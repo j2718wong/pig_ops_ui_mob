@@ -1,0 +1,118 @@
+
+
+.flex-container {
+	display: flex; /* Makes the container a flex container */
+}
+
+
+.table tr td:first-child {
+	width:150px;
+}
+
+.div1, .div2 {
+	flex: 1; /* Makes both divs take up equal space */
+	/* Or, define specific widths */
+	/* width: 50%; */
+}
+
+.pq-cell-wrap {
+	white-space: normal !important;
+	height: auto;
+}
+
+.modal-body {
+	padding-bottom:0;
+}
+
+.form-group.col-md-4 {
+    display: flex;
+    align-items: center;
+}
+
+/* From Uiverse.io by felipesntr */ 
+.btn-inside-table-row {
+  border: 2px solid #24b4fb;
+  background-color: #24b4fb;
+  border-radius: 0.6em;
+  cursor: pointer;
+  padding: 0.4em 0.4em 0.4em 0.4em;
+  transition: all ease-in-out 0.2s;
+  font-size: 16px;
+}
+
+.btn-inside-table-row span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-inside-table-row:hover {
+  background-color: #0071e2;
+}
+
+
+.div-light-color {
+	background-color: #e5edff; /* Light background color */
+	border: 2px solid #a3c9ff;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+
+.pig-weight {
+	display: inline-block;
+	background-color: #f0f0f0;
+	color: #333;
+	padding: 6px 25px 6px 12px;
+	border-radius: 15px;
+	margin: 4px;
+	font-size: 14px;
+	position: relative;
+	font-family: Arial, sans-serif;
+	
+}
+
+.glyphicon {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.glyphicon-asterisk:before {
+    content: "\2a"
+}
+
+.glyphicon-plus:before {
+    content: "\2b"
+}
+
+.glyphicon-euro:before {
+    content: "\20ac"
+}
+
+.glyphicon-minus:before {
+    content: "\2212"
+}
+
+
+.card {
+	margin-bottom: 5px;
+}
+
+
+.note-box { 
+	border: 1px solid; 
+	border-radius: 5px; 
+	padding: 10px; 
+	margin: 10px 0; 
+	width: 100%; } 
+	
+.type1 { border-color: #E76F51; background-color: rgba(231, 111, 81, 0.1); } .type2 { border-color: #2A9D8F; background-color: rgba(42, 157, 143, 0.1); } .type3 { border-color: #0096C7; background-color: rgba(0, 150, 199, 0.1); } .type4 { border-color: #00B353; background-color: rgba(0, 179, 83, 0.1); } .picture { width: 15px; padding-right: 10px; } 
