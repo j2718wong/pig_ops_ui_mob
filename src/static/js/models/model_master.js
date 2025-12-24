@@ -211,7 +211,7 @@ export function Field(value){
 
 
 
-function ModelBasic(){
+export function ModelBasic(){
 /* This class can be thought as a table row. */
     const thisObj                 = this;
     
