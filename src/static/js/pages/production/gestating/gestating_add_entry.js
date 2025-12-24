@@ -49,6 +49,16 @@ export function AddEntryProdGestating(input_settings){
     var elemIdNoBoar            = null;
     var elemIdSelectBoar        = null;
     
+    var elemIdAiShow            = null;
+    var elemIdNoSemenSupplier   = null;
+    var elemIdSemenSupplier     = null;
+    var elemIdNoSemenType       = null;
+    var elemIdSemenType         = null;
+    var elemIdSemenCostCurSymbol= null;
+    var elemIdSemenCost         = null;
+    
+    
+    
     var elemIdOtherCurSymbol    = null;
     var elemIdOtherCost         = null;
     
@@ -74,6 +84,14 @@ export function AddEntryProdGestating(input_settings){
     var elemNoBoar              = null;
     var elemSelectBoar          = null;
     
+    var elemAiShow              = null;
+    var elemNoSemenSupplier     = null;
+    var elemSemenSupplier       = null;
+    var elemNoSemenType         = null;
+    var elemSemenType           = null;
+    var elemSemenCostCurSymbol  = null;
+    var elemSemenCost           = null;
+    
     var elemOtherCurSymbol      = null;
     var elemOtherCost           = null;
     
@@ -87,6 +105,11 @@ export function AddEntryProdGestating(input_settings){
     var elemBtnSave             = null;
     
     
+    var sowList                 = null;
+    var boarList                = null;
+    var semenSupplierList       = null;
+    
+    var staffList               = null; 
     
     
     this._writeInlineStyle = function(){
@@ -347,6 +370,33 @@ export function AddEntryProdGestating(input_settings){
             to { opacity: 1; transform: translateY(0); }
         }
         
+        
+        /* Artificial Insemination Section */
+        .ai-section {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            border: 1px solid #c5e1f9;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-section h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .ai-section .form-label {
+            color: #2c5282;
+        }
+        
+        
+        
         .breeding-info {
             position: relative;
             cursor: help;
@@ -474,6 +524,15 @@ export function AddEntryProdGestating(input_settings){
         elemIdNoBoar            = `div-add-entry-${settings.elemUniqueKey}-no-boar`;
         elemIdSelectBoar        = `sel-add-entry-${settings.elemUniqueKey}-select-boar`;
         
+        
+        elemIdAiShow            = `div-add-entry-${settings.elemUniqueKey}-select-ai-show`;
+        elemIdNoSemenSupplier   = `div-add-entry-${settings.elemUniqueKey}-no-semen-supplier`;
+        elemIdSemenSupplier     = `sel-add-entry-${settings.elemUniqueKey}-select-semen-supplier`;
+        elemIdSemenType         = `sel-add-entry-${settings.elemUniqueKey}-select-semen-type`;
+        elemIdSemenCostCurSymbol= `span-add-entry-${settings.elemUniqueKey}-semen-cost-cur-symbol`;
+        elemIdSemenCost         = `txt-add-entry-${settings.elemUniqueKey}-semen-cost`;
+        
+        
         elemIdOtherCurSymbol    = `span-add-entry-${settings.elemUniqueKey}-other-cost-cur-symbol`;
         elemIdOtherCost         = `txt-add-entry-${settings.elemUniqueKey}-other-cost`;
         
@@ -481,7 +540,7 @@ export function AddEntryProdGestating(input_settings){
         elemIdNotesCharCounter  = `span-add-entry-${settings.elemUniqueKey}-notes-char-counter`;
         
         elemIdNoStaff           = `div-add-entry-${settings.elemUniqueKey}-no-staff`;
-		elemIdSelectStaff       = `sel-add-entry-${settings.elemUniqueKey}-select-staff`;
+        elemIdSelectStaff       = `sel-add-entry-${settings.elemUniqueKey}-select-staff`;
         
         elemIdBtnCancel         = `div-add-entry-${settings.elemUniqueKey}-cancel`;
         elemIdBtnSave           = `div-add-entry-${settings.elemUniqueKey}-save`;
@@ -564,7 +623,7 @@ ${html_css_inline}
         </div>
         
         <!-- 4. Boar Field -->
-        <div class="form-section" id="${elemIdSelectBoarShow}>
+        <div class="form-section" id="${elemIdSelectBoarShow}">
             <h3 class="section-title"><i class="bi bi-gender-male"></i> Boar</h3>
             <div id="${elemIdNoBoar}" class="empty-state" style="display: none;">
                 <i class="bi bi-gender-male"></i>
@@ -583,6 +642,61 @@ ${html_css_inline}
                 </button>
             </div>
         </div>
+        
+        <div id="${elemIdAiShow}" class="ai-section" style="display: none;">
+            <h5><i class="bi bi-droplet"></i> Artificial Insemination Details</h5>
+            
+            <!-- 1. Semen Supplier -->
+            <div class="mb-3">
+                <label class="form-label"><i class="bi bi-truck"></i> Semen Supplier</label>
+                <div id="${elemIdNoSemenSupplier}" class="empty-state" style="display: none;">
+                    <i class="bi bi-building"></i>
+                    <p>No suppliers available</p>
+                    <button type="button" class="btn-add-new" data-bs-toggle="modal" data-bs-target="#newSupplierModal">
+                        <i class="bi bi-plus"></i> Add New Supplier
+                    </button>
+                </div>
+
+                <div class="input-group" id="supplierSelectGroup">
+                    <select class="form-select" id="${elemIdSemenSupplier}">
+                        <option value="" selected disabled>Select supplier...</option>
+                    </select>
+                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSupplierModal">
+                        <i class="bi bi-plus"></i> New
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 2. Semen Type -->
+            <div class="mb-3">
+                <label class="form-label"><i class="bi bi-vial"></i> Semen Type</label>
+                <div id="${elemIdNoSemenType}" class="empty-state" style="display: none;">
+                    <i class="bi bi-vial"></i>
+                    <p>No semen types available</p>
+                    <button type="button" class="btn-add-new" data-bs-toggle="modal" data-bs-target="#newSemenTypeModal">
+                        <i class="bi bi-plus"></i> Add New Semen Type
+                    </button>
+                </div>
+                <div class="input-group" id="semenTypeSelectGroup">
+                    <select class="form-select" id="${elemIdSemenType}">
+                        <option value="" selected disabled>Select type...</option>
+                    </select>
+                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSemenTypeModal">
+                        <i class="bi bi-plus"></i> New
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 3. Semen Cost -->
+            <div class="mb-3">
+                <label class="form-label"><i class="bi bi-cash-stack"></i> Semen Cost</label>
+                <div class="currency-input-group">
+                    <span class="input-group-text" id="${elemIdSemenCostCurSymbol}">$</span>
+                    <input type="number" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0" value="0.00">
+                </div>
+            </div>
+        </div>
+                
         
         <!-- 5. Other Cost -->
         <div class="form-section">
@@ -662,6 +776,16 @@ ${html_css_inline}
         elemNoBoar              = document.getElementById(elemIdNoBoar);
         elemSelectBoar          = document.getElementById(elemIdSelectBoar);
         
+        elemAiShow              = document.getElementById(elemIdAiShow);
+        elemNoSemenSupplier     = document.getElementById(elemIdNoSemenSupplier);
+        elemSemenSupplier       = document.getElementById(elemIdSemenSupplier);
+        elemNoSemenType         = document.getElementById(elemIdNoSemenType);
+        elemSemenType           = document.getElementById(elemIdSemenType);
+        elemSemenCostCurSymbol  = document.getElementById(elemIdSemenCostCurSymbol);
+        elemSemenCost           = document.getElementById(elemIdSemenCost);
+        
+
+        
         elemOtherCurSymbol      = document.getElementById(elemIdOtherCurSymbol);
         elemOtherCost           = document.getElementById(elemIdOtherCost);
         
@@ -677,28 +801,27 @@ ${html_css_inline}
     
     
     this._processAfterHtmlRender = function(){
-        
+        // Temporary Philippine Peso symbol for currency1
+        elemSemenCostCurSymbol.innerHTML    = 'P';
+        elemOtherCurSymbol.innerHTML        = 'P';
     }
     
     
     this._bindEventListeners = function(){
         
         elemInsemType.addEventListener('change', function() {
-            var selectedValue = elemInsemType.val();
+            const selectedValue = elemInsemType.value;
             
             switch (selectedValue) {
                 case 'boar-mating': {
-                    elemBoarShow.show();
-                    //elemSemenSupplierShow.hide();
-                    //elemSemenShow.hide();
-                    //elemSemenCostShow.hide();
+                    elemSelectBoarShow.style.display = 'block';
+                    elemAiShow.style.display = 'none';
                     break;
                 }
                 
                 case 'ai-external': {
-                    elemBoarShow.hide();
-                    //elemSemenSupplierShow.show();
-                    //elemSemenCostShow.show();
+                    elemSelectBoarShow.style.display = 'none';
+                    elemAiShow.style.display = 'block';
                     break;
                 }
                 
@@ -715,4 +838,46 @@ ${html_css_inline}
         });
     }
     
-}
+    
+    this.setSowList = function(data){
+        sowList = data;
+        
+        if (sowList.lenght == 0){
+            elemNoSow.style.display = 'block';
+        }
+        else{
+            elemNoSow.style.display = 'none';
+        }
+        
+        
+    }
+    
+    
+    this.setBoarList = function(data){
+        boarList = data;
+        
+        if (boarList.lenght == 0){
+            elemNoBoar.style.display = 'block';
+        }
+        else{
+            elemNoBoar.style.display = 'none';
+        }
+        
+        
+    }
+    
+    
+    this.setSemenSupplierList = function(data){
+        semenSupplierList = data;
+    }
+    
+    
+                    
+    
+    this.staffList = function(data){
+        staffList = data;
+    }
+    
+        
+    
+}   
