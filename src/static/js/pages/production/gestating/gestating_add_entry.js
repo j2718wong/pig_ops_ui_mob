@@ -3,7 +3,12 @@
 // j2718wong@gmail.com
 
 'use strict';
+
+import {SOW_STATUS}				from '../../../constants.js';
+
 import {AddModalSowBoar}        from './add_modal_sow.js';
+
+
 
 
 export function AddEntryProdGestating(input_settings){
@@ -37,22 +42,18 @@ export function AddEntryProdGestating(input_settings){
     const addModalBoar          = new AddModalSowBoar(settingsAddBoar);
     
     
-    var elemIdNoSow             = null;
-    
     var elemIdSelectSow         = null;
     var elemIdSowStatusShow     = null;
-    var elemIdSowStatus         = null;
+    var elemIdSowLastInsem      = null;
+	var elemIdSowLastPid  		= null;
     var elemIdInsemType         = null;
     var elemIdDateMating        = null;
     
     var elemIdSelectBoarShow    = null;
-    var elemIdNoBoar            = null;
     var elemIdSelectBoar        = null;
     
     var elemIdAiShow            = null;
-    var elemIdNoSemenSupplier   = null;
     var elemIdSemenSupplier     = null;
-    var elemIdNoSemenType       = null;
     var elemIdSemenType         = null;
     var elemIdSemenCostCurSymbol= null;
     var elemIdSemenCost         = null;
@@ -65,27 +66,23 @@ export function AddEntryProdGestating(input_settings){
     var elemIdNotes             = null;
     var elemIdNotesCharCounter  = null;
     
-    var elemIdNoStaff           = null;
     var elemIdSelectStaff       = null;
     
     var elemIdBtnCancel         = null;
     var elemIdBtnSave           = null;
     
     
-    var elemNoSow               = null;
-    
     var elemSelectSow           = null;
     var elemSowStatusShow       = null;
-    var elemSowStatus           = null;
+    var elemSowLastInsem      	= null;
+	var elemSowLastPid  		= null;
     var elemInsemType           = null;
     var elemDateMating          = null;
     
     var elemSelectBoarShow      = null;
-    var elemNoBoar              = null;
     var elemSelectBoar          = null;
     
     var elemAiShow              = null;
-    var elemNoSemenSupplier     = null;
     var elemSemenSupplier       = null;
     var elemNoSemenType         = null;
     var elemSemenType           = null;
@@ -98,7 +95,6 @@ export function AddEntryProdGestating(input_settings){
     var elemNotes               = null;
     var elemNotesCharCounter    = null;
     
-    var elemNoStaff             = null;
     var elemSelectStaff         = null;
     
     var elemBtnCancel           = null;
@@ -512,21 +508,18 @@ export function AddEntryProdGestating(input_settings){
     
     this.render = function(){
         
-        elemIdNoSow             = `div-add-entry-${settings.elemUniqueKey}-no-sow`;
-        
         elemIdSelectSow         = `sel-add-entry-${settings.elemUniqueKey}-select-sow`;
         elemIdSowStatusShow     = `div-add-entry-${settings.elemUniqueKey}-sow-status-show`;
-        elemIdSowStatus         = `div-add-entry-${settings.elemUniqueKey}-sow-status`;
-        elemIdInsemType         = `sel-add-entry-${settings.elemUniqueKey}-insem-type`;
+        elemIdSowLastInsem     	= `span-add-entry-${settings.elemUniqueKey}-sow-last-insem`;
+		elemIdSowLastPid     	= `span-add-entry-${settings.elemUniqueKey}-sow-last-pid`;
+		elemIdInsemType         = `sel-add-entry-${settings.elemUniqueKey}-insem-type`;
         elemIdDateMating        = `txt-add-entry-${settings.elemUniqueKey}-date-mating`;
         
         elemIdSelectBoarShow    = `div-add-entry-${settings.elemUniqueKey}-select-boar-show`;
-        elemIdNoBoar            = `div-add-entry-${settings.elemUniqueKey}-no-boar`;
         elemIdSelectBoar        = `sel-add-entry-${settings.elemUniqueKey}-select-boar`;
         
         
         elemIdAiShow            = `div-add-entry-${settings.elemUniqueKey}-select-ai-show`;
-        elemIdNoSemenSupplier   = `div-add-entry-${settings.elemUniqueKey}-no-semen-supplier`;
         elemIdSemenSupplier     = `sel-add-entry-${settings.elemUniqueKey}-select-semen-supplier`;
         elemIdSemenType         = `sel-add-entry-${settings.elemUniqueKey}-select-semen-type`;
         elemIdSemenCostCurSymbol= `span-add-entry-${settings.elemUniqueKey}-semen-cost-cur-symbol`;
@@ -539,15 +532,18 @@ export function AddEntryProdGestating(input_settings){
         elemIdNotes             = `txt-add-entry-${settings.elemUniqueKey}-notes`;
         elemIdNotesCharCounter  = `span-add-entry-${settings.elemUniqueKey}-notes-char-counter`;
         
-        elemIdNoStaff           = `div-add-entry-${settings.elemUniqueKey}-no-staff`;
         elemIdSelectStaff       = `sel-add-entry-${settings.elemUniqueKey}-select-staff`;
         
         elemIdBtnCancel         = `div-add-entry-${settings.elemUniqueKey}-cancel`;
         elemIdBtnSave           = `div-add-entry-${settings.elemUniqueKey}-save`;
         
         
-        const html_css_inline   = this._writeInlineStyle();
-        
+        const html_css_inline   	= this._writeInlineStyle();
+        const html_add_modal_sow 	= addModalSow.getHtml();
+		const html_add_modal_boar 	= addModalBoar.getHtml();
+		
+		
+		
         const html =`
 
 ${html_css_inline}
@@ -563,26 +559,6 @@ ${html_css_inline}
         <!-- 1. Sow Field with Combined Warning -->
         <div class="form-section">
             <h3 class="section-title"><i class="bi bi-piggy-bank"></i> Sow</h3>
-            
-            <div class="d-flex align-items-center mb-2">
-                <label class="form-label"><i class="bi bi-tag"></i> Select Sow</label>
-                <div class="breeding-info ms-2">
-                    <i class="bi bi-info-circle" style="color: var(--primary-color); font-size: 0.9rem;"></i>
-                    <div class="info-tooltip">
-                        <strong>Breeding Status:</strong><br>
-                        • ✅ Available for breeding<br>
-                        • ⚠️ Already bred (last breeding date shown)
-                    </div>
-                </div>
-            </div>
-            
-            <div id="${elemIdNoSow}" class="empty-state" style="display: none;">
-                <i class="bi bi-piggy-bank"></i>
-                <p>No sows available</p>
-                <button type="button" class="btn-add-new" data-bs-toggle="modal" data-bs-target="#${settingsAddSow.elemIdDivModal}">
-                    <i class="bi bi-plus"></i> Add New Sow
-                </button>
-            </div>
             
             <div class="input-group" id="sowSelectGroup">
                 <select class="form-select" id="${elemIdSelectSow}">
@@ -600,7 +576,15 @@ ${html_css_inline}
                     <span>Sow Already Bred</span>
                 </div>
                 <div class="warning-details">
-                    <span id="${elemIdSowStatus}">This sow has been bred before.</span>
+                    <span>
+						This sow was last bred on <span id="${elemIdSowLastInsem}">Jan 15, 2024</span>
+						with production <b>P_ID: <span id="${elemIdSowLastPid}">20</span></b>. 
+						If this new entry will be saved, the previous gestating production  
+						entry will be marked as <b>Not Pregnant</b> and will
+						be removed from the Gestating Production List.
+						
+						Please ensure this is an intentional breeding due to sow reheat.
+					</span>
                 </div>
             </div>
         </div>
@@ -610,8 +594,7 @@ ${html_css_inline}
         <div class="form-section">
             <h3 class="section-title"><i class="bi bi-gender-ambiguous"></i> Insemination Type</h3>
             <select class="form-select" id="${elemIdInsemType}" required>
-                <option value="" selected disabled>Select...</option>
-                <option value="boar-mating">Boar Mating</option>
+                <option value="boar-mating" selected>Boar Mating</option>
                 <option value="ai-external">Artificial Insemination</option>
             </select>
         </div>
@@ -625,13 +608,6 @@ ${html_css_inline}
         <!-- 4. Boar Field -->
         <div class="form-section" id="${elemIdSelectBoarShow}">
             <h3 class="section-title"><i class="bi bi-gender-male"></i> Boar</h3>
-            <div id="${elemIdNoBoar}" class="empty-state" style="display: none;">
-                <i class="bi bi-gender-male"></i>
-                <p>No boars available</p>
-                <button type="button" class="btn-add-new" data-bs-toggle="modal" data-bs-target="#${settingsAddBoar.elemIdDivModal}">
-                    <i class="bi bi-plus"></i> Add New Boar
-                </button>
-            </div>
             
             <div class="input-group" id="boarSelectGroup">
                 <select class="form-select" id="${elemIdSelectBoar}">
@@ -649,14 +625,7 @@ ${html_css_inline}
             <!-- 1. Semen Supplier -->
             <div class="mb-3">
                 <label class="form-label"><i class="bi bi-truck"></i> Semen Supplier</label>
-                <div id="${elemIdNoSemenSupplier}" class="empty-state" style="display: none;">
-                    <i class="bi bi-building"></i>
-                    <p>No suppliers available</p>
-                    <button type="button" class="btn-add-new" data-bs-toggle="modal" data-bs-target="#newSupplierModal">
-                        <i class="bi bi-plus"></i> Add New Supplier
-                    </button>
-                </div>
-
+            
                 <div class="input-group" id="supplierSelectGroup">
                     <select class="form-select" id="${elemIdSemenSupplier}">
                         <option value="" selected disabled>Select supplier...</option>
@@ -670,13 +639,7 @@ ${html_css_inline}
             <!-- 2. Semen Type -->
             <div class="mb-3">
                 <label class="form-label"><i class="bi bi-vial"></i> Semen Type</label>
-                <div id="${elemIdNoSemenType}" class="empty-state" style="display: none;">
-                    <i class="bi bi-vial"></i>
-                    <p>No semen types available</p>
-                    <button type="button" class="btn-add-new" data-bs-toggle="modal" data-bs-target="#newSemenTypeModal">
-                        <i class="bi bi-plus"></i> Add New Semen Type
-                    </button>
-                </div>
+            
                 <div class="input-group" id="semenTypeSelectGroup">
                     <select class="form-select" id="${elemIdSemenType}">
                         <option value="" selected disabled>Select type...</option>
@@ -717,13 +680,7 @@ ${html_css_inline}
         <!-- 7. Staff -->
         <div class="form-section">
             <h3 class="section-title"><i class="bi bi-people"></i> Responsible Staff</h3>
-            <div id="${elemIdNoStaff}" class="empty-state" style="display: none;">
-                <i class="bi bi-people"></i>
-                <p>No staff available</p>
-                <button type="button" class="btn-add-new" data-bs-toggle="modal" data-bs-target="#newStaffModal">
-                    <i class="bi bi-plus"></i> Add New Staff
-                </button>
-            </div>
+            
             <div class="input-group" id="staffSelectGroup">
                 <select class="form-select" id="${elemIdSelectStaff}" required>
                     <option value="" selected disabled>Select...</option>
@@ -746,6 +703,14 @@ ${html_css_inline}
     </div>
 </div>
 
+
+
+
+<!--Modals -->
+${html_add_modal_sow}
+
+${html_add_modal_boar}
+
         `;
         
         
@@ -764,22 +729,18 @@ ${html_css_inline}
     
     this._findElements = function(){
         
-        elemNoSow               = document.getElementById(elemIdNoSow);
-        
         elemSelectSow           = document.getElementById(elemIdSelectSow);
         elemSowStatusShow       = document.getElementById(elemIdSowStatusShow);
-        elemSowStatus           = document.getElementById(elemIdSowStatus);
-        elemInsemType           = document.getElementById(elemIdInsemType);
+        elemSowLastInsem        = document.getElementById(elemIdSowLastInsem);
+        elemSowLastPid  		= document.getElementById(elemIdSowLastPid);
+		elemInsemType           = document.getElementById(elemIdInsemType);
         elemDateMating          = document.getElementById(elemIdDateMating);
         
         elemSelectBoarShow      = document.getElementById(elemIdSelectBoarShow);
-        elemNoBoar              = document.getElementById(elemIdNoBoar);
         elemSelectBoar          = document.getElementById(elemIdSelectBoar);
         
         elemAiShow              = document.getElementById(elemIdAiShow);
-        elemNoSemenSupplier     = document.getElementById(elemIdNoSemenSupplier);
         elemSemenSupplier       = document.getElementById(elemIdSemenSupplier);
-        elemNoSemenType         = document.getElementById(elemIdNoSemenType);
         elemSemenType           = document.getElementById(elemIdSemenType);
         elemSemenCostCurSymbol  = document.getElementById(elemIdSemenCostCurSymbol);
         elemSemenCost           = document.getElementById(elemIdSemenCost);
@@ -792,7 +753,6 @@ ${html_css_inline}
         elemNotes               = document.getElementById(elemIdNotes);
         elemNotesCharCounter    = document.getElementById(elemIdNotesCharCounter);
         
-        elemNoStaff             = document.getElementById(elemIdNoStaff);
         elemSelectStaff         = document.getElementById(elemIdSelectStaff);
             
         elemBtnCancel           = document.getElementById(elemIdBtnCancel);
@@ -804,15 +764,23 @@ ${html_css_inline}
         // Temporary Philippine Peso symbol for currency1
         elemSemenCostCurSymbol.innerHTML    = 'P';
         elemOtherCurSymbol.innerHTML        = 'P';
+		
+		addModalSow.afterHtmlRender();
+		addModalBoar.afterHtmlRender();
     }
     
     
     this._bindEventListeners = function(){
         
+		elemSelectSow.addEventListener('change', function(){
+			thisObj._onChangeSow();
+		});
+		
+		
         elemInsemType.addEventListener('change', function() {
-            const selectedValue = elemInsemType.value;
+            const selected_value = elemInsemType.value;
             
-            switch (selectedValue) {
+            switch (selected_value) {
                 case 'boar-mating': {
                     elemSelectBoarShow.style.display = 'block';
                     elemAiShow.style.display = 'none';
@@ -839,30 +807,108 @@ ${html_css_inline}
     }
     
     
+    this._replaceSelectOptions = function(select_elem, new_options){
+        select_elem.innerHTML = '';
+        
+        for (const cur_entry of new_options){
+            const cur_value = cur_entry.value;
+            const cur_text  = cur_entry.text;
+            
+            const new_option        = document.createElement('option');
+            new_option.value        = cur_value;
+            new_option.textContent  = cur_text;
+                
+                
+            if ((cur_value == '0') || (cur_value == '-1')){
+                new_option.disabled     = true;
+            }
+            select_elem.appendChild(new_option);
+        }
+        
+        select_elem.selectedIndex = 0;
+        
+    }
+
+    
     this.setSowList = function(data){
         sowList = data;
         
-        if (sowList.lenght == 0){
-            elemNoSow.style.display = 'block';
-        }
-        else{
-            elemNoSow.style.display = 'none';
+        var select_data = [];
+        if (sowList.length == 0){
+            select_data.push({value:"-1", text:"No Entries"});
+            thisObj._replaceSelectOptions(elemSelectSow, select_data);
+            return;
         }
         
         
+		select_data.push({value:"0", text:"Please Select"});
+        
+		for (const cur_sow_boar of data){
+            var reference;
+            
+			// This is because there is this data can come into
+			// minimum and not minimum info.
+			const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
+			
+			if (cur_entry.status_id == SOW_STATUS.GROWING ||
+				cur_entry.status_id == SOW_STATUS.GESTATING ||
+				cur_entry.status_id == SOW_STATUS.WEANING) {
+			
+				if (cur_entry.name != null && cur_entry.name.length > 0){
+					reference = cur_entry.name;
+					
+					if (cur_entry.number != null &&  cur_entry.number.length > 0) {
+						reference +=  ' (' + cur_entry.number + ')';
+					}
+				}
+				else{
+					reference = cur_entry.number;
+				}
+				
+				select_data.push({value: cur_entry.hid, text: reference});
+			}
+		}
+        
+        thisObj._replaceSelectOptions(elemSelectSow, select_data);
     }
     
     
     this.setBoarList = function(data){
         boarList = data;
         
-        if (boarList.lenght == 0){
-            elemNoBoar.style.display = 'block';
-        }
-        else{
-            elemNoBoar.style.display = 'none';
+        var select_data = [];
+        if (boarList.length == 0){
+            select_data.push({value:"-1", text:"No Entries"});
+            thisObj._replaceSelectOptions(elemSelectBoar, select_data);
+            return;
         }
         
+        
+        select_data.push({value:"0", text:"Please Select"});
+        
+        for (const cur_sow_boar of data){
+            var reference;
+            
+			// This is because there is this data can come into
+			// minimum and not minimum info.
+			const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
+			
+			
+            if (cur_entry.name != null && cur_entry.name.length > 0){
+                reference = cur_entry.name;
+                
+                if (cur_entry.number != null &&  cur_entry.number.length > 0) {
+                    reference +=  ' (' + cur_entry.number + ')';
+                }
+            }
+            else{
+                reference = cur_entry.number;
+            }
+            
+            select_data.push({value: cur_entry.hid, text: reference});
+        }
+        
+        thisObj._replaceSelectOptions(elemSelectBoar, select_data);
         
     }
     
@@ -872,12 +918,55 @@ ${html_css_inline}
     }
     
     
-                    
-    
-    this.staffList = function(data){
+    this.setStaffList = function(data){
         staffList = data;
+        
+        var select_data = [];
+        if (staffList.length == 0){
+            select_data.push({value:"-1", text:"No Entries"});
+            thisObj._replaceSelectOptions(elemSelectStaff, select_data);
+            return;
+        }
+        
+        
+        var select_data = [];
+        select_data.push({value:"0", text:"Please Select"});
+        
+        for (const cur_entry of data){
+            select_data.push({value: cur_entry.hid, text: cur_entry.name});
+        }
+        
+        thisObj._replaceSelectOptions(elemSelectStaff, select_data);
     }
     
+    
+	this._onChangeSow = function(){
+        var sow_hid       = elemSelectSow.value;
         
+        var index;
+        var cur_entry;
+        
+        var gestating_sow = null;
+        
+        elemSowStatusShow.style.display = 'none';
+		
+        for(index = 0; index < sowList.length; index++){
+            cur_entry = sowList[index];
+			if ('sow_boar' in cur_entry){
+				cur_entry = cur_entry.sow_boar;
+			}
+            
+            if (cur_entry.hid == sow_hid){
+                if (cur_entry.status_id == SOW_STATUS.GESTATING){
+					elemSowLastInsem.innerHTML 	= cur_entry.date_insemination;
+					elemSowLastPid.innerHTML 	= cur_entry.last_prod_id;  
+					
+					
+					elemSowStatusShow.style.display = 'block';
+				}
+				break;
+            }
+        }
+    }
     
 }   

@@ -38,7 +38,8 @@ export function AddModalSowBoar(input_settings){
     var elemIdDateOfBirth       = null;
     
     var elemIdBtnSave           = null;
-    
+    var elemIdBtnCancel			= null;
+	
     
     var elemDivModal            = null;
     var elemNumber              = null;
@@ -54,7 +55,8 @@ export function AddModalSowBoar(input_settings){
     var elemDateOfBirth         = null;
     
     var elemBtnSave             = null;
-    
+    var elemBtnCancel			= null;
+	
     
     var sowBoarList             = null;
     
@@ -151,6 +153,7 @@ export function AddModalSowBoar(input_settings){
     </div>
 </div>
 
+
         `;
         return html;
     }
@@ -165,21 +168,22 @@ export function AddModalSowBoar(input_settings){
     
     this._findElements = function(){
         
-        elemDivModal            = document.getElementById('elemIdDivModal');
-        elemNumber              = document.getElementById('elemIdNumber');
-        elemNumberInv           = document.getElementById('elemIdNumberInv');
+        elemDivModal            = document.getElementById(elemIdDivModal);
+        elemNumber              = document.getElementById(elemIdNumber);
+        elemNumberInv           = document.getElementById(elemIdNumberInv);
         
-        elemName                = document.getElementById('elemIdName');
-        elemNameInv             = document.getElementById('elemIdNameInv');
+        elemName                = document.getElementById(elemIdName);
+        elemNameInv             = document.getElementById(elemIdNameInv);
         
-        elemIsExternalShow      = document.getElementById('elemIdIsExternalShow');
-        elemIsExternal          = document.getElementById('elemIdIsExternal');
+        elemIsExternalShow      = document.getElementById(elemIdIsExternalShow);
+        elemIsExternal          = document.getElementById(elemIdIsExternal);
         
-        elemDateOfBirthShow     = document.getElementById('elemIdDateOfBirthShow');
-        elemDateOfBirth         = document.getElementById('elemIdDateOfBirth');
+        elemDateOfBirthShow     = document.getElementById(elemIdDateOfBirthShow);
+        elemDateOfBirth         = document.getElementById(elemIdDateOfBirth);
         
-        elemBtnSave             = document.getElementById('elemIdBtnSave');
-    }
+        elemBtnSave             = document.getElementById(elemIdBtnSave);
+		elemBtnCancel           = document.getElementById(elemIdBtnCancel);
+	}
     
     
     this._processAfterHtmlRender = function(){

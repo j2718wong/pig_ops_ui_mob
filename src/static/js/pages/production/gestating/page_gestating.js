@@ -33,7 +33,12 @@ export function PageGestating(){
         }
         
         console.log(gController);
+        
+        this._test();
     }
+    
+    
+    
     
     
     this._requestAccountData = function(){
@@ -42,5 +47,36 @@ export function PageGestating(){
     
     
     
+	this._test = function(){
+		//this._testNoEntries();
+		
+		this._testWithEntries();
+	}
     
+    
+    this._testNoEntries = function(){
+        const sow_list = [];
+        addEntryGestating.setSowList(sow_list);
+        
+        const boar_list = [];
+        addEntryGestating.setBoarList(boar_list);
+        
+        const staff_list = [];
+        addEntryGestating.setStaffList(staff_list);
+    }
+	
+	
+	this._testWithEntries = function(){
+        const sow_list = G_SAMPLE_JSON_SOW_LIST;
+        addEntryGestating.setSowList(sow_list);
+        
+        const boar_list =G_SAMPLE_JSON_BOAR_LIST;
+        addEntryGestating.setBoarList(boar_list);
+        
+        const staff_list = G_SAMPLE_JSON_STAFF;
+        addEntryGestating.setStaffList(staff_list);
+    }
+	
+	
+	
 } 
