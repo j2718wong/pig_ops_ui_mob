@@ -90,7 +90,7 @@ var G_SAMPLE_JSON_ACC_PIG_OPS = [
                 "operation_type": 1,
                 "name": "Check Pregnant",
                 "short_name": "CheckPregnant",
-                "desc": null,
+                "desc": "Check Buntis",
                 "hid": "Q92W83"
             },
             "added_by": {

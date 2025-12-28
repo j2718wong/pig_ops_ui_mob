@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Pig Farm Management Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap">
+    <style>
+        /* Pig Farm Management Dashboard - Responsive CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #2563eb;
+            --light-blue: #3b82f6;
+            --bg-blue: #eff6ff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --gold: #fbbf24;
+            --border: #e5e7eb;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* Top Navigation - Responsive */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+            z-index: 1000;
+        }
+        
+        /* Left side with burger and logo */
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .burger-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .burger-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .company-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            overflow: hidden;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--light-blue) 0%, #1d4ed8 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .logo-img i {
+            font-size: 22px;
+            color: white;
+        }
+        
+        .company-name {
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Right side with alerts and user */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        
+        .alert-icon {
+            position: relative;
+            color: var(--gold);
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            background: rgba(251, 191, 36, 0.1);
+        }
+        
+        .alert-icon:hover {
+            background: rgba(251, 191, 36, 0.2);
+        }
+        
+        .alert-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            color: white;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            padding: 0 5px;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .user-section:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--light-blue) 0%, #1d4ed8 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            position: relative;
+        }
+        
+        .avatar-alert {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--primary-blue);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(0.95); }
+        }
+        
+        .user-name {
+            color: white;
+            font-weight: 500;
+            font-size: 15px;
+            display: none;
+        }
+        
+        /* Sidebar Navigation - Responsive */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: var(--white);
+            box-shadow: 4px 0 20px rgba(30, 58, 138, 0.1);
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .farm-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #dbeafe;
+            margin-top: 6px;
+        }
+        
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .sidebar-menu {
+            flex-grow: 1;
+            padding: 15px 0;
+            overflow-y: auto;
+        }
+        
+        .menu-section {
+            margin-bottom: 20px;
+        }
+        
+        .menu-title {
+            padding: 0 20px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .menu-items {
+            list-style: none;
+            padding: 10px 0;
+        }
+        
+        .menu-item {
+            padding: 14px 20px;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            white-space: nowrap;
+        }
+        
+        .menu-item:hover {
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--light-blue);
+            color: #1e40af;
+        }
+        
+        .menu-item.active {
+            background-color: var(--bg-blue);
+            border-left: 4px solid var(--secondary-blue);
+            color: #1e40af;
+        }
+        
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        /* Custom Icon Colors */
+        .icon-blue {
+            color: var(--light-blue);
+        }
+        
+        .icon-green {
+            color: var(--success);
+        }
+        
+        .icon-purple {
+            color: #8b5cf6;
+        }
+        
+        .icon-orange {
+            color: var(--warning);
+        }
+        
+        .icon-red {
+            color: var(--danger);
+        }
+        
+        .icon-syringe {
+            color: #3b82f6;
+        }
+        
+        .icon-female {
+            color: #ec4899;
+        }
+        
+        .icon-feed {
+            color: #f59e0b;
+        }
+        
+        .icon-pig-purple {
+            color: #8b5cf6;
+        }
+        
+        .icon-pigs-green {
+            color: var(--success);
+        }
+        
+        /* Main Content - Responsive with Mobile Optimization */
+        .main-content {
+            margin-top: 70px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            min-height: calc(100vh - 70px);
+            width: 100%;
+        }
+        
+        .sidebar.open ~ .main-content {
+            margin-left: 0;
+        }
+        
+        .content-container {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.08);
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            width: 100%;
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-size: 30px;
+            font-weight: 700;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg-blue);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, var(--bg-light) 100%);
+            border-radius: 12px;
+            padding: 25px;
+            border-top: 5px solid var(--light-blue);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.05);
+        }
+        
+        .stat-card h3 {
+            font-size: 15px;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+        
+        .highlight {
+            color: var(--secondary-blue);
+        }
+        
+        .stat-trend {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .trend-up {
+            color: var(--success);
+        }
+        
+        .trend-down {
+            color: var(--danger);
+        }
+        
+        /* Health Metrics Grid - Fixed for Mobile */
+        .health-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 35px;
+        }
+        
+        .metric-box {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .metric-box h4 {
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .metric-list {
+            list-style: none;
+        }
+        
+        .metric-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .metric-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-value {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 16px;
+        }
+        
+        /* Footer - Responsive */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 40px 0 25px;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .footer-menu {
+            display: flex;
+            gap: 35px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-menu a {
+            color: #dbeafe;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+        
+        .footer-menu a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        .social-media {
+            display: flex;
+            gap: 22px;
+            font-size: 22px;
+        }
+        
+        .social-media a {
+            color: #93c5fd;
+            transition: all 0.3s ease;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-media a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            font-size: 14px;
+            color: #93c5fd;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* User Dropdown - Responsive */
+        .user-dropdown {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            width: 240px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(30, 58, 138, 0.15);
+            display: none;
+            z-index: 1001;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        
+        .user-dropdown.open {
+            display: block;
+        }
+        
+        .user-dropdown-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            color: white;
+        }
+        
+        .user-dropdown-items {
+            list-style: none;
+        }
+        
+        .user-dropdown-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #475569;
+            font-weight: 500;
+        }
+        
+        .user-dropdown-item:hover {
+            background-color: var(--bg-light);
+            color: #1e40af;
+            padding-left: 25px;
+        }
+        
+        .user-dropdown-item i {
+            width: 20px;
+            color: #64748b;
+        }
+        
+        .user-dropdown-item:hover i {
+            color: #3b82f6;
+        }
+        
+        .alert-badge {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            color: white;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-left: auto;
+            font-weight: 600;
+        }
+        
+        /* Alert Dropdown - Responsive */
+        .alert-dropdown {
+            position: absolute;
+            top: 55px;
+            right: 70px;
+            width: 320px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(30, 58, 138, 0.15);
+            display: none;
+            z-index: 1001;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        
+        .alert-dropdown.open {
+            display: block;
+        }
+        
+        .alert-dropdown-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .alert-dropdown-items {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        .alert-item {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .alert-item:hover {
+            background-color: var(--bg-light);
+        }
+        
+        .alert-item i {
+            color: var(--danger);
+            font-size: 18px;
+            margin-top: 3px;
+        }
+        
+        .alert-content {
+            flex-grow: 1;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+        
+        .alert-desc {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+        
+        .alert-time {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        
+        /* Mobile-specific styles */
+        .mobile-overlay {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            display: none;
+        }
+        
+        .mobile-overlay.active {
+            display: block;
+        }
+        
+        /* Custom double pigs icon */
+        .double-pigs {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .double-pigs i:first-child {
+            position: absolute;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .double-pigs i:last-child {
+            position: absolute;
+            left: 8px;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        
+        /* Responsive breakpoints - MOBILE FIRST APPROACH */
+        /* Mobile styles (default) */
+        .main-content {
+            padding: 0;
+        }
+        
+        .content-container {
+            border-radius: 0;
+            padding: 20px 15px;
+            margin-bottom: 0;
+            border: none;
+            box-shadow: none;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            padding: 18px;
+            border-radius: 8px;
+        }
+        
+        .stat-card h3 {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+        }
+        
+        .health-metrics {
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .metric-box {
+            padding: 18px;
+            border-radius: 8px;
+        }
+        
+        .metric-box h4 {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .metric-list li {
+            padding: 10px 0;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        
+        .metric-value {
+            align-self: flex-end;
+            font-size: 15px;
+        }
+        
+        .footer {
+            padding: 25px 0 15px;
+            margin-top: 25px;
+        }
+        
+        .footer-content {
+            padding: 0 20px;
+            gap: 20px;
+        }
+        
+        .footer-menu {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .social-media {
+            gap: 15px;
+            font-size: 20px;
+        }
+        
+        .social-media a {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .user-dropdown, .alert-dropdown {
+            position: fixed;
+            top: 70px;
+            right: 0;
+            width: 100%;
+            max-width: 100%;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .alert-dropdown {
+            max-width: 100%;
+        }
+        
+        .sidebar {
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .menu-item {
+            padding: 12px 15px;
+        }
+        
+        /* Tablet styles */
+        @media (min-width: 600px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .content-container {
+                border-radius: 12px;
+                padding: 25px;
+                margin-bottom: 20px;
+                border: 1px solid var(--border);
+                box-shadow: 0 4px 20px rgba(30, 58, 138, 0.08);
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .health-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .metric-list li {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .metric-value {
+                align-self: center;
+            }
+            
+            .user-dropdown, .alert-dropdown {
+                position: absolute;
+                width: 240px;
+                max-width: 240px;
+                border-radius: 12px;
+            }
+            
+            .alert-dropdown {
+                width: 320px;
+                max-width: 320px;
+            }
+            
+            .sidebar {
+                width: 85%;
+                max-width: 300px;
+            }
+        }
+        
+        /* Desktop styles */
+        @media (min-width: 1024px) {
+            .main-content {
+                padding: 30px;
+            }
+            
+            .content-container {
+                padding: 35px;
+                margin-bottom: 30px;
+            }
+            
+            h1 {
+                font-size: 30px;
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 25px;
+                margin-bottom: 35px;
+            }
+            
+            .stat-card {
+                padding: 25px;
+            }
+            
+            .stat-card h3 {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+            
+            .stat-value {
+                font-size: 36px;
+            }
+            
+            .health-metrics {
+                gap: 25px;
+                margin-top: 35px;
+            }
+            
+            .metric-box {
+                padding: 25px;
+            }
+            
+            .metric-box h4 {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            
+            .metric-list li {
+                padding: 12px 0;
+            }
+            
+            .metric-value {
+                font-size: 16px;
+            }
+            
+            .sidebar.open ~ .main-content {
+                margin-left: 280px;
+            }
+            
+            .user-name {
+                display: block;
+            }
+            
+            .footer {
+                padding: 40px 0 25px;
+                margin-top: 40px;
+            }
+            
+            .footer-content {
+                padding: 0 35px;
+                gap: 30px;
+            }
+            
+            .footer-menu {
+                flex-direction: row;
+                justify-content: center;
+                gap: 35px;
+            }
+        }
+        
+        /* Large desktop styles */
+        @media (min-width: 1280px) {
+            .main-content {
+                padding: 40px;
+            }
+            
+            .content-container {
+                max-width: 1200px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* Utility classes */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .d-none {
+            display: none;
+        }
+        
+        .d-block {
+            display: block;
+        }
+        
+        .w-100 {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="company-logo">
+                <div class="logo-img">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <div class="company-name">PROSWINE MANAGEMENT</div>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <div class="alert-icon" id="alertIcon" aria-label="View alerts">
+                <i class="fas fa-bell"></i>
+                <span class="alert-count">3</span>
+            </div>
+            
+            <div class="user-section" id="userSection" aria-label="User menu">
+                <div class="user-avatar" id="userAvatar">
+                    FM
+                    <div class="avatar-alert" id="avatarAlert"></div>
+                </div>
+                <span class="user-name">Farm Manager</span>
+                <i class="fas fa-chevron-down" style="color: white; font-size: 12px;"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mobile overlay for sidebar -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div>
+                <div class="company-name">PROSWINE MANAGEMENT</div>
+                <div class="farm-name">Golden Pig Farms</div>
+            </div>
+            <button class="close-btn" id="closeBtn" aria-label="Close menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-section">
+                <div class="menu-title">Operations Settings</div>
+                <ul class="menu-items">
+                    <li class="menu-item"><i class="fas fa-cog icon-blue"></i> Settings</li>
+                    <li class="menu-item"><i class="fas fa-syringe icon-syringe"></i> Gestating Ops</li>
+                    <li class="menu-item"><i class="fas fa-syringe icon-syringe"></i> Lactating Piglets Ops</li>
+                    <li class="menu-item"><i class="fas fa-female icon-female"></i> Lactating Sow Ops</li>
+                    <li class="menu-item"><i class="fas fa-venus-double icon-purple"></i> Gilts Sow Ops</li>
+                </ul>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Sow Boar Gilt</div>
+                <ul class="menu-items">
+                    <li class="menu-item"><i class="fas fa-female icon-female"></i> Sows</li>
+                    <li class="menu-item"><i class="fas fa-venus icon-purple"></i> Gilts</li>
+                    <li class="menu-item"><i class="fas fa-mars icon-blue"></i> Boars</li>
+                </ul>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Production</div>
+                <ul class="menu-items">
+                    <li class="menu-item"><i class="fas fa-pig icon-pig-purple"></i> Prod Gestating</li>
+                    <li class="menu-item"><i class="fas fa-pig icon-pig-purple"></i> Prod Lactating Piglets</li>
+                    <li class="menu-item"><i class="fas fa-pig icon-pig-purple"></i> Prod Lactating Sows</li>
+                    <li class="menu-item"><i class="fas fa-pig icon-pig-purple"></i> Fattening</li>
+                    <li class="menu-item"><i class="fas fa-layer-group icon-feed"></i> Feeds</li>
+                </ul>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Operations</div>
+                <ul class="menu-items">
+                    <li class="menu-item">
+                        <span class="double-pigs">
+                            <i class="fas fa-pig icon-pigs-green"></i>
+                            <i class="fas fa-pig icon-pigs-green"></i>
+                        </span>
+                        Pig Harvests
+                    </li>
+                    <li class="menu-item"><i class="fas fa-chart-bar icon-blue"></i> Reports</li>
+                    <li class="menu-item"><i class="fas fa-calculator icon-orange"></i> Feed Calculator</li>
+                </ul>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Financials</div>
+                <ul class="menu-items">
+                    <li class="menu-item"><i class="fas fa-money-bill-wave icon-green"></i> Feeds Expenses</li>
+                    <li class="menu-item"><i class="fas fa-receipt icon-blue"></i> Non Feeds Expenses</li>
+                    <li class="menu-item"><i class="fas fa-chart-line icon-green"></i> Sales</li>
+                </ul>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Account Lists</div>
+                <ul class="menu-items">
+                    <li class="menu-item"><i class="fas fa-users icon-blue"></i> Staff</li>
+                    <li class="menu-item"><i class="fas fa-user-tag icon-purple"></i> Pig Buyers</li>
+                    <li class="menu-item"><i class="fas fa-truck-loading icon-orange"></i> Feed Suppliers</li>
+                    <li class="menu-item"><i class="fas fa-flask icon-blue"></i> Semen Suppliers</li>
+                    <li class="menu-item"><i class="fas fa-venus-double icon-purple"></i> Gilt Suppliers</li>
+                </ul>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Users</div>
+                <ul class="menu-items">
+                    <li class="menu-item"><i class="fas fa-user-friends icon-blue"></i> Users</li>
+                    <li class="menu-item"><i class="fas fa-user-plus icon-green"></i> User Request</li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- User Dropdown -->
+    <div class="user-dropdown" id="userDropdown">
+        <div class="user-dropdown-header">
+            <div>
+                <div style="font-weight: 600;">Farm Manager</div>
+                <div style="font-size: 14px;">admin@proswine.com</div>
+            </div>
+        </div>
+        <ul class="user-dropdown-items">
+            <li class="user-dropdown-item" id="myAccount">
+                <i class="fas fa-user"></i> My Account
+            </li>
+            <li class="user-dropdown-item" id="billing">
+                <i class="fas fa-file-invoice-dollar"></i> Billing
+                <span class="alert-badge">New</span>
+            </li>
+            <li class="user-dropdown-item" id="logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Alert Dropdown -->
+    <div class="alert-dropdown" id="alertDropdown">
+        <div class="alert-dropdown-header">
+            <div>Alerts & Notifications</div>
+            <div style="font-size: 14px;">3 New</div>
+        </div>
+        <div class="alert-dropdown-items">
+            <div class="alert-item">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="alert-content">
+                    <div class="alert-title">Temperature Alert</div>
+                    <div class="alert-desc">Nursery section temperature is above threshold</div>
+                    <div class="alert-time">10 minutes ago</div>
+                </div>
+            </div>
+            <div class="alert-item">
+                <i class="fas fa-syringe"></i>
+                <div class="alert-content">
+                    <div class="alert-title">Vaccination Due</div>
+                    <div class="alert-desc">50 piglets due for vaccination tomorrow</div>
+                    <div class="alert-time">1 hour ago</div>
+                </div>
+            </div>
+            <div class="alert-item">
+                <i class="fas fa-truck"></i>
+                <div class="alert-content">
+                    <div class="alert-title">Feed Delivery</div>
+                    <div class="alert-desc">Feed shipment arriving at 2:00 PM today</div>
+                    <div class="alert-time">2 hours ago</div>
+                </div>
+            </div>
+            <div class="alert-item">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <div class="alert-content">
+                    <div class="alert-title">New Bill Available</div>
+                    <div class="alert-desc">Monthly subscription bill ready for payment</div>
+                    <div class="alert-time">Yesterday</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="content-container">
+            <h1>Pig Farm Dashboard</h1>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Production Pig Count</h3>
+                    <div class="stat-value highlight">2,847</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i> 42 from last month
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Sows in Production</h3>
+                    <div class="stat-value">187</div>
+                    <div class="stat-trend">
+                        12 gestating, 175 lactating
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Piglets This Month</h3>
+                    <div class="stat-value">312</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i> Avg. 10.4 per litter
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Feed Inventory (tons)</h3>
+                    <div class="stat-value">42.5</div>
+                    <div class="stat-trend trend-down">
+                        <i class="fas fa-arrow-down"></i> Enough for 18 days
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-20">
+                <h2>Recent Activity</h2>
+                <p style="line-height: 1.6; color: #555; margin-top: 10px;">
+                    Welcome to the Pig Farm Management System. Today's tasks include checking the vaccination schedule for nursery piglets, 
+                    reviewing feed inventory levels, and preparing the monthly financial report.
+                </p>
+                <p style="line-height: 1.6; color: #555; margin-top: 10px;">
+                    Use the navigation menu to access different sections of the farm management system. 
+                    The <strong>Production</strong> section contains real-time data on pig counts and productivity metrics.
+                </p>
+            </div>
+            
+            <!-- Health Metrics Section with Fixed Mobile Alignment -->
+            <div class="health-metrics">
+                <div class="metric-box">
+                    <h4>Health Metrics</h4>
+                    <ul class="metric-list">
+                        <li>
+                            <span>Average daily gain</span>
+                            <span class="metric-value">0.85 kg/day</span>
+                        </li>
+                        <li>
+                            <span>Feed conversion ratio</span>
+                            <span class="metric-value">2.8</span>
+                        </li>
+                        <li>
+                            <span>Mortality rate</span>
+                            <span class="metric-value">2.1%</span>
+                        </li>
+                        <li>
+                            <span>Weaning age</span>
+                            <span class="metric-value">21 days</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="metric-box">
+                    <h4>Upcoming Tasks</h4>
+                    <ul class="metric-list">
+                        <li>
+                            <span>Vaccinate nursery piglets</span>
+                            <span class="metric-value">Tomorrow</span>
+                        </li>
+                        <li>
+                            <span>Monthly financial report</span>
+                            <span class="metric-value">Friday</span>
+                        </li>
+                        <li>
+                            <span>Inspect farrowing pens</span>
+                            <span class="metric-value">Daily</span>
+                        </li>
+                        <li>
+                            <span>Order feed supplies</span>
+                            <span class="metric-value">Next Monday</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-menu">
+                <a href="#">About Us</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Farm Locations</a>
+            </div>
+            
+            <div class="social-media">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2023 ProSwine Management System. All rights reserved. | Golden Pig Farms
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // DOM Elements
+        const burgerBtn = document.getElementById('burgerBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const sidebar = document.getElementById('sidebar');
+        const userSection = document.getElementById('userSection');
+        const userDropdown = document.getElementById('userDropdown');
+        const alertIcon = document.getElementById('alertIcon');
+        const alertDropdown = document.getElementById('alertDropdown');
+        const mainContent = document.getElementById('mainContent');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const userAvatar = document.getElementById('userAvatar');
+        const avatarAlert = document.getElementById('avatarAlert');
+        
+        // Check if device is mobile
+        const isMobile = () => window.innerWidth <= 767;
+        
+        // Toggle sidebar with mobile overlay
+        const toggleSidebar = (open) => {
+            if (open) {
+                sidebar.classList.add('open');
+                if (isMobile()) {
+                    mobileOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            } else {
+                sidebar.classList.remove('open');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        };
+        
+        burgerBtn.addEventListener('click', () => {
+            toggleSidebar(true);
+        });
+        
+        closeBtn.addEventListener('click', () => {
+            toggleSidebar(false);
+        });
+        
+        // Close sidebar when clicking on overlay
+        mobileOverlay.addEventListener('click', () => {
+            toggleSidebar(false);
+        });
+        
+        // Toggle user dropdown
+        userSection.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('open');
+            // Close alert dropdown if open
+            alertDropdown.classList.remove('open');
+        });
+        
+        // Toggle alert dropdown
+        alertIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            alertDropdown.classList.toggle('open');
+            // Close user dropdown if open
+            userDropdown.classList.remove('open');
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userSection.contains(e.target)) {
+                userDropdown.classList.remove('open');
+            }
+            if (!alertIcon.contains(e.target)) {
+                alertDropdown.classList.remove('open');
+            }
+        });
+        
+        // Handle user dropdown item clicks
+        document.getElementById('myAccount').addEventListener('click', () => {
+            alert('My Account clicked');
+            userDropdown.classList.remove('open');
+        });
+        
+        document.getElementById('billing').addEventListener('click', () => {
+            alert('Billing section opened - New bill alert!');
+            userDropdown.classList.remove('open');
+            // Remove bill alert after viewing
+            avatarAlert.style.display = 'none';
+        });
+        
+        document.getElementById('logout').addEventListener('click', () => {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logged out successfully');
+                userDropdown.classList.remove('open');
+            }
+        });
+        
+        // Update alert count (simulating new alerts)
+        let alertCount = 3;
+        const alertCountElement = document.querySelector('.alert-count');
+        const alertHeaderCount = document.querySelector('.alert-dropdown-header div:last-child');
+        
+        // Simulate a new alert every 30 seconds
+        setInterval(() => {
+            alertCount++;
+            alertCountElement.textContent = alertCount;
+            alertHeaderCount.textContent = alertCount + ' New';
+            
+            // Add visual feedback
+            alertCountElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                alertCountElement.style.transform = 'scale(1)';
+            }, 300);
+        }, 30000);
+        
+        // Menu item click handlers
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all items
+                document.querySelectorAll('.menu-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // Get the text of the clicked menu item
+                const menuText = this.textContent.trim();
+                
+                // Update main content title
+                const mainTitle = document.querySelector('.main-content h1');
+                if (mainTitle) {
+                    mainTitle.textContent = menuText;
+                }
+                
+                // Close sidebar on mobile
+                if (isMobile()) {
+                    toggleSidebar(false);
+                }
+                
+                // Show a message (simulating navigation)
+                setTimeout(() => {
+                    alert(`Navigating to ${menuText} section`);
+                }, 300);
+            });
+        });
+        
+        // Handle window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (!isMobile() && sidebar.classList.contains('open')) {
+                    mobileOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+                
+                // Update user name display
+                const userName = document.querySelector('.user-name');
+                if (isMobile()) {
+                    userName.textContent = 'Manager';
+                } else {
+                    userName.textContent = 'Farm Manager';
+                }
+            }, 250);
+        });
+        
+        // Initialize based on current screen size
+        if (isMobile()) {
+            document.querySelector('.user-name').textContent = 'Manager';
+        }
+        
+        // Initialize user avatar with initials
+        function updateUserAvatar() {
+            const userName = 'Farm Manager';
+            const initials = userName.split(' ').map(n => n[0]).join('');
+            userAvatar.textContent = initials;
+        }
+        
+        // Show bill alert on avatar
+        function showBillAlert() {
+            avatarAlert.style.display = 'block';
+        }
+        
+        // Handle escape key to close menus
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                toggleSidebar(false);
+                userDropdown.classList.remove('open');
+                alertDropdown.classList.remove('open');
+            }
+        });
+        
+        // Initialize functions
+        updateUserAvatar();
+        showBillAlert();
+    </script>
+</body>
+</html>

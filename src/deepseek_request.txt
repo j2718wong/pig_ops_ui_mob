@@ -1,24 +1,37 @@
-Create a top navigation with 
+Create a two line top navigation for a Pig Farm management system 
 
-1.) put the burger on the left side
-2.) add an alert icon that can display number of alerts near the user icon
-3.) put the company logo  near the burger
-4.) Put a Pig Farm Name section below the company name when the burger is open
-5.) the main content should be scrollable and the top div will not move
+1.) The product name is PiggyProd
+2.) The Company name is J Systems Development
+3.) use corporate blue theme
+4.) Optimized for mobile experience
+5.) The CSS must be readily exportable to a separate file for minimization later
+6.) Use bigger fonts for the menu
+7.) Put some icons in the navigation links
+8.) The Company Logo is just a blue circle with a big white letter J.
+
+The first line
+- left side: Company Logo and product name
+- center: client Pig Farm Name. the center should be dynamically calculated based 
+on screen size
+- right side: alerts and User Control
+
+Second line: one special button + drop down menus  
+
+Special button name: Summary
+- Generates a PDF report of the whole pig farm operetion
 
 The nav link should contain the following subnavigation
-Updated navigation
-1.) Operations Setttings
-	- Settings
-	- Gestating Ops
-	- Lactating Piglets Ops
-	- Lactating Sow Ops
-	- Gilts Sow Ops
+1.) Settings
+	- Ops Settings 
+	- Gestating Ops (syringe icon)
+ 	- Lactating Piglets Ops(syringe icon)
+	- Lactating Sow Ops(syringe icon)
+	- Gilts Sow Ops(syringe icon)
 	
-2.) Sow Boar Gilt
-	- Sows
-	- Gilts
-	- Boars
+2.) Sow Boar Gilt (Pig Icon)
+	- Sows (female venus icon)
+	- Gilts (female venus icon)
+	- Boars  (male mars icon)
 	
 3.) Production
 	- Prod Gestating
@@ -45,47 +58,186 @@ Updated navigation
 	- Gilt Suppliers
 	
 	
-7.) Users
+7.) Admin
 	- Users
 	- User Request
-	
-	
-	
-1.) include total production pig count
-2.) The burger button when open should display a fix div with the company name logo
-and a close button
 
-3.) Put a footer with these Menu
+Show alert sample when alert button is clicked in both mobile and desktop
+1.) vaccination due for piglets, pigs or sows
+2.) Feeds for production entry  almost depleted
+3.) Upcoming pig birth
+4.) Sow Birth checklist alert
+5.) missed feed inventory entry
+6.) pig health issue reported
+7.) 
+
+There should be visual category for alerts
+1.) critical
+2.) warning
+3.) info
+
+
+
+The Landing Dash board should contain the following  cards
+1.) Number of gestating sows, lactating sows, number of gilts, number of boars
+2.) Number of production piglets
+3.) number of fattening pigs
+4.) Feeds left  
+
+
+
+
+
+
+When viewed from mobile 
+1.) Put the burger on the left side
+2.) add an alert icon that can display number of alerts near the user icon
+use a golden color alert bell icon
+3.) put the company logo and Product Name near the burger
+4.) Put a Pig Farm Name section below the company name when the burger is open
+5.) the main content should be scrollable and the top div will not move
+6.) The burger button when open should display a fix div with the top navigation.  
+7.) The burger menu should occupy whole screen when opened in mobile.
+8.) The subnavigation should be all visible not collapsed.
+
+Footer section
 - About Us
 - Contact Us
-
-4.) Social Media sharing 
-
+- Social Media sharing 
 
 
-2.) In the User control there should be sections
+
+User control should have these sections
+The user avatar should be Initials of the User name
 - My Account
 - Billing
 - Logout
-
-3.) There is also a separate alert in the user control when a new bill arrive for the account 
-
-
-
-1.)use corporate blue theme
-2.)
-
-Change the following icons
-1.) Gestating sow Ops, Lactating piglets ops should be same, injection syringe icon 
-2.) Sows should be a female symbol
-3.) Prod Gestating, Prod lactating piglets, prod lactating sow and fattening are all 
-same just large white pig icon
-4.) The Feeds icons should be stack of sacks of feeds
+- There is also a separate alert in the user control 
+when a new bill arrive for the account 
 
 
-5.) The user avatar should be Initials of the User name
-6.) There should be a visual alert in teh avatar if there is a new bill
-7.) fix on health metrics alignment when viewed from mobile
-8.) The CSS must be readily exportable to a separate file for minimization later
+Fix the following
+1.) The menu drop down did not work. no drop downs when viewed from desktop.
+2.) The burger menu should have a close button. 
+3.) 
 
-9.) Chnage the alert to golden color bell
+
+
+Fix the following
+1.) The menu drop down did not work in deskktop view . no drop downs when viewed from desktop.
+2.) When in mobile view, the alerts should be visible. very important.
+Should be put at the left side of User Control
+3.) When opening the burger button, the alerts should be at the top navigation
+inline with the  Product name.
+4.) The burger close buton, should be at the second line, in line
+with the Client Farm name 
+ 
+
+Fix the following
+1.) Remove the double user control when viewed from mobile.
+2.) The alerts should be at the left side of user control. when viewed from mobile
+3.) The close button of the burger menu should be in line with the Farm name. 
+second line of the burger menu
+
+Fix the following
+1.) Put the user control when viewed from mobile. Just 1 user control.
+2.) The Dektop menus on hover still did not work.
+
+
+Fix the following
+1.) Remove the scroll bars in the second line of the menu when viewed from Desktop
+2.) Rename the Operations Settings to just Settings
+3.) Rename Settings submenu to Ops Settings
+3.) Use colored Icons for visual appeal
+
+Fix the following
+1.) The Gestating Ops, Lactating Piglets Ops, Lactating Sow Ops and Gilt Ops should
+have same Syringe icon
+
+2.) Change the Gilt Sow Ops to Gilt Ops
+
+3.) Sows and Gilts should have female venus symbols
+
+4.) Prod Lactating Piglets and Prod Lactating Sow should have a milk bottle icon
+
+5.)Fattening should have  a standing pig icon
+
+6.) Feeds should be a sack of feed icon 
+
+7.) Pig harvest should have two pigs icon
+
+8.)  Sow Boar Gilt should be a Pig icon
+
+
+
+Create a Div Card that can stacked in a container with the following fields
+
+1.) Name
+2.) Description
+3.) Day Number
+
+4.) Optional Last update date 
+
+must be optimize when viewing from mobile
+
+no margin between divs
+no rounded curves for div corners
+
+-use the corporate blue colors 
+- must show a bootstrap modal when an edit button is touch in the card
+- the edit modal should contain a delete button of the card
+
+The Edit Button should be just  a Edit Icon 
+at the right top of the card to save space
+and  big enough that can be touch finger in mobile screen.
+
+Remove the Coporate card System.
+Just the add button and cards.
+remove the filters.
+remove the "remove Last"
+The add card should be renamed "Add New Pig Operation"
+
+
+Use this sample data or similar:
+
+{
+	"num_days_since": 3,
+	"version_num": 1,
+	"operation_type": 2,
+	"name": "Cut Teeth",
+	"short_name": "Cut TT",
+	"desc": "Cut Teeth and Tail",
+	"hid": "1K7D9J"
+}
+
+
+The add New Pig Operation should also show a bootstrap modal.
+Do not show the version_num, type and HID in the card.
+This content format should be viewable if is the screen is mobile.
+
+When the screen is bigger, it should display in tabular format.
+
+When displayed in tabular format. Only these fields should show up
+- Day Number
+- Name
+- Short Name
+- Description
+- Last Update By
+- Last Updated
+
+the name and short name should in line in the card.
+ The last update User and Time should also be in line.
+
+the card hsould have no left and right side padding; 
+no right side and left side border line.
+Only Top and bottom border line for the card. 
+
+If viewed from mobile,
+1.) Add an info box below the header for the page decription 
+2.) The last update User and Time should also be in one line.
+3.) make the days badge has rounded corners
+4.) make the short name has rounded corners 
+
+
+
+

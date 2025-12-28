@@ -4,77 +4,92 @@
 
 'use strict';
 
+import {PIG_OPERATION_TYPE,
+        SOW_BOAR_TYPE}              from '../../constants.js';
+
+import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
+
+
 function UserControl() {
-    const thisObj               = this;
+    const thisObj                   = this;
     
-	var elemUserAvatarInitials	= null;
-	var elemUserAvatarName    	= null;  
-		
-	var elemUserDropDownName	= null;
-	
-	
-    var dataUserAccount         = null;
+    var elemDesktopUserAvatarInitials   = null;
+    var elemDesktopUserAvatarInitialsL  = null;
+    var elemDesktopUserFullName         = null;
+    var elemDesktopUserRole             = null;
     
-    var userCurrentFarmHid      = null;
+    var elemMobileUserAvatarInitials    = null;
+    var elemMobileUserAvatarInitialsL   = null;
+    var elemMobileUserFullName          = null;
+    var elemMobileUserRole              = null;
     
     
-	this.init = function(){
-		this.afterHtmlRender();
-	}
-	
-	
-	this.afterHtmlRender = function(){
+    var dataUserAccount         	= null;
+    
+    var userCurrentFarmHid      	= null;
+	var userCurrentLanguage			= null;
+    
+    
+    this.init = function(){
+        this.afterHtmlRender();
+    }
+    
+    
+    this.afterHtmlRender = function(){
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
     }
-	
-	
-	this._findElements  = function(){
-		
-		// TODO; cannot be found i duno why
-		elemUserAvatarInitials      = document.getElementById('user-avatar-initials');
-		elemUserAvatarName         	= document.getElementById('user-avatar-name');
-		
-		if (!elemUserAvatarInitials){console.log('elemUserAvatarInitials is null');}
-		if (!elemUserAvatarName){console.log('elemUserAvatarName is null');}
-		else{
-			console.log('elemUserAvatarName is not null');
-		}
-		
-		
-		elemUserDropDownName		= document.getElementById('user-dropdown-name');
-	   
-	}
-	
-	
-	this._processAfterHtmlRender = function(){
-		
-		
-	}
-	
-	
-	this._bindEventListeners = function(){
-		
-	}
-	
+    
+    
+    this._findElements  = function(){
+        
+        elemDesktopUserAvatarInitials   = document.getElementById('desktop-user-initials');
+        elemDesktopUserAvatarInitialsL  = document.getElementById('desktop-user-initials-large');
+        elemDesktopUserFullName         = document.getElementById('desktop-user-full-name');
+        elemDesktopUserRole             = document.getElementById('desktop-user-role');
+        
+        
+        elemMobileUserAvatarInitials    = document.getElementById('mobile-user-initials');
+        elemMobileUserAvatarInitialsL   = document.getElementById('mobile-user-initials-large');
+        elemMobileUserFullName          = document.getElementById('mobile-user-full-name');
+        elemMobileUserRole              = document.getElementById('mobile-user-role');
+        
+    }
+    
+    
+    this._processAfterHtmlRender = function(){
+        
+        
+    }
+    
+    
+    this._bindEventListeners = function(){
+        
+    }
+    
     
     this.setDataUserAccount = function(data){
         dataUserAccount     = data;
         
-        userCurrentFarmHid 	= data.user.default_farm;
-		
-		const user 			= dataUserAccount.user;
-		const user_initials = user.name_first.substring(0,1) + 
-							user.name_last.substring(0,1);
-							
-		const user_name		= user.name_first + ' ' + user.name_last;
-		
-		//elemUserAvatarInitials.innerHTML 	= user_initials;
-		elemUserAvatarName.innerHTML 		= user_name;
-		elemUserDropDownName.innerHTML 		= user_name;
-		
-		
+        userCurrentFarmHid  = data.user.default_farm;
+        
+        const user          = dataUserAccount.user;
+        const user_initials = user.name_first.substring(0,1) + 
+                            user.name_last.substring(0,1);
+                            
+        const user_fullname = user.name_first + ' ' + user.name_last;
+        
+        elemDesktopUserAvatarInitials.innerHTML = user_initials;
+        elemMobileUserAvatarInitials.innerHTML  = user_initials;
+        elemDesktopUserAvatarInitialsL.innerHTML= user_initials;
+        elemMobileUserAvatarInitialsL.innerHTML = user_initials;
+        
+        
+        elemDesktopUserFullName.innerHTML       = user_fullname;
+        elemMobileUserFullName.innerHTML        = user_fullname;
+        
+        
     }
     
     
@@ -103,6 +118,11 @@ function UserControl() {
         
         return null;
     }
+	
+	
+	this.getCurrentLanguage = function(){
+		
+	}
 }
 
 
@@ -111,55 +131,43 @@ export function Navigation(){
     const thisObj               = this;
     
     var dataCompanyApp          = null;
+   
     
+    
+    var elemSubnavSummary       = null;
+    
+    
+    var elemDesktopNavSettings      = null;
+    var elemDesktopNavSowBoarGilt   = null;
+    var elemDesktopNavProduction    = null;
+    var elemDesktopNavOperations    = null;
+    var elemDesktopNavFinancials    = null;
+    var elemDesktopNavAccountLists  = null;
+    var elemDesktopNavAdmin         = null;
+    
+    var elemMobileNavSettings       = null;
+    var elemMobileNavSowBoarGilt    = null;
+    var elemMobileNavProduction     = null;
+    var elemMobileNavOperations     = null;
+    var elemMobileNavFinancials     = null;
+    var elemMobileNavAccountLists   = null;
+    var elemMobileNavAdmin          = null;
 
     
-    var elemFarmName            = null;
-    
-    var elemNavOpsSettings      = null;
-    var elemNavAccGestOps       = null;
-    var elemNavAccLactaPigletsOps = null;
-    var elemNavAccLactaSowOps   = null;
-    var elemNavAccGiltOps       = null;
-    
-    var elemNavSows             = null;
-    var elemNavBoars            = null;
-    var elemNavGilts            = null;
-    
-    var elemNavProdGesta        = null;
-    var elemNavProdLactaPiglets= null;
-    var elemNavProdLactaSows    = null;
-    var elemNavProdFattening    = null;
-    var elemNavProdFeeds        = null;
-    
-    var elemNavPigHarvests      = null;
-    var elemNavReports          = null;
-    var elemNavFeedCalculator   = null;
+    var elemHiddenContAccPigOps = null;
     
     
-    
-    var elemNavFinancials       = null;
-    var elemNavFeedsExpenses    = null;
-    var elemNavNonFeedsExpenses = null;
-    var elemNavSales            = null;
-    
-    var elemNavStaff            = null;
-    var elemNavPigBuyers        = null;
-    var elemNavFeedSuppliers    = null;
-    var elemNavSemenSuppliers   = null;
-    var elemNavGiltSuppliers    = null;
-    
-    var elemNavUsers            = null;
-    var elemNavUsersRequest     = null;
-    
+    this.pageAccPigOps          = new PageAccPigOps();
     
     this.userControl            = new UserControl();
     
     
     this.init = function(){
-		
-		this.userControl.init();
-		
+        
+        this.userControl.init();
+        
+        this.pageAccPigOps.init();
+        
         this.afterHtmlRender();
         
     }
@@ -176,47 +184,25 @@ export function Navigation(){
     
     
     this._findElements = function(){
+       
+        elemDesktopNavSettings      = document.getElementById('desktop-nav-settings');
+        elemDesktopNavSowBoarGilt   = document.getElementById('desktop-nav-sow-boar-gilt');
+        elemDesktopNavProduction    = document.getElementById('desktop-nav-production');
+        elemDesktopNavOperations    = document.getElementById('desktop-nav-operations');
+        elemDesktopNavFinancials    = document.getElementById('desktop-nav-financials');
+        elemDesktopNavAccountLists  = document.getElementById('desktop-nav-account-lists');
+        elemDesktopNavAdmin         = document.getElementById('desktop-nav-admin');
         
+        elemMobileNavSettings       = document.getElementById('mobile-nav-settings');
+        elemMobileNavSowBoarGilt    = document.getElementById('mobile-nav-sow-boar-gilt');
+        elemMobileNavProduction     = document.getElementById('mobile-nav-production');
+        elemMobileNavOperations     = document.getElementById('mobile-nav-operations');
+        elemMobileNavFinancials     = document.getElementById('mobile-nav-financials');
+        elemMobileNavAccountLists   = document.getElementById('mobile-nav-account-lists');
+        elemMobileNavAdmin          = document.getElementById('mobile-nav-admin');
+
         
-    
-        elemFarmName                = document.getElementById('mob-menu-farm-name');
-        
-        elemNavOpsSettings          = document.getElementById('sub-nav-settings');
-        elemNavAccGestOps           = document.getElementById('sub-nav-acc-gesta-ops');
-        elemNavAccLactaPigletsOps   = document.getElementById('sub-nav-acc-lacta-piglets-ops');
-        elemNavAccLactaSowOps       = document.getElementById('sub-nav-acc-lacta-sow-ops');
-        elemNavAccGiltOps           = document.getElementById('sub-nav-acc-gilt-ops');
-        
-        elemNavSows                 = document.getElementById('sub-nav-sows');
-        elemNavBoars                = document.getElementById('sub-nav-gilts');
-        elemNavGilts                = document.getElementById('sub-nav-boars');
-        
-        elemNavProdGesta            = document.getElementById('sub-nav-prod-gesta');
-        elemNavProdLactaPiglets     = document.getElementById('sub-nav-lacta-piglets');
-        elemNavProdLactaSows        = document.getElementById('sub-nav-lacta-sows');
-        elemNavProdFattening        = document.getElementById('sub-nav-fattening');
-        elemNavProdFeeds            = document.getElementById('sub-nav-feeds');
-        
-        elemNavPigHarvests          = document.getElementById('sub-nav-pig-harvests');
-        elemNavReports              = document.getElementById('sub-nav-reports');
-        elemNavFeedCalculator       = document.getElementById('sub-nav-feed-calculator');
-        
-        
-        
-        elemNavFinancials           = document.getElementById('nav-financials');
-        elemNavFeedsExpenses        = document.getElementById('sub-nav-feeds-expenses');
-        elemNavNonFeedsExpenses     = document.getElementById('sub-nav-non-feeds-expenses');
-        elemNavSales                = document.getElementById('sub-nav-sales');
-        
-        elemNavStaff                = document.getElementById('sub-nav-staff');
-        elemNavPigBuyers            = document.getElementById('sub-nav-pig-buyers');
-        elemNavFeedSuppliers        = document.getElementById('sub-nav-feed-suppliers');
-        elemNavSemenSuppliers       = document.getElementById('sub-nav-semen-suppliers');
-        elemNavGiltSuppliers        = document.getElementById('sub-nav-gilt-suppliers');
-        
-        elemNavUsers                = document.getElementById('sub-nav-users');
-        elemNavUsersRequest         = document.getElementById('sub-nav-user-requests');
-        
+        elemHiddenContAccPigOps     = document.getElementById('container-acc-pig-ops');
     
     }
     
@@ -228,108 +214,18 @@ export function Navigation(){
     
     this._bindEventListeners = function(){
         
-		elemNavOpsSettings.addEventListener('click', function(){
-			thisObj._onClickNavOpsSettings();
-		});
-		
-		
-		elemNavAccGestOps.addEventListener('click', function(){
-			thisObj._onClickNavAccGestOps();
-		});
-		
-		
-		elemNavAccLactaPigletsOp.addEventListener('click', function(){
-			thisObj._onClickNavAccLactaPigletsOp();
-		});
-		
-		   
-		elemNavAccLactaSowOps.addEventListener('click', function(){
-			thisObj._onClickNavAccLactaSowOps();
-		});
-		
-		       
-		elemNavAccGiltOps.addEventListener('click', function(){
-			thisObj._onClickNavAccGiltOps();
-		});
-		
-		
-		             
-		elemNavSows.addEventListener('click', function(){
-			thisObj._onClickNavSows();
-		});
-		
-		
-		elemNavBoars.addEventListener('click', function(){
-			thisObj._onClickNavBoars();
-		});
-		
-		
-		elemNavGilts.addEventListener('click', function(){
-			thisObj._onClickNavGilts();
-		});
-		
-		
-		        
-		elemNavProdGesta.addEventListener('click', function(){
-			thisObj._onClickNavProdGesta();
-		});
-		
-		
-		
-		elemNavProdLactaPiglets.addEventListener('click', function(){
-			thisObj._onClickNavProdLactaPiglets();
-		});
-		
-		
-		elemNavProdLactaSows.addEventListener('click', function(){
-			thisObj._onClickNavProdLactaSows();
-		});
-		
-		
-		elemNavProdFattening.addEventListener('click', function(){
-			thisObj._onClickNavProdFattening();
-		});
-		
-		
-		elemNavProdFattening.addEventListener('click', function(){
-			thisObj._onClickNavProdFattening();
-		});
-		
-		
-		    
-		elemNavProdFeeds        
-		
-		elemNavPigHarvests      
-		elemNavReports          
-		elemNavFeedCalculator   
-		
-		
-		
-		elemNavFinancials       
-		elemNavFeedsExpenses    
-		elemNavNonFeedsExpenses 
-		elemNavSales            
-		
-		elemNavStaff            
-		elemNavPigBuyers        
-		elemNavFeedSuppliers    
-		elemNavSemenSuppliers   
-		elemNavGiltSuppliers    
-		
-		elemNavUsers            
-		elemNavUsersRequest     
-		
-		
+        window.addEventListener('resize', thisObj.updatePigFarmName);
+        
+        
     }
     
     
     this.setDataCompanyApp = function(data){
         dataCompanyApp = data;
         
-        const elems = document.getElementsByClassName('app-name');
+        const elems = document.getElementsByClassName('product-name');
 
-        console.log('elems.length = '+ elems.length);
-
+        
         for (let i = 0; i < elems.length; i++) {
             elems[i].innerHTML = dataCompanyApp.product_name;
         }
@@ -339,19 +235,305 @@ export function Navigation(){
     this.setDataUserAccount = function(data){
         this.userControl.setDataUserAccount(data);
         
+        this.updatePigFarmName();
+    }
+    
+    
+    // Update pig farm name on resize for responsive centering
+    this.updatePigFarmName = function() {
         // Set Farm name
         const cur_user_farm = this.userControl.getCurrentFarm();
-        elemFarmName.innerHTML = cur_user_farm.name;
+        
+        
+        const pigFarmName = document.getElementById('pigFarmName');
+        const mobilePigFarmName = document.getElementById('mobilePigFarmName');
+        
+        pigFarmName.textContent = cur_user_farm.name;
+        
+        
+        // Keep mobile version consistent
+        if (mobilePigFarmName) {
+            mobilePigFarmName.textContent = cur_user_farm.name;
+        }
+    }
+    
+        
+    this.hideHiddenContainers = function(except_hidden_cont){
+        const hidden_containers = document.getElementsByClassName("hidden-container");
+        
+        
+        for (const cur_entry of hidden_containers){
+            
+            if (cur_entry == except_hidden_cont){
+                cur_entry.style.display = 'block';
+            }
+            else{
+                cur_entry.style.display = 'none';
+            }
+        }
     }
     
     
-    
-    
-    this.setNavlinks = function(){
+    this.onClickNav = function(is_mobile, nav_name){
+        
+        switch(nav_name){
+            case 'op-settings':{
+                thisObj._onClickNavOpsSettings(is_mobile);
+                break;
+            }
+            
+            case 'gesta-sow-ops':{
+                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.GESTATING);
+                break;
+            }
+            
+            case 'lacta-piglets-ops':{
+                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                break;
+            }
+                
+            case 'lacta-sow-ops':{
+                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.LACTATING_SOW);
+                break;
+            }
+            
+            case 'gilt-ops':{
+                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.GILT);
+                break;
+            }
+            
+            
+            case 'sows':{
+                thisObj._onClickNavSowBoar(is_mobile, SOW_BOAR_TYPE.SOW);
+                break;
+            }
+            
+            case 'boars':{
+                thisObj._onClickNavSowBoar(is_mobile, SOW_BOAR_TYPE.BOAR);
+                break;
+            }
+            
+            case 'gilts':{
+                thisObj._onClickNavSowBoar(is_mobile, SOW_BOAR_TYPE.GILT);
+                break;
+            }
+            
+            
+            case 'prod-gesta':{
+                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.GESTATING);
+                break;
+            }
+            
+            case 'prod-lacta-piglets':{
+                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                break;
+            }
+            
+            case 'prod-lacta-sows':{
+                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.LACTATING_SOW);
+                break;
+            }
+            
+            case 'prod-fattening':{
+                thisObj._onClickNavProdFattening(is_mobile);
+                break;
+            }
+            
+            case 'prod-feeds':{
+                thisObj._onClickNavProdFeeds(is_mobile);
+                break;
+            }
+            
+            
+            case 'pig-harvest':{
+                thisObj._onClickNavPigHarvest(is_mobile);
+                break;
+            }
+            
+            case 'reports':{
+                thisObj._onClickNavReports(is_mobile);
+                break;
+            }
+            
+            case 'feed-caculator':{
+                thisObj._onClickNavFeedCalculator(is_mobile);
+                break;
+            }
+            
+            
+            case 'feeds-expenses':{
+                thisObj._onClickNavFeedsExpenses(is_mobile);
+                break;
+            }
+            
+            case 'nonfeeds-expenses':{
+                thisObj._onClickNavNonFeedsExpenses(is_mobile);
+                break;
+            }
+            
+            case 'sales':{
+                thisObj._onClickNavSales(is_mobile);
+                break;
+            }
+            
+            
+            case 'staff':{
+                thisObj._onClickNavStaff(is_mobile);
+                break;
+            }
+            
+            case 'pig-buyers':{
+                thisObj._onClickPigBuyers(is_mobile);
+                break;
+            }
+            
+            case 'feed-suppliers':{
+                thisObj._onClickFeedSuppliers(is_mobile);
+                break;
+            }
+            
+            case 'semen-suppliers':{
+                thisObj._onClickSemenSuppliers(is_mobile);
+                break;
+            }
+            
+            case 'gilt-suppliers':{
+                thisObj._onClickGiltSuppliers(is_mobile);
+                break;
+            }
+            
+            
+            case 'users': {
+                thisObj._onClickNavUsers(is_mobile);
+                break;
+            }
+            
+            case 'users-requests':{
+                thisObj._onClickNavUsersRequest(is_mobile);
+                break;
+            }
+            
+            
+        
+        }
+        
         
     }
-	
-	
-	
+    
+    
+    this._onClickNavOpsSettings = function(is_mobile){
+        console.log('_onClickNavOpsSettings not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+    
+    this._onClickNavAccPigOps = function(is_mobile, operation_type){
+        console.log(`_onClickNavAccPigOps; is_mobile=${is_mobile}; operation_type = ${operation_type}`);
+        thisObj.hideHiddenContainers(elemHiddenContAccPigOps);
+        thisObj.pageAccPigOps.showAccPigOps(operation_type);
+    }
+        
+        
+    this._onClickNavSowBoar = function(is_mobile, sow_boar_type){
+        console.log(`_onClickNavSowBoar; is_mobile=${is_mobile}; sow_boar_type = ${sow_boar_type}`);
+        
+    }
+    
+    
+    this._onClickNavProdGestaLacta = function(is_mobile, operation_type){
+        console.log(`_onClickNavProdGestaLacta; is_mobile=${is_mobile}; operation_type = ${operation_type}`);
+    }
+    
+    
+    this._onClickNavProdFattening = function(is_mobile){
+        console.log('_onClickNavProdFattening not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this._onClickNavProdFeeds = function(is_mobile){
+        console.log('_onClickNavProdFeeds not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+        
+              
+    this._onClickNavPigHarvests = function(is_mobile){
+        console.log('_onClickNavPigHarvests not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this._onClickNavReports = function(is_mobile){
+        console.log('_onClickNavReports not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this._onClickNavFeedCalculator = function(is_mobile){
+        console.log('_onClickNavFeedCalculator not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+            
+    this._onClickNavFeedsExpenses = function(is_mobile){
+        console.log('_onClickNavFeedsExpenses not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this._onClickNavNonFeedsExpenses = function(is_mobile){
+        console.log('_onClickNavNonFeedsExpenses not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this._onClickNavSales = function(is_mobile){
+        console.log('_onClickNavSales not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+        
+        
+                    
+    this._onClickNavStaff = function(is_mobile){
+        console.log('_onClickNavStaff not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+                
+    this._onClickNavPigBuyers = function(is_mobile){
+        console.log('_onClickNavPigBuyers not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+            
+    this._onClickNavFeedSuppliers = function(is_mobile){
+        console.log('_onClickNavFeedSuppliers not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this._onClickNavSemenSuppliers = function(is_mobile){
+        console.log('_onClickNavSemenSuppliers not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this._onClickNavGiltSuppliers = function(is_mobile){
+        console.log('_onClickNavGiltSuppliers not yet implemented; is_mobile=' + is_mobile);
+    
+    }
+        
+        
+           
+                    
+    this._onClickNavUsers = function(is_mobile){
+        console.log('_onClickNavUsers not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this._onClickNavUsersRequest = function(is_mobile){
+        console.log('_onClickNavUsersRequest not yet implemented; is_mobile=' + is_mobile);
+    
+    
+    }
+        
+        
+        
+    
+    
+    
+    
     
 }

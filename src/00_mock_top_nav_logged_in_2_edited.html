@@ -7,12 +7,25 @@
     
 	<link rel="stylesheet" type="text/css" href="static/css/all.min.css">
 	
+	<link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="static/css/bootstrap-icons.css">
+	
 	<link rel="stylesheet" type="text/css" href="static/css/css2.css">
 	<link rel="stylesheet" type="text/css" href="static/css/main.css">
 	
+	
+	<script type="text/javascript" src="static/js/library/bootstrap.bundle.min.js"></script>
+	
+	
+	
 	<script type="text/javascript" src="static/js/sample_data/sample_data_account.js"></script>
+	<script type="text/javascript" src="static/js/sample_data/sample_data_acc_pig_ops.js"></script>
+	
     
 	<script type="module" src="static/js/constants.js"></script>
+	
+	<script type="module" src="static/js/pages/acc_pig_ops/page_acc_pig_ops.js"></script>
+	
 	<script type="module" src="static/js/pages/navigation/navigation.js"></script>
 	
 	
@@ -202,7 +215,10 @@
     
     <!-- Main Content -->
     <main class="main-content" id="mainContent">
-        <div class="content-container">
+		<div id="container-acc-pig-ops" class="hidden-container" style="display:none"></div>
+	
+	
+        <div class="content-container"  style="display:none;">
             <h1>Pig Farm Dashboard</h1>
             
             <div class="stats-grid">
@@ -335,8 +351,13 @@
 			const gNavigation = new Navigation();
 			gNavigation.init();
 			
+			// sample data
 			gNavigation.setDataCompanyApp(G_SAMPLE_COMPANY_APP);
 			gNavigation.setDataUserAccount(G_SAMPLE_USER_ACCOUNT);
+			
+			
+			gNavigation.pageAccPigOps.setDataAccPigOps(G_SAMPLE_JSON_ACC_PIG_OPS);
+			console.log('success set data');
 		});
 	</script>
 	
@@ -433,23 +454,7 @@
             }
         });
         
-        // Update alert count (simulating new alerts)
-        let alertCount = 3;
-        const alertCountElement = document.querySelector('.alert-count');
-        const alertHeaderCount = document.querySelector('.alert-dropdown-header div:last-child');
         
-        // Simulate a new alert every 30 seconds
-        setInterval(() => {
-            alertCount++;
-            alertCountElement.textContent = alertCount;
-            alertHeaderCount.textContent = alertCount + ' New';
-            
-            // Add visual feedback
-            alertCountElement.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                alertCountElement.style.transform = 'scale(1)';
-            }, 300);
-        }, 30000);
         
         // Menu item click handlers
         document.querySelectorAll('.menu-item').forEach(item => {
@@ -476,10 +481,7 @@
                     toggleSidebar(false);
                 }
                 
-                // Show a message (simulating navigation)
-                setTimeout(() => {
-                    alert(`Navigating to ${menuText} section`);
-                }, 300);
+                
             });
         });
         

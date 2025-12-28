@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pig Operations</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+        
+        .add-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+        
+        .add-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        /* Mobile Info Box */
+        .mobile-info-box {
+            display: none;
+            background-color: #e8f4fc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            border-radius: 0;
+        }
+        
+        .mobile-info-box .info-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .mobile-info-box .info-text {
+            color: #5a6c7d;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        /* Card View Styles - No side padding, only top/bottom borders */
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-left: none;
+            border-right: none;
+        }
+        
+        .card {
+            padding: 15px 0; /* No left/right padding */
+            border-bottom: 1px solid #eaeaea;
+            position: relative;
+            transition: background-color 0.2s;
+        }
+        
+        .card:hover {
+            background-color: #fafafa;
+        }
+        
+        .card:last-child {
+            border-bottom: none;
+        }
+        
+        /* Edit button positioned at top right */
+        .edit-icon-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 44px;
+            height: 44px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .edit-icon-btn:hover {
+            background-color: #e9ecef;
+            transform: scale(1.05);
+        }
+        
+        .edit-icon-btn i {
+            color: #495057;
+            font-size: 1.2rem;
+        }
+        
+        .card-content {
+            padding: 0 15px; /* Content has padding but card doesn't */
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-right: 50px; /* Space for edit button */
+        }
+        
+        /* Name and Short Name in one line */
+        .name-section {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .operation-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .short-name {
+            background-color: #3498db;
+            color: white;
+            padding: 4px 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 12px; /* Rounded corners */
+        }
+        
+        .days-badge {
+            background-color: #2ecc71;
+            color: white;
+            padding: 6px 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: inline-block;
+            border-radius: 15px; /* Rounded corners */
+        }
+        
+        .operation-desc {
+            color: #555;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        /* Last update user and time in one line - updated for mobile */
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .update-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .update-user, .update-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .update-info i {
+            color: #3498db;
+        }
+        
+        /* Table View Styles */
+        .table-container {
+            display: none;
+            width: 100%;
+            overflow-x: auto;
+        }
+        
+        .operations-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+        
+        .operations-table th {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
+        }
+        
+        .operations-table th:last-child {
+            border-right: none;
+        }
+        
+        .operations-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eaeaea;
+            border-right: 1px solid #eaeaea;
+            vertical-align: top;
+        }
+        
+        .operations-table td:last-child {
+            border-right: none;
+        }
+        
+        .operations-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .table-edit-btn {
+            background-color: transparent;
+            border: 1px solid #dee2e6;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 0;
+        }
+        
+        .table-edit-btn:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Modal customization */
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-weight: 500;
+        }
+        
+        .btn-delete:hover {
+            background-color: #c0392b;
+            color: white;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 0;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .add-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* Show mobile info box */
+            .mobile-info-box {
+                display: block;
+            }
+            
+            .card {
+                padding: 12px 0;
+            }
+            
+            .card-content {
+                padding: 0 12px;
+            }
+            
+            .edit-icon-btn {
+                width: 50px;
+                height: 50px;
+                top: 12px;
+                right: 12px;
+            }
+            
+            .edit-icon-btn i {
+                font-size: 1.3rem;
+            }
+            
+            .card-header {
+                padding-right: 60px;
+            }
+            
+            .operation-name {
+                font-size: 1.2rem;
+            }
+            
+            /* Ensure update info stays in one line on mobile */
+            .update-info {
+                flex-wrap: nowrap;
+                gap: 15px;
+                overflow-x: auto;
+                width: 100%;
+            }
+            
+            /* Show card view on mobile */
+            .card-container {
+                display: flex;
+                border-left: none;
+                border-right: none;
+            }
+            
+            .table-container {
+                display: none !important;
+            }
+            
+            /* Mobile-specific rounded corners */
+            .short-name {
+                border-radius: 12px;
+            }
+            
+            .days-badge {
+                border-radius: 15px;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            /* Show table view on desktop */
+            .card-container {
+                display: none;
+            }
+            
+            .table-container {
+                display: block !important;
+            }
+            
+            /* Desktop: Keep corners square as requested */
+            .short-name {
+                border-radius: 0;
+            }
+            
+            .days-badge {
+                border-radius: 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 10px 0;
+            }
+            
+            .card-content {
+                padding: 0 10px;
+            }
+            
+            .edit-icon-btn {
+                width: 48px;
+                height: 48px;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .operation-name {
+                font-size: 1.1rem;
+            }
+            
+            .days-badge {
+                font-size: 1rem;
+                padding: 5px 10px;
+            }
+            
+            .name-section {
+                gap: 8px;
+            }
+            
+            .update-info {
+                gap: 10px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .update-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pig Operations</h1>
+			
+			<!-- Mobile Info Box -->
+			<div class="mobile-info-box">
+				<div class="info-title">
+					<i class="fas fa-info-circle"></i>
+					Pig Operations Management
+				</div>
+				<div class="info-text">
+					Track and manage all pig farming operations. Each card shows operation details including day count, description, and last update information. Tap the edit icon to modify or delete operations.
+				</div>
+			</div>
+        
+		</div>
+        
+        
+		<button class="add-btn" id="addCardBtn" data-bs-toggle="modal" data-bs-target="#addCardModal">
+			<i class="fas fa-plus"></i> Add New Pig Operation
+		</button>
+	
+		
+        <!-- Card View (for mobile) -->
+        <div class="card-container" id="cardContainer">
+            <!-- Cards will be inserted here by JavaScript -->
+        </div>
+        
+        <!-- Table View (for desktop) -->
+        <div class="table-container" id="tableContainer">
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Day Number</th>
+                        <th>Name</th>
+                        <th>Short Name</th>
+                        <th>Description</th>
+                        <th>Last Update By</th>
+                        <th>Last Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Table rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bootstrap Modal for Adding New Operation -->
+    <div class="modal fade" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCardModalLabel">
+                        <i class="fas fa-plus me-2"></i>Add New Pig Operation
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCardForm">
+                        <div class="mb-3">
+                            <label for="addName" class="form-label">Operation Name *</label>
+                            <input type="text" class="form-control" id="addName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addShortName" class="form-label">Short Name *</label>
+                            <input type="text" class="form-control" id="addShortName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addDesc" class="form-label">Description *</label>
+                            <textarea class="form-control" id="addDesc" rows="3" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="addDays" class="form-label">Day Number *</label>
+                                <input type="number" class="form-control" id="addDays" min="0" max="365" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="addUpdatedBy" class="form-label">Last Update By *</label>
+                                <input type="text" class="form-control" id="addUpdatedBy" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addLastUpdated" class="form-label">Last Updated *</label>
+                            <input type="date" class="form-control" id="addLastUpdated" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveNewOperation">
+                        <i class="fas fa-save me-2"></i>Add Operation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Modal for Editing Cards -->
+    <div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCardModalLabel">
+                        <i class="fas fa-edit me-2"></i>Edit Pig Operation
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCardForm">
+                        <div class="mb-3">
+                            <label for="editName" class="form-label">Operation Name *</label>
+                            <input type="text" class="form-control" id="editName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editShortName" class="form-label">Short Name *</label>
+                            <input type="text" class="form-control" id="editShortName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDesc" class="form-label">Description *</label>
+                            <textarea class="form-control" id="editDesc" rows="3" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editDays" class="form-label">Day Number *</label>
+                                <input type="number" class="form-control" id="editDays" min="0" max="365" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editUpdatedBy" class="form-label">Last Update By *</label>
+                                <input type="text" class="form-control" id="editUpdatedBy" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLastUpdated" class="form-label">Last Updated *</label>
+                            <input type="date" class="form-control" id="editLastUpdated" required>
+                        </div>
+                        <input type="hidden" id="editCardIndex">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-delete" id="deleteCardBtn">
+                        <i class="fas fa-trash-alt me-2"></i>Delete Operation
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveCardChanges">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Sample pig operation data
+        const sampleOperations = [
+            {
+                num_days_since: 3,
+                name: "Cut Teeth",
+                short_name: "Cut TT",
+                desc: "Cut Teeth and Tail",
+                last_update_by: "John Smith",
+                last_updated: "2023-10-15"
+            },
+            {
+                num_days_since: 7,
+                name: "Vaccination",
+                short_name: "Vacc",
+                desc: "Administer vaccines to piglets",
+                last_update_by: "Maria Garcia",
+                last_updated: "2023-10-18"
+            },
+            {
+                num_days_since: 14,
+                name: "Weaning",
+                short_name: "Wean",
+                desc: "Separate piglets from sow",
+                last_update_by: "Robert Chen",
+                last_updated: "2023-10-20"
+            },
+            {
+                num_days_since: 21,
+                name: "Castration",
+                short_name: "Cast",
+                desc: "Castrate male piglets",
+                last_update_by: "Sarah Johnson",
+                last_updated: "2023-10-22"
+            },
+            {
+                num_days_since: 30,
+                name: "Ear Notching",
+                short_name: "Notch",
+                desc: "Identification marking",
+                last_update_by: "David Wilson",
+                last_updated: "2023-10-25"
+            }
+        ];
+        
+        // Initialize operations array
+        let operations = [...sampleOperations];
+        
+        // DOM elements
+        const cardContainer = document.getElementById('cardContainer');
+        const tableBody = document.getElementById('tableBody');
+        const addCardBtn = document.getElementById('addCardBtn');
+        
+        // Add modal elements
+        const addCardModal = new bootstrap.Modal(document.getElementById('addCardModal'));
+        const addName = document.getElementById('addName');
+        const addShortName = document.getElementById('addShortName');
+        const addDesc = document.getElementById('addDesc');
+        const addDays = document.getElementById('addDays');
+        const addUpdatedBy = document.getElementById('addUpdatedBy');
+        const addLastUpdated = document.getElementById('addLastUpdated');
+        
+        // Edit modal elements
+        const editCardModal = new bootstrap.Modal(document.getElementById('editCardModal'));
+        const editName = document.getElementById('editName');
+        const editShortName = document.getElementById('editShortName');
+        const editDesc = document.getElementById('editDesc');
+        const editDays = document.getElementById('editDays');
+        const editUpdatedBy = document.getElementById('editUpdatedBy');
+        const editLastUpdated = document.getElementById('editLastUpdated');
+        const editCardIndex = document.getElementById('editCardIndex');
+        const saveCardChanges = document.getElementById('saveCardChanges');
+        const deleteCardBtn = document.getElementById('deleteCardBtn');
+        const saveNewOperation = document.getElementById('saveNewOperation');
+        
+        // Current operation being edited
+        let currentEditIndex = -1;
+        
+        // Format date for display
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+        
+        // Generate a random pig operation
+        function generateRandomOperation() {
+            const names = [
+                "Iron Injection",
+                "Tail Docking", 
+                "Feeding Adjustment",
+                "Health Check",
+                "Weight Recording",
+                "Pen Cleaning",
+                "Medication Admin"
+            ];
+            
+            const shortNames = [
+                "Iron", "Tail", "Feed", "Check", "Weight", "Clean", "Med"
+            ];
+            
+            const descriptions = [
+                "Administer iron supplements to prevent anemia",
+                "Dock tails to prevent tail biting",
+                "Adjust feed ratios for growth stage",
+                "Routine health inspection and temperature check",
+                "Record weight for growth tracking",
+                "Thorough cleaning and disinfection of pen",
+                "Administer antibiotics or other medications"
+            ];
+            
+            const users = [
+                "John Smith", "Maria Garcia", "Robert Chen", 
+                "Sarah Johnson", "David Wilson", "Lisa Brown"
+            ];
+            
+            const randomIndex = Math.floor(Math.random() * names.length);
+            
+            // Generate a recent date (within last 30 days)
+            const today = new Date();
+            const daysAgo = Math.floor(Math.random() * 30);
+            const updatedDate = new Date(today);
+            updatedDate.setDate(today.getDate() - daysAgo);
+            const formattedDate = updatedDate.toISOString().split('T')[0];
+            
+            return {
+                num_days_since: Math.floor(Math.random() * 60) + 1,
+                name: names[randomIndex],
+                short_name: shortNames[randomIndex],
+                desc: descriptions[randomIndex],
+                last_update_by: users[Math.floor(Math.random() * users.length)],
+                last_updated: formattedDate
+            };
+        }
+        
+        // Render all operation cards (for mobile)
+        function renderCards() {
+            cardContainer.innerHTML = '';
+            
+            // Sort by days since (most recent first)
+            const sortedOperations = [...operations].sort((a, b) => a.num_days_since - b.num_days_since);
+            
+            // Create and append card elements
+            sortedOperations.forEach((operation, displayIndex) => {
+                // Find original index
+                const originalIndex = operations.findIndex(op => 
+                    op.name === operation.name && 
+                    op.last_updated === operation.last_updated
+                );
+                
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                
+                cardElement.innerHTML = `
+                    <button class="edit-icon-btn" data-index="${originalIndex}" title="Edit Operation">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    
+                    <div class="card-content">
+                        <div class="days-badge">Day ${operation.num_days_since}</div>
+                        
+                        <div class="card-header">
+                            <div class="name-section">
+                                <div class="operation-name">${operation.name}</div>
+                                <div class="short-name">${operation.short_name}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="operation-desc">${operation.desc}</div>
+                        
+                        <div class="card-footer">
+                            <div class="update-info">
+                                <div class="update-user">
+                                    <i class="fas fa-user"></i>
+                                    <span>${operation.last_update_by}</span>
+                                </div>
+                                <div class="update-time">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>${formatDate(operation.last_updated)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                cardContainer.appendChild(cardElement);
+            });
+            
+            // Add event listeners to edit buttons
+            document.querySelectorAll('.edit-icon-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const index = parseInt(this.getAttribute('data-index'));
+                    openEditModal(index);
+                });
+            });
+        }
+        
+        // Render table view (for desktop)
+        function renderTable() {
+            tableBody.innerHTML = '';
+            
+            // Sort by days since (most recent first)
+            const sortedOperations = [...operations].sort((a, b) => a.num_days_since - b.num_days_since);
+            
+            // Create and append table rows
+            sortedOperations.forEach((operation, displayIndex) => {
+                // Find original index
+                const originalIndex = operations.findIndex(op => 
+                    op.name === operation.name && 
+                    op.last_updated === operation.last_updated
+                );
+                
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td><strong>${operation.num_days_since}</strong></td>
+                    <td>${operation.name}</td>
+                    <td><span style="background-color: #3498db; color: white; padding: 2px 8px;">${operation.short_name}</span></td>
+                    <td>${operation.desc}</td>
+                    <td>${operation.last_update_by}</td>
+                    <td>${formatDate(operation.last_updated)}</td>
+                    <td>
+                        <button class="table-edit-btn" data-index="${originalIndex}" title="Edit Operation">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners to table edit buttons
+            document.querySelectorAll('.table-edit-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const index = parseInt(this.getAttribute('data-index'));
+                    openEditModal(index);
+                });
+            });
+        }
+        
+        // Render both views
+        function renderAllViews() {
+            renderCards();
+            renderTable();
+        }
+        
+        // Open edit modal with operation data
+        function openEditModal(index) {
+            currentEditIndex = index;
+            const operation = operations[index];
+            
+            // Populate form with operation data
+            editName.value = operation.name;
+            editShortName.value = operation.short_name;
+            editDesc.value = operation.desc;
+            editDays.value = operation.num_days_since;
+            editUpdatedBy.value = operation.last_update_by;
+            editLastUpdated.value = operation.last_updated;
+            editCardIndex.value = index;
+            
+            // Update modal title
+            document.getElementById('editCardModalLabel').innerHTML = 
+                `<i class="fas fa-edit me-2"></i>Edit: ${operation.name}`;
+            
+            // Show modal
+            editCardModal.show();
+        }
+        
+        // Reset add form
+        function resetAddForm() {
+            addName.value = '';
+            addShortName.value = '';
+            addDesc.value = '';
+            addDays.value = '';
+            addUpdatedBy.value = '';
+            
+            // Set today's date as default
+            const today = new Date();
+            addLastUpdated.value = today.toISOString().split('T')[0];
+        }
+        
+        // Save new operation from add modal
+        function saveNewOperationHandler() {
+            // Validate form
+            if (!addName.value || !addShortName.value || !addDesc.value || 
+                !addDays.value || !addUpdatedBy.value || !addLastUpdated.value) {
+                showFeedback('Please fill all required fields!', 'error');
+                return;
+            }
+            
+            // Create new operation
+            const newOperation = {
+                num_days_since: parseInt(addDays.value),
+                name: addName.value,
+                short_name: addShortName.value,
+                desc: addDesc.value,
+                last_update_by: addUpdatedBy.value,
+                last_updated: addLastUpdated.value
+            };
+            
+            // Add to operations array
+            operations.push(newOperation);
+            
+            // Re-render views and close modal
+            renderAllViews();
+            addCardModal.hide();
+            resetAddForm();
+            
+            // Show success feedback
+            showFeedback('New pig operation added successfully!', 'success');
+        }
+        
+        // Save changes from edit modal
+        function saveEditedCard() {
+            if (currentEditIndex === -1) return;
+            
+            // Update operation data
+            operations[currentEditIndex] = {
+                num_days_since: parseInt(editDays.value),
+                name: editName.value,
+                short_name: editShortName.value,
+                desc: editDesc.value,
+                last_update_by: editUpdatedBy.value,
+                last_updated: editLastUpdated.value
+            };
+            
+            // Re-render views and close modal
+            renderAllViews();
+            editCardModal.hide();
+            
+            // Show success feedback
+            showFeedback('Operation updated successfully!', 'success');
+        }
+        
+        // Delete current operation
+        function deleteCurrentCard() {
+            if (currentEditIndex === -1) return;
+            
+            if (operations.length <= 1) {
+                showFeedback('Cannot delete the last operation!', 'error');
+                return;
+            }
+            
+            // Confirm deletion
+            if (confirm(`Are you sure you want to delete "${operations[currentEditIndex].name}"?`)) {
+                const deletedName = operations[currentEditIndex].name;
+                operations.splice(currentEditIndex, 1);
+                
+                // Re-render views and close modal
+                renderAllViews();
+                editCardModal.hide();
+                
+                // Show success feedback
+                showFeedback(`"${deletedName}" deleted successfully!`, 'success');
+            }
+        }
+        
+        // Simple feedback notification
+        function showFeedback(message, type) {
+            // Remove any existing feedback
+            const existingFeedback = document.querySelector('.operation-feedback');
+            if (existingFeedback) existingFeedback.remove();
+            
+            // Create feedback element
+            const feedback = document.createElement('div');
+            feedback.className = `operation-feedback alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+            feedback.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 250px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                border-radius: 0;
+            `;
+            
+            feedback.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                    <span>${message}</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(feedback);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (feedback.parentNode) {
+                    feedback.remove();
+                }
+            }, 3000);
+        }
+        
+        // Handle window resize for view switching
+        function handleResize() {
+            const isMobile = window.innerWidth <= 768;
+            const cardContainer = document.getElementById('cardContainer');
+            const tableContainer = document.getElementById('tableContainer');
+            const mobileInfoBox = document.querySelector('.mobile-info-box');
+            
+            if (isMobile) {
+                cardContainer.style.display = 'flex';
+                tableContainer.style.display = 'none';
+                mobileInfoBox.style.display = 'block';
+            } else {
+                cardContainer.style.display = 'none';
+                tableContainer.style.display = 'block';
+                mobileInfoBox.style.display = 'none';
+            }
+        }
+        
+        // Event listeners
+        addCardBtn.addEventListener('click', resetAddForm);
+        saveNewOperation.addEventListener('click', saveNewOperationHandler);
+        saveCardChanges.addEventListener('click', saveEditedCard);
+        deleteCardBtn.addEventListener('click', deleteCurrentCard);
+        
+        // Initialize the view
+        renderAllViews();
+        handleResize();
+        
+        // Listen for window resize
+        window.addEventListener('resize', handleResize);
+    </script>
+</body>
+</html>
