@@ -7,6 +7,10 @@
 import {APPLICATION,
         PIG_OPERATION_TYPE}         from '../../constants.js';
 
+import {TextTranslation}            from '../common/translation.js';
+
+import {TRANSLATION_PAGE_ACC_PIG_OPS}   from '../../translations/page_acc_pig_ops_i8n.js'
+
 
 export function PageAccPigOps(){
     const thisObj                   = this;
@@ -15,6 +19,7 @@ export function PageAccPigOps(){
     var elemDivContainer            = document.getElementById('container-acc-pig-ops');
     
     var elemIdPageTitle             = null;
+    var elemIdPigOpsInfo            = null;
     
     var elemIdBtnAddEntryShow       = null;
     var elemIdMobileContainer       = null;
@@ -36,6 +41,7 @@ export function PageAccPigOps(){
     
     
     var elemPageTitle               = null;
+    var elemPigOpsInfo              = null;
     
     var elemBtnAddEntryShow         = null;
     var elemMobileContainer         = null;
@@ -57,7 +63,8 @@ export function PageAccPigOps(){
     
     
     
-    
+    var textTranslation             = new TextTranslation();
+    var curUserLanguageKey          = 'en';
     
     
     var dataAccGestatingOps         = null;
@@ -65,7 +72,7 @@ export function PageAccPigOps(){
     var dataAccLactatingSowOps      = null;
     var dataAccGiltOps              = null;
     
-	var curAccPigOpsType			= null;
+    var curAccPigOpsType            = null;
     var curAccPigOpsData            = null;
     
     
@@ -75,6 +82,8 @@ export function PageAccPigOps(){
     
     
     this.init = function(){
+        textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
+        
         this.render();
         this.afterHtmlRender();
     }
@@ -83,6 +92,7 @@ export function PageAccPigOps(){
     this.render = function(){
         
         elemIdPageTitle         = 'page-title-acc-pig-ops';
+        elemIdPigOpsInfo        = 'page-info-acc-pig-ops';
         
         elemIdBtnAddEntryShow   = 'add-entry-acc-pig-ops-show';
         elemIdMobileContainer   = 'mobile-container-acc-pig-ops';
@@ -108,15 +118,11 @@ export function PageAccPigOps(){
         
     <div class="container">
         <div class="header">
-            <h1 id="elemIdPageTitle">Pig Operations</h1>
+            <h1 id="${elemIdPageTitle}">Pig Operations</h1>
             
             <!-- Mobile Info Box -->
             <div class="mobile-info-box">
-                <div class="info-title">
-                    <i class="fas fa-info-circle"></i>
-                    Pig Operations Management
-                </div>
-                <div class="info-text">
+                <div class="info-text" id="${elemIdPigOpsInfo}">
                     Track and manage all pig farming operations. Each card shows operation details including day count, description, and last update information. Tap the edit icon to modify or delete operations.
                 </div>
             </div>
@@ -266,6 +272,7 @@ export function PageAccPigOps(){
     
     this._findElements = function(){
         elemPageTitle           = document.getElementById(elemIdPageTitle);
+        elemPigOpsInfo          = document.getElementById(elemIdPigOpsInfo);
 
         elemBtnAddEntryShow     = document.getElementById(elemIdBtnAddEntryShow);
         elemMobileContainer     = document.getElementById(elemIdMobileContainer);
@@ -303,11 +310,6 @@ export function PageAccPigOps(){
     
         elemBtnAddEntryShow.addEventListener('click', thisObj.addFormReset);
     
-    }
-    
-    
-    this.setContainer = function(elem_div){
-        elemDivContainer = elem_div;
     }
     
     
@@ -361,7 +363,7 @@ export function PageAccPigOps(){
     
     this.showAccPigOps = function(pig_ops_type){
         curAccPigOpsType = pig_ops_type;
-		
+        
         switch(pig_ops_type){
             case PIG_OPERATION_TYPE.GESTATING:{
                 curAccPigOpsData = dataAccGestatingOps;
@@ -450,36 +452,93 @@ export function PageAccPigOps(){
             elemMobileContainer.appendChild(cardElement);
         });
         
-		
-		thisObj.setTextElements();
+        
+        thisObj.onUserChangeLanguage();
     }
     
-	
-	this.setTextElements = function(){
-		switch(curAccPigOpsType){
+    
+    this.setUserLanguage = function(language_key){
+        curUserLanguageKey = language_key;
+        thisObj.onUserChangeLanguage();
+    }
+    
+    
+    this.onUserChangeLanguage = function(){
+        
+        var cur_text = null;
+        
+        switch(curAccPigOpsType){
             case PIG_OPERATION_TYPE.GESTATING:{
-                curAccPigOpsData = dataAccGestatingOps;
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'gestating_ops.title');
+                if (cur_text != null){
+                    elemPageTitle.innerHTML = cur_text;
+                }
+                
+                
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'gestating_ops.info_text');
+                if (cur_text != null){
+                    elemPigOpsInfo.innerHTML = cur_text;
+                }
+                
                 break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
-                curAccPigOpsData = dataAccLactatingPigletOps;
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'lactating_piglets_ops.title');
+                if (cur_text != null){
+                    elemPageTitle.innerHTML = cur_text;
+                }
+                
+                
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'lactating_piglets_ops.info_text');
+                if (cur_text != null){
+                    elemPigOpsInfo.innerHTML = cur_text;
+                }
+                
                 break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
-                curAccPigOpsData = dataAccLactatingSowOps;
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'lactating_sow_ops.title');
+                if (cur_text != null){
+                    elemPageTitle.innerHTML = cur_text;
+                }
+                
+                
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'lactating_sow_ops.info_text');
+                if (cur_text != null){
+                    elemPigOpsInfo.innerHTML = cur_text;
+                }
+                
                 break;
             }
             
             case PIG_OPERATION_TYPE.GILT:{
-                curAccPigOpsData = dataAccGiltOps;
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'gilt_ops.title');
+                if (cur_text != null){
+                    elemPageTitle.innerHTML = cur_text;
+                }
+                
+                
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'gilt_ops.info_text');
+                if (cur_text != null){
+                    elemPigOpsInfo.innerHTML = cur_text;
+                }
+                
                 break;
             }
-		}
-	}
-	
-	
+        }
+    }
+    
+    
     
     // Reset add form
     this.addFormReset = function () {
