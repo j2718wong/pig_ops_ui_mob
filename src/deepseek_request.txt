@@ -228,7 +228,7 @@ When displayed in tabular format. Only these fields should show up
 the name and short name should in line in the card.
  The last update User and Time should also be in line.
 
-the card hsould have no left and right side padding; 
+the card should have no left and right side padding; 
 no right side and left side border line.
 Only Top and bottom border line for the card. 
 

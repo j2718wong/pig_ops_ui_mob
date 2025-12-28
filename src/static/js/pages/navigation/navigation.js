@@ -242,7 +242,7 @@ export function Navigation(){
     // Update pig farm name on resize for responsive centering
     this.updatePigFarmName = function() {
         // Set Farm name
-        const cur_user_farm = this.userControl.getCurrentFarm();
+        const cur_user_farm = thisObj.userControl.getCurrentFarm();
         
         
         const pigFarmName = document.getElementById('pigFarmName');

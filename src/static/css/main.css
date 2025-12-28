@@ -862,6 +862,11 @@ p {
 }
 
 @media (max-width: 480px) {
+	
+	h1, h2 {
+		margin-bottom: 0;
+	}
+	
 	.product-name {
 		font-size: 18px;
 	}
@@ -905,9 +910,9 @@ p {
 	background-color: #3498db;
 	color: white;
 	border: none;
-	padding: 10px 20px;
+	padding: 0px 20px;
 	font-weight: 500;
-	font-size: 1rem;
+	font-size: 1.5rem;
 	cursor: pointer;
 	transition: all 0.2s;
 	display: flex;
@@ -925,8 +930,8 @@ p {
 /* Mobile Info Box */
 .mobile-info-box {
 	background-color: #e8f4fc;
-	padding: 15px;
-	margin-bottom: 20px;
+	padding: 10px;
+	margin-bottom: 10px;
 	border-left: 4px solid #3498db;
 	border-radius: 0;
 }
@@ -1056,6 +1061,7 @@ p {
 	padding: 4px 10px;
 	font-weight: 500;
 	font-size: 0.9rem;
+	border-radius: 12px;
 }
 
 .days-badge {
@@ -1067,6 +1073,7 @@ p {
 	margin-bottom: 10px;
 	display: inline-block;
 	border: none;
+	border-radius: 15px;
 }
 
 .operation-desc {
@@ -1245,7 +1252,6 @@ p {
 	}
 	
 	.update-info {
-		flex-direction: column;
 		align-items: flex-start;
 		gap: 8px;
 	}

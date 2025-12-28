@@ -7,7 +7,7 @@
 const TRANSLATION_PAGE_ACC_PIG_OPS = {
 	'en':{
 		'gestating_ops': {
-			'title': 'Gestating Ops',
+			'title': 'Gestating Operations',
 			
 			'info_text':`This list defines the standard care activities for a 
 gestating sow in each production cycle. When a <b>Prod Gestating</b> entry
@@ -17,7 +17,7 @@ when each task's due date, calculated from the start of gestation, is reached.`
 		},
 		
 		'lactating_piglets_ops': {
-			'title': 'Lactating Piglets Ops',
+			'title': 'Lactating Piglets Operations',
 			
 			'info_text':`This list defines the standard care activities for a 
 lactating piglets in each production cycle. When a <b>Prod Gestating</b> entry is updated  
@@ -27,7 +27,7 @@ when each task's due date, calculated from the start of piglets Date of Birth, i
 		},
 		
 		'lactating_sow_ops': {
-			'title': 'Lactating Sow Ops',
+			'title': 'Lactating Sow Operations',
 			
 			'info_text':`This list defines the standard care activities for a 
 lactating sows in each production cycle. When a <b>Prod Gestating</b> entry is updated  
@@ -37,7 +37,7 @@ when each task's due date, calculated from the start of piglets Date of Birth, i
 		},
 		
 		'gilt_ops': {
-			'title': 'Gilt Ops',
+			'title': 'Gilt Operations',
 			
 			'info_text':`This list defines the standard care activities for 
 prepeparation of a gilt before first mating.`

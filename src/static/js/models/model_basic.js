@@ -15,7 +15,7 @@ export const FIELD_CONTAINS_INVALID_STRING       = 6;
 export const FIELD_REQUIRES_DATE_STRING          = 7;
 
 
-function getValidationString(validation){
+export function getValidationString(validation){
     switch(validation){
         case FIELD_REQUIRES_NUMBER:             {return 'FIELD_REQUIRES_NUMBER';}
         case FIELD_REQUIRES_POSITIVE_INTEGER:   {return 'FIELD_REQUIRES_POSITIVE_INTEGER';}

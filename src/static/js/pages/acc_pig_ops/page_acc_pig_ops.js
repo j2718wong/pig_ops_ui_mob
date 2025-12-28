@@ -12,6 +12,9 @@ import {TextTranslation}            from '../common/translation.js';
 import {TRANSLATION_PAGE_ACC_PIG_OPS}   from '../../translations/page_acc_pig_ops_i8n.js'
 
 
+import {AddModalAccPigOps}          from './add_modal_acc_pig_ops.js'
+
+
 export function PageAccPigOps(){
     const thisObj                   = this;
 
@@ -24,12 +27,6 @@ export function PageAccPigOps(){
     var elemIdBtnAddEntryShow       = null;
     var elemIdMobileContainer       = null;
     var elemIdTableContainer        = null;
-    
-    var elemIdAddName               = null;
-    var elemIdAddShortName          = null;
-    var elemIdAddDescription        = null;
-    var elemIdAddDayNumber          = null;
-    var elemIdAddBtnSave            = null;
     
     
     var elemIdEditName              = null;
@@ -47,11 +44,7 @@ export function PageAccPigOps(){
     var elemMobileContainer         = null;
     var elemTableContainer          = null;
     
-    var elemAddName                 = null;
-    var elemAddShortName            = null;
-    var elemAddDescription          = null;
-    var elemAddDayNumber            = null;
-    var elemAddBtnSave              = null;
+    
     
     
     var elemEditName                = null;
@@ -76,7 +69,10 @@ export function PageAccPigOps(){
     var curAccPigOpsData            = null;
     
     
-    
+    const settingsAddModal          = {
+        parentObj:                  this
+    }
+    this.addModalAccPigOps          = new AddModalAccPigOps(settingsAddModal);
     
     
     
@@ -84,8 +80,14 @@ export function PageAccPigOps(){
     this.init = function(){
         textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
         
+        this.addModalAccPigOps.init();
+        
         this.render();
         this.afterHtmlRender();
+        
+        
+        this.addModalAccPigOps.afterHtmlRender();
+        
     }
     
     
@@ -98,12 +100,6 @@ export function PageAccPigOps(){
         elemIdMobileContainer   = 'mobile-container-acc-pig-ops';
         elemIdTableContainer    = 'table-container-acc-pig-ops';
         
-        elemIdAddName           = 'acc-pig-ops-add-name';
-        elemIdAddShortName      = 'acc-pig-ops-add-short-name';
-        elemIdAddDescription    = 'acc-pig-ops-add-description';
-        elemIdAddDayNumber      = 'acc-pig-ops-add-day-number';
-        elemIdAddBtnSave        = 'acc-pig-ops-add-save';
-        
         
         elemIdEditName          = 'acc-pig-ops-edit-name';
         elemIdEditShortName     = 'acc-pig-ops-edit-short-name';
@@ -113,6 +109,7 @@ export function PageAccPigOps(){
         elemIdEditBtnDelete     = 'acc-pig-ops-edit-delete';
         
         
+        var html_add_modal      = thisObj.addModalAccPigOps.getHtml();
         
         var html = `
         
@@ -159,50 +156,10 @@ export function PageAccPigOps(){
         </div>
     </div>
 
-    <!-- Bootstrap Modal for Adding New Operation -->
-    <div class="modal fade" id="add-entry-acc-pig-ops-modal" tabindex="-1" aria-labelledby="add-entry-acc-pig-ops-modal-label" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="add-entry-acc-pig-ops-modal-label">
-                        <i class="fas fa-plus me-2"></i>Add New Pig Operation
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                
-                <div class="modal-body">
-                    <form id="addCardForm">
-                        <div class="mb-3">
-                            <label for="${elemIdAddName}" class="form-label">Operation Name *</label>
-                            <input type="text" class="form-control" id="${elemIdAddName}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="${elemIdAddShortName}" class="form-label">Short Name *</label>
-                            <input type="text" class="form-control" id="${elemIdAddShortName}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="${elemIdAddDescription}" class="form-label">$Description *</label>
-                            <textarea class="form-control" id="${elemIdAddDescription}" rows="3" required></textarea>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="${elemIdAddDayNumber}" class="form-label">Day Number *</label>
-                            <input type="number" class="form-control" id="${elemIdAddDayNumber}" min="0" max="365" required>
-                        </div>
-                    
-                        
-                    </form>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="${elemIdAddBtnSave}">
-                        <i class="fas fa-save me-2"></i>Add Operation
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
+    <!-- Bootstrap Modal for Adding New Operation -->
+    ${html_add_modal}
+    
 
     <!-- Bootstrap Modal for Editing Cards -->
     <div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
@@ -278,12 +235,6 @@ export function PageAccPigOps(){
         elemMobileContainer     = document.getElementById(elemIdMobileContainer);
         elemTableContainer      = document.getElementById(elemIdTableContainer);
         
-        elemAddName             = document.getElementById(elemIdAddName);
-        elemAddShortName        = document.getElementById(elemIdAddShortName);
-        elemAddDescription      = document.getElementById(elemIdAddDescription);
-        elemAddDayNumber        = document.getElementById(elemIdAddDayNumber);
-        elemAddBtnSave          = document.getElementById(elemIdAddBtnSave);
-        
         
         elemEditName            = document.getElementById(elemIdEditName);
         elemEditShortName       = document.getElementById(elemIdEditShortName);
@@ -308,7 +259,8 @@ export function PageAccPigOps(){
         window.addEventListener('resize', thisObj.handleResize);
     
     
-        elemBtnAddEntryShow.addEventListener('click', thisObj.addFormReset);
+        elemBtnAddEntryShow.addEventListener('click', 
+            thisObj.addModalAccPigOps.addFormReset);
     
     }
     
@@ -406,13 +358,14 @@ export function PageAccPigOps(){
             }
             
             const last_update   = operation.last_update;
-            const added_by      = operation.last_update;
+            const added_by      = operation.added_by;
             if (operation.last_update.name_last != null){
                 html_updated_by = last_update.name_first + ' ' + last_update.name_last;
                 html_dt_update  = last_update.dt_update.substring(0,10);
             }
             else{
-                
+                html_updated_by = 'System Generated';
+                html_dt_update  = added_by.dt_entry.substring(0,10);
             }
             
             
@@ -438,11 +391,11 @@ export function PageAccPigOps(){
                         <div class="update-info">
                             <div class="update-user">
                                 <i class="fas fa-user"></i>
-                                <span>${operation.last_update_by}</span>
+                                <span>${html_updated_by}</span>
                             </div>
                             <div class="update-time">
                                 <i class="far fa-calendar-alt"></i>
-                                <span>${operation.last_update.dt_update}</span>
+                                <span>${html_dt_update}</span>
                             </div>
                         </div>
                     </div>
@@ -538,15 +491,6 @@ export function PageAccPigOps(){
         }
     }
     
-    
-    
-    // Reset add form
-    this.addFormReset = function () {
-        elemAddName.value       = '';
-        elemAddShortName.value  = '';
-        elemAddDescription.value = '';
-        elemAddDayNumber.value  = '';
-    }
     
     
     // Open edit modal with operation data
