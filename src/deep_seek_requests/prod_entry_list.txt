@@ -74,4 +74,11 @@ Fix the following
 1.) show a hustling running motorbike or a running horse animation
 beside the "expected date of birth" when the expected date of birth is near.
  
- 
+Fix the following
+1.) In the PID, sow love boar line, add an icon in the right most side 
+indicating a completed preparation checklist for coming pig birth.
+
+Fix the following
+1.) In the pig counter section, add another counter for "StillBirth".
+This counter should be after Male, Female.
+  

@@ -23,12 +23,12 @@ var G_SAMPLE_JSON_PIG_PRODUCTION = [
       },
       "insem_cost": null,
       "insem_notes": null,
-      "insem_date": "2025-11-06",
+      "insem_date": "2025-09-10",
       "insem_staff_name": "Elmer Paquit",
       "insem_staff_hid": "EKQY8R"
     },
     "birth": {
-      "date_expected": "2026-03-01",
+      "date_expected": "2026-01-03",
       "date_actual": null,
       "num_days_actual": 0,
       "num_dead_at_birth": null,
@@ -189,12 +189,12 @@ var G_SAMPLE_JSON_PIG_PRODUCTION = [
       },
       "insem_cost": null,
       "insem_notes": null,
-      "insem_date": "2025-11-06",
+      "insem_date": "2025-09-06",
       "insem_staff_name": "Elmer Paquit",
       "insem_staff_hid": "EKQY8R"
     },
     "birth": {
-      "date_expected": "2026-03-01",
+      "date_expected": "2025-12-31",
       "date_actual": null,
       "num_days_actual": 0,
       "num_dead_at_birth": null,
@@ -347,12 +347,20 @@ var G_SAMPLE_JSON_PIG_PRODUCTION = [
     },
     "insemination": {
       "insem_type": "AI_X",
-      "semen_source": {
-        "name": "PIC337",
-        "description": "Semen AI from Primary",
-        "semen_cost": 1500,
-        "hid": "EKQY8R"
-      },
+      
+	  "ai":{
+		  "semen_supplier": {
+			"hid": "EKQY8R",
+			"name": "Primary",
+			
+			"semen":{
+				"name": "PIC337",
+				"hid": "EKQY8R"
+			}
+		  },
+		  
+		  "semen_cost": 1500,
+	  },
       "insem_cost": null,
       "insem_notes": null,
       "insem_date": "2025-10-08",
@@ -522,12 +530,12 @@ var G_SAMPLE_JSON_PIG_PRODUCTION = [
       },
       "insem_cost": null,
       "insem_notes": null,
-      "insem_date": "2025-07-15",
+      "insem_date": "2025-09-06",
       "insem_staff_name": "Elmer Paquit",
       "insem_staff_hid": "EKQY8R"
     },
     "birth": {
-      "date_expected": "2025-11-07",
+      "date_expected": "2025-12-30",
       "date_actual": "2025-11-07",
       "num_days_actual": 115,
       "num_dead_at_birth": 1,

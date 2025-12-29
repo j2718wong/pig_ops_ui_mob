@@ -20,17 +20,17 @@
     
     <script type="text/javascript" src="static/js/sample_data/sample_data_account.js"></script>
     <script type="text/javascript" src="static/js/sample_data/sample_data_acc_pig_ops.js"></script>
+    <script type="text/javascript" src="static/js/sample_data/sample_data_production.js"></script>
     
 	
+	<script type="module" src="static/js/constants.js"></script>
+	<script type="module" src="static/js/utils.js"></script>
+    
 	
 	<script type="module" src="static/js/models/model_basic.js"></script>
 	<script type="module" src="static/js/models/model_acc_pig_ops.js"></script>
 	
-	<script type="module" src="static/js/constants.js"></script>
 	
-    
-    <script type="module" src="static/js/constants.js"></script>
-    
 	<script type="module" src="static/js/pages/acc_pig_ops/add_modal_acc_pig_ops.js"></script>
 	<script type="module" src="static/js/pages/acc_pig_ops/edit_modal_acc_pig_ops.js"></script>
     <script type="module" src="static/js/pages/acc_pig_ops/page_acc_pig_ops.js"></script>
@@ -422,8 +422,8 @@
             </div>
             <div class="mobile-submenu">
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-gesta');">            <i class="fas fa-chart-bar" style="color: var(--icon-indigo);"></i>Prod Gestating</div>
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-lacta-piglets');">    <i class="fas fa-wine-bottle" style="color: var(--icon-teal);"></i>Prod Lactating Piglets</div>
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-lacta-sows');">       <i class="fas fa-wine-bottle" style="color: var(--icon-teal);"></i>Prod Lactating Sows</div>
+                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-lacta-piglets');">    <i class="fas fa-wine-bottle" style="color: var(--icon-teal);"></i>Prod Lactating</div>
+                <!--<div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-lacta-sows');">       <i class="fas fa-wine-bottle" style="color: var(--icon-teal);"></i>Prod Lactating Sows</div>-->
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-fattening');">        <i class="fas fa-piggy-bank" style="color: var(--icon-orange);"></i>Fattening</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-feeds');">            <i class="fas fa-weight" style="color: var(--icon-red);"></i>Feeds</div>
             </div>
@@ -670,7 +670,11 @@
             
             
             gNavigation.pageAccPigOps.setDataAccPigOps(G_SAMPLE_JSON_ACC_PIG_OPS);
-            console.log('success set data');
+            
+			gNavigation.setDataPigProd(G_SAMPLE_JSON_PIG_PRODUCTION);
+
+			
+			console.log('success set data');
         });
     </script>
 

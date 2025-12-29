@@ -241,7 +241,7 @@ export function PageAccPigOps(){
     }
     
     
-    this.showAccPigOps = function(pig_ops_type){
+    this.show = function(pig_ops_type){
         curAccPigOpsType = pig_ops_type;
         
         switch(pig_ops_type){

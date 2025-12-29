@@ -34,6 +34,16 @@ const SOW_STATUS = {
 };
 
 
+const PROD_STATUS = {
+	GESTATING:			1,
+	TERMINATED:			2,
+	NOT_PREGNANT:		3,
+	LACTATING:			4,
+	WEANING:			5,
+	GROWING:			6,
+	COMBINED:			7,
+	HARVESTED:			8
+};
 
 
 
@@ -42,5 +52,6 @@ export {
     
     SOW_BOAR_TYPE,
     PIG_OPERATION_TYPE,
-	SOW_STATUS
+	SOW_STATUS,
+	PROD_STATUS
 };
