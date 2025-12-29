@@ -1,0 +1,76 @@
+
+
+Create a Div Card that can stacked in a container with the following fields
+
+1.) Name
+2.) Description
+3.) Day Number
+
+4.) Optional Last update date 
+
+must be optimize when viewing from mobile
+
+no margin between divs
+no rounded curves for div corners
+
+-use the corporate blue colors 
+- must show a bootstrap modal when an edit button is touch in the card
+- the edit modal should contain a delete button of the card
+
+The Edit Button should be just  a Edit Icon 
+at the right top of the card to save space
+and  big enough that can be touch finger in mobile screen.
+
+Remove the Coporate card System.
+Just the add button and cards.
+remove the filters.
+remove the "remove Last"
+The add card should be renamed "Add New Pig Operation"
+
+
+Use this sample data or similar:
+
+{
+	"num_days_since": 3,
+	"version_num": 1,
+	"operation_type": 2,
+	"name": "Cut Teeth",
+	"short_name": "Cut TT",
+	"desc": "Cut Teeth and Tail",
+	"hid": "1K7D9J"
+}
+
+
+The add New Pig Operation should also show a bootstrap modal.
+Do not show the version_num, type and HID in the card.
+This content format should be viewable if is the screen is mobile.
+
+When the screen is bigger, it should display in tabular format.
+
+When displayed in tabular format. Only these fields should show up
+- Day Number
+- Name
+- Short Name
+- Description
+- Last Update By
+- Last Updated
+
+the name and short name should in line in the card.
+ The last update User and Time should also be in line.
+
+the card should have no left and right side padding; 
+no right side and left side border line.
+Only Top and bottom border line for the card. 
+
+If viewed from mobile,
+1.) Add an info box below the header for the page decription 
+2.) The last update User and Time should also be in one line.
+3.) make the days badge has rounded corners
+4.) make the short name has rounded corners 
+
+1.) Add some colors for visual appeal in the add and edit modals.
+2.) fields that requires string input should have character counter inline
+of the field label
+
+
+

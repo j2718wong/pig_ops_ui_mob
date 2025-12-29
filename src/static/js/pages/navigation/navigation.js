@@ -8,6 +8,7 @@ import {PIG_OPERATION_TYPE,
         SOW_BOAR_TYPE}              from '../../constants.js';
 
 import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
+//import {PageMobGestaLacta}			from '../production/gesta_lacta/page_mob_gesta_lacta.js';
 
 
 function UserControl() {
@@ -156,17 +157,38 @@ export function Navigation(){
     
     var elemHiddenContAccPigOps = null;
     
+	this.userControl            = new UserControl();
     
     this.pageAccPigOps          = new PageAccPigOps();
     
-    this.userControl            = new UserControl();
+	/*
+	const settingsProdGestating = {
+		parentObj:              this,
+		isGesta:				true,
+		uniqueKey:				'prod-gesta', // Use for uniqueness in elements
+		pageTitle:				'Production Gestating'
+    } 
+    this.pageMobGestatingList   = new PageMobGestaLacta(settingsGestating);
     
+	const settingsProdLactating = {
+		parentObj:              this,
+		isGesta:				false,
+		uniqueKey:				'prod-lacta', // Use for uniqueness in elements
+		pageTitle:				'Production Lactating'
+    } 
+	this.pageMobLactatingList 	= new PageMobGestaLacta(settingsProdLactating);
+    */
     
+	
+	
+	
     this.init = function(){
         
         this.userControl.init();
         
         this.pageAccPigOps.init();
+		//this.pageMobGestatingList.init();
+		//this.pageMobLactatingList.init();
         
         this.afterHtmlRender();
         

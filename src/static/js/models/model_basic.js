@@ -32,13 +32,13 @@ export function getValidationString(validation){
 
 export function Field(value){
     const thisObj       = this;
-    const DEFAULT_MAX_BYTES_PER_STRING        = 80;
+    const DEFAULT_MAX_STRING_LEN        = 80;
     
     this.index          = 0;
     
     
     /** This needs to be overridden if the valid string lenght is longer than this default value */
-    this.maxStrByteLen  = DEFAULT_MAX_BYTES_PER_STRING;
+    this.maxStrLen  = DEFAULT_MAX_STRING_LEN;
     
     
     this.validation     = {
@@ -145,11 +145,14 @@ export function Field(value){
             
             if (thisObj.newValue == null) {return FIELD_VALIDATION_OK;}
             
-            if (gfIsNumber(thisObj.newValue) == false){return FIELD_REQUIRES_NUMBER;}
+            if (Number.isFinite(+thisObj.newValue) == false){return FIELD_REQUIRES_NUMBER;}
         
             if (thisObj.validation.isPositiveInt == true){
-                if (gfIsPositiveInteger(thisObj.newValue) == false){return FIELD_REQUIRES_POSITIVE_INTEGER;}
-            }
+                if (Number.isInteger(thisObj.newValue) == false){return FIELD_REQUIRES_POSITIVE_INTEGER;}
+				
+				const new_value = parseInt(thisObj.newValue);
+				if (new_value <= 0){return FIELD_REQUIRES_POSITIVE_INTEGER;}
+			}
             
             if (thisObj.validation.cannotBeZero == true){
                 if (thisObj.newValue == null){return FIELD_CANNOT_BE_ZERO;}
@@ -164,26 +167,25 @@ export function Field(value){
                 
                 var clean_str       = thisObj.newValue.trim();
                 var str_len         = clean_str.length;
-                var str_byte_len    = gfUtf8ByteLength(clean_str)
-            
+                
                 if (str_len == 0){return FIELD_CANNOT_BE_EMPTY_STRING;}
                 
-                if (thisObj.maxStrByteLen > 0){
-                    if (str_byte_len > thisObj.maxStrByteLen){return FIELD_EXCEEDS_STRING_LENGTH;}
+                if (thisObj.maxStrLen > 0){
+                    if (str_len > thisObj.maxStrLen){return FIELD_EXCEEDS_STRING_LENGTH;}
                 }
                 
+				/**
                 if (validateString(thisObj.newValue) == false){
                     return FIELD_CONTAINS_INVALID_STRING;
-                }
+                }*/
             }
             else{
                 if (thisObj.newValue != null){
                     var clean_str       = thisObj.newValue.trim();
                     var str_len         = clean_str.length;
-                    var str_byte_len    = gfUtf8ByteLength(clean_str)
-                
-                    if (thisObj.maxStrByteLen > 0){
-                        if (str_byte_len > thisObj.maxStrByteLen){return FIELD_EXCEEDS_STRING_LENGTH;}
+                    
+                    if (thisObj.maxStrLen > 0){
+                        if (str_len > thisObj.maxStrLen){return FIELD_EXCEEDS_STRING_LENGTH;}
                     }
                 }
                 

@@ -1,0 +1,7 @@
+Create a HTML form that can work both in mobile and dekstop screens
+for Pig Gestating Entry with the following requirements:
+
+1.) Use corporate blue theme
+
+2.) Fields
+- Sow;  there should be a select option and add button if there is no Sow

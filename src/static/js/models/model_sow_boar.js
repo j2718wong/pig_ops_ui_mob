@@ -28,9 +28,9 @@ export function ModelSowBoar(){
     this.fieldIsProductionReady = new Field();
    
     
-    this.fieldSowBoarNumber     .maxStrByteLen  = 10;
-    this.fieldSowBoarName       .maxStrByteLen  = 20;
-    this.fieldBirthDate         .maxStrByteLen  = 10;
+    this.fieldSowBoarNumber     .maxStrLen  = 10;
+    this.fieldSowBoarName       .maxStrLen  = 20;
+    this.fieldBirthDate         .maxStrLen  = 10;
     
     this.editableFields         .push(this.fieldSowBoarNumber);
     this.editableFields         .push(this.fieldSowBoarName);

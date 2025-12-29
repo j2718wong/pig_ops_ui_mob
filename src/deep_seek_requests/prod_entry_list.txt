@@ -1,0 +1,77 @@
+
+
+Create a Div Card that can be stacked in a container when viewed from mobile.
+-must be optimize when viewing from mobile
+-use the corporate blue colors and appealing visual colors
+
+
+Section: Header
+1.) Inline PID and Sow Name love icon Boar Name.
+The boar name should have a visual indicator if artificial insemination.
+The header section color should vary according to these operation types: 
+gestating, lactating piglets, lactating sow
+
+Section: Important Dates
+if operation type is gestating
+1.) Expected Date of Birth and the day count today since mating.
+
+if operation type is lactating piglets or lactating sow
+1.) Expected Date Wean and the day count today since birth.
+
+Section: piglet count
+This section will should up only if lactating piglets or lactating sow
+1.) should show number of male piglets, female piglets and number of dead piglets 
+
+
+Section: Pig operations 
+1.) This is a list of
+- Date Operation
+- Operation Name
+- description
+2.) Add a visual indicator if operation already done
+
+3.)There should be a visual indicator that the Pig Operation is already due or not yet done.  
+
+
+Section: control
+- Update button or control 
+
+Fix the following
+viewed only from  mobile. Make the layout compact.
+
+
+
+1.) Remove the page header
+2.) Add  a search function at the top and Add Entry button. 
+Do not put a code in the add entry button. 
+
+ 
+3.) The PID is just a 5 digit integer.
+4.) The PID, Sow love Boar and Artificial insemination indicator icon should be in one line.side by side.
+
+4.) Remove the section title "Important Dates".
+5.) The Expected Date birth" and "Days since Mating" should be in one line. side by side.
+
+6.) Remove the section title "Pig Operations"
+7.) The pig operations list is in descending date order
+8.) Each of the pig operation, the date and the operation name, alert/done icon  should be in line side by side.
+9.) When operation is already done, should just use the Checkmark icon.
+10.) When operation is due, should just use the golden Bell icon.
+11.) If operation is not yet done, No icon. 
+
+11.) Remove the section title  "Piglet Count".
+12.) The number of male, female and Dead piglets should be in one line. side by side.
+
+13.) remove the card features
+ 
+
+Fix the following
+1.) Put the pig operation description below the pig operation date and name line.
+2.) The golden bell icon should have an animated ring or blink 
+
+
+Fix the following
+1.) show a hustling running motorbike or a running horse animation
+beside the "expected date of birth" when the expected date of birth is near.
+ 
+ 

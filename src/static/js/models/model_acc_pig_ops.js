@@ -28,9 +28,10 @@ export function ModelAccountPigOps(){
     this.fieldDescription       .setValidation({cannotBeEmptyStr: true});
     
     
-    this.fieldName              .maxStrByteLen  = 20;
-    this.fieldShortName         .maxStrByteLen  = 11;
-    this.fieldDescription       .maxStrByteLen  = 160;
+    this.fieldName              .maxStrLen  = 20;
+    this.fieldShortName         .maxStrLen  = 15;
+    this.fieldDescription       .maxStrLen  = 160;
+    
     
     this.editableFields         .push(this.fieldNumDaysSince);
     this.editableFields         .push(this.fieldName);

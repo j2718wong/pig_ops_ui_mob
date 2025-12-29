@@ -11,8 +11,7 @@ import {ModelAccountPigOps}     from '../../models/model_acc_pig_ops.js'
 import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
 
 
-
-export function AddModalAccPigOps(input_settings){
+export function EditModalAccPigOps(input_settings){
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
     
@@ -25,6 +24,7 @@ export function AddModalAccPigOps(input_settings){
     */  
     var settings                = input_settings;
         
+    var elemIdModal             = null;
     var elemIdModalTitle        = null;
     var elemIdName              = null;
     var elemIdShortName         = null;
@@ -32,12 +32,14 @@ export function AddModalAccPigOps(input_settings){
     var elemIdDayNumber         = null;
     var elemIdDayNumberDesc     = null;
     var elemIdBtnSave           = null;
+    var elemIdBtnDelete         = null;
     
     var elemIdNameCounter       = null;
     var elemIdShortNameCounter  = null;
     var elemIdDescriptionCounter= null;
     
     
+    var elemModal               = null;
     var elemModalTitle          = null;
     var elemName                = null;
     var elemShortName           = null;
@@ -45,10 +47,15 @@ export function AddModalAccPigOps(input_settings){
     var elemDayNumber           = null;
     var elemDayNumberDesc       = null;
     var elemBtnSave             = null;
+    var elemBtnDelete           = null;
+    
     
     var elemNameCounter         = null;
     var elemShortNameCounter    = null;
     var elemDescriptionCounter  = null;
+    
+    
+    var editModal               = null;
     
     
     var newEntry                = new ModelAccountPigOps();
@@ -57,22 +64,28 @@ export function AddModalAccPigOps(input_settings){
     var operationType           = null;
     
     
+    this.callbackOnSuccessEdit  = null;
+    this.callbackOnSuccessDelete= null;
+    
+    
     this.init = function(){}
     
     
     this.getHtml = function(){
         
-        elemIdModalTitle        = 'acc-pig-ops-add-modal-title';
-        elemIdName              = 'acc-pig-ops-add-name';
-        elemIdShortName         = 'acc-pig-ops-add-short-name';
-        elemIdDescription       = 'acc-pig-ops-add-description';
-        elemIdDayNumber         = 'acc-pig-ops-add-day-number';
-        elemIdDayNumberDesc     = 'acc-pig-ops-add-day-number-desc';
-        elemIdBtnSave           = 'acc-pig-ops-add-save';
+        elemIdModal             = 'acc-pig-ops-edit-modal';
+        elemIdModalTitle        = 'acc-pig-ops-edit-modal-title';
+        elemIdName              = 'acc-pig-ops-edit-name';
+        elemIdShortName         = 'acc-pig-ops-edit-short-name';
+        elemIdDescription       = 'acc-pig-ops-edit-description';
+        elemIdDayNumber         = 'acc-pig-ops-edit-day-number';
+        elemIdDayNumberDesc     = 'acc-pig-ops-edit-day-number-desc';
+        elemIdBtnSave           = 'acc-pig-ops-edit-save';
+        elemIdBtnDelete         = 'acc-pig-ops-edit-delete';
         
-        elemIdNameCounter       = 'acc-pig-ops-add-name-counter';
-        elemIdShortNameCounter  = 'acc-pig-ops-add-short-name-counter';
-        elemIdDescriptionCounter= 'acc-pig-ops-add-description-counter';
+        elemIdNameCounter       = 'acc-pig-ops-edit-name-counter';
+        elemIdShortNameCounter  = 'acc-pig-ops-edit-short-name-counter';
+        elemIdDescriptionCounter= 'acc-pig-ops-edit-description-counter';
         
         
         const max_len_name          = newEntry.fieldName.maxStrLen;
@@ -82,11 +95,11 @@ export function AddModalAccPigOps(input_settings){
         
         
         const html =`
-    <div class="modal fade" id="add-entry-acc-pig-ops-modal" tabindex="-1" aria-labelledby="add-entry-acc-pig-ops-modal-label" aria-hidden="true">
+    <div class="modal fade" id="${elemIdModal}" tabindex="-1" aria-labelledby="edit-entry-acc-pig-ops-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="add-entry-acc-pig-ops-modal-label">
+                    <h5 class="modal-title" id="edit-entry-acc-pig-ops-modal-label">
                         <i class="fas fa-plus me-2"></i><span id="${elemIdModalTitle}">Add New Pig Operation</span>
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -156,8 +169,7 @@ export function AddModalAccPigOps(input_settings){
                                             id="${elemIdDayNumber}" 
                                             min="0" 
                                             max="365" required>
-                                    <div class="invalid-feedback">Please enter a valid number. </div>
-                                    <div class="form-text" id="${elemIdDayNumberDesc}">Days since operation started</div>
+                                    <div class="form-text" id=${elemIdDayNumberDesc}>Days since operation started</div>
                                 </div>
                             </div>
                         </div>
@@ -166,6 +178,9 @@ export function AddModalAccPigOps(input_settings){
                 </div>
                 
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-delete" id="${elemIdBtnDelete}">
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-2"></i>Cancel
                     </button>
@@ -193,6 +208,7 @@ export function AddModalAccPigOps(input_settings){
     
     this._findElements = function(){
         
+        elemModal               = document.getElementById(elemIdModal);
         elemModalTitle          = document.getElementById(elemIdModalTitle);
         elemName                = document.getElementById(elemIdName);
         elemShortName           = document.getElementById(elemIdShortName);
@@ -200,6 +216,8 @@ export function AddModalAccPigOps(input_settings){
         elemDayNumber           = document.getElementById(elemIdDayNumber);
         elemDayNumberDesc       = document.getElementById(elemIdDayNumberDesc);
         elemBtnSave             = document.getElementById(elemIdBtnSave);
+        elemBtnDelete           = document.getElementById(elemIdBtnDelete);
+    
     
         elemNameCounter         = document.getElementById(elemIdNameCounter);
         elemShortNameCounter    = document.getElementById(elemIdShortNameCounter);
@@ -209,7 +227,12 @@ export function AddModalAccPigOps(input_settings){
     
     
     this._processAfterHtmlRender = function(){
+        // Does not work
+        //editModal               = new bootstrap.Modal(elemModal);
         
+        
+        editModal   = bootstrap.Modal.getOrCreateInstance(elemModal);
+
     }
 
     
@@ -231,8 +254,8 @@ export function AddModalAccPigOps(input_settings){
         elemDescription.addEventListener('input', function(){
             thisObj.updateCharCounter(elemDescription, elemDescriptionCounter, 
                 newEntry.fieldDescription.maxStrLen);
-                
-            elemDescription.classList.remove('is-invalid');
+            
+            elemShortName.classList.remove('is-invalid');
         });
       
         
@@ -260,18 +283,23 @@ export function AddModalAccPigOps(input_settings){
         elemBtnSave.addEventListener('click', function() {
             thisObj._onClickSaveButton();
         });
+        
+        
+        elemBtnDelete.addEventListener('click', function() {
+            thisObj._onClickDeleteButton();
+        });
 
     }
     
     
-    // Reset add form
-    this.beforeShow = function(operation_type){
+
+    this.beforeShow = function(operation){
         var header_title;
         var min_days;
         var max_days;
         var num_days_title;
         
-        operationType = operation_type;
+        const operation_type = operation.acc_pig_ops.operation_type;
         
         switch (operation_type) {
             case PIG_OPERATION_TYPE.GESTATING:{
@@ -279,7 +307,8 @@ export function AddModalAccPigOps(input_settings){
                 min_days        = 0;
                 max_days        = 114;
                 num_days_title  = "Number of days since boar mating or insemination";
-                break;
+                num_days_title 	+= ' Max ' + max_days + '.';
+				break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS: {
@@ -287,7 +316,8 @@ export function AddModalAccPigOps(input_settings){
                 min_days        = 1;
                 max_days        = 45;
                 num_days_title  = "Number of days since piglets birth.";
-                break;
+                num_days_title 	+= ' Max ' + max_days + '.';
+				break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
@@ -295,7 +325,8 @@ export function AddModalAccPigOps(input_settings){
                 min_days        = 1;
                 max_days        = 45;
                 num_days_title  = "Number of days since piglets birth.";
-                break;
+                num_days_title 	+= ' Max ' + max_days + '.';
+				break;
             }
             
             case PIG_OPERATION_TYPE.GILT:{
@@ -303,40 +334,59 @@ export function AddModalAccPigOps(input_settings){
                 min_days        = 1;
                 max_days        = 300;
                 num_days_title  = "Number of days since gilt birth.";
-                break;
+                num_days_title 	+= ' Max ' + max_days + '.';
+				break;
             }
         }
         
         elemDayNumber.setAttribute("min", min_days); // Set a data attribute
         elemDayNumber.setAttribute("max", max_days); // Set a data attribute
         
-        elemDayNumberDesc.innerHTML = num_days_title + ' Max ' + max_days;
+		
+        elemDayNumberDesc.innerHTML = num_days_title;
         
         
-        // Clear inputs; 
-        // Need to remove bootstrap validation classes since 
-        // it is not cleared when viewing another entry;
-        newEntry            = new ModelAccountPigOps();
-        
-        var cur_elem;
-        
-        cur_elem = elemDayNumber;
-        cur_elem.value = ''; 
-        cur_elem.classList.remove('is-valid', 'is-invalid');
-        
-        cur_elem = elemName;
-        cur_elem.value = ''; 
-        cur_elem.classList.remove('is-valid', 'is-invalid'); 
-        
-        cur_elem = elemShortName;
-        cur_elem.value = ''; 
-        cur_elem.classList.remove('is-valid', 'is-invalid'); 
-        
-        cur_elem = elemDescription;
-        cur_elem.value = ''; 
-        cur_elem.classList.remove('is-valid', 'is-invalid'); 
         
         
+        // Set ModelAccountPigOps
+        newEntry.fieldName.setValue(operation.acc_pig_ops.name);
+        newEntry.fieldShortName.setValue(operation.acc_pig_ops.short_name);
+        newEntry.fieldDescription.setValue(operation.acc_pig_ops.desc);
+        newEntry.fieldNumDaysSince.setValue(operation.acc_pig_ops.num_days_since);
+        
+        
+        // Remove elements validation classes
+        elemName.classList.remove('is-invalid', 'is-valid');
+        elemShortName.classList.remove('is-invalid', 'is-valid');
+        elemDescription.classList.remove('is-invalid', 'is-valid');
+        elemDayNumber.classList.remove('is-invalid', 'is-valid');
+        
+        
+        // Populate form with operation data
+        elemName.value          = operation.acc_pig_ops.name;
+        elemShortName.value     = operation.acc_pig_ops.short_name;
+        elemDescription.value   = operation.acc_pig_ops.desc;
+        elemDayNumber.value     = operation.acc_pig_ops.num_days_since;
+        
+        
+        // Update modal title
+        elemModalTitle.innerHTML = 
+            `<i class="fas fa-edit me-2"></i>Edit: ${operation.acc_pig_ops.name}`;
+        
+        
+        // Initialize char counters
+        thisObj.updateCharCounter(elemName, elemNameCounter, 
+                newEntry.fieldName.maxStrLen);
+        
+        thisObj.updateCharCounter(elemShortName, elemShortNameCounter, 
+                newEntry.fieldShortName.maxStrLen);
+        
+        thisObj.updateCharCounter(elemDescription, elemDescriptionCounter, 
+                newEntry.fieldDescription.maxStrLen);
+        
+        
+        // Show modal
+        editModal.show();
     }
     
     
@@ -465,137 +515,12 @@ export function AddModalAccPigOps(input_settings){
     
     
     this._onClickSaveButton = function(){
-        var input_elem      = null;
-        var cur_field       = null;
-        var validation      = -1;
-        var proceed_to_save = 1;
         
-
-        var input_num_days  = elemDayNumber.value;
-        var input_name      = elemName.value.trim();
-        var input_short_name= elemShortName.value.trim();
-        var input_description= elemDescription.value.trim();
-        
-        
-        input_elem          = elemDayNumber;
-        cur_field           = newEntry.fieldNumDaysSince;
-        cur_field.newValue  = input_num_days;
-        validation          = cur_field.validateChange();
-        
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.hasClass('is-invalid') == false){
-                input_elem.addClass('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.hasClass('is-valid') == false){
-                input_elem.addClass('is-valid');
-            }
-        }
-        
-        if (proceed_to_save == 0) {return;}
-        
-        
-        input_elem          = elemName;
-        cur_field           = newEntry.fieldName;
-        if (input_name.length == 0){input_name = null;}
-        cur_field.newValue  = input_name;
-        validation          = cur_field.validateChange();
-
-        if (validation != FIELD_VALIDATION_OK){
-            if (el_name.hasClass('is-invalid') == false){
-                el_name.addClass('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.hasClass('is-valid') == false){
-                input_elem.addClass('is-valid');
-            }
-        }
-        
-        if (proceed_to_save == 0) {return;}
-        
-        
-        input_elem          = elemShortName;
-        cur_field           = newEntry.fieldShortName;
-        cur_field.newValue  = input_short_name;
-        validation          = cur_field.validateChange();
-
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.hasClass('is-invalid') == false){
-                input_elem.addClass('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.hasClass('is-valid') == false){
-                input_elem.addClass('is-valid');
-            }
-        }
-        
-        if (proceed_to_save == 0) {return;}
-        
-        
-        input_elem          = elemDescription;
-        cur_field           = newEntry.fieldDescription;
-        cur_field.newValue  = input_description;
-        validation          = cur_field.validateChange();
-
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.hasClass('is-invalid') == false){
-                input_elem.addClass('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.hasClass('is-valid') == false){
-                input_elem.addClass('is-valid');
-            }
-        }
-        
-        if (proceed_to_save == 0) {return;}
-        
-        
-        var user_hid        = gController.getUserUhid();
-        
-        // send post request
-        var post_data = {
-            'uhid':             user_hid,
-            'operation_type':   operationType,
-            'num_days_since':   parseInt(newEntry.fieldNumDaysSince.newValue),
-            'name':             newEntry.fieldName.newValue,
-            'short_name':       newEntry.fieldShortName.newValue,
-            'description':      newEntry.fieldDescription.newValue
-        };
-        
-
-        
-        $.ajax({
-            type: 'POST',
-            contentType: "application/json",
-            dataType: 'json',
-            url: gController.getBaseUrl() + '/account_pig_ops/add',
-            async: true,
-  
-            data: JSON.stringify(post_data),
-  
-            beforeSend: function(){
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    thisObj._onSuccessAddEntry(response.data);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
-            }
-        });
     }
+    
+    
+    this._onClickDeleteButton = function(){
+        
+    }
+    
 }

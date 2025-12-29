@@ -5,74 +5,63 @@
 'use strict';
 
 import {APPLICATION,
-        PIG_OPERATION_TYPE}         from '../../constants.js';
+        PIG_OPERATION_TYPE}     from '../../constants.js';
 
-import {TextTranslation}            from '../common/translation.js';
+import {TextTranslation}        from '../common/translation.js';
 
 import {TRANSLATION_PAGE_ACC_PIG_OPS}   from '../../translations/page_acc_pig_ops_i8n.js'
 
 
-import {AddModalAccPigOps}          from './add_modal_acc_pig_ops.js'
+import {AddModalAccPigOps}      from './add_modal_acc_pig_ops.js'
+import {EditModalAccPigOps}     from './edit_modal_acc_pig_ops.js'
 
 
 export function PageAccPigOps(){
-    const thisObj                   = this;
+    const thisObj               = this;
 
     // This is needed as ths will be first element to be rendered
-    var elemDivContainer            = document.getElementById('container-acc-pig-ops');
-    
-    var elemIdPageTitle             = null;
-    var elemIdPigOpsInfo            = null;
-    
-    var elemIdBtnAddEntryShow       = null;
-    var elemIdMobileContainer       = null;
-    var elemIdTableContainer        = null;
-    
-    
-    var elemIdEditName              = null;
-    var elemIdEditShortName         = null;
-    var elemIdEditDescription       = null;
-    var elemIdEditDayNumber         = null;
-    var elemIdEditBtnSave           = null;
-    var elemIdEditBtnDelete         = null;
-    
-    
-    var elemPageTitle               = null;
-    var elemPigOpsInfo              = null;
-    
-    var elemBtnAddEntryShow         = null;
-    var elemMobileContainer         = null;
-    var elemTableContainer          = null;
-    
-    
-    
-    
-    var elemEditName                = null;
-    var elemEditShortName           = null;
-    var elemEditDescription         = null;
-    var elemEditDayNumber           = null;
-    var elemEditBtnSave             = null;
-    var elemEditBtnDelete           = null;
-    
-    
-    
-    var textTranslation             = new TextTranslation();
-    var curUserLanguageKey          = 'en';
-    
-    
-    var dataAccGestatingOps         = null;
-    var dataAccLactatingPigletOps   = null;
-    var dataAccLactatingSowOps      = null;
-    var dataAccGiltOps              = null;
-    
-    var curAccPigOpsType            = null;
-    var curAccPigOpsData            = null;
-    
-    
-    const settingsAddModal          = {
-        parentObj:                  this
+    var elemDivContainer        = document.getElementById('container-acc-pig-ops');
+
+    var elemIdPageTitle         = null;
+    var elemIdPageInfo        	= null;
+
+    var elemIdBtnAddEntryShow   = null;
+    var elemIdMobileContainer   = null;
+    var elemIdTableContainer    = null;
+
+    var elemPageTitle           = null;
+    var elemPageInfo          	= null;
+
+    var elemBtnAddEntryShow     = null;
+    var elemMobileContainer     = null;
+    var elemTableContainer      = null;
+
+
+
+    var textTranslation         = new TextTranslation();
+    var curUserLanguageKey      = 'en';
+
+
+    var dataAccGestatingOps     = null;
+    var dataAccLactatingPigletOps= null;
+    var dataAccLactatingSowOps  = null;
+    var dataAccGiltOps          = null;
+
+    var curAccPigOpsType        = null;
+    var curAccPigOpsData        = null;
+
+
+    const settingsAddModal      = {
+        parentObj:              this
     }
-    this.addModalAccPigOps          = new AddModalAccPigOps(settingsAddModal);
+    this.addModalAccPigOps      = new AddModalAccPigOps(settingsAddModal);
+
+
+    const settingsEditModal     = {
+        parentObj:              this
+    }
+    this.editModalAccPigOps     = new EditModalAccPigOps(settingsEditModal);
+    
     
     
     
@@ -81,12 +70,15 @@ export function PageAccPigOps(){
         textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
         
         this.addModalAccPigOps.init();
+        this.editModalAccPigOps.init();
+        
         
         this.render();
         this.afterHtmlRender();
         
         
         this.addModalAccPigOps.afterHtmlRender();
+        this.editModalAccPigOps.afterHtmlRender();
         
     }
     
@@ -94,24 +86,17 @@ export function PageAccPigOps(){
     this.render = function(){
         
         elemIdPageTitle         = 'page-title-acc-pig-ops';
-        elemIdPigOpsInfo        = 'page-info-acc-pig-ops';
+        elemIdPageInfo        	= 'page-info-acc-pig-ops';
         
         elemIdBtnAddEntryShow   = 'add-entry-acc-pig-ops-show';
         elemIdMobileContainer   = 'mobile-container-acc-pig-ops';
         elemIdTableContainer    = 'table-container-acc-pig-ops';
         
         
-        elemIdEditName          = 'acc-pig-ops-edit-name';
-        elemIdEditShortName     = 'acc-pig-ops-edit-short-name';
-        elemIdEditDescription   = 'acc-pig-ops-edit-description';
-        elemIdEditDayNumber     = 'acc-pig-ops-edit-day-number';
-        elemIdEditBtnSave       = 'acc-pig-ops-edit-save';
-        elemIdEditBtnDelete     = 'acc-pig-ops-edit-delete';
+        const html_add_modal    = thisObj.addModalAccPigOps.getHtml();
+        const html_edit_modal   = thisObj.editModalAccPigOps.getHtml();
         
-        
-        var html_add_modal      = thisObj.addModalAccPigOps.getHtml();
-        
-        var html = `
+        const html = `
         
     <div class="container">
         <div class="header">
@@ -119,7 +104,7 @@ export function PageAccPigOps(){
             
             <!-- Mobile Info Box -->
             <div class="mobile-info-box">
-                <div class="info-text" id="${elemIdPigOpsInfo}">
+                <div class="info-text" id="${elemIdPageInfo}">
                     Track and manage all pig farming operations. Each card shows operation details including day count, description, and last update information. Tap the edit icon to modify or delete operations.
                 </div>
             </div>
@@ -162,56 +147,7 @@ export function PageAccPigOps(){
     
 
     <!-- Bootstrap Modal for Editing Cards -->
-    <div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="editCardModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editCardModalLabel">
-                        <i class="fas fa-edit me-2"></i>Edit Pig Operation
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                
-                <div class="modal-body">
-                    <form id="editCardForm">
-                        <div class="mb-3">
-                            <label for="${elemIdEditName}" class="form-label">Operation Name *</label>
-                            <input type="text" class="form-control" id="${elemIdEditName}" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="${elemIdEditShortName}" class="form-label">Short Name *</label>
-                            <input type="text" class="form-control" id="${elemIdEditShortName}" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="${elemIdEditDescription}" class="form-label">Description *</label>
-                            <textarea class="form-control" id="${elemIdEditDescription}" rows="3" required></textarea>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="${elemIdEditDayNumber}" class="form-label">Day Number *</label>
-                                <input type="number" class="form-control" id="${elemIdEditDayNumber}" min="0" max="365" required>
-                            </div>
-                           
-                        </div>
-            
-                    </form>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="${elemIdEditBtnDelete}" id="deleteCardBtn">
-                        <i class="fas fa-trash-alt me-2"></i>Delete
-                    </button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="${elemIdEditBtnSave}">
-                        <i class="fas fa-save me-2"></i>Save
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    ${html_edit_modal}
 
         
         `;
@@ -229,20 +165,11 @@ export function PageAccPigOps(){
     
     this._findElements = function(){
         elemPageTitle           = document.getElementById(elemIdPageTitle);
-        elemPigOpsInfo          = document.getElementById(elemIdPigOpsInfo);
+        elemPageInfo          	= document.getElementById(elemIdPageInfo);
 
         elemBtnAddEntryShow     = document.getElementById(elemIdBtnAddEntryShow);
         elemMobileContainer     = document.getElementById(elemIdMobileContainer);
         elemTableContainer      = document.getElementById(elemIdTableContainer);
-        
-        
-        elemEditName            = document.getElementById(elemIdEditName);
-        elemEditShortName       = document.getElementById(elemIdEditShortName);
-        elemEditDescription     = document.getElementById(elemIdEditDescription);
-        elemEditDayNumber       = document.getElementById(elemIdEditDayNumber);
-        elemEditBtnSave         = document.getElementById(elemIdEditBtnSave);
-        elemEditBtnDelete       = document.getElementById(elemIdEditBtnDelete);
-
     }
     
     
@@ -259,8 +186,9 @@ export function PageAccPigOps(){
         window.addEventListener('resize', thisObj.handleResize);
     
     
-        elemBtnAddEntryShow.addEventListener('click', 
-            thisObj.addModalAccPigOps.addFormReset);
+        elemBtnAddEntryShow.addEventListener('click', function(){
+            thisObj.addModalAccPigOps.beforeShow(curAccPigOpsType);
+        });
     
     }
     
@@ -371,7 +299,7 @@ export function PageAccPigOps(){
             
             
             cardElement.innerHTML = `
-                <button class="edit-icon-btn" data-index="${operation.acc_pig_ops.hid}" title="Edit Operation">
+                <button class="edit-icon-btn" onclick="gNavigation.pageAccPigOps.editModalOpen('${operation.acc_pig_ops.hid}')" title="Edit Operation">
                     <i class="fas fa-edit"></i>
                 </button>
                 
@@ -432,7 +360,7 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'gestating_ops.info_text');
                 if (cur_text != null){
-                    elemPigOpsInfo.innerHTML = cur_text;
+                    elemPageInfo.innerHTML = cur_text;
                 }
                 
                 break;
@@ -449,7 +377,7 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'lactating_piglets_ops.info_text');
                 if (cur_text != null){
-                    elemPigOpsInfo.innerHTML = cur_text;
+                    elemPageInfo.innerHTML = cur_text;
                 }
                 
                 break;
@@ -466,7 +394,7 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'lactating_sow_ops.info_text');
                 if (cur_text != null){
-                    elemPigOpsInfo.innerHTML = cur_text;
+                    elemPageInfo.innerHTML = cur_text;
                 }
                 
                 break;
@@ -483,7 +411,7 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'gilt_ops.info_text');
                 if (cur_text != null){
-                    elemPigOpsInfo.innerHTML = cur_text;
+                    elemPageInfo.innerHTML = cur_text;
                 }
                 
                 break;
@@ -492,27 +420,21 @@ export function PageAccPigOps(){
     }
     
     
+    this.getDataAccPigOps = function(entry_hid){
+        for (const cur_entry of curAccPigOpsData){
+            if(cur_entry.acc_pig_ops.hid == entry_hid){return cur_entry;}
+        }
+        return null;
+    }
+    
     
     // Open edit modal with operation data
-    this.editModalOpen = function(index) {
-        currentEditIndex = index;
-        const operation = operations[index];
+    this.editModalOpen = function(entry_hid) {
+        const operation = thisObj.getDataAccPigOps(entry_hid);
+        if (operation == null) {return;}
         
-        // Populate form with operation data
-        editName.value = operation.name;
-        editShortName.value = operation.short_name;
-        editDesc.value = operation.desc;
-        editDays.value = operation.num_days_since;
-        editUpdatedBy.value = operation.last_update_by;
-        editLastUpdated.value = operation.last_updated;
-        editCardIndex.value = index;
+        thisObj.editModalAccPigOps.beforeShow(operation);
         
-        // Update modal title
-        document.getElementById('editCardModalLabel').innerHTML = 
-            `<i class="fas fa-edit me-2"></i>Edit: ${operation.name}`;
-        
-        // Show modal
-        editCardModal.show();
     }
     
     
