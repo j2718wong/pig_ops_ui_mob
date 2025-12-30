@@ -82,3 +82,32 @@ Fix the following
 1.) In the pig counter section, add another counter for "StillBirth".
 This counter should be after Male, Female.
   
+Fix the following
+1.) In the operations list section,
+only two operations should be displayed at a time. 
+2.) there should be a control at the top of the operations list if there are 
+still future operation items yet to be done.
+3.) there should be a another control at the bottom of the operations to 
+show the operations that are already done.
+
+4.) In the not yet done operation, there should be a control for the user
+to mark it done. A modal should popup for the user to add notes.
+Modal Title should include the PID and the operation name. 
+
+The modal should have these fields 
+- Date (default today)
+- Staff dropdown
+- Notes, with char counter
+
+5.) For the already done operation, there should be a  line to show
+when the operation was done and who did the operation. 
+
+fix this. 
+When the operation is not yet and and almost due or due,
+Put the ringing bell inline with the Operation name. just a span
+
+
+fix this.
+In the "Mark Operation as Done" modal, below the staff select,
+add a check box "Done by Me"
+

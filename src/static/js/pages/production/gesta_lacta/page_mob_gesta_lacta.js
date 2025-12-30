@@ -8,8 +8,10 @@ import {APPLICATION,
         PIG_OPERATION_TYPE,
         PROD_STATUS}            from '../../../constants.js';
 
-import {FormatDate,
-        FORMAT_SHORT_MONTH}     from '../../../utils.js';
+import {formatDate,
+        FORMAT_SHORT_MONTH,
+        FORMAT_LONG_MONTH,
+        sortList}               from '../../../utils.js';
 
 
 
@@ -19,6 +21,11 @@ export function PageMobGestaLacta(input_settings){
     
     const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
     const DEFAULT_NUM_DAYS_WEAN = 45;
+    
+    const NUM_DAYS_BEFORE_OPERATION_DUE_SHOW_ALARM = 3;
+    
+    // This needs to be manually set once fix in backend
+    const PIG_PROD_OPS_DATE_TARGET_ORDER_ASC = 1;
     
     /*
     Typical input_settings
@@ -97,10 +104,10 @@ export function PageMobGestaLacta(input_settings){
         elemIdMobSearchInput    = `mobile-search-input-${settings.uniqueKey}`;
         elemIdMobAddEntryBtn    = `mobile-add-entry-btn-${settings.uniqueKey}`;
            
-		var style_hide_add_button = '';
-		if (settings.isGesta == false){
-			style_hide_add_button = 'display:none;';
-		}
+        var style_hide_add_button = '';
+        if (settings.isGesta == false){
+            style_hide_add_button = 'display:none;';
+        }
            
         const html = `
 <div class="mobile-container">
@@ -167,20 +174,58 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
+
     this.setDataPigProd = function(data){
         var data_filtered = [];
         
         for(const cur_entry of data){
-			if (settings.isGesta == true){
-				if (cur_entry.pig_production.prod_status_id == PROD_STATUS.GESTATING){
-					data_filtered.push(cur_entry);
-				}
-			}
-			else{
-				if (cur_entry.pig_production.prod_status_id == PROD_STATUS.LACTATING){
-					data_filtered.push(cur_entry);
-				}
-			}
+            
+            if (PIG_PROD_OPS_DATE_TARGET_ORDER_ASC > 0){
+                
+                let gestating_ops = cur_entry.gestating_ops;
+                gestating_ops = sortList(gestating_ops, 
+                    'pig_prod_pig_ops.date_target', 'desc');
+                
+                let lactating_piglets_ops = cur_entry.lactating_piglets_ops;
+                if (lactating_piglets_ops.length > 0){
+                    lactating_piglets_ops = sortList(lactating_piglets_ops, 
+                        'pig_prod_pig_ops.date_target', 'desc');
+                }
+                
+                
+                
+                
+                cur_entry.gestating_ops = gestating_ops;
+                cur_entry.lactating_piglets_ops = lactating_piglets_ops;
+                
+                console.log('cur_entry.gestating_ops');
+                console.log(cur_entry.gestating_ops);
+                
+                
+                let lactating_sow_ops = [];
+                if ('lactating_sow_ops' in cur_entry){
+                    lactating_sow_ops = cur_entry.lactating_sow_ops;
+                    
+                    if (lactating_sow_ops.length > 0){
+                        lactating_sow_ops = sortList(lactating_sow_ops, 
+                            'pig_prod_pig_ops.date_target', 'desc');
+                    }
+                    
+                }
+                cur_entry.lactating_sow_ops = lactating_sow_ops;
+            }
+            
+            
+            if (settings.isGesta == true){
+                if (cur_entry.pig_production.prod_status_id == PROD_STATUS.GESTATING){
+                    data_filtered.push(cur_entry);
+                }
+            }
+            else{
+                if (cur_entry.pig_production.prod_status_id == PROD_STATUS.LACTATING){
+                    data_filtered.push(cur_entry);
+                }
+            }
         } 
         
         
@@ -323,7 +368,7 @@ export function PageMobGestaLacta(input_settings){
                 
                 date_important      = birth.date_expected;
                 dt_important        = new Date(date_important);
-                dt_important_sf     = FormatDate(dt_important);
+                dt_important_sf     = formatDate(dt_important);
                 
                 diff_msecs          = dt_important - dt_current;
                 diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
@@ -377,7 +422,7 @@ export function PageMobGestaLacta(input_settings){
                 label_date_important= 'Expected Birth';
                 label_num_days_since= 'Days Since Mating'; 
                 
-                const dt_insem_sf   = FormatDate(dt_insem, FORMAT_SHORT_MONTH);
+                const dt_insem_sf   = formatDate(dt_insem, FORMAT_SHORT_MONTH);
                 value_num_days_since= `${numdays_since} Days (${dt_insem_sf})`;
                 
                 break;
@@ -385,7 +430,7 @@ export function PageMobGestaLacta(input_settings){
         
             case PROD_STATUS.LACTATING: {
                 header_class = 'lactating-sow';
-				
+                
                 // Need to add number of days for date weaning
                 date_important      = birth.date_actual;
                 dt_important        = new Date(date_important);
@@ -395,11 +440,11 @@ export function PageMobGestaLacta(input_settings){
                 cur_num_pigs_female = birth.pigs_live_f;
                 cur_num_pigs_stillbirth = birth.num_dead_at_birth;
                 
-				// TODO needs to be computed at backend
-				cur_num_pigs_dead   = (cur_num_pigs_male + cur_num_pigs_female) - 
+                // TODO needs to be computed at backend
+                cur_num_pigs_dead   = (cur_num_pigs_male + cur_num_pigs_female) - 
                                         data_prod.pig_production.cur_pig_count;
                 if (cur_num_pigs_dead < 0){cur_num_pigs_dead = 0;}
-				
+                
                 style_piglet_counter= '';
                 
                 label_date_important= 'Expected Wean';
@@ -409,7 +454,7 @@ export function PageMobGestaLacta(input_settings){
         }
         
         
-        
+        const html_operations = thisObj._getHtmlOperations(data_prod);
         
         
         var html = `
@@ -473,44 +518,10 @@ export function PageMobGestaLacta(input_settings){
                 </div>
             </div>
 
+
             <!-- Operations List -->
-            <div class="operations-container" style="display: none;">
-                <div class="operations-list">
-                    <!-- Operation 1 - Done -->
-                    <div class="operation-item operation-done">
-                        <div class="operation-header">
-                            <div class="operation-left">
-                                <div class="operation-date">May 5, 2023</div>
-                                <div class="operation-name">Vaccination</div>
-                            </div>
-                            <div class="operation-icon icon-done">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                        </div>
-                        <div class="operation-description">
-                            Pre-farrowing vaccination for leptospirosis and parvovirus
-                        </div>
-                    </div>
-                    
-                    <!-- Operation 2 - Due -->
-                    <div class="operation-item operation-due">
-                        <div class="operation-header">
-                            <div class="operation-left">
-                                <div class="operation-date">Apr 20, 2023</div>
-                                <div class="operation-name">Pregnancy Check</div>
-                            </div>
-                            <div class="operation-icon icon-due">
-                                <span class="bell-animated">
-                                    <i class="fas fa-bell"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="operation-description">
-                            Ultrasound pregnancy confirmation - Due 3 days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
+            ${html_operations}
+
 
             <!-- Update Button -->
             <div class="controls">
@@ -523,6 +534,319 @@ export function PageMobGestaLacta(input_settings){
         
     }
     
+    
+    
+    
+    this._getHtmlOperations = function(data_prod){
+        var operations = null;
+        
+        if (data_prod.pig_production.prod_status_id == PROD_STATUS.GESTATING){
+            operations = data_prod.gestating_ops;
+        }
+        else{
+            operations = [];
+            
+            // Need to combine lactating_piglets_ops and lactating_sow_ops
+            // in descending date order
+        }
+        
+        if (operations == null){return '';}
+        if (operations.length == 0){return '';}
+        
+        
+        /*
+        When the operations data is set, this is sorted in descending date_target.
+        There should only be 2 operations by default to be shown at a time.
+        
+        1.) When the number of operations <= 2, 
+            - no controls for future-operations-control
+            
+        
+        */
+        
+        
+        // Loop through the operations to see if there are done Operations
+        var has_completed_ops = 0;
+        for (const cur_entry of operations){
+            if (cur_entry.pig_prod_pig_ops.date_actual != null){
+                has_completed_ops = 1;
+            }
+        }
+        
+        
+        
+        var style_future_ops_control = '';
+        var style_operations_control = '';
+        
+        // Fill these 3 arrays 
+        var operations_above    = [];
+        var operations_cur_view = []; // can only view 2 operation items on default
+        var operations_below    = [];
+        
+        console.log(operations);
+        
+        if (operations.length <= 2){
+            operations_cur_view = operations;
+        }
+        else{
+            var index;
+            var cur_entry;
+            var count = 0;
+            
+            index = operations.length -1;
+        
+            var index_begin = -1;
+            var index_end   = -1;
+            
+            while (index >= 0){
+                cur_entry = operations[index];
+                
+                if (cur_entry.pig_prod_pig_ops.date_actual == null){
+                    index_end   = index +1;
+                    index_begin = index -1;
+
+                    if (index_begin < 0) {
+                        index_begin = 0;
+                        index_end   = 2;
+                    }
+                    break;
+                }
+                                
+                index = index - 1;
+            }
+            
+            if (index_begin > 0){
+                operations_above    = operations.slice(0,index_begin);
+                operations_cur_view = operations.slice(index_begin, index_end);
+                
+                if (index_end < operations.length){
+                    operations_below = operations.slice(index_end);
+                }
+                
+            }
+            
+            else{
+                operations_cur_view = operations.slice(index_begin, index_end);
+                
+                if (index_end < operations.length){
+                    operations_below = operations.slice(index_end);
+                }
+            }
+            
+            
+        }
+        
+        
+        
+            
+        
+        
+        
+        if (operations_below.length == 0){
+            style_operations_control = 'display:none;';
+        }
+        
+        if (operations_above.length == 0){
+            style_future_ops_control = 'display:none;';
+        }
+        
+        
+        var html_operations_above = '';
+        operations_above.forEach(operation => {
+            html_operations_above += thisObj._getHtmlOperation(
+                operation, 'operation-above', true);
+        });
+        
+        var html_operations_cur_view = '';
+        operations_cur_view.forEach(operation => {
+            html_operations_cur_view += thisObj._getHtmlOperation(
+                operation, '', false);
+        });
+        
+        var html_operations_below = '';
+        operations_below.forEach(operation => {
+            html_operations_below += thisObj._getHtmlOperation(
+                operation, 'operation-below', true);
+        });
+        
+        
+        function debugOperations(){
+            let s = '';
+            
+            s += 'Operations above: \n';
+            for (const cur_entry of operations_above){
+                s += cur_entry.pig_prod_pig_ops.date_target + ' - '
+                s += cur_entry.account_pig_ops.name +'\n';
+            }
+            
+            s += '\nOperations current: \n';
+            for (const cur_entry of operations_cur_view){
+                s += cur_entry.pig_prod_pig_ops.date_target + ' - '
+                s += cur_entry.account_pig_ops.name +'\n';
+            }
+            
+            s += '\nOperations below: \n';
+            for (const cur_entry of operations_below){
+                s += cur_entry.pig_prod_pig_ops.date_target + ' - '
+                s += cur_entry.account_pig_ops.name +'\n';
+            }
+            
+            console.log(s);
+        }
+        
+        debugOperations();
+        
+        var html = `
+        <!-- Operations List -->
+        <div class="operations-list">
+            <!--
+            <div class="operations-title">
+                <span>Operations</span>
+            </div>
+            -->
+            
+            <!-- Control for future operations (if exists) -->
+            <div class="future-operations-control" style="${style_future_ops_control}">
+                <button class="btn-show-more">
+                    <i class="fas fa-calendar-alt"></i>
+                    Show ${operations_above.length} Upcoming Operations
+                </button>
+            </div>
+            
+            
+            ${html_operations_above}
+            
+            
+            ${html_operations_cur_view}
+            
+            
+            ${html_operations_below}
+            
+            
+            <!-- Control for showing completed operations -->
+            <div class="operations-controls" style="${style_operations_control}">
+                <button class="btn-show-more" onclick="toggleCompletedOperations(this)">
+                    <i class="fas fa-history"></i>
+                    Show Completed Operations (${operations_below.length})
+                </button>
+            </div>
+            
+        </div>
+        `;
+        
+        return html;
+    }
+    
+    
+    this._getHtmlOperation = function(data_operation, placement_class, is_hidden){
+        var diff_msecs;
+        var diff_days;
+        
+        var dt_current = new Date();
+        dt_current.setHours(0, 0, 0, 0);
+        
+        
+        const date_target   = data_operation.pig_prod_pig_ops.date_target;
+        const dt_target     = new Date(date_target);
+        const date_target_s = formatDate(dt_target, FORMAT_SHORT_MONTH);
+        
+        const date_actual   = data_operation.pig_prod_pig_ops.date_actual;
+        const operation_name= data_operation.account_pig_ops.name;
+        const operation_desc= data_operation.account_pig_ops.description;
+            
+        
+        
+        var style_animation_alarm       = '';
+        var style_operation_desc        = '';
+        var style_operation_completion  = '';
+        
+        if (operation_desc == null){style_operation_desc = 'display:none;';}
+        if (data_operation.staff.name == null){
+            style_operation_completion = 'display:none;';
+        }
+        
+        
+        
+        var html = '';
+        
+        var style_hidden = '';
+        if (is_hidden){style_hidden = 'display:none;';}
+        
+        if (date_actual != null){
+            const date_actual_s = formatDate(new Date(date_actual), FORMAT_SHORT_MONTH);
+            const staff_name    = data_operation.staff.name;
+            
+            html = `
+                <div class="operation-item operation-done ${placement_class}" style="${style_hidden}">
+                    <div class="operation-header">
+                        <div class="operation-left">
+                            <div class="operation-date">${date_target_s}</div>
+                            <div class="operation-name">${operation_name}</div>
+                        </div>
+                        <div class="operation-icon icon-done">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="operation-description" style="${style_operation_desc}">
+                        ${operation_desc}
+                    </div>
+                    <div class="operation-completion" style="${style_operation_completion}">
+                        <span>Done: ${date_actual_s}</span>
+                        <span>By: ${staff_name}</span>
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        
+        // Compute the number of days from  dt_target to dt_current
+        diff_msecs          = dt_target - dt_current;
+        diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+        
+        var operation_class = '';
+        
+        if (diff_days > NUM_DAYS_BEFORE_OPERATION_DUE_SHOW_ALARM){
+            style_animation_alarm = 'display:none;';
+            operation_class = 'operation-pending';
+        }
+        else{
+            operation_class = 'operation-due';
+        }
+        
+        
+        
+        
+        html = `
+        <div class="operation-item ${operation_class} ${placement_class}" style="${style_hidden}">
+            <div class="operation-header">
+                <div class="operation-left">
+                    <div class="operation-date">${date_target_s}</div>
+                    <div class="operation-name">
+                        ${operation_name}
+                        
+                        <span class="inline-bell" title="Operation due today!" style="${style_animation_alarm}">
+                            <i class="fas fa-bell"></i>
+                        </span>
+                    
+                    </div>
+                </div>
+                <div class="operation-actions" style="${style_animation_alarm}">
+                    <button class="btn-mark-done" onclick="openMarkDoneModal('45012', 'Farrowing Prep')">
+                        <i class="fas fa-check"></i>
+                        Mark Done
+                    </button>
+                </div>
+            </div>
+            <div class="operation-description" style="${style_operation_desc}">
+                ${operation_desc}
+            </div>
+        </div>
+        `;
+            
+        return html;
+    } 
     
     
     this.setUserLanguage = function(language_key){

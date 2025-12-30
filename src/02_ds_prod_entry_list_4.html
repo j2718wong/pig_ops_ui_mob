@@ -456,6 +456,31 @@
             font-weight: 600;
             font-size: 14px;
             flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Inline bell icon for due operations */
+        .inline-bell {
+            color: var(--warning-orange);
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            animation: ringInlineBell 1s ease-in-out infinite;
+        }
+
+        @keyframes ringInlineBell {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: rotate(-10deg);
+            }
+            20%, 40%, 60%, 80% {
+                transform: rotate(10deg);
+            }
         }
 
         /* Operation description */
@@ -626,6 +651,56 @@
             border: 1px solid #d1d5db;
             border-radius: 6px;
             font-size: 14px;
+        }
+
+        /* Checkbox styling */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #f8fafc;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .checkbox-group:hover {
+            background-color: #eff6ff;
+            border-color: var(--corporate-blue-light);
+        }
+
+        .checkbox-group.checked {
+            background-color: #dcfce7;
+            border-color: var(--success-green);
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--success-green);
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .checkbox-group .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .checkbox-icon {
+            color: var(--success-green);
+            font-size: 16px;
         }
 
         textarea.form-control {
@@ -815,6 +890,9 @@
 
                 <!-- Operations List -->
                 <div class="operations-container">
+                    <div class="operations-title">
+                        <span>Operations</span>
+                    </div>
                     
                     <!-- Control for future operations (if exists) -->
                     <div class="future-operations-control" style="display: none;">
@@ -826,12 +904,15 @@
                     
                     <!-- Operations List (limited to 2) -->
                     <div class="operations-list limited-view">
-                        <!-- Operation 1 - Pending -->
+                        <!-- Operation 1 - Pending (not due yet, no bell) -->
                         <div class="operation-item operation-pending">
                             <div class="operation-header">
                                 <div class="operation-left">
                                     <div class="operation-date">May 20, 2023</div>
-                                    <div class="operation-name">Farrowing Prep</div>
+                                    <div class="operation-name">
+                                        Farrowing Prep
+                                        <!-- No bell for pending operations that aren't due -->
+                                    </div>
                                 </div>
                                 <div class="operation-actions">
                                     <button class="btn-mark-done" onclick="openMarkDoneModal('45012', 'Farrowing Prep')">
@@ -845,12 +926,17 @@
                             </div>
                         </div>
                         
-                        <!-- Operation 2 - Due -->
+                        <!-- Operation 2 - Due (with inline bell) -->
                         <div class="operation-item operation-due">
                             <div class="operation-header">
                                 <div class="operation-left">
                                     <div class="operation-date">Apr 20, 2023</div>
-                                    <div class="operation-name">Pregnancy Check</div>
+                                    <div class="operation-name">
+                                        Pregnancy Check
+                                        <span class="inline-bell" title="Operation is due!">
+                                            <i class="fas fa-bell"></i>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="operation-actions">
                                     <button class="btn-mark-done" onclick="openMarkDoneModal('45012', 'Pregnancy Check')">
@@ -860,7 +946,7 @@
                                 </div>
                             </div>
                             <div class="operation-description">
-                                Ultrasound pregnancy confirmation
+                                Ultrasound pregnancy confirmation - Due 3 days ago!
                             </div>
                         </div>
                         
@@ -999,12 +1085,17 @@
                     
                     <!-- Operations List (limited to 2) -->
                     <div class="operations-list limited-view">
-                        <!-- Operation 1 - Pending -->
-                        <div class="operation-item operation-pending">
+                        <!-- Operation 1 - Due Tomorrow (with inline bell) -->
+                        <div class="operation-item operation-due">
                             <div class="operation-header">
                                 <div class="operation-left">
-                                    <div class="operation-date">May 25, 2023</div>
-                                    <div class="operation-name">Castration</div>
+                                    <div class="operation-date">Tomorrow</div>
+                                    <div class="operation-name">
+                                        Castration
+                                        <span class="inline-bell" title="Operation due tomorrow!">
+                                            <i class="fas fa-bell"></i>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="operation-actions">
                                     <button class="btn-mark-done" onclick="openMarkDoneModal('78123', 'Castration')">
@@ -1014,16 +1105,21 @@
                                 </div>
                             </div>
                             <div class="operation-description">
-                                Castration of male piglets with local anesthesia
+                                Castration of male piglets with local anesthesia - Due tomorrow!
                             </div>
                         </div>
                         
-                        <!-- Operation 2 - Due -->
+                        <!-- Operation 2 - Overdue (with inline bell) -->
                         <div class="operation-item operation-due">
                             <div class="operation-header">
                                 <div class="operation-left">
                                     <div class="operation-date">May 10, 2023</div>
-                                    <div class="operation-name">Farrowing Report</div>
+                                    <div class="operation-name">
+                                        Farrowing Report
+                                        <span class="inline-bell" title="Operation overdue!">
+                                            <i class="fas fa-bell"></i>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="operation-actions">
                                     <button class="btn-mark-done" onclick="openMarkDoneModal('78123', 'Farrowing Report')">
@@ -1033,7 +1129,7 @@
                                 </div>
                             </div>
                             <div class="operation-description">
-                                Complete farrowing report with piglet details
+                                Complete farrowing report with piglet details - Overdue!
                             </div>
                         </div>
                         
@@ -1098,6 +1194,15 @@
                         <option value="farm_manager">Farm Manager Brown</option>
                         <option value="assistant">Assistant Garcia</option>
                     </select>
+                    
+                    <!-- Done by Me Checkbox -->
+                    <div id="doneByMeContainer" class="checkbox-group">
+                        <input type="checkbox" id="doneByMeCheckbox">
+                        <label for="doneByMeCheckbox" class="checkbox-label">
+                            <i class="fas fa-user-check checkbox-icon"></i>
+                            Done by Me
+                        </label>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -1170,20 +1275,6 @@
         // Initialize operations sorting
         sortOperations();
         
-        // Function to restart bell animations periodically
-        function restartBellAnimations() {
-            const bells = document.querySelectorAll('.bell-animated');
-            bells.forEach(bell => {
-                // Force reflow to restart animation
-                bell.style.animation = 'none';
-                void bell.offsetWidth; // Trigger reflow
-                bell.style.animation = 'ringBell 1s ease-in-out 2, blinkBell 1.5s ease-in-out infinite, pulseBell 2s infinite';
-            });
-        }
-        
-        // Restart bell animations every 8 seconds to keep them noticeable
-        setInterval(restartBellAnimations, 8000);
-        
         // Preparation checklist icon click handler
         document.querySelectorAll('.prep-checklist').forEach(icon => {
             icon.addEventListener('click', function() {
@@ -1219,10 +1310,19 @@
         const modalSubtitle = document.getElementById('modalSubtitle');
         const completionDate = document.getElementById('completionDate');
         const staffSelect = document.getElementById('staffSelect');
+        const doneByMeCheckbox = document.getElementById('doneByMeCheckbox');
+        const doneByMeContainer = document.getElementById('doneByMeContainer');
         const operationNotes = document.getElementById('operationNotes');
         const charCounter = document.getElementById('charCounter');
         const btnCancel = document.getElementById('btnCancel');
         const btnSubmit = document.getElementById('btnSubmit');
+        
+        // Current user (simulated - in a real app this would come from authentication)
+        const currentUser = {
+            id: 'current_user',
+            name: 'You (Current User)',
+            role: 'Farm Technician'
+        };
         
         // Set today's date as default
         const today = new Date().toISOString().split('T')[0];
@@ -1244,6 +1344,30 @@
             }
         });
         
+        // Done by Me checkbox functionality
+        doneByMeCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                // Disable staff select and set to current user
+                staffSelect.disabled = true;
+                staffSelect.value = 'current_user';
+                doneByMeContainer.classList.add('checked');
+            } else {
+                // Enable staff select and clear value
+                staffSelect.disabled = false;
+                staffSelect.value = '';
+                doneByMeContainer.classList.remove('checked');
+            }
+        });
+        
+        // Staff select change handler
+        staffSelect.addEventListener('change', function() {
+            if (this.value && this.value !== 'current_user') {
+                // If a staff is selected, uncheck "Done by Me"
+                doneByMeCheckbox.checked = false;
+                doneByMeContainer.classList.remove('checked');
+            }
+        });
+        
         // Open modal function
         let currentOperation = null;
         
@@ -1256,6 +1380,9 @@
             // Reset form
             completionDate.value = today;
             staffSelect.value = '';
+            staffSelect.disabled = false;
+            doneByMeCheckbox.checked = false;
+            doneByMeContainer.classList.remove('checked');
             operationNotes.value = '';
             charCounter.textContent = '0/500 characters';
             charCounter.classList.remove('warning', 'error');
@@ -1272,26 +1399,36 @@
         
         btnSubmit.addEventListener('click', function() {
             if (!staffSelect.value) {
-                alert('Please select a staff member');
+                alert('Please select a staff member or check "Done by Me"');
                 return;
             }
             
-            // Get staff name from selected value
-            const staffOptions = {
-                'dr_smith': 'Dr. Smith',
-                'tech_jones': 'Technician Jones',
-                'nurse_williams': 'Nurse Williams',
-                'farm_manager': 'Farm Manager Brown',
-                'assistant': 'Assistant Garcia'
-            };
+            // Get staff name
+            let staffName = '';
+            let isDoneByCurrentUser = false;
             
-            const staffName = staffOptions[staffSelect.value];
+            if (doneByMeCheckbox.checked) {
+                staffName = currentUser.name;
+                isDoneByCurrentUser = true;
+            } else {
+                // Get staff name from selected value
+                const staffOptions = {
+                    'dr_smith': 'Dr. Smith',
+                    'tech_jones': 'Technician Jones',
+                    'nurse_williams': 'Nurse Williams',
+                    'farm_manager': 'Farm Manager Brown',
+                    'assistant': 'Assistant Garcia',
+                    'current_user': currentUser.name
+                };
+                staffName = staffOptions[staffSelect.value];
+            }
+            
             const date = completionDate.value;
             const notes = operationNotes.value;
             
             // In a real app, this would save to a database
             // For this demo, we'll just show a confirmation
-            alert(`Operation marked as done:\n\nPID: ${currentOperation.pid}\nOperation: ${currentOperation.operationName}\nDate: ${date}\nStaff: ${staffName}\nNotes: ${notes || 'No notes added'}`);
+            alert(`Operation marked as done:\n\nPID: ${currentOperation.pid}\nOperation: ${currentOperation.operationName}\nDate: ${date}\nStaff: ${staffName}${isDoneByCurrentUser ? ' (Done by you)' : ''}\nNotes: ${notes || 'No notes added'}`);
             
             closeModal();
         });
@@ -1337,6 +1474,23 @@
         
         // Initialize controls
         updateOperationsControls();
+        
+        // Add inline bell to due operations automatically
+        function addInlineBells() {
+            document.querySelectorAll('.operation-due').forEach(operation => {
+                const operationNameEl = operation.querySelector('.operation-name');
+                if (operationNameEl && !operationNameEl.querySelector('.inline-bell')) {
+                    const bellSpan = document.createElement('span');
+                    bellSpan.className = 'inline-bell';
+                    bellSpan.title = 'Operation is due!';
+                    bellSpan.innerHTML = '<i class="fas fa-bell"></i>';
+                    operationNameEl.appendChild(bellSpan);
+                }
+            });
+        }
+        
+        // Initialize inline bells
+        addInlineBells();
     </script>
 </body>
 </html>
