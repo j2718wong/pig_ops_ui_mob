@@ -169,7 +169,8 @@ export function PageMobGestaLacta(input_settings){
     
     
     this._bindEventListeners = function(){
-     
+		
+		
     
     }
     
@@ -194,12 +195,8 @@ export function PageMobGestaLacta(input_settings){
                 
                 
                 
-                
                 cur_entry.gestating_ops = gestating_ops;
                 cur_entry.lactating_piglets_ops = lactating_piglets_ops;
-                
-                console.log('cur_entry.gestating_ops');
-                console.log(cur_entry.gestating_ops);
                 
                 
                 let lactating_sow_ops = [];
@@ -265,6 +262,26 @@ export function PageMobGestaLacta(input_settings){
            
             elemListContainer.innerHTML = html;
         }
+		
+		
+		// Search functionality
+        const cards = elemListContainer.querySelectorAll('.card-pig-prod');
+        
+        elemMobSearchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            cards.forEach(card => {
+                const pid = card.querySelector('.pid').textContent.toLowerCase();
+                const sowName = card.querySelector('.sow-name').textContent.toLowerCase();
+                
+                if (pid.includes(searchTerm) || sowName.includes(searchTerm) || searchTerm === '') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+		
     }
     
     
@@ -535,9 +552,9 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    
-    
     this._getHtmlOperations = function(data_prod){
+        const pid = data_prod.pig_production.farm_prod_id;
+        
         var operations = null;
         
         if (data_prod.pig_production.prod_status_id == PROD_STATUS.GESTATING){
@@ -583,7 +600,6 @@ export function PageMobGestaLacta(input_settings){
         var operations_cur_view = []; // can only view 2 operation items on default
         var operations_below    = [];
         
-        console.log(operations);
         
         if (operations.length <= 2){
             operations_cur_view = operations;
@@ -638,10 +654,6 @@ export function PageMobGestaLacta(input_settings){
         
         
         
-            
-        
-        
-        
         if (operations_below.length == 0){
             style_operations_control = 'display:none;';
         }
@@ -652,21 +664,45 @@ export function PageMobGestaLacta(input_settings){
         
         
         var html_operations_above = '';
-        operations_above.forEach(operation => {
+        operations_above.forEach((operation, index) => {
+            
+            const options = {
+                placement_class:    'operation-above',
+                is_hidden:          true,
+                pid:                pid,
+                data_data_index:    index
+            };
+            
             html_operations_above += thisObj._getHtmlOperation(
-                operation, 'operation-above', true);
+                operation, options);
         });
         
         var html_operations_cur_view = '';
-        operations_cur_view.forEach(operation => {
+        operations_cur_view.forEach((operation, index) => {
+            
+            const options = {
+                placement_class:    '',
+                is_hidden:          false,
+                pid:                pid,
+                data_data_index:    index
+            };
+            
             html_operations_cur_view += thisObj._getHtmlOperation(
-                operation, '', false);
+                operation, options);
         });
         
         var html_operations_below = '';
         operations_below.forEach(operation => {
+            
+            const options = {
+                placement_class:    'operation-below',
+                is_hidden:          true,
+                pid:                pid,
+                data_data_index:    index
+            };
+            
             html_operations_below += thisObj._getHtmlOperation(
-                operation, 'operation-below', true);
+                operation, options);
         });
         
         
@@ -691,10 +727,24 @@ export function PageMobGestaLacta(input_settings){
                 s += cur_entry.account_pig_ops.name +'\n';
             }
             
-            console.log(s);
         }
         
-        debugOperations();
+        //debugOperations();
+        
+        var show_upcoming_operation = `Show ${operations_above.length} Upcoming Operation`;
+        if (operations_above.length > 1){show_upcoming_operation += 's';}
+        
+        
+        var s_click_more;
+        var s_click_comp;
+        if (settings.isGesta){
+            s_click_more = `gNavigation.pageMobGestatingList.onClickShowMore(this);`;
+            s_click_comp = `gNavigation.pageMobGestatingList.onClickShowCompleted(this);`;
+        }
+        else{
+            s_click_more = `gNavigation.pageMobLactatingList.onClickShowMore(this);`;
+            s_click_comp = `gNavigation.pageMobLactatingList.onClickShowCompleted(this);`;
+        }
         
         var html = `
         <!-- Operations List -->
@@ -707,10 +757,10 @@ export function PageMobGestaLacta(input_settings){
             
             <!-- Control for future operations (if exists) -->
             <div class="future-operations-control" style="${style_future_ops_control}">
-                <button class="btn-show-more">
+                <span class="btn-show-more" onclick="${s_click_more}">
                     <i class="fas fa-calendar-alt"></i>
-                    Show ${operations_above.length} Upcoming Operations
-                </button>
+                    <span class="span-show-more" >${show_upcoming_operation}</span>
+                </span>
             </div>
             
             
@@ -725,10 +775,10 @@ export function PageMobGestaLacta(input_settings){
             
             <!-- Control for showing completed operations -->
             <div class="operations-controls" style="${style_operations_control}">
-                <button class="btn-show-more" onclick="toggleCompletedOperations(this)">
+                <span class="btn-show-completed" onclick="${s_click_comp}">
                     <i class="fas fa-history"></i>
-                    Show Completed Operations (${operations_below.length})
-                </button>
+                    <span class="span-show-completed">Show Completed Operations (${operations_below.length})</span>
+                </span>
             </div>
             
         </div>
@@ -738,7 +788,12 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    this._getHtmlOperation = function(data_operation, placement_class, is_hidden){
+    this._getHtmlOperation = function(data_operation, options){
+        const placement_class   = options.placement_class;
+        const is_hidden         = options.is_hidden;
+        const pid               = options.pid;
+        const data_index        = options.data_data_index;
+        
         var diff_msecs;
         var diff_days;
         
@@ -777,7 +832,7 @@ export function PageMobGestaLacta(input_settings){
             const staff_name    = data_operation.staff.name;
             
             html = `
-                <div class="operation-item operation-done ${placement_class}" style="${style_hidden}">
+                <div class="operation-item operation-done ${placement_class}" data-pid="${pid}" data-index="${data_index}"  style="${style_hidden}">
                     <div class="operation-header">
                         <div class="operation-left">
                             <div class="operation-date">${date_target_s}</div>
@@ -819,7 +874,7 @@ export function PageMobGestaLacta(input_settings){
         
         
         html = `
-        <div class="operation-item ${operation_class} ${placement_class}" style="${style_hidden}">
+        <div class="operation-item ${operation_class} ${placement_class}" data-pid="${pid}" data-index="${data_index}" style="${style_hidden}">
             <div class="operation-header">
                 <div class="operation-left">
                     <div class="operation-date">${date_target_s}</div>
@@ -866,6 +921,78 @@ export function PageMobGestaLacta(input_settings){
             if(cur_entry.acc_pig_ops.hid == entry_hid){return cur_entry;}
         }
         return null;
+    }
+    
+    
+    this.onClickShowMore = function(clicked_elem){
+        const operations_list   = clicked_elem.closest('.operations-list');
+        const operations_above  = operations_list.querySelectorAll('.operation-above');
+        const span_show_more    = operations_list.querySelector('.span-show-more');
+        
+
+        
+        var isDisplayed = 0;
+        
+        operations_above.forEach(operation => {
+            const computedStyle = window.getComputedStyle(operation);
+            const displayValue = computedStyle.getPropertyValue('display');
+            
+            if (displayValue == 'none'){
+                isDisplayed = 1;
+                operation.style.display = 'block';
+            }
+            else{
+                isDisplayed = 0;
+                operation.style.display = 'none';
+            }
+        });
+        
+        var s_text;
+        if (isDisplayed == 0){
+            s_text = `Show ${operations_above.length} Upcoming Operation`;
+            if (operations_above.length > 1){show_upcoming_operation += 's';}
+        }
+        else{
+            s_text = `Hide ${operations_above.length} Upcoming Operation`;
+            if (operations_above.length > 1){show_upcoming_operation += 's';}
+        }
+        
+        span_show_more.innerHTML = s_text;
+        
+    }
+    
+    
+    this.onClickShowCompleted = function(clicked_elem){
+        const operations_list   = clicked_elem.closest('.operations-list');
+        const operations_below  = operations_list.querySelectorAll('.operation-below');
+        const span_show_comp    = operations_list.querySelector('.span-show-completed');
+        
+
+        
+        var isDisplayed = 0;
+        
+        operations_below.forEach(operation => {
+            const computedStyle = window.getComputedStyle(operation);
+            const displayValue = computedStyle.getPropertyValue('display');
+            
+            if (displayValue == 'none'){
+                isDisplayed = 1;
+                operation.style.display = 'block';
+            }
+            else{
+                isDisplayed = 0;
+                operation.style.display = 'none';
+            }
+        });
+        
+        var s_text;
+        if (isDisplayed == 0){
+            s_text = `Show Completed Operations (${operations_below.length})`;
+        }
+        else{
+            s_text = `Hide Completed Operations (${operations_below.length}`;
+        }
+        
     }
     
     

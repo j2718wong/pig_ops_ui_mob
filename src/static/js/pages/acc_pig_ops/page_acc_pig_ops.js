@@ -244,20 +244,25 @@ export function PageAccPigOps(){
     this.show = function(pig_ops_type){
         curAccPigOpsType = pig_ops_type;
         
+		var card_class = '';
+		
         switch(pig_ops_type){
             case PIG_OPERATION_TYPE.GESTATING:{
                 curAccPigOpsData = dataAccGestatingOps;
+				card_class		= 'gestating';
                 break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
                 curAccPigOpsData = dataAccLactatingPigletOps;
-                break;
+                card_class		= 'lactating-piglets';
+				break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
                 curAccPigOpsData = dataAccLactatingSowOps;
-                break;
+                card_class		= 'lactating-sow';
+				break;
             }
             
             case PIG_OPERATION_TYPE.GILT:{
@@ -304,7 +309,7 @@ export function PageAccPigOps(){
                 </button>
                 
                 <div class="card-content">
-                    <div class="days-badge">Day ${operation.acc_pig_ops.num_days_since}</div>
+                    <div class="days-badge ${card_class}">Day ${operation.acc_pig_ops.num_days_since}</div>
                     
                     <div class="card-header">
                         <div class="name-section">
