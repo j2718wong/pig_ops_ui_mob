@@ -11,6 +11,7 @@ import {TextTranslation}        from '../common/translation.js';
 
 import {TRANSLATION_PAGE_ACC_PIG_OPS}   from '../../translations/page_acc_pig_ops_i8n.js'
 
+import {textSubstituteToControl}        from '../navigation/text_substitute_control.js';
 
 import {AddModalAccPigOps}      from './add_modal_acc_pig_ops.js'
 import {EditModalAccPigOps}     from './edit_modal_acc_pig_ops.js'
@@ -23,14 +24,14 @@ export function PageAccPigOps(){
     var elemDivContainer        = document.getElementById('container-acc-pig-ops');
 
     var elemIdPageTitle         = null;
-    var elemIdPageInfo        	= null;
+    var elemIdPageInfo          = null;
 
     var elemIdBtnAddEntryShow   = null;
     var elemIdMobileContainer   = null;
     var elemIdTableContainer    = null;
 
     var elemPageTitle           = null;
-    var elemPageInfo          	= null;
+    var elemPageInfo            = null;
 
     var elemBtnAddEntryShow     = null;
     var elemMobileContainer     = null;
@@ -86,7 +87,7 @@ export function PageAccPigOps(){
     this.render = function(){
         
         elemIdPageTitle         = 'page-title-acc-pig-ops';
-        elemIdPageInfo        	= 'page-info-acc-pig-ops';
+        elemIdPageInfo          = 'page-info-acc-pig-ops';
         
         elemIdBtnAddEntryShow   = 'add-entry-acc-pig-ops-show';
         elemIdMobileContainer   = 'mobile-container-acc-pig-ops';
@@ -165,7 +166,7 @@ export function PageAccPigOps(){
     
     this._findElements = function(){
         elemPageTitle           = document.getElementById(elemIdPageTitle);
-        elemPageInfo          	= document.getElementById(elemIdPageInfo);
+        elemPageInfo            = document.getElementById(elemIdPageInfo);
 
         elemBtnAddEntryShow     = document.getElementById(elemIdBtnAddEntryShow);
         elemMobileContainer     = document.getElementById(elemIdMobileContainer);
@@ -244,25 +245,25 @@ export function PageAccPigOps(){
     this.show = function(pig_ops_type){
         curAccPigOpsType = pig_ops_type;
         
-		var card_class = '';
-		
+        var card_class = '';
+        
         switch(pig_ops_type){
             case PIG_OPERATION_TYPE.GESTATING:{
                 curAccPigOpsData = dataAccGestatingOps;
-				card_class		= 'gestating';
+                card_class      = 'gestating';
                 break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
                 curAccPigOpsData = dataAccLactatingPigletOps;
-                card_class		= 'lactating-piglets';
-				break;
+                card_class      = 'lactating-piglets';
+                break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
                 curAccPigOpsData = dataAccLactatingSowOps;
-                card_class		= 'lactating-sow';
-				break;
+                card_class      = 'lactating-sow';
+                break;
             }
             
             case PIG_OPERATION_TYPE.GILT:{
@@ -364,7 +365,14 @@ export function PageAccPigOps(){
                 
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'gestating_ops.info_text');
+                    
                 if (cur_text != null){
+                    const substitute_list = textSubstituteToControl(cur_text);
+                    
+                    for (const cur_entry of substitute_list){
+                        cur_text = cur_text.replaceAll(cur_entry.key, cur_entry.substitute);
+                    }
+                    
                     elemPageInfo.innerHTML = cur_text;
                 }
                 
@@ -382,6 +390,12 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'lactating_piglets_ops.info_text');
                 if (cur_text != null){
+                    const substitute_list = textSubstituteToControl(cur_text);
+                    
+                    for (const cur_entry of substitute_list){
+                        cur_text = cur_text.replaceAll(cur_entry.key, cur_entry.substitute);
+                    }
+                    
                     elemPageInfo.innerHTML = cur_text;
                 }
                 
@@ -399,6 +413,12 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'lactating_sow_ops.info_text');
                 if (cur_text != null){
+                    const substitute_list = textSubstituteToControl(cur_text);
+                    
+                    for (const cur_entry of substitute_list){
+                        cur_text = cur_text.replaceAll(cur_entry.key, cur_entry.substitute);
+                    }
+                    
                     elemPageInfo.innerHTML = cur_text;
                 }
                 
@@ -416,6 +436,13 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'gilt_ops.info_text');
                 if (cur_text != null){
+                    
+                    const substitute_list = textSubstituteToControl(cur_text);
+                    
+                    for (const cur_entry of substitute_list){
+                        cur_text = cur_text.replaceAll(cur_entry.key, cur_entry.substitute);
+                    }
+                    
                     elemPageInfo.innerHTML = cur_text;
                 }
                 

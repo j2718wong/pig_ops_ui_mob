@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="static/css/main.css">
     
     
+	<script type="text/javascript" src="static/js/jquery/jquery.min-3.7.1.js"></script>
     <script type="text/javascript" src="static/js/library/bootstrap.bundle.min.js"></script>
     
     
@@ -30,6 +31,7 @@
 	<script type="module" src="static/js/models/model_basic.js"></script>
 	<script type="module" src="static/js/models/model_acc_pig_ops.js"></script>
 	
+	<script type="module" src="static/js/pages/navigation/text_substitute_control.js"></script>
 	
 	<script type="module" src="static/js/pages/acc_pig_ops/add_modal_acc_pig_ops.js"></script>
 	<script type="module" src="static/js/pages/acc_pig_ops/edit_modal_acc_pig_ops.js"></script>
@@ -671,7 +673,7 @@
             
             gNavigation.pageAccPigOps.setDataAccPigOps(G_SAMPLE_JSON_ACC_PIG_OPS);
             
-			gNavigation.setDataPigProd(G_SAMPLE_JSON_PIG_PRODUCTION);
+			gNavigation.setDataPigProdList(G_SAMPLE_JSON_PIG_PRODUCTION);
 
 			
 			console.log('success set data');

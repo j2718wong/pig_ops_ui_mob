@@ -1,4 +1,4 @@
-// December 28, 2025
+// December 31, 2025
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -11,7 +11,7 @@ import {ModelAccountPigOps}     from '../../models/model_acc_pig_ops.js'
 import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
 
 
-export function EditModalAccPigOps(input_settings){
+export function EditModalMarkDonePigOps(input_settings){
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
     

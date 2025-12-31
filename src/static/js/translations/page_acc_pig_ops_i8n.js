@@ -10,7 +10,7 @@ const TRANSLATION_PAGE_ACC_PIG_OPS = {
 			'title': 'Gestating Operations',
 			
 			'info_text':`This list defines the standard care activities for a 
-gestating sow in each production cycle. When a <b>Prod Gestating</b> entry
+gestating sow in each production cycle. When a {PAGE_PROD_GESTATING} entry
 is created, these tasks are automatically scheduled. Reminders are sent 
 when each task's due date, calculated from the start of gestation, is reached.`
 			
@@ -20,8 +20,8 @@ when each task's due date, calculated from the start of gestation, is reached.`
 			'title': 'Lactating Piglets Operations',
 			
 			'info_text':`This list defines the standard care activities for a 
-lactating piglets in each production cycle. When a <b>Prod Gestating</b> entry is updated  
-to <b>Prod Lactating</b> entry, these tasks are automatically scheduled. Reminders are sent 
+lactating piglets in each production cycle. When a {PAGE_PROD_GESTATING} entry is updated  
+to {PAGE_PROD_LACTATING} entry, these tasks are automatically scheduled. Reminders are sent 
 when each task's due date, calculated from the start of piglets Date of Birth, is reached.`
 			
 		},
@@ -30,8 +30,8 @@ when each task's due date, calculated from the start of piglets Date of Birth, i
 			'title': 'Lactating Sow Operations',
 			
 			'info_text':`This list defines the standard care activities for a 
-lactating sows in each production cycle. When a <b>Prod Gestating</b> entry is updated  
-to <b>Prod Lactating</b> entry, these tasks are automatically scheduled. Reminders are sent 
+lactating sows in each production cycle. When a {PAGE_PROD_GESTATING} entry is updated  
+to {PAGE_PROD_LACTATING} entry, these tasks are automatically scheduled. Reminders are sent 
 when each task's due date, calculated from the start of piglets Date of Birth, is reached.`
 			
 		},

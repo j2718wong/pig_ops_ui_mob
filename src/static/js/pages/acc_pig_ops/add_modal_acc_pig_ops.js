@@ -98,7 +98,7 @@ export function AddModalAccPigOps(input_settings){
                             Operation Information
                         </div>
                         
-                        <div class="form-group-primary">
+                        <div class="form-group-text">
                             <label for="${elemIdName}" class="form-label">
                                 Operation Name
                                 <span id="${elemIdNameCounter}" class="char-counter">0/${max_len_name}</span>
@@ -111,7 +111,7 @@ export function AddModalAccPigOps(input_settings){
                             <div class="form-text">Enter a descriptive name for the operation</div>
                         </div>
                         
-                        <div class="form-group-primary">
+                        <div class="form-group-text">
                             <label for="${elemIdShortName}" class="form-label">
                                 Short Name
                                 <span id="${elemIdShortNameCounter}" class="char-counter">0/${max_len_short_name}</span>
@@ -129,7 +129,7 @@ export function AddModalAccPigOps(input_settings){
                             Description
                         </div>
                         
-                        <div class="form-group-success">
+                        <div class="form-group-text-area">
                             <label for="${elemIdDescription}" class="form-label">
                                 Description
                                 <span id="${elemIdDescriptionCounter}" class="char-counter">0/${max_len_description}</span>
@@ -149,7 +149,7 @@ export function AddModalAccPigOps(input_settings){
                         
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group-warning">
+                                <div class="form-group-number">
                                     <label for="${elemIdDayNumber}" class="form-label">Day Number</label>
                                     <input  type="number" 
                                             class="form-control" 

@@ -69,7 +69,7 @@ export function PageMobGestaLacta(input_settings){
     
     
     
-    var dataPigProd             = null;
+    var dataPigProdList        	= null;
 
 
     //var textTranslation         = new TextTranslation();
@@ -169,14 +169,18 @@ export function PageMobGestaLacta(input_settings){
     
     
     this._bindEventListeners = function(){
-		
-		
+        
+        
     
     }
     
     
+    this.setDataStaffList = function(data){
+        
+    }
+    
 
-    this.setDataPigProd = function(data){
+    this.setDataPigProdList = function(data){
         var data_filtered = [];
         
         for(const cur_entry of data){
@@ -226,7 +230,7 @@ export function PageMobGestaLacta(input_settings){
         } 
         
         
-        dataPigProd = data_filtered;
+        dataPigProdList = data_filtered;
     }
     
     
@@ -246,7 +250,7 @@ export function PageMobGestaLacta(input_settings){
     
     
     this.show = function(){
-        if ((dataPigProd == null) || (dataPigProd.length == 0)){
+        if ((dataPigProdList == null) || (dataPigProdList.length == 0)){
             elemMobSearchInput.setAttribute("placeholder", "No entries found"); 
         }
         else{
@@ -255,16 +259,16 @@ export function PageMobGestaLacta(input_settings){
         
         var html = '';
         
-        if (dataPigProd != null){
-            for (const cur_entry of dataPigProd){
+        if (dataPigProdList != null){
+            for (const cur_entry of dataPigProdList){
                 html += thisObj._getHtml(cur_entry)
             }
            
             elemListContainer.innerHTML = html;
         }
-		
-		
-		// Search functionality
+        
+        
+        // Search functionality
         const cards = elemListContainer.querySelectorAll('.card-pig-prod');
         
         elemMobSearchInput.addEventListener('input', function() {
@@ -281,7 +285,7 @@ export function PageMobGestaLacta(input_settings){
                 }
             });
         });
-		
+        
     }
     
     
@@ -670,7 +674,8 @@ export function PageMobGestaLacta(input_settings){
                 placement_class:    'operation-above',
                 is_hidden:          true,
                 pid:                pid,
-                data_data_index:    index
+                data_index:         index,
+                operation_hid:      operation.pig_prod_pig_ops.hid
             };
             
             html_operations_above += thisObj._getHtmlOperation(
@@ -684,7 +689,8 @@ export function PageMobGestaLacta(input_settings){
                 placement_class:    '',
                 is_hidden:          false,
                 pid:                pid,
-                data_data_index:    index
+                data_index:         index,
+                operation_hid:      operation.pig_prod_pig_ops.hid
             };
             
             html_operations_cur_view += thisObj._getHtmlOperation(
@@ -692,13 +698,14 @@ export function PageMobGestaLacta(input_settings){
         });
         
         var html_operations_below = '';
-        operations_below.forEach(operation => {
+        operations_below.forEach((operation, index) => {
             
             const options = {
                 placement_class:    'operation-below',
                 is_hidden:          true,
                 pid:                pid,
-                data_data_index:    index
+                data_index:         index,
+                operation_hid:      operation.pig_prod_pig_ops.hid
             };
             
             html_operations_below += thisObj._getHtmlOperation(
@@ -792,7 +799,8 @@ export function PageMobGestaLacta(input_settings){
         const placement_class   = options.placement_class;
         const is_hidden         = options.is_hidden;
         const pid               = options.pid;
-        const data_index        = options.data_data_index;
+        const data_index        = options.data_index;
+        const operation_hid     = options.operation_hid;
         
         var diff_msecs;
         var diff_days;
@@ -861,17 +869,32 @@ export function PageMobGestaLacta(input_settings){
         diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
         
         var operation_class = '';
+        var has_action      = 0;
         
         if (diff_days > NUM_DAYS_BEFORE_OPERATION_DUE_SHOW_ALARM){
             style_animation_alarm = 'display:none;';
             operation_class = 'operation-pending';
         }
         else{
+            has_action      = 1;
             operation_class = 'operation-due';
         }
         
         
+        var s_click = '';
         
+        if (has_action > 0){
+            if (settings.isGesta){
+                s_click = `gNavigation.pageMobGestatingList.onClickMarkAsDone(${pid},'${operation_hid}');`;
+            }
+            else{
+                s_click = `gNavigation.pageMobLactatingList.onClickShowMore(${pid},'${operation_hid}');`;
+            }
+            
+            console.log('s_click');
+            console.log(s_click);
+            
+        }
         
         html = `
         <div class="operation-item ${operation_class} ${placement_class}" data-pid="${pid}" data-index="${data_index}" style="${style_hidden}">
@@ -888,7 +911,7 @@ export function PageMobGestaLacta(input_settings){
                     </div>
                 </div>
                 <div class="operation-actions" style="${style_animation_alarm}">
-                    <button class="btn-mark-done" onclick="openMarkDoneModal('45012', 'Farrowing Prep')">
+                    <button class="btn-mark-done" onclick="${s_click}">
                         <i class="fas fa-check"></i>
                         Mark Done
                     </button>
@@ -993,6 +1016,12 @@ export function PageMobGestaLacta(input_settings){
             s_text = `Hide Completed Operations (${operations_below.length}`;
         }
         
+        span_show_comp.innerHTML = s_text;
+    }
+    
+    
+    this.onClickMarkAsDone = function(pid, operation_hid){
+        console.log(`onClickMarkAsDone pid =${pid}; operation_hid=${operation_hid}`);
     }
     
     

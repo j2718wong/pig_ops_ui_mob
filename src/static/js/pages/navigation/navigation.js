@@ -158,7 +158,11 @@ export function Navigation(){
     var elemHiddenContAccPigOps     = null;
     var elemHiddenContProdGestating = null;
     var elemHiddenContProdLactating = null;
+	
+	
+	var curScreenIsMobile			= null;
     
+	
     this.userControl                = new UserControl();
     
     this.pageAccPigOps              = new PageAccPigOps();
@@ -234,8 +238,8 @@ export function Navigation(){
     
     
     this._processAfterHtmlRender = function(){
-        
-    }
+     
+	}
     
     
     this._bindEventListeners = function(){
@@ -265,9 +269,15 @@ export function Navigation(){
     }
     
 	
-	this.setDataPigProd = function(data){
-		this.pageMobGestatingList.setDataPigProd(data);
-        this.pageMobLactatingList.setDataPigProd(data);
+	this.setDataStaffList = function(data){
+		this.pageMobGestatingList.setDataStaffList(data);
+		this.pageMobLactatingList.setDataStaffList(data);
+	}
+	
+	
+	this.setDataPigProdList = function(data){
+		this.pageMobGestatingList.setDataPigProdList(data);
+        this.pageMobLactatingList.setDataPigProdList(data);
 	}
 	
     
@@ -307,7 +317,10 @@ export function Navigation(){
     
     
     this.onClickNav = function(is_mobile, nav_name){
+	
+		curScreenIsMobile = is_mobile;
         
+		
         switch(nav_name){
             case 'op-settings':{
                 thisObj._onClickNavOpsSettings(is_mobile);
@@ -472,8 +485,13 @@ export function Navigation(){
     
     
     this._onClickNavProdGestaLacta = function(is_mobile, operation_type){
-        console.log(`_onClickNavProdGestaLacta; is_mobile=${is_mobile}; operation_type = ${operation_type}`);
-    
+        
+		if (is_mobile == null){ 
+			// If not specified use the last known screen state.
+			is_mobile = curScreenIsMobile;
+		}
+		
+		
         if (is_mobile){
             if (operation_type == PIG_OPERATION_TYPE.GESTATING){
                 thisObj.hideHiddenContainers(elemHiddenContProdGestating);
