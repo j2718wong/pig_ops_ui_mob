@@ -18,7 +18,7 @@
     <script type="text/javascript" src="static/js/library/bootstrap.bundle.min.js"></script>
     
     
-    
+    <script type="text/javascript" src="static/js/sample_data/sample_data_staff.js"></script>
     <script type="text/javascript" src="static/js/sample_data/sample_data_account.js"></script>
     <script type="text/javascript" src="static/js/sample_data/sample_data_acc_pig_ops.js"></script>
     <script type="text/javascript" src="static/js/sample_data/sample_data_production.js"></script>
@@ -31,13 +31,14 @@
 	<script type="module" src="static/js/models/model_basic.js"></script>
 	<script type="module" src="static/js/models/model_acc_pig_ops.js"></script>
 	
+	<script type="module" src="static/js/pages/common/page_view_basic.js"></script>
 	<script type="module" src="static/js/pages/navigation/text_substitute_control.js"></script>
 	
 	<script type="module" src="static/js/pages/acc_pig_ops/add_modal_acc_pig_ops.js"></script>
 	<script type="module" src="static/js/pages/acc_pig_ops/edit_modal_acc_pig_ops.js"></script>
     <script type="module" src="static/js/pages/acc_pig_ops/page_acc_pig_ops.js"></script>
     
-	
+	<script type="module" src="static/js/pages/production/gesta_lacta/edit_modal_prod_pig_ops.js"></script>
 	<script type="module" src="static/js/pages/production/gesta_lacta/page_mob_gesta_lacta.js"></script>
 	
 	
@@ -389,34 +390,8 @@
             <span>Generate Summary PDF</span>
         </button>
         
+		
         <!-- Mobile Menu Sections -->
-        <div class="mobile-menu-section" id="mobile-nav-settings">
-            <div class="mobile-menu-title">
-                <i class="fas fa-cogs" style="color: var(--icon-blue);"></i>
-                <span>Settings</span>
-            </div>
-            <div class="mobile-submenu">
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'op-settings');">       <i class="fas fa-sliders-h" style="color: var(--icon-purple);"></i>Ops Settings</div>
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'gesta-sow-ops');">     <i class="fas fa-syringe" style="color: var(--gestating-color);"></i>Gestating Ops</div>
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'lacta-piglets-ops');"> <i class="fas fa-syringe" style="color: var(--lactating-piglets-color);"></i>Lactating Piglets Ops</div>
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'lacta-sow-ops');">     <i class="fas fa-syringe" style="color: var(--lactating-sow-color);"></i>Lactating Sow Ops</div>
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'gilt-ops');">          <i class="fas fa-syringe" style="color: var(--gilt-color);"></i>Gilt Ops</div>
-            </div>
-        </div>
-        
-        
-        <div class="mobile-menu-section" id="mobile-nav-sow-boar-gilt">
-            <div class="mobile-menu-title">
-                <i class="fas fa-piggy-bank" style="color: var(--icon-orange);"></i>
-                <span>Sow Boar Gilt</span>
-            </div>
-            <div class="mobile-submenu">
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'sows');">              <i class="fas fa-venus" style="color: var(--icon-pink);"></i>Sows</div>
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'boars');">             <i class="fas fa-venus" style="color: var(--icon-pink);"></i>Gilts</div>
-                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'gilts');">             <i class="fas fa-mars" style="color: var(--icon-blue);"></i>Boars</div>
-            </div>
-        </div>
-        
         <div class="mobile-menu-section" id="mobile-nav-production">
             <div class="mobile-menu-title">
                 <i class="fas fa-chart-line" style="color: var(--icon-green);"></i>
@@ -428,6 +403,18 @@
                 <!--<div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-lacta-sows');">       <i class="fas fa-wine-bottle" style="color: var(--icon-teal);"></i>Prod Lactating Sows</div>-->
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-fattening');">        <i class="fas fa-piggy-bank" style="color: var(--icon-orange);"></i>Fattening</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-feeds');">            <i class="fas fa-weight" style="color: var(--icon-red);"></i>Feeds</div>
+            </div>
+        </div>
+        
+        <div class="mobile-menu-section" id="mobile-nav-sow-boar-gilt">
+            <div class="mobile-menu-title">
+                <i class="fas fa-piggy-bank" style="color: var(--icon-orange);"></i>
+                <span>Sow Boar Gilt</span>
+            </div>
+            <div class="mobile-submenu">
+                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'sows');">              <i class="fas fa-venus" style="color: var(--icon-pink);"></i>Sows</div>
+                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'boars');">             <i class="fas fa-venus" style="color: var(--icon-pink);"></i>Gilts</div>
+                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'gilts');">             <i class="fas fa-mars" style="color: var(--icon-blue);"></i>Boars</div>
             </div>
         </div>
         
@@ -461,7 +448,6 @@
             </div>
         </div>
         
-        
         <div class="mobile-menu-section">
             <div class="mobile-menu-title">
                 <i class="fas fa-address-book" style="color: var(--icon-purple);"></i>
@@ -473,6 +459,20 @@
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'feed-suppliers');">    <i class="fas fa-truck" style="color: var(--icon-orange);"></i>Feed Suppliers</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'semen-suppliers');">   <i class="fas fa-flask" style="color: var(--icon-indigo);"></i>Semen Suppliers</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'gilt-suppliers');">    <i class="fas fa-shipping-fast" style="color: var(--icon-red);"></i>Gilt Suppliers</div>
+            </div>
+        </div>
+        
+		<div class="mobile-menu-section" id="mobile-nav-settings">
+            <div class="mobile-menu-title">
+                <i class="fas fa-cogs" style="color: var(--icon-blue);"></i>
+                <span>Settings</span>
+            </div>
+            <div class="mobile-submenu">
+                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'op-settings');">       <i class="fas fa-sliders-h" style="color: var(--icon-purple);"></i>Ops Settings</div>
+                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'gesta-sow-ops');">     <i class="fas fa-syringe" style="color: var(--gestating-color);"></i>Gestating Ops</div>
+                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'lacta-piglets-ops');"> <i class="fas fa-syringe" style="color: var(--lactating-piglets-color);"></i>Lactating Piglets Ops</div>
+                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'lacta-sow-ops');">     <i class="fas fa-syringe" style="color: var(--lactating-sow-color);"></i>Lactating Sow Ops</div>
+                <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'gilt-ops');">          <i class="fas fa-syringe" style="color: var(--gilt-color);"></i>Gilt Ops</div>
             </div>
         </div>
         
@@ -602,7 +602,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    
+	
+		<div id="container-edit-modal-prod-pig-ops"></div>
+	</div>
     
     <!-- Footer -->
     <footer class="footer">
@@ -673,6 +676,7 @@
             
             gNavigation.pageAccPigOps.setDataAccPigOps(G_SAMPLE_JSON_ACC_PIG_OPS);
             
+			gNavigation.setDataStaffList(G_SAMPLE_JSON_STAFF);
 			gNavigation.setDataPigProdList(G_SAMPLE_JSON_PIG_PRODUCTION);
 
 			

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {SOW_STATUS}				from '../../../constants.js';
+import {SOW_STATUS}             from '../../../constants.js';
 
 import {AddModalSowBoar}        from './add_modal_sow.js';
 
@@ -45,7 +45,7 @@ export function AddEntryProdGestating(input_settings){
     var elemIdSelectSow         = null;
     var elemIdSowStatusShow     = null;
     var elemIdSowLastInsem      = null;
-	var elemIdSowLastPid  		= null;
+    var elemIdSowLastPid        = null;
     var elemIdInsemType         = null;
     var elemIdDateMating        = null;
     
@@ -74,8 +74,8 @@ export function AddEntryProdGestating(input_settings){
     
     var elemSelectSow           = null;
     var elemSowStatusShow       = null;
-    var elemSowLastInsem      	= null;
-	var elemSowLastPid  		= null;
+    var elemSowLastInsem        = null;
+    var elemSowLastPid          = null;
     var elemInsemType           = null;
     var elemDateMating          = null;
     
@@ -510,9 +510,9 @@ export function AddEntryProdGestating(input_settings){
         
         elemIdSelectSow         = `sel-add-entry-${settings.elemUniqueKey}-select-sow`;
         elemIdSowStatusShow     = `div-add-entry-${settings.elemUniqueKey}-sow-status-show`;
-        elemIdSowLastInsem     	= `span-add-entry-${settings.elemUniqueKey}-sow-last-insem`;
-		elemIdSowLastPid     	= `span-add-entry-${settings.elemUniqueKey}-sow-last-pid`;
-		elemIdInsemType         = `sel-add-entry-${settings.elemUniqueKey}-insem-type`;
+        elemIdSowLastInsem      = `span-add-entry-${settings.elemUniqueKey}-sow-last-insem`;
+        elemIdSowLastPid        = `span-add-entry-${settings.elemUniqueKey}-sow-last-pid`;
+        elemIdInsemType         = `sel-add-entry-${settings.elemUniqueKey}-insem-type`;
         elemIdDateMating        = `txt-add-entry-${settings.elemUniqueKey}-date-mating`;
         
         elemIdSelectBoarShow    = `div-add-entry-${settings.elemUniqueKey}-select-boar-show`;
@@ -538,12 +538,12 @@ export function AddEntryProdGestating(input_settings){
         elemIdBtnSave           = `div-add-entry-${settings.elemUniqueKey}-save`;
         
         
-        const html_css_inline   	= this._writeInlineStyle();
-        const html_add_modal_sow 	= addModalSow.getHtml();
-		const html_add_modal_boar 	= addModalBoar.getHtml();
-		
-		
-		
+        const html_css_inline       = this._writeInlineStyle();
+        const html_add_modal_sow    = addModalSow.getHtml();
+        const html_add_modal_boar   = addModalBoar.getHtml();
+        
+        
+        
         const html =`
 
 ${html_css_inline}
@@ -577,14 +577,14 @@ ${html_css_inline}
                 </div>
                 <div class="warning-details">
                     <span>
-						This sow was last bred on <span id="${elemIdSowLastInsem}">Jan 15, 2024</span>
-						with production <b>P_ID: <span id="${elemIdSowLastPid}">20</span></b>. 
-						If this new entry will be saved, the previous gestating production  
-						entry will be marked as <b>Not Pregnant</b> and will
-						be removed from the Gestating Production List.
-						
-						Please ensure this is an intentional breeding due to sow reheat.
-					</span>
+                        This sow was last bred on <span id="${elemIdSowLastInsem}">Jan 15, 2024</span>
+                        with production <b>P_ID: <span id="${elemIdSowLastPid}">20</span></b>. 
+                        If this new entry will be saved, the previous gestating production  
+                        entry will be marked as <b>Not Pregnant</b> and will
+                        be removed from the Gestating Production List.
+                        
+                        Please ensure this is an intentional breeding due to sow reheat.
+                    </span>
                 </div>
             </div>
         </div>
@@ -732,8 +732,8 @@ ${html_add_modal_boar}
         elemSelectSow           = document.getElementById(elemIdSelectSow);
         elemSowStatusShow       = document.getElementById(elemIdSowStatusShow);
         elemSowLastInsem        = document.getElementById(elemIdSowLastInsem);
-        elemSowLastPid  		= document.getElementById(elemIdSowLastPid);
-		elemInsemType           = document.getElementById(elemIdInsemType);
+        elemSowLastPid          = document.getElementById(elemIdSowLastPid);
+        elemInsemType           = document.getElementById(elemIdInsemType);
         elemDateMating          = document.getElementById(elemIdDateMating);
         
         elemSelectBoarShow      = document.getElementById(elemIdSelectBoarShow);
@@ -764,19 +764,19 @@ ${html_add_modal_boar}
         // Temporary Philippine Peso symbol for currency1
         elemSemenCostCurSymbol.innerHTML    = 'P';
         elemOtherCurSymbol.innerHTML        = 'P';
-		
-		addModalSow.afterHtmlRender();
-		addModalBoar.afterHtmlRender();
+        
+        addModalSow.afterHtmlRender();
+        addModalBoar.afterHtmlRender();
     }
     
     
     this._bindEventListeners = function(){
         
-		elemSelectSow.addEventListener('change', function(){
-			thisObj._onChangeSow();
-		});
-		
-		
+        elemSelectSow.addEventListener('change', function(){
+            thisObj._onChangeSow();
+        });
+        
+        
         elemInsemType.addEventListener('change', function() {
             const selected_value = elemInsemType.value;
             
@@ -841,33 +841,33 @@ ${html_add_modal_boar}
         }
         
         
-		select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:"Please Select"});
         
-		for (const cur_sow_boar of data){
+        for (const cur_sow_boar of data){
             var reference;
             
-			// This is because there is this data can come into
-			// minimum and not minimum info.
-			const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
-			
-			if (cur_entry.status_id == SOW_STATUS.GROWING ||
-				cur_entry.status_id == SOW_STATUS.GESTATING ||
-				cur_entry.status_id == SOW_STATUS.WEANING) {
-			
-				if (cur_entry.name != null && cur_entry.name.length > 0){
-					reference = cur_entry.name;
-					
-					if (cur_entry.number != null &&  cur_entry.number.length > 0) {
-						reference +=  ' (' + cur_entry.number + ')';
-					}
-				}
-				else{
-					reference = cur_entry.number;
-				}
-				
-				select_data.push({value: cur_entry.hid, text: reference});
-			}
-		}
+            // This is because there is this data can come into
+            // minimum and not minimum info.
+            const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
+            
+            if (cur_entry.status_id == SOW_STATUS.GROWING ||
+                cur_entry.status_id == SOW_STATUS.GESTATING ||
+                cur_entry.status_id == SOW_STATUS.WEANING) {
+            
+                if (cur_entry.name != null && cur_entry.name.length > 0){
+                    reference = cur_entry.name;
+                    
+                    if (cur_entry.number != null &&  cur_entry.number.length > 0) {
+                        reference +=  ' (' + cur_entry.number + ')';
+                    }
+                }
+                else{
+                    reference = cur_entry.number;
+                }
+                
+                select_data.push({value: cur_entry.hid, text: reference});
+            }
+        }
         
         thisObj._replaceSelectOptions(elemSelectSow, select_data);
     }
@@ -889,11 +889,11 @@ ${html_add_modal_boar}
         for (const cur_sow_boar of data){
             var reference;
             
-			// This is because there is this data can come into
-			// minimum and not minimum info.
-			const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
-			
-			
+            // This is because there is this data can come into
+            // minimum and not minimum info.
+            const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
+            
+            
             if (cur_entry.name != null && cur_entry.name.length > 0){
                 reference = cur_entry.name;
                 
@@ -940,7 +940,7 @@ ${html_add_modal_boar}
     }
     
     
-	this._onChangeSow = function(){
+    this._onChangeSow = function(){
         var sow_hid       = elemSelectSow.value;
         
         var index;
@@ -949,22 +949,22 @@ ${html_add_modal_boar}
         var gestating_sow = null;
         
         elemSowStatusShow.style.display = 'none';
-		
+        
         for(index = 0; index < sowList.length; index++){
             cur_entry = sowList[index];
-			if ('sow_boar' in cur_entry){
-				cur_entry = cur_entry.sow_boar;
-			}
+            if ('sow_boar' in cur_entry){
+                cur_entry = cur_entry.sow_boar;
+            }
             
             if (cur_entry.hid == sow_hid){
                 if (cur_entry.status_id == SOW_STATUS.GESTATING){
-					elemSowLastInsem.innerHTML 	= cur_entry.date_insemination;
-					elemSowLastPid.innerHTML 	= cur_entry.last_prod_id;  
-					
-					
-					elemSowStatusShow.style.display = 'block';
-				}
-				break;
+                    elemSowLastInsem.innerHTML  = cur_entry.date_insemination;
+                    elemSowLastPid.innerHTML    = cur_entry.last_prod_id;  
+                    
+                    
+                    elemSowStatusShow.style.display = 'block';
+                }
+                break;
             }
         }
     }

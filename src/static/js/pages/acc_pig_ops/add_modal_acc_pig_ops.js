@@ -4,6 +4,8 @@
 
 'use strict';
 
+import {PageViewBasic}          from '../common/page_view_basic.js';
+
 import {PIG_OPERATION_TYPE}     from '../../constants.js';
         
 import {ModelAccountPigOps}     from '../../models/model_acc_pig_ops.js'
@@ -12,7 +14,10 @@ import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
 
 
 
+AddModalAccPigOps.prototype = new PageViewBasic();
 export function AddModalAccPigOps(input_settings){
+    PageViewBasic.call(this);
+    
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
     
@@ -188,6 +193,9 @@ export function AddModalAccPigOps(input_settings){
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
+        
+        console.log('add_modal_acc members');
+        console.log(this);
     }
     
     
@@ -337,27 +345,6 @@ export function AddModalAccPigOps(input_settings){
         cur_elem.classList.remove('is-valid', 'is-invalid'); 
         
         
-    }
-    
-    
-    // Update character counter
-    this.updateCharCounter = function (inputElement, counterElement, maxLength) {
-        const length = inputElement.value.length;
-        counterElement.textContent = `${length}/${maxLength}`;
-        
-        // Update styling based on character count
-        const percentUsed = (length / maxLength) * 100;
-        
-        counterElement.classList.remove('warning', 'danger');
-        inputElement.classList.remove('warning', 'danger');
-        
-        if (percentUsed >= 90) {
-            counterElement.classList.add('danger');
-            inputElement.classList.add('danger');
-        } else if (percentUsed >= 75) {
-            counterElement.classList.add('warning');
-            inputElement.classList.add('warning');
-        }
     }
     
     

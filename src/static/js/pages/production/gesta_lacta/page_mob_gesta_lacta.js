@@ -15,6 +15,8 @@ import {formatDate,
 
 
 
+
+
 export function PageMobGestaLacta(input_settings){
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
@@ -69,17 +71,22 @@ export function PageMobGestaLacta(input_settings){
     
     
     
-    var dataPigProdList        	= null;
+    var dataPigProdList         = null;
 
 
     //var textTranslation         = new TextTranslation();
     var curUserLanguageKey      = 'en';
 
+
+    
     
     // This must be set before rendering the autotable
     // See G_SAMPLE_JSON_ACCOUNT
     this.accountData            = null;
     
+    
+    // This should be set before editing ProdPigOps 
+    this.editModalProdPigOps    = null;
     
     
     this.init = function(){
@@ -176,7 +183,9 @@ export function PageMobGestaLacta(input_settings){
     
     
     this.setDataStaffList = function(data){
-        
+        if (this.editModalProdPigOps){
+			this.editModalProdPigOps.setDataStaffList(data);
+		}
     }
     
 
@@ -890,10 +899,6 @@ export function PageMobGestaLacta(input_settings){
             else{
                 s_click = `gNavigation.pageMobLactatingList.onClickShowMore(${pid},'${operation_hid}');`;
             }
-            
-            console.log('s_click');
-            console.log(s_click);
-            
         }
         
         html = `
@@ -939,9 +944,12 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    this.getDataPigProd = function(entry_hid){
-        for (const cur_entry of curAccPigOpsData){
-            if(cur_entry.acc_pig_ops.hid == entry_hid){return cur_entry;}
+    this.getDataPigProd = function(pid){
+        // Most functions with getData*** always use entry_hid as 
+        // input parameter. The DataPigProd will use pid instead
+        // as this is highly visible by in the page.
+        for (const cur_entry of dataPigProdList){
+            if(cur_entry.pig_production.farm_prod_id == pid){return cur_entry;}
         }
         return null;
     }
@@ -1020,9 +1028,63 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    this.onClickMarkAsDone = function(pid, operation_hid){
-        console.log(`onClickMarkAsDone pid =${pid}; operation_hid=${operation_hid}`);
+    this.onClickMarkAsDone = function(pid, entry_hid){
+        console.log(`onClickMarkAsDone pid =${pid}; entry_hid=${entry_hid}`);
+    
+        const data_pig_prod = thisObj.getDataPigProd(pid);
+    
+        
+        const operation = thisObj.getDataProdPigOps(data_pig_prod, entry_hid);
+        if (operation == null) {return;}
+        
+        
+        const options = {
+            pid:        	pid,
+            is_gesta:    	settings.isGesta
+        };
+        thisObj.editModalProdPigOps.show(operation, options);
     }
+    
+    
+    this.getDataProdPigOps = function(data_pig_prod, entry_hid){
+        /**
+        20251231: 
+        1.) There are 3 data blocks to read for this
+            - gestating_ops
+            - lactating_piglets_ops
+            - lactating_sow_ops
+        
+        2.) Later on, lactating_piglets_ops and lactating_sow_ops
+            planned to be combined into one data block: lactating_ops 
+        
+        3.) Each of prod_pig_ops in these blocks are distinct.
+            Different entry_hid
+        */
+        
+        var pig_prod_ops_list = null;
+        
+        if (settings.isGesta == true){
+            pig_prod_ops_list = data_pig_prod.gestating_ops;
+        }
+        else{
+            if ('lactating_ops' in data_pig_prod){
+                pig_prod_ops_list = data_pig_prod.lactating_ops;
+            }
+            else{
+                pig_prod_ops_list = data_pig_prod.lactating_piglets_ops;
+            }
+        }
+        
+        for(const cur_entry of pig_prod_ops_list){
+            if (cur_entry.pig_prod_pig_ops.hid == entry_hid){
+                return cur_entry;
+            }
+        }
+        
+        return null;
+    }
+    
+    
     
     
     // Open edit modal with operation data
@@ -1030,7 +1092,7 @@ export function PageMobGestaLacta(input_settings){
         const operation = thisObj.getDataAccPigOps(entry_hid);
         if (operation == null) {return;}
         
-        thisObj.editModalAccPigOps.beforeShow(operation);
+        
         
     }
     

@@ -992,6 +992,59 @@ p {
     color: white;             /* Text color remains the same on hover */
 }
 
+
+/* Checkbox styling */
+.checkbox-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 8px;
+	padding: 8px;
+	background-color: #f8fafc;
+	border-radius: 6px;
+	border: 1px solid #e5e7eb;
+	transition: all 0.3s;
+}
+
+.checkbox-group:hover {
+	background-color: #eff6ff;
+	border-color: var(--corporate-blue-light);
+}
+
+.checkbox-group.checked {
+	background-color: #dcfce7;
+	border-color: var(--success-green);
+}
+
+.checkbox-group input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	accent-color: var(--success-green);
+	cursor: pointer;
+}
+
+.checkbox-group label {
+	margin: 0;
+	font-weight: 500;
+	cursor: pointer;
+	flex: 1;
+}
+
+.checkbox-group .checkbox-label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 500;
+	color: var(--text-dark);
+}
+		
+.checkbox-icon {
+	color: var(--success-green);
+	font-size: 16px;
+}
+
+
+
 /********* END COMMON CONTROLS **********/
 
 
@@ -1322,8 +1375,8 @@ p {
 
 .form-control {
     border: 2px solid #e0e0e0;
-    padding: 10px 12px;
-    font-size: 1rem;
+    padding: 6px 6px;
+    font-size: 1.3rem;
     transition: all 0.2s;
     border-radius: 0;
 }
@@ -1379,7 +1432,7 @@ textarea.form-control {
 }
 
 .form-group-select {
-    border-left: 4px solid #2ecc71;
+    border-left: 4px solid #B828E1;
     padding-left: 8px;
     padding-right: 8px;
     margin-bottom: 12px;
@@ -1391,6 +1444,15 @@ textarea.form-control {
     padding-right: 8px;
     margin-bottom: 12px;
 }
+
+
+.form-group-date {
+    border-left: 4px solid #4236DC;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-bottom: 12px;
+}
+
 
 
 /* Mobile optimization */

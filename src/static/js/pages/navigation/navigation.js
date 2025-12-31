@@ -10,6 +10,8 @@ import {PIG_OPERATION_TYPE,
 import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
 import {PageMobGestaLacta}          from '../production/gesta_lacta/page_mob_gesta_lacta.js';
 
+import {EditModalProdPigOps}        from '../production/gesta_lacta/edit_modal_prod_pig_ops.js'
+
 
 function UserControl() {
     const thisObj                   = this;
@@ -158,11 +160,11 @@ export function Navigation(){
     var elemHiddenContAccPigOps     = null;
     var elemHiddenContProdGestating = null;
     var elemHiddenContProdLactating = null;
-	
-	
-	var curScreenIsMobile			= null;
     
-	
+    
+    var curScreenIsMobile           = null;
+    
+    
     this.userControl                = new UserControl();
     
     this.pageAccPigOps              = new PageAccPigOps();
@@ -185,6 +187,10 @@ export function Navigation(){
     this.pageMobLactatingList   = new PageMobGestaLacta(settingsProdLactating);
     
     
+    const settingsEditPigOps    = {
+        parentObj:              this
+    };
+    this.editModalProdPigOps    = new EditModalProdPigOps(settingsEditPigOps);
     
     
     
@@ -195,6 +201,8 @@ export function Navigation(){
         this.pageAccPigOps.init();
         this.pageMobGestatingList.init();
         this.pageMobLactatingList.init();
+        
+        this.editModalProdPigOps.init();
         
         this.afterHtmlRender();
         
@@ -238,7 +246,8 @@ export function Navigation(){
     
     
     this._processAfterHtmlRender = function(){
-     
+		this.pageMobGestatingList.editModalProdPigOps = this.editModalProdPigOps;
+		this.pageMobLactatingList.editModalProdPigOps = this.editModalProdPigOps;
 	}
     
     
@@ -268,18 +277,18 @@ export function Navigation(){
         this.updatePigFarmName();
     }
     
-	
-	this.setDataStaffList = function(data){
-		this.pageMobGestatingList.setDataStaffList(data);
-		this.pageMobLactatingList.setDataStaffList(data);
-	}
-	
-	
-	this.setDataPigProdList = function(data){
-		this.pageMobGestatingList.setDataPigProdList(data);
+    
+    this.setDataStaffList = function(data){
+        this.pageMobGestatingList.setDataStaffList(data);
+        this.pageMobLactatingList.setDataStaffList(data);
+    }
+    
+    
+    this.setDataPigProdList = function(data){
+        this.pageMobGestatingList.setDataPigProdList(data);
         this.pageMobLactatingList.setDataPigProdList(data);
-	}
-	
+    }
+    
     
     // Update pig farm name on resize for responsive centering
     this.updatePigFarmName = function() {
@@ -317,10 +326,10 @@ export function Navigation(){
     
     
     this.onClickNav = function(is_mobile, nav_name){
-	
-		curScreenIsMobile = is_mobile;
+    
+        curScreenIsMobile = is_mobile;
         
-		
+        
         switch(nav_name){
             case 'op-settings':{
                 thisObj._onClickNavOpsSettings(is_mobile);
@@ -486,12 +495,12 @@ export function Navigation(){
     
     this._onClickNavProdGestaLacta = function(is_mobile, operation_type){
         
-		if (is_mobile == null){ 
-			// If not specified use the last known screen state.
-			is_mobile = curScreenIsMobile;
-		}
-		
-		
+        if (is_mobile == null){ 
+            // If not specified use the last known screen state.
+            is_mobile = curScreenIsMobile;
+        }
+        
+        
         if (is_mobile){
             if (operation_type == PIG_OPERATION_TYPE.GESTATING){
                 thisObj.hideHiddenContainers(elemHiddenContProdGestating);
@@ -500,7 +509,7 @@ export function Navigation(){
             }
             
             if ((operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS) || 
-				(operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
+                (operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
                 thisObj.hideHiddenContainers(elemHiddenContProdLactating);
                 thisObj.pageMobLactatingList.show();
                 return;

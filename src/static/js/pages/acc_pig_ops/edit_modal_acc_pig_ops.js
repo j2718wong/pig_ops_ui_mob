@@ -4,6 +4,8 @@
 
 'use strict';
 
+import {PageViewBasic}          from '../common/page_view_basic.js';
+
 import {PIG_OPERATION_TYPE}     from '../../constants.js';
         
 import {ModelAccountPigOps}     from '../../models/model_acc_pig_ops.js'
@@ -11,7 +13,10 @@ import {ModelAccountPigOps}     from '../../models/model_acc_pig_ops.js'
 import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
 
 
+EditModalAccPigOps.prototype = new PageViewBasic();
 export function EditModalAccPigOps(input_settings){
+    PageViewBasic.call(this);
+    
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
     
@@ -100,7 +105,7 @@ export function EditModalAccPigOps(input_settings){
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="edit-entry-acc-pig-ops-modal-label">
-                        <i class="fas fa-plus me-2"></i><span id="${elemIdModalTitle}">Add New Pig Operation</span>
+                        <span id="${elemIdModalTitle}">Add New Pig Operation</span>
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -292,7 +297,6 @@ export function EditModalAccPigOps(input_settings){
     }
     
     
-
     this.beforeShow = function(operation){
         var header_title;
         var min_days;
@@ -307,8 +311,8 @@ export function EditModalAccPigOps(input_settings){
                 min_days        = 0;
                 max_days        = 114;
                 num_days_title  = "Number of days since boar mating or insemination";
-                num_days_title 	+= ' Max ' + max_days + '.';
-				break;
+                num_days_title  += ' Max ' + max_days + '.';
+                break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS: {
@@ -316,8 +320,8 @@ export function EditModalAccPigOps(input_settings){
                 min_days        = 1;
                 max_days        = 45;
                 num_days_title  = "Number of days since piglets birth.";
-                num_days_title 	+= ' Max ' + max_days + '.';
-				break;
+                num_days_title  += ' Max ' + max_days + '.';
+                break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
@@ -325,8 +329,8 @@ export function EditModalAccPigOps(input_settings){
                 min_days        = 1;
                 max_days        = 45;
                 num_days_title  = "Number of days since piglets birth.";
-                num_days_title 	+= ' Max ' + max_days + '.';
-				break;
+                num_days_title  += ' Max ' + max_days + '.';
+                break;
             }
             
             case PIG_OPERATION_TYPE.GILT:{
@@ -334,15 +338,15 @@ export function EditModalAccPigOps(input_settings){
                 min_days        = 1;
                 max_days        = 300;
                 num_days_title  = "Number of days since gilt birth.";
-                num_days_title 	+= ' Max ' + max_days + '.';
-				break;
+                num_days_title  += ' Max ' + max_days + '.';
+                break;
             }
         }
         
         elemDayNumber.setAttribute("min", min_days); // Set a data attribute
         elemDayNumber.setAttribute("max", max_days); // Set a data attribute
         
-		
+        
         elemDayNumberDesc.innerHTML = num_days_title;
         
         
@@ -389,28 +393,7 @@ export function EditModalAccPigOps(input_settings){
         editModal.show();
     }
     
-    
-    // Update character counter
-    this.updateCharCounter = function (inputElement, counterElement, maxLength) {
-        const length = inputElement.value.length;
-        counterElement.textContent = `${length}/${maxLength}`;
-        
-        // Update styling based on character count
-        const percentUsed = (length / maxLength) * 100;
-        
-        counterElement.classList.remove('warning', 'danger');
-        inputElement.classList.remove('warning', 'danger');
-        
-        if (percentUsed >= 90) {
-            counterElement.classList.add('danger');
-            inputElement.classList.add('danger');
-        } else if (percentUsed >= 75) {
-            counterElement.classList.add('warning');
-            inputElement.classList.add('warning');
-        }
-    }
-    
-    
+       
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
     
