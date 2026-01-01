@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiggyProd - Pig Farm Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --corporate-blue: #1e3a8a;
+            --corporate-blue-light: #3b82f6;
+            --corporate-blue-dark: #1e40af;
+            --alert-critical: #dc2626;
+            --alert-warning: #f59e0b;
+            --alert-info: #3b82f6;
+            --gold: #fbbf24;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --border-color: #e5e7eb;
+            --mobile-breakpoint: 768px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            line-height: 1.5;
+        }
+
+        /* Top Navigation Container */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* First Line Navigation */
+        .nav-first-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--corporate-blue);
+            color: white;
+        }
+
+        /* Company Logo and Product Name */
+        .company-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .company-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--corporate-blue);
+            font-weight: 900;
+            font-size: 1.8rem;
+        }
+
+        .product-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Client Farm Name - Centered */
+        .client-farm {
+            flex: 1;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 1rem;
+        }
+
+        /* Alert and User Controls */
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .alert-button {
+            position: relative;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alert-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--alert-critical);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--corporate-blue-light);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        /* Second Line Navigation */
+        .nav-second-line {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--corporate-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 2rem;
+        }
+
+        .summary-button:hover {
+            background-color: var(--corporate-blue-dark);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 1.125rem;
+            font-weight: 600;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--corporate-blue);
+            color: white;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            min-width: 220px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 0.375rem;
+            z-index: 100;
+            display: none;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-item:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1rem;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--corporate-blue);
+            color: white;
+        }
+
+        /* Burger Menu for Mobile */
+        .burger-button {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .burger-close {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 140px;
+            padding: 1.5rem;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-title {
+            font-size: 1.75rem;
+            color: var(--corporate-blue);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--corporate-blue-light);
+            padding-bottom: 0.5rem;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--corporate-blue);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--corporate-blue);
+        }
+
+        /* Alert Panel */
+        .alert-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1100;
+            transition: right 0.3s ease;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .alert-panel.active {
+            right: 0;
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .alert-title {
+            font-size: 1.5rem;
+            color: var(--corporate-blue);
+            font-weight: 700;
+        }
+
+        .alert-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .alert-category {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .alert-critical .alert-category {
+            color: var(--alert-critical);
+        }
+
+        .alert-warning .alert-category {
+            color: var(--alert-warning);
+        }
+
+        .alert-info .alert-category {
+            color: var(--alert-info);
+        }
+
+        .alert-item {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--border-color);
+        }
+
+        .alert-critical .alert-item {
+            border-left-color: var(--alert-critical);
+            background-color: rgba(220, 38, 38, 0.05);
+        }
+
+        .alert-warning .alert-item {
+            border-left-color: var(--alert-warning);
+            background-color: rgba(245, 158, 11, 0.05);
+        }
+
+        .alert-info .alert-item {
+            border-left-color: var(--alert-info);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .alert-time {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        /* User Control Dropdown */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 0.375rem;
+            z-index: 100;
+            display: none;
+            border: 1px solid var(--border-color);
+        }
+
+        .user-control.active .user-dropdown {
+            display: block;
+        }
+
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-dropdown-item:hover {
+            background-color: var(--corporate-blue);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--corporate-blue);
+            color: white;
+            padding: 2rem 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .footer-links a:hover {
+            opacity: 0.8;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .nav-first-line {
+                padding: 0.75rem 1rem;
+            }
+
+            .burger-button {
+                display: block;
+                margin-right: 1rem;
+            }
+
+            .client-farm {
+                display: none;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .nav-second-line {
+                display: none;
+            }
+
+            .mobile-menu {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100vh;
+                background-color: white;
+                z-index: 1200;
+                transition: left 0.3s ease;
+                overflow-y: auto;
+                padding: 1rem;
+            }
+
+            .mobile-menu.active {
+                left: 0;
+            }
+
+            .mobile-menu-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .mobile-farm-name {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: var(--corporate-blue);
+                text-align: center;
+                margin-bottom: 1.5rem;
+                padding: 0.5rem;
+                background-color: var(--bg-light);
+                border-radius: 0.375rem;
+            }
+
+            .mobile-menu-content {
+                padding: 0 1rem;
+            }
+
+            .mobile-nav-item {
+                margin-bottom: 1rem;
+            }
+
+            .mobile-nav-link {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem;
+                background-color: var(--bg-light);
+                border-radius: 0.375rem;
+                color: var(--text-dark);
+                text-decoration: none;
+                font-size: 1.125rem;
+                font-weight: 600;
+            }
+
+            .mobile-submenu {
+                background-color: white;
+                border-radius: 0.375rem;
+                margin-top: 0.5rem;
+                padding: 0.5rem;
+                display: none;
+            }
+
+            .mobile-submenu.active {
+                display: block;
+            }
+
+            .mobile-dropdown-item {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1rem;
+                color: var(--text-dark);
+                text-decoration: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .mobile-dropdown-item:last-child {
+                border-bottom: none;
+            }
+
+            .main-content {
+                margin-top: 70px;
+                padding: 1rem;
+            }
+
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .alert-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Container -->
+    <div class="nav-container">
+        <!-- First Line Navigation -->
+        <div class="nav-first-line">
+            <div class="company-brand">
+                <button class="burger-button" id="burgerButton">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="company-logo">J</div>
+                <div class="product-name">PiggyProd</div>
+            </div>
+            
+            <div class="client-farm" id="clientFarm">Sunrise Pig Farm</div>
+            
+            <div class="nav-controls">
+                <button class="alert-button" id="alertButton">
+                    <i class="fas fa-bell" style="color: var(--gold);"></i>
+                    <span class="alert-count" id="alertCount">7</span>
+                </button>
+                
+                <div class="user-control" id="userControl">
+                    <div class="user-avatar">JD</div>
+                    <div class="user-name">John Doe</div>
+                    <i class="fas fa-chevron-down"></i>
+                    
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown">
+                        <a href="#" class="user-dropdown-item">
+                            <i class="fas fa-user"></i> My Account
+                        </a>
+                        <a href="#" class="user-dropdown-item">
+                            <i class="fas fa-file-invoice-dollar"></i> Billing
+                            <span class="alert-count" style="position: static; margin-left: auto;">1</span>
+                        </a>
+                        <a href="#" class="user-dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Second Line Navigation -->
+        <div class="nav-second-line">
+            <button class="summary-button">
+                <i class="fas fa-file-pdf"></i> Summary Report
+            </button>
+            
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-industry"></i> Production
+                    </a>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-item">Prod Gestating</a>
+                        <a href="#" class="dropdown-item">Prod Lactating Piglets</a>
+                        <a href="#" class="dropdown-item">Prod Lactating Sows</a>
+                        <a href="#" class="dropdown-item">Fattening</a>
+                        <a href="#" class="dropdown-item">Feeds</a>
+                    </div>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-piggy-bank"></i> Sow Boar Gilt
+                    </a>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-item"><i class="fas fa-venus"></i> Sows</a>
+                        <a href="#" class="dropdown-item"><i class="fas fa-venus"></i> Gilts</a>
+                        <a href="#" class="dropdown-item"><i class="fas fa-mars"></i> Boars</a>
+                    </div>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cogs"></i> Operations
+                    </a>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-item">Pig Harvests</a>
+                        <a href="#" class="dropdown-item">Reports</a>
+                        <a href="#" class="dropdown-item">Feed Calculator</a>
+                    </div>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-line"></i> Financials
+                    </a>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-item">Feeds Expenses</a>
+                        <a href="#" class="dropdown-item">Non Feeds Expenses</a>
+                        <a href="#" class="dropdown-item">Sales</a>
+                    </div>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-address-book"></i> Account Lists
+                    </a>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-item">Staff</a>
+                        <a href="#" class="dropdown-item">Pig Buyers</a>
+                        <a href="#" class="dropdown-item">Feed Suppliers</a>
+                        <a href="#" class="dropdown-item">Semen Suppliers</a>
+                        <a href="#" class="dropdown-item">Gilt Suppliers</a>
+                    </div>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-sliders-h"></i> Settings
+                    </a>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-item">Ops Settings</a>
+                        <a href="#" class="dropdown-item"><i class="fas fa-syringe"></i> Gestating Ops</a>
+                        <a href="#" class="dropdown-item"><i class="fas fa-syringe"></i> Lactating Piglets Ops</a>
+                        <a href="#" class="dropdown-item"><i class="fas fa-syringe"></i> Lactating Sow Ops</a>
+                        <a href="#" class="dropdown-item"><i class="fas fa-syringe"></i> Gilts Sow Ops</a>
+                    </div>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </a>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-item">Users</a>
+                        <a href="#" class="dropdown-item">User Request</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <div class="company-brand">
+                <div class="company-logo">J</div>
+                <div class="product-name">PiggyProd</div>
+            </div>
+            <button class="burger-close" id="burgerClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-farm-name">Sunrise Pig Farm</div>
+        
+        <div class="mobile-menu-content">
+            <button class="summary-button" style="width: 100%; margin-bottom: 1.5rem;">
+                <i class="fas fa-file-pdf"></i> Summary Report
+            </button>
+            
+            <div class="mobile-nav-item">
+                <a href="#" class="mobile-nav-link" data-submenu="production">
+                    <span><i class="fas fa-industry"></i> Production</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="mobile-submenu" id="production">
+                    <a href="#" class="mobile-dropdown-item">Prod Gestating</a>
+                    <a href="#" class="mobile-dropdown-item">Prod Lactating Piglets</a>
+                    <a href="#" class="mobile-dropdown-item">Prod Lactating Sows</a>
+                    <a href="#" class="mobile-dropdown-item">Fattening</a>
+                    <a href="#" class="mobile-dropdown-item">Feeds</a>
+                </div>
+            </div>
+            
+            <div class="mobile-nav-item">
+                <a href="#" class="mobile-nav-link" data-submenu="sowBoar">
+                    <span><i class="fas fa-piggy-bank"></i> Sow Boar Gilt</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="mobile-submenu" id="sowBoar">
+                    <a href="#" class="mobile-dropdown-item"><i class="fas fa-venus"></i> Sows</a>
+                    <a href="#" class="mobile-dropdown-item"><i class="fas fa-venus"></i> Gilts</a>
+                    <a href="#" class="mobile-dropdown-item"><i class="fas fa-mars"></i> Boars</a>
+                </div>
+            </div>
+            
+            <div class="mobile-nav-item">
+                <a href="#" class="mobile-nav-link" data-submenu="operations">
+                    <span><i class="fas fa-cogs"></i> Operations</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="mobile-submenu" id="operations">
+                    <a href="#" class="mobile-dropdown-item">Pig Harvests</a>
+                    <a href="#" class="mobile-dropdown-item">Reports</a>
+                    <a href="#" class="mobile-dropdown-item">Feed Calculator</a>
+                </div>
+            </div>
+            
+            <!-- Additional mobile menu items would be added here -->
+            <div class="mobile-nav-item">
+                <a href="#" class="mobile-nav-link" data-submenu="financials">
+                    <span><i class="fas fa-chart-line"></i> Financials</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="mobile-submenu" id="financials">
+                    <a href="#" class="mobile-dropdown-item">Feeds Expenses</a>
+                    <a href="#" class="mobile-dropdown-item">Non Feeds Expenses</a>
+                    <a href="#" class="mobile-dropdown-item">Sales</a>
+                </div>
+            </div>
+            
+            <div class="mobile-nav-item">
+                <a href="#" class="mobile-nav-link" data-submenu="account">
+                    <span><i class="fas fa-address-book"></i> Account Lists</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="mobile-submenu" id="account">
+                    <a href="#" class="mobile-dropdown-item">Staff</a>
+                    <a href="#" class="mobile-dropdown-item">Pig Buyers</a>
+                    <a href="#" class="mobile-dropdown-item">Feed Suppliers</a>
+                    <a href="#" class="mobile-dropdown-item">Semen Suppliers</a>
+                    <a href="#" class="mobile-dropdown-item">Gilt Suppliers</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alert Panel -->
+    <div class="alert-panel" id="alertPanel">
+        <div class="alert-header">
+            <div class="alert-title">Alerts & Notifications</div>
+            <button class="alert-close" id="alertPanelClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="alert-category alert-critical">Critical (2)</div>
+        <div class="alert-critical">
+            <div class="alert-item">
+                <strong>Vaccination Due for 45 Piglets</strong>
+                <p>Vaccination for piglets in Pen 3 is overdue by 2 days</p>
+                <div class="alert-time">Today, 8:30 AM</div>
+            </div>
+            <div class="alert-item">
+                <strong>Pig Health Issue Reported</strong>
+                <p>Multiple pigs showing signs of respiratory distress in Fattening Pen 2</p>
+                <div class="alert-time">Yesterday, 3:45 PM</div>
+            </div>
+        </div>
+        
+        <div class="alert-category alert-warning">Warnings (3)</div>
+        <div class="alert-warning">
+            <div class="alert-item">
+                <strong>Feeds Almost Depleted</strong>
+                <p>Starter feed inventory is at 5% capacity. Reorder immediately.</p>
+                <div class="alert-time">Today, 10:15 AM</div>
+            </div>
+            <div class="alert-item">
+                <strong>Sow Birth Checklist Alert</strong>
+                <p>Sow #245 expected to give birth in 2 days. Prepare farrowing pen.</p>
+                <div class="alert-time">Today, 9:00 AM</div>
+            </div>
+            <div class="alert-item">
+                <strong>Missed Feed Inventory Entry</strong>
+                <p>Feed inventory for Grower feed was not updated yesterday</p>
+                <div class="alert-time">Yesterday, 6:00 PM</div>
+            </div>
+        </div>
+        
+        <div class="alert-category alert-info">Info (2)</div>
+        <div class="alert-info">
+            <div class="alert-item">
+                <strong>Upcoming Pig Birth</strong>
+                <p>Sow #312 is expected to give birth in 5 days</p>
+                <div class="alert-time">Today, 7:45 AM</div>
+            </div>
+            <div class="alert-item">
+                <strong>Monthly Maintenance Due</strong>
+                <p>Monthly equipment maintenance scheduled for tomorrow</p>
+                <div class="alert-time">Yesterday, 5:20 PM</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 class="dashboard-title">Farm Dashboard</h1>
+        
+        <div class="cards-container">
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="fas fa-female"></i> Gestating Sows
+                </div>
+                <div class="card-value">142</div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="fas fa-baby"></i> Lactating Sows
+                </div>
+                <div class="card-value">67</div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="fas fa-venus"></i> Gilts
+                </div>
+                <div class="card-value">38</div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="fas fa-mars"></i> Boars
+                </div>
+                <div class="card-value">12</div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="fas fa-piggy-bank"></i> Production Piglets
+                </div>
+                <div class="card-value">845</div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="fas fa-weight-hanging"></i> Fattening Pigs
+                </div>
+                <div class="card-value">423</div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="card-title">
+                    <i class="fas fa-wheat-awn"></i> Feeds Left (kg)
+                </div>
+                <div class="card-value">2,845</div>
+            </div>
+        </div>
+        
+        <div style="padding: 1.5rem; background-color: white; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: var(--corporate-blue); margin-bottom: 1rem;">Welcome to PiggyProd</h2>
+            <p>Your comprehensive pig farm management system. Monitor production, manage inventory, track finances, and optimize operations all from one dashboard.</p>
+            <p style="margin-top: 1rem;">You have <strong>7 active alerts</strong> that require your attention. Click the bell icon to view them.</p>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-title">J Systems Development</div>
+                <p>Providing innovative agricultural management solutions since 2010.</p>
+            </div>
+            
+            <div class="footer-section">
+                <div class="footer-title">Quick Links</div>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <div class="footer-title">Contact Information</div>
+                <p>Email: support@jsystems.dev</p>
+                <p>Phone: (555) 123-4567</p>
+                <p>Address: 123 Farm Management Ave, Agricultural City</p>
+            </div>
+            
+            <div class="footer-section">
+                <div class="footer-title">Follow Us</div>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+                <p style="margin-top: 1rem;">&copy; 2023 J Systems Development. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // DOM Elements
+        const burgerButton = document.getElementById('burgerButton');
+        const burgerClose = document.getElementById('burgerClose');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const alertButton = document.getElementById('alertButton');
+        const alertPanel = document.getElementById('alertPanel');
+        const alertPanelClose = document.getElementById('alertPanelClose');
+        const userControl = document.getElementById('userControl');
+        const alertCount = document.getElementById('alertCount');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+        
+        // Toggle Mobile Menu
+        burgerButton.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+        });
+        
+        burgerClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+        
+        // Toggle Alert Panel
+        alertButton.addEventListener('click', () => {
+            alertPanel.classList.add('active');
+        });
+        
+        alertPanelClose.addEventListener('click', () => {
+            alertPanel.classList.remove('active');
+        });
+        
+        // Toggle User Dropdown
+        userControl.addEventListener('click', () => {
+            userControl.classList.toggle('active');
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!userControl.contains(event.target)) {
+                userControl.classList.remove('active');
+            }
+            
+            if (!alertPanel.contains(event.target) && !alertButton.contains(event.target)) {
+                alertPanel.classList.remove('active');
+            }
+        });
+        
+        // Toggle Mobile Submenus
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const submenuId = link.getAttribute('data-submenu');
+                const submenu = document.getElementById(submenuId);
+                
+                // Close all other submenus
+                document.querySelectorAll('.mobile-submenu').forEach(menu => {
+                    if (menu.id !== submenuId) {
+                        menu.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current submenu
+                submenu.classList.toggle('active');
+                
+                // Rotate chevron icon
+                const icon = link.querySelector('.fa-chevron-down');
+                if (submenu.classList.contains('active')) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+        
+        // Update alert count (simulating real-time updates)
+        function updateAlertCount(count) {
+            alertCount.textContent = count;
+            if (count > 0) {
+                alertCount.style.display = 'flex';
+            } else {
+                alertCount.style.display = 'none';
+            }
+        }
+        
+        // Simulate alert updates
+        setTimeout(() => {
+            updateAlertCount(8);
+        }, 5000);
+        
+        // Center client farm name based on screen size
+        function centerClientFarmName() {
+            const clientFarm = document.getElementById('clientFarm');
+            const screenWidth = window.innerWidth;
+            
+            if (screenWidth >= 1200) {
+                clientFarm.style.fontSize = '1.5rem';
+            } else if (screenWidth >= 992) {
+                clientFarm.style.fontSize = '1.35rem';
+            } else if (screenWidth >= 768) {
+                clientFarm.style.fontSize = '1.2rem';
+            } else {
+                // Mobile - already hidden
+            }
+        }
+        
+        // Initial call
+        centerClientFarmName();
+        
+        // Update on resize
+        window.addEventListener('resize', centerClientFarmName);
+        
+        // Mark alerts as read when clicked
+        document.querySelectorAll('.alert-item').forEach(item => {
+            item.addEventListener('click', () => {
+                item.style.opacity = '0.7';
+                
+                // Simulate decreasing alert count
+                const currentCount = parseInt(alertCount.textContent);
+                if (currentCount > 0) {
+                    updateAlertCount(currentCount - 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

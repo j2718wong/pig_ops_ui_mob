@@ -1,10 +1,11 @@
 
 /* Pig Farm Management Dashboard - Responsive CSS */
 :root {
-    --corporate-blue: #1e5aa7;
+    --corporate-blue:  #1e3a8a; /*#1e5aa7; */
     --corporate-blue-dark: #15467d;
     --corporate-blue-light: #4a8adb;
     --corporate-border-blue: #dbeafe;
+	--corporate-bg: #e0f2fe;
     
     --alert-gold: #ffc107;
     --text-light: #ffffff;
@@ -33,6 +34,11 @@
     --neutral-gray: #6b7280;
     --text-dark: #1f2937;
     --text-light: #f9fafb;
+	
+	--warning-bg: #fef3c7;
+	--warning-border: #f59e0b;
+	--success-bg: #d1fae5;
+	--success-border: #10b981;
 
     --gestating-color:  #693FE9;
     --lactating-piglets-color:  #2394EF;
@@ -45,6 +51,8 @@
     --clickable-highlight: #1e40af;
 	
 	--white: #ffffff;
+	
+	--body-default-bg: #f5f7fa; 
 }
 
 * {
@@ -55,9 +63,10 @@
 }
 
 body {
-    background-color: #f5f7fa;
+    background-color: var(--body-default-bg);
     color: var(--text-dark);
     line-height: 1.6;
+	overflow: hidden; !important
 }
 
 /* Top Navigation Container */
@@ -585,17 +594,22 @@ body {
     font-size: 20px;
     font-weight: 700;
     color: var(--corporate-blue);
-    margin-bottom: 15px;
     display: flex;
     align-items: center;
+	justify-content: space-between;
     gap: 10px;
-    padding: 10px;
+    padding: 10px 10px 0 10px;
     background-color: var(--bg-light);
     border-radius: 6px;
 }
 
 .mobile-submenu {
     padding-left: 20px;
+	display:none;
+}
+
+.mobile-submenu.active {
+	display: block;
 }
 
 .mobile-submenu-item {
@@ -630,6 +644,7 @@ body {
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+	overflow:hidden;
 }
 
 .content-card {
@@ -877,6 +892,8 @@ p {
 
     .main-content {
         margin-top: 70px;
+		padding-left:10px;
+		padding-right:10px;
     }
     
     .dashboard-cards {
@@ -902,8 +919,9 @@ p {
     }
 
     .main-content {
-        padding: 0;
-        margin-top: 60px;
+        padding-left: 10px;
+		padding-right: 10px;
+        margin-top: 45px;
     }
     
     .dashboard-cards {
@@ -1528,6 +1546,7 @@ textarea.form-control {
 
 /* Colored form groups */
 .form-group-text {
+	background: var(--corporate-bg);
     border-left: 4px solid #3498db;
     padding-left: 8px;
     padding-right: 8px;
@@ -1536,6 +1555,7 @@ textarea.form-control {
 }
 
 .form-group-text-area {
+	background: var(--corporate-bg);
     border-left: 4px solid #2ecc71;
     padding-left: 8px;
     padding-right: 8px;
@@ -1544,6 +1564,7 @@ textarea.form-control {
 }
 
 .form-group-select {
+	background: var(--corporate-bg);
     border-left: 4px solid #B828E1;
     padding-left: 8px;
     padding-right: 8px;
@@ -1552,6 +1573,7 @@ textarea.form-control {
 }
 
 .form-group-number {
+	background: var(--corporate-bg);
     border-left: 4px solid #f39c12;
     padding-left: 8px;
     padding-right: 8px;
@@ -1561,6 +1583,7 @@ textarea.form-control {
 
 
 .form-group-date {
+	background: var(--corporate-bg);
     border-left: 4px solid #4236DC;
     padding-left: 8px;
     padding-right: 8px;
@@ -1600,9 +1623,6 @@ textarea.form-control {
 
 /* Mobile optimization */
 @media (max-width: 768px) {
-    body {
-        padding: 15px;
-    }
     
     .container {
         padding: 0;
@@ -2013,7 +2033,7 @@ textarea.form-control {
 /* Operation item - date, name, icon side by side */
 .operation-item {
     padding: 8px;
-    background-color: #f8fafc;
+    background-color: var(--row-hover);
     border-left: 4px solid #e5e7eb;
 }
 
@@ -2276,9 +2296,7 @@ textarea.form-control {
 
 @media (min-width: 769px) {
     body {
-        max-width: 480px;
-        margin: 0 auto;
-        padding: 20px 10px;
+        /*max-width: 480px;*/
     }
     
     .mobile-controls {

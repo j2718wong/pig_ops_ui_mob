@@ -118,7 +118,14 @@ input group to adjust the number of piglets
 6.) make the arrow icons bigger
 
 
+Modify the HTML such that
 
+1.) Add the fix top minimum navigation back. There is a top navigation div that 
+will not move when screen is scrolled down. The whole content should be below 
+this top navigation. Just put minimum elements in the top navigation.
+ 
+The top-section should not move when scrolled. only the tab contents 
+should move when scrolled.
                                     
 
 

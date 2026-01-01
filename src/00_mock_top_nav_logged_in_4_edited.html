@@ -207,7 +207,7 @@
                 <div class="nav-menu" id="desktop-nav-admin">
                     <button class="nav-menu-btn">
                         <i class="fas fa-user-friends" style="color: var(--icon-blue);"></i>
-                        <span>Admin</span>
+                        Admin</span>
                     </button>
                     <div class="nav-submenu">
                         <div class="submenu-item" onclick="gNavigation.onClickNav(0, 'users');">                <i class="fas fa-user" style="color: var(--icon-indigo);"></i>Users</div>
@@ -396,11 +396,11 @@
 		
         <!-- Mobile Menu Sections -->
         <div class="mobile-menu-section" id="mobile-nav-production">
-            <div class="mobile-menu-title">
-                <i class="fas fa-chart-line" style="color: var(--icon-green);"></i>
-                <span>Production</span>
+            <div class="mobile-menu-title" data-submenu="mobile-subnav-production">
+                <span><i class="fas fa-chart-line" style="color: var(--icon-green); margin-right:10px;"></i>Production</span>
+				<i class="fas fa-chevron-down"></i>
             </div>
-            <div class="mobile-submenu">
+            <div class="mobile-submenu" id="mobile-subnav-production">
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-gesta');">            <i class="fas fa-chart-bar" style="color: var(--icon-indigo);"></i>Prod Gestating</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-lacta-piglets');">    <i class="fas fa-wine-bottle" style="color: var(--icon-teal);"></i>Prod Lactating</div>
                 <!--<div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'prod-lacta-sows');">       <i class="fas fa-wine-bottle" style="color: var(--icon-teal);"></i>Prod Lactating Sows</div>-->
@@ -410,11 +410,11 @@
         </div>
         
         <div class="mobile-menu-section" id="mobile-nav-sow-boar-gilt">
-            <div class="mobile-menu-title">
-                <i class="fas fa-piggy-bank" style="color: var(--icon-orange);"></i>
-                <span>Sow Boar Gilt</span>
+            <div class="mobile-menu-title" data-submenu="mobile-subnav-sow-boar-gilt">
+                <span><i class="fas fa-piggy-bank" style="color: var(--icon-orange); margin-right:10px;"></i>Sow Boar Gilt</span>
+				<i class="fas fa-chevron-down"></i>
             </div>
-            <div class="mobile-submenu">
+            <div class="mobile-submenu" id="mobile-subnav-sow-boar-gilt">
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'sows');">              <i class="fas fa-venus" style="color: var(--icon-pink);"></i>Sows</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'boars');">             <i class="fas fa-venus" style="color: var(--icon-pink);"></i>Gilts</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'gilts');">             <i class="fas fa-mars" style="color: var(--icon-blue);"></i>Boars</div>
@@ -422,11 +422,11 @@
         </div>
         
         <div class="mobile-menu-section">
-            <div class="mobile-menu-title">
-                <i class="fas fa-tasks" style="color: var(--icon-teal);"></i>
-                <span>Operations</span>
+            <div class="mobile-menu-title" data-submenu="mobile-subnav-operations">
+                <span><i class="fas fa-tasks" style="color: var(--icon-teal); margin-right:10px;"></i>Operations</span>
+				<i class="fas fa-chevron-down"></i>
             </div>
-            <div class="mobile-submenu">
+            <div class="mobile-submenu" id="mobile-subnav-operations">
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'pig-harvest');">
                     <div style="position: relative; width: 20px;">
                         <i class="fas fa-paw" style="color: var(--icon-orange); position: absolute; left: 0;"></i>
@@ -440,11 +440,11 @@
         </div>
         
         <div class="mobile-menu-section">
-            <div class="mobile-menu-title">
-                <i class="fas fa-money-bill-wave" style="color: var(--icon-green);"></i>
-                <span>Financials</span>
+            <div class="mobile-menu-title" data-submenu="mobile-subnav-financials">
+                <span><i class="fas fa-money-bill-wave" style="color: var(--icon-green); margin-right:10px;"></i>Financials</span>
+				<i class="fas fa-chevron-down"></i>
             </div>
-            <div class="mobile-submenu">
+            <div class="mobile-submenu" id="mobile-subnav-financials">
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'feeds-expenses');">        <i class="fas fa-seedling" style="color: var(--icon-teal);"></i>Feeds Expenses</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'nonfeeds-expenses');"> <i class="fas fa-receipt" style="color: var(--icon-purple);"></i>Non Feeds Expenses</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'sales');">             <i class="fas fa-cash-register" style="color: var(--icon-indigo);"></i>Sales</div>
@@ -452,11 +452,11 @@
         </div>
         
         <div class="mobile-menu-section">
-            <div class="mobile-menu-title">
-                <i class="fas fa-address-book" style="color: var(--icon-purple);"></i>
-                <span>Account Lists</span>
+            <div class="mobile-menu-title" data-submenu="mobile-subnav-account-lists">
+                <span><i class="fas fa-address-book" style="color: var(--icon-purple); margin-right:10px;"></i>Account Lists</span>
+				<i class="fas fa-chevron-down"></i>
             </div>
-            <div class="mobile-submenu">
+            <div class="mobile-submenu" id="mobile-subnav-account-lists">
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'staff');">         <i class="fas fa-users" style="color: var(--icon-blue);"></i>Staff</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'pig-buyers');">        <i class="fas fa-user-tag" style="color: var(--icon-teal);"></i>Pig Buyers</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'feed-suppliers');">    <i class="fas fa-truck" style="color: var(--icon-orange);"></i>Feed Suppliers</div>
@@ -466,11 +466,11 @@
         </div>
         
 		<div class="mobile-menu-section" id="mobile-nav-settings">
-            <div class="mobile-menu-title">
-                <i class="fas fa-cogs" style="color: var(--icon-blue);"></i>
-                <span>Settings</span>
+            <div class="mobile-menu-title" data-submenu="mobile-subnav-settings">
+                <span><i class="fas fa-cogs" style="color: var(--icon-blue); margin-right:10px;"></i>Settings</span>
+				<i class="fas fa-chevron-down"></i>
             </div>
-            <div class="mobile-submenu">
+            <div class="mobile-submenu" id="mobile-subnav-settings">
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'op-settings');">       <i class="fas fa-sliders-h" style="color: var(--icon-purple);"></i>Ops Settings</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'gesta-sow-ops');">     <i class="fas fa-syringe" style="color: var(--gestating-color);"></i>Gestating Ops</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'lacta-piglets-ops');"> <i class="fas fa-syringe" style="color: var(--lactating-piglets-color);"></i>Lactating Piglets Ops</div>
@@ -480,11 +480,11 @@
         </div>
         
         <div class="mobile-menu-section">
-            <div class="mobile-menu-title">
-                <i class="fas fa-user-friends" style="color: var(--icon-blue);"></i>
-                <span>Users</span>
+            <div class="mobile-menu-title" data-submenu="mobile-subnav-admin">
+                <span><i class="fas fa-user-friends" style="color: var(--icon-blue); margin-right:10px;"></i>Admin</span>
+				<i class="fas fa-chevron-down"></i>
             </div>
-            <div class="mobile-submenu">
+            <div class="mobile-submenu" id="mobile-subnav-admin">
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'users');">         <i class="fas fa-user" style="color: var(--icon-indigo);"></i>Users</div>
                 <div class="mobile-submenu-item" onclick="gNavigation.onClickNav(1, 'users-requests');">    <i class="fas fa-user-plus" style="color: var(--icon-green);"></i>User Request</div>
             </div>
@@ -494,11 +494,11 @@
     
     <!-- Main Content - Dashboard -->
     <div class="main-content">
-        <div id="container-acc-pig-ops" 	 class="hidden-container" style="display:none"></div>
-		<div id="container-prod-gesta-list"  class="hidden-container" style="display:none"></div>
-		<div id="container-prod-lacta-list"  class="hidden-container" style="display:none"></div>
-		<div id="container-prod-gesta-add" 	 class="hidden-container" style="display:none"></div>
-		<div id="container-prod-gesta-entry" class="hidden-container" style="display:none"></div>
+        <div id="container-acc-pig-ops" 	 class="hidden-container" style="display:none;"></div>
+		<div id="container-prod-gesta-list"  class="hidden-container" style="display:none;"></div>
+		<div id="container-prod-lacta-list"  class="hidden-container" style="display:none;"></div>
+		<div id="container-prod-gesta-add" 	 class="hidden-container" style="display:none;"></div>
+		<div id="container-prod-gesta-entry" class="hidden-container" style="display:none; position:relative;"></div>
 	
 	
         <div id="container-dashboard" 		 class="hidden-container" style="display:none"> 

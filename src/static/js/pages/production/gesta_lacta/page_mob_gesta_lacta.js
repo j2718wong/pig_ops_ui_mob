@@ -218,7 +218,7 @@ export function PageMobGestaLacta(input_settings){
 
         
         elemMobAddEntryBtn.addEventListener('click', function() {
-            parentObj.onClickAddProdGestating();
+            parentObj.onClickProdGestatingAdd();
         });
     
     }
@@ -561,13 +561,14 @@ export function PageMobGestaLacta(input_settings){
         
         const html_operations = thisObj._getHtmlOperations(data_pig_prod);
         
-        
+        const farm_prod_id = data_pig_prod.pig_production.farm_prod_id;
+		
         var html = `
-        <div class="card-pig-prod" data-pid="${data_pig_prod.pig_production.farm_prod_id}">
+        <div class="card-pig-prod" data-pid="${farm_prod_id}">
             <div class="card-header-pig-prod ${header_class}">
                 <div class="header-top-row">
-                    <div class="pid">${data_pig_prod.pig_production.farm_prod_id}</div>
-                    <div class="sow-name">
+                    <div class="pid">${farm_prod_id}</div>
+                    <div class="sow-name" onclick="gNavigation.onClickProdGestatingEntry(${farm_prod_id});">
                         <!--${sow_name} <i class="fas fa-heart"></i> ${boar_name} -->
                         ${sow_name} ❤️ ${boar_name}
                         ${indicator_ai}

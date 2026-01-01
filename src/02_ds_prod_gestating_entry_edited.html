@@ -29,66 +29,19 @@
         body {
             background-color: var(--corporate-bg);
             color: var(--text-dark);
+            padding-top: 120px; /* Space for fixed header */
+            padding-bottom: 20px;
         }
 
-        /* Fixed Top Navigation - Minimal */
-        .top-navigation {
+        /* Fixed Top Section */
+        .top-section {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             background-color: var(--corporate-blue);
             color: white;
-            z-index: 200;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 12px 15px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .nav-title {
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-icon {
-            font-size: 22px;
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .nav-button {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-        }
-
-        .nav-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Fixed Top Section - Below navigation, doesn't move when scrolled */
-        .top-section {
-            position: fixed;
-            top: 60px; /* Below the top navigation */
-            left: 0;
-            width: 100%;
-            background-color: var(--corporate-blue);
-            color: white;
-            z-index: 150;
+            z-index: 100;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
@@ -96,11 +49,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 15px;
+            padding: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .nav-arrow-button {
+        .nav-button {
             background: none;
             border: none;
             color: white;
@@ -115,7 +68,7 @@
             cursor: pointer;
         }
 
-        .nav-arrow-button:active {
+        .nav-button:active {
             background-color: rgba(255, 255, 255, 0.15);
         }
 
@@ -154,7 +107,7 @@
             color: #f472b6; /* Pink color for love icon */
         }
 
-        /* Tabs Navigation - Fixed with top section */
+        /* Tabs Navigation */
         .tabs-container {
             display: flex;
             overflow-x: auto;
@@ -185,15 +138,7 @@
             background-color: rgba(255, 255, 255, 0.05);
         }
 
-        /* Tab Content Area - Scrolls below fixed sections */
-        .tab-content-area {
-            margin-top: 180px; /* Height of top nav (60px) + top section (120px) */
-            padding: 0 0 20px 0;
-            overflow-y: auto;
-            max-height: calc(100vh - 180px); /* Viewport height minus fixed headers */
-        }
-
-        /* Individual Tab Content */
+        /* Tab Content */
         .tab-content {
             display: none;
             padding: 20px 15px;
@@ -437,24 +382,11 @@
 
         /* Responsive Adjustments */
         @media (max-width: 480px) {
-            .top-navigation {
-                padding: 10px 12px;
-                height: 55px;
+            body {
+                padding-top: 110px;
             }
             
-            .top-section {
-                top: 55px;
-            }
-            
-            .nav-title {
-                font-size: 16px;
-            }
-            
-            .nav-icon {
-                font-size: 20px;
-            }
-            
-            .nav-arrow-button {
+            .nav-button {
                 font-size: 28px;
                 width: 44px;
                 height: 44px;
@@ -472,11 +404,6 @@
                 font-size: 13px;
                 padding: 10px 8px;
                 min-width: 70px;
-            }
-            
-            .tab-content-area {
-                margin-top: 165px;
-                max-height: calc(100vh - 165px);
             }
             
             .form-control {
@@ -498,41 +425,14 @@
                 flex-direction: column;
                 gap: 5px;
             }
-            
-            .nav-actions {
-                gap: 10px;
-            }
-            
-            .tab-content-area {
-                margin-top: 175px;
-                max-height: calc(100vh - 175px);
-            }
-        }
-
-        @media (max-height: 600px) {
-            .tab-content-area {
-                max-height: calc(100vh - 180px);
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Fixed Top Navigation - Minimal -->
-    <div class="top-navigation">
-        <div class="nav-title">
-            <span class="nav-icon">🐷</span>
-            <span>Gestating Entry</span>
-        </div>
-        <div class="nav-actions">
-            <button class="nav-button" id="back-btn" title="Back">←</button>
-            <button class="nav-button" id="menu-btn" title="Menu">☰</button>
-        </div>
-    </div>
-
-    <!-- Fixed Top Section - Below navigation, doesn't move when scrolled -->
+    <!-- Fixed Top Section -->
     <div class="top-section">
         <div class="navigation-bar">
-            <button class="nav-arrow-button" id="prev-entry">←</button>
+            <button class="nav-button" id="prev-entry">←</button>
             
             <div class="entry-info">
                 <div class="pid-and-sow">
@@ -545,10 +445,10 @@
                 </div>
             </div>
             
-            <button class="nav-arrow-button" id="next-entry">→</button>
+            <button class="nav-button" id="next-entry">→</button>
         </div>
         
-        <!-- Tabs Navigation - Fixed with top section -->
+        <!-- Tabs Navigation -->
         <div class="tabs-container">
             <button class="tab-button active" data-tab="insem">Insem</button>
             <button class="tab-button" data-tab="birth">Birth</button>
@@ -557,258 +457,255 @@
         </div>
     </div>
 
-    <!-- Tab Content Area - Scrolls below fixed sections -->
-    <div class="tab-content-area">
-        <!-- Insem Tab -->
-        <div id="insem-tab" class="tab-content active">
-            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Insemination Information</h2>
-            
+    <!-- Tab Content -->
+    <div id="insem-tab" class="tab-content active">
+        <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Insemination Information</h2>
+        
+        <div class="form-group">
+            <label class="form-label">Sow Name</label>
+            <input type="text" class="form-control readonly" value="Sow ❤️ Boar Maximus" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Date Mating</label>
+            <input type="date" class="form-control" id="date-mating" value="2023-10-15">
+        </div>
+        
+        <div class="warning-box" id="mating-warning" style="display: none;">
+            Changing the Date Mating will affect gestation period calculations.
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Insemination Type</label>
+            <select class="form-control" id="insem-type">
+                <option value="boar">Boar Mating</option>
+                <option value="artificial">Artificial Insemination</option>
+            </select>
+        </div>
+        
+        <!-- Boar Mating Section (shown by default) -->
+        <div id="boar-mating-section" class="dynamic-section">
             <div class="form-group">
-                <label class="form-label">Sow Name</label>
-                <input type="text" class="form-control readonly" value="Sow ❤️ Boar Maximus" readonly>
+                <label class="form-label">Select Boar</label>
+                <select class="form-control">
+                    <option value="boar1">Big Boy (Duroc)</option>
+                    <option value="boar2" selected>Maximus (Landrace)</option>
+                    <option value="boar3">Titan (Hampshire)</option>
+                    <option value="boar4">Hercules (Yorkshire)</option>
+                </select>
             </div>
-            
+        </div>
+        
+        <!-- Artificial Insemination Section (hidden by default) -->
+        <div id="artificial-section" class="dynamic-section" style="display: none;">
             <div class="form-group">
-                <label class="form-label">Date Mating</label>
-                <input type="date" class="form-control" id="date-mating" value="2023-10-15">
-            </div>
-            
-            <div class="warning-box" id="mating-warning" style="display: none;">
-                Changing the Date Mating will affect gestation period calculations.
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Insemination Type</label>
-                <select class="form-control" id="insem-type">
-                    <option value="boar">Boar Mating</option>
-                    <option value="artificial">Artificial Insemination</option>
+                <label class="form-label">Semen Supplier</label>
+                <select class="form-control">
+                    <option value="">Select supplier</option>
+                    <option value="supplier1">Premium Swine Genetics</option>
+                    <option value="supplier2">Elite Boar Semen Co.</option>
+                    <option value="supplier3">Top Genetics Inc.</option>
                 </select>
             </div>
             
-            <!-- Boar Mating Section (shown by default) -->
-            <div id="boar-mating-section" class="dynamic-section">
-                <div class="form-group">
-                    <label class="form-label">Select Boar</label>
-                    <select class="form-control">
-                        <option value="boar1">Big Boy (Duroc)</option>
-                        <option value="boar2" selected>Maximus (Landrace)</option>
-                        <option value="boar3">Titan (Hampshire)</option>
-                        <option value="boar4">Hercules (Yorkshire)</option>
-                    </select>
-                </div>
-            </div>
-            
-            <!-- Artificial Insemination Section (hidden by default) -->
-            <div id="artificial-section" class="dynamic-section" style="display: none;">
-                <div class="form-group">
-                    <label class="form-label">Semen Supplier</label>
-                    <select class="form-control">
-                        <option value="">Select supplier</option>
-                        <option value="supplier1">Premium Swine Genetics</option>
-                        <option value="supplier2">Elite Boar Semen Co.</option>
-                        <option value="supplier3">Top Genetics Inc.</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Semen Type</label>
-                    <select class="form-control">
-                        <option value="">Select type</option>
-                        <option value="fresh">Fresh</option>
-                        <option value="frozen">Frozen</option>
-                        <option value="chilled">Chilled</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Semen Cost ($)</label>
-                    <input type="number" class="form-control" placeholder="0.00" min="0" step="0.01">
-                </div>
+            <div class="form-group">
+                <label class="form-label">Semen Type</label>
+                <select class="form-control">
+                    <option value="">Select type</option>
+                    <option value="fresh">Fresh</option>
+                    <option value="frozen">Frozen</option>
+                    <option value="chilled">Chilled</option>
+                </select>
             </div>
             
             <div class="form-group">
-                <label class="form-label">Other Costs ($)</label>
-                <input type="number" class="form-control" placeholder="Enter additional costs" min="0" step="0.01">
+                <label class="form-label">Semen Cost ($)</label>
+                <input type="number" class="form-control" placeholder="0.00" min="0" step="0.01">
             </div>
-            
-            <div class="form-group">
-                <label class="form-label">Notes</label>
-                <textarea class="form-control" rows="4" id="insem-notes" placeholder="Add notes about this insemination..."></textarea>
-                <div class="char-counter"><span id="char-count">0</span>/500 characters</div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Other Costs ($)</label>
+            <input type="number" class="form-control" placeholder="Enter additional costs" min="0" step="0.01">
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Notes</label>
+            <textarea class="form-control" rows="4" id="insem-notes" placeholder="Add notes about this insemination..."></textarea>
+            <div class="char-counter"><span id="char-count">0</span>/500 characters</div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Staff</label>
+            <select class="form-control">
+                <option value="">Select staff member</option>
+                <option value="staff1" selected>John Smith</option>
+                <option value="staff2">Maria Garcia</option>
+                <option value="staff3">Robert Johnson</option>
+                <option value="staff4">Lisa Chen</option>
+            </select>
+        </div>
+        
+        <button class="btn btn-primary">Save Changes</button>
+    </div>
+
+    <!-- Birth Tab -->
+    <div id="birth-tab" class="tab-content">
+        <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Birth Information</h2>
+        
+        <div class="warning-box">
+            Setting the Date Actual Birth will update the production entry from Gestating status to Lactating Status and will be removed from Production Gestating List. Will be put in Production Lactating List.
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Date Expected Birth</label>
+            <input type="date" class="form-control readonly" value="2024-02-07" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Date Actual Birth</label>
+            <input type="date" class="form-control" id="actual-birth-date">
+            <div style="font-size: 14px; color: var(--text-light); margin-top: 5px;" id="gestation-days">Gestation period: -- days</div>
+        </div>
+        
+        <!-- Number of Female Piglets with plus/minus buttons -->
+        <div class="form-group">
+            <label class="form-label">Number of Female Piglets</label>
+            <div class="number-input-group">
+                <button class="number-btn minus" data-field="female">-</button>
+                <input type="number" class="form-control number-input" id="female-piglets" value="7" min="0">
+                <button class="number-btn plus" data-field="female">+</button>
             </div>
-            
-            <div class="form-group">
-                <label class="form-label">Staff</label>
+        </div>
+        
+        <!-- Number of Male Piglets with plus/minus buttons -->
+        <div class="form-group">
+            <label class="form-label">Number of Male Piglets</label>
+            <div class="number-input-group">
+                <button class="number-btn minus" data-field="male">-</button>
+                <input type="number" class="form-control number-input" id="male-piglets" value="6" min="0">
+                <button class="number-btn plus" data-field="male">+</button>
+            </div>
+        </div>
+        
+        <!-- Number of Stillbirth Piglets with plus/minus buttons -->
+        <div class="form-group">
+            <label class="form-label">Number of Stillbirth Piglets</label>
+            <div class="number-input-group">
+                <button class="number-btn minus" data-field="stillbirth">-</button>
+                <input type="number" class="form-control number-input" id="stillbirth-piglets" value="1" min="0">
+                <button class="number-btn plus" data-field="stillbirth">+</button>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Birth Staff</label>
+            <div class="input-group">
                 <select class="form-control">
                     <option value="">Select staff member</option>
-                    <option value="staff1" selected>John Smith</option>
-                    <option value="staff2">Maria Garcia</option>
+                    <option value="staff1">John Smith</option>
+                    <option value="staff2" selected>Maria Garcia</option>
                     <option value="staff3">Robert Johnson</option>
                     <option value="staff4">Lisa Chen</option>
                 </select>
+                <input type="text" class="form-control" placeholder="New staff name">
             </div>
-            
-            <button class="btn btn-primary">Save Changes</button>
         </div>
+        
+        <button class="btn btn-primary">Save Changes</button>
+    </div>
 
-        <!-- Birth Tab -->
-        <div id="birth-tab" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Birth Information</h2>
-            
-            <div class="warning-box">
-                Setting the Date Actual Birth will update the production entry from Gestating status to Lactating Status and will be removed from Production Gestating List. Will be put in Production Lactating List.
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Date Expected Birth</label>
-                <input type="date" class="form-control readonly" value="2024-02-07" readonly>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Date Actual Birth</label>
-                <input type="date" class="form-control" id="actual-birth-date">
-                <div style="font-size: 14px; color: var(--text-light); margin-top: 5px;" id="gestation-days">Gestation period: -- days</div>
-            </div>
-            
-            <!-- Number of Female Piglets with plus/minus buttons -->
-            <div class="form-group">
-                <label class="form-label">Number of Female Piglets</label>
-                <div class="number-input-group">
-                    <button class="number-btn minus" data-field="female">-</button>
-                    <input type="number" class="form-control number-input" id="female-piglets" value="7" min="0">
-                    <button class="number-btn plus" data-field="female">+</button>
-                </div>
-            </div>
-            
-            <!-- Number of Male Piglets with plus/minus buttons -->
-            <div class="form-group">
-                <label class="form-label">Number of Male Piglets</label>
-                <div class="number-input-group">
-                    <button class="number-btn minus" data-field="male">-</button>
-                    <input type="number" class="form-control number-input" id="male-piglets" value="6" min="0">
-                    <button class="number-btn plus" data-field="male">+</button>
-                </div>
-            </div>
-            
-            <!-- Number of Stillbirth Piglets with plus/minus buttons -->
-            <div class="form-group">
-                <label class="form-label">Number of Stillbirth Piglets</label>
-                <div class="number-input-group">
-                    <button class="number-btn minus" data-field="stillbirth">-</button>
-                    <input type="number" class="form-control number-input" id="stillbirth-piglets" value="1" min="0">
-                    <button class="number-btn plus" data-field="stillbirth">+</button>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Birth Staff</label>
-                <div class="input-group">
-                    <select class="form-control">
-                        <option value="">Select staff member</option>
-                        <option value="staff1">John Smith</option>
-                        <option value="staff2" selected>Maria Garcia</option>
-                        <option value="staff3">Robert Johnson</option>
-                        <option value="staff4">Lisa Chen</option>
-                    </select>
-                    <input type="text" class="form-control" placeholder="New staff name">
-                </div>
-            </div>
-            
-            <button class="btn btn-primary">Save Changes</button>
+    <!-- Status Tab -->
+    <div id="status-tab" class="tab-content">
+        <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Update Gestation Status</h2>
+        
+        <div class="warning-box">
+            This is used in abnormal cases of hog gestation. Updating the production status to any of the status below will remove this entry from the production list and will be visible only in reports. <b>This cannot be undone.</b>
         </div>
+        
+        <div class="form-group">
+            <label class="form-label">Date Status</label>
+            <input type="date" class="form-control" value="2023-11-20">
+        </div>
+        
+        <div class="radio-group">
+            <div class="radio-option" data-option="reheat">
+                <input type="radio" name="status" id="reheat" class="radio-input">
+                <div class="radio-text">
+                    <div class="radio-title">Sow not pregnant. Sow reheat.</div>
+                    <div class="radio-description">Just try again.</div>
+                </div>
+            </div>
+            
+            <div class="radio-option" data-option="sold">
+                <input type="radio" name="status" id="sold" class="radio-input">
+                <div class="radio-text">
+                    <div class="radio-title">Sow is Sold or Dead.</div>
+                    <div class="radio-description">Sow will also be removed from sow list.</div>
+                </div>
+            </div>
+            
+            <div class="radio-option" data-option="nolive">
+                <input type="radio" name="status" id="nolive" class="radio-input">
+                <div class="radio-text">
+                    <div class="radio-title">No Live piglets</div>
+                    <div class="radio-description">Sow has given birth all mummified/dead piglets.</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="btn btn-primary">Save Changes</button>
+    </div>
 
-        <!-- Status Tab -->
-        <div id="status-tab" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Update Gestation Status</h2>
-            
-            <div class="warning-box">
-                This is used in abnormal cases of hog gestation. Updating the production status to any of the status below will remove this entry from the production list and will be visible only in reports. <b>This cannot be undone.</b>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Date Status</label>
-                <input type="date" class="form-control" value="2023-11-20">
-            </div>
-            
-            <div class="radio-group">
-                <div class="radio-option" data-option="reheat">
-                    <input type="radio" name="status" id="reheat" class="radio-input">
-                    <div class="radio-text">
-                        <div class="radio-title">Sow not pregnant. Sow reheat.</div>
-                        <div class="radio-description">Just try again.</div>
-                    </div>
-                </div>
-                
-                <div class="radio-option" data-option="sold">
-                    <input type="radio" name="status" id="sold" class="radio-input">
-                    <div class="radio-text">
-                        <div class="radio-title">Sow is Sold or Dead.</div>
-                        <div class="radio-description">Sow will also be removed from sow list.</div>
-                    </div>
-                </div>
-                
-                <div class="radio-option" data-option="nolive">
-                    <input type="radio" name="status" id="nolive" class="radio-input">
-                    <div class="radio-text">
-                        <div class="radio-title">No Live piglets</div>
-                        <div class="radio-description">Sow has given birth all mummified/dead piglets.</div>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="btn btn-primary">Save Changes</button>
+    <!-- Notes Tab -->
+    <div id="notes-tab" class="tab-content">
+        <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Add New Note</h2>
+        
+        <div class="form-group">
+            <label class="form-label">Date Notes</label>
+            <input type="date" class="form-control" value="2023-12-15">
         </div>
-
-        <!-- Notes Tab -->
-        <div id="notes-tab" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Add New Note</h2>
-            
-            <div class="form-group">
-                <label class="form-label">Date Notes</label>
-                <input type="date" class="form-control" value="2023-12-15">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Notes</label>
-                <textarea class="form-control" rows="4" placeholder="Enter your notes here..."></textarea>
-            </div>
-            
-            <button class="btn btn-success">Save Note</button>
-            
-            <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--corporate-blue);">Previous Notes</h3>
-            
-            <table class="notes-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Notes</th>
-                        <th>Last Update By</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>2023-11-10</td>
-                        <td>Sow appears healthy with good appetite. All vital signs normal.</td>
-                        <td>John Smith</td>
-                    </tr>
-                    <tr>
-                        <td>2023-10-30</td>
-                        <td>Routine checkup completed. No issues detected.</td>
-                        <td>Maria Garcia</td>
-                    </tr>
-                    <tr>
-                        <td>2023-10-18</td>
-                        <td>Initial post-insemination check. Sow resting comfortably.</td>
-                        <td>Robert Johnson</td>
-                    </tr>
-                    <tr>
-                        <td>2023-10-15</td>
-                        <td>Insemination completed successfully. Sow returned to pen.</td>
-                        <td>Lisa Chen</td>
-                    </tr>
-                </tbody>
-            </table>
+        
+        <div class="form-group">
+            <label class="form-label">Notes</label>
+            <textarea class="form-control" rows="4" placeholder="Enter your notes here..."></textarea>
         </div>
+        
+        <button class="btn btn-success">Save Note</button>
+        
+        <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--corporate-blue);">Previous Notes</h3>
+        
+        <table class="notes-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Notes</th>
+                    <th>Last Update By</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2023-11-10</td>
+                    <td>Sow appears healthy with good appetite. All vital signs normal.</td>
+                    <td>John Smith</td>
+                </tr>
+                <tr>
+                    <td>2023-10-30</td>
+                    <td>Routine checkup completed. No issues detected.</td>
+                    <td>Maria Garcia</td>
+                </tr>
+                <tr>
+                    <td>2023-10-18</td>
+                    <td>Initial post-insemination check. Sow resting comfortably.</td>
+                    <td>Robert Johnson</td>
+                </tr>
+                <tr>
+                    <td>2023-10-15</td>
+                    <td>Insemination completed successfully. Sow returned to pen.</td>
+                    <td>Lisa Chen</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <script>
@@ -827,24 +724,10 @@
                 // Show corresponding content
                 tabContents.forEach(content => content.classList.remove('active'));
                 document.getElementById(`${tabId}-tab`).classList.add('active');
-                
-                // Scroll to top of content area
-                document.querySelector('.tab-content-area').scrollTop = 0;
             });
         });
         
-        // Top navigation buttons
-        document.getElementById('back-btn').addEventListener('click', () => {
-            alert('Going back to gestating list...');
-            // In a real app, this would navigate back
-        });
-        
-        document.getElementById('menu-btn').addEventListener('click', () => {
-            alert('Opening menu...');
-            // In a real app, this would open a menu
-        });
-        
-        // Entry navigation buttons
+        // Navigation buttons
         document.getElementById('prev-entry').addEventListener('click', () => {
             alert('Loading previous entry (PID: 48290)...');
             // In a real app, this would load the previous entry data
@@ -971,9 +854,6 @@
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             gestationDays.textContent = `Gestation period: ${diffDays} days`;
         }
-        
-        // Scroll content area to top on load
-        document.querySelector('.tab-content-area').scrollTop = 0;
     </script>
 </body>
 </html>

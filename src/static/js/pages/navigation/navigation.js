@@ -11,8 +11,8 @@ import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
 import {PageMobGestaLacta}          from '../production/gesta_lacta/page_mob_gesta_lacta.js';
 
 import {EditModalProdPigOps}        from '../production/gesta_lacta/edit_modal_prod_pig_ops.js'
-import {PageProdGestatingAdd}      	from '../production/gesta_lacta/page_prod_gestating_add.js'
-
+import {PageProdGestatingAdd}       from '../production/gesta_lacta/page_prod_gestating_add.js'
+import {PageProdGestatingEntry}     from '../production/gesta_lacta/page_prod_gestating_entry.js'
 
 
 function UserControl() {
@@ -128,10 +128,10 @@ function UserControl() {
     this.getCurrentLanguage = function(){
         
     }
-	
-	
-	//temporary
-	this.getBaseUrl = function(){
+    
+    
+    //temporary
+    this.getBaseUrl = function(){
         return "http://localhost:8080"; // remporary
     }
 }
@@ -168,20 +168,20 @@ export function Navigation(){
     var elemHiddenContAccPigOps     = null;
     var elemHiddenContProdGestaList = null;
     var elemHiddenContProdLactaList = null;
-    var elemHiddenContProdGestaAdd	= null;
-	var elemHiddenContProdGestaEntry= null;
-	
+    var elemHiddenContProdGestaAdd  = null;
+    var elemHiddenContProdGestaEntry= null;
     
-    this.curScreenIsMobile         	= null;
+    
+    this.curScreenIsMobile          = null;
     
     
     this.userControl                = new UserControl();
     
-	
-	const settingsAccPigOps = {
+    
+    const settingsAccPigOps = {
         parentObj:              this
     }
-	this.pageAccPigOps          = new PageAccPigOps(settingsAccPigOps);
+    this.pageAccPigOps          = new PageAccPigOps(settingsAccPigOps);
     
     
     const settingsProdGestating = {
@@ -192,7 +192,7 @@ export function Navigation(){
     } 
     this.pageMobGestatingList   = new PageMobGestaLacta(settingsProdGestating);
     
-	
+    
     const settingsProdLactating = {
         parentObj:              this,
         isGesta:                false,
@@ -207,12 +207,21 @@ export function Navigation(){
     };
     this.editModalProdPigOps    = new EditModalProdPigOps(settingsEditPigOps);
     
-	
-    const settingsAddProdGestating = {
+    
+    const settingsProdGestatingAdd = {
         parentObj:              this
     };
-	this.pageProdGestatingAdd 	= new PageProdGestatingAdd(settingsAddProdGestating);
+    this.pageProdGestatingAdd   = new PageProdGestatingAdd(settingsProdGestatingAdd);
+    
+    
+    const settingsProdGestatingEntry = {
+        parentObj:              this
+    };
+    this.pageProdGestatingEntry = new PageProdGestatingEntry(settingsProdGestatingEntry);
+    
 	
+	var dataPigProdList			= null;
+    
     
     this.init = function(){
         
@@ -223,7 +232,9 @@ export function Navigation(){
         this.pageMobLactatingList.init();
         
         this.editModalProdPigOps.init();
-		this.pageProdGestatingAdd.init();
+        this.pageProdGestatingAdd.init();
+        this.pageProdGestatingEntry.init();
+        
         
         this.afterHtmlRender();
         
@@ -262,8 +273,8 @@ export function Navigation(){
         elemHiddenContAccPigOps     = document.getElementById('container-acc-pig-ops');
         elemHiddenContProdGestaList = document.getElementById('container-prod-gesta-list');
         elemHiddenContProdLactaList = document.getElementById('container-prod-lacta-list');
-		elemHiddenContProdGestaAdd 	= document.getElementById('container-prod-gesta-add');
-		elemHiddenContProdGestaEntry= document.getElementById('container-prod-gesta-entry');
+        elemHiddenContProdGestaAdd  = document.getElementById('container-prod-gesta-add');
+        elemHiddenContProdGestaEntry= document.getElementById('container-prod-gesta-entry');
     
     }
     
@@ -283,7 +294,36 @@ export function Navigation(){
         
         window.addEventListener('resize', thisObj.updatePigFarmName);
         
-        
+        const mobileNavLinks = document.querySelectorAll('.mobile-menu-title');
+        // Toggle Mobile Submenus
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const submenuId = link.getAttribute('data-submenu');
+                const submenu = document.getElementById(submenuId);
+                
+                console.log('submenuId = ' + submenuId);
+                console.log('submenu');
+                console.log(submenu);
+                
+                
+                // Close all other submenus
+                link.querySelectorAll('.mobile-submenu').forEach(menu => {
+                    menu.classList.remove('active');
+                });
+                
+                // Toggle current submenu
+                submenu.classList.toggle('active');
+                
+                // Rotate chevron icon
+                const icon = link.querySelector('.fa-chevron-down');
+                if (submenu.classList.contains('active')) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
     }
     
     
@@ -309,25 +349,27 @@ export function Navigation(){
     this.setDataStaffList = function(data){
         this.pageMobGestatingList.setDataStaffList(data);
         this.pageMobLactatingList.setDataStaffList(data);
-		this.pageProdGestatingAdd.setDataStaffList(data);
-	}
+        this.pageProdGestatingAdd.setDataStaffList(data);
+    }
     
     
     this.setDataPigProdList = function(data){
-        this.pageMobGestatingList.setDataPigProdList(data);
-        this.pageMobLactatingList.setDataPigProdList(data);
+		dataPigProdList = data;
+		
+        this.pageMobGestatingList.setDataPigProdList(dataPigProdList);
+        this.pageMobLactatingList.setDataPigProdList(dataPigProdList);
     }
     
-	
-	this.setDataSowList = function(data){
-		this.pageProdGestatingAdd.setDataSowList(data);
-	}
-	
-	
-	this.setDataBoarList = function(data){
-		this.pageProdGestatingAdd.setDataBoarList(data);
-	}
-	
+    
+    this.setDataSowList = function(data){
+        this.pageProdGestatingAdd.setDataSowList(data);
+    }
+    
+    
+    this.setDataBoarList = function(data){
+        this.pageProdGestatingAdd.setDataBoarList(data);
+    }
+    
     
     // Update pig farm name on resize for responsive centering
     this.updatePigFarmName = function() {
@@ -349,6 +391,11 @@ export function Navigation(){
     
         
     this.hideHiddenContainersExcept = function(except_hidden_cont){
+        // All navigation menus will use this
+        // Be sure the body back ground color is reset to default
+        document.body.style.backgroundColor = '#f5f7fa';
+        document.body.style.overflow = 'hidden'; // I duno whete is the auto body overflow is coming
+        
         const hidden_containers = document.getElementsByClassName("hidden-container");
         
         
@@ -565,9 +612,7 @@ export function Navigation(){
         console.log('_onClickNavProdFeeds not yet implemented; is_mobile=' + is_mobile);
     }
         
-        
-        
-              
+           
     this._onClickNavPigHarvests = function(is_mobile){
         console.log('_onClickNavPigHarvests not yet implemented; is_mobile=' + is_mobile);
     }
@@ -583,7 +628,6 @@ export function Navigation(){
     }
         
         
-            
     this._onClickNavFeedsExpenses = function(is_mobile){
         console.log('_onClickNavFeedsExpenses not yet implemented; is_mobile=' + is_mobile);
     }
@@ -643,11 +687,27 @@ export function Navigation(){
         
         
         
-	this.onClickAddProdGestating = function(){
-		console.log('onClickAddProdGestating');
-		thisObj.hideHiddenContainersExcept(elemHiddenContProdGestaAdd);
+    this.onClickProdGestatingAdd = function(){
+        thisObj.hideHiddenContainersExcept(elemHiddenContProdGestaAdd);
         thisObj.pageProdGestatingAdd.show();
-	}
+    }
+    
+    
+    this.onClickProdGestatingEntry = function(pig_prod_pid){
+        console.log('onClickProdGestatingEntry; pig_prod_pid = ' + pig_prod_pid);
+        thisObj.hideHiddenContainersExcept(elemHiddenContProdGestaEntry);
+        
+		// Get the data_pig_prod from dataPigProdList
+		
+		for (const cur_entry of dataPigProdList){
+			if (cur_entry.pig_production.farm_prod_id == pig_prod_pid){
+				thisObj.pageProdGestatingEntry.show(cur_entry);
+				return;
+			}
+		}
+        
+    }
+    
     
     
     

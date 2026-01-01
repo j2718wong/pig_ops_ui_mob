@@ -1,4 +1,5 @@
-Create a two line top navigation for a Pig Farm management system 
+Create a two line top navigation for a Pig Farm management system.
+Use corporate blue themes.
 
 1.) The product name is PiggyProd
 2.) The Company name is J Systems Development
@@ -21,41 +22,44 @@ Special button name: Summary
 - Generates a PDF report of the whole pig farm operetion
 
 The nav link should contain the following subnavigation
-1.) Settings
-	- Ops Settings 
-	- Gestating Ops (syringe icon)
- 	- Lactating Piglets Ops(syringe icon)
-	- Lactating Sow Ops(syringe icon)
-	- Gilts Sow Ops(syringe icon)
+
+1.) Production
+	- Prod Gestating
+	- Prod Lactating Piglets
+	- Prod Lactating Sows
+	- Fattening
+	- Feeds
 	
 2.) Sow Boar Gilt (Pig Icon)
 	- Sows (female venus icon)
 	- Gilts (female venus icon)
 	- Boars  (male mars icon)
 	
-3.) Production
-	- Prod Gestating
-	- Prod Lactating Piglets
-	- Prod Lactating Sows
-	- Fattening
-	- Feeds
 
-4.) Operations
+
+3.) Operations
 	- Pig Harvests
 	- Reports
 	- Feed Calculator
 
-5.) Financials
+4.) Financials
 	- Feeds Expenses
 	- Non Feeds Expenses
 	- Sales
 	
-6.) Account Lists
+5.) Account Lists
 	- Staff
 	- Pig Buyers
 	- Feed Suppliers
 	- Semen Suppliers
 	- Gilt Suppliers
+
+7.) Settings
+	- Ops Settings 
+	- Gestating Ops (syringe icon)
+ 	- Lactating Piglets Ops(syringe icon)
+	- Lactating Sow Ops(syringe icon)
+	- Gilts Sow Ops(syringe icon)
 	
 	
 7.) Admin
@@ -88,7 +92,6 @@ The Landing Dash board should contain the following  cards
 
 
 
-
 When viewed from mobile 
 1.) Put the burger on the left side
 2.) add an alert icon that can display number of alerts near the user icon
@@ -98,7 +101,17 @@ use a golden color alert bell icon
 5.) the main content should be scrollable and the top div will not move
 6.) The burger button when open should display a fix div with the top navigation.  
 7.) The burger menu should occupy whole screen when opened in mobile.
-8.) The subnavigation should be all visible not collapsed.
+8.) The subnavigation should should have a collapse control
+9.) The burger menu should have a closed button
+10.) When in mobile view, the alerts should be visible. very important.
+Should be put at the left side of User Control
+11.) When opening the burger button, the alerts should be at the top navigation
+inline with the  Product name.
+12.) The burger close buton, should be at the second line, in line
+with the Client Farm name 
+
+
+
 
 Footer section
 - About Us

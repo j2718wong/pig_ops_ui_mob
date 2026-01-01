@@ -1,4 +1,4 @@
-// December 23, 2025
+// January 1, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -13,8 +13,8 @@ import {SOW_STATUS,
 
 
 
-pageProdGestatingAdd.prototype = new PageViewBasic();
-export function pageProdGestatingAdd(input_settings){
+PageProdGestatingEntry.prototype = new PageViewBasic();
+export function PageProdGestatingEntry(input_settings){
     PageViewBasic.call(this);
     
     const thisObj               = this;
@@ -29,87 +29,29 @@ export function pageProdGestatingAdd(input_settings){
     const settings              = input_settings;
 
     
-    const settingsAddSow        = {
-        parentObj:              this,
-        isAddSow:               true,
-        elemIdDivModal:         `div-add-entry-sow-modal`
-    };
-    //const addModalSow           = new AddModalSowBoar(settingsAddSow);
-    
-    
-    const settingsAddBoar       = {
-        parentObj:              this,
-        isAddSow:               false,
-        elemIdDivModal:         `div-add-entry-boar-modal`
-    };
-    //const addModalBoar          = new AddModalSowBoar(settingsAddBoar);
-    
-    const elemDivContainer      = document.getElementById('container-prod-gesta-add');
+   
+    const elemDivContainer      = document.getElementById('container-prod-gesta-entry');
         
         
-    var elemIdBtnClose         	= null;
-    
-    var elemIdSelectSow         = null;
-    var elemIdSowStatusShow     = null;
-    var elemIdSowLastInsem      = null;
-    var elemIdSowLastPid        = null;
-    var elemIdInsemType         = null;
-    var elemIdDateMating        = null;
-    
-    var elemIdSelectBoarShow    = null;
-    var elemIdSelectBoar        = null;
-    
-    var elemIdAiShow            = null;
-    var elemIdSemenSupplier     = null;
-    var elemIdSemenType         = null;
-    var elemIdSemenCostCurSymbol= null;
-    var elemIdSemenCost         = null;
-  
-    
-    var elemIdOtherCurSymbol    = null;
-    var elemIdOtherCost         = null;
-    
-    var elemIdNotes             = null;
-    var elemIdNotesCharCounter  = null;
-    
-    var elemIdStaff             = null;
-    var elemIdChkDoneByMe       = null;
+    var elemIdNavPrevEntry      = null;
+    var elemIdPigProdPid        = null;
+    var elemIdHeaderSowName     = null;
+    var elemIdHeaderBoarName    = null;
+    var elemIdNavNextEntry      = null;
     
     
-    var elemIdBtnCancel         = null;
-    var elemIdBtnSave           = null;
+    
+    var elemNavPrevEntry        = null;
+    var elemPigProdPid          = null;
+    var elemHeaderSowName       = null;
+    var elemHeaderBoarName      = null;
+    var elemNavNextEntry        = null;
     
     
-    var elemBtnClose            = null;
     
-    var elemSelectSow           = null;
-    var elemSowStatusShow       = null;
-    var elemSowLastInsem        = null;
-    var elemSowLastPid          = null;
-    var elemInsemType           = null;
-    var elemDateMating          = null;
     
-    var elemSelectBoarShow      = null;
-    var elemSelectBoar          = null;
     
-    var elemAiShow              = null;
-    var elemSemenSupplier       = null;
-    var elemNoSemenType         = null;
-    var elemSemenType           = null;
-    var elemSemenCostCurSymbol  = null;
-    var elemSemenCost           = null;
     
-    var elemOtherCurSymbol      = null;
-    var elemOtherCost           = null;
-    
-    var elemNotes               = null;
-    var elemNotesCharCounter    = null;
-    
-    var elemStaff               = null;
-    var elemChkDoneByMe         = null;
-    
-    var elemBtnCancel           = null;
-    var elemBtnSave             = null;
     
     
     var sowList                 = null;
@@ -126,243 +68,738 @@ export function pageProdGestatingAdd(input_settings){
     }
     
     
+    this._writeInlineStyle = function(){
+        const html = `
+    <style>
+        
+        :root{
+            --height-fixed-prod-entry: 130px;
+        }
+
+        /* Fixed Top Section */
+        .top-section {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: var(--corporate-blue);
+            color: white;
+            z-index: 150;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 32px; /* Bigger arrow icons */
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-button:active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .entry-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .pid-and-sow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pid {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .sow-name {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .love-icon {
+            margin: 0 8px;
+            font-size: 18px;
+            color: #f472b6; /* Pink color for love icon */
+        }
+
+        /* Tabs Navigation */
+        .tabs-container {
+            display: flex;
+            overflow-y: auto;
+            background-color: var(--corporate-blue);
+            padding: 0 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-button {
+            flex: 1;
+            min-width: 80px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 10px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .tab-button.active {
+            color: white;
+            border-bottom-color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+
+        /* Tab Content Area - Scrolls below fixed sections */
+        .tab-content-area {
+            margin-top: var(--height-fixed-prod-entry); /* Height of top nav (60px) + top section (120px) */
+            padding: 0 0 20px 0;
+            overflow-y: auto;
+            max-height: calc(100vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
+        }
+
+        /* Individual Tab Content */
+        .tab-content {
+            display: none;
+            padding: 12px 12px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-size: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--corporate-border);
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: white;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--corporate-light-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-control.readonly {
+            background-color: #f9fafb;
+            color: var(--text-light);
+        }
+
+        /*
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group .form-control {
+            flex-grow: 1;
+        }*/
+
+        /* Number input with plus/minus buttons */
+        .number-input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .number-btn {
+            width: 44px;
+            height: 44px;
+            background-color: var(--corporate-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .number-btn:active {
+            background-color: #1e40af;
+        }
+
+        .number-btn.minus {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .number-btn.plus {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .number-input {
+            flex-grow: 1;
+            text-align: center;
+            border-left: none;
+            border-right: none;
+            border-radius: 0;
+            font-weight: 600;
+        }
+
+       
+        .warning-box {
+            background-color: var(--warning-bg);
+            border-left: 4px solid var(--warning-border);
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .warning-box b {
+            color: #dc2626;
+        }
+
+        .radio-group {
+            margin-bottom: 15px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 12px;
+            border: 1px solid var(--corporate-border);
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .radio-option.selected {
+            border-color: var(--corporate-light-blue);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .radio-input {
+            margin-right: 12px;
+            margin-top: 3px;
+        }
+
+        .radio-text {
+            flex-grow: 1;
+        }
+
+        .radio-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .radio-description {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* Dynamic Field Sections */
+        .dynamic-section {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid var(--corporate-border);
+        }
+
+        /* Buttons */
+        /*
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--corporate-blue);
+            color: white;
+        }
+
+        .btn-primary:active {
+            background-color: #1e40af;
+            transform: translateY(1px);
+        }
+        */
+        
+        .btn-success {
+            background-color: var(--success-border);
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .btn-success:active {
+            background-color: #0da271;
+            transform: translateY(1px);
+        }
+
+        /* Table */
+        .notes-table {
+            width: 100%;
+            margin-top: 25px;
+            border-collapse: collapse;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        .notes-table th {
+            background-color: var(--corporate-blue);
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .notes-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--corporate-border);
+            font-size: 14px;
+        }
+
+        .notes-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .notes-table tr:hover {
+            background-color: #f9fafb;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+           
+            .top-section {
+                top: 60px;
+            }
+            
+            .nav-button {
+                font-size: 28px;
+                width: 44px;
+                height: 44px;
+            }
+            
+            .pid {
+                font-size: 20px;
+            }
+            
+            .sow-name {
+                font-size: 15px;
+            }
+            
+            .tab-button {
+                font-size: 16px;
+                padding: 10px 8px;
+                min-width: 70px;
+            }
+            
+            .tab-content-area {
+                margin-top: var(--height-fixed-prod-entry);
+                max-height: calc(100vh - var(--height-fixed-prod-entry));
+            }
+            
+            .form-control {
+                padding: 10px 12px;
+            }
+            
+            .btn {
+                padding: 12px;
+            }
+            
+            .number-btn {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .pid-and-sow {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .tab-content-area {
+                margin-top: var(--height-fixed-prod-entry);
+                max-height: calc(100vh - var(--height-fixed-prod-entry));
+            }
+            
+        }
+        
+        @media (max-height: 600px) {
+            .tab-content {
+                max-height: calc(100vh - 180px);
+            }
+        }
+    </style>
+        `;
+        
+        return html;
+    }
+    
+    
     this.render = function(){
         
-        elemIdBtnClose             = `pig-prod-add-select-close`;
-        
-        elemIdSelectSow         = `pig-prod-add-select-sow`;
-        elemIdSowStatusShow     = `pig-prod-add-sow-status-show`;
-        elemIdSowLastInsem      = `pig-prod-add-sow-last-insem`;
-        elemIdSowLastPid        = `pig-prod-add-sow-last-pid`;
-        elemIdInsemType         = `pig-prod-add-insem-type`;
-        elemIdDateMating        = `pig-prod-add-date-mating`;
-        
-        elemIdSelectBoarShow    = `pig-prod-add-select-boar-show`;
-        elemIdSelectBoar        = `pig-prod-add-select-boar`;
+        elemIdNavPrevEntry      = `pig-prod-entry-prev-entry`;
+        elemIdPigProdPid        = `pig-prod-entry-pig-prod-pid`;
+        elemIdHeaderSowName     = `pig-prod-entry-header-sow-name`;
+        elemIdHeaderBoarName    = `pig-prod-entry-header-boar-name`;
+        elemIdNavNextEntry      = `pig-prod-entry-next-entry`;
         
         
-        elemIdAiShow            = `pig-prod-add-select-ai-show`;
-        elemIdSemenSupplier     = `pig-prod-add-select-semen-supplier`;
-        elemIdSemenType         = `pig-prod-add-select-semen-type`;
-        elemIdSemenCostCurSymbol= `pig-prod-add-semen-cost-cur-symbol`;
-        elemIdSemenCost         = `pig-prod-add-semen-cost`;
-        
-        
-        elemIdOtherCurSymbol    = `pig-prod-add-other-cost-cur-symbol`;
-        elemIdOtherCost         = `pig-prod-add-other-cost`;
-        
-        elemIdNotes             = `pig-prod-add-notes`;
-        elemIdNotesCharCounter  = `pig-prod-add-notes-char-counter`;
-        
-        elemIdStaff             = `pig-prod-add-staff`;
-        elemIdChkDoneByMe       = `pig-prod-add-done-by-me'`;
-        
-        elemIdBtnCancel         = `pig-prod-add-cancel`;
-        elemIdBtnSave           = `pig-prod-add-save`;
-        
-        
-        //const html_add_modal_sow    = addModalSow.getHtml();
-        //const html_add_modal_boar   = addModalBoar.getHtml();
-        
+
+        const html_style = thisObj._writeInlineStyle();
         
         
         const html =`
 
+    ${html_style}
         
-<div class="form-container">
-
-    <div class="modal-header gestating">
-        <h5 class="modal-title" id="add-entry-acc-pig-ops-modal-label">
-            <i class="fas fa-plus me-2"></i><span>Add Prod Gestating</span>
-        </h5>
-        <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
+    <!-- Fixed Top Section -->
+    <div class="top-section">
+        <div class="navigation-bar">
+            <button class="nav-button" id="${elemIdNavPrevEntry}">←</button>
+            
+            <div class="entry-info">
+                <div class="pid-and-sow">
+                    <!--<div class="pid">PID <span id="${elemIdPigProdPid}">1</span></div>-->
+                    <div class="sow-name">
+                        <span id="${elemIdPigProdPid}">PID: 1</span>
+                        <span id="${elemIdHeaderSowName}">Sow</span>
+                        <span class="love-icon">❤️</span>
+                        <span id="${elemIdHeaderBoarName}">Boar</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="nav-button" id="${elemIdNavNextEntry}">→</button>
+        </div>
+        
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <button class="tab-button active" data-tab="insem">Insem</button>
+            <button class="tab-button" data-tab="birth">Birth</button>
+            <button class="tab-button" data-tab="status">Status</button>
+            <button class="tab-button" data-tab="notes">Notes</button>
+        </div>
     </div>
     
-    
-    <div class="modal-body">
-        
-        <!-- 1. Sow Field with Combined Warning -->
-        <div class="form-group-select">
-            <label for="${elemIdSelectSow}" class="form-label">
-                Select Sow
-            </label>
-                        
-            <div class="input-group" id="sowSelectGroup">
-                <select class="form-select" id="${elemIdSelectSow}">
-                    <option value="" selected disabled>Select Sow...</option>
-                </select>
-                <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#${settingsAddSow.elemIdDivModal}">
-                    <i class="bi bi-plus"></i> New
-                </button>
+    <!-- Tab Content Area - Scrolls below fixed sections -->
+    <div class="tab-content-area">
+        <!-- Tab Content -->
+        <div id="insem-tab" class="tab-content active">
+            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Insemination Information</h2>
+            
+            <div class="form-group-text">
+                <label class="form-label">Sow Name</label>
+                <input type="text" class="form-control readonly" value="Sow ❤️ Boar Maximus" readonly>
             </div>
             
-            <!-- Combined Breeding Status Warning -->
-            <div id="${elemIdSowStatusShow}" class="breeding-status-warning" style="display: none;">
-                <div class="warning-header">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <span>Sow Already Bred</span>
-                </div>
-                <div class="warning-details">
-                    <span>
-                        This sow was last bred on <span id="${elemIdSowLastInsem}">Jan 15, 2024</span>
-                        with production <b>PID: <span id="${elemIdSowLastPid}">20</span></b>. 
-                        If this new entry will be saved, the previous gestating production  
-                        entry will be marked as <b>Not Pregnant</b> and will
-                        be removed from the Gestating Production List.
-                        
-                        Please ensure this is an intentional breeding due to sow reheat.
-                    </span>
+            <div class="form-group-date">
+                <label class="form-label">Date Mating</label>
+                <input type="date" class="form-control" id="date-mating" value="2023-10-15">
+            
+                <div class="warning-box" id="mating-warning" style="display: none;">
+                    Changing the Date Mating will affect gestation period calculations.
                 </div>
             </div>
-        </div>
             
-        
-        <!-- 2. Insemination Type -->
-        <div class="form-group-select">
-            <label for="${elemIdInsemType}" class="form-label">
-                Insemination Type
-            </label>
-                        
-            <select class="form-select" id="${elemIdInsemType}" required>
-                <option value="boar-mating" selected>Boar Mating</option>
-                <option value="ai-external">Artificial Insemination</option>
-            </select>
-        </div>
-        
-        <!-- 3. Date Mating -->
-        <div class="form-group-date">
-            <label for="${elemIdDateMating}" class="form-label">
-                Date Mating or Insemination
-            </label>
-            <input type="date" class="form-control" id="${elemIdDateMating}" required>
-        </div>
-        
-        <!-- 4. Boar Field -->
-        <div class="form-group-select" id="${elemIdSelectBoarShow}">
-            <label for="${elemIdSelectSow}" class="form-label">
-                Select Boar
-            </label>
-            
-            <div class="input-group" id="boarSelectGroup">
-                <select class="form-select" id="${elemIdSelectBoar}">
-                    <option value="" selected disabled>Select...</option>
-                </select>
-                <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#${settingsAddBoar.elemIdDivModal}">
-                    <i class="bi bi-plus"></i> New
-                </button>
-            </div>
-        </div>
-        
-        <div id="${elemIdAiShow}" class="ai-section" style="display: none;">
-            <h5><i class="bi bi-droplet"></i> Artificial Insemination Details</h5>
-            
-            <!-- 1. Semen Supplier -->
             <div class="form-group-select">
-                <label for="${elemIdSemenSupplier}" class="form-label">
-                    Semen Supplier
-                </label>
+                <label class="form-label">Insemination Type</label>
+                <select class="form-control" id="insem-type">
+                    <option value="boar">Boar Mating</option>
+                    <option value="artificial">Artificial Insemination</option>
+                </select>
+            </div>
+            
+            <!-- Boar Mating Section (shown by default) -->
+            <div id="boar-mating-section" class="dynamic-section">
+                <div class="form-group-select">
+                    <label class="form-label">Select Boar</label>
+                    <select class="form-control">
+                        <option value="boar1">Big Boy (Duroc)</option>
+                        <option value="boar2" selected>Maximus (Landrace)</option>
+                        <option value="boar3">Titan (Hampshire)</option>
+                        <option value="boar4">Hercules (Yorkshire)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Artificial Insemination Section (hidden by default) -->
+            <div id="artificial-section" class="dynamic-section" style="display: none;">
+                <div class="form-group-select">
+                    <label class="form-label">Semen Supplier</label>
+                    <select class="form-control">
+                        <option value="">Select supplier</option>
+                        <option value="supplier1">Premium Swine Genetics</option>
+                        <option value="supplier2">Elite Boar Semen Co.</option>
+                        <option value="supplier3">Top Genetics Inc.</option>
+                    </select>
+                </div>
                 
-                <div class="input-group" id="supplierSelectGroup">
-                    <select class="form-select" id="${elemIdSemenSupplier}">
-                        <option value="" selected disabled>Select supplier...</option>
+                <div class="form-group-select">
+                    <label class="form-label">Semen Type</label>
+                    <select class="form-control">
+                        <option value="">Select type</option>
+                        <option value="fresh">Fresh</option>
+                        <option value="frozen">Frozen</option>
+                        <option value="chilled">Chilled</option>
                     </select>
-                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSupplierModal">
-                        <i class="bi bi-plus"></i> New
-                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Semen Cost ($)</label>
+                    <input type="number" class="form-control" placeholder="0.00" min="0" step="0.01">
                 </div>
             </div>
             
-            <!-- 2. Semen Type -->
-            <div class="form-group-select">
-                <label for="${elemIdSemenType}" class="form-label">
-                    Semen Type
-                </label>
-            
-                <div class="input-group" id="semenTypeSelectGroup">
-                    <select class="form-select" id="${elemIdSemenType}">
-                        <option value="" selected disabled>Select type...</option>
-                    </select>
-                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSemenTypeModal">
-                        <i class="bi bi-plus"></i> New
-                    </button>
-                </div>
-            </div>
-            
-            <!-- 3. Semen Cost -->
             <div class="form-group-number">
-                <label for="${elemIdSemenCost}" class="form-label">
-                    Semen Type
-                </label>
-                
-                <div class="currency-input-group">
-                    <span class="input-group-text" id="${elemIdSemenCostCurSymbol}">$</span>
-                    <input type="number" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0" value="0.00">
+                <label class="form-label">Other Costs ($)</label>
+                <input type="number" class="form-control" placeholder="Enter additional costs" min="0" step="0.01">
+            </div>
+            
+            <div class="form-group-text-area">
+                <label class="form-label">Notes</label>
+                <textarea class="form-control" rows="4" id="insem-notes" placeholder="Add notes about this insemination..."></textarea>
+                <div class="char-counter"><span id="char-count">0</span>/500 characters</div>
+            </div>
+            
+            <div class="form-group-select">
+                <label class="form-label">Staff</label>
+                <select class="form-control">
+                    <option value="">Select staff member</option>
+                    <option value="staff1" selected>John Smith</option>
+                    <option value="staff2">Maria Garcia</option>
+                    <option value="staff3">Robert Johnson</option>
+                    <option value="staff4">Lisa Chen</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary">Save Changes</button>
+        </div>
+
+        <!-- Birth Tab -->
+        <div id="birth-tab" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Birth Information</h2>
+            
+            <div class="warning-box">
+                Setting the Date Actual Birth will update the production entry from Gestating status to Lactating Status and will be removed from Production Gestating List. Will be put in Production Lactating List.
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Date Expected Birth</label>
+                <input type="date" class="form-control readonly" value="2024-02-07" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Date Actual Birth</label>
+                <input type="date" class="form-control" id="actual-birth-date">
+                <div style="font-size: 14px; color: var(--text-light); margin-top: 5px;" id="gestation-days">Gestation period: -- days</div>
+            </div>
+            
+            <!-- Number of Female Piglets with plus/minus buttons -->
+            <div class="form-group">
+                <label class="form-label">Number of Female Piglets</label>
+                <div class="number-input-group">
+                    <button class="number-btn minus" data-field="female">-</button>
+                    <input type="number" class="form-control number-input" id="female-piglets" value="7" min="0">
+                    <button class="number-btn plus" data-field="female">+</button>
                 </div>
             </div>
+            
+            <!-- Number of Male Piglets with plus/minus buttons -->
+            <div class="form-group">
+                <label class="form-label">Number of Male Piglets</label>
+                <div class="number-input-group">
+                    <button class="number-btn minus" data-field="male">-</button>
+                    <input type="number" class="form-control number-input" id="male-piglets" value="6" min="0">
+                    <button class="number-btn plus" data-field="male">+</button>
+                </div>
+            </div>
+            
+            <!-- Number of Stillbirth Piglets with plus/minus buttons -->
+            <div class="form-group">
+                <label class="form-label">Number of Stillbirth Piglets</label>
+                <div class="number-input-group">
+                    <button class="number-btn minus" data-field="stillbirth">-</button>
+                    <input type="number" class="form-control number-input" id="stillbirth-piglets" value="1" min="0">
+                    <button class="number-btn plus" data-field="stillbirth">+</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Birth Staff</label>
+                <div class="input-group">
+                    <select class="form-control">
+                        <option value="">Select staff member</option>
+                        <option value="staff1">John Smith</option>
+                        <option value="staff2" selected>Maria Garcia</option>
+                        <option value="staff3">Robert Johnson</option>
+                        <option value="staff4">Lisa Chen</option>
+                    </select>
+                    <input type="text" class="form-control" placeholder="New staff name">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary">Save Changes</button>
         </div>
+
+        <!-- Status Tab -->
+        <div id="status-tab" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Update Gestation Status</h2>
+            
+            <div class="warning-box">
+                This is used in abnormal cases of hog gestation. Updating the production status to any of the status below will remove this entry from the production list and will be visible only in reports. <b>This cannot be undone.</b>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Date Status</label>
+                <input type="date" class="form-control" value="2023-11-20">
+            </div>
+            
+            <div class="radio-group">
+                <div class="radio-option" data-option="reheat">
+                    <input type="radio" name="status" id="reheat" class="radio-input">
+                    <div class="radio-text">
+                        <div class="radio-title">Sow not pregnant. Sow reheat.</div>
+                        <div class="radio-description">Just try again.</div>
+                    </div>
+                </div>
                 
-        
-        <!-- 5. Other Cost -->
-        <div class="form-group-number">
-            <label for="${elemIdOtherCost}" class="form-label">
-                Other Cost
-            </label>
+                <div class="radio-option" data-option="sold">
+                    <input type="radio" name="status" id="sold" class="radio-input">
+                    <div class="radio-text">
+                        <div class="radio-title">Sow is Sold or Dead.</div>
+                        <div class="radio-description">Sow will also be removed from sow list.</div>
+                    </div>
+                </div>
                 
-            <div class="currency-input-group">
-                <span class="input-group-text" id="${elemIdOtherCurSymbol}">$</span>
-                <input type="number" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">
-            </div>
-        </div>
-        
-        <!-- 6. Notes -->
-        <div class="form-group-text-area">
-            <label for="${elemIdNotes}" class="form-label">
-                Notes
-                <span id="${elemIdNotesCharCounter}" class="char-counter">0/160</span>
-            </label>
-            
-            <textarea class="form-control" id="${elemIdNotes}" rows="2" maxlength="160"></textarea>
-        </div>
-        
-        <!-- 7. Staff -->
-        <div class="form-group-select">
-            <label for="${elemIdStaff}" class="form-label">
-                Staff Member
-            </label>
-            
-            <select id="${elemIdStaff}" class="form-select">
-                <option value="0" selected disabled>Please Select</option>
-            </select>
-            <div class="invalid-feedback">
-                Need to select if not done by you.
+                <div class="radio-option" data-option="nolive">
+                    <input type="radio" name="status" id="nolive" class="radio-input">
+                    <div class="radio-text">
+                        <div class="radio-title">No Live piglets</div>
+                        <div class="radio-description">Sow has given birth all mummified/dead piglets.</div>
+                    </div>
+                </div>
             </div>
             
-            <!-- Done by Me Checkbox -->
-            <div id="doneByMeContainer" class="checkbox-group">
-                <input type="checkbox" id="${elemIdChkDoneByMe}">
-                <label for="${elemIdChkDoneByMe}" class="checkbox-label">
-                    <i class="fas fa-user-check checkbox-icon"></i>
-                    Done by Me
-                </label>
+            <button class="btn btn-primary">Save Changes</button>
+        </div>
+
+        <!-- Notes Tab -->
+        <div id="notes-tab" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Add New Note</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Date Notes</label>
+                <input type="date" class="form-control" value="2023-12-15">
             </div>
             
-            <div class="form-text">Who did the operation.</div>
-        
-        </div>
-        
-        <!-- Footer Buttons -->
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" data-bs-dismiss="modal">
-                <i class="fas fa-times me-2"></i>Cancel
-            </button>
-            <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-                <i class="fas fa-save me-2"></i>Save
-            </button>
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea class="form-control" rows="4" placeholder="Enter your notes here..."></textarea>
+            </div>
+            
+            <button class="btn btn-success">Save Note</button>
+            
+            <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--corporate-blue);">Previous Notes</h3>
+            
+            <table class="notes-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Notes</th>
+                        <th>Last Update By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2023-11-10</td>
+                        <td>Sow appears healthy with good appetite. All vital signs normal.</td>
+                        <td>John Smith</td>
+                    </tr>
+                    <tr>
+                        <td>2023-10-30</td>
+                        <td>Routine checkup completed. No issues detected.</td>
+                        <td>Maria Garcia</td>
+                    </tr>
+                    <tr>
+                        <td>2023-10-18</td>
+                        <td>Initial post-insemination check. Sow resting comfortably.</td>
+                        <td>Robert Johnson</td>
+                    </tr>
+                    <tr>
+                        <td>2023-10-15</td>
+                        <td>Insemination completed successfully. Sow returned to pen.</td>
+                        <td>Lisa Chen</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
-
-
         `;
         
         
@@ -379,92 +816,44 @@ export function pageProdGestatingAdd(input_settings){
     
     
     this._findElements = function(){
-        elemBtnClose               = document.getElementById(elemIdBtnClose);
+        elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
+        elemPigProdPid          = document.getElementById(elemIdNavPrevEntry);
+        elemHeaderSowName       = document.getElementById(elemIdNavPrevEntry);
+        elemHeaderBoarName      = document.getElementById(elemIdNavPrevEntry);
+        elemNavNextEntry        = document.getElementById(elemIdNavPrevEntry);
         
-        elemSelectSow           = document.getElementById(elemIdSelectSow);
-        elemSowStatusShow       = document.getElementById(elemIdSowStatusShow);
-        elemSowLastInsem        = document.getElementById(elemIdSowLastInsem);
-        elemSowLastPid          = document.getElementById(elemIdSowLastPid);
-        elemInsemType           = document.getElementById(elemIdInsemType);
-        elemDateMating          = document.getElementById(elemIdDateMating);
         
-        elemSelectBoarShow      = document.getElementById(elemIdSelectBoarShow);
-        elemSelectBoar          = document.getElementById(elemIdSelectBoar);
         
-        elemAiShow              = document.getElementById(elemIdAiShow);
-        elemSemenSupplier       = document.getElementById(elemIdSemenSupplier);
-        elemSemenType           = document.getElementById(elemIdSemenType);
-        elemSemenCostCurSymbol  = document.getElementById(elemIdSemenCostCurSymbol);
-        elemSemenCost           = document.getElementById(elemIdSemenCost);
         
-
-        
-        elemOtherCurSymbol      = document.getElementById(elemIdOtherCurSymbol);
-        elemOtherCost           = document.getElementById(elemIdOtherCost);
-        
-        elemNotes               = document.getElementById(elemIdNotes);
-        elemNotesCharCounter    = document.getElementById(elemIdNotesCharCounter);
-        
-        elemStaff               = document.getElementById(elemIdStaff);
-        elemChkDoneByMe         = document.getElementById(elemIdChkDoneByMe);
-            
-        elemBtnCancel           = document.getElementById(elemIdBtnCancel);
-        elemBtnSave             = document.getElementById(elemIdBtnSave);
+       
     }
     
     
     this._processAfterHtmlRender = function(){
-        // Temporary Philippine Peso symbol for currency1
-        elemSemenCostCurSymbol.innerHTML    = 'P';
-        elemOtherCurSymbol.innerHTML        = 'P';
         
-        //addModalSow.afterHtmlRender();
-        //addModalBoar.afterHtmlRender();
     }
     
     
     this._bindEventListeners = function(){
         
-        elemSelectSow.addEventListener('change', function(){
-            thisObj._onChangeSow();
-        });
+        const tabButtons  = elemDivContainer.querySelectorAll('.tab-button');
+        const tabContents = elemDivContainer.querySelectorAll('.tab-content');
         
-        
-        elemInsemType.addEventListener('change', function() {
-            const selected_value = elemInsemType.value;
-            
-            switch (selected_value) {
-                case 'boar-mating': {
-                    elemSelectBoarShow.style.display = 'block';
-                    elemAiShow.style.display = 'none';
-                    break;
-                }
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
                 
-                case 'ai-external': {
-                    elemSelectBoarShow.style.display = 'none';
-                    elemAiShow.style.display = 'block';
-                    break;
-                }
+                // Update active tab button
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
                 
-                case 'ai-internal': {
-                    break;
-                }
-            }
-        });
-        
-        
-        elemNotes.addEventListener('input', function() {
-            const length = this.value.length;
-            elemNotesCharCounter.textContent = `${length}/160`;
-        });
-        
-        
-        elemBtnClose.addEventListener('click', function() {
-            parentObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
-        });
-		
-		elemBtnCancel.addEventListener('click', function() {
-            parentObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+                // Show corresponding content
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+                
+                // Scroll to top of content area
+                document.querySelector('.tab-content-area').scrollTop = 0;
+            });
         });
     }
     
