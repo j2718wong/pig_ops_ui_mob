@@ -21,6 +21,7 @@
     <script type="text/javascript" src="static/js/sample_data/sample_data_staff.js"></script>
     <script type="text/javascript" src="static/js/sample_data/sample_data_account.js"></script>
     <script type="text/javascript" src="static/js/sample_data/sample_data_acc_pig_ops.js"></script>
+	<script type="text/javascript" src="static/js/sample_data/sample_data_sow_boar.js"></script>
     <script type="text/javascript" src="static/js/sample_data/sample_data_production.js"></script>
     
 	
@@ -39,6 +40,8 @@
     <script type="module" src="static/js/pages/acc_pig_ops/page_acc_pig_ops.js"></script>
     
 	<script type="module" src="static/js/pages/production/gesta_lacta/edit_modal_prod_pig_ops.js"></script>
+	<script type="module" src="static/js/pages/production/gesta_lacta/page_prod_gestating_add.js"></script>
+	<script type="module" src="static/js/pages/production/gesta_lacta/page_prod_gestating_entry.js"></script>
 	<script type="module" src="static/js/pages/production/gesta_lacta/page_mob_gesta_lacta.js"></script>
 	
 	
@@ -491,14 +494,14 @@
     
     <!-- Main Content - Dashboard -->
     <div class="main-content">
-        <div id="container-acc-pig-ops" class="hidden-container" style="display:none"></div>
-		<div id="container-prod-gesta-list" class="hidden-container" style="display:none"></div>
-		<div id="container-prod-lacta-list" class="hidden-container" style="display:none"></div>
-    
-		
+        <div id="container-acc-pig-ops" 	 class="hidden-container" style="display:none"></div>
+		<div id="container-prod-gesta-list"  class="hidden-container" style="display:none"></div>
+		<div id="container-prod-lacta-list"  class="hidden-container" style="display:none"></div>
+		<div id="container-prod-gesta-add" 	 class="hidden-container" style="display:none"></div>
+		<div id="container-prod-gesta-entry" class="hidden-container" style="display:none"></div>
 	
 	
-        <div id="container-dashboard" class="hidden-container" style="display:none"> 
+        <div id="container-dashboard" 		 class="hidden-container" style="display:none"> 
             <div class="content-card">
                 <h1>Pig Farm Dashboard</h1>
                 <p>Welcome back, John! Here's an overview of your farm operations at Sunrise Pig Farm Management.</p>
@@ -665,7 +668,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             
             const gNavigation = new Navigation();
-            gNavigation.init();
+            gNavigation.init(); 		
             
 			globalThis.gNavigation = gNavigation;
 			
@@ -677,6 +680,10 @@
             gNavigation.pageAccPigOps.setDataAccPigOps(G_SAMPLE_JSON_ACC_PIG_OPS);
             
 			gNavigation.setDataStaffList(G_SAMPLE_JSON_STAFF);
+			gNavigation.setDataSowList(G_SAMPLE_JSON_SOW_LIST);
+			gNavigation.setDataBoarList(G_SAMPLE_JSON_BOAR_LIST);
+			
+			
 			gNavigation.setDataPigProdList(G_SAMPLE_JSON_PIG_PRODUCTION);
 
 			

@@ -4,6 +4,8 @@
 
 'use strict';
 
+import {PageViewBasic}          from '../common/page_view_basic.js';
+
 import {APPLICATION,
         PIG_OPERATION_TYPE}     from '../../constants.js';
 
@@ -17,13 +19,26 @@ import {AddModalAccPigOps}      from './add_modal_acc_pig_ops.js'
 import {EditModalAccPigOps}     from './edit_modal_acc_pig_ops.js'
 
 
-export function PageAccPigOps(){
-    const thisObj               = this;
-
-    // This is needed as ths will be first element to be rendered
+PageAccPigOps.prototype = new PageViewBasic();
+export function PageAccPigOps(input_settings){
+    PageViewBasic.call(this);
+	
+	const thisObj               = this;
+	const parentObj             = input_settings.parentObj;
+	
+	/*
+    Typical settings = {
+        parentObj:              this
+    };
+    */
+    const settings              = input_settings;
+	
+	
+    // This is needed as this will be first element to be rendered
     var elemDivContainer        = document.getElementById('container-acc-pig-ops');
 
     var elemIdPageTitle         = null;
+    var elemIdEntryCount        = null;
     var elemIdPageInfo          = null;
 
     var elemIdBtnAddEntryShow   = null;
@@ -31,6 +46,7 @@ export function PageAccPigOps(){
     var elemIdTableContainer    = null;
 
     var elemPageTitle           = null;
+    var elemEntryCount          = null;
     var elemPageInfo            = null;
 
     var elemBtnAddEntryShow     = null;
@@ -87,7 +103,9 @@ export function PageAccPigOps(){
     this.render = function(){
         
         elemIdPageTitle         = 'page-title-acc-pig-ops';
+        elemIdEntryCount        = 'page-header-acc-pig-ops-entry-count';
         elemIdPageInfo          = 'page-info-acc-pig-ops';
+        
         
         elemIdBtnAddEntryShow   = 'add-entry-acc-pig-ops-show';
         elemIdMobileContainer   = 'mobile-container-acc-pig-ops';
@@ -354,12 +372,14 @@ export function PageAccPigOps(){
         
         var cur_text = null;
         
+        const html_entry_count =  `<span id="${elemIdEntryCount}" style="margin-right:8px;"></span>`;
+        
         switch(curAccPigOpsType){
             case PIG_OPERATION_TYPE.GESTATING:{
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'gestating_ops.title');
                 if (cur_text != null){
-                    elemPageTitle.innerHTML = cur_text;
+                    elemPageTitle.innerHTML = html_entry_count + cur_text;
                 }
                 
                 
@@ -383,7 +403,7 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'lactating_piglets_ops.title');
                 if (cur_text != null){
-                    elemPageTitle.innerHTML = cur_text;
+                    elemPageTitle.innerHTML = html_entry_count + cur_text;
                 }
                 
                 
@@ -406,7 +426,7 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'lactating_sow_ops.title');
                 if (cur_text != null){
-                    elemPageTitle.innerHTML = cur_text;
+                    elemPageTitle.innerHTML = html_entry_count + cur_text;
                 }
                 
                 
@@ -429,7 +449,7 @@ export function PageAccPigOps(){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'gilt_ops.title');
                 if (cur_text != null){
-                    elemPageTitle.innerHTML = cur_text;
+                    elemPageTitle.innerHTML = html_entry_count + cur_text;
                 }
                 
                 
@@ -448,6 +468,13 @@ export function PageAccPigOps(){
                 
                 break;
             }
+        }
+        
+        
+        // Update entry_count
+        if (parentObj.curScreenIsMobile == true){
+            elemEntryCount     = document.getElementById(elemIdEntryCount);
+            elemEntryCount.textContent = curAccPigOpsData.length;
         }
     }
     

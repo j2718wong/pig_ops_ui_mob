@@ -1,0 +1,129 @@
+Gestating Entry
+
+1.) Create a Page View for mobile screen
+- user corporate blue color theme
+
+Top Section
+1.) fixed; should not move when screen is scrolled 
+2.) these elements are inline 
+- left arrow button for viewing previous entry
+- pid and (sow love icon boar name); this should be center
+- right arrow button for viewing next entry
+3.)Tab names for
+- Insem
+- Birth
+- Status
+- Notes
+
+
+
+Tabs section
+- use form groups in the fields.
+
+Insem Tab
+---------
+1.) Read only Sow Name
+2.) Date Mating input
+Warning info text if Date Mating  is changed
+
+3.) Read only Insemination Type 
+
+if insemination type is Boar Mating:
+4.) Select boar drop down
+
+if insemination type is artifical insemination
+4.) select dropdown for semen supplier
+5.) select dropdown for semen type
+6.) text input for semen cost
+
+7.) text input for other cost
+
+8.) Notes with a char counter
+
+9.) select drop down for staff
+
+10.) button for Save changes
+
+
+Birth Tab
+---------
+Warning info text if Date Actual Birth is set. The warning text should read liek this:
+Setting the Date Actual Birth will update the production
+entry from Gestating status to Lactating Status and will be
+remove from Production Gestating List. Will be put in Production 
+Lactating List.
+
+
+1.) Read only for Date Expected Birth
+2.) Date input for Date Actual Birth
+The actual number of days is computed from date insemination to 
+date actual birth.
+3.) numeric input for Number of female piglets
+4.) numeric input for Number of male piglets
+5.) numeric input for Number of stillbirth piglets
+
+6.) select birth staff with and input grup for new 
+staff if staff not in the list.
+
+7.) button for Save changes
+
+
+Status tab
+---------
+Warning text that read like this:
+This is used in abnormal cases of hog gestation. 
+Updating the production status to any of the status 
+below will remove this entry from the production list 
+and will be visible only in reports. <b>This cannot be undone.</b>
+
+1.) date input for Date Status
+
+2.) radio for 'Sow not pregnant. Sow reheat.'
+text title: Just try again.
+
+3.) radio for 'Sow is Sold or Dead.'
+text title: Sow will also be removed from sow list.
+
+4.) radio for 'No Live piglets'
+text title: Sow has given birth all mummified/dead piglets. 
+
+
+5.) button for Save changes
+
+
+Notes tab
+---------
+
+Note Add Section
+1.) Date Notes input
+2.) Notes text area
+3.) Save button
+
+Notes Table section
+1.) plain table with these columns
+- Date
+- Notes 
+- Last Update By
+
+fix this:
+1.) the PID is just a 5 character number.
+2.) Sow name love icon Boar Name. use a love icon.
+3.) The PID and the Sow love Icon boar Name should be in line
+
+4.) make the insemination Type not read nly but a select input
+
+5.) For the number of piglets, there should be some plus/minus buttons
+input group to adjust the number of piglets
+
+6.) make the arrow icons bigger
+
+
+
+                                    
+
+
+
+
+
+
+

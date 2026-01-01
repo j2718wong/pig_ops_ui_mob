@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pig Operations Due</title>
+    <style>
+        :root {
+            --corporate-blue: #1e3a8a;
+            --corporate-light-blue: #3b82f6;
+            --corporate-bg-blue: #eff6ff;
+            --corporate-border-blue: #dbeafe;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --row-even: #f8fafc;
+            --row-odd: #ffffff;
+            --row-hover: #e0f2fe;
+            --clickable-highlight: #1e40af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            padding: 15px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Table Container - Mobile Optimized */
+        .table-container {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--corporate-border-blue);
+        }
+
+        /* Main Table */
+        .operations-table {
+            width: 100%;
+            min-width: 300px;
+            border-collapse: collapse;
+        }
+
+        /* Table Header */
+        .operations-table thead {
+            background-color: var(--corporate-blue);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .operations-table th {
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--white);
+            font-size: 0.9rem;
+            border: none;
+            white-space: nowrap;
+        }
+
+        /* Zebra Striping */
+        .operations-table tbody tr:nth-child(even) {
+            background-color: var(--row-even);
+        }
+
+        .operations-table tbody tr:nth-child(odd) {
+            background-color: var(--row-odd);
+        }
+
+        /* Table Body */
+        .operations-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--corporate-border-blue);
+            vertical-align: middle;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Hover effects */
+        .operations-table tbody tr:hover {
+            background-color: var(--row-hover) !important;
+        }
+
+        /* Column Specific Styles */
+        .sow-name {
+            font-weight: 600;
+            color: var(--corporate-blue);
+            min-width: 100px;
+            cursor: pointer;
+            position: relative;
+            padding-right: 24px;
+        }
+
+        .sow-name:hover {
+            color: var(--clickable-highlight);
+        }
+
+        /* Click indicator for sow name */
+        .sow-name::after {
+            content: "→";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--corporate-light-blue);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            font-weight: bold;
+        }
+
+        .sow-name:hover::after {
+            opacity: 1;
+        }
+
+        .date {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            min-width: 70px;
+            white-space: nowrap;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .date:hover {
+            background-color: rgba(30, 64, 175, 0.1);
+            color: var(--corporate-blue);
+        }
+
+        /* Compact date format */
+        .compact-date {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 3px;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        .date:hover .compact-date {
+            background-color: var(--corporate-blue);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .operation {
+            color: var(--text-dark);
+            min-width: 150px;
+            padding-right: 20px;
+        }
+
+        /* Status indicators */
+        .status-overdue {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            margin-left: 8px;
+            vertical-align: middle;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Highlight for today's date */
+        .date-today .compact-date {
+            background-color: #fee2e2;
+            color: #dc2626;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 3px;
+        }
+
+        /* Mobile-specific optimizations */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .operations-table th,
+            .operations-table td {
+                padding: 12px 8px;
+                font-size: 0.85rem;
+            }
+            
+            .sow-name {
+                min-width: 90px;
+            }
+            
+            .date {
+                min-width: 60px;
+            }
+            
+            .operation {
+                min-width: 120px;
+            }
+            
+            /* Adjust zebra stripes for better mobile visibility */
+            .operations-table tbody tr:nth-child(even) {
+                background-color: #f5f8ff;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .sow-name:focus,
+        .date:focus {
+            outline: 2px solid var(--corporate-light-blue);
+            outline-offset: 2px;
+            border-radius: 3px;
+        }
+
+        /* Active state for touch/click */
+        .sow-name:active,
+        .date:active {
+            transform: scale(0.98);
+            transition: transform 0.1s ease;
+        }
+
+        /* Visual separator between rows */
+        .operations-table tbody tr:not(:last-child) td {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* Completed row styling */
+        .row-completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+            background-color: #f0f9ff !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="table-container">
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Sow Name</th>
+                        <th>Date</th>
+                        <th>Operation Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Bertha as done">Bertha</td>
+                        <td class="date date-today" tabindex="0" role="button" aria-label="Mark operations for Jan 15 as done">
+                            <span class="compact-date">Jan 15</span>
+                        </td>
+                        <td class="operation">Vaccination - Parvovirus</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Daisy as done">Daisy</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 16 as done">
+                            <span class="compact-date">Jan 16</span>
+                        </td>
+                        <td class="operation">Weaning</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Penny as done">Penny</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 17 as done">
+                            <span class="compact-date">Jan 17</span>
+                        </td>
+                        <td class="operation">Pregnancy Check</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Wilhelmina as done">Wilhelmina</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 18 as done">
+                            <span class="compact-date">Jan 18</span>
+                        </td>
+                        <td class="operation">Feeding Regimen Change</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Gertrude as done">Gertrude</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 19 as done">
+                            <span class="compact-date">Jan 19</span>
+                        </td>
+                        <td class="operation">Health Inspection</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Charlotte as done">Charlotte</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 20 as done">
+                            <span class="compact-date">Jan 20</span>
+                            <span class="status-overdue" aria-label="Overdue"></span>
+                        </td>
+                        <td class="operation">Breeding</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Matilda as done">Matilda</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 21 as done">
+                            <span class="compact-date">Jan 21</span>
+                        </td>
+                        <td class="operation">Vaccination - E. coli</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Olive as done">Olive</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 22 as done">
+                            <span class="compact-date">Jan 22</span>
+                            <span class="status-overdue" aria-label="Overdue"></span>
+                        </td>
+                        <td class="operation">Farrowing Preparation</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Rosie as done">Rosie</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 23 as done">
+                            <span class="compact-date">Jan 23</span>
+                        </td>
+                        <td class="operation">Weight Check</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Bella as done">Bella</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 24 as done">
+                            <span class="compact-date">Jan 24</span>
+                        </td>
+                        <td class="operation">Hoof Trimming</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Ruby as done">Ruby</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 25 as done">
+                            <span class="compact-date">Jan 25</span>
+                        </td>
+                        <td class="operation">Medication - Antibiotics</td>
+                    </tr>
+                    <tr>
+                        <td class="sow-name" tabindex="0" role="button" aria-label="Mark operation for Pearl as done">Pearl</td>
+                        <td class="date" tabindex="0" role="button" aria-label="Mark operations for Jan 26 as done">
+                            <span class="compact-date">Jan 26</span>
+                            <span class="status-overdue" aria-label="Overdue"></span>
+                        </td>
+                        <td class="operation">Environmental Enrichment</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle click/tap on sow name or date
+        function markOperationDone(target, type, value) {
+            const row = target.closest('tr');
+            
+            // Store original background color
+            const originalBg = row.style.backgroundColor;
+            
+            // Visual feedback on the clicked cell
+            if (type === 'sow') {
+                target.style.color = '#10b981';
+                target.style.fontWeight = 'bold';
+            } else {
+                const dateSpan = target.querySelector('.compact-date');
+                dateSpan.style.backgroundColor = '#10b981';
+                dateSpan.style.color = 'white';
+            }
+            
+            // Mark the entire row as completed
+            row.classList.add('row-completed');
+            
+            // Show completion message
+            const operationCell = row.querySelector('.operation');
+            const originalOperation = operationCell.textContent;
+            operationCell.innerHTML = `<span style="color:#10b981; font-weight:bold;">✓ Completed</span>`;
+            
+            // For demo purposes, log the action
+            console.log(`Marked as done: ${type === 'sow' ? 'Sow ' + value : 'Date ' + value}`);
+            
+            // In a real application, you would send this to your backend
+            // For now, we'll keep it marked as done
+        }
+
+        // Add click handlers to sow names
+        document.querySelectorAll('.sow-name').forEach(sowCell => {
+            sowCell.addEventListener('click', function() {
+                const sowName = this.textContent.trim();
+                markOperationDone(this, 'sow', sowName);
+            });
+            
+            // Also handle Enter key for accessibility
+            sowCell.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const sowName = this.textContent.trim();
+                    markOperationDone(this, 'sow', sowName);
+                }
+            });
+        });
+
+        // Add click handlers to dates
+        document.querySelectorAll('.date').forEach(dateCell => {
+            dateCell.addEventListener('click', function() {
+                const dateText = this.querySelector('.compact-date').textContent;
+                const day = dateText.replace('Jan ', '');
+                markOperationDone(this, 'date', day);
+            });
+            
+            // Also handle Enter key for accessibility
+            dateCell.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const dateText = this.querySelector('.compact-date').textContent;
+                    const day = dateText.replace('Jan ', '');
+                    markOperationDone(this, 'date', day);
+                }
+            });
+        });
+
+        // Touch feedback for mobile
+        document.querySelectorAll('.sow-name, .date').forEach(cell => {
+            let touchStartTime;
+            
+            cell.addEventListener('touchstart', function() {
+                touchStartTime = Date.now();
+                this.style.opacity = '0.8';
+            });
+            
+            cell.addEventListener('touchend', function() {
+                const touchDuration = Date.now() - touchStartTime;
+                if (touchDuration < 500) { // Only reset if it was a quick tap
+                    this.style.opacity = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

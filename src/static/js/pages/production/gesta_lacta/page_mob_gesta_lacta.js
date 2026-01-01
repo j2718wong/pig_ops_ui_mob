@@ -4,6 +4,8 @@
 
 'use strict';
 
+import {PageViewBasic}          from '../../common/page_view_basic.js';
+
 import {APPLICATION,
         PIG_OPERATION_TYPE,
         PROD_STATUS}            from '../../../constants.js';
@@ -16,8 +18,10 @@ import {formatDate,
 
 
 
-
+PageMobGestaLacta.prototype = new PageViewBasic();
 export function PageMobGestaLacta(input_settings){
+    PageViewBasic.call(this);
+    
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
     
@@ -52,24 +56,32 @@ export function PageMobGestaLacta(input_settings){
     
     
     var elemIdPageTitle         = null;
+    var elemIdPageHeaderAlarm   = null;
+    var elemIdEntryCount        = null;
     var elemIdPageInfo          = null;
     
     var elemIdMobSearchInput    = null;
     var elemIdMobAddEntryBtn    = null;
     
+    var elemIdCardList          = null;
     var elemIdListContainer     = null;
-
+    var elemIdPigOpsAlarmTable  = null;
 
 
     var elemPageTitle           = null;
+    var elemPageHeaderAlarm     = null;
+    var elemEntryCount         	= null;
     var elemPageInfo            = null;
 
     var elemMobSearchInput      = null;
     var elemMobAddEntryBtn      = null;
     
+    var elemCardList            = null;
     var elemListContainer       = null;
-    
-    
+    var elemPigOpsAlarmTable    = null;
+
+    // if false curView is PigOpsAlarmTable
+    var curViewIsCardList       = true;
     
     var dataPigProdList         = null;
 
@@ -78,6 +90,8 @@ export function PageMobGestaLacta(input_settings){
     var curUserLanguageKey      = 'en';
 
 
+    var showpageHeaderAlarm     = false;
+    var pigOpsAlarmList         = null;
     
     
     // This must be set before rendering the autotable
@@ -104,9 +118,14 @@ export function PageMobGestaLacta(input_settings){
     this.render = function(){
         
         elemIdPageTitle         = `page-title-${settings.uniqueKey}-list`;
+        elemIdPageHeaderAlarm   = `page-title-${settings.uniqueKey}-alarm`;
+        elemIdEntryCount        = `page-title-${settings.uniqueKey}-prod-count`;
         elemIdPageInfo          = `page-info-${settings.uniqueKey}-list`;
         
+        elemIdCardList          = `${settings.uniqueKey}-card-list`;
         elemIdListContainer     = `mobile-list-container-${settings.uniqueKey}`;
+        elemIdPigOpsAlarmTable  = `${settings.uniqueKey}-alarm-table`;
+        
         
         elemIdMobSearchInput    = `mobile-search-input-${settings.uniqueKey}`;
         elemIdMobAddEntryBtn    = `mobile-add-entry-btn-${settings.uniqueKey}`;
@@ -119,7 +138,14 @@ export function PageMobGestaLacta(input_settings){
         const html = `
 <div class="mobile-container">
     <div class="header">
-        <h1 id="${elemIdPageTitle}">${settings.pageTitle}</h1>
+        <h1 id="${elemIdPageTitle}">
+            <span id="${elemIdEntryCount}"></span>
+            ${settings.pageTitle}
+            <span class="inline-bell larger" id="${elemIdPageHeaderAlarm}" title="Due operations!" style="display:none;">
+                <i class="fas fa-bell"></i>
+            </span>
+            
+        </h1>
         
         <!-- Mobile Info Box -->
         <!--
@@ -129,21 +155,26 @@ export function PageMobGestaLacta(input_settings){
         </div>
         -->
     </div>
-
-    <!-- Search and Add Entry Controls -->
-    <div class="mobile-controls">
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" id=${elemIdMobSearchInput} placeholder="Search PID or Sow Name...">
+    
+    <div id="${elemIdCardList}">
+        <!-- Search and Add Entry Controls -->
+        <div class="mobile-controls">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id=${elemIdMobSearchInput} placeholder="Search PID or Sow Name...">
+            </div>
+            <button class="btn-add-entry" id="${elemIdMobAddEntryBtn}" style="${style_hide_add_button}">
+                <i class="fas fa-plus"></i>
+                Add Entry
+            </button>
         </div>
-        <button class="btn-add-entry" id="${elemIdMobAddEntryBtn}" style="${style_hide_add_button}">
-            <i class="fas fa-plus"></i>
-            Add Entry
-        </button>
-    </div>
 
-    <!-- Card Container -->
-    <div class="card-container-pig-prod" id="${elemIdListContainer}"></div>
+        <!-- Card Container -->
+        <div class="card-container-pig-prod" id="${elemIdListContainer}"></div>
+    </div>
+    
+    <div id="${elemIdPigOpsAlarmTable}"></div>
+    
 </div>
         `;
         
@@ -160,11 +191,15 @@ export function PageMobGestaLacta(input_settings){
     
     this._findElements = function(){
         elemPageTitle           = document.getElementById(elemIdPageTitle);
+        elemPageHeaderAlarm     = document.getElementById(elemIdPageHeaderAlarm);
+        elemEntryCount          = document.getElementById(elemIdEntryCount);
         elemPageInfo            = document.getElementById(elemIdPageInfo);
 
         elemMobSearchInput      = document.getElementById(elemIdMobSearchInput);
         elemMobAddEntryBtn      = document.getElementById(elemIdMobAddEntryBtn);
+        elemCardList            = document.getElementById(elemIdCardList);
         elemListContainer       = document.getElementById(elemIdListContainer);
+        elemPigOpsAlarmTable    = document.getElementById(elemIdPigOpsAlarmTable);
         
     }
     
@@ -177,15 +212,22 @@ export function PageMobGestaLacta(input_settings){
     
     this._bindEventListeners = function(){
         
+        elemPageHeaderAlarm.addEventListener('click', function() {
+            thisObj.onClickPageHeaderAlarm();
+        });
+
         
+        elemMobAddEntryBtn.addEventListener('click', function() {
+            parentObj.onClickAddProdGestating();
+        });
     
     }
     
     
     this.setDataStaffList = function(data){
         if (this.editModalProdPigOps){
-			this.editModalProdPigOps.setDataStaffList(data);
-		}
+            this.editModalProdPigOps.setDataStaffList(data);
+        }
     }
     
 
@@ -259,6 +301,14 @@ export function PageMobGestaLacta(input_settings){
     
     
     this.show = function(){
+        showpageHeaderAlarm = false; // Need to reset this.
+        elemPageHeaderAlarm.style.display = 'none';
+        
+        // Need to clear this;
+        pigOpsAlarmList     = [];
+        
+        
+        // Render HTML in elemListContainer
         if ((dataPigProdList == null) || (dataPigProdList.length == 0)){
             elemMobSearchInput.setAttribute("placeholder", "No entries found"); 
         }
@@ -295,10 +345,35 @@ export function PageMobGestaLacta(input_settings){
             });
         });
         
+        
+        // Show PageHeaderAlarm
+        if (showpageHeaderAlarm){
+            elemPageHeaderAlarm.style.display = 'inline-block';
+        }
+        
+        
+        // Render HTML in elemPigOpsAlarmTable
+        html = thisObj._getHtmlAlarmOperations();
+        elemPigOpsAlarmTable.innerHTML = html;
+    
+    
+        // Need to set this
+        curViewIsCardList       = true;
+        elemCardList.style.display = 'block';
+        elemPigOpsAlarmTable.style.display = 'none';
+        
+        
+        // Set entry count; only show if mobile screen
+        if (parentObj.curScreenIsMobile == true){
+            var prod_count = 0;
+            if (dataPigProdList){prod_count = dataPigProdList.length;}
+            
+            elemEntryCount.innerHTML = `${prod_count}`;
+        }
     }
     
     
-    this._getHtml = function(data_prod){
+    this._getHtml = function(data_pig_prod){
         var diff_msecs;
         var diff_days;
         
@@ -307,15 +382,15 @@ export function PageMobGestaLacta(input_settings){
         
         
         var sow_name = '';
-        if ((data_prod.sow.name != null) && (data_prod.sow.name.length > 0)){
-            sow_name = data_prod.sow.name;
+        if ((data_pig_prod.sow.name != null) && (data_pig_prod.sow.name.length > 0)){
+            sow_name = data_pig_prod.sow.name;
         }
         else{
-            sow_name = data_prod.sow.number;
+            sow_name = data_pig_prod.sow.number;
         }
         
         
-        const insemination = data_prod.insemination;
+        const insemination = data_pig_prod.insemination;
         
         var boar_name = '';
         switch (insemination.insem_type){
@@ -361,7 +436,7 @@ export function PageMobGestaLacta(input_settings){
         }
         
         
-        const birth = data_prod.birth;
+        const birth = data_pig_prod.birth;
         
         var date_important          = null;
         var header_class            = 'lactating-piglets';
@@ -391,7 +466,7 @@ export function PageMobGestaLacta(input_settings){
         
         
         
-        switch(data_prod.pig_production.prod_status_id){
+        switch(data_pig_prod.pig_production.prod_status_id){
             case PROD_STATUS.GESTATING: {
                 header_class        = 'gestating';
                 
@@ -472,7 +547,7 @@ export function PageMobGestaLacta(input_settings){
                 
                 // TODO needs to be computed at backend
                 cur_num_pigs_dead   = (cur_num_pigs_male + cur_num_pigs_female) - 
-                                        data_prod.pig_production.cur_pig_count;
+                                        data_pig_prod.pig_production.cur_pig_count;
                 if (cur_num_pigs_dead < 0){cur_num_pigs_dead = 0;}
                 
                 style_piglet_counter= '';
@@ -484,16 +559,17 @@ export function PageMobGestaLacta(input_settings){
         }
         
         
-        const html_operations = thisObj._getHtmlOperations(data_prod);
+        const html_operations = thisObj._getHtmlOperations(data_pig_prod);
         
         
         var html = `
-        <div class="card-pig-prod">
+        <div class="card-pig-prod" data-pid="${data_pig_prod.pig_production.farm_prod_id}">
             <div class="card-header-pig-prod ${header_class}">
                 <div class="header-top-row">
-                    <div class="pid">${data_prod.pig_production.farm_prod_id}</div>
+                    <div class="pid">${data_pig_prod.pig_production.farm_prod_id}</div>
                     <div class="sow-name">
-                        ${sow_name} <i class="fas fa-heart"></i> ${boar_name}
+                        <!--${sow_name} <i class="fas fa-heart"></i> ${boar_name} -->
+                        ${sow_name} ❤️ ${boar_name}
                         ${indicator_ai}
                     </div>
                 </div>
@@ -550,8 +626,9 @@ export function PageMobGestaLacta(input_settings){
 
 
             <!-- Operations List -->
-            ${html_operations}
-
+            <div class ="operations-list-container">
+                ${html_operations}
+            </div>
 
             <!-- Update Button -->
             <div class="controls">
@@ -565,13 +642,13 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    this._getHtmlOperations = function(data_prod){
-        const pid = data_prod.pig_production.farm_prod_id;
+    this._getHtmlOperations = function(data_pig_prod){
+        const pid = data_pig_prod.pig_production.farm_prod_id;
         
         var operations = null;
         
-        if (data_prod.pig_production.prod_status_id == PROD_STATUS.GESTATING){
-            operations = data_prod.gestating_ops;
+        if (data_pig_prod.pig_production.prod_status_id == PROD_STATUS.GESTATING){
+            operations = data_pig_prod.gestating_ops;
         }
         else{
             operations = [];
@@ -582,6 +659,17 @@ export function PageMobGestaLacta(input_settings){
         
         if (operations == null){return '';}
         if (operations.length == 0){return '';}
+        
+        
+        const data_sow = data_pig_prod.sow;
+        var sow_reference = '';
+        
+        if ((data_sow.name != null) && (data_sow.name.length >0)){
+            sow_reference = data_sow.name;
+        }
+        else{
+            sow_reference = data_sow.number;
+        }
         
         
         /*
@@ -683,6 +771,7 @@ export function PageMobGestaLacta(input_settings){
                 placement_class:    'operation-above',
                 is_hidden:          true,
                 pid:                pid,
+                sow:                sow_reference,
                 data_index:         index,
                 operation_hid:      operation.pig_prod_pig_ops.hid
             };
@@ -698,6 +787,7 @@ export function PageMobGestaLacta(input_settings){
                 placement_class:    '',
                 is_hidden:          false,
                 pid:                pid,
+                sow:                sow_reference,
                 data_index:         index,
                 operation_hid:      operation.pig_prod_pig_ops.hid
             };
@@ -713,6 +803,7 @@ export function PageMobGestaLacta(input_settings){
                 placement_class:    'operation-below',
                 is_hidden:          true,
                 pid:                pid,
+                sow:                sow_reference,
                 data_index:         index,
                 operation_hid:      operation.pig_prod_pig_ops.hid
             };
@@ -807,6 +898,7 @@ export function PageMobGestaLacta(input_settings){
     this._getHtmlOperation = function(data_operation, options){
         const placement_class   = options.placement_class;
         const is_hidden         = options.is_hidden;
+        const sow               = options.sow;
         const pid               = options.pid;
         const data_index        = options.data_index;
         const operation_hid     = options.operation_hid;
@@ -885,8 +977,28 @@ export function PageMobGestaLacta(input_settings){
             operation_class = 'operation-pending';
         }
         else{
-            has_action      = 1;
-            operation_class = 'operation-due';
+            has_action          = 1;
+            operation_class     = 'operation-due';
+            showpageHeaderAlarm = true;
+            
+            const options_date_short = {
+                month: 'short', // "Dec"
+                day: 'numeric', // "20"
+            };
+            
+            var is_overdue = 0;
+            if (diff_days < 0){is_overdue = 1;}
+            
+            const short_dt_target = dt_target.toLocaleDateString('en-US', options_date_short);
+            
+            pigOpsAlarmList.push({
+                pid:            pid,
+                sow:            sow,
+                date:           short_dt_target,
+                is_overdue:     is_overdue,
+                operation_hid:  operation_hid,
+                pig_ops_name:   operation_name
+            });
         }
         
         
@@ -930,6 +1042,68 @@ export function PageMobGestaLacta(input_settings){
             
         return html;
     } 
+    
+    
+    this._getHtmlAlarmOperations = function(){
+        
+        var html_tbody = '';
+        
+        var index = 0;
+        for (const cur_entry of pigOpsAlarmList){
+            const pid = cur_entry.pid;
+            const operation_hid = cur_entry.operation_hid;
+            
+            let html_overdue ='';
+            
+            if (cur_entry.is_overdue){
+                html_overdue = `<span class="status-overdue" aria-label="Overdue"></span>`;
+            }
+            
+            var s_click;
+            if (settings.isGesta){
+                s_click = `gNavigation.pageMobGestatingList.onClickMarkAsDone(${pid},'${operation_hid}');`;
+            }
+            else{
+                s_click = `gNavigation.pageMobLactatingList.onClickShowMore(${pid},'${operation_hid}');`;
+            }
+            
+            
+            html_tbody += `
+            <tr>
+                <td class="sow-name" tabindex="0" role="button" onclick="${s_click}">${cur_entry.sow}</td>
+                <td class="date date-today" tabindex="0" role="button" onclick="${s_click}">
+                    <span class="compact-date">${cur_entry.date}</span>
+                    ${html_overdue}
+                </td>
+                <td class="operation">${cur_entry.pig_ops_name}
+                    <span class="inline-bell">
+                        <i class="fas fa-bell"></i>
+                    </span>
+                </td>
+            </tr>
+            `;
+            
+            index += 1;
+        }
+        
+        
+        var html = `
+        <table class="operations-table">
+            <thead>
+                <tr>
+                    <th>Sow</th>
+                    <th>Date</th>
+                    <th>Operation Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${html_tbody}
+            </tbody>
+        </table>
+        `;
+        
+        return html;
+    }
     
     
     this.setUserLanguage = function(language_key){
@@ -1037,12 +1211,41 @@ export function PageMobGestaLacta(input_settings){
         const operation = thisObj.getDataProdPigOps(data_pig_prod, entry_hid);
         if (operation == null) {return;}
         
+        const data_sow = data_pig_prod.sow;
+        var sow_reference = '';
+        
+        if ((data_sow.name != null) && (data_sow.name.length >0)){
+            sow_reference = data_sow.name;
+        }
+        else{
+            sow_reference = data_sow.number;
+        }
+        
         
         const options = {
-            pid:        	pid,
-            is_gesta:    	settings.isGesta
+            pid:            pid,
+            sow:            sow_reference,
+            is_gesta:       settings.isGesta
         };
         thisObj.editModalProdPigOps.show(operation, options);
+    }
+    
+    
+    this.onClickPageHeaderAlarm = function(){
+        console.log('onClickPageHeaderAlarm');
+        
+        if (curViewIsCardList == true){
+            elemCardList.style.display = 'none';
+            elemPigOpsAlarmTable.style.display = 'block';
+        
+            curViewIsCardList = false;
+        }
+        else{
+            elemCardList.style.display = 'block';
+            elemPigOpsAlarmTable.style.display = 'none';
+            
+            curViewIsCardList = true;
+        }
     }
     
     
@@ -1087,14 +1290,26 @@ export function PageMobGestaLacta(input_settings){
     
     
     
-    // Open edit modal with operation data
-    this.editModalOpen = function(entry_hid) {
-        const operation = thisObj.getDataAccPigOps(entry_hid);
-        if (operation == null) {return;}
+    
+    this.onSuccessEditPigOps = function(pid){
+        // Query the card where this pid is found
+        const div_pig_prod_entry =  elemListContainer.querySelector(`div.card-pig-prod[data-pid="${pid}"]`);
+        
+        if (div_pig_prod_entry == null){
+            editModalProdPigOps.hide();
+            console.log(`PigProd with pid = ${pid} cannot be found in UI.`)
+            return;
+        }
+        
+        const data_prod = thisObj.getDataPigProd(pid)
+        const html_operations = thisObj._getHtmlOperations(data_prod);
         
         
+        // Query the operations-list-container 
+        const div_container = div_pig_prod_entry.querySelector('operations-list-container');
         
+        // Redraw operations list
+        div_container.innerHTML = html_operations;
+        editModalProdPigOps.hide();
     }
-    
-    
 }

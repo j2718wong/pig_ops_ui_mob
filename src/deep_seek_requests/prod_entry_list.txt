@@ -111,3 +111,27 @@ fix this.
 In the "Mark Operation as Done" modal, below the staff select,
 add a check box "Done by Me"
 
+
+========================
+Pig Operations Due plain table
+- Use corporate blue themes
+- optimize for mobile view 
+
+1.) Create a plain table that can be viewed in mobile with the following 
+columns
+
+- Sow Name
+- Date
+- Operation Name
+- Action; This is button with mark as Done; do not create code for Mark As Done
+
+Fix this:
+1.) remove the header 'Pig operations Due' and the footer 'Pig operations system'
+2.) Remove the action Column
+3.) Remove the 'Due' in the date column.
+4.) Put emphasis on the sow or date that it can be touch or clickable to Perform
+an action.
+5.)use zebra alternate color in the table rows
+
+
+

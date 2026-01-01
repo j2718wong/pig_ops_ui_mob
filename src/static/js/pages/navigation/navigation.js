@@ -11,6 +11,8 @@ import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
 import {PageMobGestaLacta}          from '../production/gesta_lacta/page_mob_gesta_lacta.js';
 
 import {EditModalProdPigOps}        from '../production/gesta_lacta/edit_modal_prod_pig_ops.js'
+import {PageProdGestatingAdd}      	from '../production/gesta_lacta/page_prod_gestating_add.js'
+
 
 
 function UserControl() {
@@ -126,6 +128,12 @@ function UserControl() {
     this.getCurrentLanguage = function(){
         
     }
+	
+	
+	//temporary
+	this.getBaseUrl = function(){
+        return "http://localhost:8080"; // remporary
+    }
 }
 
 
@@ -158,16 +166,22 @@ export function Navigation(){
 
     
     var elemHiddenContAccPigOps     = null;
-    var elemHiddenContProdGestating = null;
-    var elemHiddenContProdLactating = null;
+    var elemHiddenContProdGestaList = null;
+    var elemHiddenContProdLactaList = null;
+    var elemHiddenContProdGestaAdd	= null;
+	var elemHiddenContProdGestaEntry= null;
+	
     
-    
-    var curScreenIsMobile           = null;
+    this.curScreenIsMobile         	= null;
     
     
     this.userControl                = new UserControl();
     
-    this.pageAccPigOps              = new PageAccPigOps();
+	
+	const settingsAccPigOps = {
+        parentObj:              this
+    }
+	this.pageAccPigOps          = new PageAccPigOps(settingsAccPigOps);
     
     
     const settingsProdGestating = {
@@ -178,6 +192,7 @@ export function Navigation(){
     } 
     this.pageMobGestatingList   = new PageMobGestaLacta(settingsProdGestating);
     
+	
     const settingsProdLactating = {
         parentObj:              this,
         isGesta:                false,
@@ -192,7 +207,12 @@ export function Navigation(){
     };
     this.editModalProdPigOps    = new EditModalProdPigOps(settingsEditPigOps);
     
-    
+	
+    const settingsAddProdGestating = {
+        parentObj:              this
+    };
+	this.pageProdGestatingAdd 	= new PageProdGestatingAdd(settingsAddProdGestating);
+	
     
     this.init = function(){
         
@@ -203,6 +223,7 @@ export function Navigation(){
         this.pageMobLactatingList.init();
         
         this.editModalProdPigOps.init();
+		this.pageProdGestatingAdd.init();
         
         this.afterHtmlRender();
         
@@ -239,16 +260,23 @@ export function Navigation(){
 
         
         elemHiddenContAccPigOps     = document.getElementById('container-acc-pig-ops');
-        elemHiddenContProdGestating = document.getElementById('container-prod-gesta-list');
-        elemHiddenContProdLactating = document.getElementById('container-prod-lacta-list');
+        elemHiddenContProdGestaList = document.getElementById('container-prod-gesta-list');
+        elemHiddenContProdLactaList = document.getElementById('container-prod-lacta-list');
+		elemHiddenContProdGestaAdd 	= document.getElementById('container-prod-gesta-add');
+		elemHiddenContProdGestaEntry= document.getElementById('container-prod-gesta-entry');
     
     }
     
     
     this._processAfterHtmlRender = function(){
-		this.pageMobGestatingList.editModalProdPigOps = this.editModalProdPigOps;
-		this.pageMobLactatingList.editModalProdPigOps = this.editModalProdPigOps;
-	}
+        this.pageMobGestatingList.editModalProdPigOps = this.editModalProdPigOps;
+        this.pageMobLactatingList.editModalProdPigOps = this.editModalProdPigOps;
+    
+        this.pageMobGestatingList.setNavigation(thisObj);
+        this.pageMobLactatingList.setNavigation(thisObj);
+        this.editModalProdPigOps.setNavigation(thisObj);
+        
+    }
     
     
     this._bindEventListeners = function(){
@@ -281,7 +309,8 @@ export function Navigation(){
     this.setDataStaffList = function(data){
         this.pageMobGestatingList.setDataStaffList(data);
         this.pageMobLactatingList.setDataStaffList(data);
-    }
+		this.pageProdGestatingAdd.setDataStaffList(data);
+	}
     
     
     this.setDataPigProdList = function(data){
@@ -289,6 +318,16 @@ export function Navigation(){
         this.pageMobLactatingList.setDataPigProdList(data);
     }
     
+	
+	this.setDataSowList = function(data){
+		this.pageProdGestatingAdd.setDataSowList(data);
+	}
+	
+	
+	this.setDataBoarList = function(data){
+		this.pageProdGestatingAdd.setDataBoarList(data);
+	}
+	
     
     // Update pig farm name on resize for responsive centering
     this.updatePigFarmName = function() {
@@ -309,7 +348,7 @@ export function Navigation(){
     }
     
         
-    this.hideHiddenContainers = function(except_hidden_cont){
+    this.hideHiddenContainersExcept = function(except_hidden_cont){
         const hidden_containers = document.getElementsByClassName("hidden-container");
         
         
@@ -327,7 +366,7 @@ export function Navigation(){
     
     this.onClickNav = function(is_mobile, nav_name){
     
-        curScreenIsMobile = is_mobile;
+        thisObj.curScreenIsMobile = is_mobile;
         
         
         switch(nav_name){
@@ -481,8 +520,7 @@ export function Navigation(){
         
     
     this._onClickNavAccPigOps = function(is_mobile, operation_type){
-        console.log(`_onClickNavAccPigOps; is_mobile=${is_mobile}; operation_type = ${operation_type}`);
-        thisObj.hideHiddenContainers(elemHiddenContAccPigOps);
+        thisObj.hideHiddenContainersExcept(elemHiddenContAccPigOps);
         thisObj.pageAccPigOps.show(operation_type);
     }
         
@@ -497,20 +535,20 @@ export function Navigation(){
         
         if (is_mobile == null){ 
             // If not specified use the last known screen state.
-            is_mobile = curScreenIsMobile;
+            is_mobile = thisObj.curScreenIsMobile;
         }
         
         
         if (is_mobile){
             if (operation_type == PIG_OPERATION_TYPE.GESTATING){
-                thisObj.hideHiddenContainers(elemHiddenContProdGestating);
+                thisObj.hideHiddenContainersExcept(elemHiddenContProdGestaList);
                 thisObj.pageMobGestatingList.show();
                 return;
             }
             
             if ((operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS) || 
                 (operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
-                thisObj.hideHiddenContainers(elemHiddenContProdLactating);
+                thisObj.hideHiddenContainersExcept(elemHiddenContProdLactaList);
                 thisObj.pageMobLactatingList.show();
                 return;
             }
@@ -605,6 +643,11 @@ export function Navigation(){
         
         
         
+	this.onClickAddProdGestating = function(){
+		console.log('onClickAddProdGestating');
+		thisObj.hideHiddenContainersExcept(elemHiddenContProdGestaAdd);
+        thisObj.pageProdGestatingAdd.show();
+	}
     
     
     

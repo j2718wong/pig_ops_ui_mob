@@ -96,78 +96,76 @@ export function AddModalAccPigOps(input_settings){
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                
                 <div class="modal-body">
-                    <form id="addCardForm">
-                        <div class="form-section-title" style="margin-top:0;">
-                            <i class="fas fa-tag"></i>
-                            Operation Information
-                        </div>
-                        
-                        <div class="form-group-text">
-                            <label for="${elemIdName}" class="form-label">
-                                Operation Name
-                                <span id="${elemIdNameCounter}" class="char-counter">0/${max_len_name}</span>
-                            </label>
-                            <input  type="text" 
-                                    class="form-control" 
-                                    id="${elemIdName}" 
-                                    maxlength="${max_len_name}" required>
-                            <div class="invalid-feedback">Please enter a valid name. </div>
-                            <div class="form-text">Enter a descriptive name for the operation</div>
-                        </div>
-                        
-                        <div class="form-group-text">
-                            <label for="${elemIdShortName}" class="form-label">
-                                Short Name
-                                <span id="${elemIdShortNameCounter}" class="char-counter">0/${max_len_short_name}</span>
-                            </label>
-                            <input  type="text" 
-                                    class="form-control" 
-                                    id="${elemIdShortName}" 
-                                    maxlength="${max_len_short_name}" required>
-                            <div class="invalid-feedback">Please enter a valid short name. </div>
-                            <div class="form-text">Short name for plain text report.</div>
-                        </div>
-                        
-                        <div class="form-section-title">
-                            <i class="fas fa-align-left"></i>
+                    <div class="form-section-title" style="margin-top:0;">
+                        <i class="fas fa-tag"></i>
+                        Operation Information
+                    </div>
+                    
+                    <div class="form-group-text">
+                        <label for="${elemIdName}" class="form-label">
+                            Operation Name
+                            <span id="${elemIdNameCounter}" class="char-counter">0/${max_len_name}</span>
+                        </label>
+                        <input  type="text" 
+                                class="form-control" 
+                                id="${elemIdName}" 
+                                maxlength="${max_len_name}" required>
+                        <div class="invalid-feedback">Please enter a valid name. </div>
+                        <div class="form-text">Enter a descriptive name for the operation</div>
+                    </div>
+                    
+                    <div class="form-group-text">
+                        <label for="${elemIdShortName}" class="form-label">
+                            Short Name
+                            <span id="${elemIdShortNameCounter}" class="char-counter">0/${max_len_short_name}</span>
+                        </label>
+                        <input  type="text" 
+                                class="form-control" 
+                                id="${elemIdShortName}" 
+                                maxlength="${max_len_short_name}" required>
+                        <div class="invalid-feedback">Please enter a valid short name. </div>
+                        <div class="form-text">Short name for plain text report.</div>
+                    </div>
+                    
+                    <div class="form-section-title">
+                        <i class="fas fa-align-left"></i>
+                        Description
+                    </div>
+                    
+                    <div class="form-group-text-area">
+                        <label for="${elemIdDescription}" class="form-label">
                             Description
-                        </div>
-                        
-                        <div class="form-group-text-area">
-                            <label for="${elemIdDescription}" class="form-label">
-                                Description
-                                <span id="${elemIdDescriptionCounter}" class="char-counter">0/${max_len_description}</span>
-                            </label>
-                            <textarea class="form-control" 
-                                    id="${elemIdDescription}" 
-                                    maxlength="${max_len_description}" 
-                                    rows="3" required></textarea>
-                            <div class="invalid-feedback">Please enter a description. </div>
-                            <div class="form-text">Provide details about this operation</div>
-                        </div>
-                        
-                        <div class="form-section-title">
-                            <i class="fas fa-calendar-alt"></i>
-                            Operation Details
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group-number">
-                                    <label for="${elemIdDayNumber}" class="form-label">Day Number</label>
-                                    <input  type="number" 
-                                            class="form-control" 
-                                            id="${elemIdDayNumber}" 
-                                            min="0" 
-                                            max="365" required>
-                                    <div class="invalid-feedback">Please enter a valid number. </div>
-                                    <div class="form-text" id="${elemIdDayNumberDesc}">Days since operation started</div>
-                                </div>
+                            <span id="${elemIdDescriptionCounter}" class="char-counter">0/${max_len_description}</span>
+                        </label>
+                        <textarea class="form-control" 
+                                id="${elemIdDescription}" 
+                                maxlength="${max_len_description}" 
+                                rows="3" required></textarea>
+                        <div class="invalid-feedback">Please enter a description. </div>
+                        <div class="form-text">Provide details about this operation</div>
+                    </div>
+                    
+                    <div class="form-section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Operation Details
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-number">
+                                <label for="${elemIdDayNumber}" class="form-label">Day Number</label>
+                                <input  type="number" 
+                                        class="form-control" 
+                                        id="${elemIdDayNumber}" 
+                                        min="0" 
+                                        max="365" required>
+                                <div class="invalid-feedback">Please enter a valid number. </div>
+                                <div class="form-text" id="${elemIdDayNumberDesc}">Days since operation started</div>
                             </div>
                         </div>
-                        
-                    </form>
+                    </div>
                 </div>
                 
                 <div class="modal-footer">

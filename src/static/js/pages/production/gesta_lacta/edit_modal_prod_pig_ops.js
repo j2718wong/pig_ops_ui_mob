@@ -10,7 +10,8 @@ import {PIG_OPERATION_TYPE}     from '../../../constants.js';
         
 import {ModelAccountPigOps}     from '../../../models/model_acc_pig_ops.js'
 
-import {FIELD_VALIDATION_OK}    from '../../../models/model_basic.js'
+import {FIELD_VALIDATION_OK,
+        Field, ModelBasic}      from '../../../models/model_basic.js'
 
 
 EditModalProdPigOps.prototype = new PageViewBasic();
@@ -35,7 +36,7 @@ export function EditModalProdPigOps(input_settings){
     var elemIdModal             = null;
     var elemIdModalTitle        = null;
     var elemIdProdPigOpsTitle   = null;
-    var elemIdCompletionDate    = null;
+    var elemIdDateActual        = null;
     var elemIdStaff             = null;
     var elemIdChkDoneByMe       = null;
     var elemIdNotes             = null;
@@ -48,7 +49,7 @@ export function EditModalProdPigOps(input_settings){
     var elemModal               = null;
     var elemModalTitle          = null;
     var elemProdPigOpsTitle     = null;
-    var elemCompletionDate      = null;
+    var elemDateActual          = null;
     var elemStaff               = null;
     var elemChkDoneByMe         = null;
     var elemNotes               = null;
@@ -66,7 +67,33 @@ export function EditModalProdPigOps(input_settings){
     
     var dataStaffList           = null;
     
-    this.callbackOnSuccessEdit  = null;
+    
+    // Use these fields for validation
+    var fieldDateActual         = new Field();
+    var fieldNotes              = new Field();
+    var fieldStaffHid           = new Field();
+    
+    fieldNotes.maxStrLen  = 160;
+    fieldDateActual.setValidation({cannotBeEmptyStr: true, isDateStr:true});
+    
+    // This is used in validation
+    var dataModel               = new ModelBasic();
+    
+    // Attach these fields to data model
+    dataModel['fieldDateActual']    = fieldDateActual;
+    dataModel['fieldNotes']         = fieldNotes;
+    dataModel['fieldStaffHid']      = fieldStaffHid;
+    
+    dataModel.editableFields.push(fieldDateActual);
+    dataModel.editableFields.push(fieldNotes);
+    dataModel.editableFields.push(fieldStaffHid);
+    
+    
+    var pigProdPid      = null;
+    var prodPigOpsData  = null;
+    
+    
+    this.cbMobileOnSuccessEdit  = null;
 
     
     
@@ -81,15 +108,15 @@ export function EditModalProdPigOps(input_settings){
         elemIdModal             = 'prod-pig-ops-edit-modal';
         elemIdModalTitle        = 'prod-pig-ops-edit-modal-title';
         elemIdProdPigOpsTitle   = 'prod-pig-ops-edit-modal-subtitle';
-        elemIdCompletionDate    = 'prod-pig-ops-edit-name';
-        elemIdStaff             = 'prod-pig-ops-edit-short-name';
+        elemIdDateActual        = 'prod-pig-ops-edit-date-actual';
+        elemIdStaff             = 'prod-pig-ops-edit-staff';
         elemIdChkDoneByMe       = 'prod-pig-ops-edit-done-by-me';
-        elemIdNotes             = 'prod-pig-ops-edit-description';
+        elemIdNotes             = 'prod-pig-ops-edit-notes';
         
         elemIdBtnSave           = 'prod-pig-ops-edit-save';
         elemIdBtnDelete         = 'prod-pig-ops-edit-delete';
         
-        elemIdNotesCounter      = 'prod-pig-ops-edit-description-counter';
+        elemIdNotesCounter      = 'prod-pig-ops-edit-notes-counter';
         
 
         const html =`
@@ -102,59 +129,60 @@ export function EditModalProdPigOps(input_settings){
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                
                 <div class="modal-body">
-                    <form id="">
-                        <div class="form-section-title" style="margin-top:0;">
-                            <i class="fas fa-tag"></i>
-                            <span id="${elemIdProdPigOpsTitle}">PID: 00000 - Operation Name</span>
+                    <div class="form-section-title" style="margin-top:0;">
+                        <i class="fas fa-tag"></i>
+                        <span id="${elemIdProdPigOpsTitle}">PID: 00000 - Operation Name</span>
+                    </div>
+                    
+                    <div class="form-group-date">
+                        <label for="${elemIdDateActual}" class="form-label">
+                            Completion Date
+                        </label>
+                        <input  type="date" 
+                                class="form-control" 
+                                id="${elemIdDateActual}" 
+                                required>
+                        <div class="form-text">Enter a date.</div>
+                    </div>
+                    
+                    <div class="form-group-select">
+                        <label for="${elemIdStaff}" class="form-label">
+                            Staff Member
+                        </label>
+                        
+                        <select id="${elemIdStaff}" class="form-select">
+                            <option value="0" selected disabled>Please Select</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Need to select if not done by you.
                         </div>
                         
-                        <div class="form-group-date">
-                            <label for="${elemIdCompletionDate}" class="form-label">
-                                Completion Date
+                        <!-- Done by Me Checkbox -->
+                        <div id="doneByMeContainer" class="checkbox-group">
+                            <input type="checkbox" id="${elemIdChkDoneByMe}">
+                            <label for="${elemIdChkDoneByMe}" class="checkbox-label">
+                                <i class="fas fa-user-check checkbox-icon"></i>
+                                Done by Me
                             </label>
-                            <input  type="date" 
-                                    class="form-control" 
-                                    id="${elemIdCompletionDate}" 
-                                    required>
-                            <div class="form-text">Enter a date.</div>
                         </div>
                         
-                        <div class="form-group-select">
-                            <label for="${elemIdStaff}" class="form-label">
-                                Staff Member
-                            </label>
-                            
-                            <select id="${elemIdStaff}" class="form-control">
-                                <option value="0" selected disabled>Please Select</option>
-                            </select>
-                            
-                            <!-- Done by Me Checkbox -->
-                            <div id="doneByMeContainer" class="checkbox-group">
-                                <input type="checkbox" id="${elemIdChkDoneByMe}">
-                                <label for="${elemIdChkDoneByMe}" class="checkbox-label">
-                                    <i class="fas fa-user-check checkbox-icon"></i>
-                                    Done by Me
-                                </label>
-                            </div>
-                            
-                            <div class="form-text">Who did the operation.</div>
-                        
-                        </div>
-                        
-                        <div class="form-group-text-area">
-                            <label for="${elemIdNotes}" class="form-label">
-                                Notes
-                                <span id="${elemIdNotesCounter}" class="char-counter">0/160</span>
-                            </label>
-                            <textarea class="form-control" 
-                                    id="${elemIdNotes}" 
-                                    maxlength="160" 
-                                    rows="3"></textarea>
-                            <div class="form-text">Notes about this operation.</div>
-                        </div>
-                        
-                    </form>
+                        <div class="form-text">Who did the operation.</div>
+                    
+                    </div>
+                    
+                    <div class="form-group-text-area">
+                        <label for="${elemIdNotes}" class="form-label">
+                            Notes
+                            <span id="${elemIdNotesCounter}" class="char-counter">0/160</span>
+                        </label>
+                        <textarea class="form-control" 
+                                id="${elemIdNotes}" 
+                                maxlength="160" 
+                                rows="3"></textarea>
+                        <div class="form-text">Notes about this operation.</div>
+                    </div>
                 </div>
                 
                 <div class="modal-footer">
@@ -189,7 +217,7 @@ export function EditModalProdPigOps(input_settings){
         elemModal               = document.getElementById(elemIdModal);
         elemModalTitle          = document.getElementById(elemIdModalTitle);
         elemProdPigOpsTitle     = document.getElementById(elemIdProdPigOpsTitle);
-        elemCompletionDate      = document.getElementById(elemIdCompletionDate);
+        elemDateActual          = document.getElementById(elemIdDateActual);
         elemStaff               = document.getElementById(elemIdStaff);
         elemChkDoneByMe         = document.getElementById(elemIdChkDoneByMe);
         elemNotes               = document.getElementById(elemIdNotes);
@@ -232,16 +260,16 @@ export function EditModalProdPigOps(input_settings){
         });
         
         
-        elemCompletionDate.addEventListener('blur', function() {
-            thisObj._validateAfterChangeInput(this, 'name');
+        elemDateActual.addEventListener('blur', function() {
+            thisObj._validateAfterChangeInput(this, 'date_actual');
         });
         
-        elemStaff.addEventListener('blur', function() {
-            thisObj._validateAfterChangeInput(this, 'short_name');
+        elemStaff.addEventListener('change', function() {
+            thisObj._validateAfterChangeInput(this, 'staff');
         });
         
         elemNotes.addEventListener('blur', function() {
-            thisObj._validateAfterChangeInput(this, 'description');
+            thisObj._validateAfterChangeInput(this, 'notes');
         });
         
         
@@ -277,12 +305,18 @@ export function EditModalProdPigOps(input_settings){
 
 
     this.show = function(operation, options){
+        
         const pid           = options.pid;
+        const sow           = options.sow;
         const is_gesta      = options.is_gesta;
+        
+        pigProdPid          = pid;
+        prodPigOpsData      = operation;
+        
         
         var html;
         
-        html = `PID: ${pid} - ${operation.account_pig_ops.name}`;
+        html = `PID: ${pid}(${sow}) - ${operation.account_pig_ops.name}`;
         elemProdPigOpsTitle.innerHTML = html;
         
         
@@ -307,25 +341,12 @@ export function EditModalProdPigOps(input_settings){
                 160);
         
         
+        dataModel.hid = operation.pig_prod_pig_ops.hid;
+        
+        
         editModal.show();
         
         return;
-        
-        
-        
-        // Set ModelAccountPigOps
-        newEntry.fieldName.setValue(operation.acc_pig_ops.name);
-        newEntry.fieldShortName.setValue(operation.acc_pig_ops.short_name);
-        newEntry.fieldNotes.setValue(operation.acc_pig_ops.desc);
-        newEntry.fieldNumDaysSince.setValue(operation.acc_pig_ops.num_days_since);
-        
-        
-        // Remove elements validation classes
-        elemCompletionDate.classList.remove('is-invalid', 'is-valid');
-        elemStaff.classList.remove('is-invalid', 'is-valid');
-        elemNotes.classList.remove('is-invalid', 'is-valid');
-        elemDayNumber.classList.remove('is-invalid', 'is-valid');
-        
         
     }
     
@@ -342,10 +363,35 @@ export function EditModalProdPigOps(input_settings){
         if (ev.checkValidity()) {
             switch(input_field){
             
-                case 'day_num': {
-                    input_elem  = elemDayNumber;
+                case 'date_actual': {
+                    input_elem  = elemDateActual;
                     input_val   = input_elem.value;
-                    cur_field   = newEntry.fieldNumDaysSince;
+                    cur_field   = fieldDateActual;
+                    
+                    console.log('date_actual = ' + input_val);
+                    cur_field.newValue = input_val; 
+                    validation = cur_field.validateChange();
+                    
+                    if (validation == FIELD_VALIDATION_OK) {
+                        ev.classList.remove('is-invalid');
+                        ev.classList.add('is-valid');
+                    } else{
+                        ev.classList.remove('is-valid');
+                        ev.classList.add('is-invalid');
+                    }
+                    
+                    break;
+                }
+                
+                case 'staff':{
+                    ev.classList.remove('is-invalid');
+                    break;
+                }
+                
+                case 'notes': {
+                    input_elem  = elemNotes;
+                    input_val   = input_elem.value;
+                    cur_field   = fieldNotes;
                     
                     
                     cur_field.newValue = input_val; 
@@ -362,36 +408,12 @@ export function EditModalProdPigOps(input_settings){
                     break;
                 }
                 
-                case 'name': {
-                    input_elem  = elemCompletionDate;
-                    input_val   = input_elem.value || null;
-                    cur_field   = newEntry.fieldName;
-                    
-                    
-                    cur_field.newValue = input_val;
-                    validation = cur_field.validateChange();
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-                case 'short_name': {
+                case 'staff':{
                     input_elem  = elemStaff;
-                    input_val   = input_elem.value || null;
-                    cur_field   = newEntry.fieldShortName;
+                    input_val   = input_elem.val();
                     
                     
-                    cur_field.newValue = input_val;
-                    validation = cur_field.validateChange();
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
+                    if (input_val != '0'){
                         ev.classList.remove('is-invalid');
                         ev.classList.add('is-valid');
                     } else{
@@ -401,26 +423,7 @@ export function EditModalProdPigOps(input_settings){
                     
                     break;
                 }
-                
-                case 'description': {
-                    input_elem  = elemNotes;
-                    input_val   = input_elem.value || null;
-                    cur_field   = newEntry.fieldNotes;
-                    
-                    
-                    cur_field.newValue = input_val;
-                    validation = cur_field.validateChange();
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
+               
             }
             
             
@@ -434,9 +437,147 @@ export function EditModalProdPigOps(input_settings){
     
     
     this._onClickSaveButton = function(){
+        var input_elem      = null;
+        var cur_field       = null;
+        var validation      = -1;
+        var proceed_to_save = 1;
         
+
+        var input_date_actual   = elemDateActual.value;
+        var input_notes         = elemNotes.value.trim();
+        var input_staff_hid     = elemStaff.value;
+        
+        
+        input_elem          = elemDateActual;
+        cur_field           = fieldDateActual;
+        cur_field.newValue  = input_date_actual;
+        validation          = cur_field.validateChange();
+
+        if (validation != FIELD_VALIDATION_OK){
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        } else{
+             if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+        }
+        if (proceed_to_save == 0) {return;}
+        
+        
+        // The staff can be from the drop down
+        // Or Done by User (Done by Me checkbox)
+        var done_by_user = 0
+        
+        if (elemChkDoneByMe.checked){done_by_user = 1;}
+        
+        if (done_by_user == 0){
+            input_elem          = elemStaff;
+            if (input_staff_hid == '0'){
+                if (input_elem.classList.contains('is-invalid') == false){
+                    input_elem.classList.add('is-invalid');
+                }
+                proceed_to_save = 0;
+            }
+            else{
+                if (input_elem.classList.contains('is-valid') == false){
+                    input_elem.classList.add('is-valid');
+                }
+                fieldStaffHid.newValue = input_staff_hid;
+            }
+        }
+        if (proceed_to_save == 0) {return;}
+        
+        
+        input_elem          = elemNotes;
+        cur_field           = fieldNotes;
+        cur_field.newValue  = input_notes;
+        validation          = cur_field.validateChange();
+
+        if (validation != FIELD_VALIDATION_OK){
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        } else{
+             if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+        }
+        if (proceed_to_save == 0) {return;}
+        
+        
+        if (dataModel.hasChanged() == false){
+            console.log('No data Change');
+            return;
+        }
+        
+        console.log('thisObj');
+        console.log(thisObj);
+        
+        const user_hid      = thisObj.navigation.userControl.getUserHid();
+        const base_url      = thisObj.navigation.userControl.getBaseUrl();
+        
+        // send post request
+        const post_data = {
+            'uhid':             user_hid,
+            'pig_prod_pig_ops_hid': dataModel.hid,
+            'staff_hid':        input_staff_hid,
+            'done_by_user':     done_by_user,
+            'date':             input_date_actual,
+            'notes':            input_notes
+        };
+        
+        console.log(post_data);
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            url: `${base_url}/pig_prod_pig_ops/update`,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    // Replace these data
+                    prodPigOpsData.pig_prod_pig_ops.date_actual = input_date_actual;
+                    prodPigOpsData.staff.hid    = input_staff_hid;
+                    prodPigOpsData.notes.notes  = input_notes;
+                    
+                    // callback to refresh the table
+                    thisObj._onSuccessUpdatePigOps();
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+            }
+        });
+       
     }
     
     
+    this._onSuccessUpdatePigOps = function(){
+        if (thisObj.navigation.curScreenIsMobile > 0){
+            
+            if (thisObj.cbMobileOnSuccessEdit){
+                thisObj.cbMobileOnSuccessEdit(pigProdPid);
+            }
+        }
+        
+        
+        // TODO for desktop
+       
+    }
+
   
 }

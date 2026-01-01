@@ -8,6 +8,13 @@
 export function PageViewBasic(){
     const thisObj               = this;
     
+    this.navigation        = null;
+    
+    
+    this.setNavigation = function(navigation){
+        this.navigation = navigation;
+    }
+    
     
     // Update character counter
     this.updateCharCounter = function (input_elem, counter_elem, max_length) {
