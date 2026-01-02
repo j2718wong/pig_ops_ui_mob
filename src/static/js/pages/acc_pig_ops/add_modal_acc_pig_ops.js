@@ -455,33 +455,13 @@ export function AddModalAccPigOps(input_settings){
         var validation      = -1;
         var proceed_to_save = 1;
         
-
-        var input_num_days  = elemDayNumber.value;
+		
         var input_name      = elemName.value.trim();
         var input_short_name= elemShortName.value.trim();
         var input_description= elemDescription.value.trim();
+        var input_num_days  = elemDayNumber.value;
         
-        
-        input_elem          = elemDayNumber;
-        cur_field           = newEntry.fieldNumDaysSince;
-        cur_field.newValue  = input_num_days;
-        validation          = cur_field.validateChange();
-        
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.hasClass('is-invalid') == false){
-                input_elem.addClass('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.hasClass('is-valid') == false){
-                input_elem.addClass('is-valid');
-            }
-        }
-        
-        if (proceed_to_save == 0) {return;}
-        
-        
+
         input_elem          = elemName;
         cur_field           = newEntry.fieldName;
         if (input_name.length == 0){input_name = null;}
@@ -489,14 +469,14 @@ export function AddModalAccPigOps(input_settings){
         validation          = cur_field.validateChange();
 
         if (validation != FIELD_VALIDATION_OK){
-            if (el_name.hasClass('is-invalid') == false){
-                el_name.addClass('is-invalid');
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
             }
             proceed_to_save = 0;
         }
         else{
-            if (input_elem.hasClass('is-valid') == false){
-                input_elem.addClass('is-valid');
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
             }
         }
         
@@ -509,14 +489,14 @@ export function AddModalAccPigOps(input_settings){
         validation          = cur_field.validateChange();
 
         if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.hasClass('is-invalid') == false){
-                input_elem.addClass('is-invalid');
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
             }
             proceed_to_save = 0;
         }
         else{
-            if (input_elem.hasClass('is-valid') == false){
-                input_elem.addClass('is-valid');
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
             }
         }
         
@@ -529,14 +509,40 @@ export function AddModalAccPigOps(input_settings){
         validation          = cur_field.validateChange();
 
         if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.hasClass('is-invalid') == false){
-                input_elem.addClass('is-invalid');
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
             }
             proceed_to_save = 0;
         }
         else{
-            if (input_elem.hasClass('is-valid') == false){
-                input_elem.addClass('is-valid');
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+		
+		var input_num_days  = elemDayNumber.value;
+        var input_name      = elemName.value.trim();
+        var input_short_name= elemShortName.value.trim();
+        var input_description= elemDescription.value.trim();
+        
+        
+        input_elem          = elemDayNumber;
+        cur_field           = newEntry.fieldNumDaysSince;
+        cur_field.newValue  = input_num_days;
+        validation          = cur_field.validateChange();
+        
+        if (validation != FIELD_VALIDATION_OK){
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        }
+        else{
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
             }
         }
         

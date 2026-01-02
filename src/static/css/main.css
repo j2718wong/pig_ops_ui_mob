@@ -5,7 +5,7 @@
     --corporate-blue-dark: #15467d;
     --corporate-blue-light: #4a8adb;
     --corporate-border-blue: #dbeafe;
-	--corporate-bg: #e0f2fe;
+    --corporate-bg: #e0f2fe;
     
     --alert-gold: #ffc107;
     --text-light: #ffffff;
@@ -34,11 +34,11 @@
     --neutral-gray: #6b7280;
     --text-dark: #1f2937;
     --text-light: #f9fafb;
-	
-	--warning-bg: #fef3c7;
-	--warning-border: #f59e0b;
-	--success-bg: #d1fae5;
-	--success-border: #10b981;
+    
+    --warning-bg: #fef3c7;
+    --warning-border: #f59e0b;
+    --success-bg: #d1fae5;
+    --success-border: #10b981;
 
     --gestating-color:  #693FE9;
     --lactating-piglets-color:  #2394EF;
@@ -49,10 +49,10 @@
     --row-odd: #ffffff;
     --row-hover: #e0f2fe;
     --clickable-highlight: #1e40af;
-	
-	--white: #ffffff;
-	
-	--body-default-bg: #f5f7fa; 
+    
+    --white: #ffffff;
+    
+    --body-default-bg: #f5f7fa; 
 }
 
 * {
@@ -66,7 +66,7 @@ body {
     background-color: var(--body-default-bg);
     color: var(--text-dark);
     line-height: 1.6;
-	overflow: hidden; !important
+    overflow: hidden; 
 }
 
 /* Top Navigation Container */
@@ -596,7 +596,7 @@ body {
     color: var(--corporate-blue);
     display: flex;
     align-items: center;
-	justify-content: space-between;
+    justify-content: space-between;
     gap: 10px;
     padding: 10px 10px 0 10px;
     background-color: var(--bg-light);
@@ -605,11 +605,11 @@ body {
 
 .mobile-submenu {
     padding-left: 20px;
-	display:none;
+    display:none;
 }
 
 .mobile-submenu.active {
-	display: block;
+    display: block;
 }
 
 .mobile-submenu-item {
@@ -644,7 +644,8 @@ body {
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
-	overflow:hidden;
+    overflow-y: auto;
+    /*overflow:hidden;*/
 }
 
 .content-card {
@@ -892,8 +893,8 @@ p {
 
     .main-content {
         margin-top: 70px;
-		padding-left:10px;
-		padding-right:10px;
+        padding-left:10px;
+        padding-right:10px;
     }
     
     .dashboard-cards {
@@ -920,7 +921,7 @@ p {
 
     .main-content {
         padding-left: 10px;
-		padding-right: 10px;
+        padding-right: 10px;
         margin-top: 45px;
     }
     
@@ -1068,6 +1069,80 @@ p {
     color: var(--success-green);
     font-size: 16px;
 }
+
+
+
+
+/* Material Design Theme */
+.datepicker-material {
+    background-color: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    font-family: 'Roboto', sans-serif;
+    padding: 16px;
+}
+
+.datepicker-material .datepicker-days table thead tr th.datepicker-switch {
+    color: #3f51b5;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 0;
+}
+
+.datepicker-material .datepicker-days table thead tr th.dow {
+    color: #757575;
+    font-weight: 500;
+    padding: 8px 0;
+}
+
+.datepicker-material .datepicker-days table tbody tr td {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    margin: 2px;
+    transition: all 0.2s ease;
+}
+
+.datepicker-material .datepicker-days table tbody tr td.day:hover {
+    background-color: #e8eaf6;
+    color: #3f51b5;
+}
+
+.datepicker-material .datepicker-days table tbody tr td.active {
+    background-color: #3f51b5;
+    color: white;
+    box-shadow: 0 2px 4px rgba(63,81,181,0.3);
+}
+
+.datepicker-material .datepicker-days table tbody tr td.today {
+    background-color: #ff4081;
+    color: white;
+    box-shadow: 0 2px 4px rgba(255,64,129,0.3);
+}
+
+.datepicker-material .datepicker-days table tbody tr td.old,
+.datepicker-material .datepicker-days table tbody tr td.new {
+    color: #bdbdbd;
+}
+
+.datepicker-material .prev,
+.datepicker-material .next {
+    color: #3f51b5;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    transition: background-color 0.2s;
+}
+
+.datepicker-material .prev:hover,
+.datepicker-material .next:hover {
+    background-color: #e8eaf6;
+}
+
+
 
 
 
@@ -1331,21 +1406,21 @@ p {
 
 /* Status indicators */
 .status-overdue {
-	display: inline-block;
-	width: 10px;
-	height: 10px;
-	background-color: #ef4444;
-	border-radius: 50%;
-	margin-left: 8px;
-	vertical-align: middle;
-	box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
-	animation: pulse 2s infinite;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    margin-left: 8px;
+    vertical-align: middle;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-	0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-	70% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
-	100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    70% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
 
@@ -1481,6 +1556,7 @@ p {
 
 
 .char-counter {
+	float: right;
     font-size: 0.85rem;
     font-weight: normal;
     color: var(--neutral-gray);
@@ -1499,15 +1575,15 @@ p {
 }
 
 .form-control {
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--corporate-border-blue);
     padding: 6px 6px;
     font-size: 1.3rem;
     transition: all 0.2s;
-    border-radius: 0;
+    border-radius: 8px;
 }
 
 .form-control:focus {
-    border-color: #3498db;
+    border-color: var(--corporate-blue-light);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
@@ -1546,7 +1622,7 @@ textarea.form-control {
 
 /* Colored form groups */
 .form-group-text {
-	background: var(--corporate-bg);
+    background: var(--corporate-bg);
     border-left: 4px solid #3498db;
     padding-left: 8px;
     padding-right: 8px;
@@ -1555,7 +1631,7 @@ textarea.form-control {
 }
 
 .form-group-text-area {
-	background: var(--corporate-bg);
+    background: var(--corporate-bg);
     border-left: 4px solid #2ecc71;
     padding-left: 8px;
     padding-right: 8px;
@@ -1564,7 +1640,7 @@ textarea.form-control {
 }
 
 .form-group-select {
-	background: var(--corporate-bg);
+    background: var(--corporate-bg);
     border-left: 4px solid #B828E1;
     padding-left: 8px;
     padding-right: 8px;
@@ -1573,7 +1649,7 @@ textarea.form-control {
 }
 
 .form-group-number {
-	background: var(--corporate-bg);
+    background: var(--corporate-bg);
     border-left: 4px solid #f39c12;
     padding-left: 8px;
     padding-right: 8px;
@@ -1583,7 +1659,7 @@ textarea.form-control {
 
 
 .form-group-date {
-	background: var(--corporate-bg);
+    background: var(--corporate-bg);
     border-left: 4px solid #4236DC;
     padding-left: 8px;
     padding-right: 8px;

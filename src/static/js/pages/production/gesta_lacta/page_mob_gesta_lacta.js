@@ -284,6 +284,11 @@ export function PageMobGestaLacta(input_settings){
         dataPigProdList = data_filtered;
     }
     
+	
+	this.getDataPigProdList = function(){
+		return dataPigProdList;
+	}
+	
     
     // Handle window resize for view switching
     this.handleWindowResize = function() {

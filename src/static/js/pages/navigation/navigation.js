@@ -302,10 +302,6 @@ export function Navigation(){
                 const submenuId = link.getAttribute('data-submenu');
                 const submenu = document.getElementById(submenuId);
                 
-                console.log('submenuId = ' + submenuId);
-                console.log('submenu');
-                console.log(submenu);
-                
                 
                 // Close all other submenus
                 link.querySelectorAll('.mobile-submenu').forEach(menu => {
@@ -394,7 +390,6 @@ export function Navigation(){
         // All navigation menus will use this
         // Be sure the body back ground color is reset to default
         document.body.style.backgroundColor = '#f5f7fa';
-        document.body.style.overflow = 'hidden'; // I duno whete is the auto body overflow is coming
         
         const hidden_containers = document.getElementsByClassName("hidden-container");
         
@@ -694,14 +689,50 @@ export function Navigation(){
     
     
     this.onClickProdGestatingEntry = function(pig_prod_pid){
+		if (pig_prod_pid == null){
+			thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+			return;
+		}
+		
         console.log('onClickProdGestatingEntry; pig_prod_pid = ' + pig_prod_pid);
         thisObj.hideHiddenContainersExcept(elemHiddenContProdGestaEntry);
         
 		// Get the data_pig_prod from dataPigProdList
+		const data_pig_prod_list = thisObj.pageMobGestatingList.getDataPigProdList();
 		
-		for (const cur_entry of dataPigProdList){
+		var prev_prod_pid = null;
+		var next_prod_pid = null;
+		
+		var index;
+		var prev_entry	= null;
+		var cur_entry	= null;
+		var next_entry 	= null;
+		
+		for (index = 0; index< data_pig_prod_list.length; index++){
+			cur_entry = data_pig_prod_list[index];
+			
+			
+			
 			if (cur_entry.pig_production.farm_prod_id == pig_prod_pid){
-				thisObj.pageProdGestatingEntry.show(cur_entry);
+				
+				if ((index-1) >=0){
+					prev_entry = data_pig_prod_list[index-1];
+					prev_prod_pid = prev_entry.pig_production.farm_prod_id;
+				}
+				
+				if ((index+1) < data_pig_prod_list.length){
+					next_entry = data_pig_prod_list[index+1];
+					next_prod_pid = next_entry.pig_production.farm_prod_id;
+				}
+				
+				const options = {
+					prev_prod_pid: 	prev_prod_pid,
+					next_prod_pid: 	next_prod_pid,
+					data_index:		index+1,
+					total_entries:	data_pig_prod_list.length
+				};
+				
+				thisObj.pageProdGestatingEntry.show(cur_entry, options);
 				return;
 			}
 		}

@@ -11,6 +11,8 @@ import {SOW_STATUS,
 
 //import {AddModalSowBoar}        from './add_modal_sow.js';
 
+import {ProdEntryInsem}         from './prod_entry_insem.js'
+
 
 
 PageProdGestatingEntry.prototype = new PageViewBasic();
@@ -34,6 +36,7 @@ export function PageProdGestatingEntry(input_settings){
         
         
     var elemIdNavPrevEntry      = null;
+    var elemIdEntryTitle        = null;
     var elemIdPigProdPid        = null;
     var elemIdHeaderSowName     = null;
     var elemIdHeaderBoarName    = null;
@@ -42,6 +45,7 @@ export function PageProdGestatingEntry(input_settings){
     
     
     var elemNavPrevEntry        = null;
+    var elemEntryTitle          = null;
     var elemPigProdPid          = null;
     var elemHeaderSowName       = null;
     var elemHeaderBoarName      = null;
@@ -58,8 +62,11 @@ export function PageProdGestatingEntry(input_settings){
     var boarList                = null;
     var semenSupplierList       = null;
     
-    var staffList               = null; 
     
+    const settingsInsem = {
+        parentObj:              this
+    }
+    var prodEntryInsem          = new ProdEntryInsem(settingsInsem);
     
     
     this.init = function(){
@@ -89,9 +96,8 @@ export function PageProdGestatingEntry(input_settings){
         }
 
         .navigation-bar {
-            display: flex;
+            display: block;
             align-items: center;
-            justify-content: space-between;
             padding: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -101,8 +107,6 @@ export function PageProdGestatingEntry(input_settings){
             border: none;
             color: white;
             font-size: 32px; /* Bigger arrow icons */
-            width: 50px;
-            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -187,7 +191,7 @@ export function PageProdGestatingEntry(input_settings){
             margin-top: var(--height-fixed-prod-entry); /* Height of top nav (60px) + top section (120px) */
             padding: 0 0 20px 0;
             overflow-y: auto;
-            max-height: calc(100vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
+            max-height: calc(200vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
         }
 
         /* Individual Tab Content */
@@ -220,36 +224,6 @@ export function PageProdGestatingEntry(input_settings){
             font-size: 15px;
         }
 
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--corporate-border);
-            border-radius: 8px;
-            font-size: 16px;
-            background-color: white;
-            transition: border-color 0.2s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--corporate-light-blue);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .form-control.readonly {
-            background-color: #f9fafb;
-            color: var(--text-light);
-        }
-
-        /*
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .input-group .form-control {
-            flex-grow: 1;
-        }*/
 
         /* Number input with plus/minus buttons */
         .number-input-group {
@@ -439,8 +413,6 @@ export function PageProdGestatingEntry(input_settings){
             
             .nav-button {
                 font-size: 28px;
-                width: 44px;
-                height: 44px;
             }
             
             .pid {
@@ -459,12 +431,10 @@ export function PageProdGestatingEntry(input_settings){
             
             .tab-content-area {
                 margin-top: var(--height-fixed-prod-entry);
-                max-height: calc(100vh - var(--height-fixed-prod-entry));
+                max-height: calc(200vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
+        
             }
             
-            .form-control {
-                padding: 10px 12px;
-            }
             
             .btn {
                 padding: 12px;
@@ -484,14 +454,15 @@ export function PageProdGestatingEntry(input_settings){
             
             .tab-content-area {
                 margin-top: var(--height-fixed-prod-entry);
-                max-height: calc(100vh - var(--height-fixed-prod-entry));
+                max-height: calc(200vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
+        
             }
             
         }
         
         @media (max-height: 600px) {
             .tab-content {
-                max-height: calc(100vh - 180px);
+                
             }
         }
     </style>
@@ -504,6 +475,7 @@ export function PageProdGestatingEntry(input_settings){
     this.render = function(){
         
         elemIdNavPrevEntry      = `pig-prod-entry-prev-entry`;
+        elemIdEntryTitle        = `pig-prod-entry-title`;
         elemIdPigProdPid        = `pig-prod-entry-pig-prod-pid`;
         elemIdHeaderSowName     = `pig-prod-entry-header-sow-name`;
         elemIdHeaderBoarName    = `pig-prod-entry-header-boar-name`;
@@ -511,7 +483,9 @@ export function PageProdGestatingEntry(input_settings){
         
         
 
-        const html_style = thisObj._writeInlineStyle();
+        const html_style        = thisObj._writeInlineStyle();
+        
+        const html_tab_insem    = prodEntryInsem.getHtml();
         
         
         const html =`
@@ -521,13 +495,16 @@ export function PageProdGestatingEntry(input_settings){
     <!-- Fixed Top Section -->
     <div class="top-section">
         <div class="navigation-bar">
-            <button class="nav-button" id="${elemIdNavPrevEntry}">←</button>
+            <div style="display:flex; align-items: center;justify-content: space-between;">
+                <button class="nav-button" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
+                <span id="${elemIdEntryTitle}">1 of 4</span>
+                <button class="nav-button" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
             
             <div class="entry-info">
                 <div class="pid-and-sow">
-                    <!--<div class="pid">PID <span id="${elemIdPigProdPid}">1</span></div>-->
                     <div class="sow-name">
-                        <span id="${elemIdPigProdPid}">PID: 1</span>
+                        <span style="margin-right:10px;">(PID <span id="${elemIdPigProdPid}">1</span>)</span>
                         <span id="${elemIdHeaderSowName}">Sow</span>
                         <span class="love-icon">❤️</span>
                         <span id="${elemIdHeaderBoarName}">Boar</span>
@@ -535,7 +512,7 @@ export function PageProdGestatingEntry(input_settings){
                 </div>
             </div>
             
-            <button class="nav-button" id="${elemIdNavNextEntry}">→</button>
+            
         </div>
         
         <!-- Tabs Navigation -->
@@ -551,94 +528,7 @@ export function PageProdGestatingEntry(input_settings){
     <div class="tab-content-area">
         <!-- Tab Content -->
         <div id="insem-tab" class="tab-content active">
-            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Insemination Information</h2>
-            
-            <div class="form-group-text">
-                <label class="form-label">Sow Name</label>
-                <input type="text" class="form-control readonly" value="Sow ❤️ Boar Maximus" readonly>
-            </div>
-            
-            <div class="form-group-date">
-                <label class="form-label">Date Mating</label>
-                <input type="date" class="form-control" id="date-mating" value="2023-10-15">
-            
-                <div class="warning-box" id="mating-warning" style="display: none;">
-                    Changing the Date Mating will affect gestation period calculations.
-                </div>
-            </div>
-            
-            <div class="form-group-select">
-                <label class="form-label">Insemination Type</label>
-                <select class="form-control" id="insem-type">
-                    <option value="boar">Boar Mating</option>
-                    <option value="artificial">Artificial Insemination</option>
-                </select>
-            </div>
-            
-            <!-- Boar Mating Section (shown by default) -->
-            <div id="boar-mating-section" class="dynamic-section">
-                <div class="form-group-select">
-                    <label class="form-label">Select Boar</label>
-                    <select class="form-control">
-                        <option value="boar1">Big Boy (Duroc)</option>
-                        <option value="boar2" selected>Maximus (Landrace)</option>
-                        <option value="boar3">Titan (Hampshire)</option>
-                        <option value="boar4">Hercules (Yorkshire)</option>
-                    </select>
-                </div>
-            </div>
-            
-            <!-- Artificial Insemination Section (hidden by default) -->
-            <div id="artificial-section" class="dynamic-section" style="display: none;">
-                <div class="form-group-select">
-                    <label class="form-label">Semen Supplier</label>
-                    <select class="form-control">
-                        <option value="">Select supplier</option>
-                        <option value="supplier1">Premium Swine Genetics</option>
-                        <option value="supplier2">Elite Boar Semen Co.</option>
-                        <option value="supplier3">Top Genetics Inc.</option>
-                    </select>
-                </div>
-                
-                <div class="form-group-select">
-                    <label class="form-label">Semen Type</label>
-                    <select class="form-control">
-                        <option value="">Select type</option>
-                        <option value="fresh">Fresh</option>
-                        <option value="frozen">Frozen</option>
-                        <option value="chilled">Chilled</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Semen Cost ($)</label>
-                    <input type="number" class="form-control" placeholder="0.00" min="0" step="0.01">
-                </div>
-            </div>
-            
-            <div class="form-group-number">
-                <label class="form-label">Other Costs ($)</label>
-                <input type="number" class="form-control" placeholder="Enter additional costs" min="0" step="0.01">
-            </div>
-            
-            <div class="form-group-text-area">
-                <label class="form-label">Notes</label>
-                <textarea class="form-control" rows="4" id="insem-notes" placeholder="Add notes about this insemination..."></textarea>
-                <div class="char-counter"><span id="char-count">0</span>/500 characters</div>
-            </div>
-            
-            <div class="form-group-select">
-                <label class="form-label">Staff</label>
-                <select class="form-control">
-                    <option value="">Select staff member</option>
-                    <option value="staff1" selected>John Smith</option>
-                    <option value="staff2">Maria Garcia</option>
-                    <option value="staff3">Robert Johnson</option>
-                    <option value="staff4">Lisa Chen</option>
-                </select>
-            </div>
-            
-            <button class="btn btn-primary">Save Changes</button>
+            ${html_tab_insem}
         </div>
 
         <!-- Birth Tab -->
@@ -817,10 +707,11 @@ export function PageProdGestatingEntry(input_settings){
     
     this._findElements = function(){
         elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
-        elemPigProdPid          = document.getElementById(elemIdNavPrevEntry);
-        elemHeaderSowName       = document.getElementById(elemIdNavPrevEntry);
-        elemHeaderBoarName      = document.getElementById(elemIdNavPrevEntry);
-        elemNavNextEntry        = document.getElementById(elemIdNavPrevEntry);
+        elemEntryTitle          = document.getElementById(elemIdEntryTitle);
+        elemPigProdPid          = document.getElementById(elemIdPigProdPid);
+        elemHeaderSowName       = document.getElementById(elemIdHeaderSowName);
+        elemHeaderBoarName      = document.getElementById(elemIdHeaderBoarName);
+        elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
         
         
         
@@ -830,7 +721,7 @@ export function PageProdGestatingEntry(input_settings){
     
     
     this._processAfterHtmlRender = function(){
-        
+        prodEntryInsem.afterHtmlRender();
     }
     
     
@@ -859,146 +750,101 @@ export function PageProdGestatingEntry(input_settings){
     
     
     this.setDataSowList = function(data){
-        sowList = data;
-        
-        var select_data = [];
-        if (sowList.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
-            thisObj.replaceSelectOptions(elemSelectSow, select_data);
-            return;
-        }
-        
-        
-        select_data.push({value:"0", text:"Please Select"});
-        
-        for (const cur_sow_boar of data){
-            var reference;
-            
-            // This is because there is this data can come into
-            // minimum and not minimum info.
-            const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
-            
-            if (cur_entry.status_id == SOW_STATUS.GROWING ||
-                cur_entry.status_id == SOW_STATUS.GESTATING ||
-                cur_entry.status_id == SOW_STATUS.WEANING) {
-            
-                if (cur_entry.name != null && cur_entry.name.length > 0){
-                    reference = cur_entry.name;
-                    
-                    if (cur_entry.number != null &&  cur_entry.number.length > 0) {
-                        reference +=  ' (' + cur_entry.number + ')';
-                    }
-                }
-                else{
-                    reference = cur_entry.number;
-                }
-                
-                select_data.push({value: cur_entry.hid, text: reference});
-            }
-        }
-        
-        thisObj.replaceSelectOptions(elemSelectSow, select_data);
+        prodEntryInsem.setDataSowList(data);
     }
     
     
     this.setDataBoarList = function(data){
-        boarList = data;
-        
-        var select_data = [];
-        if (boarList.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
-            thisObj.replaceSelectOptions(elemSelectBoar, select_data);
-            return;
-        }
-        
-        
-        select_data.push({value:"0", text:"Please Select"});
-        
-        for (const cur_sow_boar of data){
-            var reference;
-            
-            // This is because there is this data can come into
-            // minimum and not minimum info.
-            const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
-            
-            
-            if (cur_entry.name != null && cur_entry.name.length > 0){
-                reference = cur_entry.name;
-                
-                if (cur_entry.number != null &&  cur_entry.number.length > 0) {
-                    reference +=  ' (' + cur_entry.number + ')';
-                }
-            }
-            else{
-                reference = cur_entry.number;
-            }
-            
-            select_data.push({value: cur_entry.hid, text: reference});
-        }
-        
-        thisObj.replaceSelectOptions(elemSelectBoar, select_data);
-        
+        prodEntryInsem.setDataSowList(data);
     }
     
     
     this.setDataSemenSupplierList = function(data){
-        semenSupplierList = data;
+        prodEntryInsem.setDataSemenSupplierList(data);
     }
     
     
     this.setDataStaffList = function(data){
-        staffList = data;
-        
-        var select_data = [];
-        if (staffList.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
-            thisObj.replaceSelectOptions(elemStaff, select_data);
-            return;
-        }
-        
-        
-        var select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
-        
-        for (const cur_entry of data){
-            select_data.push({value: cur_entry.hid, text: cur_entry.name});
-        }
-        
-        thisObj.replaceSelectOptions(elemStaff, select_data);
+        prodEntryInsem.setDataStaffList(data);
     }
     
     
-    this.show = function(){
+    this.show = function(data_pig_prod, options){
         console.log('PageAddGestating show');
-    }
-    
-    this._onChangeSow = function(){
-        var sow_hid       = elemSelectSow.value;
+        console.log(data_pig_prod);
         
-        var index;
-        var cur_entry;
+        // Set Header Data
+        const title = `Production Gestating ${options.data_index} Of ${options.total_entries}`;
+        elemEntryTitle.textContent = title;
         
-        var gestating_sow = null;
+        const pid = data_pig_prod.pig_production.farm_prod_id;
+        elemPigProdPid.textContent = pid;
         
-        elemSowStatusShow.style.display = 'none';
+        const data_sow = data_pig_prod.sow;
+        var sow_reference = '';
         
-        for(index = 0; index < sowList.length; index++){
-            cur_entry = sowList[index];
-            if ('sow_boar' in cur_entry){
-                cur_entry = cur_entry.sow_boar;
-            }
-            
-            if (cur_entry.hid == sow_hid){
-                if (cur_entry.status_id == SOW_STATUS.GESTATING){
-                    elemSowLastInsem.innerHTML  = cur_entry.date_insemination;
-                    elemSowLastPid.innerHTML    = cur_entry.last_prod_id;  
-                    
-                    
-                    elemSowStatusShow.style.display = 'block';
+        if ((data_sow.name != null) && (data_sow.name.length >0)){
+            sow_reference = data_sow.name;
+        }
+        else{
+            sow_reference = data_sow.number;
+        }
+        const insemination = data_pig_prod.insemination;
+        
+        var boar_name = '';
+        switch (insemination.insem_type){
+            case 'B':{
+                const boar = insemination.boar;
+                
+                if ((boar.name != null) && (boar.name.length > 0)){
+                    boar_name = boar.name;
+                }
+                else{
+                    boar_name = boar.number;
                 }
                 break;
             }
+            
+            case 'AI_X':{
+                boar_name = insemination.ai.semen_supplier.semen.name;
+                boar_name += ' from ' + insemination.ai.semen_supplier.name;
+                break;
+            }
+            
+            case 'AI_N':{
+                const internal_boar = insemination.ai.internal_boar;
+                
+                if ((internal_boar.name != null) && (internal_boar.name.length > 0)){
+                    boar_name = internal_boar.name;
+                }
+                else{
+                    boar_name = internal_boar.number;
+                }
+                
+                boar_name += '(via AI)';
+                
+                break;
+            }
+            
         }
+        
+        
+        
+        elemHeaderSowName.textContent   = sow_reference;
+        elemHeaderBoarName.textContent  = boar_name;
+        
+        
+        // set arrow navigation
+        elemNavPrevEntry.onclick = function(){
+            parentObj.onClickProdGestatingEntry(options.prev_prod_pid);
+        }
+        
+        elemNavNextEntry.onclick = function(){
+            parentObj.onClickProdGestatingEntry(options.next_prod_pid);
+        }
+		
+		
+		prodEntryInsem.show(data_pig_prod);
     }
     
 }   

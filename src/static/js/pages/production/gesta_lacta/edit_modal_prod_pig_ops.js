@@ -43,7 +43,7 @@ export function EditModalProdPigOps(input_settings){
     var elemIdBtnSave           = null;
     var elemIdBtnDelete         = null;
     
-    var elemIdNotesCounter      = null;
+    var elemIdNotesCharCounter  = null;
     
     
     var elemModal               = null;
@@ -57,7 +57,7 @@ export function EditModalProdPigOps(input_settings){
     var elemBtnDelete           = null;
     
     
-    var elemNotesCounter        = null;
+    var elemNotesCharCounter    = null;
     
     var editModal               = null;
 
@@ -116,7 +116,7 @@ export function EditModalProdPigOps(input_settings){
         elemIdBtnSave           = 'prod-pig-ops-edit-save';
         elemIdBtnDelete         = 'prod-pig-ops-edit-delete';
         
-        elemIdNotesCounter      = 'prod-pig-ops-edit-notes-counter';
+        elemIdNotesCharCounter  = 'prod-pig-ops-edit-notes-counter';
         
 
         const html =`
@@ -140,7 +140,7 @@ export function EditModalProdPigOps(input_settings){
                         <label for="${elemIdDateActual}" class="form-label">
                             Completion Date
                         </label>
-                        <input  type="date" 
+                        <input  type="text" 
                                 class="form-control" 
                                 id="${elemIdDateActual}" 
                                 required>
@@ -175,7 +175,7 @@ export function EditModalProdPigOps(input_settings){
                     <div class="form-group-text-area">
                         <label for="${elemIdNotes}" class="form-label">
                             Notes
-                            <span id="${elemIdNotesCounter}" class="char-counter">0/160</span>
+                            <span id="${elemIdNotesCharCounter}" class="char-counter">0/160</span>
                         </label>
                         <textarea class="form-control" 
                                 id="${elemIdNotes}" 
@@ -226,12 +226,21 @@ export function EditModalProdPigOps(input_settings){
         elemBtnDelete           = document.getElementById(elemIdBtnDelete);
     
     
-        elemNotesCounter        = document.getElementById(elemIdNotesCounter);
+        elemNotesCharCounter    = document.getElementById(elemIdNotesCharCounter);
     
     }
     
     
     this._processAfterHtmlRender = function(){
+        $('#'+elemIdDateActual).datepicker({
+            format: 'MM d, yyyy',  // This gives "January 31, 2026"
+            autoclose: true,
+            endDate: new Date() // Max date is today
+        }).on('show', function(e) {
+            $('.datepicker').addClass('datepicker-material');
+        });
+        
+        
         // Does not work
         //editModal               = new bootstrap.Modal(elemModal);
         
@@ -244,7 +253,7 @@ export function EditModalProdPigOps(input_settings){
     this._bindEventListeners = function(){
         
         elemNotes.addEventListener('input', function(){
-            thisObj.updateCharCounter(elemNotes, elemNotesCounter, 
+            thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 
                 160);
             
             elemNotes.classList.remove('is-invalid');
@@ -260,7 +269,7 @@ export function EditModalProdPigOps(input_settings){
         });
         
         
-        elemDateActual.addEventListener('blur', function() {
+        elemDateActual.addEventListener('change', function() {
             thisObj._validateAfterChangeInput(this, 'date_actual');
         });
         
@@ -302,9 +311,26 @@ export function EditModalProdPigOps(input_settings){
         
         thisObj.replaceSelectOptions(elemStaff, select_data);
     }
-
+    
+    
+    this._resetForm = function(){
+        // Clear previous Form values and validation classes
+        
+        elemDateActual.value = '';
+        elemDateActual.classList.remove('is-valid', 'is-invalid');
+        
+        elemStaff.selectedIndex = 0; 
+        elemNotes.classList.remove('is-valid', 'is-invalid');
+        
+        elemChkDoneByMe.checked = false;
+        
+        elemNotes.value = '';
+        elemNotes.classList.remove('is-valid', 'is-invalid');
+    }
+    
 
     this.show = function(operation, options){
+        thisObj._resetForm();
         
         const pid           = options.pid;
         const sow           = options.sow;
@@ -336,8 +362,9 @@ export function EditModalProdPigOps(input_settings){
         }
         
         
+        
         // Initialize char counters
-        thisObj.updateCharCounter(elemNotes, elemNotesCounter, 
+        thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 
                 160);
         
         
