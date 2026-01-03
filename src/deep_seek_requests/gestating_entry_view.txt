@@ -180,8 +180,14 @@ This should be cenetered when in mobile screens
 
 3.) The "Hide Completed should also be centered.
 
+fix the following:
+1.) Modify the Done By cell such that
+if already Done
+ two divs side by side;
+ left div -check mark icon or image; to visualy indicate completed
+ right div - contains Staff Name and full date like 'Jan 23 2026'
 
-
+if not yet Done: should be just empty cell.
 
 
 

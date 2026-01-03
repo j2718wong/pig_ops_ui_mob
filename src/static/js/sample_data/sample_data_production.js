@@ -433,8 +433,8 @@ var G_SAMPLE_JSON_PIG_PRODUCTION = [
           "hid": "Q92W83"
         },
         "staff": {
-          "name": null,
-          "hid": null
+          "name": 'Elmer',
+          "hid": 'asdsa'
         },
         "notes": {
           "notes": null,
@@ -461,8 +461,8 @@ var G_SAMPLE_JSON_PIG_PRODUCTION = [
           "hid": "EKQY8R"
         },
         "staff": {
-          "name": null,
-          "hid": null
+          "name": 'Elmer',
+          "hid": 'sdfadg'
         },
         "notes": {
           "notes": null,
@@ -629,8 +629,8 @@ var G_SAMPLE_JSON_PIG_PRODUCTION = [
           "hid": "EKQY8R"
         },
         "staff": {
-          "name": null,
-          "hid": null
+          "name": 'Elmer',
+          "hid": 'sdfsdf'
         },
         "notes": {
           "notes": null,
@@ -657,8 +657,8 @@ var G_SAMPLE_JSON_PIG_PRODUCTION = [
           "hid": "0KP5K7"
         },
         "staff": {
-          "name": null,
-          "hid": null
+          "name": 'Elmer',
+          "hid": 'aasdas'
         },
         "notes": {
           "notes": null,

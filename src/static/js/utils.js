@@ -7,6 +7,7 @@
 export const FORMAT_LONG_MONTH      = 'long';
 export const FORMAT_SHORT_MONTH     = 'short';
 export const FORMAT_COMPACT         = 'compact';
+export const FORMAT_MONTH_DATE_ONLY = 'month_date';
 
 
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -24,12 +25,23 @@ export function formatDate(dt, format){
         options.month = format;
     }
     
+    var day     = null;
+    var month   = null;
+    var year    = null;
+    
     if (format == FORMAT_COMPACT) {
-        const day = String(dt.getDate()).padStart(2, '0');
-        const month = monthNames[dt.getMonth()];
-        const year = dt.getFullYear();
+        day     = String(dt.getDate()).padStart(2, '0');
+        month   = monthNames[dt.getMonth()];
+        year    = dt.getFullYear();
 
-        return `${day}${month}${year}`;
+        return `${day} ${month} ${year}`;
+    }
+    
+    if (format == FORMAT_MONTH_DATE_ONLY){
+        day     = String(dt.getDate()).padStart(2, '0');
+        month   = monthNames[dt.getMonth()];
+        
+        return `${month} ${day}`;
     }
 
     
@@ -38,6 +50,7 @@ export function formatDate(dt, format){
 
 
 export function sortList(list, sort_key, sort_direction = 'asc') {
+  // Will sort a list with a given dotted sort key
   if (!Array.isArray(list) || list.length === 0) return list;
   
   // Parse the dotted key path into an array of keys

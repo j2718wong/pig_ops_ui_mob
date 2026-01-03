@@ -658,10 +658,7 @@ export function PageMobGestaLacta(input_settings){
             operations = data_pig_prod.gestating_ops;
         }
         else{
-            operations = [];
-            
-            // Need to combine lactating_piglets_ops and lactating_sow_ops
-            // in descending date order
+            operations = data_pig_prod.lactating_ops;
         }
         
         if (operations == null){return '';}
@@ -1079,7 +1076,7 @@ export function PageMobGestaLacta(input_settings){
             
             html_tbody += `
             <tr>
-                <td class="sow-name" tabindex="0" role="button" onclick="${s_click}">${cur_entry.sow}</td>
+                <td class="sow-name" tabindex="0" role="button" onclick="${s_click}" style="padding-left:0;">${cur_entry.sow}</td>
                 <td class="date date-today" tabindex="0" role="button" onclick="${s_click}">
                     <span class="compact-date">${cur_entry.date}</span>
                     ${html_overdue}

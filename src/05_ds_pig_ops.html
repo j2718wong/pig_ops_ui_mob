@@ -302,16 +302,14 @@
         }
         
         .data-table th:nth-child(1) { width: 22%; }
-        .data-table th:nth-child(2) { width: 48%; }
-        .data-table th:nth-child(3) { width: 30%; }
+        .data-table th:nth-child(2) { width: 50%; }
+        .data-table th:nth-child(3) { width: 28%; }
         
         .data-table td {
             padding: 8px 6px;
             border-bottom: 1px solid var(--medium-gray);
             font-size: 12px;
             vertical-align: top;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
         
         .data-table tr:nth-child(even) {
@@ -319,7 +317,7 @@
         }
         
         .data-table tr.completed {
-            opacity: 0.7;
+            opacity: 0.8;
         }
         
         .data-table tr.hidden {
@@ -330,7 +328,7 @@
             background-color: #e0f2fe;
         }
         
-        /* Date column styling */
+        /* Date column styling - with year wrapping */
         .date-cell {
             position: relative;
             min-width: 0;
@@ -353,10 +351,27 @@
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         
-        .date-text {
+        .date-content {
             margin-left: 10px;
             font-size: 11px;
+            line-height: 1.3;
+        }
+        
+        .date-with-year {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .date-month-day {
             white-space: nowrap;
+            font-weight: 500;
+        }
+        
+        .date-year {
+            color: var(--dark-gray);
+            font-size: 10px;
+            margin-top: 1px;
+            line-height: 1.2;
         }
         
         /* Operation name column */
@@ -385,8 +400,49 @@
             text-overflow: ellipsis;
         }
         
-        /* Done By column */
-        .staff-name {
+        /* Done By column - NEW STYLE */
+        .done-by-cell {
+            min-width: 0;
+        }
+        
+        /* Completed operations - two divs side by side */
+        .completed-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        
+        .checkmark-container {
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        
+        .checkmark {
+            width: 16px;
+            height: 16px;
+            background-color: var(--green-complete);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .checkmark::after {
+            content: '✓';
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .staff-date-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        
+        .staff-name-completed {
             font-weight: 500;
             color: var(--corporate-dark-blue);
             font-size: 11px;
@@ -395,18 +451,17 @@
             text-overflow: ellipsis;
         }
         
-        .completion-date {
+        .completion-full-date {
             font-size: 10px;
             color: var(--dark-gray);
             margin-top: 2px;
-            white-space: nowrap;
+            line-height: 1.2;
         }
         
-        .completed-badge {
-            font-size: 10px;
-            color: var(--green-complete);
-            font-weight: 600;
-            margin-top: 2px;
+        /* Empty cell for not done operations */
+        .empty-cell {
+            height: 32px;
+            /* Empty cell - no content */
         }
         
         /* Form Styles */
@@ -522,6 +577,23 @@
                 font-size: 11px;
             }
             
+            .checkmark {
+                width: 14px;
+                height: 14px;
+            }
+            
+            .checkmark::after {
+                font-size: 9px;
+            }
+            
+            .staff-name-completed {
+                font-size: 10px;
+            }
+            
+            .completion-full-date {
+                font-size: 9px;
+            }
+            
             .show-more-dropdown {
                 width: 110px;
                 right: 1px;
@@ -533,7 +605,7 @@
             }
         }
         
-        /* Very small screens - adjust buttons */
+        /* Very small screens */
         @media (max-width: 280px) {
             .filter-button {
                 padding: 6px 8px;
@@ -554,6 +626,27 @@
             
             .toggle-switch.active .toggle-knob {
                 transform: translateX(16px);
+            }
+            
+            .checkmark {
+                width: 12px;
+                height: 12px;
+            }
+            
+            .checkmark::after {
+                font-size: 8px;
+            }
+            
+            .completed-info {
+                gap: 4px;
+            }
+            
+            .staff-name-completed {
+                font-size: 9px;
+            }
+            
+            .completion-full-date {
+                font-size: 8px;
             }
         }
     </style>
@@ -760,19 +853,21 @@
             // Initialize filters
             initializeFilters(operations);
             
-            // Function to generate operations data
+            // Function to generate operations data with full dates
             function generateOperationsData() {
                 return [
-                    { id: 1, date: "Oct 15", isDue: true, operationName: "Vaccination - Sow", isForSow: true, doneBy: "J. Smith", completionDate: "Oct 14", isCompleted: true },
-                    { id: 2, date: "Oct 16", isDue: false, operationName: "Health Check", isForSow: false, doneBy: "M. Garcia", completionDate: "Oct 16", isCompleted: true },
-                    { id: 3, date: "Oct 17", isDue: true, operationName: "Weighing - Sow", isForSow: true, doneBy: "Not done", completionDate: null, isCompleted: false },
-                    { id: 4, date: "Oct 12", isDue: false, operationName: "Relocation", isForSow: false, doneBy: "R. Chen", completionDate: "Oct 11", isCompleted: true },
-                    { id: 5, date: "Oct 13", isDue: false, operationName: "Vaccination", isForSow: false, doneBy: "S. Johnson", completionDate: "Oct 13", isCompleted: true },
-                    { id: 6, date: "Oct 18", isDue: true, operationName: "Feeding - Sow", isForSow: true, doneBy: "Not done", completionDate: null, isCompleted: false },
-                    { id: 7, date: "Oct 19", isDue: false, operationName: "Pen Cleaning", isForSow: false, doneBy: "M. Brown", completionDate: "Oct 18", isCompleted: true },
-                    { id: 8, date: "Oct 14", isDue: false, operationName: "Vaccination - Sow", isForSow: true, doneBy: "L. Wong", completionDate: "Oct 14", isCompleted: true },
-                    { id: 9, date: "Oct 20", isDue: true, operationName: "Health Check - Sow", isForSow: true, doneBy: "Not done", completionDate: null, isCompleted: false },
-                    { id: 10, date: "Oct 21", isDue: false, operationName: "Feeding", isForSow: false, doneBy: "A. Taylor", completionDate: "Oct 20", isCompleted: true }
+                    { id: 1, date: "Oct 15", year: "2023", isDue: true, operationName: "Vaccination - Sow", isForSow: true, doneBy: "J. Smith", fullDate: "Oct 15 2023", completionFullDate: "Oct 14 2023", isCompleted: true },
+                    { id: 2, date: "Oct 16", year: "2023", isDue: false, operationName: "Health Check", isForSow: false, doneBy: "M. Garcia", fullDate: "Oct 16 2023", completionFullDate: "Oct 16 2023", isCompleted: true },
+                    { id: 3, date: "Oct 17", year: "2023", isDue: true, operationName: "Weighing - Sow", isForSow: true, doneBy: "", fullDate: "Oct 17 2023", completionFullDate: null, isCompleted: false },
+                    { id: 4, date: "Oct 12", year: "2023", isDue: false, operationName: "Relocation", isForSow: false, doneBy: "R. Chen", fullDate: "Oct 12 2023", completionFullDate: "Oct 11 2023", isCompleted: true },
+                    { id: 5, date: "Oct 13", year: "2023", isDue: false, operationName: "Vaccination", isForSow: false, doneBy: "S. Johnson", fullDate: "Oct 13 2023", completionFullDate: "Oct 13 2023", isCompleted: true },
+                    { id: 6, date: "Oct 18", year: "2023", isDue: true, operationName: "Feeding - Sow", isForSow: true, doneBy: "", fullDate: "Oct 18 2023", completionFullDate: null, isCompleted: false },
+                    { id: 7, date: "Oct 19", year: "2023", isDue: false, operationName: "Pen Cleaning", isForSow: false, doneBy: "M. Brown", fullDate: "Oct 19 2023", completionFullDate: "Oct 18 2023", isCompleted: true },
+                    { id: 8, date: "Oct 14", year: "2023", isDue: false, operationName: "Vaccination - Sow", isForSow: true, doneBy: "L. Wong", fullDate: "Oct 14 2023", completionFullDate: "Oct 14 2023", isCompleted: true },
+                    { id: 9, date: "Nov 20", year: "2023", isDue: true, operationName: "Health Check - Sow", isForSow: true, doneBy: "", fullDate: "Nov 20 2023", completionFullDate: null, isCompleted: false },
+                    { id: 10, date: "Dec 21", year: "2023", isDue: false, operationName: "Feeding", isForSow: false, doneBy: "A. Taylor", fullDate: "Dec 21 2023", completionFullDate: "Dec 20 2023", isCompleted: true },
+                    { id: 11, date: "Jan 05", year: "2024", isDue: false, operationName: "Vaccination - Sow", isForSow: true, doneBy: "T. Roberts", fullDate: "Jan 05 2024", completionFullDate: "Jan 04 2024", isCompleted: true },
+                    { id: 12, date: "Feb 15", year: "2024", isDue: true, operationName: "Health Check", isForSow: false, doneBy: "", fullDate: "Feb 15 2024", completionFullDate: null, isCompleted: false }
                 ];
             }
             
@@ -838,8 +933,8 @@
                         }
                         
                         // Convert dates to comparable format
-                        const dateA = new Date(a.date + " 2023");
-                        const dateB = new Date(b.date + " 2023");
+                        const dateA = new Date(a.fullDate);
+                        const dateB = new Date(b.fullDate);
                         return dateA - dateB;
                     });
                 
@@ -848,7 +943,7 @@
                     const row = document.createElement('tr');
                     row.className = op.isCompleted ? 'completed' : '';
                     
-                    // Date column
+                    // Date column with year
                     const dateCell = document.createElement('td');
                     dateCell.className = 'date-cell';
                     const dateContent = document.createElement('div');
@@ -861,10 +956,24 @@
                         dateContent.appendChild(dueIndicator);
                     }
                     
+                    const dateWithYear = document.createElement('div');
+                    dateWithYear.className = 'date-with-year';
+                    
+                    const dateMonthDay = document.createElement('div');
+                    dateMonthDay.className = 'date-month-day';
+                    dateMonthDay.textContent = op.date;
+                    
+                    const dateYear = document.createElement('div');
+                    dateYear.className = 'date-year';
+                    dateYear.textContent = op.year;
+                    
+                    dateWithYear.appendChild(dateMonthDay);
+                    dateWithYear.appendChild(dateYear);
+                    
                     const dateText = document.createElement('div');
-                    dateText.className = 'date-text';
-                    dateText.textContent = op.date;
-                    dateText.style.marginLeft = '0';
+                    dateText.className = 'date-content';
+                    dateText.appendChild(dateWithYear);
+                    
                     dateContent.appendChild(dateText);
                     dateCell.appendChild(dateContent);
                     row.appendChild(dateCell);
@@ -889,24 +998,46 @@
                     operationCell.appendChild(operationContent);
                     row.appendChild(operationCell);
                     
-                    // Done By column
+                    // Done By column - NEW IMPLEMENTATION
                     const doneByCell = document.createElement('td');
-                    const staffName = document.createElement('div');
-                    staffName.className = 'staff-name';
-                    staffName.textContent = op.doneBy;
-                    doneByCell.appendChild(staffName);
+                    doneByCell.className = 'done-by-cell';
                     
-                    if (op.completionDate) {
-                        const completionDate = document.createElement('div');
-                        completionDate.className = 'completion-date';
-                        completionDate.textContent = `Completed: ${op.completionDate}`;
-                        doneByCell.appendChild(completionDate);
-                    } else if (!op.isCompleted) {
-                        const pendingBadge = document.createElement('div');
-                        pendingBadge.className = 'completed-badge';
-                        pendingBadge.textContent = 'Pending';
-                        pendingBadge.style.color = '#f59e0b';
-                        doneByCell.appendChild(pendingBadge);
+                    if (op.isCompleted) {
+                        // Completed operation - two divs side by side
+                        const completedInfo = document.createElement('div');
+                        completedInfo.className = 'completed-info';
+                        
+                        // Left div - check mark
+                        const checkmarkContainer = document.createElement('div');
+                        checkmarkContainer.className = 'checkmark-container';
+                        
+                        const checkmark = document.createElement('div');
+                        checkmark.className = 'checkmark';
+                        checkmarkContainer.appendChild(checkmark);
+                        
+                        // Right div - staff name and full date
+                        const staffDateInfo = document.createElement('div');
+                        staffDateInfo.className = 'staff-date-info';
+                        
+                        const staffNameCompleted = document.createElement('div');
+                        staffNameCompleted.className = 'staff-name-completed';
+                        staffNameCompleted.textContent = op.doneBy;
+                        
+                        const completionFullDate = document.createElement('div');
+                        completionFullDate.className = 'completion-full-date';
+                        completionFullDate.textContent = op.completionFullDate;
+                        
+                        staffDateInfo.appendChild(staffNameCompleted);
+                        staffDateInfo.appendChild(completionFullDate);
+                        
+                        completedInfo.appendChild(checkmarkContainer);
+                        completedInfo.appendChild(staffDateInfo);
+                        doneByCell.appendChild(completedInfo);
+                    } else {
+                        // Not done - empty cell
+                        const emptyCell = document.createElement('div');
+                        emptyCell.className = 'empty-cell';
+                        doneByCell.appendChild(emptyCell);
                     }
                     
                     row.appendChild(doneByCell);

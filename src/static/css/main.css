@@ -31,14 +31,23 @@
     --success-green: #10b981;
     --warning-orange: #f59e0b;
     --danger-red: #ef4444;
-    --neutral-gray: #6b7280;
     --text-dark: #1f2937;
     --text-light: #f9fafb;
+	
+	--light-gray: #f8fafc;
+	--medium-gray: #e2e8f0;
+	--neutral-gray: #6b7280;
+    --dark-gray: #64748b;
     
     --warning-bg: #fef3c7;
     --warning-border: #f59e0b;
     --success-bg: #d1fae5;
     --success-border: #10b981;
+	
+	--text-light: #f8fafc;
+	--alert-red: #ef4444;
+	--alert-glow: rgba(239, 68, 68, 0.7);
+	--green-complete: #10b981;
 
     --gestating-color:  #693FE9;
     --lactating-piglets-color:  #2394EF;
@@ -1444,7 +1453,7 @@ p {
     height: 10px;
     background-color: #ef4444;
     border-radius: 50%;
-    margin-left: 8px;
+    margin-left: 5px;
     vertical-align: middle;
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
     animation: pulse 2s infinite;

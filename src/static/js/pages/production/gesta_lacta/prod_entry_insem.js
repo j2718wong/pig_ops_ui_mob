@@ -159,7 +159,7 @@ export function ProdEntryInsem(input_settings){
         
         const html = `
 <div class="modal-body" id="${elemContentContainer}">
-    <h2 style="margin-bottom: 10px; color: var(--corporate-blue);">
+    <h2 class="tab-title">
         Insemination Information
     </h2>
     

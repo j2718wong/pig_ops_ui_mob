@@ -10,7 +10,7 @@ import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
 
-
+import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryInsem}         from './prod_entry_insem.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
 
@@ -62,6 +62,12 @@ export function PageProdGestatingEntry(input_settings){
     var sowList                 = null;
     var boarList                = null;
     var semenSupplierList       = null;
+    
+    
+    const settingsPigOps = {
+        parentObj:              this
+    }
+    var prodEntryPigOps         = new ProdEntryPigOps(settingsPigOps);
     
     
     const settingsInsem = {
@@ -211,7 +217,13 @@ export function PageProdGestatingEntry(input_settings){
             display: block;
             animation: fadeIn 0.3s ease;
         }
-
+        
+        .tab-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--corporate-blue);
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -441,6 +453,7 @@ export function PageProdGestatingEntry(input_settings){
 
         const html_style        = thisObj._writeInlineStyle();
         
+        const html_pig_ops      = prodEntryPigOps.getHtml();
         const html_tab_insem    = prodEntryInsem.getHtml();
         const html_tab_birth    = prodEntryBirth.getHtml();
         
@@ -473,9 +486,9 @@ export function PageProdGestatingEntry(input_settings){
         
         <!-- Tabs Navigation -->
         <div class="tabs-container">
-            <button class="tab-button active" data-tab="insem">Insem</button>
+            <button class="tab-button active" data-tab="pig-ops">Pig Ops</button>
             <button class="tab-button" data-tab="birth">Birth</button>
-            <button class="tab-button" data-tab="status">Status</button>
+            <button class="tab-button" data-tab="insem">Insem</button>
             <button class="tab-button" data-tab="notes">Notes</button>
         </div>
     </div>
@@ -483,57 +496,22 @@ export function PageProdGestatingEntry(input_settings){
     <!-- Tab Content Area - Scrolls below fixed sections -->
     <div class="tab-content-area">
         <!-- Tab Content -->
-        <div id="insem-tab" class="tab-content active">
-            ${html_tab_insem}
+        
+        <div id="pig-ops-tab" class="tab-content active">
+            ${html_pig_ops}
         </div>
-
-        <!-- Birth Tab -->
+        
         <div id="birth-tab" class="tab-content">
             ${html_tab_birth}
         </div>
-
-        <!-- Status Tab -->
-        <div id="status-tab" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Update Gestation Status</h2>
-            
-            <div class="warning-box">
-                This is used in abnormal cases of hog gestation. Updating the production status to any of the status below will remove this entry from the production list and will be visible only in reports. <b>This cannot be undone.</b>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Date Status</label>
-                <input type="date" class="form-control" value="2023-11-20">
-            </div>
-            
-            <div class="radio-group">
-                <div class="radio-option" data-option="reheat">
-                    <input type="radio" name="status" id="reheat" class="radio-input">
-                    <div class="radio-text">
-                        <div class="radio-title">Sow not pregnant. Sow reheat.</div>
-                        <div class="radio-description">Just try again.</div>
-                    </div>
-                </div>
-                
-                <div class="radio-option" data-option="sold">
-                    <input type="radio" name="status" id="sold" class="radio-input">
-                    <div class="radio-text">
-                        <div class="radio-title">Sow is Sold or Dead.</div>
-                        <div class="radio-description">Sow will also be removed from sow list.</div>
-                    </div>
-                </div>
-                
-                <div class="radio-option" data-option="nolive">
-                    <input type="radio" name="status" id="nolive" class="radio-input">
-                    <div class="radio-text">
-                        <div class="radio-title">No Live piglets</div>
-                        <div class="radio-description">Sow has given birth all mummified/dead piglets.</div>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="btn btn-primary">Save Changes</button>
+        
+        <div id="insem-tab" class="tab-content">
+            ${html_tab_insem}
         </div>
 
+        
+        
+        
         <!-- Notes Tab -->
         <div id="notes-tab" class="tab-content">
             <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Add New Note</h2>
@@ -616,6 +594,7 @@ export function PageProdGestatingEntry(input_settings){
     
     
     this._processAfterHtmlRender = function(){
+		prodEntryPigOps.afterHtmlRender();
         prodEntryInsem.afterHtmlRender();
         prodEntryBirth.afterHtmlRender();
     }
@@ -668,7 +647,6 @@ export function PageProdGestatingEntry(input_settings){
     
     this.show = function(data_pig_prod, options){
         console.log('PageAddGestating show');
-        console.log(data_pig_prod);
         
         // Set Header Data
         const title = `Production Gestating ${options.data_index} Of ${options.total_entries}`;
@@ -731,7 +709,7 @@ export function PageProdGestatingEntry(input_settings){
         elemHeaderBoarName.textContent  = boar_name;
         
         
-        // set arrow navigation
+        // Set arrow navigation
         elemNavPrevEntry.onclick = function(){
             navigation.onClickProdGestatingEntry(options.prev_prod_pid);
         }
@@ -740,12 +718,19 @@ export function PageProdGestatingEntry(input_settings){
             navigation.onClickProdGestatingEntry(options.next_prod_pid);
         }
         
+        // Set PigProdOps tab
+        const options_pig_prod_ops ={
+            show_gesta:   true
+        }
+        prodEntryPigOps.show(data_pig_prod, options_pig_prod_ops);
+        
         
         // Set Insemination tab
         const options_insem ={
             is_read_only:   false
         }
         prodEntryInsem.show(data_pig_prod, options_insem);
+        
     }
     
 }   

@@ -103,7 +103,7 @@ export function ProdEntryBirth(input_settings){
         
         const html = `
 <div class="modal-body" id="${elemIdContentContainer}">
-    <h2 style="margin-bottom: 10px; color: var(--corporate-blue);">
+    <h2 class="tab-title">
         Birth Information
     </h2>
     
