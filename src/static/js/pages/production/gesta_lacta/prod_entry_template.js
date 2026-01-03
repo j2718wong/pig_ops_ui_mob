@@ -9,7 +9,7 @@ import {PageViewBasic}          from '../../common/page_view_basic.js';
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
-//import {AddModalSowBoar}        from './add_modal_sow.js';
+
 
 
 
@@ -19,47 +19,47 @@ export function ProdEntryInsem(input_settings){
     
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
-	
-	
-	var elemIdNavPrevEntry      = null;
-    var elemIdEntryTitle        = null;
-    var elemIdPigProdPid        = null;
-    var elemIdHeaderSowName     = null;
-    var elemIdHeaderBoarName    = null;
-    var elemIdNavNextEntry      = null;
+    
+    
+    let elemIdNavPrevEntry      = null;
+    let elemIdEntryTitle        = null;
+    let elemIdPigProdPid        = null;
+    let elemIdHeaderSowName     = null;
+    let elemIdHeaderBoarName    = null;
+    let elemIdNavNextEntry      = null;
     
     
     
-    var elemNavPrevEntry        = null;
-    var elemEntryTitle          = null;
-    var elemPigProdPid          = null;
-    var elemHeaderSowName       = null;
-    var elemHeaderBoarName      = null;
-    var elemNavNextEntry        = null;
-	
-	
-	this.init = function(){
+    let elemNavPrevEntry        = null;
+    let elemEntryTitle          = null;
+    let elemPigProdPid          = null;
+    let elemHeaderSowName       = null;
+    let elemHeaderBoarName      = null;
+    let elemNavNextEntry        = null;
+    
+    
+    this.init = function(){
         this.render();
         this.afterHtmlRender();
     }
-	
-	
-	this.getHtml = function(){
-		const html = `
-		`;
-		
-		return html
-	}
-	
-	
-	this.afterHtmlRender = function(){
+    
+    
+    this.getHtml = function(){
+        const html = `
+        `;
+        
+        return html
+    }
+    
+    
+    this.afterHtmlRender = function(){
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
     }
-	
-	
-	this._findElements = function(){
+    
+    
+    this._findElements = function(){
         elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
         elemEntryTitle          = document.getElementById(elemIdEntryTitle);
         elemPigProdPid          = document.getElementById(elemIdPigProdPid);
@@ -82,13 +82,13 @@ export function ProdEntryInsem(input_settings){
     this._bindEventListeners = function(){
         
     }
-	
-	
-	this.show = function(){
-		
-		
-	}
-	
-	
+    
+    
+    this.show = function(){
+        
+        
+    }
+    
+    
 
 }

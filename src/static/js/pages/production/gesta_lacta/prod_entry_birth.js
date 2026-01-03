@@ -21,49 +21,49 @@ export function ProdEntryBirth(input_settings){
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
     
-    var elemIdContentContainer  = null;
+    let elemIdContentContainer  = null;
     
-    var elemIdCannotUpdate      = null;
+    let elemIdCannotUpdate      = null;
     
-    var elemIdDateExpected      = null;
-    var elemIdDateBirth         = null;
-    var elemIdGestationDays     = null;
+    let elemIdDateExpected      = null;
+    let elemIdDateBirth         = null;
+    let elemIdGestationDays     = null;
     
-    var elemIdNumFemale         = null;
-    var elemIdNumMale           = null;
-    var elemIdNumDead           = null;
+    let elemIdNumFemale         = null;
+    let elemIdNumMale           = null;
+    let elemIdNumDead           = null;
     
-    var elemIdStaff             = null;
-    var elemIdStaffCount        = null;
-    var elemIdStaffAdd          = null;
-    var elemIdChkDoneByMe       = null;
+    let elemIdStaff             = null;
+    let elemIdStaffCount        = null;
+    let elemIdStaffAdd          = null;
+    let elemIdChkDoneByMe       = null;
     
-    var elemIdBtnSave           = null;
+    let elemIdBtnSave           = null;
     
     
     
-    var elemContentContainer    = null;
+    let elemContentContainer    = null;
     
-    var elemCannotUpdate        = null;
+    let elemCannotUpdate        = null;
     
-    var elemDateExpected        = null;
-    var elemDateBirth           = null;
-    var elemGestationDays       = null;
+    let elemDateExpected        = null;
+    let elemDateBirth           = null;
+    let elemGestationDays       = null;
     
-    var elemNumFemale           = null;
-    var elemNumMale             = null;
-    var elemNumDead             = null;
+    let elemNumFemale           = null;
+    let elemNumMale             = null;
+    let elemNumDead             = null;
     
-    var elemStaff               = null;
-    var elemStaffCount          = null;
-    var elemStaffAdd            = null;
-    var elemChkDoneByMe         = null;
+    let elemStaff               = null;
+    let elemStaffCount          = null;
+    let elemStaffAdd            = null;
+    let elemChkDoneByMe         = null;
     
-    var elemBtnSave             = null;
+    let elemBtnSave             = null;
     
     
    
-    var staffList               = null; 
+    let staffList               = null; 
     
     const insemDataSelect       = new InsemDataSelect();
     
@@ -286,7 +286,7 @@ export function ProdEntryBirth(input_settings){
     
     this.show = function(data_pig_prod, options){
         const data_sow = data_pig_prod.sow;
-        var sow_reference = '';
+        let sow_reference = '';
         
         if ((data_sow.name != null) && (data_sow.name.length >0)){
             sow_reference = data_sow.name;

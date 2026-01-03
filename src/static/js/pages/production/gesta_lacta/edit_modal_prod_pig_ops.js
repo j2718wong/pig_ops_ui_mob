@@ -28,56 +28,56 @@ export function EditModalProdPigOps(input_settings){
         navigation:             this
     }   
     */  
-    var settings                = input_settings;
+    let settings                = input_settings;
         
     // This is needed as ths will be first element to be rendered
-    var elemDivContainer        = document.getElementById('container-edit-modal-prod-pig-ops');
+    let elemDivContainer        = document.getElementById('container-edit-modal-prod-pig-ops');
         
-    var elemIdModal             = null;
-    var elemIdModalTitle        = null;
-    var elemIdProdPigOpsTitle   = null;
-    var elemIdDateActual        = null;
-    var elemIdStaff             = null;
-    var elemIdChkDoneByMe       = null;
-    var elemIdNotes             = null;
-    var elemIdBtnSave           = null;
-    var elemIdBtnDelete         = null;
+    let elemIdModal             = null;
+    let elemIdModalTitle        = null;
+    let elemIdProdPigOpsTitle   = null;
+    let elemIdDateActual        = null;
+    let elemIdStaff             = null;
+    let elemIdChkDoneByMe       = null;
+    let elemIdNotes             = null;
+    let elemIdBtnSave           = null;
+    let elemIdBtnDelete         = null;
     
-    var elemIdNotesCharCounter  = null;
-    
-    
-    var elemModal               = null;
-    var elemModalTitle          = null;
-    var elemProdPigOpsTitle     = null;
-    var elemDateActual          = null;
-    var elemStaff               = null;
-    var elemChkDoneByMe         = null;
-    var elemNotes               = null;
-    var elemBtnSave             = null;
-    var elemBtnDelete           = null;
+    let elemIdNotesCharCounter  = null;
     
     
-    var elemNotesCharCounter    = null;
+    let elemModal               = null;
+    let elemModalTitle          = null;
+    let elemProdPigOpsTitle     = null;
+    let elemDateActual          = null;
+    let elemStaff               = null;
+    let elemChkDoneByMe         = null;
+    let elemNotes               = null;
+    let elemBtnSave             = null;
+    let elemBtnDelete           = null;
     
-    var editModal               = null;
+    
+    let elemNotesCharCounter    = null;
+    
+    let editModal               = null;
 
         
         
-    var operationType           = null;
+    let operationType           = null;
     
-    var dataStaffList           = null;
+    let dataStaffList           = null;
     
     
     // Use these fields for validation
-    var fieldDateActual         = new Field();
-    var fieldNotes              = new Field();
-    var fieldStaffHid           = new Field();
+    let fieldDateActual         = new Field();
+    let fieldNotes              = new Field();
+    let fieldStaffHid           = new Field();
     
     fieldNotes.maxStrLen  = 160;
     fieldDateActual.setValidation({cannotBeEmptyStr: true, isDateStr:true});
     
     // This is used in validation
-    var dataModel               = new ModelBasic();
+    let dataModel               = new ModelBasic();
     
     // Attach these fields to data model
     dataModel['fieldDateActual']    = fieldDateActual;
@@ -89,8 +89,8 @@ export function EditModalProdPigOps(input_settings){
     dataModel.editableFields.push(fieldStaffHid);
     
     
-    var pigProdPid      = null;
-    var prodPigOpsData  = null;
+    let pigProdPid      = null;
+    let prodPigOpsData  = null;
     
     
     this.cbMobileOnSuccessEdit  = null;
@@ -293,7 +293,7 @@ export function EditModalProdPigOps(input_settings){
     this.setDataStaffList = function(data){
         dataStaffList = data;
         
-        var select_data = [];
+        let select_data = [];
         
         if (dataStaffList.length == 0){
             select_data.push({value:"-1", text:"No Entries"});
@@ -340,7 +340,7 @@ export function EditModalProdPigOps(input_settings){
         prodPigOpsData      = operation;
         
         
-        var html;
+        let html;
         
         html = `PID: ${pid}(${sow}) - ${operation.account_pig_ops.name}`;
         elemProdPigOpsTitle.innerHTML = html;
@@ -381,10 +381,10 @@ export function EditModalProdPigOps(input_settings){
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
     
-        var input_elem  = null;
-        var input_val   = null;
-        var cur_field   = null;
-        var validation  = null;
+        let input_elem  = null;
+        let input_val   = null;
+        let cur_field   = null;
+        let validation  = null;
      
         
         if (ev.checkValidity()) {
@@ -464,15 +464,15 @@ export function EditModalProdPigOps(input_settings){
     
     
     this._onClickSaveButton = function(){
-        var input_elem      = null;
-        var cur_field       = null;
-        var validation      = -1;
-        var proceed_to_save = 1;
+        let input_elem      = null;
+        let cur_field       = null;
+        let validation      = -1;
+        let proceed_to_save = 1;
         
 
-        var input_date_actual   = elemDateActual.value;
-        var input_notes         = elemNotes.value.trim();
-        var input_staff_hid     = elemStaff.value;
+        let input_date_actual   = elemDateActual.value;
+        let input_notes         = elemNotes.value.trim();
+        let input_staff_hid     = elemStaff.value;
         
         
         input_elem          = elemDateActual;
@@ -495,7 +495,7 @@ export function EditModalProdPigOps(input_settings){
         
         // The staff can be from the drop down
         // Or Done by User (Done by Me checkbox)
-        var done_by_user = 0
+        let done_by_user = 0
         
         if (elemChkDoneByMe.checked){done_by_user = 1;}
         

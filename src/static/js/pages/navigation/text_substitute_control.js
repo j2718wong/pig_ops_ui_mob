@@ -11,7 +11,7 @@ export function textSubstituteToControl(s_text){
     //console.log(extracted); // ["{PAGE_PROD_GESTATING}", "{PAGE_PROD_LACTATING}"]
     
     const result = [];
-    var html = ''
+    let html = ''
     for (const cur_entry of extracted){
         switch(cur_entry){
             case '{PAGE_PROD_GESTATING}':{

@@ -23,21 +23,21 @@ import {PageProdGestatingEntry}     from '../production/gesta_lacta/page_prod_ge
 function UserControl() {
     const thisObj                   = this;
     
-    var elemDesktopUserAvatarInitials   = null;
-    var elemDesktopUserAvatarInitialsL  = null;
-    var elemDesktopUserFullName         = null;
-    var elemDesktopUserRole             = null;
+    let elemDesktopUserAvatarInitials   = null;
+    let elemDesktopUserAvatarInitialsL  = null;
+    let elemDesktopUserFullName         = null;
+    let elemDesktopUserRole             = null;
     
-    var elemMobileUserAvatarInitials    = null;
-    var elemMobileUserAvatarInitialsL   = null;
-    var elemMobileUserFullName          = null;
-    var elemMobileUserRole              = null;
+    let elemMobileUserAvatarInitials    = null;
+    let elemMobileUserAvatarInitialsL   = null;
+    let elemMobileUserFullName          = null;
+    let elemMobileUserRole              = null;
     
     
-    var dataUserAccount             = null;
+    let dataUserAccount             = null;
     
-    var userCurrentFarmHid          = null;
-    var userCurrentLanguage         = null;
+    let userCurrentFarmHid          = null;
+    let userCurrentLanguage         = null;
     
     
     this.init = function(){
@@ -147,36 +147,36 @@ function UserControl() {
 export function Navigation(){
     const thisObj               = this;
     
-    var dataCompanyApp          = null;
+    let dataCompanyApp          = null;
    
     
     
-    var elemSubnavSummary       = null;
+    let elemSubnavSummary       = null;
     
     
-    var elemDesktopNavSettings      = null;
-    var elemDesktopNavSowBoarGilt   = null;
-    var elemDesktopNavProduction    = null;
-    var elemDesktopNavOperations    = null;
-    var elemDesktopNavFinancials    = null;
-    var elemDesktopNavAccountLists  = null;
-    var elemDesktopNavAdmin         = null;
+    let elemDesktopNavSettings      = null;
+    let elemDesktopNavSowBoarGilt   = null;
+    let elemDesktopNavProduction    = null;
+    let elemDesktopNavOperations    = null;
+    let elemDesktopNavFinancials    = null;
+    let elemDesktopNavAccountLists  = null;
+    let elemDesktopNavAdmin         = null;
     
-    var elemMobileNavSettings       = null;
-    var elemMobileNavSowBoarGilt    = null;
-    var elemMobileNavProduction     = null;
-    var elemMobileNavOperations     = null;
-    var elemMobileNavFinancials     = null;
-    var elemMobileNavAccountLists   = null;
-    var elemMobileNavAdmin          = null;
+    let elemMobileNavSettings       = null;
+    let elemMobileNavSowBoarGilt    = null;
+    let elemMobileNavProduction     = null;
+    let elemMobileNavOperations     = null;
+    let elemMobileNavFinancials     = null;
+    let elemMobileNavAccountLists   = null;
+    let elemMobileNavAdmin          = null;
 
     
-    var elemHiddenContAccPigOps     = null;
-    var elemHiddenContSowBoarAddEdit= null;
-    var elemHiddenContProdGestaList = null;
-    var elemHiddenContProdLactaList = null;
-    var elemHiddenContProdGestaAdd  = null;
-    var elemHiddenContProdGestaEntry= null;
+    let elemHiddenContAccPigOps     = null;
+    let elemHiddenContSowBoarAddEdit= null;
+    let elemHiddenContProdGestaList = null;
+    let elemHiddenContProdLactaList = null;
+    let elemHiddenContProdGestaAdd  = null;
+    let elemHiddenContProdGestaEntry= null;
     
     
     this.curScreenIsMobile          = null;
@@ -233,7 +233,7 @@ export function Navigation(){
     this.pageProdGestatingEntry = new PageProdGestatingEntry(settingsProdGestatingEntry);
     
     
-    var dataPigProdList         = null;
+    let dataPigProdList         = null;
     
     
     this.init = function(){
@@ -759,13 +759,13 @@ export function Navigation(){
         // Get the data_pig_prod from dataPigProdList
         const data_pig_prod_list = thisObj.pageMobGestatingList.getDataPigProdList();
         
-        var prev_prod_pid = null;
-        var next_prod_pid = null;
+        let prev_prod_pid = null;
+        let next_prod_pid = null;
         
-        var index;
-        var prev_entry  = null;
-        var cur_entry   = null;
-        var next_entry  = null;
+        let index;
+        let prev_entry  = null;
+        let cur_entry   = null;
+        let next_entry  = null;
         
         for (index = 0; index< data_pig_prod_list.length; index++){
             cur_entry = data_pig_prod_list[index];

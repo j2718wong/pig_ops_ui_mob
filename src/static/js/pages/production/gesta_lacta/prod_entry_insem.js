@@ -31,82 +31,82 @@ export function ProdEntryInsem(input_settings){
     const MAXCHAR_INSEM_NOTES   = 160;
     
     
-    var elemIdContentContainer  = null;
+    let elemIdContentContainer  = null;
         
-    var elemIdCannotUpdate      = null;
+    let elemIdCannotUpdate      = null;
     
-    var elemIdSow               = null;
-    var elemIdDateMatingWarning = null;
-    var elemIdDateMating        = null;
-    var elemIdInsemType         = null;
+    let elemIdSow               = null;
+    let elemIdDateMatingWarning = null;
+    let elemIdDateMating        = null;
+    let elemIdInsemType         = null;
     
-    var elemIdBoarShow          = null;
-    var elemIdBoar              = null;
-    var elemIdBoarCount         = null;
+    let elemIdBoarShow          = null;
+    let elemIdBoar              = null;
+    let elemIdBoarCount         = null;
     
-    var elemIdAiShow            = null;
-    var elemIdSemenSupplier     = null;
-    var elemIdSemenSupplierCount= null;
-    var elemIdSemenType         = null;
-    var elemIdSemenTypeCount    = null;
-    var elemIdSemenCost         = null;
+    let elemIdAiShow            = null;
+    let elemIdSemenSupplier     = null;
+    let elemIdSemenSupplierCount= null;
+    let elemIdSemenType         = null;
+    let elemIdSemenTypeCount    = null;
+    let elemIdSemenCost         = null;
   
-    var elemIdBoarInternalShow  = null;
-    var elemIdBoarInternal      = null;
-    var elemIdBoarInternalCount = null;
+    let elemIdBoarInternalShow  = null;
+    let elemIdBoarInternal      = null;
+    let elemIdBoarInternalCount = null;
     
     
-    var elemIdOtherCost         = null;
+    let elemIdOtherCost         = null;
     
-    var elemIdNotes             = null;
-    var elemIdNotesCharCounter  = null;
+    let elemIdNotes             = null;
+    let elemIdNotesCharCounter  = null;
     
-    var elemIdStaff             = null;
-    var elemIdStaffCount        = null;
+    let elemIdStaff             = null;
+    let elemIdStaffCount        = null;
     
-    var elemIdBtnSave           = null;
-    
-    
-    var elemContentContainer    = null;
-    
-    var elemCannotUpdate        = null;
-    
-    var elemSow                 = null;
-    var elemDateMatingWarning   = null;
-    var elemDateMating          = null;
-    var elemInsemType           = null;
-    
-    var elemBoarShow            = null;
-    var elemBoar                = null;
-    var elemBoarCount           = null;
-    
-    var elemAiShow              = null;
-    var elemSemenSupplier       = null;
-    var elemSemenSupplierCount  = null;
-    var elemSemenType           = null;
-    var elemSemenTypeCount      = null;
-    var elemSemenCost           = null;
-    
-    var elemBoarInternalShow    = null;
-    var elemBoarInternal        = null;
-    var elemBoarInternalCount   = null;
+    let elemIdBtnSave           = null;
     
     
-    var elemOtherCost           = null;
+    let elemContentContainer    = null;
     
-    var elemNotes               = null;
-    var elemNotesCharCounter    = null;
+    let elemCannotUpdate        = null;
     
-    var elemStaff               = null;
-    var elemStaffCount          = null;
+    let elemSow                 = null;
+    let elemDateMatingWarning   = null;
+    let elemDateMating          = null;
+    let elemInsemType           = null;
     
-    var elemBtnSave             = null;
+    let elemBoarShow            = null;
+    let elemBoar                = null;
+    let elemBoarCount           = null;
+    
+    let elemAiShow              = null;
+    let elemSemenSupplier       = null;
+    let elemSemenSupplierCount  = null;
+    let elemSemenType           = null;
+    let elemSemenTypeCount      = null;
+    let elemSemenCost           = null;
+    
+    let elemBoarInternalShow    = null;
+    let elemBoarInternal        = null;
+    let elemBoarInternalCount   = null;
     
     
-    var sowList                 = null;
-    var boarList                = null;
-    var semenSupplierList       = null;
-    var staffList               = null; 
+    let elemOtherCost           = null;
+    
+    let elemNotes               = null;
+    let elemNotesCharCounter    = null;
+    
+    let elemStaff               = null;
+    let elemStaffCount          = null;
+    
+    let elemBtnSave             = null;
+    
+    
+    let sowList                 = null;
+    let boarList                = null;
+    let semenSupplierList       = null;
+    let staffList               = null; 
     
     const insemDataSelect       = new InsemDataSelect();
     
@@ -423,7 +423,7 @@ export function ProdEntryInsem(input_settings){
     
     this.show = function(data_pig_prod, options){
         const data_sow = data_pig_prod.sow;
-        var sow_reference = '';
+        let sow_reference = '';
         
         if ((data_sow.name != null) && (data_sow.name.length >0)){
             sow_reference = data_sow.name;

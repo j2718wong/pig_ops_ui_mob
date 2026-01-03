@@ -29,33 +29,33 @@ export function ProdEntryNotes(input_settings){
     const MAXCHAR_NOTES         = 160;
 
     
-    var elemIdContentContainer  = null;
+    let elemIdContentContainer  = null;
     
-    var elemIdExpandNotes       = null;
-    var elemIdNotesForm         = null;
-    var elemIdDateNotes         = null;
-    var elemIdNotes             = null;
-    var elemIdNotesCharCounter  = null;
-    var elemIdBtnSave           = null;
-    
-    
-    var elemIdPigOpsTableBody   = null;
+    let elemIdExpandNotes       = null;
+    let elemIdNotesForm         = null;
+    let elemIdDateNotes         = null;
+    let elemIdNotes             = null;
+    let elemIdNotesCharCounter  = null;
+    let elemIdBtnSave           = null;
     
     
-    var elemContentContainer    = null;
-    var elemExpandNotes         = null;
-    var elemExpandIcon          = null;
-    var elemNotesForm           = null;
-    var elemDateNotes           = null;
-    var elemNotes               = null;
-    var elemNotesCharCounter    = null;
-    var elemBtnSave             = null;
+    let elemIdPigOpsTableBody   = null;
     
-    var elemPigOpsTableBody     = null;
+    
+    let elemContentContainer    = null;
+    let elemExpandNotes         = null;
+    let elemExpandIcon          = null;
+    let elemNotesForm           = null;
+    let elemDateNotes           = null;
+    let elemNotes               = null;
+    let elemNotesCharCounter    = null;
+    let elemBtnSave             = null;
+    
+    let elemPigOpsTableBody     = null;
     
     
    
-    var isNotesFormExpanded     = false;
+    let isNotesFormExpanded     = false;
     
     
     this.init = function(){

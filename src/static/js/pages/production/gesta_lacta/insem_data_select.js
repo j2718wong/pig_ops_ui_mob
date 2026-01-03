@@ -14,7 +14,7 @@ export function InsemDataSelect(){
     
     this.setDataSowList = function(data, select_elem){
         
-        var select_data = [];
+        let select_data = [];
         if (data.length == 0){
             select_data.push({value:"-1", text:"No Entries"});
             replaceSelectOptions(select_elem, select_data);
@@ -25,7 +25,7 @@ export function InsemDataSelect(){
         select_data.push({value:"0", text:"Please Select"});
         
         for (const cur_sow_boar of data){
-            var reference;
+            let reference;
             
             // This is because there is this data can come into
             // minimum and not minimum info.
@@ -56,7 +56,7 @@ export function InsemDataSelect(){
     
     this.setDataBoarList = function(data, select_elem){
         
-        var select_data = [];
+        let select_data = [];
         if (data.length == 0){
             select_data.push({value:"-1", text:"No Entries"});
             replaceSelectOptions(select_elem, select_data);
@@ -67,7 +67,7 @@ export function InsemDataSelect(){
         select_data.push({value:"0", text:"Please Select"});
         
         for (const cur_sow_boar of data){
-            var reference;
+            let reference;
             
             // This is because there is this data can come into
             // minimum and not minimum info.
@@ -95,7 +95,7 @@ export function InsemDataSelect(){
     
     this.setDataSemenSupplierList = function(data, select_elem){
         
-        var select_data = [];
+        let select_data = [];
         if (data.length == 0){
             select_data.push({value:"-1", text:"No Entries"});
             replaceSelectOptions(select_elem, select_data);
@@ -103,7 +103,7 @@ export function InsemDataSelect(){
         }
         
         
-        var select_data = [];
+        select_data = [];
         select_data.push({value:"0", text:"Please Select"});
         
         for (const cur_entry of data){
@@ -116,7 +116,7 @@ export function InsemDataSelect(){
     
     this.setDataStaffList = function(data, select_elem){
         
-        var select_data = [];
+        let select_data = [];
         if (data.length == 0){
             select_data.push({value:"-1", text:"No Entries"});
             replaceSelectOptions(select_elem, select_data);
@@ -124,7 +124,7 @@ export function InsemDataSelect(){
         }
         
         
-        var select_data = [];
+        select_data = [];
         select_data.push({value:"0", text:"Please Select"});
         
         for (const cur_entry of data){

@@ -37,99 +37,99 @@ export function PageProdGestatingAdd(input_settings){
     const elemDivContainer      = document.getElementById('container-prod-gesta-add');
         
         
-    var elemIdBtnClose          = null;
+    let elemIdBtnClose          = null;
     
-    var elemIdSow               = null;
-    var elemIdSowCount          = null;
-    var elemIdSowAdd            = null;
-    var elemIdSowStatusShow     = null;
-    var elemIdSowLastInsem      = null;
-    var elemIdSowLastPid        = null;
-    var elemIdDateMating        = null;
-    var elemIdInsemType         = null;
+    let elemIdSow               = null;
+    let elemIdSowCount          = null;
+    let elemIdSowAdd            = null;
+    let elemIdSowStatusShow     = null;
+    let elemIdSowLastInsem      = null;
+    let elemIdSowLastPid        = null;
+    let elemIdDateMating        = null;
+    let elemIdInsemType         = null;
     
-    var elemIdBoarShow          = null;
-    var elemIdBoar              = null;
-    var elemIdBoarCount         = null;
-    var elemIdBoarAdd           = null;
+    let elemIdBoarShow          = null;
+    let elemIdBoar              = null;
+    let elemIdBoarCount         = null;
+    let elemIdBoarAdd           = null;
     
-    var elemIdAiShow            = null;
-    var elemIdSemenSupplier     = null;
-    var elemIdSemenSupplierCount= null;
-    var elemIdSemenType         = null;
-    var elemIdSemenTypeCount    = null;
-    var elemIdSemenCost         = null;
+    let elemIdAiShow            = null;
+    let elemIdSemenSupplier     = null;
+    let elemIdSemenSupplierCount= null;
+    let elemIdSemenType         = null;
+    let elemIdSemenTypeCount    = null;
+    let elemIdSemenCost         = null;
   
-    var elemIdBoarInternalShow  = null;
-    var elemIdBoarInternal      = null;
-    var elemIdBoarInternalCount = null;
+    let elemIdBoarInternalShow  = null;
+    let elemIdBoarInternal      = null;
+    let elemIdBoarInternalCount = null;
     
     
-    var elemIdOtherCost         = null;
+    let elemIdOtherCost         = null;
     
-    var elemIdNotes             = null;
-    var elemIdNotesCharCounter  = null;
+    let elemIdNotes             = null;
+    let elemIdNotesCharCounter  = null;
     
-    var elemIdStaff             = null;
-    var elemIdStaffCount        = null;
-    var elemIdStaffAdd          = null;
-    var elemIdChkDoneByMe       = null;
-    
-    
-    var elemIdBtnCancel         = null;
-    var elemIdBtnSave           = null;
+    let elemIdStaff             = null;
+    let elemIdStaffCount        = null;
+    let elemIdStaffAdd          = null;
+    let elemIdChkDoneByMe       = null;
     
     
-    var elemBtnClose            = null;
-    
-    var elemSow                 = null;
-    var elemSowCount            = null;
-    var elemSowAdd              = null;
-    var elemSowStatusShow       = null;
-    var elemSowLastInsem        = null;
-    var elemSowLastPid          = null;
-    var elemDateMating          = null;
-    var elemInsemType           = null;
-    
-    var elemBoarShow            = null;
-    var elemBoar                = null;
-    var elemBoarCount           = null;
-    var elemBoarAdd             = null;
+    let elemIdBtnCancel         = null;
+    let elemIdBtnSave           = null;
     
     
-    var elemAiShow              = null;
-    var elemSemenSupplier       = null;
-    var elemSemenSupplierCount  = null;
-    var elemSemenType           = null;
-    var elemSemenTypeCount      = null;
-    var elemSemenCost           = null;
+    let elemBtnClose            = null;
     
-    var elemBoarInternalShow    = null;
-    var elemBoarInternal        = null;
-    var elemBoarInternalCount   = null;
+    let elemSow                 = null;
+    let elemSowCount            = null;
+    let elemSowAdd              = null;
+    let elemSowStatusShow       = null;
+    let elemSowLastInsem        = null;
+    let elemSowLastPid          = null;
+    let elemDateMating          = null;
+    let elemInsemType           = null;
     
-    
-    var elemOtherCost           = null;
-    
-    var elemNotes               = null;
-    var elemNotesCharCounter    = null;
-    
-    var elemStaff               = null;
-    var elemStaffCount          = null;
-    var elemStaffAdd            = null;
-    var elemChkDoneByMe         = null;
-    
-    var elemBtnCancel           = null;
-    var elemBtnSave             = null;
+    let elemBoarShow            = null;
+    let elemBoar                = null;
+    let elemBoarCount           = null;
+    let elemBoarAdd             = null;
     
     
-    var sowList                 = null;
-    var boarList                = null;
-    var semenSupplierList       = null;
-    var staffList               = null; 
+    let elemAiShow              = null;
+    let elemSemenSupplier       = null;
+    let elemSemenSupplierCount  = null;
+    let elemSemenType           = null;
+    let elemSemenTypeCount      = null;
+    let elemSemenCost           = null;
+    
+    let elemBoarInternalShow    = null;
+    let elemBoarInternal        = null;
+    let elemBoarInternalCount   = null;
     
     
-    var newEntry                = new ModelPigProduction();
+    let elemOtherCost           = null;
+    
+    let elemNotes               = null;
+    let elemNotesCharCounter    = null;
+    
+    let elemStaff               = null;
+    let elemStaffCount          = null;
+    let elemStaffAdd            = null;
+    let elemChkDoneByMe         = null;
+    
+    let elemBtnCancel           = null;
+    let elemBtnSave             = null;
+    
+    
+    let sowList                 = null;
+    let boarList                = null;
+    let semenSupplierList       = null;
+    let staffList               = null; 
+    
+    
+    let newEntry                = new ModelPigProduction();
     
     const insemDataSelect       = new InsemDataSelect();
     
@@ -674,12 +674,12 @@ export function PageProdGestatingAdd(input_settings){
     
     
     this._onChangeSow = function(){
-        var sow_hid       = elemSow.value;
+        let sow_hid       = elemSow.value;
         
-        var index;
-        var cur_entry;
+        let index;
+        let cur_entry;
         
-        var gestating_sow = null;
+        let gestating_sow = null;
         
         elemSowStatusShow.style.display = 'none';
         
@@ -706,10 +706,10 @@ export function PageProdGestatingAdd(input_settings){
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
     
-        var input_elem  = null;
-        var input_val   = null;
-        var cur_field   = null;
-        var validation  = null;
+        let input_elem  = null;
+        let input_val   = null;
+        let cur_field   = null;
+        let validation  = null;
         
         console.log('TEs1 ');
         

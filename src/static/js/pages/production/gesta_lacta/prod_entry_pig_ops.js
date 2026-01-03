@@ -29,16 +29,16 @@ export function ProdEntryPigOps(input_settings){
     
     const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
     
-    var elemIdContentContainer  = null;
-    var elemIdFilterControls    = null;
+    let elemIdContentContainer  = null;
+    let elemIdFilterControls    = null;
     
-    var elemIdPigOpsTableBody   = null;
+    let elemIdPigOpsTableBody   = null;
     
     
-    var elemContentContainer    = null;
-    var elemFilterControls      = null;
+    let elemContentContainer    = null;
+    let elemFilterControls      = null;
     
-    var elemPigOpsTableBody     = null;
+    let elemPigOpsTableBody     = null;
     
     
    
@@ -482,8 +482,8 @@ ${html_style}
         // This is the current status of the pig_production.
         // 
         
-        var operations = null; 
-        var is_gesta_operations = false;
+        let operations = null; 
+        let is_gesta_operations = false;
         
         if ('show_gesta' in options){
             if (options.show_gesta == true){
@@ -522,10 +522,10 @@ ${html_style}
         console.log('sorted_operations');
         console.log(sorted_operations);
     
-        var diff_msecs;
-        var diff_days;
+        let diff_msecs;
+        let diff_days;
         
-        var dt_current = new Date();
+        let dt_current = new Date();
         dt_current.setHours(0, 0, 0, 0);
     
     
