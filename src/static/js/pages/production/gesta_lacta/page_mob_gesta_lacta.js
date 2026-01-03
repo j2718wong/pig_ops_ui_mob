@@ -13,7 +13,7 @@ import {APPLICATION,
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-		FORMAT_COMPACT,
+        FORMAT_COMPACT,
         sortList}               from '../../../utils.js';
 
 
@@ -71,7 +71,7 @@ export function PageMobGestaLacta(input_settings){
 
     var elemPageTitle           = null;
     var elemPageHeaderAlarm     = null;
-    var elemEntryCount         	= null;
+    var elemEntryCount          = null;
     var elemPageInfo            = null;
 
     var elemMobSearchInput      = null;
@@ -285,11 +285,11 @@ export function PageMobGestaLacta(input_settings){
         dataPigProdList = data_filtered;
     }
     
-	
-	this.getDataPigProdList = function(){
-		return dataPigProdList;
-	}
-	
+    
+    this.getDataPigProdList = function(){
+        return dataPigProdList;
+    }
+    
     
     // Handle window resize for view switching
     this.handleWindowResize = function() {
@@ -568,7 +568,7 @@ export function PageMobGestaLacta(input_settings){
         const html_operations = thisObj._getHtmlOperations(data_pig_prod);
         
         const farm_prod_id = data_pig_prod.pig_production.farm_prod_id;
-		
+        
         var html = `
         <div class="card-pig-prod" data-pid="${farm_prod_id}">
             <div class="card-header-pig-prod ${header_class}">
@@ -988,13 +988,13 @@ export function PageMobGestaLacta(input_settings){
             const options_date_short = {
                 month: 'short', // "Dec"
                 day: 'numeric', // "20"
-				year: 'numeric'
+                year: 'numeric'
             };
             
             var is_overdue = 0;
             if (diff_days < 0){is_overdue = 1;}
             
-			
+            
             const short_dt_target = formatDate(dt_target, FORMAT_COMPACT);
             
             pigOpsAlarmList.push({

@@ -190,4 +190,7 @@ if already Done
 if not yet Done: should be just empty cell.
 
 
-
+For the Notes Tab
+1.) There should be a button to expand the "Add Notes" Section. 
+The Add form should be initially hidden.
+2.) There should be odd-even color for row background

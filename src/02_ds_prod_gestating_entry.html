@@ -401,6 +401,61 @@
             transform: translateY(1px);
         }
 
+        .btn-expand {
+            background-color: var(--corporate-light-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 12px;
+        }
+
+        .btn-expand:active {
+            background-color: #2563eb;
+            transform: translateY(1px);
+        }
+
+        .btn-load-more {
+            background-color: white;
+            color: var(--corporate-blue);
+            border: 1px solid var(--corporate-border);
+            margin-top: 15px;
+            padding: 12px;
+            font-weight: 500;
+        }
+
+        .btn-load-more:active {
+            background-color: #f8fafc;
+            transform: translateY(1px);
+        }
+
+        .expand-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .expand-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        /* Add Notes Section */
+        .add-notes-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 0;
+            margin-bottom: 25px;
+            border: 1px solid var(--corporate-border);
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .add-notes-section.expanded {
+            max-height: 500px;
+            padding: 20px;
+        }
+
         /* Table */
         .notes-table {
             width: 100%;
@@ -427,12 +482,21 @@
             font-size: 14px;
         }
 
-        .notes-table tr:last-child td {
-            border-bottom: none;
+        /* Odd-even row background colors */
+        .notes-table tbody tr:nth-child(odd) {
+            background-color: #f8fafc;
         }
 
-        .notes-table tr:hover {
-            background-color: #f9fafb;
+        .notes-table tbody tr:nth-child(even) {
+            background-color: white;
+        }
+
+        .notes-table tbody tr:hover {
+            background-color: #f0f5ff;
+        }
+
+        .notes-table tr:last-child td {
+            border-bottom: none;
         }
 
         /* Responsive Adjustments */
@@ -761,21 +825,29 @@
 
         <!-- Notes Tab -->
         <div id="notes-tab" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Add New Note</h2>
+            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Notes</h2>
             
-            <div class="form-group">
-                <label class="form-label">Date Notes</label>
-                <input type="date" class="form-control" value="2023-12-15">
+            <!-- Expandable Add Notes Section -->
+            <button class="btn btn-expand" id="expand-notes-btn">
+                <span>Add New Note</span>
+                <span class="expand-icon">▼</span>
+            </button>
+            
+            <div class="add-notes-section" id="add-notes-form">
+                <div class="form-group">
+                    <label class="form-label">Date Notes</label>
+                    <input type="date" class="form-control" id="note-date" value="2023-12-15">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-control" rows="4" id="note-text" placeholder="Enter your notes here..."></textarea>
+                </div>
+                
+                <button class="btn btn-success" id="save-note-btn">Save Note</button>
             </div>
             
-            <div class="form-group">
-                <label class="form-label">Notes</label>
-                <textarea class="form-control" rows="4" placeholder="Enter your notes here..."></textarea>
-            </div>
-            
-            <button class="btn btn-success">Save Note</button>
-            
-            <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--corporate-blue);">Previous Notes</h3>
+            <h3 style="margin-top: 25px; margin-bottom: 15px; color: var(--corporate-blue);">Previous Notes</h3>
             
             <table class="notes-table">
                 <thead>
@@ -785,29 +857,15 @@
                         <th>Last Update By</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>2023-11-10</td>
-                        <td>Sow appears healthy with good appetite. All vital signs normal.</td>
-                        <td>John Smith</td>
-                    </tr>
-                    <tr>
-                        <td>2023-10-30</td>
-                        <td>Routine checkup completed. No issues detected.</td>
-                        <td>Maria Garcia</td>
-                    </tr>
-                    <tr>
-                        <td>2023-10-18</td>
-                        <td>Initial post-insemination check. Sow resting comfortably.</td>
-                        <td>Robert Johnson</td>
-                    </tr>
-                    <tr>
-                        <td>2023-10-15</td>
-                        <td>Insemination completed successfully. Sow returned to pen.</td>
-                        <td>Lisa Chen</td>
-                    </tr>
+                <tbody id="notes-table-body">
+                    <!-- Initial notes loaded by JavaScript -->
                 </tbody>
             </table>
+            
+            <!-- Load More Button -->
+            <button class="btn btn-load-more" id="load-more-btn">
+                Load More Notes
+            </button>
         </div>
     </div>
 
@@ -830,6 +888,11 @@
                 
                 // Scroll to top of content area
                 document.querySelector('.tab-content-area').scrollTop = 0;
+                
+                // If Notes tab is opened, collapse the add notes form
+                if (tabId === 'notes') {
+                    collapseAddNotesForm();
+                }
             });
         });
         
@@ -959,7 +1022,156 @@
             });
         });
         
-        // Simulate initial data
+        // Expandable Add Notes Form
+        const expandNotesBtn = document.getElementById('expand-notes-btn');
+        const addNotesForm = document.getElementById('add-notes-form');
+        const expandIcon = document.querySelector('.expand-icon');
+        const saveNoteBtn = document.getElementById('save-note-btn');
+        const noteDateInput = document.getElementById('note-date');
+        const noteTextInput = document.getElementById('note-text');
+        
+        let isNotesFormExpanded = false;
+        
+        function toggleAddNotesForm() {
+            isNotesFormExpanded = !isNotesFormExpanded;
+            
+            if (isNotesFormExpanded) {
+                addNotesForm.classList.add('expanded');
+                expandIcon.classList.add('expanded');
+                expandNotesBtn.innerHTML = '<span>Hide Add Note Form</span><span class="expand-icon expanded">▼</span>';
+            } else {
+                addNotesForm.classList.remove('expanded');
+                expandIcon.classList.remove('expanded');
+                expandNotesBtn.innerHTML = '<span>Add New Note</span><span class="expand-icon">▼</span>';
+            }
+        }
+        
+        function collapseAddNotesForm() {
+            isNotesFormExpanded = false;
+            addNotesForm.classList.remove('expanded');
+            expandIcon.classList.remove('expanded');
+            expandNotesBtn.innerHTML = '<span>Add New Note</span><span class="expand-icon">▼</span>';
+        }
+        
+        expandNotesBtn.addEventListener('click', toggleAddNotesForm);
+        
+        // Notes data - in a real app, this would come from a server
+        const allNotes = [
+            { date: '2023-11-10', note: 'Sow appears healthy with good appetite. All vital signs normal.', staff: 'John Smith' },
+            { date: '2023-10-30', note: 'Routine checkup completed. No issues detected.', staff: 'Maria Garcia' },
+            { date: '2023-10-18', note: 'Initial post-insemination check. Sow resting comfortably.', staff: 'Robert Johnson' },
+            { date: '2023-10-15', note: 'Insemination completed successfully. Sow returned to pen.', staff: 'Lisa Chen' },
+            { date: '2023-10-10', note: 'Pre-insemination check. Sow in good condition for mating.', staff: 'John Smith' },
+            { date: '2023-10-05', note: 'Sow transferred to breeding area. Adjusting well to new environment.', staff: 'Maria Garcia' },
+            { date: '2023-10-01', note: 'Initial health assessment completed. All vaccinations up to date.', staff: 'Robert Johnson' },
+            { date: '2023-09-28', note: 'Sow showing signs of heat. Preparing for mating procedure.', staff: 'Lisa Chen' },
+            { date: '2023-09-25', note: 'Diet adjusted for breeding phase. Nutritional supplements added.', staff: 'John Smith' },
+            { date: '2023-09-20', note: 'Regular health monitoring. Weight stable at optimal breeding level.', staff: 'Maria Garcia' },
+            { date: '2023-09-15', note: 'Pen cleaned and sanitized. Fresh bedding provided.', staff: 'Robert Johnson' },
+            { date: '2023-09-10', note: 'Temperature check normal. Water consumption at expected levels.', staff: 'Lisa Chen' },
+            { date: '2023-09-05', note: 'Veterinary check completed. No health concerns identified.', staff: 'John Smith' },
+            { date: '2023-09-01', note: 'Sow transferred to gestation area. Space allocated for breeding.', staff: 'Maria Garcia' }
+        ];
+        
+        let notesPerLoad = 5;
+        let currentNotesIndex = 0;
+        const notesTableBody = document.getElementById('notes-table-body');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        
+        // Function to load notes
+        function loadNotes() {
+            const notesToLoad = allNotes.slice(currentNotesIndex, currentNotesIndex + notesPerLoad);
+            
+            notesToLoad.forEach((note, index) => {
+                const row = document.createElement('tr');
+                
+                // Apply alternating row colors based on current index
+                const rowNumber = currentNotesIndex + index;
+                if (rowNumber % 2 === 0) {
+                    row.style.backgroundColor = 'white';
+                } else {
+                    row.style.backgroundColor = '#f8fafc';
+                }
+                
+                row.innerHTML = `
+                    <td>${note.date}</td>
+                    <td>${note.note}</td>
+                    <td>${note.staff}</td>
+                `;
+                
+                notesTableBody.appendChild(row);
+            });
+            
+            currentNotesIndex += notesPerLoad;
+            
+            // Hide load more button if all notes are loaded
+            if (currentNotesIndex >= allNotes.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+        }
+        
+        // Load initial notes
+        loadNotes();
+        
+        // Load More button functionality
+        loadMoreBtn.addEventListener('click', () => {
+            loadNotes();
+        });
+        
+        // Save Note functionality
+        saveNoteBtn.addEventListener('click', () => {
+            const date = noteDateInput.value;
+            const text = noteTextInput.value.trim();
+            
+            if (!date) {
+                alert('Please select a date for the note.');
+                noteDateInput.focus();
+                return;
+            }
+            
+            if (!text) {
+                alert('Please enter note text.');
+                noteTextInput.focus();
+                return;
+            }
+            
+            // Format date for display
+            const formattedDate = new Date(date).toLocaleDateString('en-CA');
+            
+            // Get current user (in a real app, this would come from authentication)
+            const currentUser = "John Smith";
+            
+            // Add new note to the beginning of allNotes array
+            const newNote = {
+                date: formattedDate,
+                note: text,
+                staff: currentUser
+            };
+            
+            allNotes.unshift(newNote);
+            
+            // Clear and reload all notes to maintain proper ordering
+            currentNotesIndex = 0;
+            notesTableBody.innerHTML = '';
+            loadNotes();
+            
+            // Reset form
+            noteTextInput.value = '';
+            noteDateInput.value = new Date().toISOString().split('T')[0];
+            
+            // Collapse form after saving
+            collapseAddNotesForm();
+            
+            // Show success message
+            alert('Note saved successfully!');
+        });
+        
+        // Set default note date to today
+        noteDateInput.value = new Date().toISOString().split('T')[0];
+        
+        // Simulate initial data for other tabs
         insemNotes.value = "Sow showed good standing reflex during mating. Boar Maximus was used. Procedure completed without issues.";
         charCount.textContent = insemNotes.value.length;
         

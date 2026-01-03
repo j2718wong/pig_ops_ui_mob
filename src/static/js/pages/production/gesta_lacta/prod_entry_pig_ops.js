@@ -11,7 +11,7 @@ import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
 import {FORMAT_MONTH_DATE_ONLY,
-		FORMAT_COMPACT,
+        FORMAT_COMPACT,
         formatDate,
         sortList}               from '../../../utils.js';
 
@@ -484,11 +484,11 @@ ${html_style}
         
         var operations = null; 
         var is_gesta_operations = false;
-		
+        
         if ('show_gesta' in options){
             if (options.show_gesta == true){
                 operations = data_pig_prod.gestating_ops;
-				is_gesta_operations = true;
+                is_gesta_operations = true;
             }
             else{
                 operations = data_pig_prod.lactating_piglets_ops;
@@ -500,7 +500,7 @@ ${html_style}
         else{
             if (data_pig_prod.pig_production.prod_status_id = PROD_STATUS.GESTATING){
                 operations = data_pig_prod.gestating_ops;
-				is_gesta_operations = true;
+                is_gesta_operations = true;
             }
             else{
                 if ('lactating_ops' in data_pig_prod){
@@ -597,13 +597,13 @@ ${html_style}
             });
         }
         
-		let hide_filter_control = false;
-		if (is_gesta_operations){hide_filter_control = true;}
-		
-		
-		thisObj.initializeFilters(to_display_ops, hide_filter_control);
-		
-	}
+        let hide_filter_control = false;
+        if (is_gesta_operations){hide_filter_control = true;}
+        
+        
+        thisObj.initializeFilters(to_display_ops, hide_filter_control);
+        
+    }
     
     
     // Function to initialize filter controls
@@ -614,13 +614,13 @@ ${html_style}
         let currentFilter = 'all';
         let hideCompleted = false;
         
-		if (hide_filter_control){
-			elemFilterControls.style.display = 'none';
-		}
-		else{
-			elemFilterControls.style.display = 'block';
-		}
-		
+        if (hide_filter_control){
+            elemFilterControls.style.display = 'none';
+        }
+        else{
+            elemFilterControls.style.display = 'block';
+        }
+        
         // Render table with initial data
         thisObj.renderTable(operations, currentFilter, hideCompleted);
         
@@ -719,6 +719,8 @@ ${html_style}
             dateContent.appendChild(dateText);
             dateCell.appendChild(dateContent);
             row.appendChild(dateCell);
+			
+			
             
             // Operation column
             const operationCell = document.createElement('td');
@@ -741,46 +743,46 @@ ${html_style}
             row.appendChild(operationCell);
             
             // Done By column - NEW IMPLEMENTATION
-			const doneByCell = document.createElement('td');
-			doneByCell.className = 'done-by-cell';
-			
-			if (op.isCompleted) {
-				// Completed operation - two divs side by side
-				const completedInfo = document.createElement('div');
-				completedInfo.className = 'completed-info';
-				
-				// Left div - check mark
-				const checkmarkContainer = document.createElement('div');
-				checkmarkContainer.className = 'checkmark-container';
-				
-				const checkmark = document.createElement('div');
-				checkmark.className = 'checkmark';
-				checkmarkContainer.appendChild(checkmark);
-				
-				// Right div - staff name and full date
-				const staffDateInfo = document.createElement('div');
-				staffDateInfo.className = 'staff-date-info';
-				
-				const staffNameCompleted = document.createElement('div');
-				staffNameCompleted.className = 'staff-name-completed';
-				staffNameCompleted.textContent = op.doneBy;
-				
-				const completionFullDate = document.createElement('div');
-				completionFullDate.className = 'completion-full-date';
-				completionFullDate.textContent = op.dateActual;
-				
-				staffDateInfo.appendChild(staffNameCompleted);
-				staffDateInfo.appendChild(completionFullDate);
-				
-				completedInfo.appendChild(checkmarkContainer);
-				completedInfo.appendChild(staffDateInfo);
-				doneByCell.appendChild(completedInfo);
-			} else {
-				// Not done - empty cell
-				const emptyCell = document.createElement('div');
-				emptyCell.className = 'empty-cell';
-				doneByCell.appendChild(emptyCell);
-			}
+            const doneByCell = document.createElement('td');
+            doneByCell.className = 'done-by-cell';
+            
+            if (op.isCompleted) {
+                // Completed operation - two divs side by side
+                const completedInfo = document.createElement('div');
+                completedInfo.className = 'completed-info';
+                
+                // Left div - check mark
+                const checkmarkContainer = document.createElement('div');
+                checkmarkContainer.className = 'checkmark-container';
+                
+                const checkmark = document.createElement('div');
+                checkmark.className = 'checkmark';
+                checkmarkContainer.appendChild(checkmark);
+                
+                // Right div - staff name and full date
+                const staffDateInfo = document.createElement('div');
+                staffDateInfo.className = 'staff-date-info';
+                
+                const staffNameCompleted = document.createElement('div');
+                staffNameCompleted.className = 'staff-name-completed';
+                staffNameCompleted.textContent = op.doneBy;
+                
+                const completionFullDate = document.createElement('div');
+                completionFullDate.className = 'completion-full-date';
+                completionFullDate.textContent = op.dateActual;
+                
+                staffDateInfo.appendChild(staffNameCompleted);
+                staffDateInfo.appendChild(completionFullDate);
+                
+                completedInfo.appendChild(checkmarkContainer);
+                completedInfo.appendChild(staffDateInfo);
+                doneByCell.appendChild(completedInfo);
+            } else {
+                // Not done - empty cell
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'empty-cell';
+                doneByCell.appendChild(emptyCell);
+            }
             row.appendChild(doneByCell);
             
             tableBody.appendChild(row);

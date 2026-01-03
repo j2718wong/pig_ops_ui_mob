@@ -10,6 +10,7 @@ import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
 
+import {ProdEntryNotes}        	from './prod_entry_notes.js'
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryInsem}         from './prod_entry_insem.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
@@ -43,8 +44,10 @@ export function PageProdGestatingEntry(input_settings){
     var elemIdHeaderBoarName    = null;
     var elemIdNavNextEntry      = null;
     
+    var elemIdShowMore			= null;
+	var elemIdShowMoreDropDown	= null;
     
-    
+	
     var elemNavPrevEntry        = null;
     var elemEntryTitle          = null;
     var elemPigProdPid          = null;
@@ -52,6 +55,8 @@ export function PageProdGestatingEntry(input_settings){
     var elemHeaderBoarName      = null;
     var elemNavNextEntry        = null;
     
+    var elemShowMore			= null;
+	var elemShowMoreDropDown	= null;
     
     
     
@@ -82,7 +87,12 @@ export function PageProdGestatingEntry(input_settings){
     var prodEntryBirth          = new ProdEntryBirth(settingsBirth);
     
     
+	const settingsNotes = {
+		parentObj:              this
+	} 
+	var prodEntryNotes 			= new ProdEntryNotes(settingsNotes);
     
+	
     this.init = function(){
         this.render();
         this.afterHtmlRender();
@@ -132,6 +142,47 @@ export function PageProdGestatingEntry(input_settings){
         .nav-button:active {
             background-color: rgba(255, 255, 255, 0.15);
         }
+
+		/* Show More Dropdown */
+        .show-more-container {
+            position: relative;
+        }
+        
+        .show-more-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 140px;
+            display: none;
+            z-index: 1001;
+            margin-top: 2px;
+        }
+        
+        .show-more-dropdown.active {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--medium-gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--light-gray);
+            color: var(--corporate-blue);
+        }
+
 
         .entry-info {
             display: flex;
@@ -449,6 +500,9 @@ export function PageProdGestatingEntry(input_settings){
         elemIdHeaderBoarName    = `pig-prod-entry-header-boar-name`;
         elemIdNavNextEntry      = `pig-prod-entry-next-entry`;
         
+		elemIdShowMore			= `pig-prod-entry-show-more`;
+		elemIdShowMoreDropDown	= `pig-prod-entry-show-more-dropdown`;
+		
         
 
         const html_style        = thisObj._writeInlineStyle();
@@ -456,7 +510,9 @@ export function PageProdGestatingEntry(input_settings){
         const html_pig_ops      = prodEntryPigOps.getHtml();
         const html_tab_insem    = prodEntryInsem.getHtml();
         const html_tab_birth    = prodEntryBirth.getHtml();
-        
+        const html_tab_notes	= prodEntryNotes.getHtml();
+		
+		
         const html =`
 
     ${html_style}
@@ -490,7 +546,18 @@ export function PageProdGestatingEntry(input_settings){
             <button class="tab-button" data-tab="birth">Birth</button>
             <button class="tab-button" data-tab="insem">Insem</button>
             <button class="tab-button" data-tab="notes">Notes</button>
-        </div>
+			<!--
+			<div class="tab-button show-more-container" id="${elemIdShowMore}">
+				More ...
+				<div class="show-more-dropdown" id="${elemIdShowMoreDropDown}">
+					<div class="dropdown-item" data-tab="feed-summary">Feed Summary</div>
+					<div class="dropdown-item" data-tab="feed-buy">Feed Buy</div>
+					<div class="dropdown-item" data-tab="medvac">MedVac</div>
+					<div class="dropdown-item" data-tab="notes">Notes</div>
+					<div class="dropdown-item" data-tab="status">Status</div>
+				</div>
+			</div> -->
+		</div>
     </div>
     
     <!-- Tab Content Area - Scrolls below fixed sections -->
@@ -510,57 +577,27 @@ export function PageProdGestatingEntry(input_settings){
         </div>
 
         
+		<div id="feed-summary-tab" class="tab-content">
+			<h2 class="tab-title">Feed Summary</h2>
+		</div>
         
+		<div id="feed-buy-tab" class="tab-content">
+			<h2 class="tab-title">Feed Buy</h2>
+		</div>
+        
+		<div id="medvac-tab" class="tab-content">
+			<h2 class="tab-title">MedVac</h2>
+		</div>
+		
+		
+		<div id="status-tab" class="tab-content">
+			<h2 class="tab-title">Status</h2>
+		</div>
+		
         
         <!-- Notes Tab -->
         <div id="notes-tab" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Add New Note</h2>
-            
-            <div class="form-group">
-                <label class="form-label">Date Notes</label>
-                <input type="date" class="form-control" value="2023-12-15">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Notes</label>
-                <textarea class="form-control" rows="4" placeholder="Enter your notes here..."></textarea>
-            </div>
-            
-            <button class="btn btn-success">Save Note</button>
-            
-            <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--corporate-blue);">Previous Notes</h3>
-            
-            <table class="notes-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Notes</th>
-                        <th>Last Update By</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>2023-11-10</td>
-                        <td>Sow appears healthy with good appetite. All vital signs normal.</td>
-                        <td>John Smith</td>
-                    </tr>
-                    <tr>
-                        <td>2023-10-30</td>
-                        <td>Routine checkup completed. No issues detected.</td>
-                        <td>Maria Garcia</td>
-                    </tr>
-                    <tr>
-                        <td>2023-10-18</td>
-                        <td>Initial post-insemination check. Sow resting comfortably.</td>
-                        <td>Robert Johnson</td>
-                    </tr>
-                    <tr>
-                        <td>2023-10-15</td>
-                        <td>Insemination completed successfully. Sow returned to pen.</td>
-                        <td>Lisa Chen</td>
-                    </tr>
-                </tbody>
-            </table>
+            ${html_tab_notes}
         </div>
     </div>
         `;
@@ -586,8 +623,8 @@ export function PageProdGestatingEntry(input_settings){
         elemHeaderBoarName      = document.getElementById(elemIdHeaderBoarName);
         elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
         
-        
-        
+        elemShowMore			= document.getElementById(elemIdShowMore);
+        elemShowMoreDropDown	= document.getElementById(elemIdShowMoreDropDown);
         
        
     }
@@ -597,11 +634,13 @@ export function PageProdGestatingEntry(input_settings){
 		prodEntryPigOps.afterHtmlRender();
         prodEntryInsem.afterHtmlRender();
         prodEntryBirth.afterHtmlRender();
+		prodEntryNotes.afterHtmlRender();
     }
     
     
     this._bindEventListeners = function(){
         
+		// This is used for 4 sub tabs with no drop down.
         const tabButtons  = elemDivContainer.querySelectorAll('.tab-button');
         const tabContents = elemDivContainer.querySelectorAll('.tab-content');
         
@@ -621,6 +660,67 @@ export function PageProdGestatingEntry(input_settings){
                 elemDivContainer.querySelector('.tab-content-area').scrollTop = 0;
             });
         });
+		
+		
+		/*
+		// This is for 3 tabs + More ...
+		const navItems 		= elemDivContainer.querySelectorAll('.tab-button:not(.show-more-container)');
+		const dropdownItems = elemDivContainer.querySelectorAll('.dropdown-item');
+		const allTabs 		= elemDivContainer.querySelectorAll('.tab-content');
+		const showMoreControl = elemShowMore;
+		const showMoreDropdown = elemShowMoreDropDown;
+		
+		function switchTab(tabId) {
+			console.log('switchTab tabId') 
+			allTabs.forEach(tab => tab.classList.remove('active'));
+			const selectedTab = document.getElementById(tabId);
+			if (selectedTab) selectedTab.classList.add('active');
+			
+			navItems.forEach(item => item.classList.remove('active'));
+			
+			if (tabId === 'pig-ops' || tabId === 'birth' || tabId === 'insem') {
+				const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
+				if (activeNav) activeNav.classList.add('active');
+			}
+			
+			showMoreDropdown.classList.remove('active');
+		}
+		
+		navItems.forEach(item => {
+			item.addEventListener('click', function() {
+				const tabId = this.getAttribute('data-tab');
+				switchTab(tabId);
+			});
+		});
+		
+		dropdownItems.forEach(item => {
+			item.addEventListener('click', function() {
+				const tabId = this.getAttribute('data-tab');
+				switchTab(tabId);
+				showMoreControl.querySelector('.nav-text').textContent = this.textContent;
+				navItems.forEach(nav => nav.classList.remove('active'));
+				showMoreControl.classList.add('active');
+			});
+		});
+		
+		showMoreControl.addEventListener('click', function(e) {
+			console.log('Test');
+			if (e.target === this || e.target.classList.contains('nav-text')) {
+				e.stopPropagation();
+				showMoreDropdown.classList.toggle('active');
+			}
+		});
+		
+		document.addEventListener('click', function(e) {
+			if (!showMoreControl.contains(e.target)) {
+				showMoreDropdown.classList.remove('active');
+			}
+		});
+		
+		*/
+		
+		
+		
     }
     
     
