@@ -127,7 +127,58 @@ this top navigation. Just put minimum elements in the top navigation.
 The top-section should not move when scrolled. only the tab contents 
 should move when scrolled.
                                     
+									
+									
+									
+3 tabs  + 1 dropdown tab
+1.) Create a Page View for mobile screen
+- user corporate blue color theme
 
+Top Section
+1.) fixed; should not move when screen is scrolled down.
+2.) add 4 Divs in line.
+3.) The first 3 divs should open a tab div.
+4.) The last Div is a Show More Control.
+When clicked, it should dropdown 3 to 5 menus.
+5. When this menu is clicked it should show another tab.
+
+Example
+Tab 1: Pig Ops - should show a table of scheduled pig operations
+Tab 2: Birth - view to update birth info
+Tab 3: Wean - view to update wean info
+Tab 4: Show More (use minimum codes in the show More contents) 
+- Feeds
+- Notes - 
+- Dead Piglets
+- Insem
+
+
+Fix this.
+1.) remove the icons
+2.) when clicking on menu on the 'show more'
+it should hide the menu drop down
+
+The scheduled operations should only be 3 columns because of limited space limited space in mobile.
+1.) Date in short Month date format. There should be a glowing red dot if operations 
+is not done and already due.  
+2.) Operation name. There should be a visual clue if the operation is for the sow.
+No visual clue if the operation for the piglets.
+3.) Done By. Staff name and date when it was done in Month date format.
+
+ 
+Fix the following
+
+In the scheduled pig operations
+1.) remove the counters for scheduled, in progress completed
+2.) put a control for (Sow only, Piglets Only or All operations)
+3.) Put a control for (Hide Completed)
+
+Fix the following:
+1.) remove the 'Show:'
+2.) Put the "All" "Sow" "Piglets" buttons in one line no gap.
+This should be cenetered when in mobile screens
+
+3.) The "Hide Completed should also be centered.
 
 
 

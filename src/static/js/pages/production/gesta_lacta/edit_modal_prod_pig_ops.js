@@ -19,13 +19,13 @@ export function EditModalProdPigOps(input_settings){
     PageViewBasic.call(this);
     
     const thisObj               = this;
-    const parentObj             = input_settings.parentObj;
+    const navigation            = input_settings.navigation;
     
     
     /*
     Typical input_settings
     {
-        parentObj:              this
+        navigation:             this
     }   
     */  
     var settings                = input_settings;

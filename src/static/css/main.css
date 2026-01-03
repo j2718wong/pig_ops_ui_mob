@@ -1143,7 +1143,40 @@ p {
 }
 
 
+/* Number input with plus/minus buttons */
+.number-input-group {
+    display: flex;
+    align-items: center;
+}
 
+.number-btn {
+    width: 70px;
+    height: 44px;
+    background-color: var(--corporate-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.number-btn:active {
+    background-color: #1e40af;
+}
+
+.number-btn.minus {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.number-btn.plus {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
 
 
 /********* END COMMON CONTROLS **********/
@@ -1495,6 +1528,9 @@ p {
     align-items: center;
 }
 
+.form-select {
+    font-size: 1.3rem;
+}
 
 /* Input group fixes */
 .input-group {
@@ -1556,7 +1592,7 @@ p {
 
 
 .char-counter {
-	float: right;
+    float: right;
     font-size: 0.85rem;
     font-weight: normal;
     color: var(--neutral-gray);
@@ -1592,7 +1628,7 @@ p {
 }
 
 .form-control.danger {
-    border-color: #e74c3c;
+    border-color: #804040;
 }
 
 textarea.form-control {
@@ -1624,36 +1660,40 @@ textarea.form-control {
 .form-group-text {
     background: var(--corporate-bg);
     border-left: 4px solid #3498db;
+    padding-top:5px;
     padding-left: 8px;
     padding-right: 8px;
-    padding-bottom:4px;
+    padding-bottom:5px;
     margin-bottom: 8px;
 }
 
 .form-group-text-area {
     background: var(--corporate-bg);
     border-left: 4px solid #2ecc71;
+    padding-top:5px;
     padding-left: 8px;
     padding-right: 8px;
-    padding-bottom:4px;
+    padding-bottom:5px;
     margin-bottom: 8px;
 }
 
 .form-group-select {
     background: var(--corporate-bg);
     border-left: 4px solid #B828E1;
+    padding-top:5px;
     padding-left: 8px;
     padding-right: 8px;
-    padding-bottom:4px;
+    padding-bottom:5px;
     margin-bottom: 8px;
 }
 
 .form-group-number {
     background: var(--corporate-bg);
     border-left: 4px solid #f39c12;
+    padding-top:5px;
     padding-left: 8px;
     padding-right: 8px;
-    padding-bottom:4px;
+    padding-bottom:5px;    
     margin-bottom: 8px;
 }
 
@@ -1661,15 +1701,16 @@ textarea.form-control {
 .form-group-date {
     background: var(--corporate-bg);
     border-left: 4px solid #4236DC;
+    padding-top:5px;
     padding-left: 8px;
     padding-right: 8px;
-    padding-bottom:4px;
+    padding-bottom:5px;
     margin-bottom: 8px;
 }
 
 
 /* Combined breeding status warning */
-.breeding-status-warning {
+.warning-box {
     margin-top: 10px;
     padding: 10px;
     border-radius: 6px;
@@ -1678,7 +1719,7 @@ textarea.form-control {
     animation: fadeIn 0.5s ease-out;
 }
 
-.breeding-status-warning .warning-header {
+.warning-box .warning-header {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1688,7 +1729,7 @@ textarea.form-control {
     font-size: 0.95rem;
 }
 
-.breeding-status-warning .warning-details {
+.warning-box .warning-details {
     color: #856404;
     font-size: 0.85rem;
     line-height: 1.4;

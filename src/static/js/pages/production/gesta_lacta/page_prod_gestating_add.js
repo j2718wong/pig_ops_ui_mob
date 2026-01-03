@@ -6,12 +6,11 @@
 
 import {PageViewBasic}          from '../../common/page_view_basic.js';
 
-import {SOW_STATUS,
+import {PAGE_ID,
+        SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
 import {InsemDataSelect}        from './insem_data_select.js';
-//import {AddModalSowBoar}        from './add_modal_sow.js';
-
 
 import {ModelPigProduction}     from '../../../models/model_pig_production.js'
 
@@ -24,31 +23,16 @@ export function PageProdGestatingAdd(input_settings){
     PageViewBasic.call(this);
     
     const thisObj               = this;
-    const parentObj             = input_settings.parentObj;
+    const navigation            = input_settings.navigation;
     
     
     /*
     Typical settings = {
-        parentObj:              this
+        navigation:             this,
     };
     */
     const settings              = input_settings;
 
-    
-    const settingsAddSow        = {
-        parentObj:              this,
-        isAddSow:               true,
-        elemIdDivModal:         `div-add-entry-sow-modal`
-    };
-    //const addModalSow           = new AddModalSowBoar(settingsAddSow);
-    
-    
-    const settingsAddBoar       = {
-        parentObj:              this,
-        isAddSow:               false,
-        elemIdDivModal:         `div-add-entry-boar-modal`
-    };
-    //const addModalBoar          = new AddModalSowBoar(settingsAddBoar);
     
     const elemDivContainer      = document.getElementById('container-prod-gesta-add');
         
@@ -56,6 +40,8 @@ export function PageProdGestatingAdd(input_settings){
     var elemIdBtnClose          = null;
     
     var elemIdSow               = null;
+    var elemIdSowCount          = null;
+    var elemIdSowAdd            = null;
     var elemIdSowStatusShow     = null;
     var elemIdSowLastInsem      = null;
     var elemIdSowLastPid        = null;
@@ -64,14 +50,19 @@ export function PageProdGestatingAdd(input_settings){
     
     var elemIdBoarShow          = null;
     var elemIdBoar              = null;
+    var elemIdBoarCount         = null;
+    var elemIdBoarAdd           = null;
     
     var elemIdAiShow            = null;
     var elemIdSemenSupplier     = null;
+    var elemIdSemenSupplierCount= null;
     var elemIdSemenType         = null;
+    var elemIdSemenTypeCount    = null;
     var elemIdSemenCost         = null;
   
     var elemIdBoarInternalShow  = null;
     var elemIdBoarInternal      = null;
+    var elemIdBoarInternalCount = null;
     
     
     var elemIdOtherCost         = null;
@@ -80,6 +71,8 @@ export function PageProdGestatingAdd(input_settings){
     var elemIdNotesCharCounter  = null;
     
     var elemIdStaff             = null;
+    var elemIdStaffCount        = null;
+    var elemIdStaffAdd          = null;
     var elemIdChkDoneByMe       = null;
     
     
@@ -90,6 +83,8 @@ export function PageProdGestatingAdd(input_settings){
     var elemBtnClose            = null;
     
     var elemSow                 = null;
+    var elemSowCount            = null;
+    var elemSowAdd              = null;
     var elemSowStatusShow       = null;
     var elemSowLastInsem        = null;
     var elemSowLastPid          = null;
@@ -98,24 +93,30 @@ export function PageProdGestatingAdd(input_settings){
     
     var elemBoarShow            = null;
     var elemBoar                = null;
+    var elemBoarCount           = null;
+    var elemBoarAdd             = null;
     
-    var elemBoarInternalShow    = null;
-    var elemBoarInternal        = null;
     
     var elemAiShow              = null;
     var elemSemenSupplier       = null;
-    var elemNoSemenType         = null;
+    var elemSemenSupplierCount  = null;
     var elemSemenType           = null;
-    var elemSemenCostCurSymbol  = null;
+    var elemSemenTypeCount      = null;
     var elemSemenCost           = null;
     
-    var elemOtherCurSymbol      = null;
+    var elemBoarInternalShow    = null;
+    var elemBoarInternal        = null;
+    var elemBoarInternalCount   = null;
+    
+    
     var elemOtherCost           = null;
     
     var elemNotes               = null;
     var elemNotesCharCounter    = null;
     
     var elemStaff               = null;
+    var elemStaffCount          = null;
+    var elemStaffAdd            = null;
     var elemChkDoneByMe         = null;
     
     var elemBtnCancel           = null;
@@ -144,6 +145,8 @@ export function PageProdGestatingAdd(input_settings){
         elemIdBtnClose          = `pig-prod-add-select-close`;
         
         elemIdSow               = `pig-prod-add-select-sow`;
+        elemIdSowCount          = `pig-prod-add-select-sow-count`;
+        elemIdSowAdd            = `pig-prod-add-sow-add`;
         elemIdSowStatusShow     = `pig-prod-add-sow-status-show`;
         elemIdSowLastInsem      = `pig-prod-add-sow-last-insem`;
         elemIdSowLastPid        = `pig-prod-add-sow-last-pid`;
@@ -152,15 +155,20 @@ export function PageProdGestatingAdd(input_settings){
         
         elemIdBoarShow          = `pig-prod-add-select-boar-show`;
         elemIdBoar              = `pig-prod-add-select-boar`;
+        elemIdBoarCount         = `pig-prod-add-select-boar-count`;
+        elemIdBoarAdd           = `pig-prod-add-boar-add`;
         
         
         elemIdAiShow            = `pig-prod-add-select-ai-show`;
         elemIdSemenSupplier     = `pig-prod-add-select-semen-supplier`;
+        elemIdSemenSupplierCount= `pig-prod-add-select-semen-supplier-count`;
         elemIdSemenType         = `pig-prod-add-select-semen-type`;
+        elemIdSemenTypeCount    = `pig-prod-add-select-semen-type-count`;
         elemIdSemenCost         = `pig-prod-add-semen-cost`;
         
         elemIdBoarInternalShow  = `pig-prod-add-boar-internal-show`;
         elemIdBoarInternal      = `pig-prod-add-boar-internal`;
+        elemIdBoarInternalCount = `pig-prod-add-boar-internal-count`;
         
         elemIdOtherCost         = `pig-prod-add-other-cost`;
         
@@ -168,14 +176,13 @@ export function PageProdGestatingAdd(input_settings){
         elemIdNotesCharCounter  = `pig-prod-add-notes-char-counter`;
         
         elemIdStaff             = `pig-prod-add-staff`;
+        elemIdStaffCount        = `pig-prod-add-staff-count`;
+        elemIdStaffAdd          = `pig-prod-add-staff-add`;
         elemIdChkDoneByMe       = `pig-prod-add-done-by-me'`;
         
         elemIdBtnCancel         = `pig-prod-add-cancel`;
         elemIdBtnSave           = `pig-prod-add-save`;
         
-        
-        //const html_add_modal_sow    = addModalSow.getHtml();
-        //const html_add_modal_boar   = addModalBoar.getHtml();
         
         
         
@@ -197,20 +204,20 @@ export function PageProdGestatingAdd(input_settings){
         <!-- 1. Sow Field with Combined Warning -->
         <div class="form-group-select">
             <label for="${elemIdSow}" class="form-label">
-                Select Sow
+                Select Sow <span class="entries-count" id=${elemIdSowCount}></span>
             </label>
                         
             <div class="input-group" id="sowSelectGroup">
                 <select class="form-select" id="${elemIdSow}">
                     <option value="-1" selected disabled>No Entries</option>
                 </select>
-                <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#${settingsAddSow.elemIdDivModal}">
+                <button class="btn" type="button" id="${elemIdSowAdd}">
                     <i class="bi bi-plus"></i> New
                 </button>
             </div>
             
             <!-- Combined Breeding Status Warning -->
-            <div id="${elemIdSowStatusShow}" class="breeding-status-warning" style="display: none;">
+            <div id="${elemIdSowStatusShow}" class="warning-box" style="display: none;">
                 <div class="warning-header">
                     <i class="bi bi-exclamation-triangle"></i>
                     <span>Sow Already Bred</span>
@@ -236,6 +243,9 @@ export function PageProdGestatingAdd(input_settings){
                 Date Mating or Insemination
             </label>
             <input type="text" class="form-control" id="${elemIdDateMating}" required>
+            <div class="invalid-feedback">
+                Please enter a valid date.
+            </div>
         </div>
         
         
@@ -255,14 +265,14 @@ export function PageProdGestatingAdd(input_settings){
         <!-- 4. Boar Field -->
         <div class="form-group-select" id="${elemIdBoarShow}">
             <label for="${elemIdBoar}" class="form-label">
-                Select Boar
+                Select Boar <span class="entries-count" id=${elemIdBoarCount}></span>
             </label>
             
             <div class="input-group" id="boarSelectGroup">
                 <select class="form-select" id="${elemIdBoar}">
                     <option value="-1" selected disabled>No Entries</option>
                 </select>
-                <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#${settingsAddBoar.elemIdDivModal}">
+                <button class="btn" type="button" id="${elemIdBoarAdd}">
                     <i class="bi bi-plus"></i> New
                 </button>
             </div>
@@ -272,7 +282,7 @@ export function PageProdGestatingAdd(input_settings){
             <!-- 1. Semen Supplier -->
             <div class="form-group-select">
                 <label for="${elemIdSemenSupplier}" class="form-label">
-                    Semen Supplier
+                    Semen Supplier <span class="entries-count" id=${elemIdSemenSupplierCount}></span>
                 </label>
                 
                 <div class="input-group" id="supplierSelectGroup">
@@ -288,7 +298,7 @@ export function PageProdGestatingAdd(input_settings){
             <!-- 2. Semen Type -->
             <div class="form-group-select">
                 <label for="${elemIdSemenType}" class="form-label">
-                    Semen Type
+                    Semen Type <span class="entries-count" id=${elemIdSemenTypeCount}></span>
                 </label>
             
                 <div class="input-group" id="semenTypeSelectGroup">
@@ -309,22 +319,20 @@ export function PageProdGestatingAdd(input_settings){
                 
                 <input type="number" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0" value="0.00">
                 <div class="invalid-feedback">
-					Please enter numeric value.
-				</div>
+                    Please enter numeric value.
+                </div>
             </div>
         </div>
         
         
         <div class="form-group-select" id="${elemIdBoarInternalShow}" style="display: none;">
             <label for="${elemIdBoarInternal}" class="form-label">
-                Boar where Semen extracted 
+                Boar where Semen extracted <span class="entries-count" id=${elemIdBoarInternalCount}></span>
             </label>
             
-            <div class="input-group" id="boarSelectGroup">
-                <select class="form-select" id="${elemIdBoarInternal}">
-                    <option value="-1" selected disabled>No Entries</option>
-                </select>
-            </div>
+            <select class="form-select" id="${elemIdBoarInternal}">
+                <option value="-1" selected disabled>No Entries</option>
+            </select>
         </div>
         
         
@@ -335,10 +343,11 @@ export function PageProdGestatingAdd(input_settings){
             </label>
                 
             <input type="number" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">
-			<div class="invalid-feedback">
-				Please enter numeric value.
-			</div>
+            <div class="invalid-feedback">
+                Please enter numeric value.
+            </div>
         </div>
+        
         
         <!-- 6. Notes -->
         <div class="form-group-text-area">
@@ -353,12 +362,18 @@ export function PageProdGestatingAdd(input_settings){
         <!-- 7. Staff -->
         <div class="form-group-select">
             <label for="${elemIdStaff}" class="form-label">
-                Staff Member
+                Staff Member <span class="entries-count" id=${elemIdStaffCount}></span>
             </label>
             
-            <select id="${elemIdStaff}" class="form-select">
-                <option value="-1" selected disabled>No Entries</option>
-            </select>
+            <div class="input-group" >
+                <select class="form-select" id="${elemIdStaff}">
+                    <option value="-1" selected disabled>No Entries</option>
+                </select>
+                <button class="btn" type="button" id="${elemIdStaffAdd}">
+                    <i class="bi bi-plus"></i> New
+                </button>
+            </div>
+            
             <div class="invalid-feedback">
                 Need to select if not done by you.
             </div>
@@ -408,6 +423,8 @@ export function PageProdGestatingAdd(input_settings){
         elemBtnClose            = document.getElementById(elemIdBtnClose);
         
         elemSow                 = document.getElementById(elemIdSow);
+        elemSowCount            = document.getElementById(elemIdSowCount);
+        elemSowAdd              = document.getElementById(elemIdSowAdd);
         elemSowStatusShow       = document.getElementById(elemIdSowStatusShow);
         elemSowLastInsem        = document.getElementById(elemIdSowLastInsem);
         elemSowLastPid          = document.getElementById(elemIdSowLastPid);
@@ -416,14 +433,19 @@ export function PageProdGestatingAdd(input_settings){
         
         elemBoarShow            = document.getElementById(elemIdBoarShow);
         elemBoar                = document.getElementById(elemIdBoar);
+        elemBoarCount           = document.getElementById(elemIdBoarCount);
+        elemBoarAdd             = document.getElementById(elemIdBoarAdd);
         
         elemAiShow              = document.getElementById(elemIdAiShow);
         elemSemenSupplier       = document.getElementById(elemIdSemenSupplier);
+        elemSemenSupplierCount  = document.getElementById(elemIdSemenSupplierCount);
         elemSemenType           = document.getElementById(elemIdSemenType);
+        elemSemenTypeCount      = document.getElementById(elemIdSemenTypeCount);
         elemSemenCost           = document.getElementById(elemIdSemenCost);
         
         elemBoarInternalShow    = document.getElementById(elemIdBoarInternalShow);
         elemBoarInternal        = document.getElementById(elemIdBoarInternal);
+        elemBoarInternalCount   = document.getElementById(elemIdBoarInternalCount);
         
         
         elemOtherCost           = document.getElementById(elemIdOtherCost);
@@ -432,6 +454,8 @@ export function PageProdGestatingAdd(input_settings){
         elemNotesCharCounter    = document.getElementById(elemIdNotesCharCounter);
         
         elemStaff               = document.getElementById(elemIdStaff);
+        elemStaffCount          = document.getElementById(elemIdStaffCount);
+        elemStaffAdd            = document.getElementById(elemIdStaffAdd);
         elemChkDoneByMe         = document.getElementById(elemIdChkDoneByMe);
             
         elemBtnCancel           = document.getElementById(elemIdBtnCancel);
@@ -454,8 +478,6 @@ export function PageProdGestatingAdd(input_settings){
         this.setDataSemenSupplierList([]);
         this.setDataStaffList([]);
         
-        //addModalSow.afterHtmlRender();
-        //addModalBoar.afterHtmlRender();
     }
     
     
@@ -463,6 +485,42 @@ export function PageProdGestatingAdd(input_settings){
         
         elemSow.addEventListener('change', function(){
             thisObj._onChangeSow();
+        });
+        
+        
+        elemSowAdd.addEventListener('click', function() {
+            // Should open SowBoarAddEdit page.
+            // after success add or cancel/close should go back to this page
+            
+            const options_sow_boar ={
+                is_add:         true,
+                is_sow:         true,
+                go_back_page:   elemDivContainer   // Go back to this page
+            }
+            
+            
+            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+            navigation.showThisPage(next_page)
+        });
+        
+        
+        elemBoarAdd.addEventListener('click', function() {
+            // Should open SowBoarAddEdit page.
+            // after success add or cancel/close should go back to this page
+            
+            const options_sow_boar ={
+                is_add:         true,
+                is_sow:         false,
+                go_back_page:   elemDivContainer   // Go back to this page
+            }
+            
+            
+            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+            navigation.showThisPage(next_page)
         });
         
         
@@ -512,11 +570,11 @@ export function PageProdGestatingAdd(input_settings){
         
         
         elemBtnClose.addEventListener('click', function() {
-            parentObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         });
         
         elemBtnCancel.addEventListener('click', function() {
-            parentObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         });
     }
     
@@ -524,6 +582,8 @@ export function PageProdGestatingAdd(input_settings){
     this.setDataSowList = function(data){
         sowList = data;
         insemDataSelect.setDataSowList(sowList, elemSow);
+        
+        elemSowCount.textContent = ` (${sowList.length} entries)`;
     }
     
     
@@ -531,18 +591,25 @@ export function PageProdGestatingAdd(input_settings){
         boarList = data;
         insemDataSelect.setDataBoarList(boarList, elemBoar);
         insemDataSelect.setDataBoarList(boarList, elemBoarInternal);
+        
+        elemBoarCount.textContent   = ` (${boarList.length} entries)`;
+        elemBoarInternalCount.textContent= ` (${boarList.length} entries)`;
     }
     
     
     this.setDataSemenSupplierList = function(data){
         semenSupplierList = data;
         insemDataSelect.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
+        
+        elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} entries)`;
     }
     
     
     this.setDataStaffList = function(data){
         staffList = data;
         insemDataSelect.setDataStaffList(staffList, elemStaff);
+    
+        elemStaffCount.textContent      = ` (${staffList.length} entries)`;
     }
     
     
@@ -643,18 +710,18 @@ export function PageProdGestatingAdd(input_settings){
         var input_val   = null;
         var cur_field   = null;
         var validation  = null;
-		
-		console.log('TEs1 ');
+        
+        console.log('TEs1 ');
         
         if (ev.checkValidity()) {
             switch(input_field){
             
                 case 'date_mating': {
-                    input_elem  	= elemDateMating;
-                    input_val   	= input_elem.value;
-                    cur_field   	= newEntry.fieldInsemDate;
+                    input_elem      = elemDateMating;
+                    input_val       = input_elem.value;
+                    cur_field       = newEntry.fieldInsemDate;
                     
-					console.log('date_mating = ' + input_val);
+                    console.log('date_mating = ' + input_val);
                     cur_field.newValue = input_val; 
                     validation = cur_field.validateChange();
                     
@@ -669,7 +736,7 @@ export function PageProdGestatingAdd(input_settings){
                     break;
                 }
                 
-				case 'other_cost': {
+                case 'other_cost': {
                     input_elem  = elemOtherCost;
                     input_val   = input_elem.val() || null;
                     cur_field   = newEntry.fieldInsemCost;
@@ -687,7 +754,7 @@ export function PageProdGestatingAdd(input_settings){
                     
                     break;
                 }
-				
+                
                 case 'staff':{
                     ev.classList.remove('is-invalid');
                     break;

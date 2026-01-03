@@ -188,7 +188,7 @@ var G_SAMPLE_JSON_PIG_PRODUCTION = [
         "hid": "M9ZN9G"
       },
       "insem_cost": null,
-      "insem_notes": null,
+      "insem_notes": 'Sample insem notes',
       "insem_date": "2025-09-06",
       "insem_staff_name": "Elmer Paquit",
       "insem_staff_hid": "EKQY8R"

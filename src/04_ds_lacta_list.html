@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pig Farm Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --corporate-blue: #1e3a8a;
+            --corporate-light-blue: #3b82f6;
+            --corporate-dark-blue: #1e40af;
+            --corporate-accent: #60a5fa;
+            --light-gray: #f8fafc;
+            --medium-gray: #e2e8f0;
+            --dark-gray: #64748b;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --alert-red: #ef4444;
+            --alert-glow: rgba(239, 68, 68, 0.7);
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-dark);
+            padding-top: 100px; /* Space for both fixed headers */
+            padding-bottom: 20px;
+            min-height: 100vh;
+        }
+        
+        /* Minimal Fixed Top Navigation */
+        .minimal-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--corporate-blue);
+            padding: 12px 16px;
+            z-index: 1001;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .minimal-nav-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        /* Tab Navigation Section - Fixed below minimal nav */
+        .tab-nav {
+            position: fixed;
+            top: 48px; /* Height of minimal nav */
+            left: 0;
+            width: 100%;
+            background: var(--corporate-dark-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            z-index: 1000;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            color: var(--text-light);
+            padding: 10px 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 15%;
+            width: 70%;
+            height: 3px;
+            background-color: white;
+            border-radius: 2px;
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        
+        /* Show More Dropdown */
+        .show-more-container {
+            position: relative;
+        }
+        
+        .show-more-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 140px;
+            display: none;
+            z-index: 1001;
+            margin-top: 2px;
+        }
+        
+        .show-more-dropdown.active {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--medium-gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--light-gray);
+            color: var(--corporate-blue);
+        }
+        
+        /* Content Area */
+        .content-container {
+            padding: 20px 16px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tab-title {
+            color: var(--corporate-blue);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--medium-gray);
+            font-size: 20px;
+        }
+        
+        /* Updated Table Styles - 3 columns for mobile */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .data-table th {
+            background-color: var(--corporate-blue);
+            color: white;
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .data-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid var(--medium-gray);
+            font-size: 14px;
+            vertical-align: top;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+        
+        .data-table tr:hover {
+            background-color: #e0f2fe;
+        }
+        
+        /* Date column styling */
+        .date-cell {
+            position: relative;
+            min-width: 70px;
+        }
+        
+        .due-indicator {
+            position: absolute;
+            top: 6px;
+            left: -8px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--alert-red);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 var(--alert-glow); }
+            70% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        .date-text {
+            margin-left: 10px;
+            font-size: 13px;
+        }
+        
+        /* Operation name column */
+        .operation-cell {
+            position: relative;
+            padding-left: 18px !important;
+        }
+        
+        .sow-indicator {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background-color: var(--corporate-dark-blue);
+            border-radius: 50%;
+        }
+        
+        .operation-name {
+            font-weight: 500;
+            font-size: 13px;
+        }
+        
+        /* Done By column */
+        .staff-name {
+            font-weight: 500;
+            color: var(--corporate-dark-blue);
+            font-size: 13px;
+        }
+        
+        .completion-date {
+            font-size: 11px;
+            color: var(--dark-gray);
+            margin-top: 3px;
+        }
+        
+        /* Form Styles */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--corporate-dark-blue);
+            font-size: 14px;
+        }
+        
+        .form-input {
+            padding: 10px 12px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--corporate-blue);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        
+        .form-button {
+            background-color: var(--corporate-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 8px;
+        }
+        
+        .form-button:hover {
+            background-color: var(--corporate-dark-blue);
+        }
+        
+        /* Mobile-specific adjustments */
+        @media (max-width: 480px) {
+            body {
+                padding-top: 96px;
+            }
+            
+            .tab-nav {
+                padding: 6px 12px;
+            }
+            
+            .nav-item {
+                padding: 8px 2px;
+                font-size: 12px;
+            }
+            
+            .minimal-nav-title {
+                font-size: 16px;
+                padding: 10px 0;
+            }
+            
+            .tab-content {
+                padding: 16px;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 8px 6px;
+                font-size: 12px;
+            }
+            
+            .tab-title {
+                font-size: 18px;
+            }
+            
+            .show-more-dropdown {
+                width: 120px;
+            }
+            
+            .dropdown-item {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+        }
+        
+        /* Scrollable content indicator */
+        .scroll-indicator {
+            text-align: center;
+            color: var(--dark-gray);
+            font-size: 12px;
+            margin-top: 15px;
+            padding: 8px;
+            font-style: italic;
+        }
+        
+        /* Stats cards */
+        .stats-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--corporate-blue);
+            margin-bottom: 3px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--dark-gray);
+        }
+    </style>
+</head>
+<body>
+    <!-- Minimal Fixed Top Navigation -->
+    <div class="minimal-nav">
+        <div class="minimal-nav-title">Pig Farm Management</div>
+    </div>
+    
+    <!-- Tab Navigation Section -->
+    <div class="tab-nav">
+        <div class="nav-item active" data-tab="tab1">
+            Pig Ops
+        </div>
+        <div class="nav-item" data-tab="tab2">
+            Birth
+        </div>
+        <div class="nav-item" data-tab="tab3">
+            Wean
+        </div>
+        <div class="nav-item show-more-container" id="show-more-control">
+            Show More
+            <div class="show-more-dropdown" id="show-more-dropdown">
+                <div class="dropdown-item" data-tab="tab4">Feeds</div>
+                <div class="dropdown-item" data-tab="tab5">Notes</div>
+                <div class="dropdown-item" data-tab="tab6">Dead Piglet</div>
+                <div class="dropdown-item" data-tab="tab7">Insem</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Content Container -->
+    <div class="content-container">
+        <!-- Tab 1: Pig Ops -->
+        <div id="tab1" class="tab-content active">
+            <h2 class="tab-title">Scheduled Pig Operations</h2>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Scheduled</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Operation</th>
+                        <th>Done By</th>
+                    </tr>
+                </thead>
+                <tbody id="operations-table-body">
+                    <!-- Operations populated by JavaScript -->
+                </tbody>
+            </table>
+            
+            <div class="scroll-indicator">
+                Scroll for more operations
+            </div>
+        </div>
+        
+        <!-- Tab 2: Birth -->
+        <div id="tab2" class="tab-content">
+            <h2 class="tab-title">Update Birth Information</h2>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label class="form-label">Sow ID</label>
+                    <input type="text" class="form-input" placeholder="Enter Sow ID">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Birth Date</label>
+                    <input type="date" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Number of Piglets</label>
+                    <input type="number" class="form-input" placeholder="Enter number of piglets">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Birth Weight (kg)</label>
+                    <input type="number" step="0.1" class="form-input" placeholder="Average weight">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-input" rows="3" placeholder="Additional birth details..."></textarea>
+                </div>
+                
+                <button class="form-button">Save Birth Record</button>
+            </div>
+        </div>
+        
+        <!-- Tab 3: Wean -->
+        <div id="tab3" class="tab-content">
+            <h2 class="tab-title">Update Wean Information</h2>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label class="form-label">Litter ID</label>
+                    <input type="text" class="form-input" placeholder="Enter Litter ID">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Weaning Date</label>
+                    <input type="date" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Number Weaned</label>
+                    <input type="number" class="form-input" placeholder="Enter number weaned">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Average Wean Weight (kg)</label>
+                    <input type="number" step="0.1" class="form-input" placeholder="Average wean weight">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Destination Pen</label>
+                    <input type="text" class="form-input" placeholder="Enter destination pen number">
+                </div>
+                
+                <button class="form-button">Update Wean Record</button>
+            </div>
+        </div>
+        
+        <!-- Other tabs (Feeds, Notes, Dead Piglet, Insem) -->
+        <div id="tab4" class="tab-content">
+            <h2 class="tab-title">Feeds Management</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label class="form-label">Feed Type</label>
+                    <select class="form-input">
+                        <option value="">Select feed type</option>
+                        <option value="starter">Starter Feed</option>
+                        <option value="grower">Grower Feed</option>
+                        <option value="finsher">Finisher Feed</option>
+                        <option value="sow">Sow Feed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Quantity (kg)</label>
+                    <input type="number" class="form-input" placeholder="Enter quantity in kg">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pen / Group</label>
+                    <input type="text" class="form-input" placeholder="Enter pen number or group">
+                </div>
+                <button class="form-button">Record Feed Distribution</button>
+            </div>
+        </div>
+        
+        <div id="tab5" class="tab-content">
+            <h2 class="tab-title">Farm Notes</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label class="form-label">Note Title</label>
+                    <input type="text" class="form-input" placeholder="Enter note title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-input">
+                        <option value="">Select category</option>
+                        <option value="health">Health Issue</option>
+                        <option value="equipment">Equipment</option>
+                        <option value="observation">Observation</option>
+                        <option value="reminder">Reminder</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-input" rows="5" placeholder="Enter your notes here..."></textarea>
+                </div>
+                <button class="form-button">Save Note</button>
+            </div>
+        </div>
+        
+        <div id="tab6" class="tab-content">
+            <h2 class="tab-title">Dead Piglet Record</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label class="form-label">Piglet ID / Litter ID</label>
+                    <input type="text" class="form-input" placeholder="Enter piglet or litter ID">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date Found</label>
+                    <input type="date" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Age (days)</label>
+                    <input type="number" class="form-input" placeholder="Enter age in days">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Probable Cause</label>
+                    <select class="form-input">
+                        <option value="">Select probable cause</option>
+                        <option value="crushing">Crushing</option>
+                        <option value="starvation">Starvation</option>
+                        <option value="disease">Disease</option>
+                        <option value="congenital">Congenital</option>
+                        <option value="unknown">Unknown</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-input" rows="3" placeholder="Additional details..."></textarea>
+                </div>
+                <button class="form-button">Record Mortality</button>
+            </div>
+        </div>
+        
+        <div id="tab7" class="tab-content">
+            <h2 class="tab-title">Insemination Record</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label class="form-label">Sow ID</label>
+                    <input type="text" class="form-input" placeholder="Enter Sow ID">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Insemination Date</label>
+                    <input type="date" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Boar / Semen ID</label>
+                    <input type="text" class="form-input" placeholder="Enter boar or semen ID">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Technician</label>
+                    <input type="text" class="form-input" placeholder="Enter technician name">
+                </div>
+                <button class="form-button">Record Insemination</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item:not(.show-more-container)');
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            const allTabs = document.querySelectorAll('.tab-content');
+            const showMoreControl = document.getElementById('show-more-control');
+            const showMoreDropdown = document.getElementById('show-more-dropdown');
+            
+            function switchTab(tabId) {
+                allTabs.forEach(tab => tab.classList.remove('active'));
+                const selectedTab = document.getElementById(tabId);
+                if (selectedTab) selectedTab.classList.add('active');
+                
+                navItems.forEach(item => item.classList.remove('active'));
+                
+                if (tabId === 'tab1' || tabId === 'tab2' || tabId === 'tab3') {
+                    const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
+                    if (activeNav) activeNav.classList.add('active');
+                }
+                
+                showMoreDropdown.classList.remove('active');
+            }
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                    showMoreControl.querySelector('.nav-text').textContent = this.textContent;
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    showMoreControl.classList.add('active');
+                });
+            });
+            
+            showMoreControl.addEventListener('click', function(e) {
+                if (e.target === this || e.target.classList.contains('nav-text')) {
+                    e.stopPropagation();
+                    showMoreDropdown.classList.toggle('active');
+                }
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!showMoreControl.contains(e.target)) {
+                    showMoreDropdown.classList.remove('active');
+                }
+            });
+            
+            // Set today's date as default for date inputs
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                input.value = today;
+            });
+            
+            // Generate operations table
+            generateOperationsTable();
+            
+            function generateOperationsTable() {
+                const tableBody = document.getElementById('operations-table-body');
+                const operations = [
+                    { date: "Oct 15", isDue: true, operationName: "Vaccination - Sow", isForSow: true, doneBy: "John Smith", completionDate: "Oct 14" },
+                    { date: "Oct 16", isDue: false, operationName: "Health Check - Piglets", isForSow: false, doneBy: "Maria Garcia", completionDate: "Oct 16" },
+                    { date: "Oct 17", isDue: true, operationName: "Weighing - Sow", isForSow: true, doneBy: "Not done", completionDate: null },
+                    { date: "Oct 12", isDue: false, operationName: "Relocation - Piglets", isForSow: false, doneBy: "Robert Chen", completionDate: "Oct 11" },
+                    { date: "Oct 13", isDue: false, operationName: "Vaccination - Piglets", isForSow: false, doneBy: "Sarah Johnson", completionDate: "Oct 13" },
+                    { date: "Oct 18", isDue: true, operationName: "Feeding Adjustment - Sow", isForSow: true, doneBy: "Not done", completionDate: null },
+                    { date: "Oct 19", isDue: false, operationName: "Pen Cleaning", isForSow: false, doneBy: "Michael Brown", completionDate: "Oct 18" },
+                    { date: "Oct 14", isDue: false, operationName: "Vaccination - Sow", isForSow: true, doneBy: "Lisa Wong", completionDate: "Oct 14" }
+                ];
+                
+                tableBody.innerHTML = '';
+                
+                operations.forEach(op => {
+                    const row = document.createElement('tr');
+                    
+                    // Date column
+                    const dateCell = document.createElement('td');
+                    dateCell.className = 'date-cell';
+                    if (op.isDue) {
+                        const dueIndicator = document.createElement('div');
+                        dueIndicator.className = 'due-indicator';
+                        dateCell.appendChild(dueIndicator);
+                    }
+                    const dateText = document.createElement('div');
+                    dateText.className = 'date-text';
+                    dateText.textContent = op.date;
+                    dateCell.appendChild(dateText);
+                    row.appendChild(dateCell);
+                    
+                    // Operation column
+                    const operationCell = document.createElement('td');
+                    operationCell.className = 'operation-cell';
+                    if (op.isForSow) {
+                        const sowIndicator = document.createElement('div');
+                        sowIndicator.className = 'sow-indicator';
+                        operationCell.appendChild(sowIndicator);
+                    }
+                    const operationName = document.createElement('div');
+                    operationName.className = 'operation-name';
+                    operationName.textContent = op.operationName;
+                    operationCell.appendChild(operationName);
+                    row.appendChild(operationCell);
+                    
+                    // Done By column
+                    const doneByCell = document.createElement('td');
+                    const staffName = document.createElement('div');
+                    staffName.className = 'staff-name';
+                    staffName.textContent = op.doneBy;
+                    doneByCell.appendChild(staffName);
+                    if (op.completionDate) {
+                        const completionDate = document.createElement('div');
+                        completionDate.className = 'completion-date';
+                        completionDate.textContent = op.completionDate;
+                        doneByCell.appendChild(completionDate);
+                    }
+                    row.appendChild(doneByCell);
+                    
+                    tableBody.appendChild(row);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

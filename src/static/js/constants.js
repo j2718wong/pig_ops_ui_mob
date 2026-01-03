@@ -8,6 +8,27 @@ const APPLICATION = {
 }
 
 
+const PAGE_ID = {
+    HOME:                   0,
+    
+    
+    ACC_PIG_OPS:            1,
+    
+    SOW_BOAR_ADD_EDIT:      2,
+    
+    
+    PROD_GESTA_LIST:        3,
+    
+    
+    PROD_GESTA_ADD:         4,  
+    
+    PROD_GESTA_ENTRY:       5,
+    
+    PROD_LACTA_LIST:        6 
+    
+};
+
+
 const PIG_OPERATION_TYPE = {
     GESTATING:          1,
     LACTATING_PIGLETS:  2,
@@ -35,23 +56,24 @@ const SOW_STATUS = {
 
 
 const PROD_STATUS = {
-	GESTATING:			1,
-	TERMINATED:			2,
-	NOT_PREGNANT:		3,
-	LACTATING:			4,
-	WEANING:			5,
-	GROWING:			6,
-	COMBINED:			7,
-	HARVESTED:			8
+    GESTATING:          1,
+    TERMINATED:         2,
+    NOT_PREGNANT:       3,
+    LACTATING:          4,
+    WEANING:            5,
+    GROWING:            6,
+    COMBINED:           7,
+    HARVESTED:          8
 };
 
 
 
 export {
     APPLICATION,
+	PAGE_ID,
     
     SOW_BOAR_TYPE,
     PIG_OPERATION_TYPE,
-	SOW_STATUS,
-	PROD_STATUS
+    SOW_STATUS,
+    PROD_STATUS
 };

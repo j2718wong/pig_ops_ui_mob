@@ -13,6 +13,7 @@ import {APPLICATION,
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
+		FORMAT_COMPACT,
         sortList}               from '../../../utils.js';
 
 
@@ -23,7 +24,7 @@ export function PageMobGestaLacta(input_settings){
     PageViewBasic.call(this);
     
     const thisObj               = this;
-    const parentObj             = input_settings.parentObj;
+    const navigation            = input_settings.navigation;
     
     const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
     const DEFAULT_NUM_DAYS_WEAN = 45;
@@ -36,7 +37,7 @@ export function PageMobGestaLacta(input_settings){
     /*
     Typical input_settings
     {
-        parentObj:              this,
+        navigation:             this,
         isGesta:                true,
         uniqueKey:              'prod-gesta' // Use for uniqueness in elements
         pageTitle:              'Production Gestating'
@@ -218,7 +219,7 @@ export function PageMobGestaLacta(input_settings){
 
         
         elemMobAddEntryBtn.addEventListener('click', function() {
-            parentObj.onClickProdGestatingAdd();
+            navigation.onClickProdGestatingAdd();
         });
     
     }
@@ -369,7 +370,7 @@ export function PageMobGestaLacta(input_settings){
         
         
         // Set entry count; only show if mobile screen
-        if (parentObj.curScreenIsMobile == true){
+        if (navigation.curScreenIsMobile == true){
             var prod_count = 0;
             if (dataPigProdList){prod_count = dataPigProdList.length;}
             
@@ -990,12 +991,14 @@ export function PageMobGestaLacta(input_settings){
             const options_date_short = {
                 month: 'short', // "Dec"
                 day: 'numeric', // "20"
+				year: 'numeric'
             };
             
             var is_overdue = 0;
             if (diff_days < 0){is_overdue = 1;}
             
-            const short_dt_target = dt_target.toLocaleDateString('en-US', options_date_short);
+			
+            const short_dt_target = formatDate(dt_target, FORMAT_COMPACT);
             
             pigOpsAlarmList.push({
                 pid:            pid,

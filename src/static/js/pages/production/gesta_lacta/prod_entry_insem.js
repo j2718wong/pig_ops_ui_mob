@@ -21,59 +21,84 @@ export function ProdEntryInsem(input_settings){
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
     
+    /*
+    Typical settings = {
+        parentObj:              this,
+    };
+    */
+    const settings              = input_settings;
+
+    const MAXCHAR_INSEM_NOTES   = 160;
+    
+    
+    var elemIdContentContainer  = null;
+        
+    var elemIdCannotUpdate      = null;
     
     var elemIdSow               = null;
-    var elemIdInsemType         = null;
+    var elemIdDateMatingWarning = null;
     var elemIdDateMating        = null;
+    var elemIdInsemType         = null;
     
     var elemIdBoarShow          = null;
     var elemIdBoar              = null;
+    var elemIdBoarCount         = null;
     
     var elemIdAiShow            = null;
     var elemIdSemenSupplier     = null;
+    var elemIdSemenSupplierCount= null;
     var elemIdSemenType         = null;
-    var elemIdSemenCostCurSymbol= null;
+    var elemIdSemenTypeCount    = null;
     var elemIdSemenCost         = null;
   
+    var elemIdBoarInternalShow  = null;
+    var elemIdBoarInternal      = null;
+    var elemIdBoarInternalCount = null;
     
-    var elemIdOtherCurSymbol    = null;
+    
     var elemIdOtherCost         = null;
     
     var elemIdNotes             = null;
     var elemIdNotesCharCounter  = null;
     
     var elemIdStaff             = null;
+    var elemIdStaffCount        = null;
     
     var elemIdBtnSave           = null;
     
     
-    var elemBtnClose            = null;
+    var elemContentContainer    = null;
+    
+    var elemCannotUpdate        = null;
     
     var elemSow                 = null;
-    var elemSowStatusShow       = null;
-    var elemSowLastInsem        = null;
-    var elemSowLastPid          = null;
-    var elemInsemType           = null;
+    var elemDateMatingWarning   = null;
     var elemDateMating          = null;
+    var elemInsemType           = null;
     
     var elemBoarShow            = null;
     var elemBoar                = null;
+    var elemBoarCount           = null;
     
     var elemAiShow              = null;
     var elemSemenSupplier       = null;
-    var elemNoSemenType         = null;
+    var elemSemenSupplierCount  = null;
     var elemSemenType           = null;
-    var elemSemenCostCurSymbol  = null;
+    var elemSemenTypeCount      = null;
     var elemSemenCost           = null;
     
-    var elemOtherCurSymbol      = null;
+    var elemBoarInternalShow    = null;
+    var elemBoarInternal        = null;
+    var elemBoarInternalCount   = null;
+    
+    
     var elemOtherCost           = null;
     
     var elemNotes               = null;
     var elemNotesCharCounter    = null;
     
     var elemStaff               = null;
-
+    var elemStaffCount          = null;
     
     var elemBtnSave             = null;
     
@@ -94,28 +119,38 @@ export function ProdEntryInsem(input_settings){
     
     this.getHtml = function(){
         
-        elemIdSow               = `pig-prod-insem-select-sow`;
-        elemIdInsemType         = `pig-prod-insem-insem-type`;
+        elemContentContainer    = `pig-prod-insem-content`;
+        
+        elemIdCannotUpdate      = `pig-prod-insem-cannot-update`;
+        
+        elemIdSow               = `pig-prod-insem-sow`;
+        elemIdDateMatingWarning = `pig-prod-insem-date-mating-warning`;
         elemIdDateMating        = `pig-prod-insem-date-mating`;
+        elemIdInsemType         = `pig-prod-insem-insem-type`;
         
         elemIdBoarShow          = `pig-prod-insem-select-boar-show`;
         elemIdBoar              = `pig-prod-insem-select-boar`;
+        elemIdBoarCount         = `pig-prod-insem-select-boar-count`;
         
         
         elemIdAiShow            = `pig-prod-insem-select-ai-show`;
         elemIdSemenSupplier     = `pig-prod-insem-select-semen-supplier`;
+        elemIdSemenSupplierCount= `pig-prod-insem-select-semen-supplier-count`;
         elemIdSemenType         = `pig-prod-insem-select-semen-type`;
-        elemIdSemenCostCurSymbol= `pig-prod-insem-semen-cost-cur-symbol`;
+        elemIdSemenTypeCount    = `pig-prod-insem-select-semen-type-count`;
         elemIdSemenCost         = `pig-prod-insem-semen-cost`;
         
+        elemIdBoarInternalShow  = `pig-prod-insem-boar-internal-show`;
+        elemIdBoarInternal      = `pig-prod-insem-boar-internal`;
+        elemIdBoarInternalCount = `pig-prod-insem-boar-internal-count`;
         
-        elemIdOtherCurSymbol    = `pig-prod-insem-other-cost-cur-symbol`;
         elemIdOtherCost         = `pig-prod-insem-other-cost`;
         
         elemIdNotes             = `pig-prod-insem-notes`;
         elemIdNotesCharCounter  = `pig-prod-insem-notes-char-counter`;
         
         elemIdStaff             = `pig-prod-insem-staff`;
+        elemIdStaffCount        = `pig-prod-insem-staff-count`;
         
         elemIdBtnSave           = `pig-prod-insem-save`;
         
@@ -123,96 +158,142 @@ export function ProdEntryInsem(input_settings){
         
         
         const html = `
-<div>
-    <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">
+<div class="modal-body" id="${elemContentContainer}">
+    <h2 style="margin-bottom: 10px; color: var(--corporate-blue);">
         Insemination Information
     </h2>
     
+    <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:8px;">
+        Gestating info of a production entry that is already in 
+        <b>Lactating Stage</b> cannot be updated.
+    </div>
+    
+    <!-- 1. Sow Field cannot be edited. -->
     <div class="form-group-text">
         <label class="form-label">Sow Name</label>
         <span class="" id="${elemIdSow}"></span>
     </div>
     
+    <!-- 2. Date Mating -->
     <div class="form-group-date">
-        <label class="form-label">Date Mating</label>
-        <input type="text" class="form-control" id="${elemIdDateMating}">
-    
-        <div class="warning-box" id="mating-warning" style="display: none;">
-            Changing the Date Mating will affect gestation period calculations.
+        <div class="warning-box" id="${elemIdDateMatingWarning}" style="display: none;">
+            Changing the Date Mating will recalculate <b>Gestating Operations</b>
+            scheduled for this entry.
         </div>
+        <label for="${elemIdDateMating}" class="form-label">Date Mating</label>
+        <input type="text" class="form-control" id="${elemIdDateMating}">
+        <div class="invalid-feedback">
+            Please enter a valid date.
+        </div>
+        
     </div>
     
+    <!-- 3. Insemination Type -->
     <div class="form-group-select">
-        <label class="form-label">Insemination Type</label>
-        <select class="form-select" id="${elemIdInsemType}">
-            <option value="boar-mating">Boar Mating</option>
-            <option value="ai-external">Artificial Insemination</option>
+        <label for="${elemIdInsemType}" class="form-label">
+            Insemination Type
+        </label>
+                    
+        <select class="form-select" id="${elemIdInsemType}" required>
+            <option value="boar-mating" selected>Boar Mating</option>
+            <option value="ai-external">Artificial Insem External</option>
+            <option value="ai-internal">Artificial Insem Internal</option>
         </select>
     </div>
     
-    <!-- Boar Mating Section (shown by default) -->
+    <!-- Boar Mating Section -->
     <div class="form-group-select" id="${elemIdBoarShow}">
-        <label for="${elemIdBoar}" class="form-label">Select Boar</label>
+        <label for="${elemIdBoar}" class="form-label">
+            Select Boar <span class="entries-count" id=${elemIdBoarCount}></span>
+        </label>
         <select class="form-select" id="${elemIdBoar}">
             <option value="" selected disabled>Select...</option>
         </select>
     </div>
     
-    <!-- Artificial Insemination Section (hidden by default) -->
     <div id="${elemIdAiShow}" class="ai-section" style="display: none;">
+        <!-- 1. Semen Supplier -->
         <div class="form-group-select">
-            <label for="${elemIdSemenSupplier}" class="form-label">Semen Supplier</label>
-            <select class="form-select" id="${elemIdSemenSupplier}">
-                <option value="" selected disabled>Select supplier...</option>
-            </select>
-        </div>
-        
-        <div class="form-group-select">
-            <label for="${elemIdSemenType}" class="form-label">Semen Type</label>
-            <select class="form-select" id="${elemIdSemenType}">
-            </select>
-        </div>
-        
-        <div class="form-group-number">
-            <label for="${elemIdSemenCost}" class="form-label">
-                Semen Type
+            <label for="${elemIdSemenSupplier}" class="form-label">
+                Semen Supplier <span class="entries-count" id=${elemIdSemenSupplierCount}></span>
             </label>
             
-            <div class="currency-input-group">
-                <span class="input-group-text" id="${elemIdSemenCostCurSymbol}">$</span>
-                <input type="number" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0" value="0.00">
+            <select class="form-select" id="${elemIdSemenSupplier}">
+                <option value="-1" selected disabled>No Entries</option>
+            </select>
+            
+        </div>
+        
+        <!-- 2. Semen Type -->
+        <div class="form-group-select">
+            <label for="${elemIdSemenType}" class="form-label">
+                Semen Type <span class="entries-count" id=${elemIdSemenTypeCount}></span>
+            </label>
+        
+            <select class="form-select" id="${elemIdSemenType}">
+                <option value="-1" selected disabled>No Entries</option>
+            </select>
+        </div>
+        
+        <!-- 3. Semen Cost -->
+        <div class="form-group-number">
+            <label for="${elemIdSemenCost}" class="form-label">
+                Semen Cost
+            </label>
+            
+            <input type="number" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0" value="0.00">
+            <div class="invalid-feedback">
+                Please enter numeric value.
             </div>
         </div>
     </div>
     
+    
+    <div class="form-group-select" id="${elemIdBoarInternalShow}" style="display: none;">
+        <label for="${elemIdBoarInternal}" class="form-label">
+            Boar where Semen extracted <span class="entries-count" id=${elemIdBoarInternalCount}></span>
+        </label>
+        
+        <select class="form-select" id="${elemIdBoarInternal}">
+            <option value="-1" selected disabled>No Entries</option>
+        </select>
+    </div>
+        
+        
+    <!-- 5. Other Cost -->
     <div class="form-group-number">
         <label for="${elemIdOtherCost}" class="form-label">
             Other Cost
         </label>
             
-        <div class="currency-input-group">
-            <span class="input-group-text" id="${elemIdOtherCurSymbol}">$</span>
-            <input type="number" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">
+        <input type="number" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">
+        <div class="invalid-feedback">
+            Please enter numeric value.
         </div>
     </div>
         
     
+    <!-- 6. Notes -->
     <div class="form-group-text-area">
         <label for="${elemIdNotes}" class="form-label">
             Notes
-            <span id="${elemIdNotesCharCounter}" class="char-counter">0/160</span>
+            <span id="${elemIdNotesCharCounter}" class="char-counter">0/${MAXCHAR_INSEM_NOTES}</span>
         </label>
         
-        <textarea class="form-control" id="${elemIdNotes}" rows="2" maxlength="160"></textarea>
+        <textarea class="form-control" id="${elemIdNotes}" rows="2" maxlength="${MAXCHAR_INSEM_NOTES}"></textarea>
     </div>
     
     <div class="form-group-select">
         <label for="${elemIdStaff}" class="form-label">
-            Staff Member
+            Staff Member <span class="entries-count" id=${elemIdStaffCount}></span>
         </label>
             
         <select class="form-select" id="${elemIdStaff}">
+            <option value="-1" selected disabled>No Entries</option>
         </select>
+        
+        <div class="form-text">Who did the operation.</div>
+        
     </div>
     
     <button class="btn btn-primary" id="${elemIdBtnSave}">Save Changes</button>
@@ -233,29 +314,39 @@ export function ProdEntryInsem(input_settings){
     
     this._findElements = function(){
         
+        elemContentContainer    = document.getElementById(elemIdContentContainer);
+        
+        elemCannotUpdate        = document.getElementById(elemIdCannotUpdate);
+        
         elemSow                 = document.getElementById(elemIdSow);
-        elemInsemType           = document.getElementById(elemIdInsemType);
+        elemDateMatingWarning   = document.getElementById(elemIdDateMatingWarning);
         elemDateMating          = document.getElementById(elemIdDateMating);
+        elemInsemType           = document.getElementById(elemIdInsemType);
         
         elemBoarShow            = document.getElementById(elemIdBoarShow);
         elemBoar                = document.getElementById(elemIdBoar);
+        elemBoarCount           = document.getElementById(elemIdBoarCount);
         
         elemAiShow              = document.getElementById(elemIdAiShow);
         elemSemenSupplier       = document.getElementById(elemIdSemenSupplier);
+        elemSemenSupplierCount  = document.getElementById(elemIdSemenSupplierCount);
         elemSemenType           = document.getElementById(elemIdSemenType);
-        elemSemenCostCurSymbol  = document.getElementById(elemIdSemenCostCurSymbol);
+        elemSemenTypeCount      = document.getElementById(elemIdSemenTypeCount);
         elemSemenCost           = document.getElementById(elemIdSemenCost);
         
-
+        elemBoarInternalShow    = document.getElementById(elemIdBoarInternalShow);
+        elemBoarInternal        = document.getElementById(elemIdBoarInternal);
+        elemBoarInternalCount   = document.getElementById(elemIdBoarInternalCount);
         
-        elemOtherCurSymbol      = document.getElementById(elemIdOtherCurSymbol);
+
         elemOtherCost           = document.getElementById(elemIdOtherCost);
         
         elemNotes               = document.getElementById(elemIdNotes);
         elemNotesCharCounter    = document.getElementById(elemIdNotesCharCounter);
         
         elemStaff               = document.getElementById(elemIdStaff);
-            
+        elemStaffCount          = document.getElementById(elemIdStaffCount);
+         
         elemBtnSave             = document.getElementById(elemIdBtnSave);
     
     }
@@ -273,27 +364,27 @@ export function ProdEntryInsem(input_settings){
     
     
     this._bindEventListeners = function(){
-        elemInsemType.addEventListener('change', function() {
-            const selected_value = elemInsemType.value;
-            
-            switch (selected_value) {
-                case 'boar-mating': {
-                    elemBoarShow.style.display = 'block';
-                    elemAiShow.style.display = 'none';
-                    break;
-                }
-                
-                case 'ai-external': {
-                    elemBoarShow.style.display = 'none';
-                    elemAiShow.style.display = 'block';
-                    break;
-                }
-                
-                case 'ai-internal': {
-                    break;
-                }
-            }
+        elemInsemType.addEventListener('change', thisObj.onChangeInsemType);
+        
+        
+        elemOtherCost.addEventListener('blur', function() {
+            thisObj._validateAfterChangeInput(this, 'other_cost');
         });
+        
+        
+        
+        elemNotes.addEventListener('input', function(){
+            thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 
+                MAXCHAR_INSEM_NOTES);
+            
+            elemNotes.classList.remove('is-invalid');
+        });
+        
+        
+        elemBtnSave.addEventListener('click', function() {
+            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+        });
+        
     }
     
     
@@ -305,19 +396,28 @@ export function ProdEntryInsem(input_settings){
     
     this.setDataBoarList = function(data){
         boarList = data;
+
         insemDataSelect.setDataBoarList(boarList, elemBoar);
+        insemDataSelect.setDataBoarList(boarList, elemBoarInternal);
+        
+        elemBoarCount.textContent   = ` (${boarList.length} entries)`;
+        elemBoarInternalCount.textContent= ` (${boarList.length} entries)`;
     }
     
     
     this.setDataSemenSupplierList = function(data){
         semenSupplierList = data;
         insemDataSelect.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
+    
+        elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} entries)`;
     }
     
     
     this.setDataStaffList = function(data){
         staffList = data;
         insemDataSelect.setDataStaffList(staffList, elemStaff);
+    
+        elemStaffCount.textContent      = ` (${staffList.length} entries)`;
     }
     
     
@@ -345,10 +445,139 @@ export function ProdEntryInsem(input_settings){
         const insemination  = data_pig_prod.insemination;
         
         const dt_insem      = new Date(insemination.insem_date);
-        $('#'+elemIdDateMating).datepicker('setDate', dt_insem);
+        const $elemDateMating = $(elemDateMating);
+        $elemDateMating.datepicker('setDate', dt_insem);
+        
+        
+        
+        
+        // Set insemination type
+        switch (insemination.insem_type){
+            case 'B':{
+                elemInsemType.value = 'boar-mating';
+                thisObj.onChangeInsemType();
+                
+                elemBoar.value = insemination.boar.hid;
+                
+                break;
+            }
+            
+            case 'AI_X':{
+                elemInsemType.value = 'ai-external';
+                thisObj.onChangeInsemType();
+                
+                break;
+            }
+            
+            case 'AI_N':{
+                elemInsemType.value = 'ai-internal';
+                thisObj.onChangeInsemType();
+                
+                break;
+            }
+        }
+        
+        
+        // Set Insemination Cost
+        if (insemination.insem_cost != null){
+            elemOtherCost.textContent = thisOj.moneyFormatter(insemination.insem_cost); 
+        }
+        
+        
+        // Set Insemination Notes
+        if (insemination.insem_notes != null){
+            elemNotes.textContent = insemination.insem_notes;
+            
+            // Update char counter
+            // Initialize char counters
+            thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 
+                MAXCHAR_INSEM_NOTES);
+        }
+        
+        
+        // Set Staff
+        const $elemStaff        = $(elemStaff);
+        $elemStaff.val(insemination.insem_staff_hid).change();
+        
+        
+        if (options.is_read_only){
+            elemCannotUpdate.style.display = 'block';
+            
+            elemDateMatingWarning.style.display = 'none'; 
+            elemDateMating.disabled = true;
+            elemInsemType.disabled = true;
+            
+            elemBoar.disabled = true;
+            
+            elemSemenSupplier.disabled = true;
+            elemSemenType.disabled = true;
+            elemSemenCost.disabled = true;
+            
+            elemBoarInternal.disabled = true;
+            
+            elemOtherCost.disabled = true;
+            
+            elemNotes.disabled = true;
+            
+            elemStaff.disabled = true;
+             
+            elemBtnSave.style.display = 'none';
+            
+        }
+        
+        else{
+            elemCannotUpdate.style.display = 'none';
+            
+            elemDateMatingWarning.style.display = 'block'; 
+            elemDateMating.disabled = false;
+            elemInsemType.disabled = false;
+            
+            elemBoar.disabled = false;
+            
+            elemSemenSupplier.disabled = false;
+            elemSemenType.disabled = false;
+            elemSemenCost.disabled = false;
+            
+            elemBoarInternal.disabled = false;
+            
+            elemOtherCost.disabled = false;
+            
+            elemNotes.disabled = false;
+            
+            elemStaff.disabled = false;
+             
+            elemBtnSave.style.display = 'block';
+        }
         
     }
     
+    
+    this.onChangeInsemType = function(){
+        const selected_value = elemInsemType.value;
+        
+        switch (selected_value) {
+            case 'boar-mating': {
+                elemBoarShow.style.display = 'block';
+                elemAiShow.style.display = 'none';
+                elemBoarInternalShow.style.display = 'none';
+                break;
+            }
+            
+            case 'ai-external': {
+                elemBoarShow.style.display = 'none';
+                elemAiShow.style.display = 'block';
+                elemBoarInternalShow.style.display = 'none';
+                break;
+            }
+            
+            case 'ai-internal': {
+                elemBoarShow.style.display = 'none';
+                elemAiShow.style.display = 'none';
+                elemBoarInternalShow.style.display = 'block';
+                break;
+            }
+        }
+    }
     
 
 }

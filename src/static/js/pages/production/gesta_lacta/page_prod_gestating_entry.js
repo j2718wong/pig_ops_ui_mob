@@ -9,9 +9,10 @@ import {PageViewBasic}          from '../../common/page_view_basic.js';
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
-//import {AddModalSowBoar}        from './add_modal_sow.js';
+
 
 import {ProdEntryInsem}         from './prod_entry_insem.js'
+import {ProdEntryBirth}         from './prod_entry_birth.js'
 
 
 
@@ -20,12 +21,12 @@ export function PageProdGestatingEntry(input_settings){
     PageViewBasic.call(this);
     
     const thisObj               = this;
-    const parentObj             = input_settings.parentObj;
+    const navigation            = input_settings.navigation;
     
     
     /*
     Typical settings = {
-        parentObj:              this
+        navigation:             this
     };
     */
     const settings              = input_settings;
@@ -67,6 +68,13 @@ export function PageProdGestatingEntry(input_settings){
         parentObj:              this
     }
     var prodEntryInsem          = new ProdEntryInsem(settingsInsem);
+    
+    
+    const settingsBirth = {
+        parentObj:              this
+    }
+    var prodEntryBirth          = new ProdEntryBirth(settingsBirth);
+    
     
     
     this.init = function(){
@@ -197,7 +205,6 @@ export function PageProdGestatingEntry(input_settings){
         /* Individual Tab Content */
         .tab-content {
             display: none;
-            padding: 12px 12px;
         }
 
         .tab-content.active {
@@ -225,40 +232,7 @@ export function PageProdGestatingEntry(input_settings){
         }
 
 
-        /* Number input with plus/minus buttons */
-        .number-input-group {
-            display: flex;
-            align-items: center;
-        }
-
-        .number-btn {
-            width: 44px;
-            height: 44px;
-            background-color: var(--corporate-blue);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .number-btn:active {
-            background-color: #1e40af;
-        }
-
-        .number-btn.minus {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-
-        .number-btn.plus {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
+        
 
         .number-input {
             flex-grow: 1;
@@ -269,20 +243,6 @@ export function PageProdGestatingEntry(input_settings){
             font-weight: 600;
         }
 
-       
-        .warning-box {
-            background-color: var(--warning-bg);
-            border-left: 4px solid var(--warning-border);
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            border-radius: 0 8px 8px 0;
-            font-size: 14px;
-            color: var(--text-dark);
-        }
-
-        .warning-box b {
-            color: #dc2626;
-        }
 
         .radio-group {
             margin-bottom: 15px;
@@ -440,10 +400,6 @@ export function PageProdGestatingEntry(input_settings){
                 padding: 12px;
             }
             
-            .number-btn {
-                width: 40px;
-                height: 40px;
-            }
         }
 
         @media (max-width: 380px) {
@@ -486,7 +442,7 @@ export function PageProdGestatingEntry(input_settings){
         const html_style        = thisObj._writeInlineStyle();
         
         const html_tab_insem    = prodEntryInsem.getHtml();
-        
+        const html_tab_birth    = prodEntryBirth.getHtml();
         
         const html =`
 
@@ -533,68 +489,7 @@ export function PageProdGestatingEntry(input_settings){
 
         <!-- Birth Tab -->
         <div id="birth-tab" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: var(--corporate-blue);">Birth Information</h2>
-            
-            <div class="warning-box">
-                Setting the Date Actual Birth will update the production entry from Gestating status to Lactating Status and will be removed from Production Gestating List. Will be put in Production Lactating List.
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Date Expected Birth</label>
-                <input type="date" class="form-control readonly" value="2024-02-07" readonly>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Date Actual Birth</label>
-                <input type="date" class="form-control" id="actual-birth-date">
-                <div style="font-size: 14px; color: var(--text-light); margin-top: 5px;" id="gestation-days">Gestation period: -- days</div>
-            </div>
-            
-            <!-- Number of Female Piglets with plus/minus buttons -->
-            <div class="form-group">
-                <label class="form-label">Number of Female Piglets</label>
-                <div class="number-input-group">
-                    <button class="number-btn minus" data-field="female">-</button>
-                    <input type="number" class="form-control number-input" id="female-piglets" value="7" min="0">
-                    <button class="number-btn plus" data-field="female">+</button>
-                </div>
-            </div>
-            
-            <!-- Number of Male Piglets with plus/minus buttons -->
-            <div class="form-group">
-                <label class="form-label">Number of Male Piglets</label>
-                <div class="number-input-group">
-                    <button class="number-btn minus" data-field="male">-</button>
-                    <input type="number" class="form-control number-input" id="male-piglets" value="6" min="0">
-                    <button class="number-btn plus" data-field="male">+</button>
-                </div>
-            </div>
-            
-            <!-- Number of Stillbirth Piglets with plus/minus buttons -->
-            <div class="form-group">
-                <label class="form-label">Number of Stillbirth Piglets</label>
-                <div class="number-input-group">
-                    <button class="number-btn minus" data-field="stillbirth">-</button>
-                    <input type="number" class="form-control number-input" id="stillbirth-piglets" value="1" min="0">
-                    <button class="number-btn plus" data-field="stillbirth">+</button>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Birth Staff</label>
-                <div class="input-group">
-                    <select class="form-control">
-                        <option value="">Select staff member</option>
-                        <option value="staff1">John Smith</option>
-                        <option value="staff2" selected>Maria Garcia</option>
-                        <option value="staff3">Robert Johnson</option>
-                        <option value="staff4">Lisa Chen</option>
-                    </select>
-                    <input type="text" class="form-control" placeholder="New staff name">
-                </div>
-            </div>
-            
-            <button class="btn btn-primary">Save Changes</button>
+            ${html_tab_birth}
         </div>
 
         <!-- Status Tab -->
@@ -722,6 +617,7 @@ export function PageProdGestatingEntry(input_settings){
     
     this._processAfterHtmlRender = function(){
         prodEntryInsem.afterHtmlRender();
+        prodEntryBirth.afterHtmlRender();
     }
     
     
@@ -743,7 +639,7 @@ export function PageProdGestatingEntry(input_settings){
                 document.getElementById(`${tabId}-tab`).classList.add('active');
                 
                 // Scroll to top of content area
-                document.querySelector('.tab-content-area').scrollTop = 0;
+                elemDivContainer.querySelector('.tab-content-area').scrollTop = 0;
             });
         });
     }
@@ -755,7 +651,7 @@ export function PageProdGestatingEntry(input_settings){
     
     
     this.setDataBoarList = function(data){
-        prodEntryInsem.setDataSowList(data);
+        prodEntryInsem.setDataBoarList(data);
     }
     
     
@@ -766,6 +662,7 @@ export function PageProdGestatingEntry(input_settings){
     
     this.setDataStaffList = function(data){
         prodEntryInsem.setDataStaffList(data);
+        prodEntryBirth.setDataStaffList(data);
     }
     
     
@@ -836,15 +733,19 @@ export function PageProdGestatingEntry(input_settings){
         
         // set arrow navigation
         elemNavPrevEntry.onclick = function(){
-            parentObj.onClickProdGestatingEntry(options.prev_prod_pid);
+            navigation.onClickProdGestatingEntry(options.prev_prod_pid);
         }
         
         elemNavNextEntry.onclick = function(){
-            parentObj.onClickProdGestatingEntry(options.next_prod_pid);
+            navigation.onClickProdGestatingEntry(options.next_prod_pid);
         }
-		
-		
-		prodEntryInsem.show(data_pig_prod);
+        
+        
+        // Set Insemination tab
+        const options_insem ={
+            is_read_only:   false
+        }
+        prodEntryInsem.show(data_pig_prod, options_insem);
     }
     
 }   

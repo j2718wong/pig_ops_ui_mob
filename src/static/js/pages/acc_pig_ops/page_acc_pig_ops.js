@@ -24,11 +24,11 @@ export function PageAccPigOps(input_settings){
     PageViewBasic.call(this);
 	
 	const thisObj               = this;
-	const parentObj             = input_settings.parentObj;
+	const navigation            = input_settings.navigation;
 	
 	/*
     Typical settings = {
-        parentObj:              this
+        navigation:             this
     };
     */
     const settings              = input_settings;
@@ -472,7 +472,7 @@ export function PageAccPigOps(input_settings){
         
         
         // Update entry_count
-        if (parentObj.curScreenIsMobile == true){
+        if (navigation.curScreenIsMobile == true){
             elemEntryCount     = document.getElementById(elemIdEntryCount);
             elemEntryCount.textContent = curAccPigOpsData.length;
         }

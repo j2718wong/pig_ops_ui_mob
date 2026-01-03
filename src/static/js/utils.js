@@ -6,18 +6,32 @@
 
 export const FORMAT_LONG_MONTH      = 'long';
 export const FORMAT_SHORT_MONTH     = 'short';
+export const FORMAT_COMPACT         = 'compact';
 
-export function formatDate(dt, format_month){
+
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+
+export function formatDate(dt, format){
     const options = {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     };
     
-    if (format_month){
-        options.month = format_month;
+    if (format){
+        options.month = format;
     }
     
+    if (format == FORMAT_COMPACT) {
+        const day = String(dt.getDate()).padStart(2, '0');
+        const month = monthNames[dt.getMonth()];
+        const year = dt.getFullYear();
+
+        return `${day}${month}${year}`;
+    }
+
     
     return new Intl.DateTimeFormat('en-US', options).format(dt);
 }
