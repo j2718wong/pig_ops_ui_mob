@@ -8,6 +8,10 @@ import {PageViewBasic}          from '../../common/page_view_basic.js';
 
 import {PIG_OPERATION_TYPE}     from '../../../constants.js';
         
+import {formatDate,
+        FORMAT_LONG_MONTH}      from '../../../utils.js';
+
+        
 import {ModelAccountPigOps}     from '../../../models/model_acc_pig_ops.js'
 
 import {FIELD_VALIDATION_OK,
@@ -330,7 +334,22 @@ export function EditModalProdPigOps(input_settings){
     
 
     this.show = function(operation, options){
+        let is_mark_done = false;
+        
+        if ('is_mark_done' in options){
+            if (options.is_mark_done){
+                is_mark_done = true;
+            }
+        }
         thisObj._resetForm();
+        
+        
+        if (is_mark_done == true){
+            elemModalTitle.textContent = 'Mark PigOps as Done';
+        }
+        else{
+            elemModalTitle.textContent = 'Edit PigOps';
+        }
         
         const pid           = options.pid;
         const sow           = options.sow;
@@ -361,6 +380,24 @@ export function EditModalProdPigOps(input_settings){
             }
         }
         
+        
+        // Set this if is edit
+        if (is_mark_done == false){
+            const dt_actual = new Date(operation.pig_prod_pig_ops.date_actual);
+            elemDateActual.value = formatDate(dt_actual, FORMAT_LONG_MONTH);
+        
+            
+			const staff_hid = operation.staff.hid;
+			
+			if (staff_hid != null){
+				const $elemStaff = $(elemStaff);
+				$elemStaff.val(operation.staff.hid).change();
+            }
+			else{
+				console.log('No staff hid');
+			}
+            elemNotes.value = operation.notes.notes;
+        }
         
         
         // Initialize char counters

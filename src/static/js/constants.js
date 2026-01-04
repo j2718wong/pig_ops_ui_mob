@@ -12,8 +12,7 @@ const PAGE_ID = {
     HOME:                   0,
     
     
-    ACC_PIG_OPS:            1,
-    
+    SOW_BOAR_LIST:          1,
     SOW_BOAR_ADD_EDIT:      2,
     
     
@@ -24,7 +23,10 @@ const PAGE_ID = {
     
     PROD_GESTA_ENTRY:       5,
     
-    PROD_LACTA_LIST:        6 
+    PROD_LACTA_LIST:        6, 
+    
+    
+    ACC_PIG_OPS:            7
     
 };
 
@@ -70,7 +72,7 @@ const PROD_STATUS = {
 
 export {
     APPLICATION,
-	PAGE_ID,
+    PAGE_ID,
     
     SOW_BOAR_TYPE,
     PIG_OPERATION_TYPE,

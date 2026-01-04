@@ -41,7 +41,7 @@ export function ProdEntryPigOps(input_settings){
     let elemPigOpsTableBody     = null;
     
     
-   
+    let dataPigProd             = null;
 
     
     
@@ -54,153 +54,14 @@ export function ProdEntryPigOps(input_settings){
     this._writeInlineStyle = function(){
         const html = `
     <style>
-    /* Filter Controls - Centered */
-        .filter-controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 12px;
-            background-color: #f1f5f9;
-            border-radius: 8px;
-        }
-        
-        /* Animal Filter Buttons - Centered with no gaps */
-        .animal-filter {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-        
-        .filter-buttons {
-            display: flex;
-            background-color: white;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid var(--medium-gray);
-        }
-        
-        .filter-button {
-            padding: 8px 16px;
-            background-color: white;
-            border: none;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            color: var(--dark-gray);
-        }
-        
-        .filter-button:not(:last-child) {
-            border-right: 1px solid var(--medium-gray);
-        }
-        
-        .filter-button.active {
-            background-color: var(--corporate-blue);
-            color: white;
-        }
-        
-        /* Hide Completed Toggle - Centered */
-        .hide-completed-control {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            gap: 8px;
-        }
-        
-        .toggle-control {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            width: 100%;
-        }
-        
-        .toggle-switch {
-            width: 40px;
-            height: 22px;
-            background-color: var(--medium-gray);
-            border-radius: 11px;
-            position: relative;
-            transition: background-color 0.3s ease;
-        }
-        
-        .toggle-switch.active {
-            background-color: var(--corporate-blue);
-        }
-        
-        .toggle-knob {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 16px;
-            height: 16px;
-            background-color: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-        }
-        
-        .toggle-switch.active .toggle-knob {
-            transform: translateX(18px);
-        }
-        
-        .toggle-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--corporate-dark-blue);
-        }
         
         /* Updated Table Styles */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-            table-layout: fixed;
-        }
         
-        .data-table th {
-            background-color: var(--corporate-blue);
-            color: white;
-            padding: 8px 6px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .data-table.table-pigops th:nth-child(1) { width: 22%; }
+        .data-table.table-pigops th:nth-child(2) { width: 38%; }
+        .data-table.table-pigops th:nth-child(3) { width: 40%; }
         
-        .data-table th:nth-child(1) { width: 22%; }
-        .data-table th:nth-child(2) { width: 38%; }
-        .data-table th:nth-child(3) { width: 40%; }
         
-        .data-table td {
-            padding: 8px 6px;
-            border-bottom: 1px solid var(--medium-gray);
-            font-size: 12px;
-            vertical-align: top;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .data-table tr:nth-child(even) {
-            background-color: var(--light-gray);
-        }
-        
-        .data-table tr.completed {
-            opacity: 0.8;
-        }
-        
-        .data-table tr.hidden {
-            display: none;
-        }
-        
-        .data-table tr:hover {
-            background-color: #e0f2fe;
-        }
         
         /* Date column styling - with year wrapping */
         .date-cell {
@@ -390,7 +251,7 @@ ${html_style}
     </div>
 
     <!-- Operations Table -->
-    <table class="data-table">
+    <table class="data-table table-pigops">
         <thead>
             <tr>
                 <th>Date</th>
@@ -467,6 +328,8 @@ ${html_style}
     
     
     this.show = function(data_pig_prod, options){
+        dataPigProd = data_pig_prod;
+        
         // Transform pig_ops to this format
         //{ id: 1, date: "Oct 15", isDue: true, operationName: "Vaccination - Sow", isForSow: true, 
         //  doneBy: "J. Smith", dateActual: "Oct 14", isCompleted: true },
@@ -519,8 +382,8 @@ ${html_style}
         // Sort in decreasing date; laready done in backend; but not yet in sample data
         const sorted_operations = sortList(operations, 'pig_prod_pig_ops.date_target', 'desc');
     
-        console.log('sorted_operations');
-        console.log(sorted_operations);
+        //console.log('sorted_operations');
+        //console.log(sorted_operations);
     
         let diff_msecs;
         let diff_days;
@@ -593,7 +456,9 @@ ${html_style}
                 'isForSow': is_for_sow,
                 'doneBy':   done_by,
                 'dateActual': date_actual_short,
-                'isCompleted': is_completed
+                'isCompleted': is_completed,
+                
+                'operation':    cur_entry
             });
         }
         
@@ -719,8 +584,43 @@ ${html_style}
             dateContent.appendChild(dateText);
             dateCell.appendChild(dateContent);
             row.appendChild(dateCell);
-			
-			
+            
+            let onclickFunc = function(){
+                console.log('clicked on date');
+                
+                const pid = dataPigProd.pig_production.farm_prod_id;
+                
+                const data_sow = dataPigProd.sow;
+                let sow_reference = '';
+                
+                if ((data_sow.name != null) && (data_sow.name.length >0)){
+                    sow_reference = data_sow.name;
+                }
+                else{
+                    sow_reference = data_sow.number;
+                }
+                
+                let is_gesta = false;
+                if (dataPigProd.pig_production.prod_status_id == PROD_STATUS.GESTATING){
+                    is_gesta = true;
+                }
+                
+                
+                const options = {
+                    pid:            pid,
+                    sow:            sow_reference,
+                    is_gesta:       is_gesta,
+                    is_mark_done:   true
+                };
+                if (op.isCompleted){
+                    options.is_mark_done = false;
+                }
+                
+                thisObj.navigation.editModalProdPigOps.show(op.operation, options);
+            }; 
+            
+            dateText.onclick = onclickFunc;
+            
             
             // Operation column
             const operationCell = document.createElement('td');
@@ -741,6 +641,9 @@ ${html_style}
             operationContent.appendChild(operationName);
             operationCell.appendChild(operationContent);
             row.appendChild(operationCell);
+			
+			operationName.onclick = onclickFunc;
+			
             
             // Done By column - NEW IMPLEMENTATION
             const doneByCell = document.createElement('td');

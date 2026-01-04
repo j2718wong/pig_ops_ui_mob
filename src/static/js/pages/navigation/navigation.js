@@ -5,10 +5,10 @@
 'use strict';
 
 import {PIG_OPERATION_TYPE,
-		PAGE_ID,
+        PAGE_ID,
         SOW_BOAR_TYPE}              from '../../constants.js';
 
-import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
+import {PageSowBoarList}            from '../sow_boar/page_sow_boar_list.js';
 import {PageSowBoarAddEdit}         from '../sow_boar/page_sow_boar_add_edit.js';
 
 
@@ -18,6 +18,12 @@ import {PageMobGestaLacta}          from '../production/gesta_lacta/page_mob_ges
 import {EditModalProdPigOps}        from '../production/gesta_lacta/edit_modal_prod_pig_ops.js'
 import {PageProdGestatingAdd}       from '../production/gesta_lacta/page_prod_gestating_add.js'
 import {PageProdGestatingEntry}     from '../production/gesta_lacta/page_prod_gestating_entry.js'
+
+
+
+import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
+
+
 
 
 function UserControl() {
@@ -171,12 +177,17 @@ export function Navigation(){
     let elemMobileNavAdmin          = null;
 
     
-    let elemHiddenContAccPigOps     = null;
+    let elemHiddenContSowBoarList   = null;
     let elemHiddenContSowBoarAddEdit= null;
+    
     let elemHiddenContProdGestaList = null;
     let elemHiddenContProdLactaList = null;
     let elemHiddenContProdGestaAdd  = null;
     let elemHiddenContProdGestaEntry= null;
+    
+    
+    let elemHiddenContAccPigOps     = null;
+    
     
     
     this.curScreenIsMobile          = null;
@@ -185,10 +196,10 @@ export function Navigation(){
     this.userControl                = new UserControl();
     
     
-    const settingsAccPigOps = {
+    const settingsSowBoarList = {
         navigation:             this
     }
-    this.pageAccPigOps          = new PageAccPigOps(settingsAccPigOps);
+    this.pageSowBoarList        = new PageSowBoarList(settingsSowBoarList);
     
     
     const settingsSowBoarAddEdit = {
@@ -233,6 +244,16 @@ export function Navigation(){
     this.pageProdGestatingEntry = new PageProdGestatingEntry(settingsProdGestatingEntry);
     
     
+    const settingsAccPigOps = {
+        navigation:             this
+    }
+    this.pageAccPigOps          = new PageAccPigOps(settingsAccPigOps);
+    
+    
+    
+    
+    
+    
     let dataPigProdList         = null;
     
     
@@ -240,14 +261,17 @@ export function Navigation(){
         
         this.userControl.init();
         
-        this.pageAccPigOps.init();
-		this.pageSowBoarAddEdit.init();
+        
+        this.pageSowBoarList.init();
+        this.pageSowBoarAddEdit.init();
+        
         this.pageMobGestatingList.init();
         this.pageMobLactatingList.init();
-        
         this.editModalProdPigOps.init();
         this.pageProdGestatingAdd.init();
         this.pageProdGestatingEntry.init();
+        
+        this.pageAccPigOps.init();
         
         
         this.afterHtmlRender();
@@ -284,7 +308,7 @@ export function Navigation(){
         elemMobileNavAdmin          = document.getElementById('mobile-nav-admin');
 
         
-        elemHiddenContAccPigOps     = document.getElementById('container-acc-pig-ops');
+        elemHiddenContSowBoarList   = document.getElementById('container-sow-boar-list');
         elemHiddenContSowBoarAddEdit= document.getElementById('container-sow-boar-add-edit');
         
         
@@ -293,6 +317,8 @@ export function Navigation(){
         elemHiddenContProdGestaAdd  = document.getElementById('container-prod-gesta-add');
         elemHiddenContProdGestaEntry= document.getElementById('container-prod-gesta-entry');
     
+        elemHiddenContAccPigOps     = document.getElementById('container-acc-pig-ops');
+        
     }
     
     
@@ -340,6 +366,22 @@ export function Navigation(){
     }
     
     
+	this.setPageData = function(data){
+		this.setDataCompanyApp(G_SAMPLE_COMPANY_APP);
+        this.setDataUserAccount(G_SAMPLE_USER_ACCOUNT);
+            
+            
+        this.setDataAccPigOps(G_SAMPLE_JSON_ACC_PIG_OPS);
+            
+        this.setDataStaffList(G_SAMPLE_JSON_STAFF);
+        this.setDataSowList(G_SAMPLE_JSON_SOW_LIST);
+        this.setDataBoarList(G_SAMPLE_JSON_BOAR_LIST);
+            
+            
+        this.setDataPigProdList(G_SAMPLE_JSON_PIG_PRODUCTION);
+			
+	}
+	
     this.setDataCompanyApp = function(data){
         dataCompanyApp = data;
         
@@ -363,7 +405,7 @@ export function Navigation(){
         this.pageMobGestatingList.setDataStaffList(data);
         this.pageMobLactatingList.setDataStaffList(data);
         this.pageProdGestatingAdd.setDataStaffList(data);
-		this.pageProdGestatingEntry.setDataStaffList(data);
+        this.pageProdGestatingEntry.setDataStaffList(data);
     }
     
     
@@ -376,15 +418,20 @@ export function Navigation(){
     
     
     this.setDataSowList = function(data){
-        this.pageProdGestatingAdd.setDataSowList(data);
-		this.pageProdGestatingEntry.setDataSowList(data);
+        this.pageSowBoarList.setDataSowList(data);
+		
+		this.pageProdGestatingAdd.setDataSowList(data);
+        this.pageProdGestatingEntry.setDataSowList(data);
+		
     }
     
     
     this.setDataBoarList = function(data){
-        this.pageProdGestatingAdd.setDataBoarList(data);
-		this.pageProdGestatingEntry.setDataBoarList(data);
-	}
+        this.pageSowBoarList.setDataBoarList(data);
+		
+		this.pageProdGestatingAdd.setDataBoarList(data);
+        this.pageProdGestatingEntry.setDataBoarList(data);
+    }
     
     
     // Update pig farm name on resize for responsive centering
@@ -405,46 +452,51 @@ export function Navigation(){
         }
     }
     
-	
-	this.getPageContainer = function(page_id){
-		switch(page_id){
-			case PAGE_ID.HOME:{
-				return null;
-			}
-	
-			case PAGE_ID.ACC_PIG_OPS: {
-				return elemHiddenContAccPigOps;
-			}
-	
-			case PAGE_ID.SOW_BOAR_ADD_EDIT:{
-				return elemHiddenContSowBoarAddEdit;
-			}
-	
-	
-			case PAGE_ID.PROD_GESTA_LIST:{
-				return elemHiddenContProdGestaList;
-			}
-			
-			case PAGE_ID.PROD_GESTA_ADD:{
-				return elemHiddenContProdGestaAdd;
-			}
-			
-			case PAGE_ID.PROD_GESTA_ENTRY:{
-				return elemHiddenContProdGestaEntry;
-			}
-			
-			
-			case PAGE_ID.PROD_LACTA_LIST:{
-				return elemHiddenContProdLactaList;
-			}
-		
-		}
-		
-		return null;
-		
-	}
+    
+    this.getPageContainer = function(page_id){
+        switch(page_id){
+            case PAGE_ID.HOME:{
+                return null;
+            }
+    
+            
+            case PAGE_ID.SOW_BOAR_LIST:{
+                return elemHiddenContSowBoarList;
+            }
+    
+            case PAGE_ID.SOW_BOAR_ADD_EDIT:{
+                return elemHiddenContSowBoarAddEdit;
+            }
+    
+    
+            case PAGE_ID.PROD_GESTA_LIST:{
+                return elemHiddenContProdGestaList;
+            }
+            
+            case PAGE_ID.PROD_GESTA_ADD:{
+                return elemHiddenContProdGestaAdd;
+            }
+            
+            case PAGE_ID.PROD_GESTA_ENTRY:{
+                return elemHiddenContProdGestaEntry;
+            }
+            
+            
+            case PAGE_ID.PROD_LACTA_LIST:{
+                return elemHiddenContProdLactaList;
+            }
         
-		
+            case PAGE_ID.ACC_PIG_OPS: {
+                return elemHiddenContAccPigOps;
+            }
+    
+        }
+        
+        return null;
+        
+    }
+        
+        
     this.showThisPage = function(page_container){
         // All navigation menus will use this
         // Be sure the body back ground color is reset to default
@@ -627,8 +679,12 @@ export function Navigation(){
         
         
     this._onClickNavSowBoar = function(is_mobile, sow_boar_type){
-        console.log(`_onClickNavSowBoar; is_mobile=${is_mobile}; sow_boar_type = ${sow_boar_type}`);
-        
+        thisObj.showThisPage(elemHiddenContSowBoarList);
+		
+		const options= {
+			sow_boar_type: sow_boar_type
+		};
+        thisObj.pageSowBoarList.show(options);
     }
     
     

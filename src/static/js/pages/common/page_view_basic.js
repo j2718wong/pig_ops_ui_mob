@@ -34,13 +34,13 @@ export function PageViewBasic(){
     
     this.navigation        = null;
     
-	
-	this.moneyFormatter = new Intl.NumberFormat('en-US', {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
-	});
     
-	
+    this.moneyFormatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    
+    
     this.setNavigation = function(navigation){
         this.navigation = navigation;
     }
@@ -73,5 +73,5 @@ export function PageViewBasic(){
     }
 
     
-	
+    
 }

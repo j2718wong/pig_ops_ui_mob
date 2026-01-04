@@ -10,7 +10,7 @@ import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
 
-import {ProdEntryNotes}        	from './prod_entry_notes.js'
+import {ProdEntryNotes}         from './prod_entry_notes.js'
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryInsem}         from './prod_entry_insem.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
@@ -37,62 +37,66 @@ export function PageProdGestatingEntry(input_settings){
     const elemDivContainer      = document.getElementById('container-prod-gesta-entry');
         
         
-    var elemIdNavPrevEntry      = null;
-    var elemIdEntryTitle        = null;
-    var elemIdPigProdPid        = null;
-    var elemIdHeaderSowName     = null;
-    var elemIdHeaderBoarName    = null;
-    var elemIdNavNextEntry      = null;
+    let elemIdNavPrevEntry      = null;
+    let elemIdEntryTitle        = null;
+    let elemIdPigProdPid        = null;
+    let elemIdHeaderSowName     = null;
+    let elemIdHeaderBoarName    = null;
+    let elemIdNavNextEntry      = null;
     
-    var elemIdShowMore			= null;
-	var elemIdShowMoreDropDown	= null;
-    
-	
-    var elemNavPrevEntry        = null;
-    var elemEntryTitle          = null;
-    var elemPigProdPid          = null;
-    var elemHeaderSowName       = null;
-    var elemHeaderBoarName      = null;
-    var elemNavNextEntry        = null;
-    
-    var elemShowMore			= null;
-	var elemShowMoreDropDown	= null;
+    let elemIdShowMore          = null;
+    let elemIdShowMoreDropDown  = null;
     
     
+    let elemNavPrevEntry        = null;
+    let elemEntryTitle          = null;
+    let elemPigProdPid          = null;
+    let elemHeaderSowName       = null;
+    let elemHeaderBoarName      = null;
+    let elemNavNextEntry        = null;
+    
+    let elemShowMore            = null;
+    let elemShowMoreDropDown    = null;
     
     
     
     
     
-    var sowList                 = null;
-    var boarList                = null;
-    var semenSupplierList       = null;
+    
+    
+    let sowList                 = null;
+    let boarList                = null;
+    let semenSupplierList       = null;
     
     
     const settingsPigOps = {
         parentObj:              this
     }
-    var prodEntryPigOps         = new ProdEntryPigOps(settingsPigOps);
+    const prodEntryPigOps       = new ProdEntryPigOps(settingsPigOps);
+    prodEntryPigOps.setNavigation(navigation);
     
-    
+	
     const settingsInsem = {
         parentObj:              this
     }
-    var prodEntryInsem          = new ProdEntryInsem(settingsInsem);
+    const prodEntryInsem        = new ProdEntryInsem(settingsInsem);
+    prodEntryInsem.setNavigation(navigation);
     
-    
+	
     const settingsBirth = {
         parentObj:              this
     }
-    var prodEntryBirth          = new ProdEntryBirth(settingsBirth);
-    
-    
-	const settingsNotes = {
-		parentObj:              this
-	} 
-	var prodEntryNotes 			= new ProdEntryNotes(settingsNotes);
-    
+    const prodEntryBirth        = new ProdEntryBirth(settingsBirth);
+    prodEntryBirth.setNavigation(navigation);
 	
+    
+    const settingsNotes = {
+        parentObj:              this
+    } 
+    const prodEntryNotes        = new ProdEntryNotes(settingsNotes);
+    prodEntryNotes.setNavigation(navigation);
+	
+    
     this.init = function(){
         this.render();
         this.afterHtmlRender();
@@ -143,7 +147,7 @@ export function PageProdGestatingEntry(input_settings){
             background-color: rgba(255, 255, 255, 0.15);
         }
 
-		/* Show More Dropdown */
+        /* Show More Dropdown */
         .show-more-container {
             position: relative;
         }
@@ -500,9 +504,9 @@ export function PageProdGestatingEntry(input_settings){
         elemIdHeaderBoarName    = `pig-prod-entry-header-boar-name`;
         elemIdNavNextEntry      = `pig-prod-entry-next-entry`;
         
-		elemIdShowMore			= `pig-prod-entry-show-more`;
-		elemIdShowMoreDropDown	= `pig-prod-entry-show-more-dropdown`;
-		
+        elemIdShowMore          = `pig-prod-entry-show-more`;
+        elemIdShowMoreDropDown  = `pig-prod-entry-show-more-dropdown`;
+        
         
 
         const html_style        = thisObj._writeInlineStyle();
@@ -510,9 +514,9 @@ export function PageProdGestatingEntry(input_settings){
         const html_pig_ops      = prodEntryPigOps.getHtml();
         const html_tab_insem    = prodEntryInsem.getHtml();
         const html_tab_birth    = prodEntryBirth.getHtml();
-        const html_tab_notes	= prodEntryNotes.getHtml();
-		
-		
+        const html_tab_notes    = prodEntryNotes.getHtml();
+        
+        
         const html =`
 
     ${html_style}
@@ -546,18 +550,18 @@ export function PageProdGestatingEntry(input_settings){
             <button class="tab-button" data-tab="birth">Birth</button>
             <button class="tab-button" data-tab="insem">Insem</button>
             <button class="tab-button" data-tab="notes">Notes</button>
-			<!--
-			<div class="tab-button show-more-container" id="${elemIdShowMore}">
-				More ...
-				<div class="show-more-dropdown" id="${elemIdShowMoreDropDown}">
-					<div class="dropdown-item" data-tab="feed-summary">Feed Summary</div>
-					<div class="dropdown-item" data-tab="feed-buy">Feed Buy</div>
-					<div class="dropdown-item" data-tab="medvac">MedVac</div>
-					<div class="dropdown-item" data-tab="notes">Notes</div>
-					<div class="dropdown-item" data-tab="status">Status</div>
-				</div>
-			</div> -->
-		</div>
+            <!--
+            <div class="tab-button show-more-container" id="${elemIdShowMore}">
+                More ...
+                <div class="show-more-dropdown" id="${elemIdShowMoreDropDown}">
+                    <div class="dropdown-item" data-tab="feed-summary">Feed Summary</div>
+                    <div class="dropdown-item" data-tab="feed-buy">Feed Buy</div>
+                    <div class="dropdown-item" data-tab="medvac">MedVac</div>
+                    <div class="dropdown-item" data-tab="notes">Notes</div>
+                    <div class="dropdown-item" data-tab="status">Status</div>
+                </div>
+            </div> -->
+        </div>
     </div>
     
     <!-- Tab Content Area - Scrolls below fixed sections -->
@@ -577,23 +581,23 @@ export function PageProdGestatingEntry(input_settings){
         </div>
 
         
-		<div id="feed-summary-tab" class="tab-content">
-			<h2 class="tab-title">Feed Summary</h2>
-		</div>
+        <div id="feed-summary-tab" class="tab-content">
+            <h2 class="tab-title">Feed Summary</h2>
+        </div>
         
-		<div id="feed-buy-tab" class="tab-content">
-			<h2 class="tab-title">Feed Buy</h2>
-		</div>
+        <div id="feed-buy-tab" class="tab-content">
+            <h2 class="tab-title">Feed Buy</h2>
+        </div>
         
-		<div id="medvac-tab" class="tab-content">
-			<h2 class="tab-title">MedVac</h2>
-		</div>
-		
-		
-		<div id="status-tab" class="tab-content">
-			<h2 class="tab-title">Status</h2>
-		</div>
-		
+        <div id="medvac-tab" class="tab-content">
+            <h2 class="tab-title">MedVac</h2>
+        </div>
+        
+        
+        <div id="status-tab" class="tab-content">
+            <h2 class="tab-title">Status</h2>
+        </div>
+        
         
         <!-- Notes Tab -->
         <div id="notes-tab" class="tab-content">
@@ -623,24 +627,24 @@ export function PageProdGestatingEntry(input_settings){
         elemHeaderBoarName      = document.getElementById(elemIdHeaderBoarName);
         elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
         
-        elemShowMore			= document.getElementById(elemIdShowMore);
-        elemShowMoreDropDown	= document.getElementById(elemIdShowMoreDropDown);
+        elemShowMore            = document.getElementById(elemIdShowMore);
+        elemShowMoreDropDown    = document.getElementById(elemIdShowMoreDropDown);
         
        
     }
     
     
     this._processAfterHtmlRender = function(){
-		prodEntryPigOps.afterHtmlRender();
+        prodEntryPigOps.afterHtmlRender();
         prodEntryInsem.afterHtmlRender();
         prodEntryBirth.afterHtmlRender();
-		prodEntryNotes.afterHtmlRender();
+        prodEntryNotes.afterHtmlRender();
     }
     
     
     this._bindEventListeners = function(){
         
-		// This is used for 4 sub tabs with no drop down.
+        // This is used for 4 sub tabs with no drop down.
         const tabButtons  = elemDivContainer.querySelectorAll('.tab-button');
         const tabContents = elemDivContainer.querySelectorAll('.tab-content');
         
@@ -660,67 +664,67 @@ export function PageProdGestatingEntry(input_settings){
                 elemDivContainer.querySelector('.tab-content-area').scrollTop = 0;
             });
         });
-		
-		
-		/*
-		// This is for 3 tabs + More ...
-		const navItems 		= elemDivContainer.querySelectorAll('.tab-button:not(.show-more-container)');
-		const dropdownItems = elemDivContainer.querySelectorAll('.dropdown-item');
-		const allTabs 		= elemDivContainer.querySelectorAll('.tab-content');
-		const showMoreControl = elemShowMore;
-		const showMoreDropdown = elemShowMoreDropDown;
-		
-		function switchTab(tabId) {
-			console.log('switchTab tabId') 
-			allTabs.forEach(tab => tab.classList.remove('active'));
-			const selectedTab = document.getElementById(tabId);
-			if (selectedTab) selectedTab.classList.add('active');
-			
-			navItems.forEach(item => item.classList.remove('active'));
-			
-			if (tabId === 'pig-ops' || tabId === 'birth' || tabId === 'insem') {
-				const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
-				if (activeNav) activeNav.classList.add('active');
-			}
-			
-			showMoreDropdown.classList.remove('active');
-		}
-		
-		navItems.forEach(item => {
-			item.addEventListener('click', function() {
-				const tabId = this.getAttribute('data-tab');
-				switchTab(tabId);
-			});
-		});
-		
-		dropdownItems.forEach(item => {
-			item.addEventListener('click', function() {
-				const tabId = this.getAttribute('data-tab');
-				switchTab(tabId);
-				showMoreControl.querySelector('.nav-text').textContent = this.textContent;
-				navItems.forEach(nav => nav.classList.remove('active'));
-				showMoreControl.classList.add('active');
-			});
-		});
-		
-		showMoreControl.addEventListener('click', function(e) {
-			console.log('Test');
-			if (e.target === this || e.target.classList.contains('nav-text')) {
-				e.stopPropagation();
-				showMoreDropdown.classList.toggle('active');
-			}
-		});
-		
-		document.addEventListener('click', function(e) {
-			if (!showMoreControl.contains(e.target)) {
-				showMoreDropdown.classList.remove('active');
-			}
-		});
-		
-		*/
-		
-		
-		
+        
+        
+        /*
+        // This is for 3 tabs + More ...
+        const navItems      = elemDivContainer.querySelectorAll('.tab-button:not(.show-more-container)');
+        const dropdownItems = elemDivContainer.querySelectorAll('.dropdown-item');
+        const allTabs       = elemDivContainer.querySelectorAll('.tab-content');
+        const showMoreControl = elemShowMore;
+        const showMoreDropdown = elemShowMoreDropDown;
+        
+        function switchTab(tabId) {
+            console.log('switchTab tabId') 
+            allTabs.forEach(tab => tab.classList.remove('active'));
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) selectedTab.classList.add('active');
+            
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            if (tabId === 'pig-ops' || tabId === 'birth' || tabId === 'insem') {
+                const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
+                if (activeNav) activeNav.classList.add('active');
+            }
+            
+            showMoreDropdown.classList.remove('active');
+        }
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                switchTab(tabId);
+            });
+        });
+        
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                switchTab(tabId);
+                showMoreControl.querySelector('.nav-text').textContent = this.textContent;
+                navItems.forEach(nav => nav.classList.remove('active'));
+                showMoreControl.classList.add('active');
+            });
+        });
+        
+        showMoreControl.addEventListener('click', function(e) {
+            console.log('Test');
+            if (e.target === this || e.target.classList.contains('nav-text')) {
+                e.stopPropagation();
+                showMoreDropdown.classList.toggle('active');
+            }
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!showMoreControl.contains(e.target)) {
+                showMoreDropdown.classList.remove('active');
+            }
+        });
+        
+        */
+        
+        
+        
     }
     
     
@@ -756,7 +760,7 @@ export function PageProdGestatingEntry(input_settings){
         elemPigProdPid.textContent = pid;
         
         const data_sow = data_pig_prod.sow;
-        var sow_reference = '';
+        let sow_reference = '';
         
         if ((data_sow.name != null) && (data_sow.name.length >0)){
             sow_reference = data_sow.name;
@@ -766,7 +770,7 @@ export function PageProdGestatingEntry(input_settings){
         }
         const insemination = data_pig_prod.insemination;
         
-        var boar_name = '';
+        let boar_name = '';
         switch (insemination.insem_type){
             case 'B':{
                 const boar = insemination.boar;

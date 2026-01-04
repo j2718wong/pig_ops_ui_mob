@@ -47,6 +47,8 @@ export function PageSowBoarAddEdit(input_settings){
     var elemIdDateOfBirth       = null;
     var elemIdBirthProdIdShow   = null;
     var elemIdBirthProdId       = null;
+    var elemIdNumNipplesShow    = null;
+    var elemIdNumNipples        = null;
     var elemIdIsExternalShow    = null;
     var elemIdIsExternal        = null;
     var elemIdIsProdReadyShow   = null;
@@ -72,6 +74,8 @@ export function PageSowBoarAddEdit(input_settings){
     var elemDateOfBirth         = null;
     var elemBirthProdIdShow     = null;
     var elemBirthProdId         = null;
+    var elemNumNipplesShow      = null;
+    var elemNumNipples          = null;
     var elemIsExternalShow      = null;
     var elemIsExternal          = null;
     var elemIsProdReadyShow     = null;
@@ -111,6 +115,9 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdDateOfBirth       = `sow-boar-add-edit-date-of-birth`;
         elemIdBirthProdIdShow   = `sow-boar-add-edit-birth-prod-id-show`;
         elemIdBirthProdId       = `sow-boar-add-edit-birth-prod-id`;
+        
+        elemIdNumNipplesShow    = `sow-boar-add-edit-num-nipples-show`;
+        elemIdNumNipples        = `sow-boar-add-edit-num-nipples`;
         elemIdIsExternalShow    = `sow-boar-add-edit-is-external-show`;
         elemIdIsExternal        = `sow-boar-add-edit-is-external`;
         elemIdIsProdReadyShow   = `sow-boar-add-edit-is-prod-ready-show`;
@@ -176,6 +183,21 @@ export function PageSowBoarAddEdit(input_settings){
             <label class="form-label">Birth Prod ID</label>
             <span class="" id="${elemIdBirthProdId}"></span>
         </div>
+        
+        <!-- Number of Sow nipples -->
+        <div class="form-group" id="${elemIdNumNipplesShow}">
+            <label for="${elemIdNumNipples}" class="form-label">
+                Number of Nipples
+            </label>
+            <div class="number-input-group">
+                <button class="number-btn minus" data-target="${elemIdNumNipples}">-</button>
+                <input type="number" class="form-control number-input" id="${elemIdNumNipples}" value="12" min="12">
+                <button class="number-btn plus" data-target="${elemIdNumNipples}">+</button>
+            </div>
+            <div class="form-text">Yes. We record this. You better count.</div>
+        
+        </div>
+        
         
         <!-- 4. Is External -->
         <div class="form-group-select" id="${elemIdIsExternalShow}">
@@ -252,6 +274,8 @@ export function PageSowBoarAddEdit(input_settings){
         elemDateOfBirth         = document.getElementById(elemIdDateOfBirth);
         elemBirthProdIdShow     = document.getElementById(elemIdBirthProdIdShow);
         elemBirthProdId         = document.getElementById(elemIdBirthProdId);
+        elemNumNipplesShow      = document.getElementById(elemIdNumNipplesShow);
+        elemNumNipples          = document.getElementById(elemIdNumNipples);
         elemIsExternalShow      = document.getElementById(elemIdIsExternalShow);
         elemIsExternal          = document.getElementById(elemIdIsExternal);
         elemIsProdReadyShow     = document.getElementById(elemIdIsProdReadyShow);
@@ -265,13 +289,19 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this._processAfterHtmlRender = function(){
-        
+        $('#'+elemIdDateOfBirth).datepicker({
+            format: 'MM d, yyyy',  // This gives "January 31, 2026"
+            autoclose: true,
+            endDate: new Date() // Max date is today
+        }).on('show', function(e) {
+            $('.datepicker').addClass('datepicker-material');
+        });
     }
     
     
     this._bindEventListeners = function(){
         
-		elemName.addEventListener('input', function(){
+        elemName.addEventListener('input', function(){
             thisObj.updateCharCounter(elemName, elemNameCharCounter, 
                 50);
             
@@ -279,14 +309,14 @@ export function PageSowBoarAddEdit(input_settings){
         });
         
         
-		elemNumber.addEventListener('input', function(){
+        elemNumber.addEventListener('input', function(){
             thisObj.updateCharCounter(elemNumber, elemNumberCharCounter, 
                 20);
             
             elemNumber.classList.remove('is-invalid');
         });
         
-		
+        
         elemNotes.addEventListener('input', function(){
             thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 
                 160);
@@ -402,7 +432,7 @@ export function PageSowBoarAddEdit(input_settings){
         // Hide Boar Only info
         if (options.is_sow){
             // Boars can be external to the farm
-            elemIsExternalShow.style.display = 'block';
+            elemIsExternalShow.style.display = 'none';
         }
         
         
@@ -410,10 +440,10 @@ export function PageSowBoarAddEdit(input_settings){
         // BirthProdId will only show up if a production piglet is eartag or
         //  a pig is taken from exisiting production entry  
         if ('from_prod_pid' in options){
-            elemBirthProdIdShow.style.display = 'none';
+            elemBirthProdIdShow.style.display = 'block';
         }
         else{
-            elemBirthProdIdShow.style.display = 'block';
+            elemBirthProdIdShow.style.display = 'none';
         }
         
         

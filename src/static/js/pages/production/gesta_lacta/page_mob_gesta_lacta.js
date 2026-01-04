@@ -61,8 +61,8 @@ export function PageMobGestaLacta(input_settings){
     let elemIdEntryCount        = null;
     let elemIdPageInfo          = null;
     
-    let elemIdMobSearchInput    = null;
-    let elemIdMobAddEntryBtn    = null;
+    let elemIdSearchInput       = null;
+    let elemIdAddEntryBtn       = null;
     
     let elemIdCardList          = null;
     let elemIdListContainer     = null;
@@ -74,8 +74,8 @@ export function PageMobGestaLacta(input_settings){
     let elemEntryCount          = null;
     let elemPageInfo            = null;
 
-    let elemMobSearchInput      = null;
-    let elemMobAddEntryBtn      = null;
+    let elemSearchInput         = null;
+    let elemAddEntryBtn         = null;
     
     let elemCardList            = null;
     let elemListContainer       = null;
@@ -128,8 +128,8 @@ export function PageMobGestaLacta(input_settings){
         elemIdPigOpsAlarmTable  = `${settings.uniqueKey}-alarm-table`;
         
         
-        elemIdMobSearchInput    = `mobile-search-input-${settings.uniqueKey}`;
-        elemIdMobAddEntryBtn    = `mobile-add-entry-btn-${settings.uniqueKey}`;
+        elemIdSearchInput       = `mobile-search-input-${settings.uniqueKey}`;
+        elemIdAddEntryBtn       = `mobile-add-entry-btn-${settings.uniqueKey}`;
            
         let style_hide_add_button = '';
         if (settings.isGesta == false){
@@ -162,9 +162,9 @@ export function PageMobGestaLacta(input_settings){
         <div class="mobile-controls">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id=${elemIdMobSearchInput} placeholder="Search PID or Sow Name...">
+                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Search PID or Sow Name...">
             </div>
-            <button class="btn-add-entry" id="${elemIdMobAddEntryBtn}" style="${style_hide_add_button}">
+            <button class="btn-add-entry" id="${elemIdAddEntryBtn}" style="${style_hide_add_button}">
                 <i class="fas fa-plus"></i>
                 Add Entry
             </button>
@@ -196,8 +196,8 @@ export function PageMobGestaLacta(input_settings){
         elemEntryCount          = document.getElementById(elemIdEntryCount);
         elemPageInfo            = document.getElementById(elemIdPageInfo);
 
-        elemMobSearchInput      = document.getElementById(elemIdMobSearchInput);
-        elemMobAddEntryBtn      = document.getElementById(elemIdMobAddEntryBtn);
+        elemSearchInput      = document.getElementById(elemIdSearchInput);
+        elemAddEntryBtn      = document.getElementById(elemIdAddEntryBtn);
         elemCardList            = document.getElementById(elemIdCardList);
         elemListContainer       = document.getElementById(elemIdListContainer);
         elemPigOpsAlarmTable    = document.getElementById(elemIdPigOpsAlarmTable);
@@ -218,7 +218,7 @@ export function PageMobGestaLacta(input_settings){
         });
 
         
-        elemMobAddEntryBtn.addEventListener('click', function() {
+        elemAddEntryBtn.addEventListener('click', function() {
             navigation.onClickProdGestatingAdd();
         });
     
@@ -316,10 +316,10 @@ export function PageMobGestaLacta(input_settings){
         
         // Render HTML in elemListContainer
         if ((dataPigProdList == null) || (dataPigProdList.length == 0)){
-            elemMobSearchInput.setAttribute("placeholder", "No entries found"); 
+            elemSearchInput.setAttribute("placeholder", "No entries found"); 
         }
         else{
-            elemMobSearchInput.setAttribute("placeholder", "Search Sow Name or PID");
+            elemSearchInput.setAttribute("placeholder", "Search Sow Name or PID");
         }
         
         let html = '';
@@ -336,7 +336,7 @@ export function PageMobGestaLacta(input_settings){
         // Search functionality
         const cards = elemListContainer.querySelectorAll('.card-pig-prod');
         
-        elemMobSearchInput.addEventListener('input', function() {
+        elemSearchInput.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase().trim();
             
             cards.forEach(card => {
@@ -638,9 +638,11 @@ export function PageMobGestaLacta(input_settings){
             </div>
 
             <!-- Update Button -->
+            <!--
             <div class="controls">
                 <button class="btn-update">Update Record</button>
             </div>
+            -->
         </div>
         `;
         
@@ -1231,7 +1233,8 @@ export function PageMobGestaLacta(input_settings){
         const options = {
             pid:            pid,
             sow:            sow_reference,
-            is_gesta:       settings.isGesta
+            is_gesta:       settings.isGesta,
+            is_mark_done:   true
         };
         thisObj.editModalProdPigOps.show(operation, options);
     }
