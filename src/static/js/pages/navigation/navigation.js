@@ -88,9 +88,13 @@ function UserControl() {
     this.setDataUserAccount = function(data){
         dataUserAccount     = data;
         
-        userCurrentFarmHid  = data.user.default_farm;
+
+        const user          = dataUserAccount.user.user;
+        const user_pig_farms= dataUserAccount.user.pig_farms; 
         
-        const user          = dataUserAccount.user;
+        userCurrentFarmHid  = user_pig_farms[0]; // default to first pig farm
+
+        
         const user_initials = user.name_first.substring(0,1) + 
                             user.name_last.substring(0,1);
                             
@@ -125,9 +129,9 @@ function UserControl() {
 
     this.getCurrentFarm = function(){
         const account_farms = dataUserAccount.account.pig_farms;
-        
+
         for (const cur_entry of account_farms){
-            if (cur_entry.hid == userCurrentFarmHid){
+            if (cur_entry.pig_farm.hid == userCurrentFarmHid){
                 return cur_entry;
             }
         }
@@ -188,6 +192,8 @@ export function Navigation(){
     
     let elemHiddenContAccPigOps     = null;
     
+    
+    this.pageData                   = null;
     
     
     this.curScreenIsMobile          = null;
@@ -366,22 +372,29 @@ export function Navigation(){
     }
     
     
-	this.setPageData = function(data){
-		this.setDataCompanyApp(G_SAMPLE_COMPANY_APP);
-        this.setDataUserAccount(G_SAMPLE_USER_ACCOUNT);
+    this.setPageData = function(data){
+        this.pageData = data;
+        
+        this.setDataCompanyApp(data.application);
+        this.setDataUserAccount(data.user_account);
             
             
-        this.setDataAccPigOps(G_SAMPLE_JSON_ACC_PIG_OPS);
+        this.pageAccPigOps.setDataAccPigOps(data.acc_gestating_ops);
             
-        this.setDataStaffList(G_SAMPLE_JSON_STAFF);
-        this.setDataSowList(G_SAMPLE_JSON_SOW_LIST);
-        this.setDataBoarList(G_SAMPLE_JSON_BOAR_LIST);
+        this.setDataStaffList(data.staff_list);
+        this.setDataSowList(data.sow_list);
+        this.setDataBoarList(data.boar_list);
             
             
-        this.setDataPigProdList(G_SAMPLE_JSON_PIG_PRODUCTION);
-			
-	}
-	
+        if ('pig_production' in data){
+            this.setDataPigProdList(data.pig_production);
+        }
+        else{
+            // sendrequest
+        }
+    }
+    
+    
     this.setDataCompanyApp = function(data){
         dataCompanyApp = data;
         
@@ -419,17 +432,17 @@ export function Navigation(){
     
     this.setDataSowList = function(data){
         this.pageSowBoarList.setDataSowList(data);
-		
-		this.pageProdGestatingAdd.setDataSowList(data);
+        
+        this.pageProdGestatingAdd.setDataSowList(data);
         this.pageProdGestatingEntry.setDataSowList(data);
-		
+        
     }
     
     
     this.setDataBoarList = function(data){
         this.pageSowBoarList.setDataBoarList(data);
-		
-		this.pageProdGestatingAdd.setDataBoarList(data);
+        
+        this.pageProdGestatingAdd.setDataBoarList(data);
         this.pageProdGestatingEntry.setDataBoarList(data);
     }
     
@@ -438,17 +451,20 @@ export function Navigation(){
     this.updatePigFarmName = function() {
         // Set Farm name
         const cur_user_farm = thisObj.userControl.getCurrentFarm();
+		
+		
+        const pig_farm_name = cur_user_farm.pig_farm.name;
         
         
         const pigFarmName = document.getElementById('pigFarmName');
         const mobilePigFarmName = document.getElementById('mobilePigFarmName');
         
-        pigFarmName.textContent = cur_user_farm.name;
+        pigFarmName.textContent = pig_farm_name;
         
         
         // Keep mobile version consistent
         if (mobilePigFarmName) {
-            mobilePigFarmName.textContent = cur_user_farm.name;
+            mobilePigFarmName.textContent = pig_farm_name;
         }
     }
     
@@ -680,10 +696,10 @@ export function Navigation(){
         
     this._onClickNavSowBoar = function(is_mobile, sow_boar_type){
         thisObj.showThisPage(elemHiddenContSowBoarList);
-		
-		const options= {
-			sow_boar_type: sow_boar_type
-		};
+        
+        const options= {
+            sow_boar_type: sow_boar_type
+        };
         thisObj.pageSowBoarList.show(options);
     }
     

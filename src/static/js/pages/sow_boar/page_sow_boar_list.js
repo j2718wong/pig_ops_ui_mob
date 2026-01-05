@@ -9,7 +9,7 @@ import {PageViewBasic}          from '../common/page_view_basic.js';
 import {APPLICATION,
         PAGE_ID,
         SOW_BOAR_TYPE,
-        PROD_STATUS}            from '../../constants.js';
+        SOW_STATUS}            	from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -346,6 +346,8 @@ ${html_style}
 		dataSowList = []
 		dataGiltList = []
 		
+		let sow_boar = null;
+		
 		for (const cur_entry of data){
 			if ('sow_boar' in cur_entry){
 				sow_boar = cur_entry.sow_boar;
@@ -356,7 +358,7 @@ ${html_style}
 				dataGiltList.push(cur_entry);
 			}
 			else{
-				dataSowsList.push(cur_entry);
+				dataSowList.push(cur_entry);
 			}
 			
 		}
