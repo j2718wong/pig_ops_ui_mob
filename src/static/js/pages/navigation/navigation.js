@@ -6,7 +6,10 @@
 
 import {PIG_OPERATION_TYPE,
         PAGE_ID,
-        SOW_BOAR_TYPE}              from '../../constants.js';
+        SOW_BOAR_TYPE,
+        PIG_PROD_TYPE}              from '../../constants.js';
+
+import {AddressManager}             from '../common/address_manager.js';
 
 import {PageSowBoarList}            from '../sow_boar/page_sow_boar_list.js';
 import {PageSowBoarAddEdit}         from '../sow_boar/page_sow_boar_add_edit.js';
@@ -140,6 +143,11 @@ function UserControl() {
     }
     
     
+    this.getCurrentFarmHid =  function(){
+        return userCurrentFarmHid;
+    }
+    
+    
     this.getCurrentLanguage = function(){
         
     }
@@ -152,6 +160,83 @@ function UserControl() {
 }
 
 
+function RequestManager(input_settings){
+    const thisObj           = this;
+    const navigation        = input_settings.navigation;
+    
+    
+    
+    this.requestPigProdData = function(pig_prod_type, callback){
+        const cur_user_pfhid    = navigation.userControl.getCurrentFarmHid()
+        
+        const is_mob_view = 1; // TODO for desktop view
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/pig_prod/list?pfhid=${cur_user_pfhid}&pig_prod_type=${pig_prod_type}&is_mob_view=${is_mob_view}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (callback){callback(response.data);}
+                }
+                else {
+                    // TODO
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+            }
+        });
+        
+    }
+    
+
+    this.requestDataPigProdPublic = function(country_hid, callback){
+        const base_url = window.location.origin;
+        const url = `${base_url}/pig_prod/public?country_hid=${country_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (callback){callback(response.data);}
+                }
+                else {
+                    // TODO
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+            }
+        });
+        
+    }
+}
 
 
 export function Navigation(){
@@ -200,6 +285,19 @@ export function Navigation(){
     
     
     this.userControl                = new UserControl();
+    
+    
+    const settingsRequestManager = {
+        navigation:             this
+    }
+    this.requestManager         = new RequestManager(settingsRequestManager);
+    
+    
+    const settingsAddressManager = {
+        navigation:             this
+    }
+    this.addressManager         = new AddressManager(settingsAddressManager);
+    
     
     
     const settingsSowBoarList = {
@@ -258,9 +356,9 @@ export function Navigation(){
     
     
     
+    let dataPigProdPublic       = null;
     
-    
-    let dataPigProdList         = null;
+    this.dataPigFarmAccount   	= null;
     
     
     this.init = function(){
@@ -378,20 +476,55 @@ export function Navigation(){
         this.setDataCompanyApp(data.application);
         this.setDataUserAccount(data.user_account);
             
-            
-        this.pageAccPigOps.setDataAccPigOps(data.acc_gestating_ops);
-            
-        this.setDataStaffList(data.staff_list);
-        this.setDataSowList(data.sow_list);
-        this.setDataBoarList(data.boar_list);
-            
-            
-        if ('pig_production' in data){
-            this.setDataPigProdList(data.pig_production);
+		const pig_farm_account = data.pig_farm_account;
+		
+		this.dataPigFarmAccount = pig_farm_account;
+		
+			
+        if ('acc_pig_ops' in pig_farm_account){
+            this.pageAccPigOps.setDataAccPigOps(pig_farm_account.acc_pig_ops);
         }
         else{
-            // sendrequest
+            if ('acc_gestating_ops' in pig_farm_account){
+                this.pageAccPigOps.setDataAccPigOps(pig_farm_account.acc_gestating_ops);
+            }
+            
+            if ('acc_lactating_piglets_ops' in pig_farm_account){
+                this.pageAccPigOps.setDataAccPigOps(pig_farm_account.acc_lactating_piglets_ops);
+            }
+            
+            if ('acc_lactating_sow_ops' in pig_farm_account){
+                this.pageAccPigOps.setDataAccPigOps(pig_farm_account.acc_lactating_sow_ops);
+            }
         }
+        
+        
+        this.setDataStaffList(pig_farm_account.staff_list);
+        this.setDataSowList(pig_farm_account.sow_list);
+        this.setDataBoarList(pig_farm_account.boar_list);
+            
+            
+        if ('pig_production' in pig_farm_account){
+            this.setDataPigProdList(pig_farm_account.pig_production);
+        }
+        else{
+            
+            const pig_prod_type = PIG_PROD_TYPE.GESTATING + PIG_PROD_TYPE.LACTATING;
+            this.requestManager.requestPigProdData(pig_prod_type, 
+                thisObj.setDataPigProdList);
+        }
+        
+        
+        const user_current_farm = this.userControl.getCurrentFarm();
+        const country_hid   = user_current_farm.location.country.hid;
+        
+        
+        // This waits for the logged in user for user authentication
+        // before request
+        this.addressManager.requestDataAddressLevel1(country_hid);
+        
+        this.requestManager.requestDataPigProdPublic(country_hid, 
+                thisObj.setDataPigProdPublic);
     }
     
     
@@ -423,10 +556,8 @@ export function Navigation(){
     
     
     this.setDataPigProdList = function(data){
-        dataPigProdList = data;
-        
-        this.pageMobGestatingList.setDataPigProdList(dataPigProdList);
-        this.pageMobLactatingList.setDataPigProdList(dataPigProdList);
+        thisObj.pageMobGestatingList.setDataPigProdList(data);
+        thisObj.pageMobLactatingList.setDataPigProdList(data);
     }
     
     
@@ -447,12 +578,17 @@ export function Navigation(){
     }
     
     
+    this.setDataPigProdPublic = function(data){
+        dataPigProdPublic = data;
+    }
+    
+    
     // Update pig farm name on resize for responsive centering
     this.updatePigFarmName = function() {
         // Set Farm name
         const cur_user_farm = thisObj.userControl.getCurrentFarm();
-		
-		
+        
+        
         const pig_farm_name = cur_user_farm.pig_farm.name;
         
         
@@ -815,6 +951,8 @@ export function Navigation(){
         
     this.onClickProdGestatingAdd = function(){
         thisObj.showThisPage(elemHiddenContProdGestaAdd);
+        
+        
         thisObj.pageProdGestatingAdd.show();
     }
     
@@ -828,7 +966,7 @@ export function Navigation(){
         console.log('onClickProdGestatingEntry; pig_prod_pid = ' + pig_prod_pid);
         thisObj.showThisPage(elemHiddenContProdGestaEntry);
         
-        // Get the data_pig_prod from dataPigProdList
+        // Get the data_pig_prod from pageMobGestatingList
         const data_pig_prod_list = thisObj.pageMobGestatingList.getDataPigProdList();
         
         let prev_prod_pid = null;
@@ -870,6 +1008,5 @@ export function Navigation(){
         
     }
     
-   
     
 }

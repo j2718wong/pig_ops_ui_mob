@@ -69,6 +69,13 @@ const PROD_STATUS = {
 };
 
 
+const PIG_PROD_TYPE = {
+    GESTATING:          1,
+    LACTATING:          2,
+    FATTENING:          4
+    
+};
+
 
 export {
     APPLICATION,
@@ -77,5 +84,7 @@ export {
     SOW_BOAR_TYPE,
     PIG_OPERATION_TYPE,
     SOW_STATUS,
-    PROD_STATUS
+    PROD_STATUS,
+    
+    PIG_PROD_TYPE
 };

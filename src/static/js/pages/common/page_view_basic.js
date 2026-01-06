@@ -31,8 +31,9 @@ export function replaceSelectOptions(select_elem, new_options){
 
 export function PageViewBasic(){
     const thisObj           = this;
+    const NUM_MSECS_1DAY    = 1000 * 60 * 60 * 24;
     
-    this.navigation        = null;
+    this.navigation         = null;
     
     
     this.moneyFormatter = new Intl.NumberFormat('en-US', {
@@ -70,6 +71,34 @@ export function PageViewBasic(){
     this.replaceSelectOptions = function(select_elem, new_options){
         replaceSelectOptions(select_elem, new_options);
         return;
+    }
+    
+    
+    /*
+    Will calculate the number of days since date insemination.
+    
+    @param insem_date: dat estr in YYYY-MM-DD format
+    
+    */
+    
+    this.calculateNumDaysSinceInsem = function(insem_date, dt_current, settings_operations){
+        if (!dt_current){
+            dt_current = new Date();
+            dt_current.setHours(0, 0, 0, 0);
+        }
+        
+        const dt_insem            = new Date(insem_date);
+        const diff_msecs          = dt_current - dt_insem;
+        
+        let   diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+        
+        // Adjust Day 1 on date of insemination/coupling if needed
+        if (settings_operations){
+            if (settings_operations.day_1_on_date_of_insem > 0){
+                days_diff += 1;
+            }
+        }
+        return diff_days;
     }
 
     

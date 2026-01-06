@@ -165,13 +165,13 @@ export function PageSowBoarList(input_settings){
         
 		
         elemIdTableSow          = `sow-boar-sow-table`;
-        elemIdTableSowBody      = `sow-boar-sow-table-body`;
+        elemIdTableSowBody      = `sow-boar-sow-tbody`;
         
         elemIdTableBoar         = `sow-boar-boar-table`;
-        elemIdTableBoarBody     = `sow-boar-boar-table-body`;
+        elemIdTableBoarBody     = `sow-boar-boar-tbody`;
         
         elemIdTableGilt         = `sow-boar-gilt-table`;
-        elemIdTableGiltBody     = `sow-boar-gilt-table-body`;
+        elemIdTableGiltBody     = `sow-boar-gilt-tbody`;
         
 		elemIdNumEntriesCurView = `sow-boar-num-entries-view`;
         

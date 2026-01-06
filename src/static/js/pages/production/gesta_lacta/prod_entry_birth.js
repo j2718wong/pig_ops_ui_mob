@@ -9,6 +9,8 @@ import {PageViewBasic}          from '../../common/page_view_basic.js';
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
+import {getSowBoarReference}    from '../../common/common_app.js';
+
 import {InsemDataSelect}        from './insem_data_select.js';
 
 
@@ -286,23 +288,9 @@ export function ProdEntryBirth(input_settings){
     
     this.show = function(data_pig_prod, options){
         const data_sow = data_pig_prod.sow;
-        let sow_reference = '';
-        
-        if ((data_sow.name != null) && (data_sow.name.length >0)){
-            sow_reference = data_sow.name;
-            
-            if (data_sow.number != null) {
-                sow_reference += ` (${data_sow.number})`;
-            }
-            
-        }
-        else{
-            sow_reference = data_sow.number;
-        }
-        
+        let sow_reference =  getSowBoarReference(data_sow, true);
         
         elemSow.textContent = sow_reference;
-        
         
         
         const insemination  = data_pig_prod.insemination;
@@ -311,6 +299,8 @@ export function ProdEntryBirth(input_settings){
         $('#'+elemIdDateMating).datepicker('setDate', dt_insem);
         
     }
+    
+    
     
     
 

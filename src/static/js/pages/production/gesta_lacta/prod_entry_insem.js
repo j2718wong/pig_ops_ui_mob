@@ -480,7 +480,7 @@ export function ProdEntryInsem(input_settings){
         
         // Set Insemination Cost
         if (insemination.insem_cost != null){
-            elemOtherCost.textContent = thisOj.moneyFormatter(insemination.insem_cost); 
+			elemOtherCost.textContent = thisObj.moneyFormatter.format(insemination.insem_cost); 
         }
         
         

@@ -134,6 +134,7 @@ export function PageProdGestatingAdd(input_settings){
     const insemDataSelect       = new InsemDataSelect();
     
     
+    
     this.init = function(){
         this.render();
         this.afterHtmlRender();
@@ -469,7 +470,7 @@ export function PageProdGestatingAdd(input_settings){
             autoclose: true,
             endDate: new Date() // Max date is today
         }).on('show', function(e) {
-            $('.datepicker').addClass('datepicker-material');
+            $('.datepicker').classList.add('datepicker-material');
         });
         
         
@@ -524,7 +525,6 @@ export function PageProdGestatingAdd(input_settings){
         });
         
         
-        
         elemInsemType.addEventListener('change', function() {
             const selected_value = elemInsemType.value;
             
@@ -553,8 +553,6 @@ export function PageProdGestatingAdd(input_settings){
         });
         
         
-        
-        
         elemOtherCost.addEventListener('blur', function() {
             thisObj._validateAfterChangeInput(this, 'other_cost');
         });
@@ -566,6 +564,15 @@ export function PageProdGestatingAdd(input_settings){
                 160);
             
             elemNotes.classList.remove('is-invalid');
+        });
+        
+        
+        elemChkDoneByMe.addEventListener('change', function(event) {
+            if (event.currentTarget.checked) {
+                elemStaff.style.display = 'none';
+            } else {
+                elemStaff.style.display = 'block';
+            }
         });
         
         
@@ -805,4 +812,218 @@ export function PageProdGestatingAdd(input_settings){
         }
 
     }
+    
+    
+    this._onClickSaveButton = function(){
+        var input_elem;
+        var cur_field;
+        var validation;
+        var proceed_to_save = 1;
+        
+
+        var input_sow_hid           = elemSow.value;
+        var input_insem_type        = elemInsemType.value;
+        var input_boar_hid          = elemBoar.value;
+        var input_date_insem        = elemInsemDate.value;
+        var input_semen_supplier_hid = elemSemenSupplier.value;
+        var input_semen_hid         = elemSemen.value;
+        var input_semen_cost        = elemSemenCost.value;
+        var input_other_cost        = elemOtherCost.value;
+        var input_insem_notes       = elemNotes.value;
+        var input_staff_hid         = elemStaff.value;
+        
+        
+        input_elem          = elemSow;
+        
+        if (input_sow_hid == '0'){
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        }
+        else{
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+        
+        if (input_insem_type == 'boar-mating'){
+            input_elem          = elemBoar;
+            
+            if (input_boar_hid == '0'){
+                if (input_elem.classList.contains('is-invalid') == false){
+                    input_elem.classList.add('is-invalid');
+                }
+                proceed_to_save = 0;
+            }
+            else{
+                if (input_elem.classList.contains('is-valid') == false){
+                    input_elem.classList.add('is-valid');
+                }
+            }
+            
+        } else{
+            input_elem          = elemSemenSupplier;
+            
+            if (input_semen_supplier_hid  == '0'){
+                if (input_elem.classList.contains('is-invalid') == false){
+                    input_elem.classList.add('is-invalid');
+                }
+                proceed_to_save = 0;
+            }
+            else{
+                if (input_elem.classList.contains('is-valid') == false){
+                    input_elem.classList.add('is-valid');
+                }
+            }
+            
+            
+            input_elem          = elemSemen;
+            
+            if (input_semen_hid  == '0'){
+                if (input_elem.classList.contains('is-invalid') == false){
+                    input_elem.classList.add('is-invalid');
+                }
+                proceed_to_save = 0;
+            }
+            else{
+                if (input_elem.classList.contains('is-valid') == false){
+                    input_elem.classList.add('is-valid');
+                }
+            }
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+        
+        input_elem          = elemInsemDate;
+        cur_field           = newEntry.fieldInsemDate;
+        cur_field.newValue  = input_date_insem;
+        validation          = cur_field.validateChange();
+        
+        if (validation != FIELD_VALIDATION_OK){
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        }
+        else{
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+        
+        // The staff can be from the drop down
+        // Or Done by User (Done by Me checkbox)
+        let done_by_user = 0
+        
+        if (elemChkDoneByMe.checked){done_by_user = 1;}
+        
+        if (done_by_user == 0){
+            input_elem          = elemStaff;
+            if (input_staff_hid == '0'){
+                if (input_elem.classList.contains('is-invalid') == false){
+                    input_elem.classList.add('is-invalid');
+                }
+                proceed_to_save = 0;
+            }
+            else{
+                if (input_elem.classList.contains('is-valid') == false){
+                    input_elem.classList.add('is-valid');
+                }
+                fieldStaffHid.newValue = input_staff_hid;
+            }
+        }
+        if (proceed_to_save == 0) {return;}
+        
+        
+        const user_hid      = navigation.userControl.getUserHid();
+        const base_url      = window.location.origin;
+
+        
+        // send post request
+        const post_data = {
+            'uhid':             user_hid,
+            'sow_hid':          input_sow_hid,
+            'boar_hid':         input_boar_hid,
+            'semen_supplier_hid':   input_semen_supplier_hid,
+            'semen_sup_semen_hid':  input_semen_hid,
+            
+            'insem_staff_hid':  input_staff_hid,
+            'done_by_user':     done_by_user,
+
+            'insem_notes':      input_insem_notes,
+            
+            'insem_date':       input_date_insem
+        };
+        
+        if (input_semen_cost != null && input_semen_cost > 0){
+            post_data.semen_cost = parseFloat(input_semen_cost);
+        }
+        
+        if (input_other_cost != null && input_other_cost > 0) {
+            post_data.insem_cost = parseFloat(input_other_cost);
+        }
+        
+        
+        if (input_insem_type == 'boar-mating'){
+            delete post_data.semen_supplier_hid;
+            delete post_data.semen_sup_semen_hid;
+        }
+        else{
+            delete post_data.boar_hid;
+        }
+        
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            url: `${base_url}/pig_prod/add`,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.onSuccessAddGestatingEntry();
+				}
+            },
+  
+            complete: function(){
+                // TODO unsay buhaton
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+            }
+        });
+    }
+    
+    
+    this.onSuccessAddGestatingEntry = function(){
+        const pig_prod_type = PIG_PROD_TYPE.GESTATING;
+        
+        const callback = function(data){
+            navigation.setDataPigProdList(data);
+            
+            thisObj.show(); 
+            
+            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+        };
+        
+        navigation.requestManager.requestPigProdData(pig_prod_type, callback);
+        
+    }
+    
+    
 }   

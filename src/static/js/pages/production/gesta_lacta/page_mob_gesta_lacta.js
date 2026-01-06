@@ -16,7 +16,7 @@ import {formatDate,
         FORMAT_COMPACT,
         sortList}               from '../../../utils.js';
 
-
+import {getSowBoarReference}    from '../../common/common_app.js';
 
 
 PageMobGestaLacta.prototype = new PageViewBasic();
@@ -32,7 +32,7 @@ export function PageMobGestaLacta(input_settings){
     const NUM_DAYS_BEFORE_OPERATION_DUE_SHOW_ALARM = 3;
     
     // This needs to be manually set once fix in backend
-    const PIG_PROD_OPS_DATE_TARGET_ORDER_ASC = 1;
+    const PIG_PROD_OPS_DATE_TARGET_ORDER_ASC = 0;
     
     /*
     Typical input_settings
@@ -64,8 +64,11 @@ export function PageMobGestaLacta(input_settings){
     let elemIdSearchInput       = null;
     let elemIdAddEntryBtn       = null;
     
-    let elemIdCardList          = null;
-    let elemIdListContainer     = null;
+    let elemIdPigProdList       = null;
+    let elemIdCardContainer     = null;
+    let elemIdPigProdTable      = null;
+    let elemIdPigProdTableBody  = null;
+    
     let elemIdPigOpsAlarmTable  = null;
 
 
@@ -77,12 +80,19 @@ export function PageMobGestaLacta(input_settings){
     let elemSearchInput         = null;
     let elemAddEntryBtn         = null;
     
-    let elemCardList            = null;
-    let elemListContainer       = null;
+    let elemPigProdList         = null;
+    let elemCardContainer       = null;
+    let elemPigProdTable        = null;
+    let elemPigProdTableBody    = null;
     let elemPigOpsAlarmTable    = null;
 
-    // if false curView is PigOpsAlarmTable
-    let curViewIsCardList       = true;
+    // if false current view is PigOpsAlarmTable
+    let curViewIsPigProdList    = true;
+    
+    
+    // if false, current  pig prod view is table
+    let curPigProdViewIsCards   = true;
+    
     
     let dataPigProdList         = null;
 
@@ -91,14 +101,11 @@ export function PageMobGestaLacta(input_settings){
     let curUserLanguageKey      = 'en';
 
 
-    let showpageHeaderAlarm     = false;
+    let showPageHeaderAlarm     = false;
     let pigOpsAlarmList         = null;
     
     
-    // This must be set before rendering the autotable
-    // See G_SAMPLE_JSON_ACCOUNT
-    this.accountData            = null;
-    
+
     
     // This should be set before editing ProdPigOps 
     this.editModalProdPigOps    = null;
@@ -115,6 +122,21 @@ export function PageMobGestaLacta(input_settings){
         
     }
     
+    this._writeInlineStyle = function(){
+        const html = `
+    <style>
+        
+        /* Updated Table Styles */
+        
+        .data-table.table-gesta-lacta th:nth-child(1) { width: 15%; }
+        .data-table.table-gesta-lacta th:nth-child(2) { width: 20%; }
+        .data-table.table-gesta-lacta th:nth-child(3) { width: 25%; }
+        .data-table.table-gesta-lacta th:nth-child(4) { width: 30%; }
+    </style>
+    `;
+        return html;
+    }
+    
     
     this.render = function(){
         
@@ -123,20 +145,68 @@ export function PageMobGestaLacta(input_settings){
         elemIdEntryCount        = `page-title-${settings.uniqueKey}-prod-count`;
         elemIdPageInfo          = `page-info-${settings.uniqueKey}-list`;
         
-        elemIdCardList          = `${settings.uniqueKey}-card-list`;
-        elemIdListContainer     = `mobile-list-container-${settings.uniqueKey}`;
+        elemIdPigProdList      	= `${settings.uniqueKey}-card-list`;
+        elemIdCardContainer     = `mobile-list-container-${settings.uniqueKey}`;
+        elemIdPigProdTable      = `mobile-pig-prod-${settings.uniqueKey}-table`;
+        elemIdPigProdTableBody  = `mobile-pig-prod-${settings.uniqueKey}-tbody`;
+        
         elemIdPigOpsAlarmTable  = `${settings.uniqueKey}-alarm-table`;
         
         
         elemIdSearchInput       = `mobile-search-input-${settings.uniqueKey}`;
         elemIdAddEntryBtn       = `mobile-add-entry-btn-${settings.uniqueKey}`;
            
+           
+        let html_pig_prod_table = '';
+           
         let style_hide_add_button = '';
         if (settings.isGesta == false){
             style_hide_add_button = 'display:none;';
+            
+            html_pig_prod_table = `
+            <!-- PogProd Gesta Table -->
+            <table class="data-table table-gesta-lacta">
+                <thead>
+                    <tr>
+                        <th>PID</th>
+                        <th>Sow</th>
+                        <th>Date Expected</th>
+                        <th>Operation</th>
+                    </tr>
+                </thead>
+                <tbody id="${elemIdPigProdTableBody}">
+                </tbody>
+            </table>
+            `;
+        }
+        
+        else{
+            html_pig_prod_table = `
+            <!-- PogProd Lacta Table -->
+            <table class="data-table table-gesta-lacta">
+                <thead>
+                    <tr>
+                        <th>PID</th>
+                        <th>Sow</th>
+                        <th>Date Wean</th>
+                        <th>Operation</th>
+                    </tr>
+                </thead>
+                <tbody id="${elemIdPigProdTableBody}">
+                </tbody>
+            </table>
+            `;
         }
            
+        
+        const html_style        = thisObj._writeInlineStyle();
+           
+           
         const html = `
+        
+${html_style}
+
+
 <div class="mobile-container">
     <div class="header">
         <h1 id="${elemIdPageTitle}">
@@ -157,7 +227,7 @@ export function PageMobGestaLacta(input_settings){
         -->
     </div>
     
-    <div id="${elemIdCardList}">
+    <div id="${elemIdPigProdList}">
         <!-- Search and Add Entry Controls -->
         <div class="mobile-controls">
             <div class="search-container">
@@ -171,7 +241,11 @@ export function PageMobGestaLacta(input_settings){
         </div>
 
         <!-- Card Container -->
-        <div class="card-container-pig-prod" id="${elemIdListContainer}"></div>
+        <div class="card-container-pig-prod" id="${elemIdCardContainer}"></div>
+        
+        <div id="${elemIdPigProdTable}" style="display:none;">
+            ${html_pig_prod_table}
+        </div>
     </div>
     
     <div id="${elemIdPigOpsAlarmTable}"></div>
@@ -196,10 +270,12 @@ export function PageMobGestaLacta(input_settings){
         elemEntryCount          = document.getElementById(elemIdEntryCount);
         elemPageInfo            = document.getElementById(elemIdPageInfo);
 
-        elemSearchInput      = document.getElementById(elemIdSearchInput);
-        elemAddEntryBtn      = document.getElementById(elemIdAddEntryBtn);
-        elemCardList            = document.getElementById(elemIdCardList);
-        elemListContainer       = document.getElementById(elemIdListContainer);
+        elemSearchInput         = document.getElementById(elemIdSearchInput);
+        elemAddEntryBtn         = document.getElementById(elemIdAddEntryBtn);
+        elemPigProdList         = document.getElementById(elemIdPigProdList);
+        elemCardContainer       = document.getElementById(elemIdCardContainer);
+        elemPigProdTable        = document.getElementById(elemIdPigProdTable);
+        elemPigProdTableBody    = document.getElementById(elemIdPigProdTableBody);
         elemPigOpsAlarmTable    = document.getElementById(elemIdPigOpsAlarmTable);
         
     }
@@ -208,10 +284,18 @@ export function PageMobGestaLacta(input_settings){
     this._processAfterHtmlRender = function(){
         
         this.handleWindowResize();
+    
+        // Set this callback
+        navigation.editModalProdPigOps.cbMobileOnSuccessEdit = thisObj.onSuccessEditPigOps;
     }
     
     
     this._bindEventListeners = function(){
+        
+        elemPageTitle.addEventListener('click', function() {
+            thisObj.onClickPageHeaderTitle();
+        });
+        
         
         elemPageHeaderAlarm.addEventListener('click', function() {
             thisObj.onClickPageHeaderAlarm();
@@ -307,14 +391,14 @@ export function PageMobGestaLacta(input_settings){
     
     
     this.show = function(){
-        showpageHeaderAlarm = false; // Need to reset this.
+        showPageHeaderAlarm = false; // Need to reset this.
         elemPageHeaderAlarm.style.display = 'none';
         
         // Need to clear this;
         pigOpsAlarmList     = [];
         
         
-        // Render HTML in elemListContainer
+        // Render HTML in elemCardContainer
         if ((dataPigProdList == null) || (dataPigProdList.length == 0)){
             elemSearchInput.setAttribute("placeholder", "No entries found"); 
         }
@@ -326,15 +410,15 @@ export function PageMobGestaLacta(input_settings){
         
         if (dataPigProdList != null){
             for (const cur_entry of dataPigProdList){
-                html += thisObj._getHtml(cur_entry)
+                html += thisObj._getHtmlPigProdList(cur_entry)
             }
            
-            elemListContainer.innerHTML = html;
+            elemCardContainer.innerHTML = html;
         }
         
         
         // Search functionality
-        const cards = elemListContainer.querySelectorAll('.card-pig-prod');
+        const cards = elemCardContainer.querySelectorAll('.card-pig-prod');
         
         elemSearchInput.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase().trim();
@@ -353,7 +437,7 @@ export function PageMobGestaLacta(input_settings){
         
         
         // Show PageHeaderAlarm
-        if (showpageHeaderAlarm){
+        if (showPageHeaderAlarm){
             elemPageHeaderAlarm.style.display = 'inline-block';
         }
         
@@ -364,8 +448,8 @@ export function PageMobGestaLacta(input_settings){
     
     
         // Need to set this
-        curViewIsCardList       = true;
-        elemCardList.style.display = 'block';
+        curViewIsPigProdList       = true;
+        elemPigProdList.style.display = 'block';
         elemPigOpsAlarmTable.style.display = 'none';
         
         
@@ -379,7 +463,7 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    this._getHtml = function(data_pig_prod){
+    this._getHtmlPigProdList = function(data_pig_prod){
         let diff_msecs;
         let diff_days;
         
@@ -514,18 +598,10 @@ export function PageMobGestaLacta(input_settings){
                 
                 
                 
-                
-                
-                dt_insem            = new Date(insemination.insem_date);
-                diff_msecs          = dt_current - dt_insem;
-                diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
-                
-                // Adjust Day 1 on date of insemination/coupling if needed
-                if (thisObj.accountData != null){
-                    if (thisObj.accountData.settings_operations.day_1_on_date_of_insem > 0){
-                        days_diff += 1;
-                    }
-                }
+                diff_days = thisObj.calculateNumDaysSinceInsem(
+                        insemination.insem_date, dt_current,
+                        navigation.dataPigFarmAccount.account.settings_operations);
+                        
                 numdays_since       = diff_days;
                 
                 
@@ -565,7 +641,7 @@ export function PageMobGestaLacta(input_settings){
         }
         
         
-        const html_operations = thisObj._getHtmlOperations(data_pig_prod);
+        const html_operations = thisObj._getHtmlCardOperations(data_pig_prod);
         
         const farm_prod_id = data_pig_prod.pig_production.farm_prod_id;
         
@@ -651,7 +727,7 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    this._getHtmlOperations = function(data_pig_prod){
+    this._getHtmlCardOperations = function(data_pig_prod){
         const pid = data_pig_prod.pig_production.farm_prod_id;
         
         let operations = null;
@@ -668,14 +744,7 @@ export function PageMobGestaLacta(input_settings){
         
         
         const data_sow = data_pig_prod.sow;
-        let sow_reference = '';
-        
-        if ((data_sow.name != null) && (data_sow.name.length >0)){
-            sow_reference = data_sow.name;
-        }
-        else{
-            sow_reference = data_sow.number;
-        }
+        const sow_reference = getSowBoarReference(data_sow);
         
         
         /*
@@ -782,7 +851,7 @@ export function PageMobGestaLacta(input_settings){
                 operation_hid:      operation.pig_prod_pig_ops.hid
             };
             
-            html_operations_above += thisObj._getHtmlOperation(
+            html_operations_above += thisObj._getHtmlCardOperation(
                 operation, options);
         });
         
@@ -798,7 +867,7 @@ export function PageMobGestaLacta(input_settings){
                 operation_hid:      operation.pig_prod_pig_ops.hid
             };
             
-            html_operations_cur_view += thisObj._getHtmlOperation(
+            html_operations_cur_view += thisObj._getHtmlCardOperation(
                 operation, options);
         });
         
@@ -814,7 +883,7 @@ export function PageMobGestaLacta(input_settings){
                 operation_hid:      operation.pig_prod_pig_ops.hid
             };
             
-            html_operations_below += thisObj._getHtmlOperation(
+            html_operations_below += thisObj._getHtmlCardOperation(
                 operation, options);
         });
         
@@ -901,7 +970,7 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    this._getHtmlOperation = function(data_operation, options){
+    this._getHtmlCardOperation = function(data_operation, options){
         const placement_class   = options.placement_class;
         const is_hidden         = options.is_hidden;
         const sow               = options.sow;
@@ -985,14 +1054,9 @@ export function PageMobGestaLacta(input_settings){
         else{
             has_action          = 1;
             operation_class     = 'operation-due';
-            showpageHeaderAlarm = true;
+            showPageHeaderAlarm = true;
             
-            const options_date_short = {
-                month: 'short', // "Dec"
-                day: 'numeric', // "20"
-                year: 'numeric'
-            };
-            
+           
             let is_overdue = 0;
             if (diff_days < 0){is_overdue = 1;}
             
@@ -1114,6 +1178,64 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
+    this._getHtmlPigProdTableBody = function(){
+        
+        let html_tbody = '';
+        
+        let index = 0;
+        for (const cur_entry of dataPigProdList){
+            const pid = cur_entry.pig_production.farm_prod_id;
+            
+            const data_sow = cur_entry.sow;
+            const sow_reference = getSowBoarReference(data_sow);
+        
+            
+            let s_date_expected = ''
+            const dt_expected = new Date(cur_entry.birth.date_expected);
+            const short_dt_expected = formatDate(dt_expected, FORMAT_COMPACT);
+            
+            const diff_days = thisObj.calculateNumDaysSinceInsem(
+                        cur_entry.insemination.insem_date, null,
+                        navigation.dataPigFarmAccount.account.settings_operations);
+                        
+            s_date_expected = `${short_dt_expected} (Day ${diff_days})`;
+            
+            
+            // The Operation column should display either the following
+            // 1.) Over due not yet done operation; display Date, operation name 
+            // + overdue indicator
+            // 2.) If no overdue, show the upcoming operation
+            // 3.) If all Done, should display ALL DONE 
+            
+            
+            
+            
+            let s_click = null;
+            if (settings.isGesta){
+            }
+            else{
+            }
+            
+            
+            html_tbody += `
+            <tr>
+                <td>${pid}</td>
+                <td class="sow-name"  role="button" onclick="${s_click}" style="padding-left:0;">${sow_reference}</td>
+                <td class="date" role="button" onclick="${s_click}">
+                    ${s_date_expected}
+                </td>
+                <td class="operation">
+                </td>
+            </tr>
+            `;
+            
+        }
+        
+        return html_tbody;
+        
+    }
+    
+    
     this.setUserLanguage = function(language_key){
         curUserLanguageKey = language_key;
         thisObj.onUserChangeLanguage();
@@ -1134,6 +1256,48 @@ export function PageMobGestaLacta(input_settings){
             if(cur_entry.pig_production.farm_prod_id == pid){return cur_entry;}
         }
         return null;
+    }
+    
+    
+    this.onClickPageHeaderTitle = function(){
+        console.log('onClickPageHeaderTitle');
+        
+        // Hide alarms table
+        elemPigOpsAlarmTable.style.display = 'none';
+		curViewIsPigProdList = true;
+        
+        // Toggle Cards or Table View`
+        if (curPigProdViewIsCards == true){
+            elemCardContainer.style.display = 'none';
+            elemPigProdTable.style.display = 'block';
+            
+            curPigProdViewIsCards = false;
+        } else {
+            elemCardContainer.style.display = 'block';
+            elemPigProdTable.style.display = 'none';
+            
+            curPigProdViewIsCards = true;
+        }
+    
+        
+    }
+    
+    
+    this.onClickPageHeaderAlarm = function(){
+        console.log('onClickPageHeaderAlarm');
+        
+        if (curViewIsPigProdList == true){
+            elemPigProdList.style.display = 'none';
+            elemPigOpsAlarmTable.style.display = 'block';
+        
+            curViewIsPigProdList = false;
+        }
+        else{
+            elemPigProdList.style.display = 'block';
+            elemPigOpsAlarmTable.style.display = 'none';
+            
+            curViewIsPigProdList = true;
+        }
     }
     
     
@@ -1240,24 +1404,6 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    this.onClickPageHeaderAlarm = function(){
-        console.log('onClickPageHeaderAlarm');
-        
-        if (curViewIsCardList == true){
-            elemCardList.style.display = 'none';
-            elemPigOpsAlarmTable.style.display = 'block';
-        
-            curViewIsCardList = false;
-        }
-        else{
-            elemCardList.style.display = 'block';
-            elemPigOpsAlarmTable.style.display = 'none';
-            
-            curViewIsCardList = true;
-        }
-    }
-    
-    
     this.getDataProdPigOps = function(data_pig_prod, entry_hid){
         /**
         20251231: 
@@ -1297,28 +1443,24 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
-    
-    
-    
-    this.onSuccessEditPigOps = function(pid){
-        // Query the card where this pid is found
-        const div_pig_prod_entry =  elemListContainer.querySelector(`div.card-pig-prod[data-pid="${pid}"]`);
+    this.onSuccessEditPigOps = function(){
+        // Need to redraw Page, because an alarm is maybe already addressed
+        // by PigProdPigOps edit
+            
+
+        const pig_prod_type = settings.isGesta? PIG_PROD_TYPE.GESTATING : PIG_PROD_TYPE.LACTATING;
         
-        if (div_pig_prod_entry == null){
+        const callback = function(data){
+            navigation.setDataPigProdList(data);
+            
+            thisObj.show(); 
+            
             editModalProdPigOps.hide();
-            console.log(`PigProd with pid = ${pid} cannot be found in UI.`)
-            return;
-        }
+        };
         
-        const data_prod = thisObj.getDataPigProd(pid)
-        const html_operations = thisObj._getHtmlOperations(data_prod);
+        navigation.requestManager.requestPigProdData(pig_prod_type, callback);
         
-        
-        // Query the operations-list-container 
-        const div_container = div_pig_prod_entry.querySelector('operations-list-container');
-        
-        // Redraw operations list
-        div_container.innerHTML = html_operations;
-        editModalProdPigOps.hide();
     }
 }
+
+

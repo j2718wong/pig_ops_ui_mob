@@ -22,18 +22,18 @@ import {EditModalAccPigOps}     from './edit_modal_acc_pig_ops.js'
 PageAccPigOps.prototype = new PageViewBasic();
 export function PageAccPigOps(input_settings){
     PageViewBasic.call(this);
-	
-	const thisObj               = this;
-	const navigation            = input_settings.navigation;
-	
-	/*
+    
+    const thisObj               = this;
+    const navigation            = input_settings.navigation;
+    
+    /*
     Typical settings = {
         navigation:             this
     };
     */
     const settings              = input_settings;
-	
-	
+    
+    
     // This is needed as this will be first element to be rendered
     var elemDivContainer        = document.getElementById('container-acc-pig-ops');
 
@@ -213,6 +213,7 @@ export function PageAccPigOps(input_settings){
     
     
     this.setDataAccPigOps = function(data){
+		
         dataAccGestatingOps = [];
         dataAccLactatingPigletOps = [];
         dataAccLactatingSowOps = [];
@@ -308,7 +309,7 @@ export function PageAccPigOps(input_settings){
             if (operation.acc_pig_ops.desc != null){
                 html_desc = `<div class="operation-desc">${operation.acc_pig_ops.desc}</div>`;
             }
-            
+			
             const last_update   = operation.last_update;
             const added_by      = operation.added_by;
             if (operation.last_update.name_last != null){

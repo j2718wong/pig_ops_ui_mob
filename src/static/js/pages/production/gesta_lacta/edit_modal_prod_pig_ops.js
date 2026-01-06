@@ -387,15 +387,15 @@ export function EditModalProdPigOps(input_settings){
             elemDateActual.value = formatDate(dt_actual, FORMAT_LONG_MONTH);
         
             
-			const staff_hid = operation.staff.hid;
-			
-			if (staff_hid != null){
-				const $elemStaff = $(elemStaff);
-				$elemStaff.val(operation.staff.hid).change();
+            const staff_hid = operation.staff.hid;
+            
+            if (staff_hid != null){
+                const $elemStaff = $(elemStaff);
+                $elemStaff.val(operation.staff.hid).change();
             }
-			else{
-				console.log('No staff hid');
-			}
+            else{
+                console.log('No staff hid');
+            }
             elemNotes.value = operation.notes.notes;
         }
         
@@ -577,11 +577,10 @@ export function EditModalProdPigOps(input_settings){
             return;
         }
         
-        console.log('thisObj');
-        console.log(thisObj);
+
         
         const user_hid      = thisObj.navigation.userControl.getUserHid();
-        const base_url      = thisObj.navigation.userControl.getBaseUrl();
+        const base_url      = window.location.origin;
         
         // send post request
         const post_data = {
