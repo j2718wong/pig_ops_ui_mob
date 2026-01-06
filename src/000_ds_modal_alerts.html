@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection Error Modal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --error-red: #dc3545;
+            --warning-orange: #ffc107;
+            --info-blue: #0dcaf0;
+            --retry-green: #198754;
+        }
+        
+        .connection-modal .modal-header {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .connection-modal .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+        }
+        
+        .error-icon.error {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--error-red);
+        }
+        
+        .error-icon.warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-orange);
+        }
+        
+        .error-icon.info {
+            background-color: rgba(13, 202, 240, 0.1);
+            color: var(--info-blue);
+        }
+        
+        .error-icon.success {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: var(--retry-green);
+        }
+        
+        .error-details {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .error-details-title {
+            font-weight: 600;
+            color: #6c757d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .error-details-title i {
+            transition: transform 0.3s ease;
+        }
+        
+        .error-details.open .error-details-title i {
+            transform: rotate(180deg);
+        }
+        
+        .error-details pre {
+            background-color: #e9ecef;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            display: none;
+        }
+        
+        .error-details.open pre {
+            display: block;
+        }
+        
+        .btn-retry {
+            background-color: var(--retry-green);
+            border-color: var(--retry-green);
+            padding: 10px 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 250px;
+        }
+        
+        .btn-retry:hover {
+            background-color: #157347;
+            border-color: #146c43;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+        }
+        
+        .btn-retry:active {
+            transform: translateY(0);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .error-timestamp {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .connection-status-text {
+            display: block;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        
+        .modal-close-top {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h1 class="mb-4">Connection Error Modal Demo</h1>
+                <p class="lead mb-4">Click the buttons below to simulate different connection errors</p>
+                
+                <div class="demo-buttons">
+                    <button class="btn btn-danger btn-lg" onclick="showErrorModal('connection_lost')">
+                        <i class="fas fa-wifi-slash me-2"></i>Connection Lost
+                    </button>
+                    <button class="btn btn-warning btn-lg" onclick="showErrorModal('timeout')">
+                        <i class="fas fa-clock me-2"></i>Timeout Error
+                    </button>
+                    <button class="btn btn-info btn-lg" onclick="showErrorModal('server_error')">
+                        <i class="fas fa-server me-2"></i>Server Error
+                    </button>
+                    <button class="btn btn-dark btn-lg" onclick="showErrorModal('network_error')">
+                        <i class="fas fa-globe me-2"></i>Network Error
+                    </button>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="form-check form-switch d-inline-block">
+                        <input class="form-check-input" type="checkbox" id="soundSwitch">
+                        <label class="form-check-label" for="soundSwitch">Enable Sound Alert</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Error Modal -->
+    <div class="modal fade" id="connectionErrorModal" tabindex="-1" aria-labelledby="connectionErrorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content connection-modal">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close modal-close-top" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4 pt-0">
+                    <div class="error-icon error pulse-animation" id="errorIcon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    
+                    <h4 class="modal-title mb-2" id="errorTitle">Connection Error</h4>
+                    
+                    <div class="connection-status-text" id="connectionStatusText">
+                        Disconnected from server
+                    </div>
+                    
+                    <p class="mb-4" id="errorMessage">There was a problem connecting to the server. Please check your internet connection and try again.</p>
+                    
+                    <div class="error-details mb-4" id="technicalDetailsContainer">
+                        <div class="error-details-title" id="technicalDetailsTitle">
+                            <span>Show Technical Details</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <pre id="technicalDetails">Error code: 0
+Status: Offline
+Time: <span id="errorTime"></span></pre>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-retry text-white" id="retryButton" onclick="retryConnection()">
+                            <i class="fas fa-redo me-2"></i>Retry Connection
+                        </button>
+                    </div>
+                    
+                    <div class="error-timestamp mt-3">
+                        Last checked: <span id="lastChecked">Just now</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Error configurations
+        const errorConfigs = {
+            connection_lost: {
+                title: "Connection Lost",
+                message: "Your connection to the server has been lost. Please check your internet connection.",
+                icon: "fa-wifi-slash",
+                iconClass: "error",
+                details: "Error code: 1001\nStatus: Connection lost\nType: Network disruption\nSuggested action: Check router or mobile data"
+            },
+            timeout: {
+                title: "Request Timeout",
+                message: "The server is taking too long to respond. This might be due to high traffic or server issues.",
+                icon: "fa-clock",
+                iconClass: "warning",
+                details: "Error code: 408\nStatus: Request timeout\nTimeout: 30 seconds\nSuggested action: Try again in a moment"
+            },
+            server_error: {
+                title: "Server Error",
+                message: "We're experiencing technical difficulties on our end. Our team has been notified.",
+                icon: "fa-server",
+                iconClass: "info",
+                details: "Error code: 500\nStatus: Internal server error\nServer: api.example.com\nSuggested action: Wait for maintenance"
+            },
+            network_error: {
+                title: "Network Error",
+                message: "Unable to establish a connection to the server. This might be due to firewall or DNS issues.",
+                icon: "fa-globe",
+                iconClass: "error",
+                details: "Error code: 0\nStatus: Network error\nConnection: Failed\nSuggested action: Check firewall settings"
+            }
+        };
+        
+        let retryCount = 0;
+        let modalInstance = null;
+        let retryTimeout = null;
+        
+        // Function to show the error modal
+        function showErrorModal(errorType) {
+            const config = errorConfigs[errorType];
+            if (!config) {
+                console.error('Invalid error type:', errorType);
+                return;
+            }
+            
+            // Update modal content
+            document.getElementById('errorTitle').textContent = config.title;
+            document.getElementById('errorMessage').textContent = config.message;
+            document.getElementById('technicalDetails').textContent = config.details;
+            
+            // Update icon - FIXED: Use correct icon from config
+            const errorIcon = document.getElementById('errorIcon');
+            errorIcon.className = `error-icon ${config.iconClass} pulse-animation`;
+            errorIcon.innerHTML = `<i class="fas ${config.icon}"></i>`;
+            
+            // Update time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            //document.getElementById('errorTime').textContent = timeString;
+            document.getElementById('lastChecked').textContent = "Just now";
+            
+            // Reset to error state
+            document.getElementById('errorMessage').className = "mb-4";
+            document.getElementById('connectionStatusText').textContent = "Disconnected from server";
+            document.getElementById('connectionStatusText').className = "text-muted";
+            
+            // Reset technical details to closed state
+            const detailsContainer = document.getElementById('technicalDetailsContainer');
+            detailsContainer.classList.remove('open');
+            const detailsTitle = document.getElementById('technicalDetailsTitle');
+            detailsTitle.innerHTML = '<span>Show Technical Details</span><i class="fas fa-chevron-down"></i>';
+            
+            // Reset retry count and button
+            retryCount = 0;
+            const retryButton = document.getElementById('retryButton');
+            retryButton.disabled = false;
+            retryButton.className = 'btn btn-retry text-white';
+            retryButton.innerHTML = '<i class="fas fa-redo me-2"></i>Retry Connection';
+            
+            // Get modal element
+            const modalElement = document.getElementById('connectionErrorModal');
+            if (!modalElement) {
+                console.error('Modal element not found');
+                return;
+            }
+            
+            // Create or get modal instance
+            if (!modalInstance) {
+                modalInstance = new bootstrap.Modal(modalElement);
+            }
+            
+            // Show modal
+            modalInstance.show();
+            
+            // Play sound if enabled
+            if (document.getElementById('soundSwitch')?.checked) {
+                playErrorSound();
+            }
+        }
+        
+        // Function to retry connection
+        function retryConnection() {
+            const retryButton = document.getElementById('retryButton');
+            
+            // Clear any existing timeout
+            if (retryTimeout) {
+                clearTimeout(retryTimeout);
+            }
+            
+            // Disable button and show loading state
+            retryButton.disabled = true;
+            retryButton.innerHTML = '<i class="fas fa-spinner spinner me-2"></i>Connecting...';
+            
+            // Update status
+            document.getElementById('connectionStatusText').textContent = "Attempting to reconnect...";
+            document.getElementById('connectionStatusText').className = "text-info";
+            
+            // Simulate connection attempt with 2 second delay
+            retryTimeout = setTimeout(() => {
+                retryCount++;
+                
+                // Simulate random success/failure (30% chance of success)
+                const isSuccess = Math.random() < 0.3;
+                
+                if (isSuccess) {
+                    // Connection successful
+                    handleConnectionSuccess();
+                } else {
+                    // Connection failed
+                    handleConnectionFailure(retryButton);
+                }
+                
+                // Update last checked time
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+                document.getElementById('lastChecked').textContent = timeString;
+            }, 2000);
+        }
+        
+        // Handle successful connection
+        function handleConnectionSuccess() {
+            document.getElementById('connectionStatusText').textContent = "Connected successfully!";
+            document.getElementById('connectionStatusText').className = "text-success";
+            
+            // Update icon
+            const errorIcon = document.getElementById('errorIcon');
+            errorIcon.className = "error-icon success";
+            errorIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+            errorIcon.classList.remove('pulse-animation');
+            
+            // Update message
+            document.getElementById('errorMessage').textContent = "Your connection has been restored. You may continue using the application.";
+            document.getElementById('errorMessage').className = "text-success mb-4";
+            
+            // Update button
+            const retryButton = document.getElementById('retryButton');
+            retryButton.innerHTML = '<i class="fas fa-check me-2"></i>Connected';
+            retryButton.className = 'btn btn-success text-white';
+            retryButton.disabled = true;
+            
+            // Auto-close after 3 seconds
+            setTimeout(() => {
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            }, 3000);
+        }
+        
+        // Handle failed connection
+        function handleConnectionFailure(retryButton) {
+            document.getElementById('connectionStatusText').textContent = "Reconnection failed";
+            document.getElementById('connectionStatusText').className = "text-danger";
+            
+            // Re-enable button with updated count
+            retryButton.disabled = false;
+            retryButton.innerHTML = `<i class="fas fa-redo me-2"></i>Retry Again (${retryCount})`;
+        }
+        
+        // Function to play error sound
+        function playErrorSound() {
+            try {
+                // Create audio context
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                
+                const audioContext = new AudioContext();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 300;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (error) {
+                console.log("Audio not supported in this browser");
+            }
+        }
+        
+        // Toggle technical details function
+        function toggleTechnicalDetails() {
+            const detailsContainer = document.getElementById('technicalDetailsContainer');
+            const detailsTitle = document.getElementById('technicalDetailsTitle');
+            
+            if (detailsContainer.classList.contains('open')) {
+                // Close details
+                detailsContainer.classList.remove('open');
+                detailsTitle.innerHTML = '<span>Show Technical Details</span><i class="fas fa-chevron-down"></i>';
+            } else {
+                // Open details
+                detailsContainer.classList.add('open');
+                detailsTitle.innerHTML = '<span>Hide Technical Details</span><i class="fas fa-chevron-up"></i>';
+            }
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Connection Error Modal Demo loaded');
+            
+            // Set up event listener for technical details toggle
+            const detailsContainer = document.getElementById('technicalDetailsContainer');
+            const detailsTitle = document.getElementById('technicalDetailsTitle');
+            
+            if (detailsContainer && detailsTitle) {
+                detailsTitle.addEventListener('click', toggleTechnicalDetails);
+                detailsContainer.addEventListener('click', function(e) {
+                    // If clicking anywhere in the container (but not on the pre content), toggle
+                    if (e.target.tagName !== 'PRE') {
+                        toggleTechnicalDetails();
+                    }
+                });
+            }
+            
+            // Reset modal state when hidden
+            const modalElement = document.getElementById('connectionErrorModal');
+            if (modalElement) {
+                modalElement.addEventListener('hidden.bs.modal', function() {
+                    // Reset button state
+                    const retryButton = document.getElementById('retryButton');
+                    retryButton.disabled = false;
+                    retryButton.className = 'btn btn-retry text-white';
+                    retryButton.innerHTML = '<i class="fas fa-redo me-2"></i>Retry Connection';
+                    
+                    // Clear any pending timeout
+                    if (retryTimeout) {
+                        clearTimeout(retryTimeout);
+                        retryTimeout = null;
+                    }
+                    
+                    // Reset technical details to closed state
+                    if (detailsContainer) {
+                        detailsContainer.classList.remove('open');
+                        if (detailsTitle) {
+                            detailsTitle.innerHTML = '<span>Show Technical Details</span><i class="fas fa-chevron-down"></i>';
+                        }
+                    }
+                    
+                    retryCount = 0;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

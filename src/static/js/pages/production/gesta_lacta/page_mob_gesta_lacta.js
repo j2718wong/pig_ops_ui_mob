@@ -8,6 +8,7 @@ import {PageViewBasic}          from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PIG_OPERATION_TYPE,
+        PIG_PROD_TYPE,
         PROD_STATUS}            from '../../../constants.js';
 
 import {formatDate,
@@ -145,7 +146,7 @@ export function PageMobGestaLacta(input_settings){
         elemIdEntryCount        = `page-title-${settings.uniqueKey}-prod-count`;
         elemIdPageInfo          = `page-info-${settings.uniqueKey}-list`;
         
-        elemIdPigProdList      	= `${settings.uniqueKey}-card-list`;
+        elemIdPigProdList       = `${settings.uniqueKey}-card-list`;
         elemIdCardContainer     = `mobile-list-container-${settings.uniqueKey}`;
         elemIdPigProdTable      = `mobile-pig-prod-${settings.uniqueKey}-table`;
         elemIdPigProdTableBody  = `mobile-pig-prod-${settings.uniqueKey}-tbody`;
@@ -170,7 +171,7 @@ export function PageMobGestaLacta(input_settings){
                     <tr>
                         <th>PID</th>
                         <th>Sow</th>
-                        <th>Date Expected</th>
+                        <th>Date Wean</th>
                         <th>Operation</th>
                     </tr>
                 </thead>
@@ -188,7 +189,7 @@ export function PageMobGestaLacta(input_settings){
                     <tr>
                         <th>PID</th>
                         <th>Sow</th>
-                        <th>Date Wean</th>
+                        <th>Date Expected</th>
                         <th>Operation</th>
                     </tr>
                 </thead>
@@ -209,9 +210,9 @@ ${html_style}
 
 <div class="mobile-container">
     <div class="header">
-        <h1 id="${elemIdPageTitle}">
+        <h1>
             <span id="${elemIdEntryCount}"></span>
-            ${settings.pageTitle}
+            <span id="${elemIdPageTitle}">${settings.pageTitle}</span>
             <span class="inline-bell larger" id="${elemIdPageHeaderAlarm}" title="Due operations!" style="display:none;">
                 <i class="fas fa-bell"></i>
             </span>
@@ -285,8 +286,7 @@ ${html_style}
         
         this.handleWindowResize();
     
-        // Set this callback
-        navigation.editModalProdPigOps.cbMobileOnSuccessEdit = thisObj.onSuccessEditPigOps;
+        
     }
     
     
@@ -609,8 +609,9 @@ ${html_style}
                 label_date_important= 'Expected Birth';
                 label_num_days_since= 'Days Since Mating'; 
                 
-                const dt_insem_sf   = formatDate(dt_insem, FORMAT_SHORT_MONTH);
-                value_num_days_since= `${numdays_since} Days (${dt_insem_sf})`;
+                const dt_insem      = new Date(insemination.insem_date);
+                const dt_insem_s    = formatDate(dt_insem, FORMAT_SHORT_MONTH);
+                value_num_days_since= `${numdays_since} Days (${dt_insem_s})`;
                 
                 break;
             }
@@ -759,10 +760,10 @@ ${html_style}
         
         
         // Loop through the operations to see if there are done Operations
-        let has_completed_ops = 0;
+        let count_completed_ops = 0;
         for (const cur_entry of operations){
             if (cur_entry.pig_prod_pig_ops.date_actual != null){
-                has_completed_ops = 1;
+                count_completed_ops += 1;
             }
         }
         
@@ -776,59 +777,59 @@ ${html_style}
         let operations_cur_view = []; // can only view 2 operation items on default
         let operations_below    = [];
         
-        
-        if (operations.length <= 2){
-            operations_cur_view = operations;
+        if (count_completed_ops == operations.length){
+            operations_below = operations;
         }
         else{
-            let index;
-            let cur_entry;
-            let count = 0;
-            
-            index = operations.length -1;
-        
-            let index_begin = -1;
-            let index_end   = -1;
-            
-            while (index >= 0){
-                cur_entry = operations[index];
-                
-                if (cur_entry.pig_prod_pig_ops.date_actual == null){
-                    index_end   = index +1;
-                    index_begin = index -1;
-
-                    if (index_begin < 0) {
-                        index_begin = 0;
-                        index_end   = 2;
-                    }
-                    break;
-                }
-                                
-                index = index - 1;
+            if (operations.length <= 2){
+                operations_cur_view = operations;
             }
-            
-            if (index_begin > 0){
-                operations_above    = operations.slice(0,index_begin);
-                operations_cur_view = operations.slice(index_begin, index_end);
-                
-                if (index_end < operations.length){
-                    operations_below = operations.slice(index_end);
-                }
-                
-            }
-            
             else{
-                operations_cur_view = operations.slice(index_begin, index_end);
+                let index;
+                let cur_entry;
+                let count = 0;
                 
-                if (index_end < operations.length){
-                    operations_below = operations.slice(index_end);
+                index = operations.length -1;
+            
+                let index_begin = -1;
+                let index_end   = -1;
+                
+                while (index >= 0){
+                    cur_entry = operations[index];
+                    
+                    if (cur_entry.pig_prod_pig_ops.date_actual == null){
+                        index_end   = index +1;
+                        index_begin = index -1;
+
+                        if (index_begin < 0) {
+                            index_begin = 0;
+                            index_end   = 2;
+                        }
+                        break;
+                    }
+                                    
+                    index = index - 1;
                 }
-            }
-            
-            
+                
+                if (index_begin > 0){
+                    operations_above    = operations.slice(0,index_begin);
+                    operations_cur_view = operations.slice(index_begin, index_end);
+                    
+                    if (index_end < operations.length){
+                        operations_below = operations.slice(index_end);
+                    }
+                    
+                }
+                
+                else{
+                    operations_cur_view = operations.slice(index_begin, index_end);
+                    
+                    if (index_end < operations.length){
+                        operations_below = operations.slice(index_end);
+                    }
+                }
+            }        
         }
-        
-        
         
         if (operations_below.length == 0){
             style_operations_control = 'display:none;';
@@ -1260,11 +1261,10 @@ ${html_style}
     
     
     this.onClickPageHeaderTitle = function(){
-        console.log('onClickPageHeaderTitle');
         
         // Hide alarms table
         elemPigOpsAlarmTable.style.display = 'none';
-		curViewIsPigProdList = true;
+        curViewIsPigProdList = true;
         
         // Toggle Cards or Table View`
         if (curPigProdViewIsCards == true){
@@ -1284,7 +1284,6 @@ ${html_style}
     
     
     this.onClickPageHeaderAlarm = function(){
-        console.log('onClickPageHeaderAlarm');
         
         if (curViewIsPigProdList == true){
             elemPigProdList.style.display = 'none';
@@ -1295,6 +1294,11 @@ ${html_style}
         else{
             elemPigProdList.style.display = 'block';
             elemPigOpsAlarmTable.style.display = 'none';
+            
+            elemCardContainer.style.display = 'block';
+            elemPigProdTable.style.display = 'none';
+            
+            curPigProdViewIsCards = true;
             
             curViewIsPigProdList = true;
         }
@@ -1375,7 +1379,6 @@ ${html_style}
     
     
     this.onClickMarkAsDone = function(pid, entry_hid){
-        console.log(`onClickMarkAsDone pid =${pid}; entry_hid=${entry_hid}`);
     
         const data_pig_prod = thisObj.getDataPigProd(pid);
     
@@ -1400,6 +1403,9 @@ ${html_style}
             is_gesta:       settings.isGesta,
             is_mark_done:   true
         };
+        
+        // Set this callback
+        thisObj.editModalProdPigOps.cbMobileOnSuccessEdit = thisObj.onSuccessEditPigOps;
         thisObj.editModalProdPigOps.show(operation, options);
     }
     
@@ -1448,14 +1454,15 @@ ${html_style}
         // by PigProdPigOps edit
             
 
-        const pig_prod_type = settings.isGesta? PIG_PROD_TYPE.GESTATING : PIG_PROD_TYPE.LACTATING;
-        
+        let pig_prod_type = PIG_PROD_TYPE.GESTATING;
+        if (settings.isGesta == false){pig_prod_type = PIG_PROD_TYPE.LACTATING;}
+
         const callback = function(data){
             navigation.setDataPigProdList(data);
             
             thisObj.show(); 
             
-            editModalProdPigOps.hide();
+            navigation.editModalProdPigOps.hide();
         };
         
         navigation.requestManager.requestPigProdData(pig_prod_type, callback);

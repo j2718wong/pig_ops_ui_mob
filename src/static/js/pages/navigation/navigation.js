@@ -119,14 +119,14 @@ function UserControl() {
     this.getUserHid = function(){
         if (dataUserAccount == null){return null;}
         
-        return dataUserAccount.user.hid;
+        return dataUserAccount.user.user.hid;
     }
     
     
     this.getUserAccountHid = function(){
         if (dataUserAccount == null){return null;}
         
-        return dataUserAccount.account.hid;
+        return dataUserAccount.account.account.hid;
     }
 
 
@@ -358,7 +358,7 @@ export function Navigation(){
     
     let dataPigProdPublic       = null;
     
-    this.dataPigFarmAccount   	= null;
+    this.dataPigFarmAccount     = null;
     
     
     this.init = function(){
@@ -476,11 +476,11 @@ export function Navigation(){
         this.setDataCompanyApp(data.application);
         this.setDataUserAccount(data.user_account);
             
-		const pig_farm_account = data.pig_farm_account;
-		
-		this.dataPigFarmAccount = pig_farm_account;
-		
-			
+        const pig_farm_account = data.pig_farm_account;
+        
+        this.dataPigFarmAccount = pig_farm_account;
+        
+            
         if ('acc_pig_ops' in pig_farm_account){
             this.pageAccPigOps.setDataAccPigOps(pig_farm_account.acc_pig_ops);
         }

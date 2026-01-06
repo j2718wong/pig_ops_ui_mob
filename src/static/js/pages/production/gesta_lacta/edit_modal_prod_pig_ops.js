@@ -310,7 +310,8 @@ export function EditModalProdPigOps(input_settings){
         select_data.push({value:"0", text:"Please Select"});
         
         for (const cur_entry of dataStaffList){
-            select_data.push({value: cur_entry.hid, text: cur_entry.name});
+            select_data.push({value: cur_entry.pig_farm_staff.hid, 
+                text: cur_entry.pig_farm_staff.name});
         }
         
         thisObj.replaceSelectOptions(elemStaff, select_data);
@@ -415,6 +416,11 @@ export function EditModalProdPigOps(input_settings){
     }
     
     
+    this.hide = function(){
+        editModal.hide();
+    }
+    
+    
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
     
@@ -499,7 +505,6 @@ export function EditModalProdPigOps(input_settings){
     }
     
     
-    
     this._onClickSaveButton = function(){
         let input_elem      = null;
         let cur_field       = null;
@@ -514,7 +519,12 @@ export function EditModalProdPigOps(input_settings){
         
         input_elem          = elemDateActual;
         cur_field           = fieldDateActual;
-        cur_field.newValue  = input_date_actual;
+        
+        // Convert date to YYYY-MM-DD format
+        const dt_actual     = new Date(input_date_actual);
+        const dt_actual_s   = dt_actual.toLocaleDateString('en-CA');
+        
+        cur_field.newValue  = dt_actual_s;
         validation          = cur_field.validateChange();
 
         if (validation != FIELD_VALIDATION_OK){
@@ -588,7 +598,7 @@ export function EditModalProdPigOps(input_settings){
             'pig_prod_pig_ops_hid': dataModel.hid,
             'staff_hid':        input_staff_hid,
             'done_by_user':     done_by_user,
-            'date':             input_date_actual,
+            'date':             fieldDateActual.newValue,
             'notes':            input_notes
         };
         
