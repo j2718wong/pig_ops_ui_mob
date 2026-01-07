@@ -75,7 +75,7 @@ export function PageViewBasic(){
     
     
     /*
-    Will calculate the number of days since date insemination.
+    Will calculate the number of days since date insemination up to now.
     
     @param insem_date: dat estr in YYYY-MM-DD format
     
@@ -95,12 +95,31 @@ export function PageViewBasic(){
         // Adjust Day 1 on date of insemination/coupling if needed
         if (settings_operations){
             if (settings_operations.day_1_on_date_of_insem > 0){
-                days_diff += 1;
+                diff_days += 1;
             }
         }
         return diff_days;
     }
 
     
+	this.calculateNumDaysSinceBirth = function(date_of_birth, dt_current, settings_operations){
+        if (!dt_current){
+            dt_current = new Date();
+            dt_current.setHours(0, 0, 0, 0);
+        }
+        
+        const dt_birth            = new Date(date_of_birth);
+        const diff_msecs          = dt_current - dt_birth;
+        
+        let   diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+        
+        // Adjust Day 1 on date of birth if needed
+        if (settings_operations){
+            if (settings_operations.day_1_on_date_of_birth > 0){
+                diff_days += 1;
+            }
+        }
+        return diff_days;
+    }
     
 }

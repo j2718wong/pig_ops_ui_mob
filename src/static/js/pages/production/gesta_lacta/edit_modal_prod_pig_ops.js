@@ -239,6 +239,7 @@ export function EditModalProdPigOps(input_settings){
         $('#'+elemIdDateActual).datepicker({
             format: 'MM d, yyyy',  // This gives "January 31, 2026"
             autoclose: true,
+            orientation: 'bottom',
             endDate: new Date() // Max date is today
         }).on('show', function(e) {
             $('.datepicker').addClass('datepicker-material');

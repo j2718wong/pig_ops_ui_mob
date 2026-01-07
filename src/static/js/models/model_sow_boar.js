@@ -6,7 +6,7 @@
 
 
 import {Field, 
-		ModelBasic}             from './model_master.js';
+		ModelBasic}             from './model_basic.js';
 
 
 ModelSowBoar.prototype = new ModelBasic();

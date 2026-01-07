@@ -67,6 +67,9 @@ export function ProdEntryBirth(input_settings){
    
     let staffList               = null; 
     
+    let pigProdData         = null;
+    
+    
     const insemDataSelect       = new InsemDataSelect();
     
 
@@ -244,7 +247,7 @@ export function ProdEntryBirth(input_settings){
             autoclose: true,
             endDate: new Date() // Max date is today
         }).on('show', function(e) {
-            $('.datepicker').addClass('datepicker-material');
+            $('.datepicker').classList.add('datepicker-material');
         });
     }
     
@@ -276,6 +279,19 @@ export function ProdEntryBirth(input_settings){
             });
         });
         
+        
+        elemChkDoneByMe.addEventListener('change', function(event) {
+            if (event.currentTarget.checked) {
+                elemStaff.style.display = 'none';
+            } else {
+                elemStaff.style.display = 'block';
+            }
+        });
+        
+        
+        elemDateBirth.addEventListener('change', function() {
+            thisObj._validateAfterChangeInput(this, 'date_birth');
+        });
     }
     
     
@@ -287,6 +303,8 @@ export function ProdEntryBirth(input_settings){
     
     
     this.show = function(data_pig_prod, options){
+        pigProdData = data_pig_prod;
+        
         const data_sow = data_pig_prod.sow;
         let sow_reference =  getSowBoarReference(data_sow, true);
         
@@ -301,6 +319,197 @@ export function ProdEntryBirth(input_settings){
     }
     
     
+    this._validateAfterChangeInput = function(ev, input_field){
+        /* Use this to validate new entry form input.*/
+    
+        var input_elem  = null;
+        var input_val   = null;
+        var cur_field   = null;
+        var validation  = null;
+     
+        
+        if (ev.checkValidity()) {
+            switch(input_field){
+            
+                
+                case 'date_birth': {
+                    input_elem  = elemIdDateBirth;
+                    input_val   = input_elem.value || null;
+                    cur_field   = newEntry.fieldShortName;
+                    
+                    
+                    cur_field.newValue = input_val;
+                    validation = cur_field.validateChange();
+                    
+                    if (validation == FIELD_VALIDATION_OK) {
+                        ev.classList.remove('is-invalid');
+                        ev.classList.add('is-valid');
+                    } else{
+                        ev.classList.remove('is-valid');
+                        ev.classList.add('is-invalid');
+                    }
+                    
+                    break;
+                }
+                
+                case 'description': {
+                    input_elem  = elemDescription;
+                    input_val   = input_elem.value || null;
+                    cur_field   = newEntry.fieldDescription;
+                    
+                    
+                    cur_field.newValue = input_val;
+                    validation = cur_field.validateChange();
+                    
+                    if (validation == FIELD_VALIDATION_OK) {
+                        ev.classList.remove('is-invalid');
+                        ev.classList.add('is-valid');
+                    } else{
+                        ev.classList.remove('is-valid');
+                        ev.classList.add('is-invalid');
+                    }
+                    
+                    break;
+                }
+            }
+            
+            
+        } else {
+            ev.classList.remove('is-valid');
+            ev.classList.add('is-invalid');
+        }
+
+    }
+    
+    
+    this._onClickSaveButton = function(){
+
+        let input_elem      = null;
+        let cur_field       = null;
+        let validation      = -1;
+        let proceed_to_save = 1;
+        
+       
+        let input_date_birth= elemDateBirth.value;
+        let input_num_dead  = parseInt(elemNumDead.value);
+        let input_num_male  = parseInt(elemNumMale.value);
+        let input_num_female= parseInt(elemNumFemale.value);
+        let input_staff_hid = elemStaff.val();
+        
+        
+        input_elem          = elemDateBirth;
+        cur_field           = selectedEntry.fieldBirthDate;
+        cur_field.newValue  = input_date_birth;
+        validation          = cur_field.validateChange();
+
+        if (validation != FIELD_VALIDATION_OK){
+            if (el_date_birth.classList.contains('is-invalid') == false){
+                el_date_birth.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        }
+        else{
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+        
+        // The staff can be from the drop down
+        // Or Done by User (Done by Me checkbox)
+        let done_by_user = 0
+        
+        if (elemChkDoneByMe.checked){done_by_user = 1;}
+        
+        if (done_by_user == 0){
+            input_elem          = elemStaff;
+            if (input_staff_hid == '0'){
+                if (input_elem.classList.contains('is-invalid') == false){
+                    input_elem.classList.add('is-invalid');
+                }
+                proceed_to_save = 0;
+            }
+            else{
+                if (input_elem.classList.contains('is-valid') == false){
+                    input_elem.classList.add('is-valid');
+                }
+                fieldStaffHid.newValue = input_staff_hid;
+            }
+        }
+        if (proceed_to_save == 0) {return;}
+        
+        
+        
+        if (selectedEntry.hasChanged() == false){
+            console.log('No change');
+            
+            
+            return;
+        }
+        
+        
+        let user_hid        = gController.getUserUhid();
+        
+        // send post request
+        let post_data = {
+            'uhid':             user_hid,
+            'pig_prod_hid':     selectedEntry.hid,
+            'birth_staff_hid':  input_staff_hid,
+            
+            'date_actual_birth': input_date_birth,
+            'num_pigs_dead':    input_num_dead,
+            'num_pigs_male':    input_num_male,
+            'num_pigs_female':  input_num_female
+        };
+        
+               
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            url: gController.getBaseUrl() + '/pig_prod/update_birth',
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (thisObj.callBackOnSuccessUpdate != null){
+                        thisObj.callBackOnSuccessUpdate();
+                    }
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+            }
+        });
+        
+    }
+
+    
+    
+    this._onSuccessUpdatePigOps = function(){
+        if (thisObj.navigation.curScreenIsMobile > 0){
+            
+            if (thisObj.cbMobileOnSuccessEdit){
+                thisObj.cbMobileOnSuccessEdit(pigProdPid);
+            }
+        }
+        
+        
+        // TODO for desktop
+       
+    }
     
     
 

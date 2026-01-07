@@ -9,7 +9,8 @@ import {PageViewBasic}          from '../../common/page_view_basic.js';
 import {PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
-        PIG_OPERATION_TYPE}     from '../../../constants.js';
+        PIG_OPERATION_TYPE,
+        SUPPLIER_TYPE}          from '../../../constants.js';
 
 import {InsemDataSelect}        from './insem_data_select.js';
 
@@ -57,6 +58,7 @@ export function PageProdGestatingAdd(input_settings){
     let elemIdAiShow            = null;
     let elemIdSemenSupplier     = null;
     let elemIdSemenSupplierCount= null;
+    let elemIdSemenSupplierInfo = null;
     let elemIdSemenType         = null;
     let elemIdSemenTypeCount    = null;
     let elemIdSemenCost         = null;
@@ -101,6 +103,7 @@ export function PageProdGestatingAdd(input_settings){
     let elemAiShow              = null;
     let elemSemenSupplier       = null;
     let elemSemenSupplierCount  = null;
+    let elemSemenSupplierInfo   = null;
     let elemSemenType           = null;
     let elemSemenTypeCount      = null;
     let elemSemenCost           = null;
@@ -164,6 +167,7 @@ export function PageProdGestatingAdd(input_settings){
         elemIdAiShow            = `pig-prod-add-select-ai-show`;
         elemIdSemenSupplier     = `pig-prod-add-select-semen-supplier`;
         elemIdSemenSupplierCount= `pig-prod-add-select-semen-supplier-count`;
+        elemIdSemenSupplierInfo = `pig-prod-add-select-semen-supplier-info`;
         elemIdSemenType         = `pig-prod-add-select-semen-type`;
         elemIdSemenTypeCount    = `pig-prod-add-select-semen-type-count`;
         elemIdSemenCost         = `pig-prod-add-semen-cost`;
@@ -295,6 +299,8 @@ export function PageProdGestatingAdd(input_settings){
                         <i class="bi bi-plus"></i> New
                     </button>
                 </div>
+                
+                <div id="${elemIdSemenSupplierInfo}"></div>
             </div>
             
             <!-- 2. Semen Type -->
@@ -596,19 +602,38 @@ export function PageProdGestatingAdd(input_settings){
     
     this.setDataSowList = function(data){
         sowList = data;
-        insemDataSelect.setDataSowList(sowList, elemSow);
+		
+
+        // Exclude not production ready
+        let filtered = [];
+        for (const cur_entry of data){
+            if (cur_entry.is_production_ready > 0){
+                filtered.push(cur_entry);
+            }
+        }
         
-        elemSowCount.textContent = ` (${sowList.length} entries)`;
+        insemDataSelect.setDataSowList(filtered, elemSow);
+        
+        elemSowCount.textContent = ` (${filtered.length} entries)`;
     }
     
     
     this.setDataBoarList = function(data){
         boarList = data;
-        insemDataSelect.setDataBoarList(boarList, elemBoar);
-        insemDataSelect.setDataBoarList(boarList, elemBoarInternal);
         
-        elemBoarCount.textContent   = ` (${boarList.length} entries)`;
-        elemBoarInternalCount.textContent= ` (${boarList.length} entries)`;
+        // Exclude not production ready
+        const filtered = []
+        for (const cur_entry of data){
+            if (cur_entry.is_production_ready > 0){
+                filtered.push(cur_entry);
+            }
+        }
+        
+        insemDataSelect.setDataBoarList(filtered, elemBoar);
+        insemDataSelect.setDataBoarList(filtered, elemBoarInternal);
+        
+        elemBoarCount.textContent   = ` (${filtered.length} Entries)`;
+        elemBoarInternalCount.textContent= ` (${filtered.length} Entries)`;
     }
     
     
@@ -684,7 +709,16 @@ export function PageProdGestatingAdd(input_settings){
     this.show = function(){
         thisObj._resetForm();
         
-        console.log('PageAddGestating show');
+        const account_semen_suppliers = navigation.accountLists.getListSemenSupplier();
+        
+        // Request semen_supplier if not yet requested
+        if (account_semen_suppliers == null){
+            navigation.accountLists.requestSupplier(SUPPLIER_TYPE.SEMEN,
+                    thisObj.setDataSemenSupplierList);
+        }
+        else{
+            thisObj.setDataSemenSupplierList(account_semen_suppliers);
+        }
     }
     
     
@@ -717,6 +751,75 @@ export function PageProdGestatingAdd(input_settings){
                 break;
             }
         }
+    }
+    
+    
+    this._onChangeSemenSupplier = function(semen_hid){
+        elemSemen       .removeClass('is-invalid');
+        elemSemen       .removeClass('is-valid');
+        
+        const supplier_hid = elemSemenSupplier.value
+        
+        
+        // Need to request semen_supplier_semen
+        const base_url = window.location.origin;
+        const url = `${base_url}/semen_sup_semen/list?semen_supplier_hid={supplier_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    
+                    let semen_supplier = thisObj.getSemenSupplier(supplier_hid);
+                  
+                  
+                    
+                    
+                    let new_options = [];
+                    if (response.data.length == 0){
+                        new_options.push({value:"-1", text:"No Entries"});
+                        thisObj._replaceSelectOptions(
+                            elemSemen, new_options);
+                        elemSemenShow.show();
+                        return;
+                    }
+                    
+                    
+                    new_options.push({value:"0", text:"Please Select"});
+                    
+                    $(response.data).each(function(){
+                        new_options.push({value:this.hid, text:this.name});
+                    });
+                    
+                    thisObj._replaceSelectOptions(elemSemen, new_options);
+                    elemSemenShow.show();
+                    
+                    if (semen_hid){
+                        elemSemen.val(semen_hid).change();
+                    }
+                    
+                }
+                else {
+                    // TODO
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+            }
+        });
     }
     
     
@@ -825,22 +928,22 @@ export function PageProdGestatingAdd(input_settings){
     
     
     this._onClickSaveButton = function(){
-        var input_elem;
-        var cur_field;
-        var validation;
-        var proceed_to_save = 1;
+        let input_elem;
+        let cur_field;
+        let validation;
+        let proceed_to_save = 1;
         
 
-        var input_sow_hid           = elemSow.value;
-        var input_insem_type        = elemInsemType.value;
-        var input_boar_hid          = elemBoar.value;
-        var input_date_mating       = elemDateMating.value;
-        var input_semen_supplier_hid = elemSemenSupplier.value;
-        var input_semen_type_hid    = elemSemenType.value;
-        var input_semen_cost        = elemSemenCost.value;
-        var input_other_cost        = elemOtherCost.value;
-        var input_insem_notes       = elemNotes.value;
-        var input_staff_hid         = elemStaff.value;
+        let input_sow_hid           = elemSow.value;
+        let input_insem_type        = elemInsemType.value;
+        let input_boar_hid          = elemBoar.value;
+        let input_date_mating       = elemDateMating.value;
+        let input_semen_supplier_hid = elemSemenSupplier.value;
+        let input_semen_type_hid    = elemSemenType.value;
+        let input_semen_cost        = elemSemenCost.value;
+        let input_other_cost        = elemOtherCost.value;
+        let input_insem_notes       = elemNotes.value;
+        let input_staff_hid         = elemStaff.value;
         
         
         input_elem          = elemSow;

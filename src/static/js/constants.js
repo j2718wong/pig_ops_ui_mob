@@ -56,6 +56,16 @@ const SOW_STATUS = {
     SOLD:               7
 };
 
+const SOW_STATUS_NAME = {
+	1:	'Growing',
+	2:	'Gestating',
+	3:	'Lactating',
+	4:	'Weaning',
+	5:	'Culled',
+	6:	'Dead',
+	7:	'Sold'
+	
+}
 
 const PROD_STATUS = {
     GESTATING:          1,
@@ -77,6 +87,13 @@ const PIG_PROD_TYPE = {
 };
 
 
+const SUPPLIER_TYPE ={
+    FEED:               1,
+    SEMEN:              2,
+    GILT:               3
+    
+};
+
 export {
     APPLICATION,
     PAGE_ID,
@@ -84,7 +101,9 @@ export {
     SOW_BOAR_TYPE,
     PIG_OPERATION_TYPE,
     SOW_STATUS,
+	SOW_STATUS_NAME,
     PROD_STATUS,
     
-    PIG_PROD_TYPE
+    PIG_PROD_TYPE,
+    SUPPLIER_TYPE
 };

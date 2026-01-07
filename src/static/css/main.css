@@ -1014,6 +1014,15 @@ p {
 
 
 /********* COMMON CONTROLS **********/
+.server-error-msg {
+	padding-top:2px;  display:none
+}
+
+.server-error-msg span{
+	color:red;
+}
+
+
 /* Updated Table Styles */
 .data-table {
 	width: 100%;
@@ -1231,6 +1240,7 @@ p {
 }
 
 .filter-button {
+	min-width: 60px;
     padding: 8px 8px;
     background-color: white;
     border: none;
@@ -2418,9 +2428,13 @@ textarea.form-control {
 }
         
 .operation-icon {
-    font-size: 16px;
+    font-size: 20px;
     min-width: 20px;
     text-align: center;
+}
+
+.operation-icon.large {
+	font-size: 30px;
 }
 
 .icon-done {

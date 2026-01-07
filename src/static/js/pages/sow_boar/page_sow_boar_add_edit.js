@@ -12,6 +12,8 @@ import {SOW_STATUS}             from '../../constants.js';
 
 import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
 
+import {ModelSowBoar}           from '../../models/model_sow_boar.js'
+
 
 
 PageSowBoarAddEdit.prototype = new PageViewBasic();
@@ -42,8 +44,10 @@ export function PageSowBoarAddEdit(input_settings){
     
     let elemIdName              = null;
     let elemIdNameCharCounter   = null;
+    let elemIdNameInv           = null;
     let elemIdNumber            = null;
     let elemIdNumberCharCounter = null;
+    let elemIdNumberInv         = null;
     let elemIdDateOfBirth       = null;
     let elemIdBirthProdIdShow   = null;
     let elemIdBirthProdId       = null;
@@ -56,6 +60,7 @@ export function PageSowBoarAddEdit(input_settings){
     let elemIdNotes             = null;
     let elemIdNotesCharCounter  = null;
     
+    let elemIdServerErrorMsg    = null;
     let elemIdBtnCancel         = null;
     let elemIdBtnSave           = null;
     
@@ -69,8 +74,10 @@ export function PageSowBoarAddEdit(input_settings){
         
     let elemName                = null;
     let elemNameCharCounter     = null;
+    let elemNameInv             = null;
     let elemNumber              = null;
     let elemNumberCharCounter   = null;
+    let elemNumberInv           = null;
     let elemDateOfBirth         = null;
     let elemBirthProdIdShow     = null;
     let elemBirthProdId         = null;
@@ -83,6 +90,7 @@ export function PageSowBoarAddEdit(input_settings){
     let elemNotes               = null;
     let elemNotesCharCounter    = null;
     
+    let elemServerErrorMsg      = null;
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
     
@@ -91,6 +99,12 @@ export function PageSowBoarAddEdit(input_settings){
     let boarList                = null;
 
     let showOptions             = null;
+    
+    
+    let sowBoarEntry            = new ModelSowBoar();
+    
+    
+    this.callbackOnSuccessAdd   = null;
     
     
     this.init = function(){
@@ -110,8 +124,11 @@ export function PageSowBoarAddEdit(input_settings){
         
         elemIdName              = `sow-boar-add-edit-name`;
         elemIdNameCharCounter   = `sow-boar-add-edit-name-counter`;
+        elemIdNameInv           = `sow-boar-add-edit-name-inv`;
         elemIdNumber            = `sow-boar-add-edit-number`;
         elemIdNumberCharCounter = `sow-boar-add-edit-number-counter`;
+        elemIdNumberInv         = `sow-boar-add-edit-number-inv`;
+        
         elemIdDateOfBirth       = `sow-boar-add-edit-date-of-birth`;
         elemIdBirthProdIdShow   = `sow-boar-add-edit-birth-prod-id-show`;
         elemIdBirthProdId       = `sow-boar-add-edit-birth-prod-id`;
@@ -125,6 +142,7 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdNotes             = `sow-boar-add-edit-notes`;
         elemIdNotesCharCounter  = `sow-boar-add-edit-notes-counter`;
         
+        elemIdServerErrorMsg    = `sow-boar-add-edit-server-error-msg`;
         elemIdBtnCancel         = `sow-boar-add-edit-cancel`;
         elemIdBtnSave           = `sow-boar-add-edit-save`;
         
@@ -155,8 +173,8 @@ export function PageSowBoarAddEdit(input_settings){
             <label for="${elemIdName}" class="form-label">Name
                 <span id="${elemIdNameCharCounter}" class="char-counter">0/${max_len_name}</span>
             </label>
-            <input  type="text" class="form-control" id="${elemIdName}" maxlength="${max_len_name}" required>
-            <div class="invalid-feedback">Please enter a valid name. </div>
+            <input  type="text" class="form-control" id="${elemIdName}" maxlength="${max_len_name}">
+            <div class="invalid-feedback" id="${elemIdNameInv}">Please enter a valid name. </div>
             <div class="form-text">Pig name to easily remember.</div>
         </div>
         
@@ -165,8 +183,8 @@ export function PageSowBoarAddEdit(input_settings){
             <label for="${elemIdNumber}" class="form-label">Number
                 <span id="${elemIdNumberCharCounter}" class="char-counter">0/${max_len_number}</span>
             </label>
-            <input  type="text" class="form-control" id="${elemIdNumber}" maxlength="${max_len_number}" required>
-            <div class="invalid-feedback">Please enter a pig number. </div>
+            <input  type="text" class="form-control" id="${elemIdNumber}" maxlength="${max_len_number}">
+            <div class="invalid-feedback" id="${elemIdNumberInv}">Please enter a pig number. </div>
             <div class="form-text">This can be an eartag number of your pig.</div>
         </div>
         
@@ -175,7 +193,7 @@ export function PageSowBoarAddEdit(input_settings){
             <label for="${elemIdDateOfBirth}" class="form-label">
                 Date of Birth
             </label>
-            <input type="text" class="form-control" id="${elemIdDateOfBirth}" required>
+            <input type="text" class="form-control" id="${elemIdDateOfBirth}">
             <div class="form-text">This is use to calculate pig's age.</div>
         </div>
         
@@ -237,6 +255,8 @@ export function PageSowBoarAddEdit(input_settings){
         
         <!-- Footer Buttons -->
         <div class="modal-footer">
+            <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+                                           
             <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
                 <i class="fas fa-times me-2"></i>Cancel
             </button>
@@ -269,8 +289,10 @@ export function PageSowBoarAddEdit(input_settings){
         
         elemName                = document.getElementById(elemIdName);
         elemNameCharCounter     = document.getElementById(elemIdNameCharCounter);
+        elemNameInv             = document.getElementById(elemIdNameInv);
         elemNumber              = document.getElementById(elemIdNumber);
         elemNumberCharCounter   = document.getElementById(elemIdNumberCharCounter);
+        elemNumberInv           = document.getElementById(elemIdNumberInv);
         elemDateOfBirth         = document.getElementById(elemIdDateOfBirth);
         elemBirthProdIdShow     = document.getElementById(elemIdBirthProdIdShow);
         elemBirthProdId         = document.getElementById(elemIdBirthProdId);
@@ -283,6 +305,7 @@ export function PageSowBoarAddEdit(input_settings){
         elemNotes               = document.getElementById(elemIdNotes);
         elemNotesCharCounter    = document.getElementById(elemIdNotesCharCounter);
        
+        elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
         elemBtnCancel           = document.getElementById(elemIdBtnCancel);
         elemBtnSave             = document.getElementById(elemIdBtnSave);
     }
@@ -292,7 +315,7 @@ export function PageSowBoarAddEdit(input_settings){
         $('#'+elemIdDateOfBirth).datepicker({
             format: 'MM d, yyyy',  // This gives "January 31, 2026"
             autoclose: true,
-			orientation: 'bottom',
+            orientation: 'bottom',
             endDate: new Date() // Max date is today
         }).on('show', function(e) {
             $('.datepicker').addClass('datepicker-material');
@@ -326,15 +349,18 @@ export function PageSowBoarAddEdit(input_settings){
         });
         
         
-		elemName.addEventListener('blur', function() {
+        elemName.addEventListener('blur', function() {
             thisObj._validateAfterChangeInput(this, 'name');
         });
         
-		elemNumber.addEventListener('blur', function() {
+        elemNumber.addEventListener('blur', function() {
             thisObj._validateAfterChangeInput(this, 'number');
         });
-		
         
+        
+        elemBtnSave.addEventListener('click', function() {
+            thisObj._onClickSaveButton();
+        });
        
     }
     
@@ -349,25 +375,126 @@ export function PageSowBoarAddEdit(input_settings){
     }
     
     
+    this._getSowBoar = function(name, number, exclude_hid){
+        // Note: SowBoar name or number can be null; but not both
+        // SowBoar number can also contain non numeric characters
+        let upper_name  = null;
+        let upper_number = null;
+        
+        if (name != null){upper_name = name.toUpperCase();}
+        if (number != null){upper_number = number.toUpperCase();}
+        
+        
+        let cur_entry;
+        let index;
+        
+        let sow_boar_list= null;
+        if (showOptions.is_sow){
+            sow_boar_list = sowList;
+        }
+        else{
+            sow_boar_list = boarList;
+        }
+        
+        for (index = 0; index < sow_boar_list.length; index++){
+            cur_entry = sow_boar_list[index];
+            
+            // Will check both name and number for duplicate 
+            
+            if (upper_name != null) {
+                if (cur_entry.name != null){
+                    if (cur_entry.name.toUpperCase() == upper_name){
+                        if (exclude_hid){
+                            if (cur_entry.hid != exclude_hid){
+                                return cur_entry;
+                            }
+                        }
+                        
+                        else{
+                            return cur_entry;
+                        }
+                    }
+                }
+                
+                if (cur_entry.number != null) {
+                    if (cur_entry.number.toUpperCase() == upper_name){
+                        if (exclude_hid){
+                            if (cur_entry.hid != exclude_hid){
+                                return cur_entry;
+                            }
+                        }
+                        
+                        else{
+                            return cur_entry;
+                        }
+                    }
+                }
+            }
+            
+            if (upper_number != null) {
+                if (cur_entry.name != null){
+                    if (cur_entry.name.toUpperCase() == upper_number){
+                        if (exclude_hid){
+                            if (cur_entry.hid != exclude_hid){
+                                return cur_entry;
+                            }
+                        }
+                        
+                        else{
+                            return cur_entry;
+                        }
+                    }
+                }
+                
+                if (cur_entry.number != null) {
+                    if (cur_entry.number.toUpperCase() == upper_number){
+                        if (exclude_hid){
+                            if (cur_entry.hid != exclude_hid){
+                                return cur_entry;
+                            }
+                        }
+                        
+                        else{
+                            return cur_entry;
+                        }
+                    }
+                }
+            }
+            
+        }
+        
+        return null;
+    }
+    
+    
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
+        elemIdNameInv.style.display = 'none';
+        elemIdNumberInv.style.display = 'none';
       
         
         
+        // Remove validation classes
+        let cur_elem = null;
+        
+        cur_elem = elemName;
+        cur_elem.value = ''; 
+        cur_elem.classList.remove('is-valid', 'is-invalid'); 
+        
+        cur_elem = elemNumber;
+        cur_elem.value = ''; 
+        cur_elem.classList.remove('is-valid', 'is-invalid'); 
+        
+        cur_elem = elemIdDateOfBirth;
+        cur_elem.value = ''; 
+        cur_elem.classList.remove('is-valid', 'is-invalid'); 
+        
+        cur_elem = elemNotes;
+        cur_elem.value = ''; 
+        cur_elem.classList.remove('is-valid', 'is-invalid'); 
         
         
-        
-        elemStaff.selectedIndex = 0;
-        elemStaff.classList.remove('is-valid', 'is-invalid');
-        
-        elemChkDoneByMe.checked = false;
-        
-        
-        elemNotes.value = '';
-        elemStaff.classList.remove('is-valid', 'is-invalid');
-        
-        thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 160);
         
     }
     
@@ -413,6 +540,8 @@ export function PageSowBoarAddEdit(input_settings){
         if (options.is_sow){
             // Boars can be external to the farm
             elemIsExternalShow.style.display = 'none';
+            
+            elemNumNipplesShow.style.display = 'none';
         }
         
         
@@ -457,23 +586,50 @@ export function PageSowBoarAddEdit(input_settings){
         let cur_field   = null;
         let validation  = null;
         
+		let is_duplicate = 0;
+		
         
         if (ev.checkValidity()) {
             switch(input_field){
             
                 case 'name': {
-                    input_elem      = elemDateMating;
-                    input_val       = input_elem.value;
-                    cur_field       = newEntry.fieldInsemDate;
+                    input_elem      = elemName;
+                    input_val       = input_elem.value.trim();
+                    cur_field       = sowBoarEntry.fieldSowBoarName;
                     
-                    console.log('date_mating = ' + input_val);
+                    
                     cur_field.newValue = input_val; 
                     validation = cur_field.validateChange();
+                    
+                    // Additional validation to prevent duplicate 
+                    if (validation == FIELD_VALIDATION_OK){
+						if (input_val.length > 0){
+							if (showOptions.is_add){ 
+								const cur_sow_boar = thisObj._getSowBoar(input_val, null);
+					
+								if (cur_sow_boar != null){
+									is_duplicate = 1;
+									validation = -1;
+								}
+							
+							} else{
+								// edit
+								
+							}
+						}
+                    }
                     
                     if (validation == FIELD_VALIDATION_OK) {
                         ev.classList.remove('is-invalid');
                         ev.classList.add('is-valid');
                     } else{
+                        if (is_duplicate > 0){
+                            elemNameInv.textContent = 'Duplicate entry.';
+                        }
+                        else{
+                            elemNameInv.textContent = 'Please enter a valid name.';
+                        }
+                        
                         ev.classList.remove('is-valid');
                         ev.classList.add('is-invalid');
                     }
@@ -482,9 +638,9 @@ export function PageSowBoarAddEdit(input_settings){
                 }
                 
                 case 'number': {
-                    input_elem  = elemOtherCost;
-                    input_val   = input_elem.val() || null;
-                    cur_field   = newEntry.fieldInsemCost;
+                    input_elem  = elemNumber;
+                    input_val   = input_elem.value;
+                    cur_field   = sowBoarEntry.fieldSowBoarNumber;
                     
                     
                     cur_field.newValue = input_val;
@@ -500,42 +656,7 @@ export function PageSowBoarAddEdit(input_settings){
                     break;
                 }
                 
-                case 'notes': {
-                    input_elem  = elemNotes;
-                    input_val   = input_elem.value;
-                    cur_field   = fieldNotes;
-                    
-                    
-                    cur_field.newValue = input_val; 
-                    validation = cur_field.validateChange();
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-                case 'staff':{
-                    input_elem  = elemStaff;
-                    input_val   = input_elem.val();
-                    
-                    
-                    if (input_val != '0'){
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-               
+                               
             }
             
             
@@ -545,4 +666,254 @@ export function PageSowBoarAddEdit(input_settings){
         }
 
     }
+    
+    
+    this._onClickSaveButton = function(){
+
+        let input_elem      = null;
+        let input_val       = null;
+        let cur_field       = null;
+        let validation      = -1;
+        let proceed_to_save = 1;
+        
+        let is_duplicate    = 0;
+        
+       
+        
+        let input_name      = elemName.value.trim();
+        let input_number    = elemNumber.value.trim();
+        let input_date_birth= elemDateOfBirth.value.trim();
+        
+        is_duplicate        = 0;
+        
+        input_elem          = elemName;
+        cur_field           = sowBoarEntry.fieldSowBoarName;
+        cur_field.newValue  = input_name;
+        validation          = cur_field.validateChange();
+        
+        
+        // Additional validation to prevent duplicate 
+        if (validation == FIELD_VALIDATION_OK){
+            if (input_name.length > 0){
+                if (showOptions.is_add){ 
+                    const cur_sow_boar = thisObj._getSowBoar(input_name, null);
+        
+                    if (cur_sow_boar != null){
+                        is_duplicate = 1;
+                        validation = -1;
+                    }
+                
+                } else{
+                    // edit
+                    
+                }
+            }
+            
+        }
+        
+        if (validation != FIELD_VALIDATION_OK){
+            if (is_duplicate > 0){
+                elemNameInv.html('Duplicate entry.');
+            }
+            else{
+                elemNameInv.html('Please enter a valid name.');
+            }
+            
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        }
+        else{
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+            
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+        
+        is_duplicate        = 0;
+        
+        input_elem          = elemNumber;
+        cur_field           = sowBoarEntry.fieldSowBoarNumber;
+        cur_field.newValue  = input_number;
+        validation          = cur_field.validateChange();
+        
+        
+        // Additional validation to prevent duplicate 
+        if (validation == FIELD_VALIDATION_OK){
+            if (input_number.length > 0){
+                const cur_sow_boar = thisObj._getSowBoar(null, input_number);
+    
+                if (cur_sow_boar != null){
+                    is_duplicate = 1;
+                    validation = -1;
+                }
+            }
+        }
+        
+        if (validation != FIELD_VALIDATION_OK){
+            if (is_duplicate > 0){
+                elemNumberInv.textContent = 'Duplicate entry.';
+            }
+            else{
+                elemNumberInv.textContent = 'Please enter a valid number.';
+            }
+            
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        }
+        else{
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+            
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+        
+        // check if both name and number are blank
+        if (input_name.length == 0 && input_number.length == 0){
+            elemNameInv.textContent = 'Cannot be both blank.';
+            elemNumberInv.textContent = 'Cannot be both blank.';
+            
+            input_elem          = elemName;
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            
+            input_elem          = elemNumber;
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            
+            proceed_to_save = 0;
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+        if (input_date_birth.length == 0){
+            input_date_birth = null;
+        } else{
+            input_elem          = elemDateOfBirth;
+            cur_field           = sowBoarEntry.fieldBirthDate;
+            
+            
+            // Convert date to YYYY-MM-DD format
+            const dt_dob        = new Date(input_date_birth);
+            const dt_dob_s      = dt_actual.toLocaleDateString('en-CA');
+            
+            cur_field.newValue  = dt_dob_s;
+            validation          = cur_field.validateChange();
+                
+                
+            if (validation != FIELD_VALIDATION_OK){
+            
+                if (input_elem.classList.contains('is-invalid') == false){
+                    input_elem.classList.add('is-invalid');
+                }
+                proceed_to_save = 0;
+            }
+            else{
+                if (input_elem.classList.contains('is-valid') == false){
+                    input_elem.classList.add('is-valid');
+                }
+            }
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+                
+        
+        
+        const is_external   = elemIsExternal.checked;
+        const is_prod_ready = elemIsProdReady.checked;
+        
+        const sex           = showOptions.is_sow ? 'F':'M';
+        
+        
+        const user_hid      = navigation.userControl.getUserHid();
+        const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
+        const base_url      = window.location.origin;
+        
+        
+        // send post request
+        let post_data = {
+            'uhid':             user_hid,
+            'pfhid':            pig_farm_hid,
+            
+            'number':           sowBoarEntry.fieldSowBoarNumber.newValue,
+            'name':             sowBoarEntry.fieldSowBoarName.newValue,
+            'date_of_birth':    sowBoarEntry.fieldBirthDate.newValue,
+            'sex':              sex,
+            'is_production_ready': is_prod_ready? 1 : 0,
+        };
+        
+        if (showOptions.is_add == false){
+            // edit entry
+            delete post_data.pfhid;
+            
+            post_data['sow_boar_hid'] = sowBoarEntry.hid;
+        }
+        
+		if (post_data.date_of_birth == null){
+			delete post_data.date_of_birth;
+		}
+        
+        // Only add Boars will have is_external flag;
+        if (is_external == true && showOptions.is_sow == false){
+            post_data.is_external = 1;
+        }
+        
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            url: `${base_url}/sow_boar/add`,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    elemServerErrorMsg.style.display.block;
+                    
+                    navigation.pigFarm.requestSowBoar(showOptions.is_sow, 
+                        thisObj.callbackOnSuccessAdd)
+                }
+                else{
+                    let result_desc = response.result.desc;
+                    let html;
+                    if ((result_desc != null) && (result_desc.length > 0)){
+                        html = `<span>${result_desc}</span>`;
+                    }
+                    else{
+                        html = `<span>${response.result.code}</span>`;
+                    }
+                    
+                    elemServerErrorMsg.innerHTML = html;
+                    elemServerErrorMsg.style.display = 'block'
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+            }
+        });
+    }
+    
+    
+
 }   

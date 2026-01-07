@@ -200,7 +200,7 @@ export function PageSowBoarAddEdit(input_settings){
 		</div>
 		
 		
-		<!-- 4. Entry Name -->
+		<!-- 5. Entry Name -->
         <div class="form-group-text">
             <label for="${elemIdName}" class="form-label">Name
                 <span id="${elemIdNameCharCounter}" class="char-counter">0/${max_len_name}</span>
@@ -208,80 +208,6 @@ export function PageSowBoarAddEdit(input_settings){
             <input  type="text" class="form-control" id="${elemIdName}" maxlength="${max_len_name}" required>
             <div class="invalid-feedback">Please enter a valid name. </div>
             <div class="form-text">Pig name to easily remember.</div>
-        </div>
-        
-        <!-- 2. Number -->
-        <div class="form-group-text">
-            <label for="${elemIdNumber}" class="form-label">Number
-                <span id="${elemIdNumberCharCounter}" class="char-counter">0/${max_len_number}</span>
-            </label>
-            <input  type="text" class="form-control" id="${elemIdNumber}" maxlength="${max_len_number}" required>
-            <div class="invalid-feedback">Please enter a pig number. </div>
-            <div class="form-text">This can be an eartag number of your pig.</div>
-        </div>
-        
-        <!-- 3. Date of Birth -->
-        <div class="form-group-date">
-            <label for="${elemIdDateOfBirth}" class="form-label">
-                Date of Birth
-            </label>
-            <input type="text" class="form-control" id="${elemIdDateOfBirth}" required>
-            <div class="form-text">This is use to calculate pig's age.</div>
-        </div>
-        
-        <div class="form-group-text" id="${elemIdBirthProdIdShow}">
-            <label class="form-label">Birth Prod ID</label>
-            <span class="" id="${elemIdBirthProdId}"></span>
-        </div>
-        
-        <!-- Number of Sow nipples -->
-        <div class="form-group" id="${elemIdNumNipplesShow}">
-            <label for="${elemIdNumNipples}" class="form-label">
-                Number of Nipples
-            </label>
-            <div class="number-input-group">
-                <button class="number-btn minus" data-target="${elemIdNumNipples}">-</button>
-                <input type="number" class="form-control number-input" id="${elemIdNumNipples}" value="12" min="12">
-                <button class="number-btn plus" data-target="${elemIdNumNipples}">+</button>
-            </div>
-            <div class="form-text">Yes. We record this. You better count.</div>
-        
-        </div>
-        
-        
-        <!-- 4. Is External -->
-        <div class="form-group-select" id="${elemIdIsExternalShow}">
-            <label for="${elemIdIsExternal}" class="form-label">
-                Is External?
-            </label>
-            <input type="checkbox" id="${elemIdIsExternal}">
-            <label for="${elemIdIsExternal}" class="checkbox-label">
-                External
-            </label>
-            <div class="form-text">Check this if you borrowed your neighbor's boar.</div>
-        </div>
-        
-        <!-- 5. Is Production Ready -->
-        <div class="form-group-select">
-            <label for="${elemIdIsProdReady}" class="form-label">
-                Is Ready for Mating?
-            </label>
-            <input type="checkbox" id="${elemIdIsProdReady}">
-            <label for="${elemIdIsProdReady}" class="checkbox-label">
-                Production Ready
-            </label>
-            <div class="form-text">Need to specify if ready to mate.</div>
-        </div>
-        
-        
-        <!-- 6. Notes -->
-        <div class="form-group-text-area">
-            <label for="${elemIdNotes}" class="form-label">
-                Notes
-                <span id="${elemIdNotesCharCounter}" class="char-counter">0/160</span>
-            </label>
-            
-            <textarea class="form-control" id="${elemIdNotes}" rows="2" maxlength="160"></textarea>
         </div>
         
         

@@ -9,7 +9,8 @@ import {PageViewBasic}          from '../common/page_view_basic.js';
 import {APPLICATION,
         PAGE_ID,
         SOW_BOAR_TYPE,
-        SOW_STATUS}            	from '../../constants.js';
+        SOW_STATUS,
+        SOW_STATUS_NAME}        from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -27,8 +28,8 @@ export function PageSowBoarList(input_settings){
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
-	const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
-	
+    const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
+    
     
     /*
     Typical input_settings
@@ -55,6 +56,8 @@ export function PageSowBoarList(input_settings){
     let elemIdAddEntryBtn       = null;
     let elemIdFilterControls    = null;
     
+    let elemIdTableRowCount     = null;
+    
     let elemIdTableSow          = null;
     let elemIdTableSowBody      = null;
     
@@ -64,8 +67,8 @@ export function PageSowBoarList(input_settings){
     let elemIdTableGilt         = null;
     let elemIdTableGiltBody     = null;
     
-	let elemIdNumEntriesCurView	= null;
-	
+    let elemIdNumEntriesCurView = null;
+    
     let elemIdPigOpsAlarmTable  = null;
 
 
@@ -78,6 +81,8 @@ export function PageSowBoarList(input_settings){
     let elemAddEntryBtn         = null;
     let elemFilterControls      = null;
     
+    let elemTableRowCount       = null;
+    
     let elemTableSow            = null;
     let elemTableSowBody        = null;
     
@@ -87,7 +92,7 @@ export function PageSowBoarList(input_settings){
     let elemTableGilt           = null;
     let elemTableGiltBody       = null;
     
-    let elemNumEntriesCurView	= null;
+    let elemNumEntriesCurView   = null;
     
     
     let elemPigOpsAlarmTable    = null;
@@ -97,7 +102,7 @@ export function PageSowBoarList(input_settings){
     
     let dataSowList             = null;
     let dataBoarList            = null;
-    let dataGiltList			= null;
+    let dataGiltList            = null;
 
     let curSowBoarType          = null;
 
@@ -107,6 +112,9 @@ export function PageSowBoarList(input_settings){
 
     let showpageHeaderAlarm     = false;
     let pigOpsAlarmList         = null;
+    
+    
+    let curSowFilter            = null;
     
     
     // This must be set before rendering the autotable
@@ -159,11 +167,13 @@ export function PageSowBoarList(input_settings){
         elemIdEntryCount        = `page-title-sow-boar-count`;
         elemIdPageInfo          = `page-info-sow-boar-list`;
         
-		elemIdSearchInput       = `mobile-search-input-sow-boar`;
+        elemIdSearchInput       = `mobile-search-input-sow-boar`;
         elemIdAddEntryBtn       = `mobile-add-entry-btn-sow-boar`;
         elemIdFilterControls    = `mobile-filter-control-sow-boar`;
         
-		
+        
+        elemIdTableRowCount     = `sow-boar-table-row-count`;
+        
         elemIdTableSow          = `sow-boar-sow-table`;
         elemIdTableSowBody      = `sow-boar-sow-tbody`;
         
@@ -173,7 +183,7 @@ export function PageSowBoarList(input_settings){
         elemIdTableGilt         = `sow-boar-gilt-table`;
         elemIdTableGiltBody     = `sow-boar-gilt-tbody`;
         
-		elemIdNumEntriesCurView = `sow-boar-num-entries-view`;
+        elemIdNumEntriesCurView = `sow-boar-num-entries-view`;
         
         elemIdPigOpsAlarmTable  = `${settings.uniqueKey}-alarm-table`;
         
@@ -225,14 +235,16 @@ ${html_style}
             <div class="animal-filter">
                 <div class="filter-buttons sow">
                     <button class="filter-button active" data-filter="all">All</button>
-                    <button class="filter-button" data-filter="gestating">Gestating</button>
-                    <button class="filter-button" data-filter="lactating">Lactating</button>
-                    <button class="filter-button" data-filter="weaning">Weaning</button>
+                    <button class="filter-button" data-filter="gestating">Gesta</button>
+                    <button class="filter-button" data-filter="lactating">Lacta</button>
+                    <button class="filter-button" data-filter="weaning">Wean</button>
                     <button class="filter-button" data-filter="disposed">Disposed</button>
                 </div>
             </div>
             
         </div>
+        
+        <div id="${elemIdTableRowCount}"></div>
 
         <!-- Sow Boar -->
         <table class="data-table table-sow" id="${elemIdTableSow}">
@@ -276,7 +288,7 @@ ${html_style}
             </tbody>
         </table>
         
-		<span id="${elemIdNumEntriesCurView}"></span>
+        <span id="${elemIdNumEntriesCurView}"></span>
         
         
         
@@ -306,8 +318,10 @@ ${html_style}
 
         elemSearchInput         = document.getElementById(elemIdSearchInput);
         elemAddEntryBtn         = document.getElementById(elemIdAddEntryBtn);
-        elemFilterControls		= document.getElementById(elemIdFilterControls);
-		
+        elemFilterControls      = document.getElementById(elemIdFilterControls);
+        
+        elemTableRowCount       = document.getElementById(elemIdTableRowCount);
+        
         elemTableSow            = document.getElementById(elemIdTableSow);
         elemTableSowBody        = document.getElementById(elemIdTableSowBody);
         
@@ -317,7 +331,7 @@ ${html_style}
         elemTableGilt           = document.getElementById(elemIdTableGilt);
         elemTableGiltBody       = document.getElementById(elemIdTableGiltBody);
         
-        elemNumEntriesCurView	= document.getElementById(elemIdNumEntriesCurView);
+        elemNumEntriesCurView   = document.getElementById(elemIdNumEntriesCurView);
     }
     
     
@@ -334,41 +348,57 @@ ${html_style}
         });
 
         
-       
+        const filterButtons  = elemDivContainer.querySelectorAll('.filter-button');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const data_filter = button.getAttribute('data-filter');
+                
+                // Update active tab button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                thisObj.onClickSowFilter(data_filter);
+               
+            });
+        });
+        
     
     }
     
 
     this.setDataSowList = function(data){
-		// When this is set, the data includes the gilts (SOW_STATUS.GROWING)
-		// Need to seperate	gilts data	
-		
-		dataSowList = []
-		dataGiltList = []
-		
-		let sow_boar = null;
-		
-		for (const cur_entry of data){
-			if ('sow_boar' in cur_entry){
-				sow_boar = cur_entry.sow_boar;
-			}
-			else{sow_boar = cur_entry;}
-			
-			if (sow_boar.status_id == SOW_STATUS.GROWING){
-				dataGiltList.push(cur_entry);
-			}
-			else{
-				dataSowList.push(cur_entry);
-			}
-			
-		}
-		
+        // When this is set, the data includes the gilts (SOW_STATUS.GROWING)
+        // Need to seperate gilts data  
         
+        dataSowList = []
+        dataGiltList = []
+        
+        let sow_boar = null;
+        
+        for (const cur_entry of data){
+            if ('sow_boar' in cur_entry){
+                sow_boar = cur_entry.sow_boar;
+            }
+            else{sow_boar = cur_entry;}
+            
+            if (sow_boar.status_id == SOW_STATUS.GROWING){
+                dataGiltList.push(cur_entry);
+            }
+            else{
+                dataSowList.push(cur_entry);
+            }
+            
+        }
+        
+        // Default all
+        curSowFilter = 'all';
     }
     
     
     this.setDataBoarList = function(data){
         dataBoarList    = data;
+
     }
     
     
@@ -414,11 +444,13 @@ ${html_style}
                     elemFilterControls.style.display = 'block';
                 }
                 
+                elemTableRowCount.style.display = 'block';
+                
                 elemTableSow.style.display = 'block';
                 elemTableBoar.style.display = 'none';
                 elemTableGilt.style.display = 'none';
                 
-				thisObj._renderSowTable(dataSowList);
+                thisObj.renderSowTable(dataSowList);
                 break;
             }
             
@@ -431,17 +463,22 @@ ${html_style}
                 
                 elemFilterControls.style.display = 'none';
                 
+                elemTableRowCount.style.display = 'none';
+                
                 elemTableSow.style.display = 'none';
                 elemTableBoar.style.display = 'block';
                 elemTableGilt.style.display = 'none';
                 
-				break;
+				thisObj.renderBoarTable(dataBoarList);
+                break;
             }
             
             case SOW_BOAR_TYPE.GILT:{
                 elemPageTitle.textContent = 'Gilt List';
                 
                 elemFilterControls.style.display = 'none';
+                
+                elemTableRowCount.style.display = 'none';
                 
                 elemTableSow.style.display = 'none';
                 elemTableBoar.style.display = 'none';
@@ -472,111 +509,246 @@ ${html_style}
         
     }
     
-	
-	this._renderSowTable = function(sow_list){
-		let html = '';	
-		
-		
-		let diff_msecs;
+    
+    this.renderSowTable = function(sow_list){
+        let html = '';  
+        
+        
+        let diff_msecs;
         let diff_days;
         
-		
-		let dt_current = new Date();
-		dt_current.setHours(0, 0, 0, 0);
-		
-			    
-		
-		for (const cur_entry of sow_list){
-			let sow_boar = null;
-			let sow_reference = '';
         
-			if ('sow_boar' in cur_entry){
-				sow_boar = cur_entry.sow_boar;
-			}
-			else{
-				sow_boar = cur_entry;
-			}
-		
-			if ((sow_boar.name != null) && (sow_boar.name.length >0)){
-				sow_reference = sow_boar.name;
-			}
-			else{
-				sow_reference = sow_boar.number;
-			}
-			
-			let dt_birth = null;
-			let s_age = '';
-			
-			if (sow_boar.date_of_birth != null){
-				dt_birth = new Date(sow_boar.date_of_birth);
-			
-				diff_msecs          = dt_current - dt_birth;
-				diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
-				
-				let num_years 		= Math.floor(diff_days / 365);
-				let excess_days 	= diff_days % 365;
-				let num_months 		= Math.round(excess_days / 30);
-				
-				
-				if (num_years == 0){
-					s_age = `${num_months} months`;
-				}
-				else{
-					if (num_years == 1){
-						s_age = `${num_years} year`;
-					} else{
-						s_age = `${num_years} years`;
-					}
-					
-					if (num_months  >0){
-						if (num_months == 1){
-							s_age += `, <span>${num_months} month</span>`;
-						}
-						else{
-							s_age += `, <span>${num_months} months</span>`;
-						}
-					}
-				}
-				
-			
-			}
-			
-			html += `<tr>`;
-			html += `<td>${sow_reference}</td>`;
-			html += `<td>${sow_boar.status}</td>`;
-			html += `<td>${s_age}</td>`;
-			html += `<td></td>`;
-			
-			
-			html += '</tr>';
-		}
-		
-		elemTableSowBody.innerHTML = html;
-	}
-	
+        let dt_current = new Date();
+        dt_current.setHours(0, 0, 0, 0);
+        
+        
+        for (const cur_entry of sow_list){
+            let sow_boar = null;
+            let sow_reference = '';
+        
+            if ('sow_boar' in cur_entry){
+                sow_boar = cur_entry.sow_boar;
+            }
+            else{
+                sow_boar = cur_entry;
+            }
+        
+            if ((sow_boar.name != null) && (sow_boar.name.length >0)){
+                sow_reference = sow_boar.name;
+            }
+            else{
+                sow_reference = sow_boar.number;
+            }
+            
+            let dt_birth = null;
+            let s_age = '';
+            
+            if (sow_boar.date_of_birth != null){
+                dt_birth = new Date(sow_boar.date_of_birth);
+            
+                diff_msecs          = dt_current - dt_birth;
+                diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+                
+                let num_years       = Math.floor(diff_days / 365);
+                let excess_days     = diff_days % 365;
+                let num_months      = Math.round(excess_days / 30);
+                
+                
+                if (num_years == 0){
+                    s_age = `${num_months} months`;
+                }
+                else{
+                    if (num_years == 1){
+                        s_age = `${num_years} year`;
+                    } else{
+                        s_age = `${num_years} years`;
+                    }
+                    
+                    if (num_months  >0){
+                        if (num_months == 1){
+                            s_age += `, <span>${num_months} month</span>`;
+                        }
+                        else{
+                            s_age += `, <span>${num_months} months</span>`;
+                        }
+                    }
+                }
+                
+            
+            }
+            
+            html += `<tr>`;
+            html += `<td>${sow_reference}</td>`;
+            html += `<td>${SOW_STATUS_NAME[sow_boar.status_id]}</td>`;
+            html += `<td>${s_age}</td>`;
+            html += `<td></td>`;
+            
+            
+            html += '</tr>';
+        }
+        
+        elemTableSowBody.innerHTML = html;
+    }
     
-	this.filterDataSowList = function(sow_status_id){
-		let data_filtered = [];
-		
-		for (const cur_entry of dataSowList){
-			let sow_boar = null;
-			if ('sow_boar' in cur_entry){
-				sow_boar = cur_entry.sow_boar;
-			}
-			else{
-				sow_boar = cur_entry;
-			}
-			
-			if (sow_boar.status_id == sow_status_id){
-				data_filtered.push(cur_entry)
-			}
-			
-		}
-		
-		return data_filtered;
-	}
-	
     
+    this.onClickSowFilter = function(filter_type){
+        
+        if (curSowFilter == filter_type){return;}
+        
+        let sow_status_id = null;
+        let filtered_sow_list = null;
+        
+        switch(filter_type){
+            case 'all':{
+                filtered_sow_list = dataSowList;
+                thisObj.renderSowTable(filtered_sow_list);
+                
+                elemTableRowCount.textContent = `${filtered_sow_list.length} Entries`;
+                break;
+            }
+            
+            case 'gestating':{
+                sow_status_id = SOW_STATUS.GESTATING;
+                filtered_sow_list = thisObj.filterDataSowList(sow_status_id);
+                thisObj.renderSowTable(filtered_sow_list);
+                
+                elemTableRowCount.textContent = `${filtered_sow_list.length} Entries`;
+                break;
+            }
+            
+            case 'lactating':{
+                sow_status_id = SOW_STATUS.LACTATING;
+                filtered_sow_list = thisObj.filterDataSowList(sow_status_id);
+                thisObj.renderSowTable(filtered_sow_list);
+                
+                elemTableRowCount.textContent = `${filtered_sow_list.length} Entries`;
+                break;
+            }
+            
+            case 'weaning':{
+                sow_status_id = SOW_STATUS.WEANING;
+                filtered_sow_list = thisObj.filterDataSowList(sow_status_id);
+                thisObj.renderSowTable(filtered_sow_list);
+                
+                elemTableRowCount.textContent = `${filtered_sow_list.length} Entries`;
+                break;
+            }
+            
+            case 'disposed':{
+                // TODO
+                break;
+            }
+        }
+        
+        curSowFilter = filter_type;
+    }
+    
+    
+    this.filterDataSowList = function(sow_status_id){
+        let data_filtered = [];
+        
+        for (const cur_entry of dataSowList){
+            let sow_boar = null;
+            if ('sow_boar' in cur_entry){
+                sow_boar = cur_entry.sow_boar;
+            }
+            else{
+                sow_boar = cur_entry;
+            }
+            
+            if (sow_boar.status_id == sow_status_id){
+                data_filtered.push(cur_entry)
+            }
+            
+        }
+        
+        return data_filtered;
+    }
+    
+    
+	this.renderBoarTable = function(boar_list){
+        let html = '';  
+        
+        
+        let diff_msecs;
+        let diff_days;
+        
+        
+        let dt_current = new Date();
+        dt_current.setHours(0, 0, 0, 0);
+        
+        
+        for (const cur_entry of boar_list){
+            let sow_boar = null;
+            let sow_reference = '';
+        
+            if ('sow_boar' in cur_entry){
+                sow_boar = cur_entry.sow_boar;
+            }
+            else{
+                sow_boar = cur_entry;
+            }
+        
+            if ((sow_boar.name != null) && (sow_boar.name.length >0)){
+                sow_reference = sow_boar.name;
+            }
+            else{
+                sow_reference = sow_boar.number;
+            }
+            
+            let dt_birth = null;
+            let s_age = '';
+            
+            if (sow_boar.date_of_birth != null){
+                dt_birth = new Date(sow_boar.date_of_birth);
+            
+                diff_msecs          = dt_current - dt_birth;
+                diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+                
+                let num_years       = Math.floor(diff_days / 365);
+                let excess_days     = diff_days % 365;
+                let num_months      = Math.round(excess_days / 30);
+                
+                
+                if (num_years == 0){
+                    s_age = `${num_months} months`;
+                }
+                else{
+                    if (num_years == 1){
+                        s_age = `${num_years} year`;
+                    } else{
+                        s_age = `${num_years} years`;
+                    }
+                    
+                    if (num_months  >0){
+                        if (num_months == 1){
+                            s_age += `, <span>${num_months} month</span>`;
+                        }
+                        else{
+                            s_age += `, <span>${num_months} months</span>`;
+                        }
+                    }
+                }
+                
+            
+            }
+            
+            html += `<tr>`;
+            html += `<td>${sow_reference}</td>`;
+            html += `<td>${s_age}</td>`;
+            html += `<td></td>`;
+            html += `<td></td>`;
+            
+            
+            html += '</tr>';
+        }
+        
+        elemTableBoarBody.innerHTML = html;
+    }
+    
+    
+	
+	
     this.setUserLanguage = function(language_key){
         curUserLanguageKey = language_key;
         thisObj.onUserChangeLanguage();

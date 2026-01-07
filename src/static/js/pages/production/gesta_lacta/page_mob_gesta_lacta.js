@@ -435,11 +435,12 @@ ${html_style}
             });
         });
         
-		
-		// Render HTML in elemPigProdTableBody
-		elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
         
-		
+        // Render HTML in elemPigProdTableBody
+        const is_gesta = settings.isGesta;
+        elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(is_gesta);
+        
+        
         // Show PageHeaderAlarm
         if (showPageHeaderAlarm){
             elemPageHeaderAlarm.style.display = 'inline-block';
@@ -604,7 +605,7 @@ ${html_style}
                 
                 diff_days = thisObj.calculateNumDaysSinceInsem(
                         insemination.insem_date, dt_current,
-                        navigation.dataPigFarmAccount.account.settings_operations);
+                        navigation.pigFarm.getSettingsOperations());
                         
                 numdays_since       = diff_days;
                 
@@ -1183,40 +1184,154 @@ ${html_style}
     }
     
     
-    this._getHtmlPigProdTableBody = function(){
+    this._getHtmlPigProdTableBody = function(is_gesta){
         
         let html_tbody = '';
+        let s_date_expected = ''
+        let s_operation = '';
+        
+        let pid;
+        let data_sow;
+        let sow_reference;
+        
+        let dt_important; 
+        let dt_important_s;
+        let diff_days;
+        let num_days_wean; 
+        let s_date_important;
+        
+        let dt_actual;
+        let msecs_wean;
+        let dt_wean;
+        
+        let operations;
+        let len_items;
+        
+        let has_operations = 0;
+        let are_all_done= 0;
+        let pending_operation = null;
+        
+        let cur_operation;
+        let dt_target;
+        let dt_target_s;
+        let operation_name;
+        
+        
+        const dt_current = new Date();
+        dt_current.setHours(0, 0, 0, 0);
+        
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         
         let index = 0;
         for (const cur_entry of dataPigProdList){
-            const pid = cur_entry.pig_production.farm_prod_id;
+            pid = cur_entry.pig_production.farm_prod_id;
             
-            const data_sow = cur_entry.sow;
-            const sow_reference = getSowBoarReference(data_sow);
+            data_sow = cur_entry.sow;
+            sow_reference = getSowBoarReference(data_sow);
         
             
-            let s_date_expected = ''
-            const dt_expected = new Date(cur_entry.birth.date_expected);
-            const short_dt_expected = formatDate(dt_expected, FORMAT_COMPACT);
+            // Set important date; 
+            // gesta: expected date of birth 
+            // lacta: date of weaning
+            s_date_important = ''
+            if (is_gesta){
+                dt_important = new Date(cur_entry.birth.date_expected);
+                dt_important_s = formatDate(dt_important, FORMAT_COMPACT);
+                
+                diff_days = thisObj.calculateNumDaysSinceInsem(
+                            cur_entry.insemination.insem_date, dt_current,
+                            acc_settings_ops);
+                            
+                s_date_important = `${dt_important_s} (Day ${diff_days})`;
+            }
+            else{
+                dt_actual = new Date(cur_entry.birth.date_actual);
+                
+                num_days_wean = DEFAULT_NUM_DAYS_WEAN;
+                
+                // check if the account has set num_days_wean
+                if (acc_settings_ops){
+                    num_days_wean = acc_settings_ops.num_days_wean;
+                    
+                    // Adjust Day 1 on date of birth if needed
+                    if (acc_settings_ops.day_1_on_date_of_birth > 0){
+                        num_days_wean -= 1;
+                    }
+                }
+                
+                msecs_wean = dt_actual.getTime() + num_days_wean * NUM_MSECS_1DAY;
+                dt_wean = new Date(msecs_wean);
+                
+                dt_important    = dt_wean;
+                dt_important_s  = formatDate(dt_important, FORMAT_COMPACT);
+                
+                diff_days = thisObj.calculateNumDaysSinceBirth(
+                            cur_entry.birth.date_actual, dt_current,
+                            acc_settings_ops);
+                
+                s_date_important = `${dt_important_s} (Day ${diff_days})`;
+            }
             
-            const diff_days = thisObj.calculateNumDaysSinceInsem(
-                        cur_entry.insemination.insem_date, null,
-                        navigation.dataPigFarmAccount.account.settings_operations);
-                        
-            s_date_expected = `${short_dt_expected} (Day ${diff_days})`;
             
-            
-            // The Operation column should display either the following
+            // The Operation column should display either one of the following
             // 1.) Over due not yet done operation; display Date, operation name 
             // + overdue indicator
             // 2.) If no overdue, show the upcoming operation
             // 3.) If all Done, should display ALL DONE 
+            s_operation = '';
+            
+            if (is_gesta){
+                operations = cur_entry.gestating_ops;
+            }
+            else{
+                operations = cur_entry.lactating_ops;
+            }
+            
+            len_items = operations.length;
+            
+            has_operations = 1;
+            if (len_items == 0){has_operations = 0;}
+            
+            pending_operation = null;
+            are_all_done = 1;
+            if (len_items > 0){
+                index = len_items -1;
+                while (index >= 0){
+                    cur_operation = operations[index];
+                    
+                    if (cur_operation.pig_prod_pig_ops.date_actual == null){
+                        are_all_done = 0;
+                        pending_operation = cur_operation;
+                        break; // break the while loop
+                    }
+                    
+                    index -= 1;
+                }
+            }
+            
+            
+            if (pending_operation){
+                dt_target   = new Date(pending_operation.pig_prod_pig_ops.date_target);
+                dt_target_s  = formatDate(dt_target, FORMAT_COMPACT);
+            
+                if (dt_current >= dt_target){
+                    operation_name = pending_operation.account_pig_ops.name;
+                }
+                
+                s_operation = `<div>${dt_target_s}</div><div>${operation_name}</div>`;
+            } else{
+                s_operation = `<div>All Done
+                                    <span class="operation-icon large icon-done">
+                                        <i class="fas fa-check-circle"></i>
+                                    </span>
+                                </div>`;
+            }
             
             
             
             
             let s_click = null;
-            if (settings.isGesta){
+            if (is_gesta){
             }
             else{
             }
@@ -1227,9 +1342,10 @@ ${html_style}
                 <td>${pid}</td>
                 <td class="sow-name"  role="button" onclick="${s_click}" style="margin-left:0; padding-left:0;">${sow_reference}</td>
                 <td class="date" role="button" onclick="${s_click}">
-                    ${s_date_expected}
+                    ${s_date_important}
                 </td style="margin-left:0; padding-left:0;">
                 <td class="operation" style="margin-left:0; padding-left:0;">
+                    ${s_operation}
                 </td>
             </tr>
             `;
@@ -1270,18 +1386,18 @@ ${html_style}
         elemPigOpsAlarmTable.style.display = 'none';
         curViewIsPigProdList = true;
         
-		console.log('Test A');
-		
+        console.log('Test A');
+        
         // Toggle Cards or Table View`
         if (curPigProdViewIsCards == true){
-			console.log('Test 1');
+            console.log('Test 1');
             elemCardContainer.style.display = 'none';
             elemPigProdTable.style.display = 'block';
             
             curPigProdViewIsCards = false;
         } else {
             console.log('Test 2');
-			elemCardContainer.style.display = 'block';
+            elemCardContainer.style.display = 'block';
             elemPigProdTable.style.display = 'none';
             
             curPigProdViewIsCards = true;
@@ -1293,7 +1409,7 @@ ${html_style}
     
     this.onClickPageHeaderAlarm = function(){
         curPigProdViewIsCards = false;
-		
+        
         if (curViewIsPigProdList == true){
             elemPigProdList.style.display = 'none';
             elemPigOpsAlarmTable.style.display = 'block';
