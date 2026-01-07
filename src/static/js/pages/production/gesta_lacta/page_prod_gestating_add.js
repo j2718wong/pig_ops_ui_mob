@@ -508,7 +508,17 @@ export function PageProdGestatingAdd(input_settings){
             }
             
             
+            const callback = function(new_sow_boar_hid){
+                const cur_sow = thisObj.getDataSow(new_sow_boar_hid);
+                
+                if (cur_sow == null){return;}
+                if (cur_sow.is_production_ready == 0){return;}
+                
+                elemSow.value = new_sow_boar_hid;
+            };
+            
             navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
             
             const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
             navigation.showThisPage(next_page)
@@ -525,8 +535,18 @@ export function PageProdGestatingAdd(input_settings){
                 go_back_page:   elemDivContainer   // Go back to this page
             }
             
+                
+            const callback = function(new_sow_boar_hid){
+                const cur_boar = thisObj.getDataBoar(new_sow_boar_hid);
+                
+                if (cur_boar == null){return;}
+                if (cur_boar.is_production_ready == 0){return;}
+                
+                elemBoar.value = new_sow_boar_hid;
+            };
             
             navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
             
             const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
             navigation.showThisPage(next_page)
@@ -602,8 +622,7 @@ export function PageProdGestatingAdd(input_settings){
     
     this.setDataSowList = function(data){
         sowList = data;
-		
-
+        
         // Exclude not production ready
         let filtered = [];
         for (const cur_entry of data){
@@ -612,6 +631,7 @@ export function PageProdGestatingAdd(input_settings){
             }
         }
         
+
         insemDataSelect.setDataSowList(filtered, elemSow);
         
         elemSowCount.textContent = ` (${filtered.length} entries)`;
@@ -637,8 +657,30 @@ export function PageProdGestatingAdd(input_settings){
     }
     
     
+    this.getDataSow = function(sow_hid){
+        for (const cur_entry of sowList){
+            if (cur_entry.hid == sow_hid){return cur_entry;}
+        } 
+        
+        return null;
+    }
+    
+    
+    this.getDataBoar = function(boar_hid){
+        for (const cur_entry of boarList){
+            if (cur_entry.hid == boar_hid){return cur_entry;}
+        } 
+        
+        return null;
+    }
+    
+    
+    
     this.setDataSemenSupplierList = function(data){
         semenSupplierList = data;
+		
+		console.log(data);
+		
         insemDataSelect.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
         
         elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} entries)`;

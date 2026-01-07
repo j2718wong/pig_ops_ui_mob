@@ -453,13 +453,19 @@ export function Navigation(){
         
         this.setDataCompanyApp(data.application);
         this.setDataUserAccount(data.user_account);
-            
-        const pig_farm_account = data.pig_farm_account;
-        this.pigFarm.setDataPigFarmAccount(pig_farm_account);
         
-        const user_current_farm = this.userControl.getCurrentFarm();
+		const user_current_farm = this.userControl.getCurrentFarm();
+        const pig_farm_account = data.pig_farm_account;
+        
+		this.pigFarm.setDataPigFarm(user_current_farm);
+		this.pigFarm.setDataPigFarmAccount(pig_farm_account);
+        
+        
         const country_hid   = user_current_farm.location.country.hid;
         
+		console.log(`user_current_farm`);
+		console.log(user_current_farm);
+		
         
         // This waits for the logged in user for user authentication
         // before request

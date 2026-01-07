@@ -470,8 +470,8 @@ export function PageSowBoarAddEdit(input_settings){
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
-        elemIdNameInv.style.display = 'none';
-        elemIdNumberInv.style.display = 'none';
+        elemNameInv.style.display = 'none';
+        elemNumberInv.style.display = 'none';
       
         
         
@@ -486,7 +486,7 @@ export function PageSowBoarAddEdit(input_settings){
         cur_elem.value = ''; 
         cur_elem.classList.remove('is-valid', 'is-invalid'); 
         
-        cur_elem = elemIdDateOfBirth;
+        cur_elem = elemDateOfBirth;
         cur_elem.value = ''; 
         cur_elem.classList.remove('is-valid', 'is-invalid'); 
         
@@ -509,6 +509,7 @@ export function PageSowBoarAddEdit(input_settings){
             from_prod_pid:  null    // can be null or undefined
         }
         */
+        thisObj._resetForm();
         
         showOptions = options;
         
@@ -540,7 +541,10 @@ export function PageSowBoarAddEdit(input_settings){
         if (options.is_sow){
             // Boars can be external to the farm
             elemIsExternalShow.style.display = 'none';
-            
+            elemNumNipplesShow.style.display = 'block';
+        }
+        else{
+            elemIsExternalShow.style.display = 'block';
             elemNumNipplesShow.style.display = 'none';
         }
         
@@ -586,8 +590,8 @@ export function PageSowBoarAddEdit(input_settings){
         let cur_field   = null;
         let validation  = null;
         
-		let is_duplicate = 0;
-		
+        let is_duplicate = 0;
+        
         
         if (ev.checkValidity()) {
             switch(input_field){
@@ -603,20 +607,20 @@ export function PageSowBoarAddEdit(input_settings){
                     
                     // Additional validation to prevent duplicate 
                     if (validation == FIELD_VALIDATION_OK){
-						if (input_val.length > 0){
-							if (showOptions.is_add){ 
-								const cur_sow_boar = thisObj._getSowBoar(input_val, null);
-					
-								if (cur_sow_boar != null){
-									is_duplicate = 1;
-									validation = -1;
-								}
-							
-							} else{
-								// edit
-								
-							}
-						}
+                        if (input_val.length > 0){
+                            if (showOptions.is_add){ 
+                                const cur_sow_boar = thisObj._getSowBoar(input_val, null);
+                    
+                                if (cur_sow_boar != null){
+                                    is_duplicate = 1;
+                                    validation = -1;
+                                }
+                            
+                            } else{
+                                // edit
+                                
+                            }
+                        }
                     }
                     
                     if (validation == FIELD_VALIDATION_OK) {
@@ -806,7 +810,7 @@ export function PageSowBoarAddEdit(input_settings){
             
             // Convert date to YYYY-MM-DD format
             const dt_dob        = new Date(input_date_birth);
-            const dt_dob_s      = dt_actual.toLocaleDateString('en-CA');
+            const dt_dob_s      = dt_dob.toLocaleDateString('en-CA');
             
             cur_field.newValue  = dt_dob_s;
             validation          = cur_field.validateChange();
@@ -861,9 +865,9 @@ export function PageSowBoarAddEdit(input_settings){
             post_data['sow_boar_hid'] = sowBoarEntry.hid;
         }
         
-		if (post_data.date_of_birth == null){
-			delete post_data.date_of_birth;
-		}
+        if (post_data.date_of_birth == null){
+            delete post_data.date_of_birth;
+        }
         
         // Only add Boars will have is_external flag;
         if (is_external == true && showOptions.is_sow == false){
@@ -881,25 +885,58 @@ export function PageSowBoarAddEdit(input_settings){
             data: JSON.stringify(post_data),
   
             beforeSend: function(){
+                elemServerErrorMsg.style.display = 'none';
             },
   
             success: function(response){
                 if (response.result.num == 0){
-                    elemServerErrorMsg.style.display.block;
+                    
+                    const callback_error = function(error_code, error_desc){
+                        let html;
+                        if ((error_desc != null) && (error_desc.length > 0)){
+                            html = `<span>${error_desc}</span>`;
+                        }
+                        else{
+                            html = `<span>${error_code}</span>`;
+                        }
+                        
+                        elemServerErrorMsg.innerHTML = html;
+                        elemServerErrorMsg.style.display = 'block'
+                    };
+                    
+                    if (thisObj.callbackOnSuccessAdd == null){
+                        console.log('No callback; nothing to do after save;')
+                        
+                        navigation.pigFarm.requestSowBoar(showOptions.is_sow, 
+                            null, callback_error);
+                            
+                        navigation.showThisPage(showOptions.go_back_page);
+                        return;
+                    }
+                    
+                    
+                    const new_sow_boar_hid = response.sow_boar.hid;
+                    const callback_success = function(){
+                        thisObj.callbackOnSuccessAdd(new_sow_boar_hid);
+                        navigation.showThisPage(showOptions.go_back_page);
+                    };
                     
                     navigation.pigFarm.requestSowBoar(showOptions.is_sow, 
-                        thisObj.callbackOnSuccessAdd)
+                        callback_success, callback_error);
+                    
                 }
                 else{
-                    let result_desc = response.result.desc;
+                    let error_desc = response.result.desc;
+                    let error_code = response.result.code;
+                    
                     let html;
-                    if ((result_desc != null) && (result_desc.length > 0)){
-                        html = `<span>${result_desc}</span>`;
+                    if ((error_desc != null) && (error_desc.length > 0)){
+                        html = `<span>${error_desc}</span>`;
                     }
                     else{
-                        html = `<span>${response.result.code}</span>`;
+                        html = `<span>${error_code}</span>`;
                     }
-                    
+                    console.log('to display error');
                     elemServerErrorMsg.innerHTML = html;
                     elemServerErrorMsg.style.display = 'block'
                 }

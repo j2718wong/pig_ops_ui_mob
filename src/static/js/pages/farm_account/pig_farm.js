@@ -12,9 +12,9 @@ export function PigFarm(input_settings){
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
-    let pigFarmHid              = null;
     
     
+	this.dataPigFarm			= null;
     this.dataPigFarmAccount     = null;
     
     this.dataSowList            = null;
@@ -24,14 +24,15 @@ export function PigFarm(input_settings){
 	
 	
     
-    this.setPigFarmHid = function(hid){
-        pigFarmHid = hid;
+    this.setDataPigFarm = function(data){
+        this.dataPigFarm = data;
     }
     
     
 	this.setDataPigFarmAccount = function(data){
 		thisObj.dataPigFarmAccount = data;
         
+		
             
         if ('acc_pig_ops' in data){
             navigation.pageAccPigOps.setDataAccPigOps(data.acc_pig_ops);
@@ -113,7 +114,7 @@ export function PigFarm(input_settings){
     }
     
     
-    this.requestSowBoar = function(is_sow, callback){
+    this.requestSowBoar = function(is_sow, callback_success, callback_error){
 
         const sex               = is_sow? 'F':'M';
 
@@ -121,8 +122,8 @@ export function PigFarm(input_settings){
         // Need to request sow_boar list
         
         const base_url = window.location.origin;
-        let url = `${base_url}/sow_boar/list?pfhid=${pigFarmHid}`;
-        url += `&sex=${sex}&is_production_ready=1`;
+        let url = `${base_url}/sow_boar/list?pfhid=${thisObj.dataPigFarm.pig_farm.hid}`;
+        url += `&sex=${sex}`;
         
         if (is_sow == false){
             url += '&inc_external=1';
@@ -149,10 +150,12 @@ export function PigFarm(input_settings){
                         navigation.setDataBoarList(response.data);
                     }
                     
-                    if (callback){callback(response.data);}
+                    if (callback_success){callback_success(response.data);}
                 }
                 else {
-                    // TODO
+                    if (callback_error){
+						callback_error(response.result.code, response.result.desc);
+					}
                 }
             },
   
