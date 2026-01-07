@@ -170,9 +170,9 @@ export function PageMobGestaLacta(input_settings){
                 <thead>
                     <tr>
                         <th>PID</th>
-                        <th>Sow</th>
-                        <th>Date Wean</th>
-                        <th>Operation</th>
+                        <th style="padding-left:0;">Sow</th>
+                        <th style="">Wean</th>
+                        <th style="padding-left:0;">Operation</th>
                     </tr>
                 </thead>
                 <tbody id="${elemIdPigProdTableBody}">
@@ -188,9 +188,9 @@ export function PageMobGestaLacta(input_settings){
                 <thead>
                     <tr>
                         <th>PID</th>
-                        <th>Sow</th>
-                        <th>Date Expected</th>
-                        <th>Operation</th>
+                        <th style="padding-left:0;">Sow</th>
+                        <th style="">Expected</th>
+                        <th style="padding-left:0;">Operation</th>
                     </tr>
                 </thead>
                 <tbody id="${elemIdPigProdTableBody}">
@@ -435,7 +435,11 @@ ${html_style}
             });
         });
         
+		
+		// Render HTML in elemPigProdTableBody
+		elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
         
+		
         // Show PageHeaderAlarm
         if (showPageHeaderAlarm){
             elemPageHeaderAlarm.style.display = 'inline-block';
@@ -1144,7 +1148,7 @@ ${html_style}
             html_tbody += `
             <tr>
                 <td class="sow-name" tabindex="0" role="button" onclick="${s_click}" style="padding-left:0;">${cur_entry.sow}</td>
-                <td class="date date-today" tabindex="0" role="button" onclick="${s_click}">
+                <td class="date date-today" tabindex="0" role="button" onclick="${s_click}" style="padding-left:0; padding-right:0;">
                     <span class="compact-date">${cur_entry.date}</span>
                     ${html_overdue}
                 </td>
@@ -1165,7 +1169,7 @@ ${html_style}
             <thead>
                 <tr>
                     <th>Sow</th>
-                    <th>Date</th>
+                    <th style="padding-left:0;">Date</th>
                     <th>Operation Name</th>
                 </tr>
             </thead>
@@ -1221,11 +1225,11 @@ ${html_style}
             html_tbody += `
             <tr>
                 <td>${pid}</td>
-                <td class="sow-name"  role="button" onclick="${s_click}" style="padding-left:0;">${sow_reference}</td>
+                <td class="sow-name"  role="button" onclick="${s_click}" style="margin-left:0; padding-left:0;">${sow_reference}</td>
                 <td class="date" role="button" onclick="${s_click}">
                     ${s_date_expected}
-                </td>
-                <td class="operation">
+                </td style="margin-left:0; padding-left:0;">
+                <td class="operation" style="margin-left:0; padding-left:0;">
                 </td>
             </tr>
             `;
@@ -1266,14 +1270,18 @@ ${html_style}
         elemPigOpsAlarmTable.style.display = 'none';
         curViewIsPigProdList = true;
         
+		console.log('Test A');
+		
         // Toggle Cards or Table View`
         if (curPigProdViewIsCards == true){
+			console.log('Test 1');
             elemCardContainer.style.display = 'none';
             elemPigProdTable.style.display = 'block';
             
             curPigProdViewIsCards = false;
         } else {
-            elemCardContainer.style.display = 'block';
+            console.log('Test 2');
+			elemCardContainer.style.display = 'block';
             elemPigProdTable.style.display = 'none';
             
             curPigProdViewIsCards = true;
@@ -1284,7 +1292,8 @@ ${html_style}
     
     
     this.onClickPageHeaderAlarm = function(){
-        
+        curPigProdViewIsCards = false;
+		
         if (curViewIsPigProdList == true){
             elemPigProdList.style.display = 'none';
             elemPigOpsAlarmTable.style.display = 'block';
@@ -1297,8 +1306,6 @@ ${html_style}
             
             elemCardContainer.style.display = 'block';
             elemPigProdTable.style.display = 'none';
-            
-            curPigProdViewIsCards = true;
             
             curViewIsPigProdList = true;
         }

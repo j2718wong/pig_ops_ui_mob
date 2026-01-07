@@ -33,64 +33,64 @@ export function PageSowBoarAddEdit(input_settings){
     const elemDivContainer      = document.getElementById('container-sow-boar-add-edit');
         
         
-    var elemIdBtnClose          = null;
+    let elemIdBtnClose          = null;
     
-    var elemIdHeaderTitle       = null;
+    let elemIdHeaderTitle       = null;
         
-    var elemIdInfoShow          = null;
-    var elemIdInfo              = null;
+    let elemIdInfoShow          = null;
+    let elemIdInfo              = null;
     
-    var elemIdName              = null;
-    var elemIdNameCharCounter   = null;
-    var elemIdNumber            = null;
-    var elemIdNumberCharCounter = null;
-    var elemIdDateOfBirth       = null;
-    var elemIdBirthProdIdShow   = null;
-    var elemIdBirthProdId       = null;
-    var elemIdNumNipplesShow    = null;
-    var elemIdNumNipples        = null;
-    var elemIdIsExternalShow    = null;
-    var elemIdIsExternal        = null;
-    var elemIdIsProdReadyShow   = null;
-    var elemIdIsProdReady       = null;
-    var elemIdNotes             = null;
-    var elemIdNotesCharCounter  = null;
+    let elemIdName              = null;
+    let elemIdNameCharCounter   = null;
+    let elemIdNumber            = null;
+    let elemIdNumberCharCounter = null;
+    let elemIdDateOfBirth       = null;
+    let elemIdBirthProdIdShow   = null;
+    let elemIdBirthProdId       = null;
+    let elemIdNumNipplesShow    = null;
+    let elemIdNumNipples        = null;
+    let elemIdIsExternalShow    = null;
+    let elemIdIsExternal        = null;
+    let elemIdIsProdReadyShow   = null;
+    let elemIdIsProdReady       = null;
+    let elemIdNotes             = null;
+    let elemIdNotesCharCounter  = null;
     
-    var elemIdBtnCancel         = null;
-    var elemIdBtnSave           = null;
+    let elemIdBtnCancel         = null;
+    let elemIdBtnSave           = null;
     
     
-    var elemBtnClose            = null;
+    let elemBtnClose            = null;
     
-    var elemHeaderTitle         = null;
+    let elemHeaderTitle         = null;
             
-    var elemInfoShow            = null;
-    var elemInfo                = null;
+    let elemInfoShow            = null;
+    let elemInfo                = null;
         
-    var elemName                = null;
-    var elemNameCharCounter     = null;
-    var elemNumber              = null;
-    var elemNumberCharCounter   = null;
-    var elemDateOfBirth         = null;
-    var elemBirthProdIdShow     = null;
-    var elemBirthProdId         = null;
-    var elemNumNipplesShow      = null;
-    var elemNumNipples          = null;
-    var elemIsExternalShow      = null;
-    var elemIsExternal          = null;
-    var elemIsProdReadyShow     = null;
-    var elemIsProdReady         = null;
-    var elemNotes               = null;
-    var elemNotesCharCounter    = null;
+    let elemName                = null;
+    let elemNameCharCounter     = null;
+    let elemNumber              = null;
+    let elemNumberCharCounter   = null;
+    let elemDateOfBirth         = null;
+    let elemBirthProdIdShow     = null;
+    let elemBirthProdId         = null;
+    let elemNumNipplesShow      = null;
+    let elemNumNipples          = null;
+    let elemIsExternalShow      = null;
+    let elemIsExternal          = null;
+    let elemIsProdReadyShow     = null;
+    let elemIsProdReady         = null;
+    let elemNotes               = null;
+    let elemNotesCharCounter    = null;
     
-    var elemBtnCancel           = null;
-    var elemBtnSave             = null;
+    let elemBtnCancel           = null;
+    let elemBtnSave             = null;
     
     
-    var sowList                 = null;
-    var boarList                = null;
+    let sowList                 = null;
+    let boarList                = null;
 
-    var showOptions             = null;
+    let showOptions             = null;
     
     
     this.init = function(){
@@ -292,6 +292,7 @@ export function PageSowBoarAddEdit(input_settings){
         $('#'+elemIdDateOfBirth).datepicker({
             format: 'MM d, yyyy',  // This gives "January 31, 2026"
             autoclose: true,
+			orientation: 'bottom',
             endDate: new Date() // Max date is today
         }).on('show', function(e) {
             $('.datepicker').addClass('datepicker-material');
@@ -325,6 +326,15 @@ export function PageSowBoarAddEdit(input_settings){
         });
         
         
+		elemName.addEventListener('blur', function() {
+            thisObj._validateAfterChangeInput(this, 'name');
+        });
+        
+		elemNumber.addEventListener('blur', function() {
+            thisObj._validateAfterChangeInput(this, 'number');
+        });
+		
+        
        
     }
     
@@ -343,39 +353,9 @@ export function PageSowBoarAddEdit(input_settings){
         // Clear previous Form values and validation classes
         
       
-        elemSow.selectedIndex = 0; 
-        elemSow.classList.remove('is-valid', 'is-invalid');
-        
-        elemSowStatusShow.style.display = 'none';
-        
-        elemDateMating.value = '';
-        elemDateMating.classList.remove('is-valid', 'is-invalid');
         
         
-        // This is needed as there is a switch in inputs
-        elemInsemType.selectedIndex = 0;
-        const event = new Event('change');
-        elemInsemType.dispatchEvent(event); 
         
-        
-        elemBoar.selectedIndex = 0;
-        elemBoar.classList.remove('is-valid', 'is-invalid');
-        
-        
-        elemSemenSupplier.selectedIndex = 0;
-        elemSemenSupplier.classList.remove('is-valid', 'is-invalid');
-        
-        
-        elemSemenType.selectedIndex = 0;
-        elemSemenType.classList.remove('is-valid', 'is-invalid');
-        
-        
-        elemSemenCost.value = '';
-        elemSemenCost.classList.remove('is-valid', 'is-invalid');
-        
-        
-        elemOtherCost.value = '';
-        elemOtherCost.classList.remove('is-valid', 'is-invalid');
         
         
         elemStaff.selectedIndex = 0;
@@ -405,7 +385,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         showOptions = options;
         
-        var html;
+        let html;
         
         
         // Change Header title
@@ -468,51 +448,20 @@ export function PageSowBoarAddEdit(input_settings){
         console.log('PageAddGestating show');
     }
     
-    
-    this._onChangeSow = function(){
-        var sow_hid       = elemSow.value;
-        
-        var index;
-        var cur_entry;
-        
-        var gestating_sow = null;
-        
-        elemSowStatusShow.style.display = 'none';
-        
-        for(index = 0; index < sowList.length; index++){
-            cur_entry = sowList[index];
-            if ('sow_boar' in cur_entry){
-                cur_entry = cur_entry.sow_boar;
-            }
-            
-            if (cur_entry.hid == sow_hid){
-                if (cur_entry.status_id == SOW_STATUS.GESTATING){
-                    elemSowLastInsem.innerHTML  = cur_entry.date_insemination;
-                    elemSowLastPid.innerHTML    = cur_entry.last_prod_id;  
-                    
-                    
-                    elemSowStatusShow.style.display = 'block';
-                }
-                break;
-            }
-        }
-    }
-    
-    
+      
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
     
-        var input_elem  = null;
-        var input_val   = null;
-        var cur_field   = null;
-        var validation  = null;
+        let input_elem  = null;
+        let input_val   = null;
+        let cur_field   = null;
+        let validation  = null;
         
-        console.log('TEs1 ');
         
         if (ev.checkValidity()) {
             switch(input_field){
             
-                case 'date_mating': {
+                case 'name': {
                     input_elem      = elemDateMating;
                     input_val       = input_elem.value;
                     cur_field       = newEntry.fieldInsemDate;
@@ -532,7 +481,7 @@ export function PageSowBoarAddEdit(input_settings){
                     break;
                 }
                 
-                case 'other_cost': {
+                case 'number': {
                     input_elem  = elemOtherCost;
                     input_val   = input_elem.val() || null;
                     cur_field   = newEntry.fieldInsemCost;
@@ -548,11 +497,6 @@ export function PageSowBoarAddEdit(input_settings){
                         ev.classList.add('is-invalid');
                     }
                     
-                    break;
-                }
-                
-                case 'staff':{
-                    ev.classList.remove('is-invalid');
                     break;
                 }
                 

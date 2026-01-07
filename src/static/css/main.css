@@ -1034,11 +1034,14 @@ p {
 	text-overflow: ellipsis;
 }
 
+.data-table tr {
+	border-bottom: 1px solid var(--medium-gray);
+	
+}
 
 .data-table td {
-	padding: 8px 6px;
-	border-bottom: 1px solid var(--medium-gray);
-	font-size: 12px;
+	padding: 6px 6px;
+	font-size: 15px;
 	vertical-align: top;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -1582,12 +1585,12 @@ p {
 
 .operations-table tbody tr:nth-child(odd) {
     background-color: var(--row-odd);
+	border-bottom: 1px solid var(--corporate-border-blue);
 }
 
 /* Table Body */
 .operations-table td {
     padding: 8px 8px;
-    border-bottom: 1px solid var(--corporate-border-blue);
     vertical-align: middle;
     transition: background-color 0.2s ease;
 }

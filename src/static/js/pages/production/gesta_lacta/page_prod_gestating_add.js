@@ -8,6 +8,7 @@ import {PageViewBasic}          from '../../common/page_view_basic.js';
 
 import {PAGE_ID,
         SOW_STATUS,
+        PIG_PROD_TYPE,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
 import {InsemDataSelect}        from './insem_data_select.js';
@@ -468,9 +469,10 @@ export function PageProdGestatingAdd(input_settings){
         $('#'+elemIdDateMating).datepicker({
             format: 'MM d, yyyy',  // This gives "January 31, 2026"
             autoclose: true,
+            orientation: 'bottom',
             endDate: new Date() // Max date is today
         }).on('show', function(e) {
-            $('.datepicker').classList.add('datepicker-material');
+            $('.datepicker').addClass('datepicker-material');
         });
         
         
@@ -556,8 +558,7 @@ export function PageProdGestatingAdd(input_settings){
         elemOtherCost.addEventListener('blur', function() {
             thisObj._validateAfterChangeInput(this, 'other_cost');
         });
-        
-        
+         
         
         elemNotes.addEventListener('input', function(){
             thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 
@@ -583,6 +584,13 @@ export function PageProdGestatingAdd(input_settings){
         elemBtnCancel.addEventListener('click', function() {
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         });
+        
+        
+        elemBtnSave.addEventListener('click', function() {
+            thisObj._onClickSaveButton();
+        });
+        
+        
     }
     
     
@@ -698,11 +706,13 @@ export function PageProdGestatingAdd(input_settings){
             
             if (cur_entry.hid == sow_hid){
                 if (cur_entry.status_id == SOW_STATUS.GESTATING){
-                    elemSowLastInsem.innerHTML  = cur_entry.date_insemination;
-                    elemSowLastPid.innerHTML    = cur_entry.last_prod_id;  
-                    
-                    
-                    elemSowStatusShow.style.display = 'block';
+                    if (cur_entry.last_farm_prod_id != null){
+                        elemSowLastInsem.innerHTML  = cur_entry.date_insemination;
+                        elemSowLastPid.innerHTML    = cur_entry.last_farm_prod_id;  
+                        
+                        
+                        elemSowStatusShow.style.display = 'block';
+                    }
                 }
                 break;
             }
@@ -745,7 +755,7 @@ export function PageProdGestatingAdd(input_settings){
                 
                 case 'other_cost': {
                     input_elem  = elemOtherCost;
-                    input_val   = input_elem.val() || null;
+                    input_val   = input_elem.value;
                     cur_field   = newEntry.fieldInsemCost;
                     
                     
@@ -824,9 +834,9 @@ export function PageProdGestatingAdd(input_settings){
         var input_sow_hid           = elemSow.value;
         var input_insem_type        = elemInsemType.value;
         var input_boar_hid          = elemBoar.value;
-        var input_date_insem        = elemInsemDate.value;
+        var input_date_mating       = elemDateMating.value;
         var input_semen_supplier_hid = elemSemenSupplier.value;
-        var input_semen_hid         = elemSemen.value;
+        var input_semen_type_hid    = elemSemenType.value;
         var input_semen_cost        = elemSemenCost.value;
         var input_other_cost        = elemOtherCost.value;
         var input_insem_notes       = elemNotes.value;
@@ -881,9 +891,9 @@ export function PageProdGestatingAdd(input_settings){
             }
             
             
-            input_elem          = elemSemen;
+            input_elem          = elemSemenType;
             
-            if (input_semen_hid  == '0'){
+            if (input_semen_type_hid  == '0'){
                 if (input_elem.classList.contains('is-invalid') == false){
                     input_elem.classList.add('is-invalid');
                 }
@@ -899,9 +909,15 @@ export function PageProdGestatingAdd(input_settings){
         if (proceed_to_save == 0) {return;}
         
         
-        input_elem          = elemInsemDate;
+        input_elem          = elemDateMating;
         cur_field           = newEntry.fieldInsemDate;
-        cur_field.newValue  = input_date_insem;
+        
+        // Convert date to YYYY-MM-DD format
+        const dt_mating     = new Date(input_date_mating);
+        const dt_mating_s   = dt_mating.toLocaleDateString('en-CA');
+        
+        
+        cur_field.newValue  = dt_mating_s;
         validation          = cur_field.validateChange();
         
         if (validation != FIELD_VALIDATION_OK){
@@ -937,7 +953,6 @@ export function PageProdGestatingAdd(input_settings){
                 if (input_elem.classList.contains('is-valid') == false){
                     input_elem.classList.add('is-valid');
                 }
-                fieldStaffHid.newValue = input_staff_hid;
             }
         }
         if (proceed_to_save == 0) {return;}
@@ -953,14 +968,14 @@ export function PageProdGestatingAdd(input_settings){
             'sow_hid':          input_sow_hid,
             'boar_hid':         input_boar_hid,
             'semen_supplier_hid':   input_semen_supplier_hid,
-            'semen_sup_semen_hid':  input_semen_hid,
+            'semen_sup_semen_hid':  input_semen_type_hid,
             
             'insem_staff_hid':  input_staff_hid,
             'done_by_user':     done_by_user,
 
             'insem_notes':      input_insem_notes,
             
-            'insem_date':       input_date_insem
+            'insem_date':       dt_mating_s
         };
         
         if (input_semen_cost != null && input_semen_cost > 0){
@@ -996,7 +1011,7 @@ export function PageProdGestatingAdd(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.onSuccessAddGestatingEntry();
-				}
+                }
             },
   
             complete: function(){

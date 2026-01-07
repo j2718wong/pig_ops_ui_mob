@@ -598,7 +598,7 @@ export function EditModalProdPigOps(input_settings){
             'pig_prod_pig_ops_hid': dataModel.hid,
             'staff_hid':        input_staff_hid,
             'done_by_user':     done_by_user,
-            'date':             fieldDateActual.newValue,
+            'date':             dt_actual_s,
             'notes':            input_notes
         };
         

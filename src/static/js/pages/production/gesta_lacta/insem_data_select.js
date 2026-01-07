@@ -128,7 +128,8 @@ export function InsemDataSelect(){
         select_data.push({value:"0", text:"Please Select"});
         
         for (const cur_entry of data){
-            select_data.push({value: cur_entry.hid, text: cur_entry.name});
+            select_data.push({value: cur_entry.pig_farm_staff.hid, 
+                text: cur_entry.pig_farm_staff.name});
         }
         
         replaceSelectOptions(select_elem, select_data);
