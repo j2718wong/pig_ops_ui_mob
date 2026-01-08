@@ -56,7 +56,9 @@ export function PageMobGestaLacta(input_settings){
         elemDivContainer        = document.getElementById('container-prod-lacta-list');
     }
     
-    
+    let elemIdNavPrevEntry      = null;
+    let elemIdNavNextEntry      = null;
+
     let elemIdPageTitle         = null;
     let elemIdPageHeaderAlarm   = null;
     let elemIdEntryCount        = null;
@@ -72,6 +74,9 @@ export function PageMobGestaLacta(input_settings){
     
     let elemIdPigOpsAlarmTable  = null;
 
+
+    let elemNavPrevEntry        = null;
+    let elemNavNextEntry        = null;
 
     let elemPageTitle           = null;
     let elemPageHeaderAlarm     = null;
@@ -140,6 +145,8 @@ export function PageMobGestaLacta(input_settings){
     
     
     this.render = function(){
+        elemIdNavPrevEntry      = `page-title-${settings.uniqueKey}-prev`;
+        elemIdNavNextEntry      = `page-title-${settings.uniqueKey}-next`;
         
         elemIdPageTitle         = `page-title-${settings.uniqueKey}-list`;
         elemIdPageHeaderAlarm   = `page-title-${settings.uniqueKey}-alarm`;
@@ -209,24 +216,28 @@ ${html_style}
 
 
 <div class="mobile-container">
-    <div class="header">
-        <h1>
-            <span id="${elemIdEntryCount}"></span>
-            <span id="${elemIdPageTitle}">${settings.pageTitle}</span>
+    <div class="nav-left-right">
+        <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
+            
+        <span>
+            <span class="nav-title blue" id="${elemIdEntryCount}"></span>
+            <span class="nav-title blue" id="${elemIdPageTitle}" style="margin-right:8px;">${settings.pageTitle}</span>
             <span class="inline-bell larger" id="${elemIdPageHeaderAlarm}" title="Due operations!" style="display:none;">
                 <i class="fas fa-bell"></i>
             </span>
-            
-        </h1>
+        </span>
         
-        <!-- Mobile Info Box -->
-        <!--
-        <div class="mobile-info-box">
-            <div class="info-text" id="${elemIdPageInfo}">
-            </div>
-        </div>
-        -->
+        <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
+            
     </div>
+    
+    <!-- Mobile Info Box -->
+    <!--
+    <div class="mobile-info-box">
+        <div class="info-text" id="${elemIdPageInfo}">
+        </div>
+    </div>
+    -->
     
     <div id="${elemIdPigProdList}">
         <!-- Search and Add Entry Controls -->
@@ -266,6 +277,9 @@ ${html_style}
     
     
     this._findElements = function(){
+        elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
+        elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
+        
         elemPageTitle           = document.getElementById(elemIdPageTitle);
         elemPageHeaderAlarm     = document.getElementById(elemIdPageHeaderAlarm);
         elemEntryCount          = document.getElementById(elemIdEntryCount);
@@ -305,7 +319,31 @@ ${html_style}
         elemAddEntryBtn.addEventListener('click', function() {
             navigation.onClickProdGestatingAdd();
         });
-    
+        
+        
+        if (settings.isGesta == true){
+            // Set up listeners for navigation arrows
+            elemNavPrevEntry.onclick = function(){
+                navigation._onClickNavProdFeeds(null);
+            }
+
+            elemNavNextEntry.onclick = function(){
+                navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            }
+        
+        }
+        
+        else{
+            // Set up listeners for navigation arrows
+            elemNavPrevEntry.onclick = function(){
+                navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            }
+
+            elemNavNextEntry.onclick = function(){
+                navigation._onClickNavProdFattening(null);
+            }
+        }
+             
     }
     
     

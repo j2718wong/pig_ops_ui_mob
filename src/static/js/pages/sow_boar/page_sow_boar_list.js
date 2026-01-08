@@ -34,9 +34,7 @@ export function PageSowBoarList(input_settings){
     /*
     Typical input_settings
     {
-        navigation:             this,
-        livestock:              'sow',   // 
-        pageTitle:              'Sow'
+        navigation:             this
     }   
     */  
     let settings                = input_settings;
@@ -46,6 +44,8 @@ export function PageSowBoarList(input_settings){
     let elemDivContainer        = document.getElementById('container-sow-boar-list');
     
     
+    let elemIdNavPrevEntry      = null;
+    let elemIdNavNextEntry      = null;
     
     let elemIdPageTitle         = null;
     let elemIdPageHeaderAlarm   = null;
@@ -67,10 +67,12 @@ export function PageSowBoarList(input_settings){
     let elemIdTableGilt         = null;
     let elemIdTableGiltBody     = null;
     
-    let elemIdNumEntriesCurView = null;
     
     let elemIdPigOpsAlarmTable  = null;
 
+
+    let elemNavPrevEntry        = null;
+    let elemNavNextEntry        = null;
 
     let elemPageTitle           = null;
     let elemPageHeaderAlarm     = null;
@@ -92,7 +94,6 @@ export function PageSowBoarList(input_settings){
     let elemTableGilt           = null;
     let elemTableGiltBody       = null;
     
-    let elemNumEntriesCurView   = null;
     
     
     let elemPigOpsAlarmTable    = null;
@@ -103,6 +104,9 @@ export function PageSowBoarList(input_settings){
     let dataSowList             = null;
     let dataBoarList            = null;
     let dataGiltList            = null;
+    
+    let curDataView             = null;
+    
 
     let curSowBoarType          = null;
 
@@ -121,6 +125,8 @@ export function PageSowBoarList(input_settings){
     // See G_SAMPLE_JSON_ACCOUNT
     this.accountData            = null;
     
+    
+    let showOptions             = null;
     
     
     this.init = function(){
@@ -162,6 +168,9 @@ export function PageSowBoarList(input_settings){
     
     this.render = function(){
         
+        elemIdNavPrevEntry      = `page-title-sow-boar-list-prev`;
+        elemIdNavNextEntry      = `page-title-sow-boar-list-next`;
+        
         elemIdPageTitle         = `page-title-sow-boar-list`;
         elemIdPageHeaderAlarm   = `page-title-sow-boar-alarm`;
         elemIdEntryCount        = `page-title-sow-boar-count`;
@@ -183,8 +192,7 @@ export function PageSowBoarList(input_settings){
         elemIdTableGilt         = `sow-boar-gilt-table`;
         elemIdTableGiltBody     = `sow-boar-gilt-tbody`;
         
-        elemIdNumEntriesCurView = `sow-boar-num-entries-view`;
-        
+       
         elemIdPigOpsAlarmTable  = `${settings.uniqueKey}-alarm-table`;
         
         
@@ -197,24 +205,29 @@ export function PageSowBoarList(input_settings){
 ${html_style}
         
 <div class="mobile-container">
-    <div class="header">
-        <h1 >
-            <span id="${elemIdEntryCount}"></span>
-            <span id="${elemIdPageTitle}"></span>
+    <div class="nav-left-right">
+        <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
+                
+        <span>
+            <span class="nav-title blue" id="${elemIdEntryCount}"></span>
+            <span class="nav-title blue" id="${elemIdPageTitle}"></span>
             <span class="inline-bell larger" id="${elemIdPageHeaderAlarm}" title="Due operations!" style="display:none;">
                 <i class="fas fa-bell"></i>
             </span>
-            
-        </h1>
+        </span>
         
-        <!-- Mobile Info Box -->
+        <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
+            
+    </div>
+    
+    <!-- Mobile Info Box -->
         <!--
         <div class="mobile-info-box">
             <div class="info-text" id="${elemIdPageInfo}">
             </div>
         </div>
         -->
-    </div>
+    
     
     <div>
         <!-- Search and Add Entry Controls -->
@@ -288,7 +301,6 @@ ${html_style}
             </tbody>
         </table>
         
-        <span id="${elemIdNumEntriesCurView}"></span>
         
         
         
@@ -311,6 +323,9 @@ ${html_style}
     
     
     this._findElements = function(){
+        elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
+        elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
+        
         elemPageTitle           = document.getElementById(elemIdPageTitle);
         elemPageHeaderAlarm     = document.getElementById(elemIdPageHeaderAlarm);
         elemEntryCount          = document.getElementById(elemIdEntryCount);
@@ -331,7 +346,6 @@ ${html_style}
         elemTableGilt           = document.getElementById(elemIdTableGilt);
         elemTableGiltBody       = document.getElementById(elemIdTableGiltBody);
         
-        elemNumEntriesCurView   = document.getElementById(elemIdNumEntriesCurView);
     }
     
     
@@ -402,7 +416,6 @@ ${html_style}
     }
     
     
-    
     // Handle window resize for view switching
     this.handleWindowResize = function() {
         const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
@@ -419,6 +432,8 @@ ${html_style}
     
     
     this.show = function(options){
+        showOptions = options;
+        
         showpageHeaderAlarm = false; // Need to reset this.
         elemPageHeaderAlarm.style.display = 'none';
         
@@ -427,7 +442,7 @@ ${html_style}
         let is_add_sow = false;
         let entry_count = 0;
         
-        switch (options.sow_boar_type){
+        switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW: {
                 elemPageTitle.textContent = 'Sow List';
                 is_add_sow = true;
@@ -444,6 +459,17 @@ ${html_style}
                     elemFilterControls.style.display = 'block';
                 }
                 
+                
+                // Set up listeners for navigation arrows
+                elemNavPrevEntry.onclick = function(){
+                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
+                }
+        
+                elemNavNextEntry.onclick = function(){
+                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.BOAR);
+                }
+                
+                
                 elemTableRowCount.style.display = 'block';
                 
                 elemTableSow.style.display = 'block';
@@ -452,6 +478,7 @@ ${html_style}
                 
                 thisObj.renderSowTable(dataSowList);
                 break;
+                
             }
             
             case SOW_BOAR_TYPE.BOAR: {
@@ -461,6 +488,16 @@ ${html_style}
                     entry_count = dataBoarList.length; 
                 }
                 
+                // Set up listeners for navigation arrows
+                elemNavPrevEntry.onclick = function(){
+                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.SOW);
+                }
+        
+                elemNavNextEntry.onclick = function(){
+                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
+                }
+                
+                
                 elemFilterControls.style.display = 'none';
                 
                 elemTableRowCount.style.display = 'none';
@@ -469,12 +506,22 @@ ${html_style}
                 elemTableBoar.style.display = 'block';
                 elemTableGilt.style.display = 'none';
                 
-				thisObj.renderBoarTable(dataBoarList);
+                thisObj.renderBoarTable(dataBoarList);
                 break;
             }
             
             case SOW_BOAR_TYPE.GILT:{
                 elemPageTitle.textContent = 'Gilt List';
+                
+                // Set up listeners for navigation arrows
+                elemNavPrevEntry.onclick = function(){
+                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.BOAR);
+                }
+        
+                elemNavNextEntry.onclick = function(){
+                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.SOW);
+                }
+                
                 
                 elemFilterControls.style.display = 'none';
                 
@@ -496,11 +543,37 @@ ${html_style}
         elemAddEntryBtn.onclick = function(){
             const options_sow_boar ={
                 is_add:         true,   // false is edit
-                is_sow:         is_add_sow,   // false is boar
+                sow_boar_type:  showOptions.sow_boar_type, 
                 go_back_page:   elemDivContainer   // Go back to this page
             };
             
+            
+            // callback on successful add;
+            // will redraw table regardless if filtered or not
+            const callback = function(new_sow_boar_hid){
+                switch (showOptions.sow_boar_type){
+                    case SOW_BOAR_TYPE.SOW: {
+                        thisObj.renderSowTable(dataSowList);
+                        break;
+                    }
+            
+                    case SOW_BOAR_TYPE.BOAR: {
+                        thisObj.renderBoarTable(dataBoarList);
+                        break;
+                    }
+            
+                    case SOW_BOAR_TYPE.GILT:{
+                        thisObj.renderGiltTable(dataGiltList);
+                        break;
+                    }
+                    
+                }
+            };
+            
+            
             navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
+            
             
             const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
             navigation.showThisPage(next_page)
@@ -511,6 +584,8 @@ ${html_style}
     
     
     this.renderSowTable = function(sow_list){
+        curDataView = sow_list;
+        
         let html = '';  
         
         
@@ -578,7 +653,7 @@ ${html_style}
             }
             
             html += `<tr>`;
-            html += `<td>${sow_reference}</td>`;
+            html += `<td><span>${sow_reference}</span></td>`;
             html += `<td>${SOW_STATUS_NAME[sow_boar.status_id]}</td>`;
             html += `<td>${s_age}</td>`;
             html += `<td></td>`;
@@ -666,9 +741,10 @@ ${html_style}
     }
     
     
-	this.renderBoarTable = function(boar_list){
-        let html = '';  
+    this.renderBoarTable = function(boar_list){
+        curDataView = boar_list;
         
+        let html = '';  
         
         let diff_msecs;
         let diff_days;
@@ -747,8 +823,12 @@ ${html_style}
     }
     
     
-	
-	
+    this.renderGiltTable = function(gilt_list){
+        curDataView = gilt_list;
+        
+    }
+    
+    
     this.setUserLanguage = function(language_key){
         curUserLanguageKey = language_key;
         thisObj.onUserChangeLanguage();
@@ -761,14 +841,83 @@ ${html_style}
     }
     
     
-    this.getDataPigProd = function(pid){
-        // Most functions with getData*** always use entry_hid as 
-        // input parameter. The DataPigProd will use pid instead
-        // as this is highly visible by in the page.
-        for (const cur_entry of dataPigProdList){
-            if(cur_entry.pig_production.farm_prod_id == pid){return cur_entry;}
+    this.onClickSowBoarName = function(sow_boar_type, farm_sow_boar_id){
+        let index;
+        let cur_entry;
+        let edit_entry = null;
+        
+        switch (sow_boar_type){
+            case SOW_BOAR_TYPE.SOW: {
+                for (cur_entry of curDataView){
+                    if (cur_entry.farm_sow_id == farm_sow_boar_id){
+                        edit_entry = cur_entry;
+                        break;
+                    }
+                }
+                break;
+            }
+    
+            case SOW_BOAR_TYPE.BOAR: {
+                for (cur_entry of curDataView){
+                    if (cur_entry.farm_boar_id == farm_sow_boar_id){
+                        edit_entry = cur_entry;
+                        break;
+                    }
+                }
+                break;
+            }
+    
+            case SOW_BOAR_TYPE.GILT:{
+                for (cur_entry of curDataView){
+                    if (cur_entry.farm_sow_id == farm_sow_boar_id){
+                        edit_entry = cur_entry;
+                        break;
+                    }
+                }
+                break;
+            }
+            
         }
-        return null;
+        
+        
+        const options_sow_boar ={
+            is_add:         false,   // false is edit
+            is_sow:         is_add_sow,   // false is boar
+            go_back_page:   elemDivContainer   // Go back to this page
+        };
+            
+            
+            const callback = function(new_sow_boar_hid){
+                switch (showOptions.sow_boar_type){
+                    case SOW_BOAR_TYPE.SOW: {
+                        thisObj.renderSowTable(dataSowList);
+                        break;
+                    }
+            
+                    case SOW_BOAR_TYPE.BOAR: {
+                        thisObj.renderBoarTable(dataBoarList);
+                        break;
+                    }
+            
+                    case SOW_BOAR_TYPE.GILT:{
+                        thisObj.renderGiltTable(dataGiltList);
+                        break;
+                    }
+                    
+                }
+            };
+            
+            
+            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
+            
+            
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+            navigation.showThisPage(next_page)
+        
+        
+        
     }
+
     
 }

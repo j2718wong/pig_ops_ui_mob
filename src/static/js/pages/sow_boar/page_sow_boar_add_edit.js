@@ -6,7 +6,8 @@
 
 import {PageViewBasic}          from '../common/page_view_basic.js';
 
-import {SOW_STATUS}             from '../../constants.js';
+import {SOW_BOAR_TYPE,
+		SOW_STATUS}             from '../../constants.js';
 
 
 
@@ -118,7 +119,8 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdBtnClose          = `sow-boar-add-edit-close`;
         
         elemIdHeaderTitle       = `sow-boar-add-edit-title`;
-            
+        
+			
         elemIdInfoShow          = `sow-boar-add-edit-info-show`;
         elemIdInfo              = `sow-boar-add-edit-info`;
         
@@ -167,6 +169,10 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     <div class="modal-body">
+		<!-- Mobile Info Box -->
+		<div class="warning-box" id="${elemIdInfoShow}">
+			Adding a new Gilt will create schedule for new Gilt Pig Operations.
+		</div>
         
         <!-- 1. Name -->
         <div class="form-group-text">
@@ -203,7 +209,7 @@ export function PageSowBoarAddEdit(input_settings){
         </div>
         
         <!-- Number of Sow nipples -->
-        <div class="form-group" id="${elemIdNumNipplesShow}">
+        <div class="form-group-number" id="${elemIdNumNipplesShow}">
             <label for="${elemIdNumNipples}" class="form-label">
                 Number of Nipples
             </label>
@@ -324,7 +330,36 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this._bindEventListeners = function(){
+        // Plus/Minus buttons for piglet counts
+        const plusButtons   = elemDivContainer.querySelectorAll('.number-btn.plus');
+        const minusButtons  = elemDivContainer.querySelectorAll('.number-btn.minus');
         
+        plusButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const target = button.getAttribute('data-target');
+                const input = document.getElementById(target);
+                let value = parseInt(input.value) || 0;
+                input.value = value + 1;
+                input.dispatchEvent(new Event('change'));
+            });
+        });
+        
+        minusButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const target = button.getAttribute('data-target');
+                const input = document.getElementById(target);
+                let value = parseInt(input.value) || 0;
+                if (value > 0) {
+                    input.value = value - 1;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+        
+        
+		
+		
+		
         elemName.addEventListener('input', function(){
             thisObj.updateCharCounter(elemName, elemNameCharCounter, 
                 50);
@@ -504,7 +539,7 @@ export function PageSowBoarAddEdit(input_settings){
         Typical options
         options_sow_boar ={
             is_add:         true,   // false is edit
-            is_sow:         true,   // false is boar
+            sow_boar_type: 	1,   
             go_back_page:   elemDivContainer   // Go back to this page
             from_prod_pid:  null    // can be null or undefined
         }
@@ -517,41 +552,63 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         // Change Header title
-        if (options.is_sow){
-            
-            if (options.is_add){
+		switch(options.sow_boar_type){
+			case SOW_BOAR_TYPE.SOW: {
+				if (options.is_add){
                 html = `<i class="fas fa-plus me-2"></i>Add Sow`;
-            }
-            else{
-                html = `<i class="fas fa-edit me-2"></i>Edit Sow`;
-            }
-        }
-        else{
-            if (options.is_add){
-                html = `<i class="fas fa-plus me-2"></i>Add Boar`;
-            }
-            else{
-                html = `<i class="fas fa-edit me-2"></i>Edit Boar`;
-            }
-        }
-        
-        elemHeaderTitle.innerHTML = html;
-        
-        // Hide Boar Only info
-        if (options.is_sow){
-            // Boars can be external to the farm
-            elemIsExternalShow.style.display = 'none';
-            elemNumNipplesShow.style.display = 'block';
-        }
-        else{
-            elemIsExternalShow.style.display = 'block';
-            elemNumNipplesShow.style.display = 'none';
-        }
-        
+				}
+				else{
+					html = `<i class="fas fa-edit me-2"></i>Edit Sow`;
+				}
+				elemHeaderTitle.innerHTML = html;
+				
+				// Hide Boar Only info
+				elemIsExternalShow.style.display = 'none';
+				elemNumNipplesShow.style.display = 'block';
+				
+				break;
+			}
+	
+			case SOW_BOAR_TYPE.BOAR: {
+				if (options.is_add){
+					html = `<i class="fas fa-plus me-2"></i>Add Boar`;
+				}
+				else{
+					html = `<i class="fas fa-edit me-2"></i>Edit Boar`;
+				}
+				elemHeaderTitle.innerHTML = html;
+				
+				// Boars can be external to the farm
+				elemIsExternalShow.style.display = 'block';
+				elemNumNipplesShow.style.display = 'none';
+				break;
+			}
+	
+			case SOW_BOAR_TYPE.GILT:{
+				if (options.is_add){
+					html = `<i class="fas fa-plus me-2"></i>Add Gilt`;
+				}
+				else{
+					html = `<i class="fas fa-edit me-2"></i>Edit Gilt`;
+				}
+				elemHeaderTitle.innerHTML = html;
+				
+				// Hide Boar Only info
+				elemIsExternalShow.style.display = 'none';
+				elemNumNipplesShow.style.display = 'block';
+				
+				break;
+			}
+	
+			
+		}
+		
+		
+		
         
         // Hide elemBirthProdIdShow
         // BirthProdId will only show up if a production piglet is eartag or
-        //  a pig is taken from exisiting production entry  
+        //  a pig is taken from existing production entry  
         if ('from_prod_pid' in options){
             elemBirthProdIdShow.style.display = 'block';
         }

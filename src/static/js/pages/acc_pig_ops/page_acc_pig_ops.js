@@ -35,37 +35,44 @@ export function PageAccPigOps(input_settings){
     
     
     // This is needed as this will be first element to be rendered
-    var elemDivContainer        = document.getElementById('container-acc-pig-ops');
+    let elemDivContainer        = document.getElementById('container-acc-pig-ops');
 
-    var elemIdPageTitle         = null;
-    var elemIdEntryCount        = null;
-    var elemIdPageInfo          = null;
+    let elemIdNavPrevEntry      = null;
+    let elemIdNavNextEntry      = null;
 
-    var elemIdBtnAddEntryShow   = null;
-    var elemIdMobileContainer   = null;
-    var elemIdTableContainer    = null;
+    let elemIdPageTitle         = null;
+    let elemIdEntryCount        = null;
+    let elemIdPageInfo          = null;
 
-    var elemPageTitle           = null;
-    var elemEntryCount          = null;
-    var elemPageInfo            = null;
-
-    var elemBtnAddEntryShow     = null;
-    var elemMobileContainer     = null;
-    var elemTableContainer      = null;
+    let elemIdBtnAddEntryShow   = null;
+    let elemIdMobileContainer   = null;
+    let elemIdTableContainer    = null;
 
 
+    let elemNavPrevEntry        = null;
+    let elemNavNextEntry        = null;
 
-    var textTranslation         = new TextTranslation();
-    var curUserLanguageKey      = 'en';
+    let elemPageTitle           = null;
+    let elemEntryCount          = null;
+    let elemPageInfo            = null;
+
+    let elemBtnAddEntryShow     = null;
+    let elemMobileContainer     = null;
+    let elemTableContainer      = null;
 
 
-    var dataAccGestatingOps     = null;
-    var dataAccLactatingPigletOps= null;
-    var dataAccLactatingSowOps  = null;
-    var dataAccGiltOps          = null;
 
-    var curAccPigOpsType        = null;
-    var curAccPigOpsData        = null;
+    let textTranslation         = new TextTranslation();
+    let curUserLanguageKey      = 'en';
+
+
+    let dataAccGestatingOps     = null;
+    let dataAccLactatingPigletOps= null;
+    let dataAccLactatingSowOps  = null;
+    let dataAccGiltOps          = null;
+
+    let curAccPigOpsType        = null;
+    let curAccPigOpsData        = null;
 
 
     const settingsAddModal      = {
@@ -101,15 +108,17 @@ export function PageAccPigOps(input_settings){
     
     
     this.render = function(){
+        elemIdNavPrevEntry      = `page-title-acc-pig-ops-list-prev`;
+        elemIdNavNextEntry      = `page-title-acc-pig-ops-list-next`;
         
-        elemIdPageTitle         = 'page-title-acc-pig-ops';
-        elemIdEntryCount        = 'page-header-acc-pig-ops-entry-count';
-        elemIdPageInfo          = 'page-info-acc-pig-ops';
+        elemIdPageTitle         = `page-title-acc-pig-ops`;
+        elemIdEntryCount        = `page-header-acc-pig-ops-entry-count`;
+        elemIdPageInfo          = `page-info-acc-pig-ops`;
         
         
-        elemIdBtnAddEntryShow   = 'add-entry-acc-pig-ops-show';
-        elemIdMobileContainer   = 'mobile-container-acc-pig-ops';
-        elemIdTableContainer    = 'table-container-acc-pig-ops';
+        elemIdBtnAddEntryShow   = `add-entry-acc-pig-ops-show`;
+        elemIdMobileContainer   = `mobile-container-acc-pig-ops`;
+        elemIdTableContainer    = `table-container-acc-pig-ops`;
         
         
         const html_add_modal    = thisObj.addModalAccPigOps.getHtml();
@@ -118,16 +127,25 @@ export function PageAccPigOps(input_settings){
         const html = `
         
     <div class="container">
-        <div class="header">
-            <h1 id="${elemIdPageTitle}">Pig Operations</h1>
+        
+        <div class="nav-left-right">
+            <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
+                    
+            <span>
+                <span class="nav-title blue" id="${elemIdEntryCount}"></span>
+                <span class="nav-title blue" id="${elemIdPageTitle}"></span>
+            </span>
             
-            <!-- Mobile Info Box -->
-            <div class="mobile-info-box">
-                <div class="info-text" id="${elemIdPageInfo}">
-                    Track and manage all pig farming operations. Each card shows operation details including day count, description, and last update information. Tap the edit icon to modify or delete operations.
-                </div>
+            <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
+                
+        </div>
+        
+        
+        <!-- Mobile Info Box -->
+        <div class="mobile-info-box">
+            <div class="info-text" id="${elemIdPageInfo}">
+                Track and manage all pig farming operations. Each card shows operation details including day count, description, and last update information. Tap the edit icon to modify or delete operations.
             </div>
-            
         </div>
         
         <button class="add-btn" id="${elemIdBtnAddEntryShow}" data-bs-toggle="modal" data-bs-target="#add-entry-acc-pig-ops-modal">
@@ -183,6 +201,9 @@ export function PageAccPigOps(input_settings){
     
     
     this._findElements = function(){
+        elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
+        elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
+        
         elemPageTitle           = document.getElementById(elemIdPageTitle);
         elemPageInfo            = document.getElementById(elemIdPageInfo);
 
@@ -213,7 +234,7 @@ export function PageAccPigOps(input_settings){
     
     
     this.setDataAccPigOps = function(data){
-		
+        
         dataAccGestatingOps = [];
         dataAccLactatingPigletOps = [];
         dataAccLactatingSowOps = [];
@@ -264,29 +285,65 @@ export function PageAccPigOps(input_settings){
     this.show = function(pig_ops_type){
         curAccPigOpsType = pig_ops_type;
         
-        var card_class = '';
+        let card_class = '';
         
         switch(pig_ops_type){
             case PIG_OPERATION_TYPE.GESTATING:{
                 curAccPigOpsData = dataAccGestatingOps;
                 card_class      = 'gestating';
+                
+                // Set up listeners for navigation arrows
+                elemNavPrevEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
+                }
+        
+                elemNavNextEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                }
                 break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
                 curAccPigOpsData = dataAccLactatingPigletOps;
                 card_class      = 'lactating-piglets';
+                
+                // Set up listeners for navigation arrows
+                elemNavPrevEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
+                }
+        
+                elemNavNextEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
+                }
                 break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
                 curAccPigOpsData = dataAccLactatingSowOps;
                 card_class      = 'lactating-sow';
+                
+                // Set up listeners for navigation arrows
+                elemNavPrevEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                }
+        
+                elemNavNextEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
+                }
                 break;
             }
             
             case PIG_OPERATION_TYPE.GILT:{
                 curAccPigOpsData = dataAccGiltOps;
+                
+                // Set up listeners for navigation arrows
+                elemNavPrevEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
+                }
+        
+                elemNavNextEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
+                }
                 break;
             }
         }
@@ -302,14 +359,14 @@ export function PageAccPigOps(input_settings){
             const cardElement = document.createElement('div');
             cardElement.className = 'card';
             
-            var html_desc = '';
-            var html_updated_by = '';
-            var html_dt_update = '';
+            let html_desc = '';
+            let html_updated_by = '';
+            let html_dt_update = '';
             
             if (operation.acc_pig_ops.desc != null){
                 html_desc = `<div class="operation-desc">${operation.acc_pig_ops.desc}</div>`;
             }
-			
+            
             const last_update   = operation.last_update;
             const added_by      = operation.added_by;
             if (operation.last_update.name_last != null){
@@ -371,7 +428,7 @@ export function PageAccPigOps(input_settings){
     
     this.onUserChangeLanguage = function(){
         
-        var cur_text = null;
+        let cur_text = null;
         
         const html_entry_count =  `<span id="${elemIdEntryCount}" style="margin-right:8px;"></span>`;
         
@@ -380,7 +437,7 @@ export function PageAccPigOps(input_settings){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'gestating_ops.title');
                 if (cur_text != null){
-                    elemPageTitle.innerHTML = html_entry_count + cur_text;
+                    elemPageTitle.innerHTML = cur_text;
                 }
                 
                 
@@ -404,7 +461,7 @@ export function PageAccPigOps(input_settings){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'lactating_piglets_ops.title');
                 if (cur_text != null){
-                    elemPageTitle.innerHTML = html_entry_count + cur_text;
+                    elemPageTitle.innerHTML = cur_text;
                 }
                 
                 
@@ -427,7 +484,7 @@ export function PageAccPigOps(input_settings){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'lactating_sow_ops.title');
                 if (cur_text != null){
-                    elemPageTitle.innerHTML = html_entry_count + cur_text;
+                    elemPageTitle.innerHTML = cur_text;
                 }
                 
                 
@@ -450,7 +507,7 @@ export function PageAccPigOps(input_settings){
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'gilt_ops.title');
                 if (cur_text != null){
-                    elemPageTitle.innerHTML = html_entry_count + cur_text;
+                    elemPageTitle.innerHTML = cur_text;
                 }
                 
                 

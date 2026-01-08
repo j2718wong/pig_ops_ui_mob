@@ -1014,6 +1014,48 @@ p {
 
 
 /********* COMMON CONTROLS **********/
+.nav-left-right{
+	display:flex; 
+	align-items: center;
+	vertical-align: center;
+	justify-content: space-between;
+}
+
+
+
+.nav-title{
+	font-size:24px; 
+	font-weight: 700;
+}
+
+.nav-title.blue{
+	color:var(--corporate-blue);
+}
+
+
+.nav-button {
+	background: none;
+	border: none;
+	color: white;
+	font-size: 32px; /* Bigger arrow icons */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	transition: background-color 0.2s;
+	cursor: pointer;
+}
+
+.nav-button:active {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+
+.nav-button.blue {
+	color: var(--corporate-blue);
+}
+
+
+
 .server-error-msg {
 	padding-top:2px;  display:none
 }
@@ -1885,8 +1927,9 @@ textarea.form-control {
 
 /* Combined breeding status warning */
 .warning-box {
-    margin-top: 10px;
-    padding: 10px;
+    margin-top: 8px;
+	margin-bottom: 8px;
+    padding: 8px;
     border-radius: 6px;
     background: linear-gradient(135deg, #fff3cd, #ffeaa7);
     border: 1px solid #ffc107;

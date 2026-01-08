@@ -112,7 +112,7 @@ export function ProdEntryBirth(input_settings){
         Birth Information
     </h2>
     
-    <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:10px;">
+    <div class="warning-box" id="${elemIdCannotUpdate}">
         Setting the Date Actual Birth will update this production entry from 
         Gestating Status to Lactating Status and will be removed from Production 
         Gestating List. Will be put in Production Lactating List. 

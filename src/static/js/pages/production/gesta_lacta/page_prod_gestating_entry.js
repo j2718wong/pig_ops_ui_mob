@@ -126,26 +126,11 @@ export function PageProdGestatingEntry(input_settings){
         .navigation-bar {
             display: block;
             align-items: center;
-            padding: 15px;
+            padding: 8px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .nav-button {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 32px; /* Bigger arrow icons */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
-
-        .nav-button:active {
-            background-color: rgba(255, 255, 255, 0.15);
-        }
+        
 
         /* Show More Dropdown */
         .show-more-container {
@@ -524,9 +509,9 @@ export function PageProdGestatingEntry(input_settings){
     <!-- Fixed Top Section -->
     <div class="top-section">
         <div class="navigation-bar">
-            <div style="display:flex; align-items: center;justify-content: space-between;">
+            <div class="nav-left-right">
                 <button class="nav-button" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
-                <span id="${elemIdEntryTitle}">1 of 4</span>
+                <span class="nav-title" id="${elemIdEntryTitle}">1 of 4</span>
                 <button class="nav-button" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
             </div>
             
@@ -753,7 +738,7 @@ export function PageProdGestatingEntry(input_settings){
         console.log('PageAddGestating show');
         
         // Set Header Data
-        const title = `Production Gestating ${options.data_index} Of ${options.total_entries}`;
+        const title = `Prod Gestating ${options.data_index} Of ${options.total_entries}`;
         elemEntryTitle.textContent = title;
         
         const pid = data_pig_prod.pig_production.farm_prod_id;
@@ -786,7 +771,7 @@ export function PageProdGestatingEntry(input_settings){
             
             case 'AI_X':{
                 boar_name = insemination.ai.semen_supplier.semen.name;
-                boar_name += ' from ' + insemination.ai.semen_supplier.name;
+                //boar_name += ' from ' + insemination.ai.semen_supplier.name;
                 break;
             }
             

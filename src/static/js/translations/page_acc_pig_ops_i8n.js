@@ -7,7 +7,7 @@
 const TRANSLATION_PAGE_ACC_PIG_OPS = {
 	'en':{
 		'gestating_ops': {
-			'title': 'Gestating Operations',
+			'title': 'Gesta Operations',
 			
 			'info_text':`This list defines the standard care activities for a 
 gestating sow in each production cycle. When a {PAGE_PROD_GESTATING} entry
@@ -17,7 +17,7 @@ when each task's due date, calculated from the start of gestation, is reached.`
 		},
 		
 		'lactating_piglets_ops': {
-			'title': 'Lactating Piglets Operations',
+			'title': 'Piglets Operations',
 			
 			'info_text':`This list defines the standard care activities for a 
 lactating piglets in each production cycle. When a {PAGE_PROD_GESTATING} entry is updated  
@@ -27,7 +27,7 @@ when each task's due date, calculated from the start of piglets Date of Birth, i
 		},
 		
 		'lactating_sow_ops': {
-			'title': 'Lactating Sow Operations',
+			'title': 'Lacta Sow Operations',
 			
 			'info_text':`This list defines the standard care activities for a 
 lactating sows in each production cycle. When a {PAGE_PROD_GESTATING} entry is updated  

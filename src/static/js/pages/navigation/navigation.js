@@ -294,7 +294,7 @@ export function Navigation(){
         navigation:             this,
         isGesta:                true,
         uniqueKey:              'prod-gesta', // Use for uniqueness in elements
-        pageTitle:              'Production Gestating'
+        pageTitle:              'Prod Gestating'
     } 
     this.pageMobGestatingList   = new PageMobGestaLacta(settingsProdGestating);
     
@@ -303,7 +303,7 @@ export function Navigation(){
         navigation:             this,
         isGesta:                false,
         uniqueKey:              'prod-lacta', // Use for uniqueness in elements
-        pageTitle:              'Production Lactating'
+        pageTitle:              'Prod Lactating'
     } 
     this.pageMobLactatingList   = new PageMobGestaLacta(settingsProdLactating);
     
@@ -454,18 +454,15 @@ export function Navigation(){
         this.setDataCompanyApp(data.application);
         this.setDataUserAccount(data.user_account);
         
-		const user_current_farm = this.userControl.getCurrentFarm();
+        const user_current_farm = this.userControl.getCurrentFarm();
         const pig_farm_account = data.pig_farm_account;
         
-		this.pigFarm.setDataPigFarm(user_current_farm);
-		this.pigFarm.setDataPigFarmAccount(pig_farm_account);
+        this.pigFarm.setDataPigFarm(user_current_farm);
+        this.pigFarm.setDataPigFarmAccount(pig_farm_account);
         
         
         const country_hid   = user_current_farm.location.country.hid;
-        
-		console.log(`user_current_farm`);
-		console.log(user_current_farm);
-		
+
         
         // This waits for the logged in user for user authentication
         // before request
@@ -517,7 +514,7 @@ export function Navigation(){
     
     this.setDataSowList = function(data){
         this.pageSowBoarList.setDataSowList(data);
-		this.pageSowBoarAddEdit.setDataSowList(data);
+        this.pageSowBoarAddEdit.setDataSowList(data);
         
         this.pageProdGestatingAdd.setDataSowList(data);
         this.pageProdGestatingEntry.setDataSowList(data);
@@ -528,7 +525,7 @@ export function Navigation(){
     this.setDataBoarList = function(data){
         this.pageSowBoarList.setDataBoarList(data);
         this.pageSowBoarAddEdit.setDataBoarList(data);
-		
+        
         this.pageProdGestatingAdd.setDataBoarList(data);
         this.pageProdGestatingEntry.setDataBoarList(data);
     }
@@ -912,7 +909,10 @@ export function Navigation(){
         thisObj.pageProdGestatingAdd.show();
     }
     
+	
+	
     
+	
     this.onClickProdGestatingEntry = function(pig_prod_pid){
         if (pig_prod_pid == null){
             thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
