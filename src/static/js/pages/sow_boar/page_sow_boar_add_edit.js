@@ -1206,7 +1206,7 @@ export function PageSowBoarAddEdit(input_settings){
         }
         
         
-        let 
+        let url;
         
         if (showOptions.is_add == true){
             url = `${base_url}/sow_boar/add`;
@@ -1268,7 +1268,7 @@ export function PageSowBoarAddEdit(input_settings){
                     
                     else{
                         navigation.pigFarm.requestSowBoar(showOptions.is_sow, 
-                            null;, callback_error);
+                            null, callback_error);
                         
                     }
                     

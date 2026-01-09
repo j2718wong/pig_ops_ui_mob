@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sow List - Livestock Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.5;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+        
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            padding: 16px 0;
+            margin-bottom: 12px;
+        }
+        
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        /* Controls Bar */
+        .controls-bar {
+            background-color: white;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .entry-count {
+            font-size: 0.9rem;
+            color: #4a5568;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .pagination-btn {
+            background-color: #edf2f7;
+            border: none;
+            border-radius: 6px;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #4a5568;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn:active:not(:disabled) {
+            background-color: #2c5282;
+            color: white;
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .page-indicator {
+            font-size: 0.85rem;
+            color: #4a5568;
+            margin: 0 6px;
+            min-width: 45px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        /* Table Container */
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+            width: 100%;
+        }
+        
+        /* Table Styles */
+        .sow-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .sow-table thead {
+            display: none;
+        }
+        
+        .sow-table tbody {
+            display: block;
+            width: 100%;
+        }
+        
+        .sow-table tr {
+            display: block;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px;
+        }
+        
+        .sow-table tr:last-child {
+            border-bottom: none;
+        }
+        
+        .sow-table td {
+            display: block;
+            padding: 8px 0;
+            border: none;
+            width: 100%;
+        }
+        
+        .sow-table td::before {
+            content: attr(data-label);
+            display: block;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        
+        .sow-id {
+            font-weight: 700;
+            color: #2c5282;
+            font-size: 0.95rem;
+        }
+        
+        .sow-age {
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 90px;
+        }
+        
+        .status-gestating {
+            background-color: #ebf8ff;
+            color: #2c5282;
+            border: 1px solid #bee3f8;
+        }
+        
+        .status-lactating {
+            background-color: #f0fff4;
+            color: #276749;
+            border: 1px solid #c6f6d5;
+        }
+        
+        .status-weaning {
+            background-color: #fffaf0;
+            color: #c05621;
+            border: 1px solid #feebc8;
+        }
+        
+        /* Operation Column */
+        .operation-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .operation-date {
+            color: #718096;
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+        }
+        
+        .operation-name {
+            color: #2d3748;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 16px;
+            color: #718096;
+            font-size: 0.85rem;
+            margin-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        /* Tablet Styles (768px and above) */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 95%;
+                padding: 0 16px;
+            }
+            
+            .page-header {
+                padding: 18px 0;
+                margin-bottom: 16px;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .controls-bar {
+                padding: 14px 16px;
+                margin-bottom: 16px;
+            }
+            
+            .entry-count {
+                font-size: 0.95rem;
+            }
+            
+            .table-container {
+                border-radius: 10px;
+                margin-bottom: 20px;
+            }
+            
+            /* Table Styles for Tablet/Desktop */
+            .sow-table {
+                display: table;
+            }
+            
+            .sow-table thead {
+                display: table-header-group;
+                background-color: #2c5282;
+            }
+            
+            .sow-table thead th {
+                padding: 14px 16px;
+                text-align: left;
+                color: white;
+                font-weight: 600;
+                font-size: 0.9rem;
+                border: none;
+            }
+            
+            .sow-table tbody {
+                display: table-row-group;
+            }
+            
+            .sow-table tr {
+                display: table-row;
+                padding: 0;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            .sow-table td {
+                display: table-cell;
+                padding: 14px 16px;
+                border: none;
+                width: auto;
+            }
+            
+            .sow-table td::before {
+                display: none;
+            }
+            
+            .status-badge {
+                min-width: 100px;
+            }
+        }
+        
+        /* Desktop Styles (1024px and above) */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1200px;
+            }
+            
+            .controls-bar {
+                padding: 16px 20px;
+            }
+            
+            .sow-table thead th,
+            .sow-table td {
+                padding: 16px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Sow List</h1>
+        </div>
+        
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+            <div class="entry-count" id="entry-count">
+                12 Entries
+            </div>
+            
+            <div class="pagination-controls">
+                <button class="pagination-btn" id="prev-page" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="page-indicator">
+                    <span id="current-page">1</span> / <span id="total-pages">3</span>
+                </span>
+                <button class="pagination-btn" id="next-page">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Sow List Table -->
+        <div class="table-container">
+            <table class="sow-table" id="sow-table">
+                <thead>
+                    <tr>
+                        <th>Sow</th>
+                        <th>Age</th>
+                        <th>Status</th>
+                        <th>Operation</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Table rows will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>Livestock Management System • Data as of <span id="current-date">January 9, 2026</span></p>
+        </div>
+    </div>
+    
+    <script>
+        // Sample data for the sow list
+        const sowData = [
+            { id: "SOW-101", age: "2 years 3 months", status: "Gestating", operationDate: "2026-01-05", operationName: "AI Breeding" },
+            { id: "SOW-102", age: "1 year 8 months", status: "Lactating", operationDate: "2025-12-28", operationName: "Farrowing" },
+            { id: "SOW-103", age: "3 years 1 month", status: "Weaning", operationDate: "2026-01-02", operationName: "Weaning Process" },
+            { id: "SOW-104", age: "2 years 11 months", status: "Gestating", operationDate: "2026-01-07", operationName: "Pregnancy Check" },
+            { id: "SOW-105", age: "1 year 5 months", status: "Gestating", operationDate: "2025-12-30", operationName: "AI Breeding" },
+            { id: "SOW-106", age: "4 years 2 months", status: "Lactating", operationDate: "2026-01-04", operationName: "Farrowing" },
+            { id: "SOW-107", age: "2 years 7 months", status: "Weaning", operationDate: "2026-01-01", operationName: "Weaning Process" },
+            { id: "SOW-108", age: "1 year 10 months", status: "Gestating", operationDate: "2025-12-29", operationName: "Pregnancy Check" },
+            { id: "SOW-109", age: "3 years 4 months", status: "Lactating", operationDate: "2026-01-03", operationName: "Farrowing" },
+            { id: "SOW-110", age: "2 years 6 months", status: "Weaning", operationDate: "2026-01-06", operationName: "Weaning Process" },
+            { id: "SOW-111", age: "1 year 9 months", status: "Gestating", operationDate: "2025-12-27", operationName: "AI Breeding" },
+            { id: "SOW-112", age: "3 years 8 months", status: "Lactating", operationDate: "2026-01-08", operationName: "Farrowing" }
+        ];
+        
+        // DOM elements
+        const tableBody = document.getElementById('table-body');
+        const entryCountElement = document.getElementById('entry-count');
+        const currentPageElement = document.getElementById('current-page');
+        const totalPagesElement = document.getElementById('total-pages');
+        const prevPageBtn = document.getElementById('prev-page');
+        const nextPageBtn = document.getElementById('next-page');
+        const currentDateElement = document.getElementById('current-date');
+        
+        // Initialize pagination manager with all required parameters
+        const paginationManager = new createPaginationManager({
+            tableBody: tableBody,
+            entryCountElement: entryCountElement,
+            currentPageElement: currentPageElement,
+            totalPagesElement: totalPagesElement,
+            prevPageBtn: prevPageBtn,
+            nextPageBtn: nextPageBtn,
+            data: sowData,
+            itemsPerPage: 4,
+            renderRow: renderSowRow
+        });
+        
+        // Initialize the page
+        function initPage() {
+            // Set current date
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            currentDateElement.textContent = now.toLocaleDateString('en-US', options);
+            
+            // Initialize pagination
+            paginationManager.init();
+            
+            // Add event listeners
+            prevPageBtn.addEventListener('click', () => paginationManager.goToPrevPage());
+            nextPageBtn.addEventListener('click', () => paginationManager.goToNextPage());
+            
+            // Add touch feedback for mobile
+            document.querySelectorAll('.pagination-btn').forEach(btn => {
+                btn.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                btn.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        }
+        
+        // Function to render a single sow row
+        function renderSowRow(sow) {
+            const statusClass = getStatusClass(sow.status);
+            const formattedDate = formatDate(sow.operationDate);
+            
+            return `
+                <td data-label="Sow" class="sow-id">${sow.id}</td>
+                <td data-label="Age" class="sow-age">${sow.age}</td>
+                <td data-label="Status">
+                    <span class="status-badge ${statusClass}">${sow.status}</span>
+                </td>
+                <td data-label="Operation">
+                    <div class="operation-info">
+                        <div class="operation-date">${formattedDate}</div>
+                        <div class="operation-name">${sow.operationName}</div>
+                    </div>
+                </td>
+            `;
+        }
+        
+        // Helper function to get status class
+        function getStatusClass(status) {
+            switch(status.toLowerCase()) {
+                case 'gestating': return 'status-gestating';
+                case 'lactating': return 'status-lactating';
+                case 'weaning': return 'status-weaning';
+                default: return '';
+            }
+        }
+        
+        // Helper function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+        }
+        
+        // Main function that creates pagination manager with all table and pagination logic
+        function createPaginationManager(config) {
+            const {
+                tableBody,
+                entryCountElement,
+                currentPageElement,
+                totalPagesElement,
+                prevPageBtn,
+                nextPageBtn,
+                data,
+                itemsPerPage,
+                renderRow
+            } = config;
+            
+            let currentPage = 1;
+            let totalPages = Math.ceil(data.length / itemsPerPage);
+            
+            // Public methods
+            return {
+                init() {
+                    this.updateEntryCount();
+                    this.updatePaginationInfo();
+                    this.renderTable();
+                },
+                
+                updateEntryCount() {
+                    entryCountElement.textContent = `${data.length} Entries`;
+                },
+                
+                updatePaginationInfo() {
+                    currentPageElement.textContent = currentPage;
+                    totalPagesElement.textContent = totalPages;
+                    
+                    // Enable/disable pagination buttons
+                    prevPageBtn.disabled = currentPage === 1;
+                    nextPageBtn.disabled = currentPage === totalPages;
+                },
+                
+                goToPrevPage() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        this.renderTable();
+                        this.updatePaginationInfo();
+                    }
+                },
+                
+                goToNextPage() {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        this.renderTable();
+                        this.updatePaginationInfo();
+                    }
+                },
+                
+                renderTable() {
+                    // Clear the current table body
+                    tableBody.innerHTML = '';
+                    
+                    // Calculate start and end index for current page
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = Math.min(startIndex + itemsPerPage, data.length);
+                    
+                    // Get data for current page
+                    const pageData = data.slice(startIndex, endIndex);
+                    
+                    // Render each row using the provided renderRow function
+                    pageData.forEach(sow => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = renderRow(sow);
+                        tableBody.appendChild(row);
+                    });
+                },
+                
+                // Getter for current state (optional, for debugging)
+                getState() {
+                    return {
+                        currentPage,
+                        totalPages,
+                        totalItems: data.length,
+                        itemsPerPage
+                    };
+                }
+            };
+        }
+        
+        // Initialize the page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>

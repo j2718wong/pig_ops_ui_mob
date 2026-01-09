@@ -16,7 +16,8 @@ import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
-        sortList}               from '../../utils.js';
+        sortList,
+        createPaginationManager} from '../../utils.js';
 
 
 
@@ -57,6 +58,13 @@ export function PageSowBoarList(input_settings){
     let elemIdFilterControls    = null;
     
     let elemIdTableRowCount     = null;
+    let elemIdTablePagination   = null;
+    let elemIdTablePrevPage     = null;
+    let elemIdTableCurPage      = null;
+    let elemIdTableTotalPages   = null;
+    let elemIdTableNextPage     = null;
+    
+    
     
     let elemIdTableSow          = null;
     let elemIdTableSowBody      = null;
@@ -84,6 +92,12 @@ export function PageSowBoarList(input_settings){
     let elemFilterControls      = null;
     
     let elemTableRowCount       = null;
+    let elemTablePagination     = null;
+    let elemTablePrevPage       = null;
+    let elemTableCurPage        = null;
+    let elemTableTotalPages     = null;
+    let elemTableNextPage       = null;
+    
     
     let elemTableSow            = null;
     let elemTableSowBody        = null;
@@ -104,8 +118,8 @@ export function PageSowBoarList(input_settings){
     let dataSowList             = null;
     let dataBoarList            = null;
     let dataGiltList            = null;
-	
-	let dataDisposedList		= null;
+    
+    let dataDisposedList        = null;
     
     let curDataView             = null;
     
@@ -131,6 +145,8 @@ export function PageSowBoarList(input_settings){
     let showOptions             = null;
     
     
+    let dtCurrentDate           = null;
+    
     this.init = function(){
         //textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
         
@@ -146,16 +162,15 @@ export function PageSowBoarList(input_settings){
     <style>
         
         /* Updated Table Styles */
+		.data-table.table-sow th {position:sticky; top: 0;}
+		.data-table.table-sow td {position:sticky; top: 0;}
         
-        .data-table.table-sow th:nth-child(1) { width: 25%; }
-        .data-table.table-sow th:nth-child(2) { width: 25%; }
-        .data-table.table-sow th:nth-child(3) { width: 25%; }
-        .data-table.table-sow th:nth-child(4) { width: 25%; }
-        
-        .data-table.table-boar th:nth-child(1) { width: 25%; }
-        .data-table.table-boar th:nth-child(2) { width: 25%; }
-        .data-table.table-boar th:nth-child(3) { width: 25%; }
+        .data-table.table-boar th:nth-child(1) { width: 30%; }
+        .data-table.table-boar th:nth-child(2) { width: 30%; }
+        .data-table.table-boar th:nth-child(3) { width: 15%; }
         .data-table.table-boar th:nth-child(4) { width: 25%; }
+        
+        .data-table.table-boar td:nth-child(3) { text-align: center; }
         
         .data-table.table-gilt th:nth-child(1) { width: 25%; }
         .data-table.table-gilt th:nth-child(2) { width: 25%; }
@@ -184,6 +199,11 @@ export function PageSowBoarList(input_settings){
         
         
         elemIdTableRowCount     = `sow-boar-table-row-count`;
+        elemIdTablePagination   = `sow-boar-table-pagination`;
+        elemIdTablePrevPage     = `sow-boar-table-prev-page`;
+        elemIdTableCurPage      = `sow-boar-table-cur-page`;
+        elemIdTableTotalPages   = `sow-boar-table-total-pages`;
+        elemIdTableNextPage     = `sow-boar-table-next-page`;
         
         elemIdTableSow          = `sow-boar-sow-table`;
         elemIdTableSowBody      = `sow-boar-sow-tbody`;
@@ -259,10 +279,36 @@ ${html_style}
             
         </div>
         
-        <div id="${elemIdTableRowCount}"></div>
+        
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+            <div class="entry-count" id="${elemIdTableRowCount}">
+                12 Entries
+            </div>
+            
+            <div class="pagination-controls" id="${elemIdTablePagination}">
+                <button class="pagination-btn" id="${elemIdTablePrevPage}" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="page-indicator">
+                    <span id="${elemIdTableCurPage}">1</span> / <span id="${elemIdTableTotalPages}">3</span>
+                </span>
+                <button class="pagination-btn" id="${elemIdTableNextPage}">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
 
         <!-- Sow Boar -->
-        <table class="data-table table-sow" id="${elemIdTableSow}">
+        <table class="data-table table-sow" id="${elemIdTableSow}" style="display:table;">
+			<colgroup>
+				<col style="width: 30%;">
+				<col style="width: 25%;">
+				<col style="width: 25%;">
+				<col style="width: 20%;">
+			</colgroup>
+  
             <thead>
                 <tr>
                     <th>Sow</th>
@@ -281,7 +327,7 @@ ${html_style}
                 <tr>
                     <th>Boar</th>
                     <th>Age</th>
-                    <th>Num Mating</th>
+                    <th>Mates</th>
                     <th>Last Mate</th>
                 </tr>
             </thead>
@@ -338,6 +384,12 @@ ${html_style}
         elemFilterControls      = document.getElementById(elemIdFilterControls);
         
         elemTableRowCount       = document.getElementById(elemIdTableRowCount);
+        elemTablePagination     = document.getElementById(elemIdTablePagination);
+        elemTablePrevPage       = document.getElementById(elemIdTablePrevPage);
+        elemTableCurPage        = document.getElementById(elemIdTableCurPage);
+        elemTableTotalPages     = document.getElementById(elemIdTableTotalPages);
+        elemTableNextPage       = document.getElementById(elemIdTableNextPage);
+        
         
         elemTableSow            = document.getElementById(elemIdTableSow);
         elemTableSowBody        = document.getElementById(elemIdTableSowBody);
@@ -434,6 +486,10 @@ ${html_style}
     
     
     this.show = function(options){
+        // So that not to instantiate in every table redraw
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
         showOptions = options;
         
         showpageHeaderAlarm = false; // Need to reset this.
@@ -590,85 +646,129 @@ ${html_style}
         
         let html = '';  
         
+        /*
+        for (const cur_entry of sow_list){
+            html+= thisObj.getHtmlTableRowSow(cur_entry);
+        }
         
+        elemTableSowBody.innerHTML = html;
+        */
+        
+        const config = {
+            elemPagination:     elemTablePagination,
+            elemTableBody:      elemTableSowBody,
+            elemEntryCount:     elemTableRowCount,
+            elemCurrentPage:    elemTableCurPage,
+            elemTotalPages:     elemTableTotalPages,
+            elemPrevPageBtn:    elemTablePrevPage,
+            elemNextPageBtn:    elemTableNextPage,
+            data:               curDataView,
+            itemsPerPage:       10,
+            renderRow:          thisObj.getHtmlTableRowSow,
+			renderRowEmpty:		thisObj.getHtmlTableRowSowEmpty
+        } 
+        
+        const paginationManager = new createPaginationManager(config); 
+        paginationManager.init();
+        
+        // One event handler at a time
+        elemTablePrevPage.onclick = function(){
+            paginationManager.goToPrevPage();
+        }
+        
+        // One event handler at a time
+        elemTableNextPage.onclick = function(){
+            paginationManager.goToNextPage();
+        }
+        
+    }
+    
+    
+	this.getHtmlTableRowSowEmpty = function(){
+		const html = `
+            <tr>
+                <td><span>No Entries</span></td>
+                <td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+            </tr>
+        `;
+        
+        return html;
+	}
+	
+    this.getHtmlTableRowSow = function(cur_entry){
+         
         let diff_msecs;
         let diff_days;
         
         
-        let dt_current = new Date();
-        dt_current.setHours(0, 0, 0, 0);
-        
-        
-        for (const cur_entry of sow_list){
-            let sow_boar = null;
-            let sow_reference = '';
-        
-            if ('sow_boar' in cur_entry){
-                sow_boar = cur_entry.sow_boar;
-            }
-            else{
-                sow_boar = cur_entry;
-            }
-        
-            if ((sow_boar.name != null) && (sow_boar.name.length >0)){
-                sow_reference = sow_boar.name;
-            }
-            else{
-                sow_reference = sow_boar.number;
-            }
-            
-            let dt_birth = null;
-            let s_age = '';
-            
-            if (sow_boar.date_of_birth != null){
-                dt_birth = new Date(sow_boar.date_of_birth);
-            
-                diff_msecs          = dt_current - dt_birth;
-                diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
-                
-                let num_years       = Math.floor(diff_days / 365);
-                let excess_days     = diff_days % 365;
-                let num_months      = Math.round(excess_days / 30);
-                
-                
-                if (num_years == 0){
-                    s_age = `${num_months} months`;
-                }
-                else{
-                    if (num_years == 1){
-                        s_age = `${num_years} year`;
-                    } else{
-                        s_age = `${num_years} years`;
-                    }
-                    
-                    if (num_months  >0){
-                        if (num_months == 1){
-                            s_age += `, <span>${num_months} month</span>`;
-                        }
-                        else{
-                            s_age += `, <span>${num_months} months</span>`;
-                        }
-                    }
-                }
-                
-            
-            }
-            
-            
-            let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
-            s_click += `${SOW_BOAR_TYPE.SOW}, ${sow_boar.farm_sow_id});`;
-            
-            html += `<tr>`;
-            html += `<td><span onclick="${s_click}">${sow_reference}</span></td>`;
-            html += `<td>${SOW_STATUS_NAME[sow_boar.status_id]}</td>`;
-            html += `<td>${s_age}</td>`;
-            html += `<td></td>`;
-            
-            
-            html += '</tr>';
+        let sow_boar = null;
+        let sow_reference = '';
+    
+        if ('sow_boar' in cur_entry){
+            sow_boar = cur_entry.sow_boar;
+        }
+        else{
+            sow_boar = cur_entry;
+        }
+    
+        if ((sow_boar.name != null) && (sow_boar.name.length >0)){
+            sow_reference = sow_boar.name;
+        }
+        else{
+            sow_reference = sow_boar.number;
         }
         
-        elemTableSowBody.innerHTML = html;
+        let dt_birth = null;
+        let s_age = '';
+        
+        if (sow_boar.date_of_birth != null){
+            dt_birth = new Date(sow_boar.date_of_birth);
+        
+            diff_msecs          = dtCurrentDate - dt_birth;
+            diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+            
+            let num_years       = Math.floor(diff_days / 365);
+            let excess_days     = diff_days % 365;
+            let num_months      = Math.round(excess_days / 30);
+            
+            
+            if (num_years == 0){
+                s_age = `${num_months} months`;
+            }
+            else{
+                if (num_years == 1){
+                    s_age = `${num_years} year`;
+                } else{
+                    s_age = `${num_years} years`;
+                }
+                
+                if (num_months  >0){
+                    if (num_months == 1){
+                        s_age += `, <span class="nowrap">${num_months} month</span>`;
+                    }
+                    else{
+                        s_age += `, <span class="nowrap">${num_months} months</span>`;
+                    }
+                }
+            }
+        }
+        
+        
+        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
+        s_click += `${SOW_BOAR_TYPE.SOW}, ${sow_boar.farm_sow_id});`;
+        
+        const html = `
+            <tr>
+                <td><span onclick="${s_click}">${sow_reference}</span></td>
+                <td>${SOW_STATUS_NAME[sow_boar.status_id]}</td>
+                <td>${s_age}</td>
+                <td></td>
+            </tr>
+        `;
+        
+        return html;
     }
     
     
@@ -750,82 +850,97 @@ ${html_style}
     this.renderBoarTable = function(boar_list){
         curDataView = boar_list;
         
+        console.log(boar_list);
+        
         let html = '';  
+        
+        for (const cur_entry of boar_list){
+            html += thisObj.getHtmlTableRowBoar(cur_entry);
+        }
+        
+        elemTableBoarBody.innerHTML = html;
+    }
+    
+    
+    this.getHtmlTableRowBoar = function(cur_entry){
         
         let diff_msecs;
         let diff_days;
         
-        
-        let dt_current = new Date();
-        dt_current.setHours(0, 0, 0, 0);
-        
-        
-        for (const cur_entry of boar_list){
-            let sow_boar = null;
-            let sow_reference = '';
-        
-            if ('sow_boar' in cur_entry){
-                sow_boar = cur_entry.sow_boar;
-            }
-            else{
-                sow_boar = cur_entry;
-            }
-        
-            if ((sow_boar.name != null) && (sow_boar.name.length >0)){
-                sow_reference = sow_boar.name;
-            }
-            else{
-                sow_reference = sow_boar.number;
-            }
-            
-            let dt_birth = null;
-            let s_age = '';
-            
-            if (sow_boar.date_of_birth != null){
-                dt_birth = new Date(sow_boar.date_of_birth);
-            
-                diff_msecs          = dt_current - dt_birth;
-                diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
-                
-                let num_years       = Math.floor(diff_days / 365);
-                let excess_days     = diff_days % 365;
-                let num_months      = Math.round(excess_days / 30);
-                
-                
-                if (num_years == 0){
-                    s_age = `${num_months} months`;
-                }
-                else{
-                    if (num_years == 1){
-                        s_age = `${num_years} year`;
-                    } else{
-                        s_age = `${num_years} years`;
-                    }
-                    
-                    if (num_months  >0){
-                        if (num_months == 1){
-                            s_age += `, <span>${num_months} month</span>`;
-                        }
-                        else{
-                            s_age += `, <span>${num_months} months</span>`;
-                        }
-                    }
-                }
-                
-            
-            }
-            
-            html += `<tr>`;
-            html += `<td>${sow_reference}</td>`;
-            html += `<td>${s_age}</td>`;
-            html += `<td></td>`;
-            html += `<td></td>`;
-            
-            
-            html += '</tr>';
+        let sow_boar = null;
+        let sow_reference = '';
+    
+        if ('sow_boar' in cur_entry){
+            sow_boar = cur_entry.sow_boar;
+        }
+        else{
+            sow_boar = cur_entry;
+        }
+    
+        if ((sow_boar.name != null) && (sow_boar.name.length >0)){
+            sow_reference = sow_boar.name;
+        }
+        else{
+            sow_reference = sow_boar.number;
         }
         
-        elemTableBoarBody.innerHTML = html;
+        let dt_birth = null;
+        let s_age = '';
+        
+        if (sow_boar.date_of_birth != null){
+            dt_birth = new Date(sow_boar.date_of_birth);
+        
+            diff_msecs          = dtCurrentDate - dt_birth;
+            diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+            
+            let num_years       = Math.floor(diff_days / 365);
+            let excess_days     = diff_days % 365;
+            let num_months      = Math.round(excess_days / 30);
+            
+            
+            if (num_years == 0){
+                s_age = `${num_months} months`;
+            }
+            else{
+                if (num_years == 1){
+                    s_age = `${num_years} year`;
+                } else{
+                    s_age = `${num_years} years`;
+                }
+                
+                if (num_months  >0){
+                    if (num_months == 1){
+                        s_age += `, <span class="nowrap">${num_months} month</span>`;
+                    }
+                    else{
+                        s_age += `, <span class="nowrap">${num_months} months</span>`;
+                    }
+                }
+            }
+            
+        
+        }
+        
+        
+        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
+        s_click += `${SOW_BOAR_TYPE.BOAR}, ${sow_boar.farm_boar_id});`;
+        
+        let s_last_mate ='';
+        if (cur_entry.date_last_mate != null){
+            s_last_mate = cur_entry.date_last_mate;
+        }
+        
+        
+        const html = `
+            <tr>
+                <td>${sow_reference}</td>
+                <td>${s_age}</td>
+                <td>${cur_entry.mate_count}</td>
+                <td>${s_last_mate}</td>
+            </tr>
+        `;
+        
+        return html;
     }
     
     
@@ -929,8 +1044,8 @@ ${html_style}
     }
 
     
-	this.requestDisposedSowBoar = function(){
-		const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
+    this.requestDisposedSowBoar = function(){
+        const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
         
         const is_mob_view = 1; // TODO for desktop view
         
@@ -963,5 +1078,5 @@ ${html_style}
                 gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
             }
         });
-	}
+    }
 }

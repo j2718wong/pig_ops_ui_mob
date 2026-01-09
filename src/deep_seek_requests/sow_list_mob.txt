@@ -1,0 +1,37 @@
+Create a page view for mobile device that has these requirements
+Use corporate blue themes and optimize for mobile view
+
+1.) Header Title: Sow List
+
+2.) Top line
+left side:
+	Entry Count - display total entries of current view
+
+right side
+	pagination controls
+	
+3.) Simple table with the following columns
+- Sow
+- Age
+- Status (either Gestating, Lactating, Weaning)
+- Operation; date and operation name
+
+
+fix the following
+1.) remove header and filter controls
+2.) the operation should be put in he operation column not in whole row
+3.) fix CSS issues
+4.) The total entry count should be the total entries in all pages and
+should be labeled like "10 Entries"
+
+
+fix the following
+1.) remove the icon entries count.
+2.) remove the refresh icon
+3.) css does not work in mobile screen
+
+1.) create just one JS function and put all table appending and pagination codes
+ inside the function
+2.) The inputs should be  page elements of table and pagination controls , 
+table data and a function to render the table row  
+

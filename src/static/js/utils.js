@@ -212,3 +212,110 @@ export function insertIntoSortedList(list, object_to_insert, sort_key, sort_dire
     list.splice(insertionIndex, 0, object_to_insert);
     return list;
 }
+
+
+
+export function createPaginationManager(config) {
+    const {
+        elemPagination,
+        elemTableBody,
+        elemEntryCount,
+        elemCurrentPage,
+        elemTotalPages,
+        elemPrevPageBtn,
+        elemNextPageBtn,
+        data,
+        itemsPerPage,
+        renderRow,
+		renderRowEmpty
+    } = config;
+    
+    let currentPage = 1;
+    let totalPages = Math.ceil(data.length / itemsPerPage);
+    
+    // Public methods
+    return {
+        init() {
+            this.updateEntryCount();
+            this.updatePaginationInfo();
+            this.renderTable();
+        },
+        
+        updateEntryCount() {
+            elemEntryCount.textContent = `${data.length} Entries`;
+            
+            if (data.length <= itemsPerPage){
+                elemPagination.style.display = 'none';
+            }
+            else{
+                elemPagination.style.display = 'flex';
+            }
+        },
+        
+        updatePaginationInfo() {
+            elemCurrentPage.textContent = currentPage;
+            elemTotalPages.textContent = totalPages;
+            
+            // Enable/disable pagination buttons
+            elemPrevPageBtn.disabled = currentPage === 1;
+            elemNextPageBtn.disabled = currentPage === totalPages;
+        },
+        
+        goToPrevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                this.renderTable();
+                this.updatePaginationInfo();
+            }
+        },
+        
+        goToNextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                this.renderTable();
+                this.updatePaginationInfo();
+            }
+        },
+        
+        renderTable() {
+            // Clear the current table body
+            elemTableBody.innerHTML = '';
+			
+			if (data.length == 0){
+				if (renderRowEmpty){
+					const row = document.createElement('tr');
+					row.innerHTML = renderRowEmpty();
+					elemTableBody.appendChild(row);
+					
+					return;
+				}
+			}
+            
+            // Calculate start and end index for current page
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, data.length);
+            
+            // Get data for current page
+            const pageData = data.slice(startIndex, endIndex);
+            
+            // Render each row using the provided renderRow function
+            pageData.forEach(sow => {
+                const row = document.createElement('tr');
+                row.innerHTML = renderRow(sow);
+                elemTableBody.appendChild(row);
+            });
+        },
+        
+        // Getter for current state (optional, for debugging)
+        getState() {
+            return {
+                currentPage,
+                totalPages,
+                totalItems: data.length,
+                itemsPerPage
+            };
+        }
+    };
+}
+
+

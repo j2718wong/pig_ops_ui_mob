@@ -15,7 +15,9 @@ import {AddressManager}             from '../common/address_manager.js';
 import {PigFarm}                    from '../farm_account/pig_farm.js';
 import {AccountLists}               from '../farm_account/account_lists.js';
 
-
+import {PageAccountDisabled}		from '../a_user_control/page_account_disabled.js';
+import {PageUserDisabled}			from '../a_user_control/page_user_disabled.js';
+import {PageAccountUnpaidBill}		from '../a_user_control/page_account_unpaid_bill.js';
 
 
 
@@ -162,7 +164,9 @@ function UserControl() {
 
     }
     
-    
+    this.isUserCompanyUser = function(){
+		return false;
+	}
     
     
     
@@ -286,7 +290,7 @@ export function Navigation(){
     const settingsAccUnpaidBill = {
         navigation:             this
     }
-    pageAccountUnpaidBill       = new PageAccountUnpaidBill(settingsAccUnpaidBill);
+    this.pageAccountUnpaidBill 	= new PageAccountUnpaidBill(settingsAccUnpaidBill);
     
     
     const settingsPigFarm = {

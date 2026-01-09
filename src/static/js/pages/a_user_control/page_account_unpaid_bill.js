@@ -38,7 +38,7 @@ export function PageAccountUnpaidBill(input_settings){
     let elemIdBillDateDue       = null;
     let elemIdBillDateStart     = null;
     let elemIdBillDateEnd       = null;
-    
+    let elemIdBillAmount		= null;
     
     
     let elemAccountCode         = null;
@@ -49,7 +49,7 @@ export function PageAccountUnpaidBill(input_settings){
     let elemBillDateDue         = null;
     let elemBillDateStart       = null;
     let elemBillDateEnd         = null;
-    
+    let elemBillAmount			= null;
     
     
 
@@ -77,7 +77,8 @@ export function PageAccountUnpaidBill(input_settings){
         elemIdBillDateDue       = `account-bill-unpaid-bill-date-due`;
         elemIdBillDateStart     = `account-bill-unpaid-bill-date-start`;
         elemIdBillDateEnd       = `account-bill-unpaid-bill-date-end`;
-        
+        elemIdBillAmount		= `account-bill-unpaid-bill-amount`;
+		
 
         const html = `
         
@@ -180,7 +181,7 @@ export function PageAccountUnpaidBill(input_settings){
         elemBillDateDue         = document.getElementById(elemIdBillDateDue);
         elemBillDateStart       = document.getElementById(elemIdBillDateStart);
         elemBillDateEnd         = document.getElementById(elemIdBillDateEnd);
-    
+		elemBillAmount			= document.getElementById(elemIdBillAmount);
     }
     
     
