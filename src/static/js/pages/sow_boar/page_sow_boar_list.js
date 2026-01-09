@@ -104,6 +104,8 @@ export function PageSowBoarList(input_settings){
     let dataSowList             = null;
     let dataBoarList            = null;
     let dataGiltList            = null;
+	
+	let dataDisposedList		= null;
     
     let curDataView             = null;
     
@@ -652,8 +654,12 @@ ${html_style}
             
             }
             
+            
+            let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
+            s_click += `${SOW_BOAR_TYPE.SOW}, ${sow_boar.farm_sow_id});`;
+            
             html += `<tr>`;
-            html += `<td><span>${sow_reference}</span></td>`;
+            html += `<td><span onclick="${s_click}">${sow_reference}</span></td>`;
             html += `<td>${SOW_STATUS_NAME[sow_boar.status_id]}</td>`;
             html += `<td>${s_age}</td>`;
             html += `<td></td>`;
@@ -842,6 +848,8 @@ ${html_style}
     
     
     this.onClickSowBoarName = function(sow_boar_type, farm_sow_boar_id){
+        console.log(`onClickSowBoarName; sow_boar_type=${sow_boar_type}; farm_sow_boar_id = ${farm_sow_boar_id}`);
+        
         let index;
         let cur_entry;
         let edit_entry = null;
@@ -882,42 +890,78 @@ ${html_style}
         
         const options_sow_boar ={
             is_add:         false,   // false is edit
-            is_sow:         is_add_sow,   // false is boar
+            sow_boar_type:  sow_boar_type,   // false is boar
+            farm_sow_boar_id: farm_sow_boar_id,
             go_back_page:   elemDivContainer   // Go back to this page
         };
             
             
-            const callback = function(new_sow_boar_hid){
-                switch (showOptions.sow_boar_type){
-                    case SOW_BOAR_TYPE.SOW: {
-                        thisObj.renderSowTable(dataSowList);
-                        break;
-                    }
-            
-                    case SOW_BOAR_TYPE.BOAR: {
-                        thisObj.renderBoarTable(dataBoarList);
-                        break;
-                    }
-            
-                    case SOW_BOAR_TYPE.GILT:{
-                        thisObj.renderGiltTable(dataGiltList);
-                        break;
-                    }
-                    
+        const callback = function(new_sow_boar_hid){
+            switch (sow_boar_type){
+                case SOW_BOAR_TYPE.SOW: {
+                    thisObj.renderSowTable(dataSowList);
+                    break;
                 }
-            };
+        
+                case SOW_BOAR_TYPE.BOAR: {
+                    thisObj.renderBoarTable(dataBoarList);
+                    break;
+                }
+        
+                case SOW_BOAR_TYPE.GILT:{
+                    thisObj.renderGiltTable(dataGiltList);
+                    break;
+                }
+                
+            }
+        };
             
             
-            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
-            navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
-            
-            
-            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-            navigation.showThisPage(next_page)
+        navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+        navigation.pageSowBoarAddEdit.callbackOnSuccessEdit = callback;
+        
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+        navigation.showThisPage(next_page)
         
         
         
     }
 
     
+	this.requestDisposedSowBoar = function(){
+		const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
+        
+        const is_mob_view = 1; // TODO for desktop view
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/sow_boar/list?pfhid=${cur_pig_farm_hid}&is_disposed=1&inc_user_audit=1`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                }
+                else {
+                    // TODO
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+            }
+        });
+	}
 }

@@ -1,0 +1,23 @@
+
+Create a collapsible div that has this requirement
+use compact layout for mobile view; use corporate blue theme
+use bootstrap. 
+
+1.) arrow icon for toggle  collapse state
+2.) div title: Update Sow
+3.) Inside the div
+
+a.) warning box: Updating pig status to any of the options below will remove from the list. 
+
+b.) Date Status input 
+
+c.) Radio buttons
+- Delete. Invalid Entry
+
+- Pig is Sold
+
+- Pig is Culled
+
+- Pig is Dead
+
+d.) Notes input

@@ -1,0 +1,70 @@
+User Control pages
+
+
+Create 3 divs for mobile view
+Use  clean and corporate blue themes
+
+div 1:
+
+Title: Account Disabled
+
+Message: 
+Your account has been disabled.
+Please contact our customer service if you want to appeal to enable again.
+
+Account Code: ABC123
+Account Name: Leolex Farms
+
+Customer Service
+email: support@jsysdev.com
+
+
+div 2: 
+
+Title: User Access Disabled 
+
+Message: 
+Your account access has been disabled by your Account Admin.
+Please contact your Account Admin to restore your access.
+
+
+div 3: Bill Unpaid
+
+Your account has been temporarily locked because of your pending bill.
+Please contact your account admins to settle this bill
+
+Account Code: ABC123
+Account Name: Leolex Farms
+Bill Number: 2789 7890
+
+Bill Details
+
+Date Issue:  January 8, 2026
+Date Due: January 23, 2026
+
+Date Biling Start: December 6, 2025
+Date Biling End: January 7, 2025
+
+Amount: PHP 1,500.00
+
+
+
+Payment Instructions
+
+Pay By:
+
+1.) Bank Transfer
+BDO: 2342323223
+
+2.) GCash
+6061 5575
+
+3.) Credit Card
+
+
+
+
+ 
+
+
+

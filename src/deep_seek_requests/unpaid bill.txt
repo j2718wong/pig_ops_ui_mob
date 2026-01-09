@@ -1,0 +1,20 @@
+Unpaid Bill
+
+Create a mobile page view that as these requirements
+
+Account Unpaid Bill
+
+1.) Info Box
+Your account has been temporarily locked until pending bill is paid.
+Only the billing page is available until bill is settled.
+
+2.) Read only fields
+
+- Account Code
+- Account Name
+- Bill Number
+- Billing Period
+- Amount
+
+
+

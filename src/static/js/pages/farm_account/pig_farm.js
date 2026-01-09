@@ -22,6 +22,19 @@ export function PigFarm(input_settings){
     this.dataStaffList          = null;
     
 	
+	this.getPigFarmAccountHid = function(){
+		return null;
+	}
+	
+	
+	this.isPigFarmAccountEnabled = function(){
+		return true;
+	}
+	
+	
+	this.isPigFarmAccountHasUnpaidBill = function(){
+		return false;
+	}
 	
     
     this.setDataPigFarm = function(data){

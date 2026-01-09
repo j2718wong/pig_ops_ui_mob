@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Sow Panel</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --corporate-blue: #0d6efd;
+            --corporate-blue-dark: #0b5ed7;
+            --corporate-blue-light: #cfe2ff;
+            --corporate-blue-lighter: #e8f1ff;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .container {
+            max-width: 800px;
+        }
+        
+        /* Corporate blue theme for the collapsible panel */
+        .collapsible-header {
+            background-color: var(--corporate-blue);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .collapsible-header:hover {
+            background-color: var(--corporate-blue-dark);
+        }
+        
+        .collapsible-header.collapsed {
+            border-radius: 8px;
+        }
+        
+        .collapsible-body {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 1.5rem;
+        }
+        
+        .collapsible-body.collapsed {
+            display: none;
+        }
+        
+        /* Arrow icon animation */
+        .arrow-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .arrow-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        /* Warning box styling */
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffecb5;
+            color: #856404;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .warning-icon {
+            color: #ffc107;
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        /* Radio button styling */
+        .form-check-input:checked {
+            background-color: var(--corporate-blue);
+            border-color: var(--corporate-blue);
+        }
+        
+        .form-check-label {
+            margin-left: 0.5rem;
+        }
+        
+        /* Form controls */
+        .form-control, .form-select {
+            border-color: #ced4da;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--corporate-blue);
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        /* Mobile-specific compact layout */
+        @media (max-width: 768px) {
+            .collapsible-header {
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+            }
+            
+            .collapsible-body {
+                padding: 1rem;
+            }
+            
+            .warning-box {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            .form-group {
+                margin-bottom: 0.75rem;
+            }
+            
+            .btn {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Custom button styling */
+        .btn-corporate {
+            background-color: var(--corporate-blue);
+            color: white;
+            border: none;
+        }
+        
+        .btn-corporate:hover {
+            background-color: var(--corporate-blue-dark);
+            color: white;
+        }
+        
+        /* Status badge styles for demo */
+        .status-badge {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.375rem;
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .demo-header {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-header">
+            <h1 class="h3 mb-3" style="color: var(--corporate-blue);">Sow Management System</h1>
+            <p class="text-muted">Update sow status using the collapsible panel below</p>
+            <div class="d-flex justify-content-center align-items-center">
+                <span class="me-3">Current Status:</span>
+                <span class="status-badge" id="currentStatus">Active</span>
+            </div>
+        </div>
+        
+        <!-- Collapsible Panel -->
+        <div class="corporate-panel mb-4">
+            <!-- Header with arrow icon -->
+            <div class="collapsible-header" id="panelHeader" onclick="togglePanel()">
+                <span>Update Sow</span>
+                <i class="bi bi-chevron-down arrow-icon" id="arrowIcon"></i>
+            </div>
+            
+            <!-- Body content -->
+            <div class="collapsible-body" id="panelBody">
+                <!-- Warning box -->
+                <div class="warning-box">
+                    <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
+                    <div>
+                        Updating pig status to any of the options below will remove it from the active list.
+                    </div>
+                </div>
+                
+                <!-- Form content -->
+                <form id="sowUpdateForm">
+                    <!-- Date Status input -->
+                    <div class="mb-3">
+                        <label for="statusDate" class="form-label">Date Status <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="statusDate" required>
+                    </div>
+                    
+                    <!-- Radio buttons -->
+                    <div class="mb-3">
+                        <label class="form-label d-block">Status Options <span class="text-danger">*</span></label>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="statusOption" id="deleteOption" value="Delete" required>
+                            <label class="form-check-label" for="deleteOption">
+                                Delete. Invalid Entry
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="statusOption" id="soldOption" value="Sold">
+                            <label class="form-check-label" for="soldOption">
+                                Pig is Sold
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="statusOption" id="culledOption" value="Culled">
+                            <label class="form-check-label" for="culledOption">
+                                Pig is Culled
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="statusOption" id="deadOption" value="Dead">
+                            <label class="form-check-label" for="deadOption">
+                                Pig is Dead
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes input -->
+                    <div class="mb-4">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" rows="3" placeholder="Add any additional notes here..."></textarea>
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">Reset</button>
+                        <button type="submit" class="btn btn-corporate">Update Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Toggle panel function
+        function togglePanel() {
+            const panelBody = document.getElementById('panelBody');
+            const panelHeader = document.getElementById('panelHeader');
+            const arrowIcon = document.getElementById('arrowIcon');
+            
+            // Toggle visibility
+            panelBody.classList.toggle('collapsed');
+            
+            // Toggle header border radius
+            panelHeader.classList.toggle('collapsed');
+            
+            // Rotate arrow icon
+            arrowIcon.classList.toggle('rotated');
+        }
+        
+        // Form submission handler
+        document.getElementById('sowUpdateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const date = document.getElementById('statusDate').value;
+            const status = document.querySelector('input[name="statusOption"]:checked');
+            const notes = document.getElementById('notes').value;
+            
+            if (!date || !status) {
+                alert('Please fill in all required fields (Date and Status).');
+                return;
+            }
+            
+            // Update the status badge
+            document.getElementById('currentStatus').textContent = status.value;
+            document.getElementById('currentStatus').style.backgroundColor = '#dc3545'; // Red for removed status
+            
+            // Show success message
+            alert(`Sow status updated to: ${status.value}\nDate: ${date}\nNotes: ${notes || 'No notes provided'}`);
+            
+            // Collapse the panel after successful submission
+            if (!document.getElementById('panelBody').classList.contains('collapsed')) {
+                togglePanel();
+            }
+            
+            // Reset form
+            resetForm();
+        });
+        
+        // Reset form function
+        function resetForm() {
+            document.getElementById('sowUpdateForm').reset();
+        }
+        
+        // Initialize with current date
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('statusDate').value = today;
+        });
+    </script>
+</body>
+</html>

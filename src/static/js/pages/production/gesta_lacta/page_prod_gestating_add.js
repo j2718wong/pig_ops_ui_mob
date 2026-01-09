@@ -225,16 +225,16 @@ export function PageProdGestatingAdd(input_settings){
             <!-- Combined Breeding Status Warning -->
             <div id="${elemIdSowStatusShow}" class="warning-box" style="display: none;">
                 <div class="warning-header">
-                    <i class="bi bi-exclamation-triangle"></i>
+                    <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
                     <span>Sow Already Bred</span>
                 </div>
                 <div class="warning-details">
                     <span>
                         This sow was last bred on <span id="${elemIdSowLastInsem}">Jan 15, 2024</span>
                         with production <b>PID: <span id="${elemIdSowLastPid}">20</span></b>. 
-                        If this new entry will be saved, the previous gestating production  
+                        If this new entry will be saved, the previous production gestating  
                         entry will be marked as <b>Not Pregnant</b> and will
-                        be removed from the Gestating Production List.
+                        be removed from the Prod Gestating List.
                         
                         Please ensure this is an intentional breeding due to sow reheat.
                     </span>

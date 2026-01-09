@@ -152,6 +152,20 @@ function UserControl() {
     }
     
     
+    this.isUserAccountEnabled = function(){
+        return true;
+    }
+    
+    
+    this.isUserEnabled = function(){
+        return true;
+
+    }
+    
+    
+    
+    
+    
     this.getCurrentFarmHid =  function(){
         return userCurrentFarmHid;
     }
@@ -232,6 +246,10 @@ export function Navigation(){
     let elemMobileNavAdmin          = null;
 
     
+    let elemHiddenContAccDisabled   = null;
+    let elemHiddenContUserDisabled  = null;
+    let elemHiddenContBillUnpaid    = null;
+    
     let elemHiddenContSowBoarList   = null;
     let elemHiddenContSowBoarAddEdit= null;
     
@@ -251,6 +269,24 @@ export function Navigation(){
     
     
     this.userControl                = new UserControl();
+    
+    
+    const settingsaAccountDisabled = {
+        navigation:             this
+    }
+    this.pageAccountDisabled    = new PageAccountDisabled(settingsaAccountDisabled);
+    
+    
+    const settingsUserDisabled = {
+        navigation:             this
+    }
+    this.pageUserDisabled    = new PageUserDisabled(settingsUserDisabled);
+    
+    
+    const settingsAccUnpaidBill = {
+        navigation:             this
+    }
+    pageAccountUnpaidBill       = new PageAccountUnpaidBill(settingsAccUnpaidBill);
     
     
     const settingsPigFarm = {
@@ -343,6 +379,9 @@ export function Navigation(){
         
         this.userControl.init();
         
+        this.pageAccountDisabled.init();
+        this.pageUserDisabled.init();
+        this.pageAccountUnpaidBill.init();
         
         this.pageSowBoarList.init();
         this.pageSowBoarAddEdit.init();
@@ -388,6 +427,11 @@ export function Navigation(){
         elemMobileNavFinancials     = document.getElementById('mobile-nav-financials');
         elemMobileNavAccountLists   = document.getElementById('mobile-nav-account-lists');
         elemMobileNavAdmin          = document.getElementById('mobile-nav-admin');
+
+
+        elemHiddenContAccDisabled   = document.getElementById('container-account-disabled');
+        elemHiddenContUserDisabled  = document.getElementById('container-user-disabled');
+        elemHiddenContBillUnpaid    = document.getElementById('container-account-bill-unpaid');
 
         
         elemHiddenContSowBoarList   = document.getElementById('container-sow-boar-list');
@@ -608,6 +652,59 @@ export function Navigation(){
         document.body.style.backgroundColor = '#f5f7fa';
         
         const hidden_containers = document.getElementsByClassName("hidden-container");
+        
+        
+        // Perform user and account control checks.
+        
+        // Check if user.account is disabled
+        if (thisObj.userControl.isUserAccountEnabled() == false){
+            // Hide all containers
+            for (const cur_entry of hidden_containers){
+                cur_entry.style.display = 'none';
+            }
+            
+            // Except
+            elemHiddenContAccDisabled.style.display = 'block';
+            
+            return;
+        }
+        
+        
+        // Check if user is disabled by account
+        if (thisObj.userControl.isUserEnabled() == false){
+            // Hide all containers
+            for (const cur_entry of hidden_containers){
+                cur_entry.style.display = 'none';
+            }
+            
+            // Except
+            elemHiddenContUserDisabled.style.display = 'block';
+            
+            return;
+        }
+        
+        
+        // Get current pig Farm
+        
+        const farm_acc_has_unpaid_bill = thisObj.pigFarm.isPigFarmAccountHasUnpaidBill();
+        
+        
+        // Check if current user is company support, marketing related users
+        if (thisObj.userControl.isUserCompanyUser() == false){
+            
+            if (farm_acc_has_unpaid_bill == true){
+                // Hide all containers
+                for (const cur_entry of hidden_containers){
+                    cur_entry.style.display = 'none';
+                }
+                
+                // Except
+                elemHiddenContBillUnpaid.style.display = 'block';
+                
+                return;
+            }
+            
+        }
         
         
         for (const cur_entry of hidden_containers){
@@ -909,10 +1006,10 @@ export function Navigation(){
         thisObj.pageProdGestatingAdd.show();
     }
     
-	
-	
     
-	
+    
+    
+    
     this.onClickProdGestatingEntry = function(pig_prod_pid){
         if (pig_prod_pid == null){
             thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
