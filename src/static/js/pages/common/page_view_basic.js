@@ -35,6 +35,13 @@ export function PageViewBasic(){
     
     this.navigation         = null;
     
+	this.curUserLanguageKey	= 'en';
+	
+	
+	this.setUserLanguage = function(language_key){
+        this.curUserLanguageKey = language_key;
+        thisObj.onUserChangeLanguage();
+    }
     
     this.moneyFormatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,

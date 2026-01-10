@@ -25,6 +25,7 @@ export function PageAccountDisabled(input_settings){
     */
     const settings              = input_settings;
     
+    const MAX_TRUNCATE_ACC_NAME = 18;
     
     // This is needed as this will be first element to be rendered
     let elemDivContainer        = document.getElementById('container-account-disabled');
@@ -69,7 +70,7 @@ export function PageAccountDisabled(input_settings){
     <div class="container">
         <!-- Card 1: Account Disabled -->
         <div class="notification-card">
-            <div class="card-header">
+            <div class="user-control-card-header">
                 <i class="fas fa-user-slash"></i>
                 <h2>Account Disabled</h2>
             </div>
@@ -147,5 +148,28 @@ export function PageAccountDisabled(input_settings){
      
     }
    
+    
+    this.beforeShow = function(options){
+         /*
+        Typical options
+        options ={
+            account_code:   '',   
+            account_name:   '',   
+        }
+        */
+        
+        let display_name;
+        
+        if (options.account_name.length > MAX_TRUNCATE_ACC_NAME){
+            display_name = options.account_name.substring(0, MAX_TRUNCATE_ACC_NAME) + '...';
+        }
+        else{
+            display_name = options.account_name.length;
+        }
+        
+        elemAccountCode.textContent = options.account_code;
+        elemAccountName.textContent = display_name;
+    }
+    
     
 }

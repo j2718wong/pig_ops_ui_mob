@@ -6,8 +6,14 @@
 
 import {PageViewBasic}          from '../common/page_view_basic.js';
 
+import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
+
+import {TextTranslation}        from '../common/translation.js';
+
+
 import {SOW_BOAR_TYPE,
-        SOW_STATUS}             from '../../constants.js';
+        SOW_STATUS,
+        REQUEST_ERROR_NUM}      from '../../constants.js';
 
 
 import {formatDate,
@@ -31,7 +37,7 @@ export function PageSowBoarAddEdit(input_settings){
     const navigation            = input_settings.navigation;
     
     const MAXCHAR_SOW_BOAR_NAME     = 20;
-    const MAXCHAR_SOW_BOAR_NUMBER   = 50;
+    const MAXCHAR_SOW_BOAR_NUMBER   = 10;
     const MAXCHAR_NOTES             = 160;
     
     /*
@@ -115,7 +121,10 @@ export function PageSowBoarAddEdit(input_settings){
     let elemIdPanelArrowIcon    = null;
     let elemIdPanelBody         = null;
     let elemIdDateStatus        = null;
+    let elemIdStatusInv         = null;
     let elemIdStatusNotes       = null;
+    let elemIdStatusNotesCharCounter = null;
+    let elemIdUpdateStatusErrorMsg  = null;
     let elemIdBtnUpdateStatus   = null;
     
     let elemUpdateStatusShow    = null;
@@ -125,7 +134,10 @@ export function PageSowBoarAddEdit(input_settings){
     let elemPanelArrowIcon      = null;
     let elemPanelBody           = null;
     let elemDateStatus          = null;
+    let elemStatusInv           = null;
     let elemStatusNotes         = null;
+    let elemStatusNotesCharCounter = null;
+    let elemUpdateStatusErrorMsg = null;
     let elemBtnUpdateStatus     = null;
     
     
@@ -133,13 +145,69 @@ export function PageSowBoarAddEdit(input_settings){
     
     let sowList                 = null;
     let boarList                = null;
+	let giltList				= null;
+	
+	
+	/** The disposed entry has a different structure that the sow or boar entry.
+	This is because the user audit is also returned.
+	
+	1.) The disposed entry is a list of disposed sows, boar and gilts.
+	2.) Also included are  deleted entries.
+	3.) There is no sex information in the disposed entry. But this can be read 
+		from sow_boar.farm_sow_id or sow_boar.farm_boar_id; These cannot be both
+		filled in.
+	4.) There is no difference between a sow and a gilt; 
+	
+	
+	
+	{
+		"sow_boar": {
+			"farm_sow_id": null,
+			"farm_boar_id": 13,
+			"number": null,
+			"name": "Tuyor",
+			"is_disposed": 1,
+			"is_external": 0,
+			"is_production_ready": 1,
+			"num_nipples": 0,
+			"farm_birth_prod_id": null,
+			"last_prod_id": null,
+			"status_id": 6,
+			"status": "Dead",
+			"date_of_birth": "2025-02-25",
+			"date_eartag": null,
+			"date_dispose": "2026-01-02",
+			"notes": null,
+			"dispose_notes": "namatay",
+			"hid": "VKVWQ9"
+		},
+		"added_by": {
+			"name_last": "Wong",
+			"name_first": "Jack",
+			"dt_entry": "2026-01-08 06:37:14"
+		},
+		"last_update": {
+			"name_last": "Wong",
+			"name_first": "Jack",
+			"dt_update": "2026-01-10 19:20:12"
+		}
+	}
+	
+	*/
+	let disposedList			= null;
 
     let showOptions             = null;
     
     
     let sowBoarEntry            = new ModelSowBoar();
     
+    // This may not contain sex information
+    let curDataSowBoar          = null;
     
+	// This is an explicit computatin during show;
+	// true is Show Sow or Show Gilt; 
+	let curIsSow				= null;
+	
     this.callbackOnSuccessAdd   = null;
     
     
@@ -285,16 +353,16 @@ export function PageSowBoarAddEdit(input_settings){
         <div class="form-group-text-area">
             <label for="${elemIdNotes}" class="form-label">
                 Notes
-                <span id="${elemIdNotesCharCounter}" class="char-counter">0/160</span>
+                <span id="${elemIdNotesCharCounter}" class="char-counter">0/${MAXCHAR_NOTES}</span>
             </label>
             
-            <textarea class="form-control" id="${elemIdNotes}" rows="2" maxlength="160"></textarea>
+            <textarea class="form-control" id="${elemIdNotes}" rows="2" maxlength="${MAXCHAR_NOTES}"></textarea>
         </div>
         
+        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
         <!-- Footer Buttons -->
         <div class="modal-footer">
-            <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
                                            
             <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
                 <i class="fas fa-times me-2"></i>Cancel
@@ -323,6 +391,11 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdPanelArrowIcon    = `sow-boar-add-edit-panel-arrow`;
         elemIdPanelBody         = `sow-boar-add-edit-panel-body`;
         elemIdDateStatus        = `sow-boar-add-edit-date-status`;
+        elemIdStatusInv         = `sow-boar-add-edit-status-inv`;
+        elemIdStatusNotes       = `sow-boar-add-edit-status-notes`;
+        elemIdStatusNotesCharCounter = `sow-boar-add-edit-status-notes-char-counter`;
+        
+        elemIdUpdateStatusErrorMsg = `sow-boar-add-edit-btn-update-status-error-msg`;
         elemIdBtnUpdateStatus   = `sow-boar-add-edit-btn-update-status`;
         
         const html = `
@@ -344,61 +417,71 @@ export function PageSowBoarAddEdit(input_settings){
                     </div>
                     <div>
                         Updating pig status to any of the options below will remove it from the active list.
+                        <b>This cannot be undone.</b>
                     </div>
                 </div>
                 
-                <!-- Form content -->
-                <form id="sowUpdateForm">
-                    <!-- Date Status input -->
-                    <div class="mb-3">
-                        <label for="${elemIdDateStatus}" class="form-label">Date Status <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="${elemIdDateStatus}" required>
+                
+                
+                <!-- Date Status input -->
+                <div class="mb-3">
+                    <label for="${elemIdDateStatus}" class="form-label">Date Status <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="${elemIdDateStatus}" required>
+                </div>
+                
+                <!-- Radio buttons -->
+                <div class="mb-3">
+                    <label class="form-label d-block">Status Options <span class="text-danger">*</span></label>
+                    
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="statusOption" id="deleteOption" value="Delete" required>
+                        <label class="form-check-label" for="deleteOption">
+                            Delete. Invalid Entry
+                        </label>
                     </div>
                     
-                    <!-- Radio buttons -->
-                    <div class="mb-3">
-                        <label class="form-label d-block">Status Options <span class="text-danger">*</span></label>
-                        
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="statusOption" id="deleteOption" value="Delete" required>
-                            <label class="form-check-label" for="deleteOption">
-                                Delete. Invalid Entry
-                            </label>
-                        </div>
-                        
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="statusOption" id="soldOption" value="Sold">
-                            <label class="form-check-label" for="soldOption">
-                                Pig is Sold
-                            </label>
-                        </div>
-                        
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="statusOption" id="culledOption" value="Culled">
-                            <label class="form-check-label" for="culledOption">
-                                Pig is Culled
-                            </label>
-                        </div>
-                        
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="statusOption" id="deadOption" value="Dead">
-                            <label class="form-check-label" for="deadOption">
-                                Pig is Dead
-                            </label>
-                        </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="statusOption" id="soldOption" value="Sold">
+                        <label class="form-check-label" for="soldOption">
+                            Pig is Sold
+                        </label>
                     </div>
                     
-                    <!-- Notes input -->
-                    <div class="mb-4">
-                        <label for="${elemIdStatusNotes}" class="form-label">Notes</label>
-                        <textarea class="form-control" id="${elemIdStatusNotes}" rows="3" placeholder="Add any additional notes here..."></textarea>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="statusOption" id="culledOption" value="Culled">
+                        <label class="form-check-label" for="culledOption">
+                            Pig is Culled
+                        </label>
                     </div>
                     
-                    <!-- Buttons -->
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-primary" id="${elemIdBtnUpdateStatus}">Update Status</button>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="statusOption" id="deadOption" value="Dead">
+                        <label class="form-check-label" for="deadOption">
+                            Pig is Dead
+                        </label>
                     </div>
-                </form>
+                    
+                    <div class="invalid-feedback" id="${elemIdStatusInv}">Please select option. </div>
+        
+                </div>
+                
+                <!-- Notes input -->
+                <div class="mb-4">
+                    <label for="${elemIdStatusNotes}" class="form-label">
+                        Notes <span class="text-danger">*</span>
+                        <span id="${elemIdStatusNotesCharCounter}" class="char-counter">0/${MAXCHAR_NOTES}</span>
+                    </label>
+                    <textarea class="form-control" id="${elemIdStatusNotes}" rows="3" placeholder="Add any additional notes here..." required></textarea>
+                    <div class="invalid-feedback">Please add some notes. </div>
+                </div>
+                
+                <div class="server-error-msg" id="${elemIdUpdateStatusErrorMsg}"></div>
+                
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary" id="${elemIdBtnUpdateStatus}">Update Status</button>
+                </div>
+                
             </div>
         </div>
         
@@ -407,7 +490,6 @@ export function PageSowBoarAddEdit(input_settings){
         return html;
         
     }
-    
     
     
     this.afterHtmlRender = function(){
@@ -453,7 +535,10 @@ export function PageSowBoarAddEdit(input_settings){
         elemPanelArrowIcon      = document.getElementById(elemIdPanelArrowIcon);
         elemPanelBody           = document.getElementById(elemIdPanelBody);
         elemDateStatus          = document.getElementById(elemIdDateStatus);
+        elemStatusInv           = document.getElementById(elemIdStatusInv);
         elemStatusNotes         = document.getElementById(elemIdStatusNotes);
+        elemStatusNotesCharCounter = document.getElementById(elemIdStatusNotesCharCounter);
+        elemUpdateStatusErrorMsg= document.getElementById(elemIdUpdateStatusErrorMsg);
         elemBtnUpdateStatus     = document.getElementById(elemIdBtnUpdateStatus);
         
         
@@ -470,6 +555,17 @@ export function PageSowBoarAddEdit(input_settings){
         }).on('show', function(e) {
             $('.datepicker').addClass('datepicker-material');
         });
+        
+        
+        $('#'+elemIdDateStatus).datepicker({
+            format: 'MM d, yyyy',  // This gives "January 31, 2026"
+            autoclose: true,
+            orientation: 'bottom',
+            endDate: new Date() // Max date is today
+        }).on('show', function(e) {
+            $('.datepicker').addClass('datepicker-material');
+        });
+        
     }
     
     
@@ -528,6 +624,14 @@ export function PageSowBoarAddEdit(input_settings){
         });
         
         
+        elemStatusNotes.addEventListener('input', function(){
+            thisObj.updateCharCounter(elemStatusNotes, elemStatusNotesCharCounter, 
+                MAXCHAR_NOTES);
+            
+            elemStatusNotes.classList.remove('is-invalid');
+        });
+        
+        
         elemName.addEventListener('blur', function() {
             thisObj._validateAfterChangeInput(this, 'name');
         });
@@ -538,7 +642,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         elemBtnSave.addEventListener('click', function() {
-            thisObj._onClickSaveButton();
+            thisObj.onClickSaveButton();
         });
         
         
@@ -546,6 +650,13 @@ export function PageSowBoarAddEdit(input_settings){
         elemPanelHeader.addEventListener('click', function() {
             thisObj.togglePanel();
         });
+        
+        
+        elemBtnUpdateStatus.addEventListener('click', function() {
+            thisObj.onClickUpdateStatus();
+        });
+        
+        
     }
     
     
@@ -713,14 +824,29 @@ export function PageSowBoarAddEdit(input_settings){
         cur_elem.classList.remove('is-valid', 'is-invalid'); 
         
         
+        cur_elem = elemDateStatus;
+        cur_elem.value = ''; 
+        cur_elem.classList.remove('is-valid', 'is-invalid'); 
         
+        cur_elem = elemStatusNotes;
+        cur_elem.value = ''; 
+        cur_elem.classList.remove('is-valid', 'is-invalid'); 
+        
+        const radios = elemDivContainer.querySelectorAll('input[name="statusOption"]');
+        for (const cur_entry of radios){
+            cur_entry.checked = false;
+        }
+        
+        
+        elemStatusInv.style.display = 'none';
+        elemUpdateStatusErrorMsg.style.display = 'none';
     }
     
     
     this.beforeShow = function(options){
         /*
         Typical options
-        options_sow_boar ={
+        options ={
             is_add:         true,   // false is edit
             sow_boar_type:  1,   
             farm_sow_boar_id: 1,    // only needed for edit
@@ -733,8 +859,14 @@ export function PageSowBoarAddEdit(input_settings){
         showOptions = options;
         
         let html;
-        let cur_sow_boar;
         let sow_boar_reference;
+        
+        if (options.is_add){
+            elemUpdateStatusShow.style.display = 'none';
+        } 
+        else{
+            elemUpdateStatusShow.style.display = 'block';
+        }
         
         // Change Header title
         switch(options.sow_boar_type){
@@ -743,18 +875,18 @@ export function PageSowBoarAddEdit(input_settings){
                     html = `<i class="fas fa-plus me-2"></i>Add Sow`;
                 }
                 else{
-                    cur_sow_boar = thisObj._getSowBoarById(options.farm_sow_boar_id);
+                    curDataSowBoar = thisObj._getSowBoarById(options.farm_sow_boar_id);
                     
-                    if ((cur_sow_boar.name != null) && (cur_sow_boar.name.length >0)){
-                        sow_boar_reference = cur_sow_boar.name;
+                    if ((curDataSowBoar.name != null) && (curDataSowBoar.name.length >0)){
+                        sow_boar_reference = curDataSowBoar.name;
                     }
                     else{
-                        sow_boar_reference = cur_sow_boar.number;
+                        sow_boar_reference = curDataSowBoar.number;
                     }
                     
                     html = `<i class="fas fa-edit me-2"></i>Edit Sow: ${sow_boar_reference}`;
                     
-                    thisObj.populateForm(cur_sow_boar);
+                    thisObj.populateForm(curDataSowBoar);
                 }
                 elemHeaderTitle.innerHTML = html;
                 
@@ -772,7 +904,18 @@ export function PageSowBoarAddEdit(input_settings){
                     html = `<i class="fas fa-plus me-2"></i>Add Boar`;
                 }
                 else{
-                    html = `<i class="fas fa-edit me-2"></i>Edit Boar`;
+                    curDataSowBoar = thisObj._getSowBoarById(options.farm_sow_boar_id);
+                    
+                    if ((curDataSowBoar.name != null) && (curDataSowBoar.name.length >0)){
+                        sow_boar_reference = curDataSowBoar.name;
+                    }
+                    else{
+                        sow_boar_reference = curDataSowBoar.number;
+                    }
+                    
+                    html = `<i class="fas fa-edit me-2"></i>Edit Boar: ${sow_boar_reference}`;
+                    
+                    thisObj.populateForm(curDataSowBoar);
                 }
                 elemHeaderTitle.innerHTML = html;
                 
@@ -787,13 +930,13 @@ export function PageSowBoarAddEdit(input_settings){
             case SOW_BOAR_TYPE.GILT:{
                 if (options.is_add){
                     html = `<i class="fas fa-plus me-2"></i>Add Gilt`;
+                    elemInfoShow.style.display = 'block';
                 }
                 else{
                     html = `<i class="fas fa-edit me-2"></i>Edit Gilt`;
                 }
                 elemHeaderTitle.innerHTML = html;
                 
-                elemInfoShow.style.display = 'block';
                 
                 // Hide Boar Only info
                 elemIsExternalShow.style.display = 'none';
@@ -801,7 +944,8 @@ export function PageSowBoarAddEdit(input_settings){
                 
                 break;
             }
-    
+            
+            case SOW_BOAR_TYPE.GILT:{}
             
         }
         
@@ -843,6 +987,9 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this.populateForm = function(data_sow_boar){
+        
+        sowBoarEntry.hid    =  
+        
         
         elemName.value      = data_sow_boar.name;
         elemNumber.value    = data_sow_boar.number;
@@ -1003,7 +1150,7 @@ export function PageSowBoarAddEdit(input_settings){
     }
     
     
-    this._onClickSaveButton = function(){
+    this.onClickSaveButton = function(){
 
         let input_elem      = null;
         let input_val       = null;
@@ -1169,8 +1316,24 @@ export function PageSowBoarAddEdit(input_settings){
         const is_external   = elemIsExternal.checked;
         const is_prod_ready = elemIsProdReady.checked;
         
-        const sex           = showOptions.is_sow ? 'F':'M';
         
+        let sex = null;
+        switch(showOptions.sow_boar_type){
+            case SOW_BOAR_TYPE.SOW:{
+                sex = 'F';
+                break;
+            }
+            
+            case SOW_BOAR_TYPE.BOAR:{
+                sex = 'M';
+                break;
+            }
+            
+            case SOW_BOAR_TYPE.GILT:{
+                sex = 'F';
+                break;
+            }
+        }
         
         const user_hid      = navigation.userControl.getUserHid();
         const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
@@ -1193,7 +1356,7 @@ export function PageSowBoarAddEdit(input_settings){
             // edit entry
             delete post_data.pfhid;
             
-            post_data['sow_boar_hid'] = sowBoarEntry.hid;
+            post_data['sow_boar_hid'] = curDataSowBoar.hid;
         }
         
         if (post_data.date_of_birth == null){
@@ -1201,7 +1364,7 @@ export function PageSowBoarAddEdit(input_settings){
         }
         
         // Only add Boars will have is_external flag;
-        if (is_external == true && showOptions.is_sow == false){
+        if (is_external == true){
             post_data.is_external = 1;
         }
         
@@ -1230,6 +1393,24 @@ export function PageSowBoarAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+					let is_sow = false;
+					switch(showOptions.sow_boar_type){
+						case SOW_BOAR_TYPE.SOW:{
+							is_sow = true;
+							break;
+						}
+						
+						case SOW_BOAR_TYPE.BOAR:{
+							is_sow = false;
+							break;
+						}
+						
+						case SOW_BOAR_TYPE.GILT:{
+							is_sow = true;
+							break;
+						}
+					}
+					
                     
                     const callback_error = function(error_code, error_desc){
                         let html;
@@ -1248,7 +1429,10 @@ export function PageSowBoarAddEdit(input_settings){
                         if (thisObj.callbackOnSuccessAdd == null){
                             console.log('No callback; nothing to do after save;')
                             
-                            navigation.pigFarm.requestSowBoar(showOptions.is_sow, 
+							
+							
+							
+                            navigation.pigFarm.requestSowBoar(is_sow, 
                                 null, callback_error);
                                 
                             navigation.showThisPage(showOptions.go_back_page);
@@ -1261,13 +1445,13 @@ export function PageSowBoarAddEdit(input_settings){
                             navigation.showThisPage(showOptions.go_back_page);
                         };
                         
-                        navigation.pigFarm.requestSowBoar(showOptions.is_sow, 
+                        navigation.pigFarm.requestSowBoar(is_sow, 
                             callback_success, callback_error);
                         
                     }
                     
                     else{
-                        navigation.pigFarm.requestSowBoar(showOptions.is_sow, 
+                        navigation.pigFarm.requestSowBoar(is_sow, 
                             null, callback_error);
                         
                     }
@@ -1288,6 +1472,246 @@ export function PageSowBoarAddEdit(input_settings){
                     console.log('to display error');
                     elemServerErrorMsg.innerHTML = html;
                     elemServerErrorMsg.style.display = 'block'
+                    
+                    
+                    // Check special error numbers;
+                    // These will open to a new page
+                    switch (response.result.num){
+                        case REQUEST_ERROR_NUM.ERROR_USER_INACTIVE: {
+                            navigation.userControl.setUserIsEnabled(false);
+                            navigation.showThisPage(null); // reroute page
+                            return;
+                        }
+                        
+                        case REQUEST_ERROR_NUM.ERROR_ACCOUNT_DISABLED: {
+                            navigation.userControl.setUserAccountIsEnabled(false);
+                            navigation.showThisPage(null); // reroute page
+                            return;
+                        }
+                        
+                        case REQUEST_ERROR_NUM.ERROR_ACCOUNT_BILL_OVERDUE: {
+                            const due_bill_hid = response.result.due_bill_hid;
+                            navigation.pigFarm.setPigFarmAccountHasUnpaidBill(due_bill_hid);
+                            
+                            // Check if current user is company support, marketing related users
+                            if (navigation.userControl.isUserCompanyUser() == false){
+                                navigation.showThisPage(null); // reroute page
+                            }
+                            break;
+                        } 
+                    }
+                    
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+            }
+        });
+    }
+    
+    
+    this.onClickUpdateStatus = function(){
+
+        let input_elem      = null;
+        let input_val       = null;
+        let cur_field       = null;
+        let validation      = -1;
+        let proceed_to_save = 1;
+        
+        let is_duplicate    = 0;
+        
+       
+        
+        let input_date_status= elemDateStatus.value.trim();
+        let input_notes     = elemStatusNotes.value.trim();
+        
+        input_elem          = elemDateStatus;
+        cur_field           = sowBoarEntry.fieldBirthDate;
+        
+        let dt_status_s     = null;
+        
+        if (input_date_status.length == 0){
+            validation = -1;
+        }
+        else{
+            // Convert date to YYYY-MM-DD format
+            const dt_status     = new Date(input_date_status);
+            
+            dt_status_s         = dt_status.toLocaleDateString('en-CA');
+            validation          = FIELD_VALIDATION_OK;
+        }
+            
+        if (validation != FIELD_VALIDATION_OK){
+        
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        }
+        else{
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+        }
+        
+        if (proceed_to_save == 0) {return;}
+        
+          
+        const checkedRadio = elemDivContainer.querySelector('input[name="statusOption"]:checked');
+        
+        if (checkedRadio == null){
+            elemStatusInv.style.display ='block';
+            return;
+        } 
+        else{
+            elemStatusInv.style.display ='none';
+        }
+        
+        const value = checkedRadio.value;
+        
+        let dispose_status_id = 0;
+        
+        
+        // Delete has no mapped sow_status_id in the backend.
+        // The sow_status_id is for both sows and boars
+        // and purely for operations only. The delete action is
+        // interpreted as user entry error.
+        // The Delete status will be mapped to a special number
+        // SOW_STATUS.DELETE. But this will not be marked as
+        // sow_boar.is_disposed but will be marked as
+        // sow_boar.flag.is_deleted = 1;
+        //
+        // When disposed pigs are queried in the front end,
+        // both the disposed pigs and deleted pigs will be returned.
+        
+        switch(value){
+            case 'Delete':{
+                dispose_status_id = SOW_STATUS.DELETE;
+                break;
+            }
+            
+            case 'Sold':{
+                dispose_status_id = SOW_STATUS.SOLD;
+                break;
+            }
+            
+            case 'Culled':{
+                dispose_status_id = SOW_STATUS.CULLED;
+                break;
+            }
+            
+            case 'Dead':{
+                dispose_status_id = SOW_STATUS.DEAD;
+                break;
+            }
+            
+        }
+        
+        const user_hid      = navigation.userControl.getUserHid();
+        const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
+        const base_url      = window.location.origin;
+        
+        
+        // send post request
+        let post_data = {
+            'uhid':             user_hid,
+            'sow_boar_hid':     curDataSowBoar.hid,
+            
+            'dispose_status_id': dispose_status_id,
+            'date_dispose':     dt_status_s,
+            'dispose_notes':    input_notes
+        };
+        
+        
+        let url = `${base_url}/sow_boar/dispose`;
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+                elemServerErrorMsg.style.display = 'none';
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    const callback_error = function(error_code, error_desc){
+                        let html;
+                        if ((error_desc != null) && (error_desc.length > 0)){
+                            html = `<span>${error_desc}</span>`;
+                        }
+                        else{
+                            html = `<span>${error_code}</span>`;
+                        }
+                        
+                        elemUpdateStatusErrorMsg.innerHTML = html;
+                        elemUpdateStatusErrorMsg.style.display = 'block'
+                    };
+                    
+                    const callback_success = function(){
+                        navigation.pageSowBoarList.show(null);
+                        navigation.showThisPage(showOptions.go_back_page);
+                    };
+                    
+                    navigation.pigFarm.requestSowBoar(showOptions.is_sow, 
+                        callback_success, callback_error);
+                        
+                    
+                    
+                }
+                else{
+                    let error_desc = response.result.desc;
+                    let error_code = response.result.code;
+                    
+                    let html;
+                    if ((error_desc != null) && (error_desc.length > 0)){
+                        html = `<span>${error_desc}</span>`;
+                    }
+                    else{
+                        html = `<span>${error_code}</span>`;
+                    }
+                    console.log('to display error');
+                    elemUpdateStatusErrorMsg.innerHTML = html;
+                    elemUpdateStatusErrorMsg.style.display = 'block'
+                    
+                    
+                    // Check special error numbers;
+                    // These will open to a new page
+                    switch (response.result.num){
+                        case REQUEST_ERROR_NUM.ERROR_USER_INACTIVE: {
+                            navigation.userControl.setUserIsEnabled(false);
+                            navigation.showThisPage(null); // reroute page
+                            return;
+                        }
+                        
+                        case REQUEST_ERROR_NUM.ERROR_ACCOUNT_DISABLED: {
+                            navigation.userControl.setUserAccountIsEnabled(false);
+                            navigation.showThisPage(null); // reroute page
+                            return;
+                        }
+                        
+                        case REQUEST_ERROR_NUM.ERROR_ACCOUNT_BILL_OVERDUE: {
+                            const due_bill_hid = response.result.due_bill_hid;
+                            navigation.pigFarm.setPigFarmAccountHasUnpaidBill(due_bill_hid);
+                            
+                            // Check if current user is company support, marketing related users
+                            if (navigation.userControl.isUserCompanyUser() == false){
+                                navigation.showThisPage(null); // reroute page
+                            }
+                            break;
+                        } 
+                    }
+                    
                 }
             },
   

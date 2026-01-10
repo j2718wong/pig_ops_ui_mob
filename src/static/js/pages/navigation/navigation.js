@@ -15,9 +15,9 @@ import {AddressManager}             from '../common/address_manager.js';
 import {PigFarm}                    from '../farm_account/pig_farm.js';
 import {AccountLists}               from '../farm_account/account_lists.js';
 
-import {PageAccountDisabled}		from '../a_user_control/page_account_disabled.js';
-import {PageUserDisabled}			from '../a_user_control/page_user_disabled.js';
-import {PageAccountUnpaidBill}		from '../a_user_control/page_account_unpaid_bill.js';
+import {PageAccountDisabled}        from '../a_user_control/page_account_disabled.js';
+import {PageUserDisabled}           from '../a_user_control/page_user_disabled.js';
+import {PageAccountUnpaidBill}      from '../a_user_control/page_account_unpaid_bill.js';
 
 
 
@@ -59,6 +59,10 @@ function UserControl() {
     let userCurrentFarmHid          = null;
     let userCurrentLanguage         = null;
     
+    
+    let userIsEnabled               = true;
+    let userAccountIsEnabled        = true;
+    let userAccounthasOverdueBill   = false;
     
     this.init = function(){
         this.afterHtmlRender();
@@ -155,20 +159,28 @@ function UserControl() {
     
     
     this.isUserAccountEnabled = function(){
-        return true;
+        return userAccountIsEnabled;
     }
     
     
     this.isUserEnabled = function(){
-        return true;
-
+        return userIsEnabled;
     }
+
     
     this.isUserCompanyUser = function(){
-		return false;
-	}
+        return false;
+    }
     
     
+    this.setUserIsEnabled = function(is_enabled){
+        userIsEnabled = is_enabled;
+    }
+    
+    
+    this.setUserAccountIsEnabled = function(is_enabled){
+        userAccountIsEnabled = is_enabled;
+    }
     
     this.getCurrentFarmHid =  function(){
         return userCurrentFarmHid;
@@ -275,10 +287,10 @@ export function Navigation(){
     this.userControl                = new UserControl();
     
     
-    const settingsaAccountDisabled = {
+    const settingsAccountDisabled = {
         navigation:             this
     }
-    this.pageAccountDisabled    = new PageAccountDisabled(settingsaAccountDisabled);
+    this.pageAccountDisabled    = new PageAccountDisabled(settingsAccountDisabled);
     
     
     const settingsUserDisabled = {
@@ -290,7 +302,7 @@ export function Navigation(){
     const settingsAccUnpaidBill = {
         navigation:             this
     }
-    this.pageAccountUnpaidBill 	= new PageAccountUnpaidBill(settingsAccUnpaidBill);
+    this.pageAccountUnpaidBill  = new PageAccountUnpaidBill(settingsAccUnpaidBill);
     
     
     const settingsPigFarm = {
@@ -667,6 +679,16 @@ export function Navigation(){
                 cur_entry.style.display = 'none';
             }
             
+            
+            console.log(thisObj.pigFarm);
+            
+            const pig_farm_account = thisObj.pigFarm.dataPigFarmAccount.account.account;
+            const options = {
+                account_code:   pig_farm_account.hid,   
+                account_name:   pig_farm_account.name   
+            }
+            thisObj.pageAccountDisabled.beforeShow(options);
+            
             // Except
             elemHiddenContAccDisabled.style.display = 'block';
             
@@ -695,17 +717,41 @@ export function Navigation(){
         
         // Check if current user is company support, marketing related users
         if (thisObj.userControl.isUserCompanyUser() == false){
+            console.log('test Naviation 1');
             
             if (farm_acc_has_unpaid_bill == true){
+                console.log('test Navigation 2');
+            
                 // Hide all containers
                 for (const cur_entry of hidden_containers){
                     cur_entry.style.display = 'none';
                 }
                 
-                // Except
-                elemHiddenContBillUnpaid.style.display = 'block';
                 
-                return;
+                let pig_farm_account = thisObj.pigFarm.dataPigFarmAccount.account;
+                let account_bill = null;
+                if ('account_bill' in pig_farm_account){
+                    account_bill = pig_farm_account.account_bill;
+                
+                    const options ={
+                        pig_farm_account:   pig_farm_account.account,
+                        account_bill:       account_bill
+                    };
+                    thisObj.pageAccountUnpaidBill.beforeShow(options);
+                    
+                    // Except
+                    elemHiddenContBillUnpaid.style.display = 'block';
+                
+                    return;
+                
+                }
+                
+                else{
+                    // Request account bill
+                    
+                }
+                
+                
             }
             
         }

@@ -5,7 +5,7 @@
 'use strict';
 
 import {PIG_PROD_TYPE,
-		SUPPLIER_TYPE}          from '../../constants.js';
+        SUPPLIER_TYPE}          from '../../constants.js';
 
 
 export function PigFarm(input_settings){
@@ -14,38 +14,42 @@ export function PigFarm(input_settings){
     
     
     
-	this.dataPigFarm			= null;
+    this.dataPigFarm            = null;
     this.dataPigFarmAccount     = null;
     
     this.dataSowList            = null;
     this.dataBoarList           = null;
     this.dataStaffList          = null;
     
-	
-	this.getPigFarmAccountHid = function(){
-		return null;
-	}
-	
-	
-	this.isPigFarmAccountEnabled = function(){
-		return true;
-	}
-	
-	
-	this.isPigFarmAccountHasUnpaidBill = function(){
-		return false;
-	}
-	
+    
+    let accountHasUnpaidBill    = false;
+    let accountDueBillHid       = null;
+    
+    
+    this.getPigFarmAccountHid = function(){
+        return null;
+    }
+    
+    
+    this.isPigFarmAccountEnabled = function(){
+        return true;
+    }
+    
+    
+    this.isPigFarmAccountHasUnpaidBill = function(){
+        return  accountHasUnpaidBill;
+    }
+    
     
     this.setDataPigFarm = function(data){
         this.dataPigFarm = data;
     }
     
     
-	this.setDataPigFarmAccount = function(data){
-		thisObj.dataPigFarmAccount = data;
+    this.setDataPigFarmAccount = function(data){
+        thisObj.dataPigFarmAccount = data;
         
-		
+        
             
         if ('acc_pig_ops' in data){
             navigation.pageAccPigOps.setDataAccPigOps(data.acc_pig_ops);
@@ -80,16 +84,22 @@ export function PigFarm(input_settings){
                 navigation.setDataPigProdList);
         }
         
-	}
-	
-	
+    }
+    
+    
+    this.setPigFarmAccountHasUnpaidBill = function(bill_hid){
+         accountHasUnpaidBill   = true;
+         accountDueBillHid      = bill_hid;
+        
+    }
+    
     this.getSettingsOperations  = function(){
         if (thisObj.dataPigFarmAccount == null){return null;}
         return thisObj.dataPigFarmAccount.account.settings_operations;
     }
     
-	
-	this.requestPigProdData = function(pig_prod_type, callback){
+    
+    this.requestPigProdData = function(pig_prod_type, callback){
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
         
         const is_mob_view = 1; // TODO for desktop view
@@ -167,8 +177,8 @@ export function PigFarm(input_settings){
                 }
                 else {
                     if (callback_error){
-						callback_error(response.result.code, response.result.desc);
-					}
+                        callback_error(response.result.code, response.result.desc);
+                    }
                 }
             },
   

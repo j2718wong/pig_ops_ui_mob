@@ -42,7 +42,9 @@ const PIG_OPERATION_TYPE = {
 const SOW_BOAR_TYPE = {
     SOW:                1,
     BOAR:               2,
-    GILT:               3
+    GILT:               3,
+    
+    DISPOSED:           4
 };
 
 
@@ -52,19 +54,21 @@ const SOW_STATUS = {
     LACTATING:          3,
     WEANING:            4,
     CULLED:             5,
-    DEAD_AT_LABOR:      6,
-    SOLD:               7
+    DEAD:               6,
+    SOLD:               7,
+    
+    DELETE:             99
 };
 
 const SOW_STATUS_NAME = {
-	1:	'Growing',
-	2:	'Gestating',
-	3:	'Lactating',
-	4:	'Weaning',
-	5:	'Culled',
-	6:	'Dead',
-	7:	'Sold'
-	
+    1:  'Growing',
+    2:  'Gestating',
+    3:  'Lactating',
+    4:  'Weaning',
+    5:  'Culled',
+    6:  'Dead',
+    7:  'Sold'
+    
 }
 
 const PROD_STATUS = {
@@ -94,6 +98,19 @@ const SUPPLIER_TYPE ={
     
 };
 
+
+const REQUEST_ERROR_NUM ={
+    ERROR_DATABASE_ERROR:                       1,
+    ERROR_SERVER_ERROR:                         2,  
+    
+    ERROR_USER_INACTIVE:                        3,
+    ERROR_ACCOUNT_DISABLED:                     4,
+    ERROR_ACCOUNT_BILL_OVERDUE:                 5
+
+};
+
+
+
 export {
     APPLICATION,
     PAGE_ID,
@@ -101,9 +118,11 @@ export {
     SOW_BOAR_TYPE,
     PIG_OPERATION_TYPE,
     SOW_STATUS,
-	SOW_STATUS_NAME,
+    SOW_STATUS_NAME,
     PROD_STATUS,
     
     PIG_PROD_TYPE,
-    SUPPLIER_TYPE
+    SUPPLIER_TYPE,
+    
+    REQUEST_ERROR_NUM
 };

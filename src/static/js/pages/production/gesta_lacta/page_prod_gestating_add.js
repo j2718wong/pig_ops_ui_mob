@@ -613,7 +613,7 @@ export function PageProdGestatingAdd(input_settings){
         
         
         elemBtnSave.addEventListener('click', function() {
-            thisObj._onClickSaveButton();
+            thisObj.onClickSaveButton();
         });
         
         
@@ -969,7 +969,7 @@ export function PageProdGestatingAdd(input_settings){
     }
     
     
-    this._onClickSaveButton = function(){
+    this.onClickSaveButton = function(){
         let input_elem;
         let cur_field;
         let validation;

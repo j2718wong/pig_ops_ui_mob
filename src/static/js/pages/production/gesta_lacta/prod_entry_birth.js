@@ -382,7 +382,7 @@ export function ProdEntryBirth(input_settings){
     }
     
     
-    this._onClickSaveButton = function(){
+    this.onClickSaveButton = function(){
 
         let input_elem      = null;
         let cur_field       = null;

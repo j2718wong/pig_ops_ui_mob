@@ -288,7 +288,7 @@ export function EditModalProdPigOps(input_settings){
         
         
         elemBtnSave.addEventListener('click', function() {
-            thisObj._onClickSaveButton();
+            thisObj.onClickSaveButton();
         });
         
         
@@ -506,7 +506,7 @@ export function EditModalProdPigOps(input_settings){
     }
     
     
-    this._onClickSaveButton = function(){
+    this.onClickSaveButton = function(){
         let input_elem      = null;
         let cur_field       = null;
         let validation      = -1;

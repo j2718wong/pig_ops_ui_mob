@@ -64,7 +64,7 @@ export function PageUserDisabled(input_settings){
         
     <!-- Card 2: User Access Disabled -->
         <div class="notification-card">
-            <div class="card-header">
+            <div class="user-control-card-header">
                 <i class="fas fa-lock"></i>
                 <h2>User Access Disabled</h2>
             </div>

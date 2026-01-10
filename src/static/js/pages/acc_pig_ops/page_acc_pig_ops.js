@@ -420,10 +420,7 @@ export function PageAccPigOps(input_settings){
     }
     
     
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
+    
     
     
     this.onUserChangeLanguage = function(){

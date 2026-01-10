@@ -9,6 +9,10 @@ import {PageViewBasic}          from '../common/page_view_basic.js';
 import {APPLICATION,
         PIG_OPERATION_TYPE}     from '../../constants.js';
 
+import {formatDate,
+        FORMAT_SHORT_MONTH,
+        FORMAT_LONG_MONTH,
+        FORMAT_COMPACT}         from '../../utils.js';
 
 
 PageAccountUnpaidBill.prototype = new PageViewBasic();
@@ -25,9 +29,10 @@ export function PageAccountUnpaidBill(input_settings){
     */
     const settings              = input_settings;
     
+    const MAX_TRUNCATE_ACC_NAME = 18;
     
     // This is needed as this will be first element to be rendered
-    let elemDivContainer        = document.getElementById('container-account-disabled');
+    let elemDivContainer        = document.getElementById('container-account-bill-unpaid');
 
     
     let elemIdAccountCode       = null;
@@ -38,7 +43,7 @@ export function PageAccountUnpaidBill(input_settings){
     let elemIdBillDateDue       = null;
     let elemIdBillDateStart     = null;
     let elemIdBillDateEnd       = null;
-    let elemIdBillAmount		= null;
+    let elemIdBillAmount        = null;
     
     
     let elemAccountCode         = null;
@@ -49,7 +54,7 @@ export function PageAccountUnpaidBill(input_settings){
     let elemBillDateDue         = null;
     let elemBillDateStart       = null;
     let elemBillDateEnd         = null;
-    let elemBillAmount			= null;
+    let elemBillAmount          = null;
     
     
 
@@ -77,15 +82,15 @@ export function PageAccountUnpaidBill(input_settings){
         elemIdBillDateDue       = `account-bill-unpaid-bill-date-due`;
         elemIdBillDateStart     = `account-bill-unpaid-bill-date-start`;
         elemIdBillDateEnd       = `account-bill-unpaid-bill-date-end`;
-        elemIdBillAmount		= `account-bill-unpaid-bill-amount`;
-		
+        elemIdBillAmount        = `account-bill-unpaid-bill-amount`;
+        
 
         const html = `
         
     <div class="container">
         <!-- Card 3: Bill Unpaid -->
         <div class="notification-card">
-            <div class="card-header">
+            <div class="user-control-card-header">
                 <i class="fas fa-file-invoice-dollar"></i>
                 <h2>Bill Unpaid</h2>
             </div>
@@ -181,7 +186,7 @@ export function PageAccountUnpaidBill(input_settings){
         elemBillDateDue         = document.getElementById(elemIdBillDateDue);
         elemBillDateStart       = document.getElementById(elemIdBillDateStart);
         elemBillDateEnd         = document.getElementById(elemIdBillDateEnd);
-		elemBillAmount			= document.getElementById(elemIdBillAmount);
+        elemBillAmount          = document.getElementById(elemIdBillAmount);
     }
     
     
@@ -212,5 +217,44 @@ export function PageAccountUnpaidBill(input_settings){
      
     }
    
+    
+    this.beforeShow = function(options){
+        
+        /* Typical options
+        options ={
+            pig_farm_account:   pig_farm_account,
+            account_bill:       account_bill
+        }
+        */
+        
+        let display_name;
+        const account_name = options.pig_farm_account.name;
+        
+        if (account_name.length > MAX_TRUNCATE_ACC_NAME){
+            display_name = account_name.substring(0, MAX_TRUNCATE_ACC_NAME) + '...';
+        }
+        else{
+            display_name = account_name;
+        }
+        
+        const account_bill = options.account_bill;
+        
+        const s_money   = thisObj.moneyFormatter.format(account_bill.amount);
+        const s_amount  = `${account_bill.currency_code} ${s_money}`;
+        
+        elemAccountCode.textContent     = options.pig_farm_account.hid;
+        elemAccountName.textContent     = display_name;  
+        elemBillNumber.textContent      = account_bill.reference;
+        elemBillDateIssue.textContent   = formatDate(new Date(account_bill.date_issue));
+        elemBillDateDue.textContent     = formatDate(new Date(account_bill.date_due));
+        elemBillDateStart.textContent   = formatDate(new Date(account_bill.date_bill_start));
+        elemBillDateEnd.textContent     = formatDate(new Date(account_bill.date_bill_end));
+        elemBillAmount.textContent      = s_amount;
+        
+        
+        // TODO: 20260110
+        // Hide money figures and payment instructions if user is not account admin user
+        
+    }
     
 }

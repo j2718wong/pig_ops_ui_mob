@@ -264,7 +264,7 @@ export function AddModalAccPigOps(input_settings){
 
 
         elemBtnSave.addEventListener('click', function() {
-            thisObj._onClickSaveButton();
+            thisObj.onClickSaveButton();
         });
 
     }
@@ -449,7 +449,7 @@ export function AddModalAccPigOps(input_settings){
     
     
     
-    this._onClickSaveButton = function(){
+    this.onClickSaveButton = function(){
         var input_elem      = null;
         var cur_field       = null;
         var validation      = -1;
