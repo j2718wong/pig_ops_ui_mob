@@ -3,8 +3,10 @@
 // j2718wong@gmail.com
 'use strict';
 
-export function AddressManager(){
+export function ManagerAddress(_navigation){
     const thisObj           = this;
+	const navigation 		= _navigation;
+	
     
     // This will be ordered by what? for faster search
     let addressLevel1List   = null;
@@ -116,7 +118,7 @@ export function AddressManager(){
   
             success: function(response){
                 if (response.result.num == 0){
-                    // Set addressManager.setAddressLevel1List
+                    // Set managerAddress.setAddressLevel1List
                     thisObj.setAddressLevel1List(response.data);
                   
                 }

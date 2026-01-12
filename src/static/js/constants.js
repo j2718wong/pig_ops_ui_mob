@@ -4,6 +4,8 @@
 
 
 const APPLICATION = {
+    MOBILE_TABLE_ROW_PER_PAGE:      10,
+    
     MAX_WIDTH_WINDOW_IS_MOBILE:     768
 }
 
@@ -12,21 +14,20 @@ const PAGE_ID = {
     HOME:                   0,
     
     
-    SOW_BOAR_LIST:          1,
-    SOW_BOAR_ADD_EDIT:      2,
+    SOW_BOAR_LIST:          11,
+    SOW_BOAR_ADD_EDIT:      12,
+    SOW_BOAR_ENTRY:         13,
     
     
-    PROD_GESTA_LIST:        3,
+	
+	
+    PROD_GESTA_LIST:        31,
+    PROD_GESTA_ADD:         32,
+    PROD_GESTA_ENTRY:       33,
+    PROD_LACTA_LIST:        34, 
     
     
-    PROD_GESTA_ADD:         4,  
-    
-    PROD_GESTA_ENTRY:       5,
-    
-    PROD_LACTA_LIST:        6, 
-    
-    
-    ACC_PIG_OPS:            7
+    ACC_PIG_OPS:            50
     
 };
 

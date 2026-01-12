@@ -10,10 +10,12 @@ import {PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
         SUPPLIER_TYPE}              from '../../constants.js';
 
-import {AddressManager}             from '../common/address_manager.js';
+
+import {ErrorServerMessage}         from '../common/error_server_message.js';
+import {ManagerAddress}             from '../common/address_manager.js';
 
 import {PigFarm}                    from '../farm_account/pig_farm.js';
-import {AccountLists}               from '../farm_account/account_lists.js';
+
 
 import {PageAccountDisabled}        from '../a_user_control/page_account_disabled.js';
 import {PageUserDisabled}           from '../a_user_control/page_user_disabled.js';
@@ -24,6 +26,7 @@ import {PageAccountUnpaidBill}      from '../a_user_control/page_account_unpaid_
 
 import {PageSowBoarList}            from '../sow_boar/page_sow_boar_list.js';
 import {PageSowBoarAddEdit}         from '../sow_boar/page_sow_boar_add_edit.js';
+import {PageSowBoarEntry}           from '../sow_boar/page_sow_boar_entry.js';
 
 
 
@@ -40,8 +43,10 @@ import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
 
 
 
-function UserControl() {
+function UserControl(_navigation) {
     const thisObj                   = this;
+    const navigation                = _navigation;
+    
     
     let elemDesktopUserAvatarInitials   = null;
     let elemDesktopUserAvatarInitialsL  = null;
@@ -195,9 +200,9 @@ function UserControl() {
 }
 
 
-function RequestManager(input_settings){
+function ManagerRequest(_navigation){
     const thisObj           = this;
-    const navigation        = input_settings.navigation;
+    const navigation        = _navigation;
     
 
     this.requestDataPigProdPublic = function(country_hid, callback){
@@ -245,6 +250,32 @@ export function Navigation(){
     let elemSubnavSummary       = null;
     
     
+    const elemIdContAccountDisabled     = 'container-account-disabled';
+    const elemIdContUserDisabled        = 'container-user-disabled';
+    const elemIdContAccountBillUnpaid   = 'container-account-bill-unpaid';
+    
+    const elemIdContSowBoarList         = 'container-sow-boar-list';
+    const elemIdContSowBoarAddEdit      = 'container-sow-boar-add-edit';
+    const elemIdContSowBoarEntry        = 'container-sow-boar-entry';
+    
+    const elemIdContMedVacAddEdit       = 'container-medvac-add-edit';
+    
+    const elemIdContProdGestaList       = 'container-prod-gesta-list';
+    const elemIdContProdLactaList       = 'container-prod-lacta-list';
+    const elemIdContProdGestaAdd        = 'container-prod-gesta-add';
+    const elemIdContProdGestaEntry      = 'container-prod-gesta-entry';
+    
+    
+    const elemIdContAccPigOps           = 'container-acc-pig-ops';
+    
+    
+    
+    
+    
+    
+    
+    
+    
     let elemDesktopNavSettings      = null;
     let elemDesktopNavSowBoarGilt   = null;
     let elemDesktopNavProduction    = null;
@@ -268,6 +299,11 @@ export function Navigation(){
     
     let elemHiddenContSowBoarList   = null;
     let elemHiddenContSowBoarAddEdit= null;
+    let elemHiddenContSowBoarEntry  = null;
+    
+    let elemHiddenContMedVacAddEdit = null;
+    
+    
     
     let elemHiddenContProdGestaList = null;
     let elemHiddenContProdLactaList = null;
@@ -284,66 +320,65 @@ export function Navigation(){
     this.curScreenIsMobile          = null;
     
     
-    this.userControl                = new UserControl();
+    this.userControl            = new UserControl(this);
+    this.errorServerMessage     = new ErrorServerMessage(this);
+    this.managerRequest         = new ManagerRequest(this);
+    this.managerAddress         = new ManagerAddress(this);
+    this.managerPublicData      = new ManagerPublicData(this)
+    this.pigFarm                = new PigFarm(this);
+    
+    
     
     
     const settingsAccountDisabled = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAccountDisabled
     }
     this.pageAccountDisabled    = new PageAccountDisabled(settingsAccountDisabled);
     
     
     const settingsUserDisabled = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContUserDisabled
     }
-    this.pageUserDisabled    = new PageUserDisabled(settingsUserDisabled);
+    this.pageUserDisabled       = new PageUserDisabled(settingsUserDisabled);
     
     
     const settingsAccUnpaidBill = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAccountBillUnpaid
     }
     this.pageAccountUnpaidBill  = new PageAccountUnpaidBill(settingsAccUnpaidBill);
     
     
-    const settingsPigFarm = {
-        navigation:             this
-    }
-    this.pigFarm                = new PigFarm(settingsPigFarm);
-    
-    
-    const settingsAccountLists = {
-        navigation:             this
-    }
-    this.accountLists           = new AccountLists(settingsAccountLists);
-    
-    
-    const settingsRequestManager = {
-        navigation:             this
-    }
-    this.requestManager         = new RequestManager(settingsRequestManager);
-    
-    
-    const settingsAddressManager = {
-        navigation:             this
-    }
-    this.addressManager         = new AddressManager(settingsAddressManager);
-    
-    
     
     const settingsSowBoarList = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContSowBoarList
     }
     this.pageSowBoarList        = new PageSowBoarList(settingsSowBoarList);
     
     
     const settingsSowBoarAddEdit = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContSowBoarAddEdit
     }
     this.pageSowBoarAddEdit     = new PageSowBoarAddEdit(settingsSowBoarAddEdit);
     
     
+    const settingsSowBoarEntry = {
+        navigation:             this,
+        elemIdDivContainer:     elemIdContSowBoarEntry
+    }
+    this.pageSowBoarEntry       = new PageSowBoarEntry(settingsSowBoarEntry)
+    
+    
+    
+    
+    
     const settingsProdGestating = {
         navigation:             this,
+        elemIdDivContainer:     elemIdContProdGestaList,
         isGesta:                true,
         uniqueKey:              'prod-gesta', // Use for uniqueness in elements
         pageTitle:              'Prod Gestating'
@@ -353,6 +388,7 @@ export function Navigation(){
     
     const settingsProdLactating = {
         navigation:             this,
+        elemIdDivContainer:     elemHiddenContProdLactaList,
         isGesta:                false,
         uniqueKey:              'prod-lacta', // Use for uniqueness in elements
         pageTitle:              'Prod Lactating'
@@ -367,19 +403,22 @@ export function Navigation(){
     
     
     const settingsProdGestatingAdd = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdGestaAdd
     };
     this.pageProdGestatingAdd   = new PageProdGestatingAdd(settingsProdGestatingAdd);
     
     
     const settingsProdGestatingEntry = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdGestaEntry
     };
     this.pageProdGestatingEntry = new PageProdGestatingEntry(settingsProdGestatingEntry);
     
     
     const settingsAccPigOps = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAccPigOps
     }
     this.pageAccPigOps          = new PageAccPigOps(settingsAccPigOps);
     
@@ -401,6 +440,8 @@ export function Navigation(){
         
         this.pageSowBoarList.init();
         this.pageSowBoarAddEdit.init();
+        this.pageSowBoarEntry.init();
+        
         
         this.pageMobGestatingList.init();
         this.pageMobLactatingList.init();
@@ -445,21 +486,24 @@ export function Navigation(){
         elemMobileNavAdmin          = document.getElementById('mobile-nav-admin');
 
 
-        elemHiddenContAccDisabled   = document.getElementById('container-account-disabled');
-        elemHiddenContUserDisabled  = document.getElementById('container-user-disabled');
-        elemHiddenContBillUnpaid    = document.getElementById('container-account-bill-unpaid');
+        elemHiddenContAccDisabled   = document.getElementById(elemIdContAccountDisabled);
+        elemHiddenContUserDisabled  = document.getElementById(elemIdContUserDisabled);
+        elemHiddenContBillUnpaid    = document.getElementById(elemIdContAccountBillUnpaid);
 
         
-        elemHiddenContSowBoarList   = document.getElementById('container-sow-boar-list');
-        elemHiddenContSowBoarAddEdit= document.getElementById('container-sow-boar-add-edit');
+        elemHiddenContSowBoarList   = document.getElementById(elemIdContSowBoarList);
+        elemHiddenContSowBoarAddEdit= document.getElementById(elemIdContSowBoarAddEdit);
+        elemHiddenContSowBoarEntry  = document.getElementById(elemIdContSowBoarEntry);
+        
+        elemHiddenContMedVacAddEdit = document.getElementById(elemIdContMedVacAddEdit);
         
         
-        elemHiddenContProdGestaList = document.getElementById('container-prod-gesta-list');
-        elemHiddenContProdLactaList = document.getElementById('container-prod-lacta-list');
-        elemHiddenContProdGestaAdd  = document.getElementById('container-prod-gesta-add');
-        elemHiddenContProdGestaEntry= document.getElementById('container-prod-gesta-entry');
+        elemHiddenContProdGestaList = document.getElementById(elemIdContProdGestaList);
+        elemHiddenContProdLactaList = document.getElementById(elemIdContProdLactaList);
+        elemHiddenContProdGestaAdd  = document.getElementById(elemIdContProdGestaAdd);
+        elemHiddenContProdGestaEntry= document.getElementById(elemIdContProdGestaEntry);
     
-        elemHiddenContAccPigOps     = document.getElementById('container-acc-pig-ops');
+        elemHiddenContAccPigOps     = document.getElementById(elemIdContAccPigOps);
         
     }
     
@@ -526,9 +570,9 @@ export function Navigation(){
         
         // This waits for the logged in user for user authentication
         // before request
-        this.addressManager.requestDataAddressLevel1(country_hid);
+        this.managerAddress.requestDataAddressLevel1(country_hid);
         
-        this.requestManager.requestDataPigProdPublic(country_hid, 
+        this.managerRequest.requestDataPigProdPublic(country_hid, 
                 thisObj.setDataPigProdPublic);
             
         
@@ -631,6 +675,10 @@ export function Navigation(){
     
             case PAGE_ID.SOW_BOAR_ADD_EDIT:{
                 return elemHiddenContSowBoarAddEdit;
+            }
+    
+            case PAGE_ID.SOW_BOAR_ENTRY:{
+                return elemHiddenContSowBoarEntry;
             }
     
     

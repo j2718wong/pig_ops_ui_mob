@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Tab Control - Corporate Blue</title>
+    <link rel="stylesheet" type="text/css" href="static/css/all.min.css">
+    <style>
+        :root {
+            --corporate-blue: #0056b3;
+            --corporate-blue-light: #e6f0ff;
+            --corporate-blue-dark: #003d82;
+            --light-gray: #f5f7fa;
+            --medium-gray: #e1e5eb;
+            --dark-gray: #6c757d;
+            --white: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9fafc;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+            overflow: hidden;
+            margin-top: 30px;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--corporate-blue), var(--corporate-blue-dark));
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .tab-control-wrapper {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--white);
+        }
+        
+        .tab-control-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            padding: 8px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab-button {
+            background-color: transparent;
+            border: none;
+            color: var(--corporate-blue);
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        
+        .tab-button:hover:not(:disabled) {
+            background-color: var(--corporate-blue-light);
+        }
+        
+        .tab-button:disabled {
+            color: var(--medium-gray);
+            cursor: not-allowed;
+        }
+        
+        .tabs-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+        
+        .tabs-slider {
+            display: flex;
+            transition: transform 0.4s ease;
+        }
+        
+        .tab-item {
+            min-width: calc(25% - 8px);
+            margin: 0 4px;
+            text-align: center;
+            padding: 12px 8px;
+            background-color: var(--white);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            transition: var(--transition);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid transparent;
+        }
+        
+        .tab-item:hover {
+            background-color: var(--corporate-blue-light);
+        }
+        
+        .tab-item.active {
+            background-color: var(--corporate-blue);
+            color: var(--white);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.2);
+        }
+        
+        .content-container {
+            padding: 25px 20px;
+            background-color: var(--white);
+            border-top: 1px solid var(--medium-gray);
+            min-height: 300px;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-content h3 {
+            color: var(--corporate-blue);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .tab-content p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .tab-content ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .tab-content li {
+            margin-bottom: 8px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            background-color: var(--corporate-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .control-btn:hover {
+            background-color: var(--corporate-blue-dark);
+        }
+        
+        .instructions {
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 500px;
+            border-left: 4px solid var(--corporate-blue);
+        }
+        
+        .instructions h3 {
+            color: var(--corporate-blue);
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .instructions code {
+            background-color: var(--white);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--corporate-blue);
+        }
+        
+        .status {
+            background-color: var(--corporate-blue-light);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--corporate-blue-dark);
+            text-align: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 400px) {
+            .tab-item {
+                font-size: 0.75rem;
+                padding: 10px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mobile Tab Control</h1>
+        <p class="subtitle">Corporate Blue Theme with Navigation</p>
+    </header>
+    
+    <div class="container">
+        <div class="tab-control-wrapper">
+            <div class="tab-control-container">
+                <!-- Left Arrow Button -->
+                <button class="tab-button left-arrow" id="leftArrow" aria-label="Previous tabs">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <!-- Tab Container -->
+                <div class="tabs-container">
+                    <div class="tabs-slider" id="tabsSlider">
+                        <!-- Tab items will be generated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Right Arrow Button -->
+                <button class="tab-button right-arrow" id="rightArrow" aria-label="Next tabs">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="status" id="statusDisplay">
+            Showing tabs 1-4 of 6
+        </div>
+        
+        <div class="content-container">
+            <!-- Tab content will be generated by JavaScript -->
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h3>Tab Control Features</h3>
+        <ul>
+            <li>Left arrow is hidden when exactly 4 tabs are visible</li>
+            <li>Right arrow appears only when more than 4 tabs exist</li>
+            <li>Maximum of 8 tabs supported</li>
+            <li>Right arrow shows excess tabs (5-8)</li>
+            <li>Left arrow returns to first 4 tabs</li>
+            <li>Clean corporate blue theme</li>
+        </ul>
+        <p>Try the controls below to add/remove tabs and test the functionality.</p>
+    </div>
+    
+    <div class="controls">
+        <button class="control-btn" id="addTab">Add Tab (Max: 8)</button>
+        <button class="control-btn" id="removeTab">Remove Tab (Min: 1)</button>
+        <button class="control-btn" id="resetToFour">Set to Exactly 4 Tabs</button>
+        <button class="control-btn" id="resetToSix">Reset to Example (6 Tabs)</button>
+    </div>
+
+    <script>
+        // Tab data
+        const tabData = [
+            { id: 1, name: "MedVac", content: "<h3>MedVac Dashboard</h3><p>Medical vaccination tracking and management system.</p><ul><li>View vaccination schedules</li><li>Track patient records</li><li>Generate reports</li><li>Manage inventory</li></ul>" },
+            { id: 2, name: "Health", content: "<h3>Health Monitor</h3><p>Real-time health metrics and wellness tracking.</p><ul><li>Monitor vital signs</li><li>Track wellness activities</li><li>Set health goals</li><li>View progress charts</li></ul>" },
+            { id: 3, name: "Notes", content: "<h3>Notes & Documentation</h3><p>Clinical notes and patient documentation.</p><ul><li>Create clinical notes</li><li>Attach documents</li><li>Search patient history</li><li>Collaborate with team</li></ul>" },
+            { id: 4, name: "Output", content: "<h3>Output Reports</h3><p>Generate and export reports and analytics.</p><ul><li>Create custom reports</li><li>Export to PDF/Excel</li><li>Schedule automated reports</li><li>Share with stakeholders</li></ul>" },
+            { id: 5, name: "Mates", content: "<h3>Team Mates</h3><p>Collaborate with your healthcare team.</p><ul><li>Message team members</li><li>Assign tasks</li><li>Schedule meetings</li><li>Share patient updates</li></ul>" },
+            { id: 6, name: "Edit", content: "<h3>Edit & Configuration</h3><p>Customize settings and edit configurations.</p><ul><li>Update user profiles</li><li>Configure system settings</li><li>Customize dashboard</li><li>Manage permissions</li></ul>" }
+        ];
+        
+        // Additional tabs for when user adds more
+        const additionalTabs = [
+            { id: 7, name: "Admin", content: "<h3>Admin Panel</h3><p>System administration and user management.</p><ul><li>Manage users</li><li>Configure system settings</li><li>View audit logs</li><li>Monitor system health</li></ul>" },
+            { id: 8, name: "Help", content: "<h3>Help & Support</h3><p>Get assistance and access documentation.</p><ul><li>Access user guides</li><li>Contact support</li><li>View FAQs</li><li>Report issues</li></ul>" }
+        ];
+        
+        // State variables
+        let currentTabs = [...tabData];
+        let activeTabIndex = 0;
+        let currentPosition = 0; // 0 = first 4 tabs, 1 = next tabs (5-8)
+        
+        // DOM elements
+        const tabsSlider = document.getElementById('tabsSlider');
+        const leftArrow = document.getElementById('leftArrow');
+        const rightArrow = document.getElementById('rightArrow');
+        const contentContainer = document.querySelector('.content-container');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const addTabBtn = document.getElementById('addTab');
+        const removeTabBtn = document.getElementById('removeTab');
+        const resetToFourBtn = document.getElementById('resetToFour');
+        const resetToSixBtn = document.getElementById('resetToSix');
+        
+        // Initialize the tabs
+        function initTabs() {
+            renderTabs();
+            updateArrows();
+            updateStatus();
+            activateTab(0);
+        }
+        
+        // Render tabs based on current state
+        function renderTabs() {
+            tabsSlider.innerHTML = '';
+            
+            currentTabs.forEach((tab, index) => {
+                const tabElement = document.createElement('div');
+                tabElement.className = `tab-item ${index === activeTabIndex ? 'active' : ''}`;
+                tabElement.textContent = tab.name;
+                tabElement.dataset.index = index;
+                tabElement.addEventListener('click', () => activateTab(index));
+                
+                tabsSlider.appendChild(tabElement);
+            });
+            
+            // Update slider position based on currentPosition
+            const tabWidth = 100 / 4; // 4 tabs visible at a time
+            tabsSlider.style.transform = `translateX(-${currentPosition * tabWidth * 4}%)`;
+        }
+        
+        // Activate a specific tab
+        function activateTab(index) {
+            activeTabIndex = index;
+            
+            // Update tab visuals
+            document.querySelectorAll('.tab-item').forEach((tab, i) => {
+                if (i === index) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Update content
+            contentContainer.innerHTML = `<div class="tab-content active">${currentTabs[index].content}</div>`;
+            
+            // Update status
+            updateStatus();
+        }
+        
+        // Update arrow buttons based on current state
+        function updateArrows() {
+            // Hide/show left arrow based on position
+            if (currentPosition === 0 || currentTabs.length <= 4) {
+                leftArrow.style.display = 'none';
+                leftArrow.disabled = true;
+            } else {
+                leftArrow.style.display = 'flex';
+                leftArrow.disabled = false;
+            }
+            
+            // Hide/show right arrow based on number of tabs
+            if (currentTabs.length <= 4) {
+                rightArrow.style.display = 'none';
+                rightArrow.disabled = true;
+            } else {
+                rightArrow.style.display = 'flex';
+                rightArrow.disabled = false;
+                
+                // Disable right arrow if we're already at the rightmost position
+                if (currentPosition === 1 || currentTabs.length <= 4) {
+                    rightArrow.disabled = true;
+                } else {
+                    rightArrow.disabled = false;
+                }
+            }
+            
+            // Special case: if exactly 4 tabs, both arrows should be hidden
+            if (currentTabs.length === 4) {
+                leftArrow.style.display = 'none';
+                rightArrow.style.display = 'none';
+            }
+        }
+        
+        // Update status display
+        function updateStatus() {
+            const startTab = currentPosition * 4 + 1;
+            const endTab = Math.min(currentPosition * 4 + 4, currentTabs.length);
+            const totalTabs = currentTabs.length;
+            
+            statusDisplay.textContent = `Showing tabs ${startTab}-${endTab} of ${totalTabs}`;
+        }
+        
+        // Navigate to the right (show next set of tabs)
+        function navigateRight() {
+            if (currentTabs.length > 4) {
+                currentPosition = 1;
+                renderTabs();
+                updateArrows();
+                updateStatus();
+            }
+        }
+        
+        // Navigate to the left (show first set of tabs)
+        function navigateLeft() {
+            currentPosition = 0;
+            renderTabs();
+            updateArrows();
+            updateStatus();
+        }
+        
+        // Add a new tab (maximum 8)
+        function addTab() {
+            if (currentTabs.length >= 8) {
+                alert("Maximum of 8 tabs allowed");
+                return;
+            }
+            
+            // Get the next tab from additional tabs
+            const nextTabIndex = currentTabs.length - tabData.length;
+            if (nextTabIndex < additionalTabs.length) {
+                currentTabs.push(additionalTabs[nextTabIndex]);
+            } else {
+                // Create a generic tab if we've used all predefined ones
+                const newId = currentTabs.length + 1;
+                currentTabs.push({
+                    id: newId,
+                    name: `Tab ${newId}`,
+                    content: `<h3>Tab ${newId} Content</h3><p>This is the content for the newly added tab ${newId}.</p><ul><li>Feature 1 for tab ${newId}</li><li>Feature 2 for tab ${newId}</li><li>Feature 3 for tab ${newId}</li></ul>`
+                });
+            }
+            
+            // Reset to first position if we're at second position and tabs reduced to 4 or less
+            if (currentTabs.length <= 4 && currentPosition === 1) {
+                currentPosition = 0;
+            }
+            
+            renderTabs();
+            updateArrows();
+            updateStatus();
+        }
+        
+        // Remove a tab (minimum 1)
+        function removeTab() {
+            if (currentTabs.length <= 1) {
+                alert("Minimum of 1 tab required");
+                return;
+            }
+            
+            currentTabs.pop();
+            
+            // Reset to first position if we're at second position and tabs reduced to 4 or less
+            if (currentTabs.length <= 4 && currentPosition === 1) {
+                currentPosition = 0;
+                activeTabIndex = Math.min(activeTabIndex, currentTabs.length - 1);
+            }
+            
+            // Adjust active tab index if needed
+            if (activeTabIndex >= currentTabs.length) {
+                activeTabIndex = currentTabs.length - 1;
+            }
+            
+            renderTabs();
+            updateArrows();
+            updateStatus();
+            activateTab(activeTabIndex);
+        }
+        
+        // Reset to exactly 4 tabs
+        function resetToFourTabs() {
+            currentTabs = tabData.slice(0, 4);
+            currentPosition = 0;
+            activeTabIndex = 0;
+            renderTabs();
+            updateArrows();
+            updateStatus();
+            activateTab(0);
+        }
+        
+        // Reset to example (6 tabs)
+        function resetToSixTabs() {
+            currentTabs = [...tabData];
+            currentPosition = 0;
+            activeTabIndex = 0;
+            renderTabs();
+            updateArrows();
+            updateStatus();
+            activateTab(0);
+        }
+        
+        // Event listeners
+        leftArrow.addEventListener('click', navigateLeft);
+        rightArrow.addEventListener('click', navigateRight);
+        addTabBtn.addEventListener('click', addTab);
+        removeTabBtn.addEventListener('click', removeTab);
+        resetToFourBtn.addEventListener('click', resetToFourTabs);
+        resetToSixBtn.addEventListener('click', resetToSixTabs);
+        
+        // Initialize the tabs on page load
+        document.addEventListener('DOMContentLoaded', initTabs);
+    </script>
+</body>
+</html>

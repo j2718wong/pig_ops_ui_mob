@@ -55,7 +55,7 @@ export function AccountLists(input_settings){
         
         
         const base_url = window.location.origin;
-        const url = `${base_url}/supplier/list?ahid=${accountHid}&${param}=1`;
+        const url = `${base_url}/supplier/list?ahid=${accountHid}&country_id${param}=1`;
         
         
         $.ajax({

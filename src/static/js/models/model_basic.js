@@ -37,7 +37,7 @@ export function Field(value){
     this.index          = 0;
     
     
-    /** This needs to be overridden if the valid string lenght is longer than this default value */
+    /** This needs to be overridden if the valid string length is longer than this default value */
     this.maxStrLen  = DEFAULT_MAX_STRING_LEN;
     
     
@@ -122,7 +122,7 @@ export function Field(value){
         if (thisObj.curValue == null) {
             if ((thisObj.newValue != null) && 
                 (typeof thisObj.newValue === 'string') &&
-                (thisObj.newValue.lenght == 0)) {
+                (thisObj.newValue.length == 0)) {
                 // previous is null and new value is empty string
                 // will be treated as no change
                 return false;

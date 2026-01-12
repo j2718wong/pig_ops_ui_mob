@@ -36,14 +36,15 @@ export function PageSowBoarList(input_settings){
     /*
     Typical input_settings
     {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContSowBoarList
     }   
     */  
     let settings                = input_settings;
     
     
     // This is needed as ths will be first element to be rendered
-    let elemDivContainer        = document.getElementById('container-sow-boar-list');
+    let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
     
     let elemIdNavPrevEntry      = null;
@@ -51,7 +52,7 @@ export function PageSowBoarList(input_settings){
     
     let elemIdPageTitle         = null;
     let elemIdPageHeaderAlarm   = null;
-    let elemIdEntryCount        = null;
+    let elemIdPageHeaderEntryCount = null;
     let elemIdPageInfo          = null;
     
     let elemIdSearchInput       = null;
@@ -86,7 +87,7 @@ export function PageSowBoarList(input_settings){
 
     let elemPageTitle           = null;
     let elemPageHeaderAlarm     = null;
-    let elemEntryCount          = null;
+    let elemPageHeaderEntryCount = null;
     let elemPageInfo            = null;
 
     let elemSearchInput         = null;
@@ -194,7 +195,7 @@ export function PageSowBoarList(input_settings){
         
         elemIdPageTitle         = `page-title-sow-boar-list`;
         elemIdPageHeaderAlarm   = `page-title-sow-boar-alarm`;
-        elemIdEntryCount        = `page-title-sow-boar-count`;
+        elemIdPageHeaderEntryCount = `page-title-sow-boar-count`;
         elemIdPageInfo          = `page-info-sow-boar-list`;
         
         elemIdSearchInput       = `mobile-search-input-sow-boar`;
@@ -235,7 +236,7 @@ ${html_style}
         <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
                 
         <span>
-            <span class="nav-title blue" id="${elemIdEntryCount}"></span>
+            <span class="nav-title blue" id="${elemIdPageHeaderEntryCount}"></span>
             <span class="nav-title blue" id="${elemIdPageTitle}"></span>
             <span class="inline-bell larger" id="${elemIdPageHeaderAlarm}" title="Due operations!" style="display:none;">
                 <i class="fas fa-bell"></i>
@@ -394,7 +395,7 @@ ${html_style}
         
         elemPageTitle           = document.getElementById(elemIdPageTitle);
         elemPageHeaderAlarm     = document.getElementById(elemIdPageHeaderAlarm);
-        elemEntryCount          = document.getElementById(elemIdEntryCount);
+        elemPageHeaderEntryCount = document.getElementById(elemIdPageHeaderEntryCount);
         elemPageInfo            = document.getElementById(elemIdPageInfo);
 
         elemSearchInput         = document.getElementById(elemIdSearchInput);
@@ -465,6 +466,8 @@ ${html_style}
         // When this is set, the data includes the gilts (SOW_STATUS.GROWING)
         // Need to seperate gilts data  
         
+        
+        
         dataSowList = []
         dataGiltList = []
         
@@ -477,7 +480,12 @@ ${html_style}
             else{sow_boar = cur_entry;}
             
             if (sow_boar.status_id == SOW_STATUS.GROWING){
-                dataGiltList.push(cur_entry);
+                if (sow_boar.is_production_ready > 0){
+                    dataSowList.push(cur_entry);
+                }
+                else{
+                    dataGiltList.push(cur_entry);
+                }
             }
             else{
                 dataSowList.push(cur_entry);
@@ -491,8 +499,27 @@ ${html_style}
     
     
     this.setDataBoarList = function(data){
+        console.log('setDataBoarList');
         dataBoarList    = data;
 
+    }
+    
+    
+    this.getSowBoarEntry = function(entry_hid){
+        let cur_sow_boar_list = null;
+        
+        switch (showOptions.sow_boar_type){
+            case SOW_BOAR_TYPE.SOW:  {cur_sow_boar_list = dataSowList; 
+                for(const cur_entry of  cur_sow_boar_list){
+                    if (cur_entry.hid == entry_hid);
+                }
+                break;
+            }
+            case SOW_BOAR_TYPE.BOAR: {cur_sow_boar_list = dataBoarList; break;}
+            case SOW_BOAR_TYPE.GILT: {cur_sow_boar_list = dataGiltList; break;}
+            
+            case SOW_BOAR_TYPE.DISPOSED: {cur_sow_boar_list = dataDisposedList; break;}
+        }
     }
     
     
@@ -512,10 +539,10 @@ ${html_style}
     
     
     this.show = function(options){
-		
-		// show the last showOptions if there is no options
-		if (options == null){options = showOptions;}
-		
+        
+        // show the last showOptions if there is no options
+        if (options == null){options = showOptions;}
+        
         // So that not to instantiate in every table redraw
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
@@ -540,7 +567,7 @@ ${html_style}
                 
                 // Update EntryCount
                 if (dataSowList != null){
-                    entry_count = dataSowList.length; // TODO need to separate gilt
+                    entry_count = dataSowList.length; 
                 }
                 
                 if (entry_count == 0){
@@ -553,7 +580,7 @@ ${html_style}
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
+                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.DISPOSED);
                 }
         
                 elemNavNextEntry.onclick = function(){
@@ -636,6 +663,10 @@ ${html_style}
                 
                 elemAddEntryBtn.style.display = 'none';
                 
+                if (dataDisposedList != null){
+                    entry_count = dataDisposedList.length; 
+                }
+                
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
@@ -674,7 +705,7 @@ ${html_style}
         }
         
         // Set Entry count
-        elemEntryCount.textContent = entry_count;
+        elemPageHeaderEntryCount.textContent = entry_count;
         
         
         // Need to set click listener
@@ -682,7 +713,8 @@ ${html_style}
             const options_sow_boar ={
                 is_add:         true,   // false is edit
                 sow_boar_type:  showOptions.sow_boar_type, 
-                go_back_page:   elemDivContainer   // Go back to this page
+                go_back_page:   elemDivContainer,   // Go back to this page
+                go_back_page_id: PAGE_ID.SOW_BOAR_LIST
             };
             
             
@@ -709,8 +741,8 @@ ${html_style}
             };
             
             
-            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
             navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
+            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
             
             
             const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
@@ -784,11 +816,22 @@ ${html_style}
             sow_boar = cur_entry;
         }
     
-        if ((sow_boar.name != null) && (sow_boar.name.length >0)){
-            sow_reference = sow_boar.name;
+        let sow_boar_name_class = '';
+        switch (sow_boar.status_id){
+            case SOW_STATUS.GROWING:    {sow_boar_name_class = 'growing'; break;}
+            case SOW_STATUS.GESTATING:  {sow_boar_name_class = 'gestating'; break;}
+            case SOW_STATUS.LACTATING:  {sow_boar_name_class = 'lactating-sow'; break;}
+            case SOW_STATUS.WEANING:    {sow_boar_name_class = 'lactating-piglets'; break;}
+        }
+    
+        if (sow_boar.name  && sow_boar.name.length >0 ){
+            sow_reference = `<span class="sow-boar-name">${sow_boar.name}</span>`;
+            if (sow_boar.number && sow_boar.name.length >0){
+                sow_reference += `<br>${sow_boar.number}`;
+            }
         }
         else{
-            sow_reference = sow_boar.number;
+            sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
         }
         
         let dt_birth = null;
@@ -828,11 +871,11 @@ ${html_style}
         
         
         let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
-        s_click += `${SOW_BOAR_TYPE.SOW}, ${sow_boar.farm_sow_id});`;
+        s_click += `"${sow_boar.hid}");`;
         
         const html = `
             <tr>
-                <td><span onclick="${s_click}">${sow_reference}</span></td>
+                <td><span onclick='${s_click}'>${sow_reference}</span></td>
                 <td>${SOW_STATUS_NAME[sow_boar.status_id]}</td>
                 <td>${s_age}</td>
                 <td></td>
@@ -947,6 +990,8 @@ ${html_style}
         elemTableNextPage.onclick = function(){
             paginationManager.goToNextPage();
         }
+        
+        thisObj.addToolTips();
     }
     
     
@@ -965,11 +1010,26 @@ ${html_style}
             sow_boar = cur_entry;
         }
     
-        if ((sow_boar.name != null) && (sow_boar.name.length >0)){
-            sow_reference = sow_boar.name;
+        if (sow_boar.name && sow_boar.name.length >0){
+            
+            let not_ready = '';
+            if (sow_boar.is_production_ready == 0){
+                not_ready = '<span class="not-production-ready" data-bs-toggle="tooltip" data-bs-placement="top" title="Not Production Ready"></span>';
+            }
+            sow_reference = `
+                <span class="sow-boar-name">${sow_boar.name} ${not_ready}</span>
+            `;
+            
+            if (sow_boar.number && sow_boar.number.length >0){
+                sow_reference += `<br>${sow_boar.number}`;
+            }
+            
         }
         else{
-            sow_reference = sow_boar.number;
+            sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
+            if (sow_boar.is_production_ready == 0){
+                sow_reference += `<span class="not-production-ready" title="Not Production Ready"></span>`
+            }
         }
         
         let dt_birth = null;
@@ -1011,7 +1071,7 @@ ${html_style}
         
         
         let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
-        s_click += `${SOW_BOAR_TYPE.BOAR}, ${sow_boar.farm_boar_id});`;
+        s_click += `"${sow_boar.hid}");`;
         
         let s_last_mate ='';
         if (cur_entry.date_last_mate != null){
@@ -1021,7 +1081,7 @@ ${html_style}
         
         const html = `
             <tr>
-                <td onclick="${s_click}">${sow_reference}</td>
+                <td onclick='${s_click}'>${sow_reference}</td>
                 <td>${s_age}</td>
                 <td>${cur_entry.mate_count}</td>
                 <td>${s_last_mate}</td>
@@ -1081,10 +1141,14 @@ ${html_style}
         }
     
         if ((sow_boar.name != null) && (sow_boar.name.length >0)){
-            sow_reference = sow_boar.name;
+            sow_reference = `<span class="sow-boar-name">${sow_boar.name} </span>`;
+            
+            if (sow_boar.number && sow_boar.number.length >0){
+                sow_reference += `<br>${sow_boar.number}`;
+            }
         }
         else{
-            sow_reference = sow_boar.number;
+            sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
         }
         
         let dt_birth = null;
@@ -1124,7 +1188,7 @@ ${html_style}
         
         
         let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
-        s_click += `${SOW_BOAR_TYPE.GILT}, ${sow_boar.farm_sow_id});`;
+        s_click += `'${sow_boar.hid}');`;
         
         const html = `
             <tr>
@@ -1167,21 +1231,80 @@ ${html_style}
         elemTableNextPage.onclick = function(){
             paginationManager.goToNextPage();
         }
+        
+        // Set Entry count; This needs to be set since this is requested late
+        const entry_count = disposed_list.length;
+        elemPageHeaderEntryCount.textContent = entry_count;
+        
     }
     
     
     this.getHtmlTableRowDisposed = function(cur_entry){
+        let pig_type = '';
+        
+        if (cur_entry.sow_boar.sex == 'M'){
+            pig_type = 'Boar';
+        }
+        else{
+            if (cur_entry.sow_boar.status_id == SOW_STATUS.GROWING){
+                pig_type = 'Gilt';
+            }
+            else{
+                pig_type = 'Sow';
+            }
+        }
+        
+        let sow_reference = '';
+        let sow_boar;
+        
+        if ('sow_boar' in cur_entry){
+            sow_boar = cur_entry.sow_boar;
+        }
+        else{
+            sow_boar = cur_entry;
+        }
+    
+        if ((sow_boar.name != null) && (sow_boar.name.length >0)){
+            sow_reference = `<span class="sow-boar-name">${sow_boar.name}</span>`;
+            
+            if (sow_boar.number && sow_boar.number.length >0){
+                sow_reference += `<br>${sow_boar.number}`;
+            }
+        }
+        else{
+            sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
+        }
+        
+        let s_status = '';
+        
+        switch(cur_entry.sow_boar.dispose_status_id){
+            case SOW_STATUS.CULLED: {s_status = 'Culled'; break;}
+            case SOW_STATUS.DEAD:   {s_status = 'Dead'; break;}
+            case SOW_STATUS.SOLD:   {s_status = 'Sold'; break;}
+            case SOW_STATUS.DELETE: {s_status = 'Deleted'; break;}
+                    
+        }
+        
         const html = `
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>${cur_entry.sow_boar.date_dispose}</td>
+                <td>${pig_type}</td>
+                <td>${sow_reference}</td>
+                <td>${s_status}</td>
             </tr>
         `;
         
         return html;
         
+    }
+    
+    
+    this.addToolTips = function(){
+        const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
+        console.log('with_tooltips='+with_tooltips.length);
+        for (const cur_entry of with_tooltips){
+            new bootstrap.Tooltip(cur_entry);
+        }
     }
     
     
@@ -1192,7 +1315,7 @@ ${html_style}
             case SOW_BOAR_TYPE.SOW:{
                 cur_list = dataSowList;
                 
-                if (key.lenght == 0){
+                if (key.length == 0){
                     thisObj.renderSowTable(cur_list);
                     return;
                 }
@@ -1202,7 +1325,7 @@ ${html_style}
             case SOW_BOAR_TYPE.BOAR:{
                 cur_list = dataBoarList;
                 
-                if (key.lenght == 0){
+                if (key.length == 0){
                     thisObj.renderBoarTable(cur_list);
                     return;
                 }
@@ -1212,7 +1335,7 @@ ${html_style}
             case SOW_BOAR_TYPE.GILT:{
                 cur_list = dataGiltList;
                 
-                if (key.lenght == 0){
+                if (key.length == 0){
                     thisObj.renderGiltTable(cur_list);
                     return;
                 }
@@ -1223,7 +1346,7 @@ ${html_style}
             default:{
                 cur_list = dataDisposedList;
                 
-                if (key.lenght == 0){
+                if (key.length == 0){
                     return;
                 }
                 
@@ -1289,18 +1412,18 @@ ${html_style}
     }
     
     
-    this.onClickSowBoarName = function(sow_boar_type, farm_sow_boar_id){
-        console.log(`onClickSowBoarName; sow_boar_type=${sow_boar_type}; farm_sow_boar_id = ${farm_sow_boar_id}`);
+    this.onClickSowBoarName = function(sow_boar_hid){
+        console.log(`onClickSowBoarName;  sow_boar_hid = ${sow_boar_hid}`);
         
         let index;
         let cur_entry;
-        let edit_entry = null;
+        let cur_sow_boar_entry = null;
         
-        switch (sow_boar_type){
+        switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW: {
                 for (cur_entry of curDataView){
-                    if (cur_entry.farm_sow_id == farm_sow_boar_id){
-                        edit_entry = cur_entry;
+                    if (cur_entry.hid == sow_boar_hid){
+                        cur_sow_boar_entry = cur_entry;
                         break;
                     }
                 }
@@ -1309,8 +1432,8 @@ ${html_style}
     
             case SOW_BOAR_TYPE.BOAR: {
                 for (cur_entry of curDataView){
-                    if (cur_entry.farm_boar_id == farm_sow_boar_id){
-                        edit_entry = cur_entry;
+                    if (cur_entry.hid == sow_boar_hid){
+                        cur_sow_boar_entry = cur_entry;
                         break;
                     }
                 }
@@ -1319,8 +1442,8 @@ ${html_style}
     
             case SOW_BOAR_TYPE.GILT:{
                 for (cur_entry of curDataView){
-                    if (cur_entry.farm_sow_id == farm_sow_boar_id){
-                        edit_entry = cur_entry;
+                    if (cur_entry.hid == sow_boar_hid){
+                        cur_sow_boar_entry = cur_entry;
                         break;
                     }
                 }
@@ -1332,8 +1455,8 @@ ${html_style}
         
         const options_sow_boar ={
             is_add:         false,   // false is edit
-            sow_boar_type:  sow_boar_type,   // false is boar
-            farm_sow_boar_id: farm_sow_boar_id,
+            sow_boar_type:  showOptions.sow_boar_type,   
+            //farm_sow_boar_id: farm_sow_boar_id,
             go_back_page:   elemDivContainer   // Go back to this page
         };
             
@@ -1359,16 +1482,123 @@ ${html_style}
         };
             
             
-        navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
-        navigation.pageSowBoarAddEdit.callbackOnSuccessEdit = callback;
+        //navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+        //navigation.pageSowBoarAddEdit.callbackOnSuccessEdit = callback;
         
         
-        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-        navigation.showThisPage(next_page)
+        //const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
         
-        
-        
+        thisObj.onClickSowBoarEntry(sow_boar_hid)
     }
+        
+        
+    this.onClickSowBoarEntry = function(sow_boar_hid){
+        if (sow_boar_hid == null){
+            // Go back to this page
+            const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+            navigation.showThisPage(page_container);
+            return;
+        }
+    
+    
+        let cur_sow_boar_list = null;
+        
+        switch (showOptions.sow_boar_type){
+            case SOW_BOAR_TYPE.SOW:  {cur_sow_boar_list = dataSowList; break;}
+            case SOW_BOAR_TYPE.BOAR: {cur_sow_boar_list = dataBoarList; break;}
+            case SOW_BOAR_TYPE.GILT: {cur_sow_boar_list = dataGiltList; break;}
+            
+            case SOW_BOAR_TYPE.DISPOSED: {cur_sow_boar_list = dataDisposedList; break;}
+        }
+        
+        
+        let prev_sow_boar_hid = null;
+        let next_sow_boar_hid = null;
+        
+        let index;
+        let cur_entry   = null;
+        let prev_entry  = null;
+        let next_entry  = null;
+        
+        for (index = 0; index< cur_sow_boar_list.length; index++){
+            cur_entry = cur_sow_boar_list[index];
+            
+            switch (showOptions.sow_boar_type){
+                case SOW_BOAR_TYPE.SOW:
+                case SOW_BOAR_TYPE.BOAR:
+                case SOW_BOAR_TYPE.GILT: { 
+                    if (cur_entry.hid == sow_boar_hid){
+                
+                        if ((index-1) >=0){
+                            prev_entry = cur_sow_boar_list[index-1];
+                            prev_sow_boar_hid = prev_entry.hid;
+                        }
+                        
+                        if ((index+1) < cur_sow_boar_list.length){
+                            next_entry = cur_sow_boar_list[index+1];
+                            next_sow_boar_hid = next_entry.hid;
+                        }
+                        
+                        const options = {
+                            sow_boar_type:      showOptions.sow_boar_type,
+                            prev_sow_boar_hid:  prev_sow_boar_hid,
+                            next_sow_boar_hid:  next_sow_boar_hid,
+                            data_index:     index+1,
+                            total_entries:  cur_sow_boar_list.length
+                        };
+                        
+                        navigation.pageSowBoarEntry.beforeShow(cur_entry, options);
+                        const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                        navigation.showThisPage(page_container);
+                        return;
+                    }
+                    
+                    break;
+                }
+                
+                case SOW_BOAR_TYPE.DISPOSED: { 
+                    if (cur_entry.sow_boar.hid == sow_boar_hid){
+                
+                        if ((index-1) >=0){
+                            prev_entry = cur_sow_boar_list[index-1];
+                            prev_sow_boar_hid = prev_entry.sow_boar.hid;
+                        }
+                        
+                        if ((index+1) < cur_sow_boar_list.length){
+                            next_entry = cur_sow_boar_list[index+1];
+                            next_sow_boar_hid = next_entry.sow_boar.hid;
+                        }
+                        
+                        const options = {
+                            sow_boar_type:      showOptions.sow_boar_type,
+                            prev_sow_boar_hid:  prev_sow_boar_hid,
+                            next_sow_boar_hid:  next_sow_boar_hid,
+                            data_index:     index+1,
+                            total_entries:  cur_sow_boar_list.length
+                        };
+                        
+                        navigation.pageSowBoarEntry.beforeShow(cur_entry, options);
+                        const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                        navigation.showThisPage(page_container);
+                        return;
+                    }
+                    
+                    break;
+                }
+            }
+            
+            
+        }
+        
+
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        navigation.showThisPage(next_page)
+
+    }
+
+    
+        
 
     
     this.requestDisposedSowBoar = function(callback){

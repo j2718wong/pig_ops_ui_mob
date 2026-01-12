@@ -225,7 +225,7 @@ export function PageProdGestatingEntry(input_settings){
             color: rgba(255, 255, 255, 0.7);
             padding: 12px 10px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             text-align: center;
             border-bottom: 3px solid transparent;
             transition: all 0.2s;
@@ -437,8 +437,8 @@ export function PageProdGestatingEntry(input_settings){
             
             .tab-button {
                 font-size: 16px;
-                padding: 10px 8px;
-                min-width: 70px;
+                padding: 10px 5px;
+                min-width: 60px;
             }
             
             .tab-content-area {
@@ -736,7 +736,18 @@ export function PageProdGestatingEntry(input_settings){
     
     this.show = function(data_pig_prod, options){
         console.log('PageAddGestating show');
-        
+		
+		/** Typicla options 
+		const options = {
+			prev_prod_pid:  prev_prod_pid,
+			next_prod_pid:  next_prod_pid,
+			data_index:     index+1,
+			total_entries:  data_pig_prod_list.length
+		};
+		
+        */
+		
+		
         // Set Header Data
         const title = `Prod Gestating ${options.data_index} Of ${options.total_entries}`;
         elemEntryTitle.textContent = title;

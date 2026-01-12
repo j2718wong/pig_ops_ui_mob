@@ -20,14 +20,15 @@ export function PageUserDisabled(input_settings){
     
     /*
     Typical settings = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContUserDisabled
     };
     */
     const settings              = input_settings;
     
     
     // This is needed as this will be first element to be rendered
-    let elemDivContainer        = document.getElementById('container-user-disabled');
+    let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
 
     
     let elemIdAccountCode       = null;

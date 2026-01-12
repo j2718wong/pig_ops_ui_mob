@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Breadcrumb</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .mobile-container {
+            width: 100%;
+            max-width: 375px;
+            background-color: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        /* Simple Breadcrumb - Just text links */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            overflow: hidden;
+            padding: 8px 0;
+            margin-bottom: 30px;
+        }
+        
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .breadcrumb-link {
+            text-decoration: none;
+            color: #0066cc;
+            font-size: 15px;
+            padding: 2px 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90px;
+        }
+        
+        .breadcrumb-link:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb-link.current {
+            color: #333;
+            font-weight: 500;
+            pointer-events: none;
+        }
+        
+        .breadcrumb-separator {
+            color: #999;
+            margin: 0 6px;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        /* Example variations */
+        .example {
+            margin-bottom: 40px;
+        }
+        
+        .example-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        /* Compact version */
+        .breadcrumb.compact .breadcrumb-link {
+            font-size: 14px;
+            max-width: 70px;
+        }
+        
+        /* Minimal version */
+        .breadcrumb.minimal .breadcrumb-separator {
+            margin: 0 4px;
+            color: #ccc;
+        }
+        
+        .code {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #333;
+            overflow-x: auto;
+            margin-top: 30px;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <h1 class="title">Mobile Breadcrumb Bar</h1>
+        
+        <!-- Example 1: Standard (4 items max) -->
+        <div class="example">
+            <div class="example-title">Standard breadcrumb (4 items)</div>
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link">Home</a>
+                </div>
+                <div class="breadcrumb-separator">/</div>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link">Shop</a>
+                </div>
+                <div class="breadcrumb-separator">/</div>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link">Electronics</a>
+                </div>
+                <div class="breadcrumb-separator">/</div>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link current">Phones</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Example 2: Compact (4 items) -->
+        <div class="example">
+            <div class="example-title">Compact breadcrumb (4 items)</div>
+            <div class="breadcrumb compact">
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link">Dashboard</a>
+                </div>
+                <div class="breadcrumb-separator">/</div>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link">Projects</a>
+                </div>
+                <div class="breadcrumb-separator">/</div>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link">Web Design</a>
+                </div>
+                <div class="breadcrumb-separator">/</div>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link current">Mobile UI</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Example 3: Minimal (3 items) -->
+        <div class="example">
+            <div class="example-title">Minimal breadcrumb (3 items)</div>
+            <div class="breadcrumb minimal">
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link">Home</a>
+                </div>
+                <div class="breadcrumb-separator">/</div>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link">Blog</a>
+                </div>
+                <div class="breadcrumb-separator">/</div>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link current">Article</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Example 4: 2 items -->
+        <div class="example">
+            <div class="example-title">Simple breadcrumb (2 items)</div>
+            <div class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link">Settings</a>
+                </div>
+                <div class="breadcrumb-separator">/</div>
+                <div class="breadcrumb-item">
+                    <a href="#" class="breadcrumb-link current">Profile</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- HTML Code Example -->
+        <div class="code">
+&lt;!-- Simple breadcrumb with max 4 items --&gt;
+&lt;div class="breadcrumb"&gt;
+    &lt;div class="breadcrumb-item"&gt;
+        &lt;a href="#" class="breadcrumb-link"&gt;Home&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="breadcrumb-separator"&gt;/&lt;/div&gt;
+    &lt;div class="breadcrumb-item"&gt;
+        &lt;a href="#" class="breadcrumb-link"&gt;Category&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="breadcrumb-separator"&gt;/&lt;/div&gt;
+    &lt;div class="breadcrumb-item"&gt;
+        &lt;a href="#" class="breadcrumb-link"&gt;Subcategory&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="breadcrumb-separator"&gt;/&lt;/div&gt;
+    &lt;div class="breadcrumb-item"&gt;
+        &lt;a href="#" class="breadcrumb-link current"&gt;Current Page&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+        </div>
+    </div>
+
+    <script>
+        // Add dynamic breadcrumb example
+        document.addEventListener('DOMContentLoaded', function() {
+            const breadcrumbContainer = document.querySelector('.mobile-container');
+            
+            // Create dynamic example container
+            const dynamicExample = document.createElement('div');
+            dynamicExample.className = 'example';
+            dynamicExample.innerHTML = `
+                <div class="example-title">Dynamic breadcrumb (JavaScript generated)</div>
+                <div class="breadcrumb" id="dynamic-breadcrumb"></div>
+            `;
+            
+            // Insert before code example
+            breadcrumbContainer.insertBefore(dynamicExample, document.querySelector('.code'));
+            
+            // Breadcrumb data
+            const breadcrumbData = [
+                { text: "Home", href: "#", current: false },
+                { text: "Products", href: "#", current: false },
+                { text: "Mobile Apps", href: "#", current: false },
+                { text: "Navigation", href: "#", current: true }
+            ];
+            
+            // Generate breadcrumb HTML
+            function generateBreadcrumb(items) {
+                // Limit to max 4 items
+                const limitedItems = items.slice(0, 4);
+                let html = '';
+                
+                limitedItems.forEach((item, index) => {
+                    html += `
+                        <div class="breadcrumb-item">
+                            <a href="${item.href}" class="breadcrumb-link ${item.current ? 'current' : ''}">
+                                ${item.text}
+                            </a>
+                        </div>
+                    `;
+                    
+                    // Add separator if not the last item
+                    if (index < limitedItems.length - 1) {
+                        html += '<div class="breadcrumb-separator">/</div>';
+                    }
+                });
+                
+                return html;
+            }
+            
+            // Render dynamic breadcrumb
+            document.getElementById('dynamic-breadcrumb').innerHTML = generateBreadcrumb(breadcrumbData);
+            
+            // Add click handlers for all breadcrumb links
+            document.querySelectorAll('.breadcrumb-link:not(.current)').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert(`Navigating to: ${this.textContent}`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

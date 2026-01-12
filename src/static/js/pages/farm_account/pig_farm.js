@@ -8,11 +8,16 @@ import {PIG_PROD_TYPE,
         SUPPLIER_TYPE}          from '../../constants.js';
 
 
-export function PigFarm(input_settings){
+import {AccountLists}         	from './account_lists.js';
+
+
+
+export function PigFarm(_navigation){
     const thisObj               = this;
-    const navigation            = input_settings.navigation;
+    const navigation            = _navigation;
     
     
+	this.accountLists			= new AccountLists(_navigation);
     
     this.dataPigFarm            = null;
     this.dataPigFarmAccount     = null;
@@ -93,6 +98,13 @@ export function PigFarm(input_settings){
         
     }
     
+	
+	// Should return country hid of the farm.
+	this.getCountryHid = function(data){
+		
+	}
+	
+	
     this.getSettingsOperations  = function(){
         if (thisObj.dataPigFarmAccount == null){return null;}
         return thisObj.dataPigFarmAccount.account.settings_operations;

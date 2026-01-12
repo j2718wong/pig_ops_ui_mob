@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Percentage Column Widths Table</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .demo-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            color: #3498db;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .width-indicator {
+            background-color: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .width-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .width-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .width-bar {
+            width: 60px;
+            height: 8px;
+            background-color: #3498db;
+            border-radius: 4px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        button#removeRows {
+            background-color: #e74c3c;
+        }
+        
+        button#removeRows:hover {
+            background-color: #c0392b;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        button#addRows {
+            background-color: #2ecc71;
+        }
+        
+        button#addRows:hover {
+            background-color: #27ae60;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        button#toggleEmpty {
+            background-color: #9b59b6;
+        }
+        
+        button#toggleEmpty:hover {
+            background-color: #8e44ad;
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+        }
+        
+        button i {
+            font-style: normal;
+            font-size: 1.2em;
+        }
+        
+        /* Table styling */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* This ensures column widths are fixed */
+        }
+        
+        /* Column widths are defined via colgroup in HTML */
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        th {
+            background: linear-gradient(to bottom, #3498db, #2980b9);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #eef7ff;
+            transform: scale(1.002);
+            transition: transform 0.1s ease;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background-color: #2ecc71;
+        }
+        
+        .status-inactive {
+            background-color: #e74c3c;
+        }
+        
+        .status-pending {
+            background-color: #f39c12;
+        }
+        
+        .empty-table-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+            font-style: italic;
+            background-color: #f9f9f9;
+        }
+        
+        .percentage-display {
+            font-weight: bold;
+            color: #2c3e50;
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        
+        .code-snippet {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        
+        .code-highlight {
+            color: #f1c40f;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .note {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .note strong {
+            color: #ff9800;
+        }
+        
+        .responsive-test {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .responsive-btn {
+            background-color: #95a5a6;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .responsive-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .responsive-btn.active {
+            background-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fixed Percentage Column Widths Table</h1>
+        <p class="subtitle">Column widths maintain their percentage proportions even with no table rows</p>
+        
+        <div class="demo-section">
+            <h2 class="section-title">
+                <span>Table with Percentage-Based Column Widths</span>
+                <span class="width-indicator">Total: 100%</span>
+            </h2>
+            
+            <div class="width-display">
+                <div class="width-item">
+                    <div class="width-bar" style="width: 30%; background-color: #3498db;"></div>
+                    <span>Name: <span class="percentage-display">30%</span></span>
+                </div>
+                <div class="width-item">
+                    <div class="width-bar" style="width: 20%; background-color: #2ecc71;"></div>
+                    <span>Position: <span class="percentage-display">20%</span></span>
+                </div>
+                <div class="width-item">
+                    <div class="width-bar" style="width: 15%; background-color: #e74c3c;"></div>
+                    <span>Status: <span class="percentage-display">15%</span></span>
+                </div>
+                <div class="width-item">
+                    <div class="width-bar" style="width: 15%; background-color: #f39c12;"></div>
+                    <span>Department: <span class="percentage-display">15%</span></span>
+                </div>
+                <div class="width-item">
+                    <div class="width-bar" style="width: 20%; background-color: #9b59b6;"></div>
+                    <span>Email: <span class="percentage-display">20%</span></span>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="addRows">
+                    <i>+</i> Add Sample Rows
+                </button>
+                <button id="removeRows">
+                    <i>−</i> Remove All Rows
+                </button>
+                <button id="toggleEmpty">
+                    <i>⇄</i> Toggle Empty/Full
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <table id="percentageTable">
+                    <!-- Percentage column widths defined in colgroup -->
+                    <colgroup>
+                        <col style="width: 30%;"> <!-- Name -->
+                        <col style="width: 20%;"> <!-- Position -->
+                        <col style="width: 15%;"> <!-- Status -->
+                        <col style="width: 15%;"> <!-- Department -->
+                        <col style="width: 20%;"> <!-- Email -->
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Status</th>
+                            <th>Department</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Initial rows -->
+                        <tr>
+                            <td>Alexandra Johnson</td>
+                            <td>Senior Software Engineer</td>
+                            <td><span class="status-indicator status-active"></span>Active</td>
+                            <td>Engineering</td>
+                            <td>alexandra.j@example.com</td>
+                        </tr>
+                        <tr>
+                            <td>Michael Rodriguez</td>
+                            <td>Product Manager</td>
+                            <td><span class="status-indicator status-active"></span>Active</td>
+                            <td>Product</td>
+                            <td>michael.r@company.org</td>
+                        </tr>
+                        <tr>
+                            <td>Sophia Williams</td>
+                            <td>UX/UI Designer</td>
+                            <td><span class="status-indicator status-pending"></span>Pending</td>
+                            <td>Design</td>
+                            <td>sophia.w@designstudio.com</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div id="emptyMessage" class="empty-table-message" style="display: none;">
+                    <h3>Table is Empty</h3>
+                    <p>No rows are present, but column widths remain fixed at their percentage values:</p>
+                    <p><strong>30% | 20% | 15% | 15% | 20%</strong></p>
+                    <p>Try resizing the browser window to see how percentages maintain proportions.</p>
+                </div>
+            </div>
+            
+            <div class="responsive-test">
+                <div>Test table responsiveness:</div>
+                <div class="responsive-btn" onclick="resizeContainer('narrow')">Narrow View</div>
+                <div class="responsive-btn" onclick="resizeContainer('medium')">Medium View</div>
+                <div class="responsive-btn active" onclick="resizeContainer('wide')">Wide View</div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 class="section-title">Implementation Code</h2>
+            
+            <p>The following HTML creates a table with fixed percentage column widths:</p>
+            
+            <div class="code-snippet">
+<pre>&lt;table id="percentageTable"&gt;
+    <span class="code-highlight">&lt;!-- Percentage-based column widths --&gt;</span>
+    &lt;colgroup&gt;
+        &lt;col <span class="code-highlight">style="width: 30%;"</span>&gt; &lt;!-- Name --&gt;
+        &lt;col <span class="code-highlight">style="width: 20%;"</span>&gt; &lt;!-- Position --&gt;
+        &lt;col <span class="code-highlight">style="width: 15%;"</span>&gt; &lt;!-- Status --&gt;
+        &lt;col <span class="code-highlight">style="width: 15%;"</span>&gt; &lt;!-- Department --&gt;
+        &lt;col <span class="code-highlight">style="width: 20%;"</span>&gt; &lt;!-- Email --&gt;
+    &lt;/colgroup&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Name&lt;/th&gt;
+            &lt;th&gt;Position&lt;/th&gt;
+            &lt;th&gt;Status&lt;/th&gt;
+            &lt;th&gt;Department&lt;/th&gt;
+            &lt;th&gt;Email&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody id="tableBody"&gt;
+        <span class="code-highlight">&lt;!-- Table rows go here --&gt;</span>
+    &lt;/tbody&gt;
+&lt;/table&gt;</pre>
+            </div>
+            
+            <p>The essential CSS that makes this work:</p>
+            
+            <div class="code-snippet">
+<pre>table {
+    width: 100%;
+    border-collapse: collapse;
+    <span class="code-highlight">table-layout: fixed;</span> <span class="code-highlight">/* Critical for fixed percentages */</span>
+}
+
+<span class="code-highlight">/* Column widths are controlled by colgroup */</span>
+col {
+    <span class="code-highlight">/* Widths defined in HTML, not CSS */</span>
+}</pre>
+            </div>
+            
+            <div class="note">
+                <p><strong>Important Note:</strong> With <code>table-layout: fixed</code>, the browser calculates column widths based on:</p>
+                <ol>
+                    <li>Explicit widths set on <code>&lt;col&gt;</code> elements (as percentages in this case)</li>
+                    <li>If no <code>&lt;col&gt;</code> widths are set, the first row of cells determines column widths</li>
+                    <li>When there are no rows, the <code>&lt;col&gt;</code> widths are essential for maintaining layout</li>
+                </ol>
+                <p>Percentages in <code>&lt;col&gt;</code> elements are relative to the total table width, not the viewport.</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Table column widths remain fixed at their percentage values (30%, 20%, 15%, 15%, 20%) even with no rows.</p>
+            <p>Try adding/removing rows and resizing the browser to see the percentages in action.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableBody = document.getElementById('tableBody');
+            const emptyMessage = document.getElementById('emptyMessage');
+            const addRowsBtn = document.getElementById('addRows');
+            const removeRowsBtn = document.getElementById('removeRows');
+            const toggleEmptyBtn = document.getElementById('toggleEmpty');
+            
+            // Sample data for adding rows
+            const sampleData = [
+                { name: "Alexandra Johnson", position: "Senior Software Engineer", status: "active", department: "Engineering", email: "alexandra.j@example.com" },
+                { name: "Michael Rodriguez", position: "Product Manager", status: "active", department: "Product", email: "michael.r@company.org" },
+                { name: "Sophia Williams", position: "UX/UI Designer", status: "pending", department: "Design", email: "sophia.w@designstudio.com" },
+                { name: "James Wilson", position: "Data Scientist", status: "active", department: "Analytics", email: "james.w@datacorp.com" },
+                { name: "Emma Thompson", position: "Marketing Director", status: "active", department: "Marketing", email: "emma.t@marketplace.com" },
+                { name: "Daniel Lee", position: "DevOps Engineer", status: "inactive", department: "Operations", email: "daniel.l@cloudservices.io" },
+                { name: "Olivia Martinez", position: "HR Manager", status: "active", department: "Human Resources", email: "olivia.m@hrpartners.net" },
+                { name: "William Chen", position: "Financial Analyst", status: "pending", department: "Finance", email: "william.c@financegroup.biz" }
+            ];
+            
+            // Function to update the empty message visibility
+            function updateEmptyMessage() {
+                const hasRows = tableBody.children.length > 0;
+                emptyMessage.style.display = hasRows ? 'none' : 'block';
+            }
+            
+            // Function to add sample rows
+            function addSampleRows() {
+                // Clear existing rows
+                tableBody.innerHTML = '';
+                
+                // Add new rows from sample data
+                sampleData.forEach(item => {
+                    const row = document.createElement('tr');
+                    
+                    let statusClass = "status-active";
+                    if (item.status === "inactive") statusClass = "status-inactive";
+                    if (item.status === "pending") statusClass = "status-pending";
+                    
+                    row.innerHTML = `
+                        <td>${item.name}</td>
+                        <td>${item.position}</td>
+                        <td><span class="status-indicator ${statusClass}"></span>${item.status.charAt(0).toUpperCase() + item.status.slice(1)}</td>
+                        <td>${item.department}</td>
+                        <td>${item.email}</td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                updateEmptyMessage();
+            }
+            
+            // Function to remove all rows
+            function removeAllRows() {
+                tableBody.innerHTML = '';
+                updateEmptyMessage();
+            }
+            
+            // Function to toggle between empty and full table
+            function toggleEmptyTable() {
+                if (tableBody.children.length === 0) {
+                    addSampleRows();
+                } else {
+                    removeAllRows();
+                }
+            }
+            
+            // Function to resize the container for testing
+            window.resizeContainer = function(size) {
+                const container = document.querySelector('.table-container');
+                const buttons = document.querySelectorAll('.responsive-btn');
+                
+                // Update active button
+                buttons.forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+                
+                // Set container width based on size
+                if (size === 'narrow') {
+                    container.style.width = '400px';
+                } else if (size === 'medium') {
+                    container.style.width = '700px';
+                } else {
+                    container.style.width = '100%';
+                }
+            };
+            
+            // Event listeners
+            addRowsBtn.addEventListener('click', addSampleRows);
+            removeRowsBtn.addEventListener('click', removeAllRows);
+            toggleEmptyBtn.addEventListener('click', toggleEmptyTable);
+            
+            // Initialize
+            updateEmptyMessage();
+        });
+    </script>
+</body>
+</html>

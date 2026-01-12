@@ -24,7 +24,8 @@ export function PageAccountUnpaidBill(input_settings){
     
     /*
     Typical settings = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAccountBillUnpaid
     };
     */
     const settings              = input_settings;
@@ -32,7 +33,7 @@ export function PageAccountUnpaidBill(input_settings){
     const MAX_TRUNCATE_ACC_NAME = 18;
     
     // This is needed as this will be first element to be rendered
-    let elemDivContainer        = document.getElementById('container-account-bill-unpaid');
+    let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
 
     
     let elemIdAccountCode       = null;

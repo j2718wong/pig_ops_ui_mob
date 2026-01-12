@@ -1,0 +1,23 @@
+horizontal control bar
+
+Create an inline tab control bar for mobile view  that has these requirements
+User corporate blue and clean themes
+
+1.) Arrow left button. hidden if exactly 4 tabs 
+2.) 4 buttons with each button opening a tab
+3.) Right Arrow button. hidden if exactly 4 tabs 
+4.) The right arrow button only shows up when there are more than 4 tabs
+5.) when right button is click, it should show up the excess tabs;
+6.) maximum of 8 tabs only
+7.) if left button is click it should show  up the first 4 tabs 
+8.) Just put a simple content in the tabs
+
+Example 1:
+tab 1: MedVac
+tab 2: Health
+tab 3: Notes
+tab 4: Output
+tab 5: Mates
+tab 6: Edit
+
+ 
