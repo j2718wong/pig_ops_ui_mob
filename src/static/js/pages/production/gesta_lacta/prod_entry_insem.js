@@ -9,7 +9,7 @@ import {PageViewBasic}          from '../../common/page_view_basic.js';
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
-import {InsemDataSelect}        from './insem_data_select.js';
+import {CommonSelectOptions}        from './common_select_options.js';
 
 
 
@@ -108,7 +108,7 @@ export function ProdEntryInsem(input_settings){
     let semenSupplierList       = null;
     let staffList               = null; 
     
-    const insemDataSelect       = new InsemDataSelect();
+    const commonSelectOptions       = new CommonSelectOptions();
     
     
     this.init = function(){
@@ -390,15 +390,15 @@ export function ProdEntryInsem(input_settings){
     
     this.setDataSowList = function(data){
         sowList = data;
-        insemDataSelect.setDataSowList(sowList, elemSow);
+        commonSelectOptions.setDataSowList(sowList, elemSow);
     }
     
     
     this.setDataBoarList = function(data){
         boarList = data;
 
-        insemDataSelect.setDataBoarList(boarList, elemBoar);
-        insemDataSelect.setDataBoarList(boarList, elemBoarInternal);
+        commonSelectOptions.setDataBoarList(boarList, elemBoar);
+        commonSelectOptions.setDataBoarList(boarList, elemBoarInternal);
         
         elemBoarCount.textContent   = ` (${boarList.length} entries)`;
         elemBoarInternalCount.textContent= ` (${boarList.length} entries)`;
@@ -407,7 +407,7 @@ export function ProdEntryInsem(input_settings){
     
     this.setDataSemenSupplierList = function(data){
         semenSupplierList = data;
-        insemDataSelect.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
+        commonSelectOptions.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
     
         elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} entries)`;
     }
@@ -415,7 +415,7 @@ export function ProdEntryInsem(input_settings){
     
     this.setDataStaffList = function(data){
         staffList = data;
-        insemDataSelect.setDataStaffList(staffList, elemStaff);
+        commonSelectOptions.setDataStaffList(staffList, elemStaff);
     
         elemStaffCount.textContent      = ` (${staffList.length} entries)`;
     }

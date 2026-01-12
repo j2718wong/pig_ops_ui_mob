@@ -15,7 +15,7 @@ import {FORMAT_MONTH_DATE_ONLY,
         formatDate,
         sortList}               from '../../../utils.js';
 
-import {InsemDataSelect}        from './insem_data_select.js';
+import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
 
@@ -323,7 +323,7 @@ ${html_style}
     
     this.setDataStaffList = function(data){
         staffList = data;
-        insemDataSelect.setDataStaffList(staffList, elemStaff);
+        commonSelectOptions.setDataStaffList(staffList, elemStaff);
     }
     
     

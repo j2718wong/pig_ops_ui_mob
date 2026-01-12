@@ -10,7 +10,7 @@ import {SOW_STATUS}             from '../../../constants.js';
         
         
         
-export function InsemDataSelect(){
+export function CommonSelectOptions(){
     
     this.setDataSowList = function(data, select_elem){
         

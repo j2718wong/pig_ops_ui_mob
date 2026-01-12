@@ -136,6 +136,9 @@ export function PageMedVacAddEdit(input_settings){
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
     
+	
+	
+	let medVacList				= null;
     
     
     
@@ -446,6 +449,14 @@ export function PageMedVacAddEdit(input_settings){
     }
     
     
+	this.setDataMedVacBrand = function(data){
+		medVacList	= data;
+		
+		
+		// Populate Sselect options
+	}
+	
+	
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         

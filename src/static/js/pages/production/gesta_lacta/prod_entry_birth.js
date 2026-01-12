@@ -11,7 +11,7 @@ import {SOW_STATUS,
 
 import {getSowBoarReference}    from '../../common/common_app.js';
 
-import {InsemDataSelect}        from './insem_data_select.js';
+import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
 
@@ -70,7 +70,7 @@ export function ProdEntryBirth(input_settings){
     let pigProdData         = null;
     
     
-    const insemDataSelect       = new InsemDataSelect();
+    const commonSelectOptions       = new CommonSelectOptions();
     
 
     
@@ -298,7 +298,7 @@ export function ProdEntryBirth(input_settings){
     
     this.setDataStaffList = function(data){
         staffList = data;
-        insemDataSelect.setDataStaffList(staffList, elemStaff);
+        commonSelectOptions.setDataStaffList(staffList, elemStaff);
     }
     
     

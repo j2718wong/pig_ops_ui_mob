@@ -12,7 +12,7 @@ import {PAGE_ID,
         PIG_OPERATION_TYPE,
         SUPPLIER_TYPE}          from '../../../constants.js';
 
-import {InsemDataSelect}        from './insem_data_select.js';
+import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 import {ModelPigProduction}     from '../../../models/model_pig_production.js'
 
@@ -135,7 +135,7 @@ export function PageProdGestatingAdd(input_settings){
     
     let newEntry                = new ModelPigProduction();
     
-    const insemDataSelect       = new InsemDataSelect();
+    const commonSelectOptions       = new CommonSelectOptions();
     
     
     
@@ -632,7 +632,7 @@ export function PageProdGestatingAdd(input_settings){
         }
         
 
-        insemDataSelect.setDataSowList(filtered, elemSow);
+        commonSelectOptions.setDataSowList(filtered, elemSow);
         
         elemSowCount.textContent = ` (${filtered.length} entries)`;
     }
@@ -649,8 +649,8 @@ export function PageProdGestatingAdd(input_settings){
             }
         }
         
-        insemDataSelect.setDataBoarList(filtered, elemBoar);
-        insemDataSelect.setDataBoarList(filtered, elemBoarInternal);
+        commonSelectOptions.setDataBoarList(filtered, elemBoar);
+        commonSelectOptions.setDataBoarList(filtered, elemBoarInternal);
         
         elemBoarCount.textContent   = ` (${filtered.length} Entries)`;
         elemBoarInternalCount.textContent= ` (${filtered.length} Entries)`;
@@ -681,7 +681,7 @@ export function PageProdGestatingAdd(input_settings){
 		
 		console.log(data);
 		
-        insemDataSelect.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
+        commonSelectOptions.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
         
         elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} entries)`;
     }
@@ -689,7 +689,7 @@ export function PageProdGestatingAdd(input_settings){
     
     this.setDataStaffList = function(data){
         staffList = data;
-        insemDataSelect.setDataStaffList(staffList, elemStaff);
+        commonSelectOptions.setDataStaffList(staffList, elemStaff);
     
         elemStaffCount.textContent      = ` (${staffList.length} entries)`;
     }
