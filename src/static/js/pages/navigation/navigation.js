@@ -610,10 +610,7 @@ export function Navigation(){
     
     
     this.setDataStaffList = function(data){
-        this.pageMobGestatingList.setDataStaffList(data);
-        this.pageMobLactatingList.setDataStaffList(data);
-        this.pageProdGestatingAdd.setDataStaffList(data);
-        this.pageProdGestatingEntry.setDataStaffList(data);
+        this.pigFarm.setDataStaffList(data);
     }
     
     
@@ -697,6 +694,12 @@ export function Navigation(){
             case PAGE_ID.SOW_BOAR_ENTRY:{
                 return elemHiddenContSowBoarEntry;
             }
+    
+    
+            case PAGE_ID.MEDVAC_ADD_EDIT:{
+                return elemHiddenContMedVacAddEdit;
+            }
+    
     
     
             case PAGE_ID.PROD_GESTA_LIST:{

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
 
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
@@ -17,9 +17,9 @@ import {ProdEntryBirth}         from './prod_entry_birth.js'
 
 
 
-PageProdGestatingEntry.prototype = new PageViewBasic();
+PageProdGestatingEntry.prototype = new PageViewPigFarmPage();
 export function PageProdGestatingEntry(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;

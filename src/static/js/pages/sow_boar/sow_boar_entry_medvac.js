@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageTableBasic}        	from '../common/page_table_basic.js';
+import {PageTableBasic}         from '../common/page_table_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
@@ -24,27 +24,27 @@ import {formatDate,
 TableMedVac.prototype = new PageTableBasic();
 export function TableMedVac(input_settings){
     PageTableBasic.call(this);
-	
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
-	
+    
     /*
     Typical input_settings
     {
         navigation:             this,
-        elemDivContainer:      	'<element>'
+        elemDivContainer:       '<element>'
     }   
     */  
     let settings                = input_settings;
     
     
-	let elemDivContainer        = settings.elemDivContainer;
+    let elemDivContainer        = settings.elemDivContainer;
 
-	let elemIdTableBody			= null;
+    let elemIdTableBody         = null;
 
     
-    let elemTableBody        	= null;
+    let elemTableBody           = null;
     
 
 
@@ -53,38 +53,65 @@ export function TableMedVac(input_settings){
     let curUserLanguageKey      = 'en';
 
 
-    let showOptions				= null;
+    let showOptions             = null;
     
     let dtCurrentDate           = null;
     
-	
-	let dataSowBoar				= null;
-	
-	
+    
+    let dataSowBoar             = null;
+    
+    
     this.init = function(){
-		
-		const settingsTable = {
-			uniqueKey:		'sow-boar-medvac',
-			tableTitle:		'Medicines & Vaccines'
-		}
-		
-		thisObj.setSettings(settingsTable);
+        
+        const settingsTable = {
+            uniqueKey:      'sow-boar-medvac',
+            tableTitle:     'Medicines & Vaccines'
+        }
+        
+        thisObj.setSettings(settingsTable);
         
         const html_table = thisObj.getHtml();
-		
-		elemDivContainer.innerHTML = html_table;
-        thisObj.afterHtmlRender();
-		
-		
-		thisObj.setDataEntryList([]);
+        
+        elemDivContainer.innerHTML = html_table;
+        thisObj.afterHtmlRender();  // This will call the parent method 
+        thisObj.afterHtmlRenderThis();
+
+    }
+    
+    
+    this.afterHtmlRenderThis = function(){
+        elemTableBody           = document.getElementById(elemIdTableBody);
+        
+        // Set onclick listener to parent object
+        thisObj.setOnClickAddEntry(thisObj.onClickAddEntry); 
+    }
+    
+    
+    this.getElemTableBody = function(){
+        return elemTableBody;
+    }
+    
+    
+    
+    this.beforeShow = function(data_sow_boar){
+        dataSowBoar = data_sow_boar;
+        
+        const data_sow_boar_medvac = null;
+        if ('list_medvac' in dataSowBoar){
+            // TODO
+            const test = 1;
+        } else{
+            const callback_success = function(data){
+                // Set table entry list; This will set also the entry count;
+                thisObj.setDataEntryList(data);
+                thisObj.renderTable(data);
+            };
+            thisObj.requestData(callback_success);
+        }
+        
     }
     
         
-	this.setDataSowBoar = function(data){
-		dataSowBoar = data;
-	}
-	
-		
     this.show = function(options){
         
         // show the last showOptions if there is no options
@@ -95,31 +122,21 @@ export function TableMedVac(input_settings){
         dtCurrentDate.setHours(0, 0, 0, 0);
         
         showOptions = options;
-		
-		
-        const data_sow_boar_medvac = null;
-		if ('list_medvac' in dataSowBoar){
-			// TODO
-			const test = 1;
-		} else{
-			const callback_success = function(data){
-				// Set table entry list; This will set also the entry count;
-				thisObj.setDataEntryList(data);
-			};
-			thisObj.requestData(callback_success);
-		}
-		
-		
-		
-		
+        
+        
+        
+        
+        
+        
+        
     }
     
-	 
-	this.getHtmlTableHeader = function(){
-		elemIdTableBody			= `${settings.uniqueKey}-table-tbody`;
-		
-		const html = `
-		<table class="data-table" id="">
+     
+    this.getHtmlTableHeader = function(){
+        elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
+        
+        const html = `
+        <table class="data-table" id="">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -131,32 +148,31 @@ export function TableMedVac(input_settings){
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>
-		
-		`;
-		
-		return html;
-		
-	}
+        
+        `;
+        
+        return html;
+        
+    }
        
 
     this.getHtmlTableRowEmpty = function(){
         const html = `
-			<tr>
+            <tr>
                 <td><div>No Entries</div></td>
                 <td><div>&nbsp;</div></td>
                 <td><div>&nbsp;</div></td>
                 <td><div>&nbsp;</div></td>
             </tr>
-		`;
+        `;
         return html;
     }
     
-    
 
     this.getHtmlTableRow = function(cur_entry){
-		
-		let  s_click = '';
-		
+        
+        let  s_click = '';
+        
         const html = `
             <tr>
                 <td><span>${cur_entry.medvac.date_medvac}</span></td>
@@ -182,12 +198,12 @@ export function TableMedVac(input_settings){
     this.searchSowBoar = function(key){
         
     }
-	
-	
-	this.requestData = function(callback){
-		const sow_boar_hid = dataSowBoar.hid;
-		
-		const base_url = window.location.origin;
+    
+    
+    this.requestData = function(callback){
+        const sow_boar_hid = dataSowBoar.hid;
+        
+        const base_url = window.location.origin;
         const url = `${base_url}/pig_medvac/list?sow_boar_hid=${sow_boar_hid}`;
         
         
@@ -198,20 +214,20 @@ export function TableMedVac(input_settings){
             async: true,
   
             beforeSend: function(){
-				elemServerErrorMsg.style.display = 'none';
+                thisObj.elemServerErrorMsg.style.display = 'none';
             },
   
             success: function(response){
                 if (response.result.num == 0){
                     dataSowBoar['list_medvac'] = response.data;
-					
-					if (callback){
-						callback(dataSowBoar['list_medvac']);
-					}
+                    
+                    if (callback){
+                        callback(dataSowBoar['list_medvac']);
+                    }
                 }
                 else {
-					navigation.errorServerMessage.receivedErrorMessage(
-						response, elemServerErrorMsg);
+                    navigation.errorServerMessage.receivedErrorMessage(
+                        response, thisObj.elemServerErrorMsg);
                 }
             },
   
@@ -222,8 +238,8 @@ export function TableMedVac(input_settings){
                 gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
             }
         });
-		
-	}
+        
+    }
     
     
     this.setUserLanguage = function(language_key){
@@ -236,7 +252,21 @@ export function TableMedVac(input_settings){
         
        
     }
-	
-	
+    
+    this.onClickAddEntry = function(){
+        
+		const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+		
+        const options ={
+            is_add:         true,   // false is edit
+            go_back_page:   go_back_page   // Go back to this page; this is Div element
+        }
+        
+        navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
+        const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+        navigation.showThisPage(page_container);
+        
+        
+    }
     
 }

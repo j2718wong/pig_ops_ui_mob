@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
@@ -22,9 +22,9 @@ import {formatDate,
 
 
 
-PageSowBoarList.prototype = new PageViewBasic();
+PageSowBoarList.prototype = new PageViewPigFarmPage();
 export function PageSowBoarList(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;

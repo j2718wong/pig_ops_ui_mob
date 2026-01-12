@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
 
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
@@ -14,9 +14,9 @@ import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
 
-ProdEntryInsem.prototype = new PageViewBasic();
+ProdEntryInsem.prototype = new PageViewPigFarmPage();
 export function ProdEntryInsem(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
@@ -106,9 +106,7 @@ export function ProdEntryInsem(input_settings){
     let sowList                 = null;
     let boarList                = null;
     let semenSupplierList       = null;
-    let staffList               = null; 
     
-    const commonSelectOptions       = new CommonSelectOptions();
     
     
     this.init = function(){
@@ -360,6 +358,8 @@ export function ProdEntryInsem(input_settings){
         }).on('show', function(e) {
             $('.datepicker').addClass('datepicker-material');
         });
+		
+		thisObj.setElemStaff(elemStaff, elemStaffCount);
     }
     
     
@@ -390,15 +390,15 @@ export function ProdEntryInsem(input_settings){
     
     this.setDataSowList = function(data){
         sowList = data;
-        commonSelectOptions.setDataSowList(sowList, elemSow);
+        thisObj.commonSelectOptions.setDataSowList(sowList, elemSow);
     }
     
     
     this.setDataBoarList = function(data){
         boarList = data;
 
-        commonSelectOptions.setDataBoarList(boarList, elemBoar);
-        commonSelectOptions.setDataBoarList(boarList, elemBoarInternal);
+        thisObj.commonSelectOptions.setDataBoarList(boarList, elemBoar);
+        thisObj.commonSelectOptions.setDataBoarList(boarList, elemBoarInternal);
         
         elemBoarCount.textContent   = ` (${boarList.length} entries)`;
         elemBoarInternalCount.textContent= ` (${boarList.length} entries)`;
@@ -407,17 +407,9 @@ export function ProdEntryInsem(input_settings){
     
     this.setDataSemenSupplierList = function(data){
         semenSupplierList = data;
-        commonSelectOptions.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
+        thisObj.commonSelectOptions.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
     
         elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} entries)`;
-    }
-    
-    
-    this.setDataStaffList = function(data){
-        staffList = data;
-        commonSelectOptions.setDataStaffList(staffList, elemStaff);
-    
-        elemStaffCount.textContent      = ` (${staffList.length} entries)`;
     }
     
     

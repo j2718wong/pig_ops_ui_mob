@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../common/page_view_basic.js';
 import {CommonSelectOptions}    from '../common/common_select_options.js';
 
 
@@ -32,9 +32,9 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 
-PageMedVacAddEdit.prototype = new PageViewBasic();
+PageMedVacAddEdit.prototype = new PageViewPigFarmPage();
 export function PageMedVacAddEdit(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -166,7 +166,6 @@ export function PageMedVacAddEdit(input_settings){
     this.callbackOnSuccessAdd   = null;
     
     
-    const commonSelectOptions   = new CommonSelectOptions();
     
     
     this.init = function(){
@@ -256,10 +255,10 @@ export function PageMedVacAddEdit(input_settings){
         <!-- 1. Date MedVac -->
         <div class="form-group-date">
             <label for="${elemIdDateMedVac}" class="form-label">
-                Date of Birth
+                Date
             </label>
             <input type="text" class="form-control" id="${elemIdDateMedVac}">
-            <div class="form-text">This is use to calculate pig's age.</div>
+            <div class="form-text"></div>
         </div>
         
         <!-- 2. MedVac Brand -->
@@ -449,7 +448,7 @@ export function PageMedVacAddEdit(input_settings){
             $('.datepicker').addClass('datepicker-material');
         });
         
-        
+        thisObj.setElemStaff(elemStaff, elemStaffCount);
     }
     
     
@@ -499,7 +498,7 @@ export function PageMedVacAddEdit(input_settings){
     this.setDataMedVacBrand = function(data){
         medVacBrandList = data;
         
-        commonSelectOptions.setDataMedVacBrand(medVacBrandList, elemMedVacBrand);
+        thisObj.thisObj.commonSelectOptions.setDataMedVacBrand(medVacBrandList, elemMedVacBrand);
         elemSowCount.textContent = ` (${medVacBrandList.length} Entries)`;
     }
     
@@ -507,7 +506,7 @@ export function PageMedVacAddEdit(input_settings){
     this.setDataMedVacType = function(data){
         medVacTypeList  = data;
         
-        commonSelectOptions.setDataMedVacType(medVacTypeList, elemMedVacType);
+        thisObj.thisObj.commonSelectOptions.setDataMedVacType(medVacTypeList, elemMedVacType);
         elemSowCount.textContent = ` (${medVacTypeList.length} Entries)`;
     }
     

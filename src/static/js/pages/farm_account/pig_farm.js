@@ -99,6 +99,17 @@ export function PigFarm(_navigation){
     }
     
 	
+	this.setDataStaffList = function(data) {
+		navigation.pageMobGestatingList.setDataStaffList(data);
+        navigation.pageMobLactatingList.setDataStaffList(data);
+        navigation.pageProdGestatingAdd.setDataStaffList(data);
+        navigation.pageProdGestatingEntry.setDataStaffList(data);
+		
+		navigation.pageMedVacAddEdit.setDataStaffList(data);
+		
+	}
+	
+	
 	// Should return country hid of the farm.
 	this.getCountryHid = function(data){
 		

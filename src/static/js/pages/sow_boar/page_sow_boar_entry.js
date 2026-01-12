@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
@@ -19,12 +19,12 @@ import {formatDate,
         sortList,
         createPaginationManager} from '../../utils.js';
 
-import {TableMedVac}			from './sow_boar_entry_medvac.js'
+import {TableMedVac}            from './sow_boar_entry_medvac.js'
 
 
-PageSowBoarEntry.prototype = new PageViewBasic();
+PageSowBoarEntry.prototype = new PageViewPigFarmPage();
 export function PageSowBoarEntry(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -82,9 +82,13 @@ export function PageSowBoarEntry(input_settings){
     let elemTabEdit             = null;
     let elemTabStatus           = null;
     
-    
-	let tableMedVac				= null;
 	
+	
+    let dataSowBoar             = null;
+	
+	
+    let tableMedVac             = null;
+    
     
     
     this.init = function(){
@@ -230,12 +234,12 @@ export function PageSowBoarEntry(input_settings){
     
     
     this._processAfterHtmlRender = function(){
-		const settings_medvac = {
-			navigation:             settings.navigation,
-			elemDivContainer:      	elemTabMedVac
-		};
-        tableMedVac		= new TableMedVac(settings_medvac);
-		tableMedVac.init();
+        const settings_medvac = {
+            navigation:             settings.navigation,
+            elemDivContainer:       elemTabMedVac
+        };
+        tableMedVac     = new TableMedVac(settings_medvac);
+        tableMedVac.init();
     }
     
     
@@ -304,6 +308,7 @@ export function PageSowBoarEntry(input_settings){
     
     
     this.beforeShow = function(data_sow_boar, options){
+		dataSowBoar	= data_sow_boar;
         
         // Set Entry Title
         let s_title = '';
@@ -362,8 +367,9 @@ export function PageSowBoarEntry(input_settings){
             navigation.pageSowBoarList.onClickSowBoarEntry(options.next_sow_boar_hid);
         }
         
-        
-        
+		
+        // Set tableMedVac 
+        tableMedVac.beforeShow(dataSowBoar);
         
         
     }

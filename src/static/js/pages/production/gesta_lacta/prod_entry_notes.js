@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
 
 import {SOW_STATUS,
         PROD_STATUS,
@@ -19,9 +19,9 @@ import {FORMAT_MONTH_DATE_ONLY,
 
 
 
-ProdEntryNotes.prototype = new PageViewBasic();
+ProdEntryNotes.prototype = new PageViewPigFarmPage();
 export function ProdEntryNotes(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PIG_OPERATION_TYPE,
@@ -20,9 +20,9 @@ import {formatDate,
 import {getSowBoarReference}    from '../../common/common_app.js';
 
 
-PageMobGestaLacta.prototype = new PageViewBasic();
+PageMobGestaLacta.prototype = new PageViewPigFarmPage();
 export function PageMobGestaLacta(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -1626,7 +1626,7 @@ ${html_style}
             navigation.editModalProdPigOps.hide();
         };
         
-        navigation.requestManager.requestPigProdData(pig_prod_type, callback);
+        navigation.managerRequest.requestPigProdData(pig_prod_type, callback);
         
     }
 }

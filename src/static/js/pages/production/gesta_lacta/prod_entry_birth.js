@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
 
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
@@ -16,9 +16,9 @@ import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
 
-ProdEntryBirth.prototype = new PageViewBasic();
+ProdEntryBirth.prototype = new PageViewPigFarmPage();
 export function ProdEntryBirth(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
@@ -64,13 +64,9 @@ export function ProdEntryBirth(input_settings){
     let elemBtnSave             = null;
     
     
-   
-    let staffList               = null; 
+    let pigProdData         	= null;
     
-    let pigProdData         = null;
-    
-    
-    const commonSelectOptions       = new CommonSelectOptions();
+
     
 
     
@@ -292,13 +288,6 @@ export function ProdEntryBirth(input_settings){
         elemDateBirth.addEventListener('change', function() {
             thisObj._validateAfterChangeInput(this, 'date_birth');
         });
-    }
-    
-    
-    
-    this.setDataStaffList = function(data){
-        staffList = data;
-        commonSelectOptions.setDataStaffList(staffList, elemStaff);
     }
     
     

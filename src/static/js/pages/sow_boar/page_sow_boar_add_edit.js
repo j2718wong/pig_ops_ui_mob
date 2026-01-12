@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../common/page_view_basic.js';
 
 import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
 
@@ -30,9 +30,9 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 
-PageSowBoarAddEdit.prototype = new PageViewBasic();
+PageSowBoarAddEdit.prototype = new PageViewPigFarmPage();
 export function PageSowBoarAddEdit(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;

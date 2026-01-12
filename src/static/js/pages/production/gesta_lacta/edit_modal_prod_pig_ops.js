@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
 
 import {PIG_OPERATION_TYPE}     from '../../../constants.js';
         
@@ -18,9 +18,9 @@ import {FIELD_VALIDATION_OK,
         Field, ModelBasic}      from '../../../models/model_basic.js'
 
 
-EditModalProdPigOps.prototype = new PageViewBasic();
+EditModalProdPigOps.prototype = new PageViewPigFarmPage();
 export function EditModalProdPigOps(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;

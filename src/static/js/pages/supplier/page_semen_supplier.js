@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}          from '../common/page_view_basic.js';
 
 import {SOW_STATUS}             from '../../constants.js';
 
@@ -14,9 +14,9 @@ import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
 
 
 
-PageSemenSupplierAddEdit.prototype = new PageViewBasic();
+PageSemenSupplierAddEdit.prototype = new PageViewPigFarmPage();
 export function PageSowBoarAddEdit(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;

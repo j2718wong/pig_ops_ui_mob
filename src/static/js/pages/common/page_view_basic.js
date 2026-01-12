@@ -5,6 +5,9 @@
 'use strict';
 
 
+import {CommonSelectOptions}    from './common_select_options.js';
+
+
 export function replaceSelectOptions(select_elem, new_options){
     select_elem.innerHTML = '';
     
@@ -31,14 +34,15 @@ export function replaceSelectOptions(select_elem, new_options){
 
 export function PageViewBasic(){
     const thisObj           = this;
-    const NUM_MSECS_1DAY    = 1000 * 60 * 60 * 24;
+    
+    this.NUM_MSECS_1DAY     = 1000 * 60 * 60 * 24;
     
     this.navigation         = null;
     
-	this.curUserLanguageKey	= 'en';
-	
-	
-	this.setUserLanguage = function(language_key){
+    this.curUserLanguageKey = 'en';
+    
+    
+    this.setUserLanguage = function(language_key){
         this.curUserLanguageKey = language_key;
         thisObj.onUserChangeLanguage();
     }
@@ -80,13 +84,54 @@ export function PageViewBasic(){
         return;
     }
     
+}
+    
+    
+    
+PageViewPigFarmPage.prototype = new PageViewBasic();
+export function PageViewPigFarmPage(){  
+    const thisObj       = this;
+    
+    PageViewBasic.call(this);
+    
     
     /*
     Will calculate the number of days since date insemination up to now.
     
-    @param insem_date: dat estr in YYYY-MM-DD format
+    @param insem_date: date str in YYYY-MM-DD format
     
     */
+    
+    let elemStaffSelect         = null;
+    let elemStaffCount          = null;
+    
+    
+    
+    this.commonSelectOptions    = new CommonSelectOptions();
+    
+    
+    this.dataStaffList          = null;
+    
+    
+    this.setElemStaff = function(elem_staff_select, elem_staff_count){
+        elemStaffSelect = elem_staff_select;
+        elemStaffCount  = elem_staff_count;
+    }
+    
+    
+    this.setDataStaffList = function(data){
+        this.dataStaffList = data;
+        
+        if (elemStaffSelect){
+            this.commonSelectOptions.setDataStaffList(data, elemStaffSelect);
+        }
+        
+        if (elemStaffCount){
+            elemStaffCount.textContent      = ` (${data.length} Entries)`;
+        }
+    }
+    
+    
     
     this.calculateNumDaysSinceInsem = function(insem_date, dt_current, settings_operations){
         if (!dt_current){
@@ -97,7 +142,7 @@ export function PageViewBasic(){
         const dt_insem            = new Date(insem_date);
         const diff_msecs          = dt_current - dt_insem;
         
-        let   diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+        let   diff_days           = Math.round(diff_msecs / thisObj.NUM_MSECS_1DAY);
         
         // Adjust Day 1 on date of insemination/coupling if needed
         if (settings_operations){
@@ -109,7 +154,7 @@ export function PageViewBasic(){
     }
 
     
-	this.calculateNumDaysSinceBirth = function(date_of_birth, dt_current, settings_operations){
+    this.calculateNumDaysSinceBirth = function(date_of_birth, dt_current, settings_operations){
         if (!dt_current){
             dt_current = new Date();
             dt_current.setHours(0, 0, 0, 0);
@@ -118,7 +163,7 @@ export function PageViewBasic(){
         const dt_birth            = new Date(date_of_birth);
         const diff_msecs          = dt_current - dt_birth;
         
-        let   diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+        let   diff_days           = Math.round(diff_msecs / thisObj.NUM_MSECS_1DAY);
         
         // Adjust Day 1 on date of birth if needed
         if (settings_operations){

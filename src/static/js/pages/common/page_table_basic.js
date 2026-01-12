@@ -84,7 +84,6 @@ export function PageTableBasic(){
 
 
     
-    
     let dtCurrentDate           = null;
     
     this.init = function(){
@@ -148,7 +147,7 @@ export function PageTableBasic(){
         <div class="mobile-controls">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Search Pig Name or Number">
+                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Search">
             </div>
             <button class="btn-add-entry" id="${elemIdAddEntryBtn}">
                 <i class="fas fa-plus"></i>
@@ -255,6 +254,15 @@ export function PageTableBasic(){
         }*/
     }
     
+	
+	this.setOnClickAddEntry = function(callback){
+		
+		
+		elemAddEntryBtn.addEventListener('click', function() {
+            callback();
+        });
+	}
+	
     
     this.setDataEntryList = function(data_entry_list){
         dataEntryList = data_entry_list;    
@@ -270,7 +278,7 @@ export function PageTableBasic(){
 
         const config = {
             elemPagination:     elemTablePagination,
-            elemTableBody:      thisObj.getTableBody(),
+            elemTableBody:      thisObj.getElemTableBody(),
             elemEntryCount:     elemTableRowCount,
             elemCurrentPage:    elemTableCurPage,
             elemTotalPages:     elemTableTotalPages,

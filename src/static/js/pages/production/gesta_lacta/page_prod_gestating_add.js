@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewBasic}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {PAGE_ID,
         SOW_STATUS,
@@ -20,9 +20,9 @@ import {FIELD_VALIDATION_OK}    from '../../../models/model_basic.js'
 
 
 
-PageProdGestatingAdd.prototype = new PageViewBasic();
+PageProdGestatingAdd.prototype = new PageViewPigFarmPage();
 export function PageProdGestatingAdd(input_settings){
-    PageViewBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -130,12 +130,12 @@ export function PageProdGestatingAdd(input_settings){
     let sowList                 = null;
     let boarList                = null;
     let semenSupplierList       = null;
-    let staffList               = null; 
+    
     
     
     let newEntry                = new ModelPigProduction();
     
-    const commonSelectOptions 	= new CommonSelectOptions();
+    
     
     
     
@@ -482,6 +482,9 @@ export function PageProdGestatingAdd(input_settings){
         });
         
         
+        this.setElemStaff(elemStaff, elemStaffCount);
+        
+        
         this.setDataSowList([]);
         this.setDataBoarList([]);
         this.setDataSemenSupplierList([]);
@@ -632,7 +635,7 @@ export function PageProdGestatingAdd(input_settings){
         }
         
 
-        commonSelectOptions.setDataSowList(filtered, elemSow);
+        thisObj.commonSelectOptions.setDataSowList(filtered, elemSow);
         
         elemSowCount.textContent = ` (${filtered.length} Entries)`;
     }
@@ -649,8 +652,8 @@ export function PageProdGestatingAdd(input_settings){
             }
         }
         
-        commonSelectOptions.setDataBoarList(filtered, elemBoar);
-        commonSelectOptions.setDataBoarList(filtered, elemBoarInternal);
+        thisObj.commonSelectOptions.setDataBoarList(filtered, elemBoar);
+        thisObj.commonSelectOptions.setDataBoarList(filtered, elemBoarInternal);
         
         elemBoarCount.textContent   = ` (${filtered.length} Entries)`;
         elemBoarInternalCount.textContent= ` (${filtered.length} Entries)`;
@@ -678,23 +681,15 @@ export function PageProdGestatingAdd(input_settings){
     
     this.setDataSemenSupplierList = function(data){
         semenSupplierList = data;
-		
-		console.log(data);
-		
-        commonSelectOptions.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
+        
+        
+        thisObj.commonSelectOptions.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
         
         elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} Entries)`;
     }
     
     
-    this.setDataStaffList = function(data){
-        staffList = data;
-        commonSelectOptions.setDataStaffList(staffList, elemStaff);
-    
-        elemStaffCount.textContent      = ` (${staffList.length} Entries)`;
-    }
-    
-    
+   
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
@@ -751,11 +746,11 @@ export function PageProdGestatingAdd(input_settings){
     this.show = function(){
         thisObj._resetForm();
         
-        const account_semen_suppliers = navigation.accountLists.getListSemenSupplier();
+        const account_semen_suppliers = navigation.pigFarm.accountLists.getListSemenSupplier();
         
         // Request semen_supplier if not yet requested
         if (account_semen_suppliers == null){
-            navigation.accountLists.requestSupplier(SUPPLIER_TYPE.SEMEN,
+            navigation.pigFarm.accountLists.requestSupplier(SUPPLIER_TYPE.SEMEN,
                     thisObj.setDataSemenSupplierList);
         }
         else{
@@ -1181,7 +1176,7 @@ export function PageProdGestatingAdd(input_settings){
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         };
         
-        navigation.requestManager.requestPigProdData(pig_prod_type, callback);
+        navigation.managerRequest.requestPigProdData(pig_prod_type, callback);
         
     }
     
