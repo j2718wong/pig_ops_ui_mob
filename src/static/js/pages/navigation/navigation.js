@@ -12,7 +12,8 @@ import {PIG_OPERATION_TYPE,
 
 
 import {ErrorServerMessage}         from '../common/error_server_message.js';
-import {ManagerAddress}             from '../common/address_manager.js';
+import {ManagerAddress}             from '../common/manager_address.js';
+import {ManagerPublicData}          from '../common/manager_public_data.js';
 
 import {PigFarm}                    from '../farm_account/pig_farm.js';
 
@@ -28,6 +29,7 @@ import {PageSowBoarList}            from '../sow_boar/page_sow_boar_list.js';
 import {PageSowBoarAddEdit}         from '../sow_boar/page_sow_boar_add_edit.js';
 import {PageSowBoarEntry}           from '../sow_boar/page_sow_boar_entry.js';
 
+import {PageMedVacAddEdit}          from '../sow_boar/page_medvac_add_edit.js';
 
 
 import {PageMobGestaLacta}          from '../production/gesta_lacta/page_mob_gesta_lacta.js';
@@ -373,7 +375,11 @@ export function Navigation(){
     this.pageSowBoarEntry       = new PageSowBoarEntry(settingsSowBoarEntry)
     
     
-    
+    const settingsMedVacAddEdit = {
+        navigation:             this,
+        elemIdDivContainer:     elemIdContMedVacAddEdit
+    }
+    this.pageMedVacAddEdit      = new PageMedVacAddEdit(settingsMedVacAddEdit);
     
     
     const settingsProdGestating = {
@@ -441,6 +447,7 @@ export function Navigation(){
         this.pageSowBoarList.init();
         this.pageSowBoarAddEdit.init();
         this.pageSowBoarEntry.init();
+        this.pageMedVacAddEdit.init();
         
         
         this.pageMobGestatingList.init();
@@ -576,10 +583,10 @@ export function Navigation(){
                 thisObj.setDataPigProdPublic);
             
         
-        this.accountLists.setPigFarmAccountHid(pig_farm_account.account.account.hid);
+        this.pigFarm.accountLists.setPigFarmAccountHid(pig_farm_account.account.account.hid);
         
         // Request account feed supplier
-        this.accountLists.requestSupplier(SUPPLIER_TYPE.FEED);
+        this.pigFarm.accountLists.requestSupplier(SUPPLIER_TYPE.FEED);
     }
     
     
@@ -632,6 +639,16 @@ export function Navigation(){
         
         this.pageProdGestatingAdd.setDataBoarList(data);
         this.pageProdGestatingEntry.setDataBoarList(data);
+    }
+    
+    
+    this.setDataMedVacBrandList = function(data){
+        this.pageMedVacAddEdit.setDataMedVacBrandList(data);
+    }
+    
+    
+    this.setDataMedVacTypeList = function(data){
+        this.pageMedVacAddEdit.setDataMedVacTypeList(data);
     }
     
     

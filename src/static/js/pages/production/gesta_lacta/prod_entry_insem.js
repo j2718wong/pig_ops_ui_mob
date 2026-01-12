@@ -9,7 +9,7 @@ import {PageViewBasic}          from '../../common/page_view_basic.js';
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
-import {CommonSelectOptions}        from './common_select_options.js';
+import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
 

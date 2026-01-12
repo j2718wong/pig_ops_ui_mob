@@ -6,10 +6,10 @@
 
 
 import {PAGE_ID,
-        REQUEST_ERROR_NUM}      from '../constants.js';
+        REQUEST_ERROR_NUM}      from '../../constants.js';
         
 
-function ErrorServerMessage(_navigation){
+export function ErrorServerMessage(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
     

@@ -135,7 +135,7 @@ export function PageProdGestatingAdd(input_settings){
     
     let newEntry                = new ModelPigProduction();
     
-    const commonSelectOptions       = new CommonSelectOptions();
+    const commonSelectOptions 	= new CommonSelectOptions();
     
     
     
@@ -634,7 +634,7 @@ export function PageProdGestatingAdd(input_settings){
 
         commonSelectOptions.setDataSowList(filtered, elemSow);
         
-        elemSowCount.textContent = ` (${filtered.length} entries)`;
+        elemSowCount.textContent = ` (${filtered.length} Entries)`;
     }
     
     
@@ -683,7 +683,7 @@ export function PageProdGestatingAdd(input_settings){
 		
         commonSelectOptions.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
         
-        elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} entries)`;
+        elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} Entries)`;
     }
     
     
@@ -691,7 +691,7 @@ export function PageProdGestatingAdd(input_settings){
         staffList = data;
         commonSelectOptions.setDataStaffList(staffList, elemStaff);
     
-        elemStaffCount.textContent      = ` (${staffList.length} entries)`;
+        elemStaffCount.textContent      = ` (${staffList.length} Entries)`;
     }
     
     

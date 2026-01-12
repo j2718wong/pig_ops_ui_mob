@@ -5,6 +5,8 @@
 'use strict';
 
 import {PageViewBasic}          from '../common/page_view_basic.js';
+import {CommonSelectOptions}    from '../common/common_select_options.js';
+
 
 import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
 
@@ -49,8 +51,7 @@ export function PageMedVacAddEdit(input_settings){
     */
     const settings              = input_settings;
 
-    
-    const elemDivContainer      = document.getElementById(settings.elemDivContainer);
+    const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
     
     let elemIdBreadCrumb0       = null;
@@ -65,6 +66,12 @@ export function PageMedVacAddEdit(input_settings){
     let elemIdInfo              = null;
     
     let elemIdDateMedVac        = null;
+    
+    let elemIdMedVacBrandAddShow= null;
+    let elemIdMedVacBrandName   = null;
+    let elemIdMedVacBrandCancel = null;
+    let elemIdMedVacBrandSave   = null;
+    
     
     let elemIdMedVacBrand       = null;
     let elemIdMedVacBrandCount  = null;
@@ -111,6 +118,12 @@ export function PageMedVacAddEdit(input_settings){
     
     let elemDateMedVac          = null;
     
+    
+    let elemMedVacBrandAddShow  = null;
+    let elemMedVacBrandName     = null;
+    let elemMedVacBrandCancel   = null;
+    let elemMedVacBrandSave     = null;
+    
     let elemMedVacBrand         = null;
     let elemMedVacBrandCount    = null;
     let elemMedVacBrandAdd      = null;
@@ -136,9 +149,10 @@ export function PageMedVacAddEdit(input_settings){
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
     
-	
-	
-	let medVacList				= null;
+    
+    
+    let medVacBrandList         = null;
+    let medVacTypeList          = null;
     
     
     
@@ -150,6 +164,9 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.callbackOnSuccessAdd   = null;
+    
+    
+    const commonSelectOptions   = new CommonSelectOptions();
     
     
     this.init = function(){
@@ -171,6 +188,12 @@ export function PageMedVacAddEdit(input_settings){
         elemIdInfo              = `medvac-add-edit-info`;
         
         elemIdDateMedVac        = `medvac-add-edit-date-medvac`;
+        
+        elemIdMedVacBrandAddShow= `medvac-add-edit-date-medvac-brand-show`;
+        elemIdMedVacBrandName   = `medvac-add-edit-date-medvac-brand-name`;
+        elemIdMedVacBrandCancel = `medvac-add-edit-date-medvac-brand-cancel`;
+        elemIdMedVacBrandSave   = `medvac-add-edit-date-medvac-brand-save`;
+        
         
         elemIdMedVacBrand       = `medvac-add-edit-date-medvac-brand`;
         elemIdMedVacBrandCount  = `medvac-add-edit-date-medvac-brand-count`;
@@ -241,6 +264,19 @@ export function PageMedVacAddEdit(input_settings){
         
         <!-- 2. MedVac Brand -->
         <div class="form-group-select">
+            <div class="expandable-section hidden" id="${elemIdMedVacBrandAddShow}">
+                <h5>Add New MedVac Brand</h5>
+                
+                <div class="form-group">
+                    <label for="${elemIdMedVacBrandName}" class="form-label">MedVac Brand Name</label>
+                    <input type="text" class="form-control" id="${elemIdMedVacBrandName}">
+                </div>
+                
+                <button class="btn btn-cancel" id="${elemIdMedVacBrandCancel}">Cancel</button>
+                <button class="btn btn-success" id="${elemIdMedVacBrandSave}">Save MedVac Brand</button>
+            </div>
+        
+        
             <label for="${elemIdMedVacBrand}" class="form-label">
                 Select MedVac Brand <span class="entries-count" id=${elemIdMedVacBrandCount}></span>
             </label>
@@ -367,7 +403,13 @@ export function PageMedVacAddEdit(input_settings){
         elemInfo                = document.getElementById(elemIdInfo);
                                                           
         elemDateMedVac          = document.getElementById(elemIdDateMedVac);
-                                                          
+        
+        elemMedVacBrandAddShow  = document.getElementById(elemIdMedVacBrandAddShow);
+        elemMedVacBrandName     = document.getElementById(elemIdMedVacBrandName);
+        elemMedVacBrandCancel   = document.getElementById(elemIdMedVacBrandCancel);
+        elemMedVacBrandSave     = document.getElementById(elemIdMedVacBrandSave);
+
+
         elemMedVacBrand         = document.getElementById(elemIdMedVacBrand);
         elemMedVacBrandCount    = document.getElementById(elemIdMedVacBrandCount);
         elemMedVacBrandAdd      = document.getElementById(elemIdMedVacBrandAdd);
@@ -430,6 +472,11 @@ export function PageMedVacAddEdit(input_settings){
         });
         
         
+        elemMedVacBrandAdd.addEventListener('click', function() {
+            elemMedVacBrandAddShow.classList.toggle('hidden');
+        });
+        
+        
         
         elemBtnClose.addEventListener('click', function() {
             //navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
@@ -449,14 +496,23 @@ export function PageMedVacAddEdit(input_settings){
     }
     
     
-	this.setDataMedVacBrand = function(data){
-		medVacList	= data;
-		
-		
-		// Populate Sselect options
-	}
-	
-	
+    this.setDataMedVacBrand = function(data){
+        medVacBrandList = data;
+        
+        commonSelectOptions.setDataMedVacBrand(medVacBrandList, elemMedVacBrand);
+        elemSowCount.textContent = ` (${medVacBrandList.length} Entries)`;
+    }
+    
+    
+    this.setDataMedVacType = function(data){
+        medVacTypeList  = data;
+        
+        commonSelectOptions.setDataMedVacType(medVacTypeList, elemMedVacType);
+        elemSowCount.textContent = ` (${medVacTypeList.length} Entries)`;
+    }
+    
+    
+    
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
@@ -496,7 +552,7 @@ export function PageMedVacAddEdit(input_settings){
         Typical options
         options ={
             is_add:         true,   // false is edit
-            medvac_hid:  	"",   	// only needed for edit
+            medvac_hid:     "",     // only needed for edit
             go_back_page:   elemDivContainer,   // Go back to this page; this is Div element
             go_back_page_id: PAGE_ID.SOW_BOAR_LIST, optional
         }
@@ -545,35 +601,35 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.populateForm = function(data_sow_boar, medvac_hid){
-		
-		// Get medvac entry from data_sow_boar
-		const list_medvac = data_sow_boar.list_medvac;
-		
-		let cur_medvac = null;
-		for (const cur_entry of list_medvac){
-			if (cur_entry.medvac.hid == medvac_hid){
-				cur_medvac = cur_entry;
-				break;
-			}
-		}
-		
-		if (cur_medvac == null){return;}
-		
-		
-		const dt_medvac		= new Date(cur_medvac.date_medvac);
-		const dt_medvac_s  	= formatDate(dt_medvac);
-		elemDateMedVac.value = dt_medvac_s;
-		
-		// Set the datepicker to this date
-		const $elemDateMedVac = $(elemDateMedVac);
-		$elemDateMedVac.datepicker('setDate', cur_medvac.date_medvac);
-		
-		
-		
-		
-		
-		
-		
+        
+        // Get medvac entry from data_sow_boar
+        const list_medvac = data_sow_boar.list_medvac;
+        
+        let cur_medvac = null;
+        for (const cur_entry of list_medvac){
+            if (cur_entry.medvac.hid == medvac_hid){
+                cur_medvac = cur_entry;
+                break;
+            }
+        }
+        
+        if (cur_medvac == null){return;}
+        
+        
+        const dt_medvac     = new Date(cur_medvac.date_medvac);
+        const dt_medvac_s   = formatDate(dt_medvac);
+        elemDateMedVac.value = dt_medvac_s;
+        
+        // Set the datepicker to this date
+        const $elemDateMedVac = $(elemDateMedVac);
+        $elemDateMedVac.datepicker('setDate', cur_medvac.date_medvac);
+        
+        
+        
+        
+        
+        
+        
         elemName.value      = data_sow_boar.name;
         
         
@@ -654,6 +710,26 @@ export function PageMedVacAddEdit(input_settings){
         
         if (ev.checkValidity()) {
             switch(input_field){
+                
+                case 'date_medvac': {
+                    input_elem      = elemDateMedVac;
+                    input_val       = input_elem.value;
+                    cur_field       = newEntry.fieldInsemDate;
+                    
+                    cur_field.newValue = input_val; 
+                    validation = cur_field.validateChange();
+                    
+                    if (validation == FIELD_VALIDATION_OK) {
+                        ev.classList.remove('is-invalid');
+                        ev.classList.add('is-valid');
+                    } else{
+                        ev.classList.remove('is-valid');
+                        ev.classList.add('is-invalid');
+                    }
+                    
+                    break;
+                }
+                
             
                 case 'name': {
                     input_elem      = elemName;
@@ -710,62 +786,7 @@ export function PageMedVacAddEdit(input_settings){
                     break;
                 }
                 
-                case 'number': {
-                    input_elem  = elemNumber;
-                    input_val   = input_elem.value;
-                    cur_field   = sowBoarEntry.fieldSowBoarNumber;
-                    
-                    
-                    cur_field.newValue = input_val;
-                    validation = cur_field.validateChange();
-                    
-                    // Additional validation to prevent duplicate 
-                    if (validation == FIELD_VALIDATION_OK){
-                        if (input_val.length > 0){
-                            if (showOptions.is_add){ 
-                                const cur_sow_boar = thisObj._getSowBoar(null, input_val);
-                    
-                                if (cur_sow_boar != null){
-                                    is_duplicate = 1;
-                                    validation = -1;
-                                }
-                            
-                            } else{
-                                // edit
-                                const exclude_hid = curDataSowBoar.hid;
-                                const cur_sow_boar = thisObj._getSowBoar(input_val, null, exclude_hid);
-                                
-                                if (cur_sow_boar != null){
-                                    is_duplicate = 1;
-                                    validation = -1;
-                                }
-                            }
-                        }
-                    }
-                    
-                    
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                        elemNumberInv.style.display = 'none';
-                    } else{
-                        if (is_duplicate > 0){
-                            elemNumberInv.textContent = 'Duplicate entry.';
-                        }
-                        else{
-                            elemNumberInv.textContent = 'Please enter a valid number.';
-                        }
-                        elemNumberInv.style.display = 'block';
-                        
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-                               
+                                      
             }
             
             
@@ -788,11 +809,9 @@ export function PageMedVacAddEdit(input_settings){
         let is_duplicate    = 0;
         
        
-        
+        let input_medvac    = elemDateMedVac.value.trim();
         let input_name      = elemName.value.trim();
-        let input_number    = elemNumber.value.trim();
-        let input_date_birth= elemDateOfBirth.value.trim();
-        let input_num_nipples = elemNumNipples.value;
+        
         let input_notes     = elemNotes.value.trim();
         
         
@@ -803,31 +822,7 @@ export function PageMedVacAddEdit(input_settings){
         cur_field.newValue  = input_name;
         validation          = cur_field.validateChange();
         
-        
-        // Additional validation to prevent duplicate 
-        if (validation == FIELD_VALIDATION_OK){
-            if (input_name.length > 0){
-                if (showOptions.is_add){ 
-                    const cur_sow_boar = thisObj._getSowBoar(input_name, null);
-        
-                    if (cur_sow_boar != null){
-                        is_duplicate = 1;
-                        validation = -1;
-                    }
-                
-                } else{
-                    // edit
-                    const exclude_hid = curDataSowBoar.hid;
-                    const cur_sow_boar = thisObj._getSowBoar(input_name, null, exclude_hid);
-                    
-                    if (cur_sow_boar != null){
-                        is_duplicate = 1;
-                        validation = -1;
-                    }
-                }
-            }
-            
-        }
+       
         
         if (validation != FIELD_VALIDATION_OK){
             if (is_duplicate > 0){
@@ -1144,176 +1139,4 @@ export function PageMedVacAddEdit(input_settings){
     }
     
     
-    this.onClickUpdateStatus = function(){
-
-        let input_elem      = null;
-        let input_val       = null;
-        let cur_field       = null;
-        let validation      = -1;
-        let proceed_to_save = 1;
-        
-        let is_duplicate    = 0;
-        
-       
-        
-        let input_date_status= elemDateStatus.value.trim();
-        let input_notes     = elemStatusNotes.value.trim();
-        
-        input_elem          = elemDateStatus;
-        cur_field           = sowBoarEntry.fieldBirthDate;
-        
-        let dt_status_s     = null;
-        
-        if (input_date_status.length == 0){
-            validation = -1;
-        }
-        else{
-            // Convert date to YYYY-MM-DD format
-            const dt_status     = new Date(input_date_status);
-            
-            dt_status_s         = dt_status.toLocaleDateString('en-CA');
-            validation          = FIELD_VALIDATION_OK;
-        }
-            
-        if (validation != FIELD_VALIDATION_OK){
-        
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
-        }
-        
-        if (proceed_to_save == 0) {return;}
-        
-          
-        const checkedRadio = elemDivContainer.querySelector('input[name="statusOption"]:checked');
-        
-        if (checkedRadio == null){
-            elemStatusInv.style.display ='block';
-            return;
-        } 
-        else{
-            elemStatusInv.style.display ='none';
-        }
-        
-        const value = checkedRadio.value;
-        
-        let dispose_status_id = 0;
-        
-        
-        // Delete has no mapped sow_status_id in the backend.
-        // The sow_status_id is for both sows and boars
-        // and purely for operations only. The delete action is
-        // interpreted as user entry error.
-        // The Delete status will be mapped to a special number
-        // SOW_STATUS.DELETE. But this will not be marked as
-        // sow_boar.is_disposed but will be marked as
-        // sow_boar.flag.is_deleted = 1;
-        //
-        // When disposed pigs are queried in the front end,
-        // both the disposed pigs and deleted pigs will be returned.
-        
-        switch(value){
-            case 'Delete':{
-                dispose_status_id = SOW_STATUS.DELETE;
-                break;
-            }
-            
-            case 'Sold':{
-                dispose_status_id = SOW_STATUS.SOLD;
-                break;
-            }
-            
-            case 'Culled':{
-                dispose_status_id = SOW_STATUS.CULLED;
-                break;
-            }
-            
-            case 'Dead':{
-                dispose_status_id = SOW_STATUS.DEAD;
-                break;
-            }
-            
-        }
-        
-        const user_hid      = navigation.userControl.getUserHid();
-        const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
-        const base_url      = window.location.origin;
-        
-        
-        // send post request
-        let post_data = {
-            'uhid':             user_hid,
-            'sow_boar_hid':     curDataSowBoar.hid,
-            
-            'dispose_status_id': dispose_status_id,
-            'date_dispose':     dt_status_s,
-            'dispose_notes':    input_notes
-        };
-        
-        
-        let url = `${base_url}/sow_boar/dispose`;
-        
-        $.ajax({
-            type: 'POST',
-            contentType: "application/json",
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            data: JSON.stringify(post_data),
-  
-            beforeSend: function(){
-                elemServerErrorMsg.style.display = 'none';
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    
-                    const callback_error = function(error_code, error_desc){
-                        let html;
-                        if ((error_desc != null) && (error_desc.length > 0)){
-                            html = `<span>${error_desc}</span>`;
-                        }
-                        else{
-                            html = `<span>${error_code}</span>`;
-                        }
-                        
-                        elemUpdateStatusErrorMsg.innerHTML = html;
-                        elemUpdateStatusErrorMsg.style.display = 'block'
-                    };
-                    
-                    const callback_success = function(){
-                        navigation.pageSowBoarList.show(null);
-                        navigation.showThisPage(showOptions.go_back_page);
-                    };
-                    
-                    navigation.pigFarm.requestSowBoar(showOptions.is_sow, 
-                        callback_success, callback_error);
-                        
-                    
-                    
-                }
-                else{
-                    navigation.errorServerMessage.receivedErrorMessage(
-                        response, elemUpdateStatusErrorMsg);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
-            }
-        });
-    }
-    
-    
-
 }   

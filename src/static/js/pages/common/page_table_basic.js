@@ -123,10 +123,10 @@ export function PageTableBasic(){
         
         elemIdTableContent      = `${settings.uniqueKey}-table-content`;
            
-		
-		const html_table = thisObj.getHtmlTableHeader();
-		   
-		   
+        
+        const html_table = thisObj.getHtmlTableHeader();
+           
+           
         const html = `
 
         
@@ -180,8 +180,8 @@ export function PageTableBasic(){
         </div>
 
         <div id="${elemIdTableContent}">
-			${html_table}
-		<div>
+            ${html_table}
+        <div>
         
     </div>
     
@@ -219,8 +219,8 @@ export function PageTableBasic(){
         elemTableCurPage        = document.getElementById(elemIdTableCurPage);
         elemTableTotalPages     = document.getElementById(elemIdTableTotalPages);
         elemTableNextPage       = document.getElementById(elemIdTableNextPage);
-		
-		thisObj.elemIdTableContent	= document.getElementById(elemIdTableContent);
+        
+        thisObj.elemIdTableContent  = document.getElementById(elemIdTableContent);
              
     }
     
@@ -258,7 +258,7 @@ export function PageTableBasic(){
     
     this.setDataEntryList = function(data_entry_list){
         dataEntryList = data_entry_list;    
-        
+        console.log('PageTableBasic');
         console.log('dataEntryList.length = ' + dataEntryList.length)
         
         elemTableEntryCount.textContent = dataEntryList.length;

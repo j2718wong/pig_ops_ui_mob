@@ -1272,7 +1272,22 @@ p {
 }
 
 
+/* Add Notes Section */
+.expandable-section {
+	background-color: white;
+	border-radius: 8px;
+	padding: 0;
+	margin-bottom: 25px;
+	border: 1px solid var(--corporate-border);
+	overflow: hidden;
+	max-height: 0;
+	transition: max-height 0.3s ease, padding 0.3s ease;
+}
 
+.expandable.expanded {
+	max-height: 500px;
+	padding: 20px;
+}
 
 
 
@@ -1463,6 +1478,28 @@ p {
 .btn-link:hover {
     color: white;             /* Text color remains the same on hover */
 }
+
+
+.btn-success {
+	background-color: var(--success-border);
+	color: white;
+	margin-bottom: 10px;
+}
+
+.btn-success:active {
+	background-color: #0da271;
+	transform: translateY(1px);
+}
+
+
+.btn-cancel {
+	background-color: var(--warning-border);
+	color: white;
+	margin-bottom: 10px;
+}
+
+
+
 
 
 /* Checkbox styling */

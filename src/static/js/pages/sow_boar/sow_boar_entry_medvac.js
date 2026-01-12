@@ -62,7 +62,6 @@ export function TableMedVac(input_settings){
 	
 	
     this.init = function(){
-		console.log('Test 1');
 		
 		const settingsTable = {
 			uniqueKey:		'sow-boar-medvac',
@@ -76,8 +75,6 @@ export function TableMedVac(input_settings){
 		elemDivContainer.innerHTML = html_table;
         thisObj.afterHtmlRender();
 		
-		console.log('thisObj');
-		console.log(thisObj);
 		
 		thisObj.setDataEntryList([]);
     }
@@ -100,16 +97,21 @@ export function TableMedVac(input_settings){
         showOptions = options;
 		
 		
-		const callback_success = function(data){
-			// Set table entry list; This will set also the entry count;
-			thisObj.setDataEntryList(data);
-		};
-		
-		
         const data_sow_boar_medvac = null;
-		if !('list_medvac' in dataSowBoar){
-			this.requestData(callback_success);
+		if ('list_medvac' in dataSowBoar){
+			// TODO
+			const test = 1;
+		} else{
+			const callback_success = function(data){
+				// Set table entry list; This will set also the entry count;
+				thisObj.setDataEntryList(data);
+			};
+			thisObj.requestData(callback_success);
 		}
+		
+		
+		
+		
     }
     
 	 
