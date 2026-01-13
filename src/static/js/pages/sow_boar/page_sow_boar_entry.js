@@ -19,7 +19,7 @@ import {formatDate,
         sortList,
         createPaginationManager} from '../../utils.js';
 
-import {TableMedVac}            from './sow_boar_entry_medvac.js'
+import {TableMedVac}            from './table_medvac.js'
 
 
 PageSowBoarEntry.prototype = new PageViewPigFarmPage();

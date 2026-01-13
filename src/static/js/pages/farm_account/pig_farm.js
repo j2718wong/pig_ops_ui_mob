@@ -8,7 +8,7 @@ import {PIG_PROD_TYPE,
         SUPPLIER_TYPE}          from '../../constants.js';
 
 
-import {AccountLists}         	from './account_lists.js';
+import {AccountLists}           from './account_lists.js';
 
 
 
@@ -17,7 +17,7 @@ export function PigFarm(_navigation){
     const navigation            = _navigation;
     
     
-	this.accountLists			= new AccountLists(_navigation);
+    this.accountLists           = new AccountLists(_navigation);
     
     this.dataPigFarm            = null;
     this.dataPigFarmAccount     = null;
@@ -98,24 +98,24 @@ export function PigFarm(_navigation){
         
     }
     
-	
-	this.setDataStaffList = function(data) {
-		navigation.pageMobGestatingList.setDataStaffList(data);
+    
+    this.setDataStaffList = function(data) {
+        navigation.pageMobGestatingList.setDataStaffList(data);
         navigation.pageMobLactatingList.setDataStaffList(data);
         navigation.pageProdGestatingAdd.setDataStaffList(data);
         navigation.pageProdGestatingEntry.setDataStaffList(data);
-		
-		navigation.pageMedVacAddEdit.setDataStaffList(data);
-		
-	}
-	
-	
-	// Should return country hid of the farm.
-	this.getCountryHid = function(){
-		return this.dataPigFarm.location.country.hid;
-	}
-	
-	
+        
+        navigation.pageMedVacAddEdit.setDataStaffList(data);
+        
+    }
+    
+    
+    // Should return country hid of the farm.
+    this.getCountryHid = function(){
+        return this.dataPigFarm.location.country.hid;
+    }
+    
+    
     this.getSettingsOperations  = function(){
         if (thisObj.dataPigFarmAccount == null){return null;}
         return thisObj.dataPigFarmAccount.account.settings_operations;

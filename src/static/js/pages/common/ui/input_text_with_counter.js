@@ -7,17 +7,16 @@
 import {updateCharCounter}          from '../page_view_basic.js'
 
 
-export function InputTextWithCounter(input_settings){
+export function UiInputTextWithCounter(input_settings){
     
     /* Typical settings
     settings = {
-        className:          'form-group-text',
+        uniqueKey:      ''
+        
+        className:      'form-group-text',
         textLabel:      'Name',
-        elemIdText:     '',
-        elemIdCharCounter: '',
         textMaxChars:   ''
-        elemIdTextInv:  '',
-        textHelpText:   
+        helpText:       ''  
     }
     
     
@@ -25,20 +24,27 @@ export function InputTextWithCounter(input_settings){
     
     const settings              = input_settings;
     
+    const elemIdText            = `${settings.uniqueKey}-text`;
+    const elemIdCharCounter     = `${settings.uniqueKey}-char-counter`;
+    const elemIdTextInv         = `${settings.uniqueKey}-text-inv`;
+    
+    
+    
     let elemText                = null;
     let elemCharCounter         = null;
-    let elemTextInv           	= null;
+    let elemTextInv             = null;
     
     
     
     this.getHtml = function(){
+        
         return `
         <div class="${settings.className}">
-            <label for="${settings.elemIdText}" class="form-label">${settings.textLabel}
-                <span id="${settings.elemIdCharCounter}" class="char-counter">0/${settings.textMaxChars}</span>
+            <label for="${elemIdText}" class="form-label">${settings.textLabel}
+                <span id="${elemIdCharCounter}" class="char-counter">0/${settings.textMaxChars}</span>
             </label>
             <input  type="text" class="form-control" id="${settings.elemIdText}" maxlength="${settings.textMaxChars}">
-            <div class="invalid-feedback" id="${settings.elemIdTextInv}">Please enter a valid name. </div>
+            <div class="invalid-feedback" id="${elemIdTextInv}">Please enter a valid name. </div>
             <div class="form-text">${settings.textHelpText}</div>
         </div>
         `;
@@ -47,10 +53,9 @@ export function InputTextWithCounter(input_settings){
     
     
     this._findElements = function(){
-        elemText                = document.getElementById(settings.elemIdText);
-        elemCharCounter         = document.getElementById(settings.elemIdCharCounter);
-        
-        elemTextInv             = document.getElementById(settings.elemIdTextInv);
+        elemText                = document.getElementById(elemIdText);
+        elemCharCounter         = document.getElementById(elemIdCharCounter);
+        elemTextInv             = document.getElementById(elemIdTextInv);
         
     }
     
@@ -72,6 +77,18 @@ export function InputTextWithCounter(input_settings){
     }
     
     
+    this.getElemText  = function(){
+        return elemText;
+    }
+    
+    
+    this.setText = function(text){
+        elemText.value      = text;
+        
+        updateCharCounter(elemText, elemCharCounter, settings.textMaxChars);
+    }
+    
+    
     this.reset = function(){
         elemText.value = '';
         elemText.classList.remove('is-valid', 'is-invalid');
@@ -80,5 +97,10 @@ export function InputTextWithCounter(input_settings){
         
         updateCharCounter(elemText, elemCharCounter, settings.textMaxChars);
     } 
+    
+    
+    this.setTextInvalid = function(text){
+        elemTextInv.textContent = text;
+    }
     
 }

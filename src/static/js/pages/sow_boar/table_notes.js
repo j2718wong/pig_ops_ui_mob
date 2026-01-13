@@ -1,4 +1,4 @@
-// Jnauary 12, 2026
+// January 12, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -21,8 +21,8 @@ import {formatDate,
 
 
 
-TableMedVac.prototype = new PageTableBasic();
-export function TableMedVac(input_settings){
+TableNotes.prototype = new PageTableBasic();
+export function TableNotes(input_settings){
     PageTableBasic.call(this);
     
     const thisObj               = this;
@@ -33,12 +33,13 @@ export function TableMedVac(input_settings){
     Typical input_settings
     {
         navigation:             this,
+		uniqueKey:				'sow-boar-notes'
         elemDivContainer:       '<element>'
     }   
     */  
     let settings                = input_settings;
     
-    
+	
     let elemDivContainer        = settings.elemDivContainer;
 
     let elemIdTableBody         = null;
@@ -63,11 +64,13 @@ export function TableMedVac(input_settings){
     
     this.init = function(){
         
-        const settingsTable = {
-            uniqueKey:      'sow-boar-medvac',
-            tableTitle:     'Medicines & Vaccines'
-        }
+		let settingsTable;
+		settingsTable = {
+			uniqueKey:      settings.uniqueKey,
+			tableTitle:     'Notes'
+		}
         
+		
         thisObj.setSettings(settingsTable);
         
         const html_table = thisObj.getHtml();
@@ -97,7 +100,7 @@ export function TableMedVac(input_settings){
         dataSowBoar = data_sow_boar;
         
         const data_sow_boar_medvac = null;
-        if ('list_medvac' in dataSowBoar){
+        if ('notes' in dataSowBoar){
             // TODO
             const test = 1;
         } else{
@@ -138,11 +141,16 @@ export function TableMedVac(input_settings){
         const html = `
         <table class="data-table" id="">
             <thead>
+                <colgroup>
+                    <col style="width: 20%;">
+                    <col style="width: 50%;">
+					<col style="width: 30%;">
+                </colgroup>
+                
                 <tr>
                     <th>Date</th>
-                    <th>Brand</th>
-                    <th>Type</th>
-                    <th>Name</th>
+                    <th>Notes</th>
+                    <th>Last Update</th>
                 </tr>
             </thead>
             <tbody id="${elemIdTableBody}">
@@ -162,7 +170,6 @@ export function TableMedVac(input_settings){
                 <td><div>No Entries</div></td>
                 <td><div>&nbsp;</div></td>
                 <td><div>&nbsp;</div></td>
-                <td><div>&nbsp;</div></td>
             </tr>
         `;
         return html;
@@ -171,14 +178,15 @@ export function TableMedVac(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         
-        let  s_click = '';
+        let s_click = '';
+        
+		let s_last_update = '';
         
         const html = `
             <tr>
-                <td><span>${cur_entry.medvac.date_medvac}</span></td>
-                <td>${cur_entry.medvac.brand.name}</td>
-                <td></td>
-                <td onclick='${s_click}'></td>
+                <td><span>${cur_entry.prod_notes.date_notes}</span></td>
+                <td>${cur_entry.prod_notes.notes}</td>
+                <td onclick='${s_click}'>${s_last_update}</td>
             </tr>
         `;
         
@@ -195,11 +203,7 @@ export function TableMedVac(input_settings){
     }
     
     
-    this.searchSowBoar = function(key){
-        
-    }
-    
-    
+  
     this.requestData = function(callback){
         const sow_boar_hid = dataSowBoar.hid;
         
@@ -255,8 +259,8 @@ export function TableMedVac(input_settings){
     
     this.onClickAddEntry = function(){
         
-		const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
-		
+        const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        
         const options ={
             is_add:         true,   // false is edit
             go_back_page:   go_back_page   // Go back to this page; this is Div element

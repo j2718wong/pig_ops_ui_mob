@@ -154,7 +154,8 @@ export function PageTableBasic(){
                 Add Entry
             </button>
         </div>
-    
+		
+	
     
         <div id="${elemIdServerErrorMsg}"></div>
     

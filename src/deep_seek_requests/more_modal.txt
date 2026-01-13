@@ -1,0 +1,11 @@
+Create a More modal
+
+
+1.) Create a bootstrap modal
+with  a title "More"; no close buttons
+
+2.) In the modal is a configurable menu items that will open a
+tab div when clicked
+
+3.) The modal should be just white back ground, large corners
+and designed for mobile view
