@@ -31,6 +31,27 @@ export function replaceSelectOptions(select_elem, new_options){
 }
 
 
+export function updateCharCounter(input_elem, counter_elem, max_length) {
+    const length = input_elem.value.length;
+    counter_elem.textContent = `${length}/${max_length}`;
+    
+    // Update styling based on character count
+    const percentUsed = (length / max_length) * 100;
+    
+    counter_elem.classList.remove('warning', 'danger');
+    input_elem.classList.remove('warning', 'danger');
+    
+    if (percentUsed >= 90) {
+        counter_elem.classList.add('danger');
+        input_elem.classList.add('danger');
+    } else if (percentUsed >= 75) {
+        counter_elem.classList.add('warning');
+        input_elem.classList.add('warning');
+    }
+}
+
+
+
 
 export function PageViewBasic(){
     const thisObj           = this;
@@ -59,23 +80,9 @@ export function PageViewBasic(){
     
     
     // Update character counter
-    this.updateCharCounter = function (input_elem, counter_elem, max_length) {
-        const length = input_elem.value.length;
-        counter_elem.textContent = `${length}/${max_length}`;
-        
-        // Update styling based on character count
-        const percentUsed = (length / max_length) * 100;
-        
-        counter_elem.classList.remove('warning', 'danger');
-        input_elem.classList.remove('warning', 'danger');
-        
-        if (percentUsed >= 90) {
-            counter_elem.classList.add('danger');
-            input_elem.classList.add('danger');
-        } else if (percentUsed >= 75) {
-            counter_elem.classList.add('warning');
-            input_elem.classList.add('warning');
-        }
+    this.updateCharCounter = function(input_elem, counter_elem, max_length) {
+        updateCharCounter(input_elem, counter_elem, max_length);
+        return;
     }
     
     

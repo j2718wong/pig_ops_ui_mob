@@ -4,8 +4,11 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}          from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 import {CommonSelectOptions}    from '../common/common_select_options.js';
+
+
+import {InputTextWithCounter}	from '../common/ui/input_text_with_counter.js';
 
 
 import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
@@ -39,9 +42,8 @@ export function PageMedVacAddEdit(input_settings){
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
-    const MAXCHAR_MEDVAC_NAME     = 20;
-    const MAXCHAR_SOW_BOAR_NUMBER   = 10;
-    const MAXCHAR_NOTES             = 160;
+    const MAXCHAR_MEDVAC_NAME   = 50;
+    const MAXCHAR_NOTES         = 160;
     
     /*
     Typical settings = {
@@ -69,6 +71,8 @@ export function PageMedVacAddEdit(input_settings){
     
     let elemIdMedVacBrandAddShow= null;
     let elemIdMedVacBrandName   = null;
+	let elemIdMedVacBrandNameCounter = null;
+    let elemIdMedVacBrandNameInv= null;
     let elemIdMedVacBrandCancel = null;
     let elemIdMedVacBrandSave   = null;
     
@@ -99,7 +103,7 @@ export function PageMedVacAddEdit(input_settings){
     let elemIdBtnSave           = null;
     
     
-    
+    let elemUiMedVacBrandName	= null;
     
     
     
@@ -121,6 +125,7 @@ export function PageMedVacAddEdit(input_settings){
     
     let elemMedVacBrandAddShow  = null;
     let elemMedVacBrandName     = null;
+    let elemMedVacBrandNameInv  = null;
     let elemMedVacBrandCancel   = null;
     let elemMedVacBrandSave     = null;
     
@@ -151,8 +156,8 @@ export function PageMedVacAddEdit(input_settings){
     
     
     
-    let medVacBrandList         = null;
-    let medVacTypeList          = null;
+    let dataMedVacBrandList     = null;
+    let dataMedVacTypeList      = null;
     
     
     
@@ -161,6 +166,10 @@ export function PageMedVacAddEdit(input_settings){
     
     // This may not contain sex information
     let curDataSowBoar          = null;
+    
+    
+    
+    let isAddMedVacBrandExpanded = false;
     
     
     this.callbackOnSuccessAdd   = null;
@@ -190,6 +199,8 @@ export function PageMedVacAddEdit(input_settings){
         
         elemIdMedVacBrandAddShow= `medvac-add-edit-date-medvac-brand-show`;
         elemIdMedVacBrandName   = `medvac-add-edit-date-medvac-brand-name`;
+		elemIdMedVacBrandNameCounter = `medvac-add-edit-date-medvac-brand-name-counter`;
+        elemIdMedVacBrandNameInv= `medvac-add-edit-date-medvac-brand-name-inv`;
         elemIdMedVacBrandCancel = `medvac-add-edit-date-medvac-brand-cancel`;
         elemIdMedVacBrandSave   = `medvac-add-edit-date-medvac-brand-save`;
         
@@ -219,8 +230,20 @@ export function PageMedVacAddEdit(input_settings){
         elemIdBtnCancel         = `medvac-add-edit-cancel`;
         elemIdBtnSave           = `medvac-add-edit-save`;
         
-                
         
+		elemUiMedVacBrandName 	= new InputTextWithCounter({
+									className:      'form-group-text',
+									textLabel:      'Name',
+									elemIdText:     elemIdMedVacBrandName,
+									elemIdCharCounter: elemIdMedVacBrandNameCounter,
+									textMaxChars:   50,
+									elemIdTextInv:  elemIdMedVacBrandNameInv,
+									textHelpText: 	''
+								});
+        
+		const html_new_brand_name = elemUiMedVacBrandName.getHtml();
+		
+		
         const html =`
 
         
@@ -258,18 +281,25 @@ export function PageMedVacAddEdit(input_settings){
                 Date
             </label>
             <input type="text" class="form-control" id="${elemIdDateMedVac}">
-            <div class="form-text"></div>
+            <div class="form-text">Date when MedVac was given to pig.</div>
         </div>
         
         <!-- 2. MedVac Brand -->
         <div class="form-group-select">
-            <div class="expandable-section hidden" id="${elemIdMedVacBrandAddShow}">
+            <div class="expandable-section" id="${elemIdMedVacBrandAddShow}">
                 <h5>Add New MedVac Brand</h5>
                 
+				<!--
                 <div class="form-group">
                     <label for="${elemIdMedVacBrandName}" class="form-label">MedVac Brand Name</label>
                     <input type="text" class="form-control" id="${elemIdMedVacBrandName}">
+                    <div class="invalid-feedback" id="${elemIdMedVacBrandNameInv}">Please enter a valid name. </div>
                 </div>
+                -->
+				${html_new_brand_name}
+				
+				
+                <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
                 
                 <button class="btn btn-cancel" id="${elemIdMedVacBrandCancel}">Cancel</button>
                 <button class="btn btn-success" id="${elemIdMedVacBrandSave}">Save MedVac Brand</button>
@@ -288,12 +318,13 @@ export function PageMedVacAddEdit(input_settings){
                     <i class="bi bi-plus"></i> New
                 </button>
             </div>
+            <div class="form-text">MedVac brand name or manufacturer</div>
         </div>
         
         <!-- 3. MedVac Type -->
         <div class="form-group-select">
             <label for="${elemIdMedVacType}" class="form-label">
-                Select Boar <span class="entries-count" id=${elemIdMedVacTypeCount}></span>
+                Select MedVac Type <span class="entries-count" id=${elemIdMedVacTypeCount}></span>
             </label>
             
             <div class="input-group">
@@ -304,6 +335,8 @@ export function PageMedVacAddEdit(input_settings){
                     <i class="bi bi-plus"></i> New
                 </button>
             </div>
+            
+            <div class="form-text">MedVac generic description or what it is for</div>
         </div>
         
         
@@ -314,7 +347,7 @@ export function PageMedVacAddEdit(input_settings){
             </label>
             <input  type="text" class="form-control" id="${elemIdName}" maxlength="${MAXCHAR_MEDVAC_NAME}">
             <div class="invalid-feedback" id="${elemIdNameInv}">Please enter a valid name. </div>
-            <div class="form-text"></div>
+            <div class="form-text">MedVac product name</div>
         </div>
         
         <!-- 5. Description -->
@@ -325,19 +358,25 @@ export function PageMedVacAddEdit(input_settings){
             </label>
             
             <textarea class="form-control" id="${elemIdNotes}" rows="2" maxlength="${MAXCHAR_NOTES}"></textarea>
-            <div class="form-text">Describe the dosage given to pig. Sample 2mL injection.</div>
+            <div class="form-text">Describe the dosage given to pig. Sample: 2mL injection.</div>
         </div>
         
         
         <!-- 5. Staff -->
         <div class="form-group-select">
             <label for="${elemIdStaff}" class="form-label">
-                Staff Member
+                Staff Member <span class="entries-count" id=${elemIdStaffCount}></span>
             </label>
             
-            <select id="${elemIdStaff}" class="form-select">
-                <option value="0" selected disabled>Please Select</option>
-            </select>
+            <div class="input-group" >
+                <select class="form-select" id="${elemIdStaff}">
+                    <option value="-1" selected disabled>No Entries</option>
+                </select>
+                <button class="btn" type="button" id="${elemIdStaffAdd}">
+                    <i class="bi bi-plus"></i> New
+                </button>
+            </div>
+            
             <div class="invalid-feedback">
                 Need to select if not done by you.
             </div>
@@ -403,8 +442,10 @@ export function PageMedVacAddEdit(input_settings){
                                                           
         elemDateMedVac          = document.getElementById(elemIdDateMedVac);
         
+        
         elemMedVacBrandAddShow  = document.getElementById(elemIdMedVacBrandAddShow);
         elemMedVacBrandName     = document.getElementById(elemIdMedVacBrandName);
+        elemMedVacBrandNameInv  = document.getElementById(elemIdMedVacBrandNameInv);
         elemMedVacBrandCancel   = document.getElementById(elemIdMedVacBrandCancel);
         elemMedVacBrandSave     = document.getElementById(elemIdMedVacBrandSave);
 
@@ -439,6 +480,8 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this._processAfterHtmlRender = function(){
+		elemUiMedVacBrandName.afterHtmlRender();
+		
         $('#'+elemIdDateMedVac).datepicker({
             format: 'MM d, yyyy',  // This gives "January 31, 2026"
             autoclose: true,
@@ -472,9 +515,35 @@ export function PageMedVacAddEdit(input_settings){
         
         
         elemMedVacBrandAdd.addEventListener('click', function() {
-            elemMedVacBrandAddShow.classList.toggle('hidden');
+            
+            isAddMedVacBrandExpanded = !isAddMedVacBrandExpanded;
+            
+            if (isAddMedVacBrandExpanded) {
+                elemMedVacBrandAddShow.classList.add('expanded');
+                elemMedVacBrandAddShow.style.marginBottom = '15px';
+				
+				elemMedVacBrandAddShow.value = '';
+				elemMedVacBrandAddShow.classList.remove('is-valid', 'is-invalid');
+				elemMedVacBrandNameInv.style.display = 'none';
+				
+            } else {
+                elemMedVacBrandAddShow.classList.remove('expanded');
+                elemMedVacBrandAddShow.style.marginBottom = 0;
+            }
+            
+            
         });
         
+        elemMedVacBrandCancel.addEventListener('click', function() {
+            elemMedVacBrandAddShow.classList.remove('expanded');
+            elemMedVacBrandAddShow.style.marginBottom = 0;
+            isAddMedVacBrandExpanded = false;
+        });
+        
+        
+        elemMedVacBrandSave.addEventListener('click', function() {
+            thisObj.onClickSaveMedVacBrand();
+        });
         
         
         elemBtnClose.addEventListener('click', function() {
@@ -496,20 +565,75 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.setDataMedVacBrand = function(data){
-        medVacBrandList = data;
+        dataMedVacBrandList = data;
         
-        thisObj.thisObj.commonSelectOptions.setDataMedVacBrand(medVacBrandList, elemMedVacBrand);
-        elemSowCount.textContent = ` (${medVacBrandList.length} Entries)`;
+        thisObj.commonSelectOptions.setDataMedVacBrand(dataMedVacBrandList, elemMedVacBrand);
+        elemMedVacBrandCount.textContent = ` (${dataMedVacBrandList.length} Entries)`;
     }
     
     
     this.setDataMedVacType = function(data){
-        medVacTypeList  = data;
+        dataMedVacTypeList  = data;
         
-        thisObj.thisObj.commonSelectOptions.setDataMedVacType(medVacTypeList, elemMedVacType);
-        elemSowCount.textContent = ` (${medVacTypeList.length} Entries)`;
+        thisObj.commonSelectOptions.setDataMedVacType(dataMedVacTypeList, elemMedVacType);
+        elemMedVacTypeCount.textContent = ` (${dataMedVacTypeList.length} Entries)`;
     }
     
+    
+    this._getMedVacBrand = function(name, exclude_hid){
+        let upper_name = name.toUpperCase();
+        
+        
+        let cur_entry;
+        let index;
+        
+        for (index = 0; index < dataMedVacBrandList.length; index++){
+            cur_entry = dataMedVacBrandList[index];
+            
+            // Will check name for duplicate 
+            if (cur_entry.name.toUpperCase() == upper_name){
+                if (exclude_hid){
+                    if (cur_entry.hid != exclude_hid){
+                        return cur_entry;
+                    }
+                }
+                
+                else{
+                    return cur_entry;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    this._getMedVacType = function(name, exclude_hid){
+        let upper_name = name.toUpperCase();
+        
+        
+        let cur_entry;
+        let index;
+        
+        for (index = 0; index < dataMedVacTypeList.length; index++){
+            cur_entry = dataMedVacTypeList[index];
+            
+            // Will check name for duplicate 
+            if (cur_entry.name.toUpperCase() == upper_name){
+                if (exclude_hid){
+                    if (cur_entry.hid != exclude_hid){
+                        return cur_entry;
+                    }
+                }
+                
+                else{
+                    return cur_entry;
+                }
+            }
+        }
+        
+        return null;
+    }
     
     
     this._resetForm = function(){
@@ -560,6 +684,27 @@ export function PageMedVacAddEdit(input_settings){
         curDataSowBoar = data_sow_boar;
         
         thisObj._resetForm();
+        
+        
+        // Check if there is a public data MedVacBrandList and dataMedVacTypeList
+        if (navigation.managerPublicData.getMedVacBrandList() == null){
+            
+            const callback_success = function(data){
+                thisObj.setDataMedVacBrand(data);
+            };
+            
+            navigation.managerPublicData.requestDataMedVacBrand(callback_success, elemServerErrorMsg)
+        }
+        
+        if (navigation.managerPublicData.getMedVacTypeList() == null){
+            
+            const callback_success = function(data){
+                thisObj.setDataMedVacType(data);
+            };
+            
+            navigation.managerPublicData.requestDataMedVacType(callback_success, elemServerErrorMsg)
+        }
+        
         
         showOptions = options;
         
@@ -797,6 +942,55 @@ export function PageMedVacAddEdit(input_settings){
     }
     
     
+    this.onClickSaveMedVacBrand = function(){
+        let input_elem      = null;
+        let input_val       = null;
+        let cur_field       = null;
+        let validation      = -1;
+        let proceed_to_save = 1;
+        
+        let is_duplicate    = 0;
+        
+       
+        let input_name      = elemMedVacBrandName.value.trim();
+        
+        input_elem          = elemMedVacBrandName;
+        
+        if (input_name.length > 0){
+            // check for duplicates
+			const cur_medvac_brand = thisObj._getMedVacBrand(input_name);
+			if (cur_medvac_brand != null){
+				is_duplicate = 1;
+			}
+        }
+        else{
+            validation = -1;
+        }
+        
+        
+        if (validation != FIELD_VALIDATION_OK){
+            if (is_duplicate > 0){
+                elemMedVacBrandNameInv.textContent = 'Duplicate entry.';
+            }
+            else{
+                elemMedVacBrandNameInv.textContent = 'Please enter a valid name.';
+            }
+			
+            if (input_elem.classList.contains('is-invalid') == false){
+                input_elem.classList.add('is-invalid');
+            }
+            proceed_to_save = 0;
+        }
+        else{
+            if (input_elem.classList.contains('is-valid') == false){
+                input_elem.classList.add('is-valid');
+            }
+            
+        }
+        
+    }
+    
+    
     this.onClickSaveButton = function(){
 
         let input_elem      = null;
@@ -825,10 +1019,10 @@ export function PageMedVacAddEdit(input_settings){
         
         if (validation != FIELD_VALIDATION_OK){
             if (is_duplicate > 0){
-                elemNameInv.html('Duplicate entry.');
+                elemNameInv.textContent = 'Duplicate entry.';
             }
             else{
-                elemNameInv.html('Please enter a valid name.');
+                elemNameInv.textContent = 'Please enter a valid name.';
             }
             
             if (input_elem.classList.contains('is-invalid') == false){

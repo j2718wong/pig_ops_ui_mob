@@ -30,7 +30,7 @@ export function ManagerPublicData(_navigation){
     
     this.requestDataMedVacBrand = function(callback_success, elem_show_error){
         // Get the country hid of the pig farm account
-        const country_hid = null;
+        const country_hid = navigation.pigFarm.getCountryHid();
         
         // Need to request medvac brands
         const base_url = window.location.origin;

@@ -111,8 +111,8 @@ export function PigFarm(_navigation){
 	
 	
 	// Should return country hid of the farm.
-	this.getCountryHid = function(data){
-		
+	this.getCountryHid = function(){
+		return this.dataPigFarm.location.country.hid;
 	}
 	
 	

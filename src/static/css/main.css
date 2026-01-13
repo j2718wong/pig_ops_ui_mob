@@ -1277,14 +1277,13 @@ p {
 	background-color: white;
 	border-radius: 8px;
 	padding: 0;
-	margin-bottom: 25px;
 	border: 1px solid var(--corporate-border);
 	overflow: hidden;
 	max-height: 0;
 	transition: max-height 0.3s ease, padding 0.3s ease;
 }
 
-.expandable.expanded {
+.expandable-section.expanded {
 	max-height: 500px;
 	padding: 20px;
 }
@@ -1352,7 +1351,9 @@ p {
 
 
 .server-error-msg {
-	padding-top:2px;  display:none
+	margin-top:4px;
+	margin-bottom:4px;
+	display:none;
 }
 
 .server-error-msg span{

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}          from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
 
@@ -1276,10 +1276,10 @@ export function PageSowBoarAddEdit(input_settings){
         
         if (validation != FIELD_VALIDATION_OK){
             if (is_duplicate > 0){
-                elemNameInv.html('Duplicate entry.');
+                elemNameInv.textContent = 'Duplicate entry.';
             }
             else{
-                elemNameInv.html('Please enter a valid name.');
+                elemNameInv.textContent = 'Please enter a valid name.';
             }
             
             if (input_elem.classList.contains('is-invalid') == false){
