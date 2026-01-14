@@ -1626,7 +1626,7 @@ ${html_style}
             navigation.editModalProdPigOps.hide();
         };
         
-        navigation.managerRequest.requestPigProdData(pig_prod_type, callback);
+        navigation.managerRequest.requestDataPigProd(pig_prod_type, callback);
         
     }
 }

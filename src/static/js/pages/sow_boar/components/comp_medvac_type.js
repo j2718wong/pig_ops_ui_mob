@@ -4,32 +4,35 @@
 
 'use strict';
 
-import {UiInputTextWithCounter}   from '../../common/ui/input_text_with_counter.js';
+import {UiInputTextWithCounter} from '../../common/ui/input_text_with_counter.js';
 import {UiSelectWithAddExpandable} from '../../common/ui/select_with_add_expandable.js';
 
+import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
-ComponentMedVacType.prototype = new UiSelectWithAddExpandable();
-function ComponentMedVacType(input_settings){
+
+export function ComponentMedVacType(input_settings){
     /*
     Typical settings
     {
         navigation:             navigation,
-        uniqueKey:              'medvac-add-edit-brand-type-select',
+        uniqueKey:              'medvac-add-edit-type',
 
         titleExpandSection:     'Add New MedVac Type',
         htmlExpandSection:      null,
         labelBtnExpandSave:     'Save MedVac Type',
         
         labelSelect:            'Select MedVac Type',
-        helpText:               'MedVac generic description or what it is for'
+        helpText:               'MedVac type name or manufacturer'
 
     }
     */
     
     
+
     
-    ComponentMedVacType.call(this, input_settings);
+    UiSelectWithAddExpandable.call(this, input_settings);
+    
     
     const navigation        = input_settings.navigation;
     
@@ -40,24 +43,25 @@ function ComponentMedVacType(input_settings){
     const MAXCHAR_MEDVAC_TYPE   = 50;
     
     
-    const elemUiMedVacType   = new UiInputTextWithCounter({
-                                    uniqueKey:      'medvac-add-edit-brand-name',
+    const elemUiMedVacTypeName   = new UiInputTextWithCounter({
+                                    uniqueKey:      input_settings.uniqueKey,
                                     className:      'form-group',
-                                    textLabel:      'Type Name',
+                                    textLabel:      'MedVac Type',
+                                    isRequired:     true,
                                     textMaxChars:   MAXCHAR_MEDVAC_TYPE,
                                     textHelpText:   ''
                                 });
     
-    input_settings.htmlExpandSection = elemUiMedVacType.getHtml();
+    input_settings.htmlExpandSection = elemUiMedVacTypeName.getHtml();
     
     
-    let dataMedVacTypeList     	= null;
+    let dataMedVacTypeList     = navigation.managerPublicData.dataMedVacTypeList;
     
-    let elemMedVacTypeName     	= null;
+    let elemMedVacTypeName     = null;
     
     
     // This needs to be set
-    this.commonSelectOptions    = null;
+    const commonSelectOptions   = new CommonSelectOptions();
     
     
     this.afterHtmlRender = function(){
@@ -66,22 +70,32 @@ function ComponentMedVacType(input_settings){
         
         
         // Call the parent afterHtmlRender
-        this.prototype.afterHtmlRender();
+        thisObj.afterHtmlRenderExpandable();
         
         
         elemMedVacTypeName = elemUiMedVacTypeName.getElemText();
         
         const elemSaveMedVacType = this.getElemEntrySave();
         elemSaveMedVacType.addEventListener('click', thisObj.onClickSave);
+        
+        
+        this.callbackBeforeExpand = function(){
+            elemUiMedVacTypeName.reset()
+        }
     }
     
     
-    this.setDataMedVacType = function(data){
+    this.setDataMedVacType = function(data, selected_entry_value){
         dataMedVacTypeList = data;
         
-        thisObj.commonSelectOptions.setDataMedVacType(dataMedVacTypeList, 
-            thisObj.getElemSelect());
+        const elem_select = thisObj.getElemSelect();
+        
+        commonSelectOptions.setDataMedVacType(dataMedVacTypeList, elem_select);
         thisObj.setEntryCount(data);
+        
+        if (selected_entry_value){
+            elem_select.value = selected_entry_value;
+        }
     }
     
     
@@ -91,6 +105,9 @@ function ComponentMedVacType(input_settings){
         
         let cur_entry;
         let index;
+        
+        
+        if (dataMedVacTypeList == null){return null;}
         
         for (index = 0; index < dataMedVacTypeList.length; index++){
             cur_entry = dataMedVacTypeList[index];
@@ -125,12 +142,15 @@ function ComponentMedVacType(input_settings){
        
         let input_name      = elemMedVacTypeName.value.trim();
         
+       
         input_elem          = elemMedVacTypeName;
         
         if (input_name.length > 0){
             // check for duplicates
-            const cur_medvac_brand = thisObj._getMedVacType(input_name);
-            if (cur_medvac_brand != null){
+            validation = 0;
+            const cur_medvac_type = thisObj._getMedVacType(input_name);
+            if (cur_medvac_type != null){
+                validation   = -1;
                 is_duplicate = 1;
             }
         }
@@ -139,12 +159,12 @@ function ComponentMedVacType(input_settings){
         }
         
         
-        if (validation != FIELD_VALIDATION_OK){
+        if (validation != 0){
             if (is_duplicate > 0){
-                elemMedVacTypeNameInv.textContent = 'Duplicate entry.';
+                elemUiMedVacTypeName.setTextInvalid('Duplicate entry.');
             }
             else{
-                elemMedVacTypeNameInv.textContent = 'Please enter a valid name.';
+                elemUiMedVacTypeName.setTextInvalid('Please enter a valid name.');
             }
             
             if (input_elem.classList.contains('is-invalid') == false){
@@ -164,6 +184,7 @@ function ComponentMedVacType(input_settings){
         
         
         const user_hid      = navigation.userControl.getUserHid();
+        
         
         const base_url      = window.location.origin;
 
@@ -193,9 +214,12 @@ function ComponentMedVacType(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    const medvac_type_hid = response.medvac_type.hid;
+                    
                     const callback_success = function(data){
-                        thisObj.setDataMedVacType(data);
+                        thisObj.setDataMedVacType(data, medvac_type_hid);
                     };
+                    
                     
                     
                     navigation.managerPublicData.requestDataMedVacType(

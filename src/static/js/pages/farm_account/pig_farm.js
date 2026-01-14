@@ -32,7 +32,8 @@ export function PigFarm(_navigation){
     
     
     this.getPigFarmAccountHid = function(){
-        return null;
+        // TODO
+		return null;
     }
     
     
@@ -85,7 +86,7 @@ export function PigFarm(_navigation){
         else{
             
             const pig_prod_type = PIG_PROD_TYPE.GESTATING + PIG_PROD_TYPE.LACTATING;
-            thisObj.requestPigProdData(pig_prod_type, 
+            thisObj.requestDataPigProd(pig_prod_type, 
                 navigation.setDataPigProdList);
         }
         
@@ -122,7 +123,7 @@ export function PigFarm(_navigation){
     }
     
     
-    this.requestPigProdData = function(pig_prod_type, callback){
+    this.requestDataPigProd = function(pig_prod_type, callback){
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
         
         const is_mob_view = 1; // TODO for desktop view
@@ -160,7 +161,7 @@ export function PigFarm(_navigation){
     }
     
     
-    this.requestSowBoar = function(is_sow, callback_success, callback_error){
+    this.requestDataSowBoar = function(is_sow, callback_success, callback_error){
 
         const sex               = is_sow? 'F':'M';
 

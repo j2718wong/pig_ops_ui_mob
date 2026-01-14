@@ -7,17 +7,18 @@
 import {updateCharCounter}          from '../page_view_basic.js'
 
 
-export function UiInputTextWithCounter(input_settings){
+export function UiInputTextAreaWithCounter(input_settings){
     
     /* Typical settings
     settings = {
-        uniqueKey:      ''
+        uniqueKey:      'medvac-add-edit-notes'
         
-        className:      'form-group-text',
-        textLabel:      'Name',
+        className:      'form-group-text-area',
+        textLabel:      'Notes',
         isRequired:     false,
-        textMaxChars:   ''
-        helpText:       ''  
+        textMaxChars:   160,
+        rows:           2,
+        helpText:       'Describe the dosage given to pig. Sample: 2mL injection.'  
     }
     
     
@@ -30,7 +31,7 @@ export function UiInputTextWithCounter(input_settings){
     const elemIdText            = `${settings.uniqueKey}-text`;
     const elemIdCharCounter     = `${settings.uniqueKey}-char-counter`;
     const elemIdTextInv         = `${settings.uniqueKey}-text-inv`;
-  
+    
     
     let elemText                = null;
     let elemCharCounter         = null;
@@ -59,7 +60,11 @@ export function UiInputTextWithCounter(input_settings){
                 ${settings.textLabel} ${s_required_mark}
                 <span id="${elemIdCharCounter}" class="char-counter">0/${settings.textMaxChars}</span>
             </label>
-            <input  type="text" class="form-control" id="${elemIdText}" maxlength="${settings.textMaxChars}" ${s_required}>
+            <input  type="text" class="form-control" 
+                    id="${elemIdText}" 
+                    rows="${settings.rows}" 
+                    maxlength="${settings.textMaxChars}" 
+                    ${s_required}>
             <div class="invalid-feedback" id="${elemIdTextInv}">Please enter a valid name. </div>
             <div class="form-text">${settings.textHelpText}</div>
         </div>

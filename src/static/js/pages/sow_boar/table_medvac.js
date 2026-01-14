@@ -21,7 +21,7 @@ import {formatDate,
 
 
 
-TableMedVac.prototype = new PageTableBasic();
+
 export function TableMedVac(input_settings){
     PageTableBasic.call(this);
     
@@ -164,9 +164,7 @@ export function TableMedVac(input_settings){
     this.getHtmlTableRowEmpty = function(){
         const html = `
             <tr>
-                <td><div>No Entries</div></td>
-                <td><div>&nbsp;</div></td>
-                <td><div>&nbsp;</div></td>
+                <td colspan="3"><div>No Entries</div></td>
             </tr>
         `;
         return html;

@@ -1176,7 +1176,7 @@ export function PageProdGestatingAdd(input_settings){
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         };
         
-        navigation.managerRequest.requestPigProdData(pig_prod_type, callback);
+        navigation.managerRequest.requestDataPigProd(pig_prod_type, callback);
         
     }
     

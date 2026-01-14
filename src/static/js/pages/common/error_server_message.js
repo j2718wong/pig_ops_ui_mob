@@ -23,7 +23,7 @@ export function ErrorServerMessage(_navigation){
             html = `<span>${error_code}</span>`;
             
             if (error_desc && error_desc.length > 0){
-                html += `<span>${error_desc}</span>`;
+                html += `<br><span>${error_desc}</span>`;
             }
             
             

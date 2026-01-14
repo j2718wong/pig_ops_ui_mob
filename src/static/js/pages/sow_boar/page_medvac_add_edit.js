@@ -8,8 +8,12 @@ import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 import {CommonSelectOptions}    from '../common/common_select_options.js';
 
 
-import {UiInputTextWithCounter}   from '../common/ui/input_text_with_counter.js';
-import {UiSelectWithAddExpandable} from '../common/ui/select_with_add_expandable.js';
+import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
+import {UiInputTextAreaWithCounter} from '../common/ui/input_text_with_counter.js';
+
+import {ComponentMedVacBrand}   from './components/comp_medvac_brand.js'
+import {ComponentMedVacType}    from './components/comp_medvac_type.js'
+import {ComponentAccMedVac}     from './components/comp_acc_medvac.js'
 
 
 import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
@@ -36,7 +40,7 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 
-PageMedVacAddEdit.prototype = new PageViewPigFarmPage();
+//PageMedVacAddEdit.prototype = new PageViewPigFarmPage();
 export function PageMedVacAddEdit(input_settings){
     PageViewPigFarmPage.call(this);
     
@@ -74,17 +78,6 @@ export function PageMedVacAddEdit(input_settings){
     let elemIdDateMedVac        = null;
     
     
-    let elemIdMedVacType        = null;
-    let elemIdMedVacTypeCount   = null;
-    let elemIdMedVacTypeAdd     = null;
-    
-    let elemIdName              = null;
-    let elemIdNameCharCounter   = null;
-    let elemIdNameInv           = null;
-    
-    let elemIdNotes             = null;
-    let elemIdNotesCharCounter  = null;
-    
     let elemIdStaff             = null;
     let elemIdStaffCount        = null;
     let elemIdStaffAdd          = null;
@@ -96,9 +89,11 @@ export function PageMedVacAddEdit(input_settings){
     let elemIdBtnSave           = null;
     
     
-    let elemUiMedVacBrandName   = null;
-    let elemUiMedVacBrandSelect = null;
+    let compMedVacBrand         = null;
+    let compMedVacType          = null;
+    let compAccMedVac           = null;
     
+    let elemUiNotes             = null;
     
     
     
@@ -116,19 +111,10 @@ export function PageMedVacAddEdit(input_settings){
     let elemDateMedVac          = null;
     
     
-    let elemMedVacBrandSelect         = null;
-    
-    
-    let elemMedVacTypeSelect          = null;
-    let elemMedVacTypeCount     = null;
-    let elemMedVacTypeAdd       = null;
-    
+
     let elemName                = null;
-    let elemNameCharCounter     = null;
-    let elemNameInv             = null;
-    
     let elemNotes               = null;
-    let elemNotesCharCounter    = null;
+
     
     let elemStaff               = null;
     let elemStaffCount          = null;
@@ -155,7 +141,6 @@ export function PageMedVacAddEdit(input_settings){
     
     
     
-    let isAddMedVacBrandExpanded = false;
     
     
     this.callbackOnSuccessAdd   = null;
@@ -185,13 +170,7 @@ export function PageMedVacAddEdit(input_settings){
         
         
         
-        elemIdName              = `medvac-add-edit-name`;
-        elemIdNameCharCounter   = `medvac-add-edit-name-counter`;
-        elemIdNameInv           = `medvac-add-edit-name-inv`;
 
-        elemIdNotes             = `medvac-add-edit-notes`;
-        elemIdNotesCharCounter  = `medvac-add-edit-notes-counter`;
-        
         elemIdStaff             = `medvac-add-staff`;
         elemIdStaffCount        = `medvac-add-staff-count`;
         elemIdStaffAdd          = `medvac-add-staff-add`;
@@ -203,70 +182,64 @@ export function PageMedVacAddEdit(input_settings){
         elemIdBtnSave           = `medvac-add-edit-save`;
         
         
-        elemUiMedVacBrandName   = new UiInputTextWithCounter({
-                                    uniqueKey:      'medvac-add-edit-brand-name',
-                                    className:      'form-group',
-                                    textLabel:      'Brand Name',
-                                    textMaxChars:   MAXCHAR_MEDVAC_BRAND_NAME,
-                                    textHelpText:   ''
-                                });
         
-        
-        elemUiMedVacType        = new UiInputTextWithCounter({
-                                    uniqueKey:      'medvac-add-edit-type',
-                                    className:      'form-group',
-                                    textLabel:      'MedVac Type',
-                                    textMaxChars:   MAXCHAR_MEDVAC_TYPE,
-                                    textHelpText:   ''
-                                });
-        
-        
-        elemUiMedVacName        = new UiInputTextWithCounter({
-                                    uniqueKey:      'medvac-add-edit-name',
-                                    className:      'form-group-text',
-                                    textLabel:      'MedVac Name',
-                                    textMaxChars:   MAXCHAR_MEDVAC_NAME,
-                                    textHelpText:   'MedVac product name'
-                                });
-        
-        
-        
-        
-        
-        const html_ui_new_medvac_brand_name = elemUiMedVacBrandName.getHtml();
-        const html_ui_new_medvac_type       = elemUiMedVacType.getHtml();
-        
-        
-        elemUiMedVacBrandSelect = new UiSelectWithAddExpandable({
-                                    uniqueKey:              'medvac-add-edit-brand-name-select',
-        
+        compMedVacBrand         = new ComponentMedVacBrand({
+                                    navigation:             navigation,
+                                    uniqueKey:              'medvac-add-edit-brand-name',
+
                                     titleExpandSection:     'Add New MedVac Brand',
-                                    htmlExpandSection:      html_ui_new_medvac_brand_name,
+                                    htmlExpandSection:      null,
                                     labelBtnExpandSave:     'Save MedVac Brand',
                                     
                                     labelSelect:            'Select MedVac Brand',
                                     helpText:               'MedVac brand name or manufacturer'
                                 });
         
-        const html_ui_medvac_brand_select = elemUiMedVacBrandSelect.getHtml();
+        const html_comp_medvac_brand = compMedVacBrand.getHtml();
         
         
-        elemUiMedVacTypeSelect = new UiSelectWithAddExpandable({
-                                    uniqueKey:              'medvac-add-edit-type-select',
-        
+        compMedVacType         = new ComponentMedVacType({
+                                    navigation:             navigation,
+                                    uniqueKey:              'medvac-add-edit-type',
+
                                     titleExpandSection:     'Add New MedVac Type',
-                                    htmlExpandSection:      html_ui_new_medvac_type,
+                                    htmlExpandSection:      null,
                                     labelBtnExpandSave:     'Save MedVac Type',
                                     
                                     labelSelect:            'Select MedVac Type',
                                     helpText:               'MedVac generic description or what it is for'
                                 });
         
-        const html_ui_medvac_select = elemUiMedVacBrandSelect.getHtml();
+        const html_comp_medvac_type = compMedVacType.getHtml();
         
         
+        compAccMedVac         = new ComponentAccMedVac({
+                                    navigation:             navigation,
+                                    uniqueKey:              'medvac-add-edit-name',
+
+                                    titleExpandSection:     'Add New MedVac Name',
+                                    htmlExpandSection:      null,
+                                    labelBtnExpandSave:     'Save MedVac Name',
+                                    
+                                    labelSelect:            'Select MedVac Name',
+                                    helpText:               'MedVac product name'
+                                });
+        
+        const html_comp_acc_medvac = compAccMedVac.getHtml();
         
         
+        elemUiNotes             = new UiInputTextAreaWithCounter({
+                                    uniqueKey:      'medvac-add-edit-notes'
+                                    
+                                    className:      'form-group-text-area',
+                                    textLabel:      'Notes',
+                                    textMaxChars:   160,
+                                    rows:           3,
+                                    helpText:       'Describe the dosage given to pig. Sample: 2mL injection.'  
+                                });
+                                
+        const html_ui_notes = elemUiNotes.getHtml();
+                                
         
         const html =`
 
@@ -309,22 +282,16 @@ export function PageMedVacAddEdit(input_settings){
         </div>
         
         <!-- 2. MedVac Brand -->
-        ${html_ui_medvac_brand_select}
+        ${html_comp_medvac_brand}
         
         <!-- 3. MedVac Type -->
-        ${html_ui_medvac_type_select}
+        ${html_comp_medvac_type}
         
         <!-- 4. Name -->
-        <div class="form-group-text">
-            <label for="${elemIdName}" class="form-label">Name
-                <span id="${elemIdNameCharCounter}" class="char-counter">0/${MAXCHAR_MEDVAC_NAME}</span>
-            </label>
-            <input  type="text" class="form-control" id="${elemIdName}" maxlength="${MAXCHAR_MEDVAC_NAME}">
-            <div class="invalid-feedback" id="${elemIdNameInv}">Please enter a valid name. </div>
-            <div class="form-text">MedVac product name</div>
-        </div>
+        ${html_comp_acc_medvac}
         
         <!-- 5. Description -->
+        <!--
         <div class="form-group-text-area">
             <label for="${elemIdNotes}" class="form-label">
                 Notes
@@ -334,7 +301,8 @@ export function PageMedVacAddEdit(input_settings){
             <textarea class="form-control" id="${elemIdNotes}" rows="2" maxlength="${MAXCHAR_NOTES}"></textarea>
             <div class="form-text">Describe the dosage given to pig. Sample: 2mL injection.</div>
         </div>
-        
+        -->
+        ${html_ui_notes}
         
         <!-- 5. Staff -->
         <div class="form-group-select">
@@ -398,12 +366,12 @@ export function PageMedVacAddEdit(input_settings){
     this.afterHtmlRender = function(){
         // Do the afterHtmlRender to UI elements first;
         
-        elemUiMedVacBrandName.afterHtmlRender();
-        elemUiMedVacBrandSelect.afterHtmlRender();
+
+        compMedVacBrand.afterHtmlRender();
+        compMedVacType.afterHtmlRender();
+        compAccMedVac.afterHtmlRender();
         
-        elemUiMedVacType.afterHtmlRender();
-        elemUiMedVacTypeSelect.afterHtmlRender();
-        
+        elemUiNotes.afterHtmlRender();
         
         
         this._findElements();
@@ -426,21 +394,7 @@ export function PageMedVacAddEdit(input_settings){
                                                           
         elemDateMedVac          = document.getElementById(elemIdDateMedVac);
         
-        
-        elemMedVacBrandNew      = elemUiMedVacBrandName.getElemText();
-        elemMedVacBrandSelect   = elemUiMedVacBrandSelect.getElemSelect();
-        elemMedVacBrandSave     = elemUiMedVacBrandSelect.getElemEntrySave();
-        
-        elemMedVacTypeNew       = elemUiMedVacType.getElemText();
-        elemMedVacTypeSelect    = elemUiMedVacTypeSelect.getElemSelect();
-        elemMedVacTypeSave      = elemUiMedVacTypeSelect.getElemEntrySave();
-                                                          
-        elemName                = document.getElementById(elemIdName);
-        elemNameCharCounter     = document.getElementById(elemIdNameCharCounter);
-        elemNameInv             = document.getElementById(elemIdNameInv);
-                                                          
-        elemNotes               = document.getElementById(elemIdNotes);
-        elemNotesCharCounter    = document.getElementById(elemIdNotesCharCounter);
+
                                                           
         elemStaff               = document.getElementById(elemIdStaff);
         elemStaffCount          = document.getElementById(elemIdStaffCount);
@@ -473,30 +427,7 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this._bindEventListeners = function(){
-        
-        elemName.addEventListener('input', function(){
-            thisObj.updateCharCounter(elemName, elemNameCharCounter, 
-                MAXCHAR_MEDVAC_NAME);
-            
-            elemName.classList.remove('is-invalid');
-        });
-        
-       
-        
-        elemNotes.addEventListener('input', function(){
-            thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 
-                MAXCHAR_NOTES);
-            
-            elemNotes.classList.remove('is-invalid');
-        });
-        
-        
-        
-        
-        
-        elemMedVacBrandSave.addEventListener('click', function() {
-            thisObj.onClickSaveMedVacBrand();
-        });
+          
         
         
         elemBtnClose.addEventListener('click', function() {
@@ -519,98 +450,34 @@ export function PageMedVacAddEdit(input_settings){
     
     this.setDataMedVacBrand = function(data){
         dataMedVacBrandList = data;
-        
-        thisObj.commonSelectOptions.setDataMedVacBrand(dataMedVacBrandList, elemMedVacBrandSelect);
-        elemUiMedVacBrandSelect.setEntryCount(data);
+        compMedVacBrand.setDataMedVacBrand(data);
     }
     
     
     this.setDataMedVacType = function(data){
         dataMedVacTypeList  = data;
-        
-        thisObj.commonSelectOptions.setDataMedVacType(dataMedVacTypeList, elemMedVacTypeSelect);
-        elemUiMedVacBrandSelect.setEntryCount(data);
+        compMedVacType.setDataMedVacType(data);
     }
     
     
-    this._getMedVacBrand = function(name, exclude_hid){
-        let upper_name = name.toUpperCase();
-        
-        
-        let cur_entry;
-        let index;
-        
-        for (index = 0; index < dataMedVacBrandList.length; index++){
-            cur_entry = dataMedVacBrandList[index];
-            
-            // Will check name for duplicate 
-            if (cur_entry.name.toUpperCase() == upper_name){
-                if (exclude_hid){
-                    if (cur_entry.hid != exclude_hid){
-                        return cur_entry;
-                    }
-                }
-                
-                else{
-                    return cur_entry;
-                }
-            }
-        }
-        
-        return null;
+    this.setDataAccMedVac = function(data) {
+        compAccMedVac.setDataAccMedVac(data);
     }
     
-    
-    this._getMedVacType = function(name, exclude_hid){
-        let upper_name = name.toUpperCase();
-        
-        
-        let cur_entry;
-        let index;
-        
-        for (index = 0; index < dataMedVacTypeList.length; index++){
-            cur_entry = dataMedVacTypeList[index];
-            
-            // Will check name for duplicate 
-            if (cur_entry.name.toUpperCase() == upper_name){
-                if (exclude_hid){
-                    if (cur_entry.hid != exclude_hid){
-                        return cur_entry;
-                    }
-                }
-                
-                else{
-                    return cur_entry;
-                }
-            }
-        }
-        
-        return null;
-    }
     
     
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
-        elemNameInv.style.display = 'none';
-        
-        
-        
         // Remove validation classes
         let cur_elem = null;
         
-        elemUiMedVacBrandName.reset();
-        elemUiMedVacType.reset();
+        compMedVacBrand.reset();
+        compMedVacType.reset();
+        compAccMedVac.reset()
         
-		elemUiMedVacName.reset()
         
-        elemUiMedVacBrandSelect.reset();
-		elemUiMedVacTypeSelect.reset();
-
-        
-        cur_elem = elemNotes;
-        cur_elem.value = ''; 
-        cur_elem.classList.remove('is-valid', 'is-invalid'); 
+        elemUiNotes.reset(); 
         
         elemStaff.selectedIndex = 0;
         elemChkDoneByMe.checked = false;
@@ -635,8 +502,9 @@ export function PageMedVacAddEdit(input_settings){
         thisObj._resetForm();
         
         
-        // Check if there is a public data MedVacBrandList and dataMedVacTypeList
-        if (navigation.managerPublicData.getMedVacBrandList() == null){
+        // Check if there is a public data dataMedVacBrandList and dataMedVacTypeList
+        const medvac_brand_list = navigation.managerPublicData.dataMedVacBrandList;
+        if (medvac_brand_list == null){
             
             const callback_success = function(data){
                 thisObj.setDataMedVacBrand(data);
@@ -644,8 +512,13 @@ export function PageMedVacAddEdit(input_settings){
             
             navigation.managerPublicData.requestDataMedVacBrand(callback_success, elemServerErrorMsg)
         }
+        else{
+            thisObj.setDataMedVacBrand(medvac_brand_list);
+        }
         
-        if (navigation.managerPublicData.getMedVacTypeList() == null){
+        
+        const medvac_type_list = navigation.managerPublicData.dataMedVacTypeList;
+        if (medvac_type_list == null){
             
             const callback_success = function(data){
                 thisObj.setDataMedVacType(data);
@@ -653,6 +526,26 @@ export function PageMedVacAddEdit(input_settings){
             
             navigation.managerPublicData.requestDataMedVacType(callback_success, elemServerErrorMsg)
         }
+        else{
+            thisObj.setDataMedVacType(medvac_type_list);
+        }
+        
+        
+        // check if there is an account dataAccMedVac
+        const acc_medvac_list = navigation.pigFarm.accountLists.dataAccMedVac;
+        if (acc_medvac_list == null){
+            
+            const callback_success = function(data){
+                thisObj.setDataAccMedVac(data);
+            };
+            
+            navigation.pigFarm.accountLists.requestDataAccMedVac(callback_success, elemServerErrorMsg)
+        
+        }
+        else{
+            thisObj.setDataAccMedVac(data);
+        }
+        
         
         
         showOptions = options;
@@ -873,11 +766,14 @@ export function PageMedVacAddEdit(input_settings){
         
         let is_duplicate    = 0;
         
-       
-        let input_medvac    = elemDateMedVac.value.trim();
-        let input_name      = elemName.value.trim();
         
-        let input_notes     = elemNotes.value.trim();
+        let input_date_medvac   = elemDateMedVac.value.trim();
+        
+        let input_medvac_brand  = compMedVacBrand.getValue()
+        let input_medvac_type   = compMedVacType.getValue()
+        let input_medvac_name   = compAccMedVac.getValue()
+        
+        let input_notes         = elemNotes.value.trim();
         
         
         is_duplicate        = 0;
@@ -1046,17 +942,23 @@ export function PageMedVacAddEdit(input_settings){
             }
         }
         
+        
+        
+        // Check if user_account_hid is same with farm_account_hid;
+        const user_account_hid = navigation.userControl.getUserAccountHid();
+        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
+        
+        if (user_account_hid != farm_account_hid){
+            console.log('User account_hid not equal to farm_account_hid');
+            return;
+        } 
+        
+        
+        
         const user_hid      = navigation.userControl.getUserHid();
         const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
         const base_url      = window.location.origin;
         
-        let num_nipples = null;
-        try {
-            num_nipples = parseInt(input_num_nipples);
-        }
-        catch(error){
-            num_nipples = null;
-        }
         
         // send post request
         let post_data = {
@@ -1110,7 +1012,6 @@ export function PageMedVacAddEdit(input_settings){
             data: JSON.stringify(post_data),
   
             beforeSend: function(){
-                elemServerErrorMsg.style.display = 'none';
             },
   
             success: function(response){
@@ -1151,7 +1052,7 @@ export function PageMedVacAddEdit(input_settings){
                                     navigation.showThisPage(showOptions.go_back_page);
                                 };
                                 
-                                navigation.pigFarm.requestSowBoar(is_sow, 
+                                navigation.pigFarm.requestDataSowBoar(is_sow, 
                                     callback_success, callback_error);
 
                                 return;
@@ -1168,7 +1069,7 @@ export function PageMedVacAddEdit(input_settings){
                             navigation.showThisPage(showOptions.go_back_page);
                         };
                         
-                        navigation.pigFarm.requestSowBoar(is_sow, 
+                        navigation.pigFarm.requestDataSowBoar(is_sow, 
                             callback_success, callback_error);
                         
                     }
@@ -1181,7 +1082,7 @@ export function PageMedVacAddEdit(input_settings){
                             navigation.showThisPage(showOptions.go_back_page);
                         };
                         
-                        navigation.pigFarm.requestSowBoar(is_sow, 
+                        navigation.pigFarm.requestDataSowBoar(is_sow, 
                             callback_success, callback_error);
                         
                     }

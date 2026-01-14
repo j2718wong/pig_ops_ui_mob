@@ -10,21 +10,10 @@ export function ManagerPublicData(_navigation){
     
     
     // This will be ordered by what? for faster search
-    let medVacBrandList     = null;
+    this.dataMedVacBrandList= null;
     
     // This will be ordered by what? for faster search
-    let medVacTypeList      = null;
-    
-    
-    
-    this.getMedVacBrandList  = function(){
-        return medVacBrandList;
-    }
-    
-    
-    this.getMedVacTypeList  = function(){
-        return medVacTypeList;
-    }
+    this.dataMedVacTypeList = null;
     
     
     
@@ -49,7 +38,7 @@ export function ManagerPublicData(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
-                    medVacBrandList = response.data;
+                    thisObj.dataMedVacBrandList = response.data;
                     
                     if (callback_success){
                         callback_success(response.data);
@@ -72,7 +61,7 @@ export function ManagerPublicData(_navigation){
     }
     
     
-    this.requestDataMedVacType = function(callback_success, callback_erorr){
+    this.requestDataMedVacType = function(callback_success, elem_show_error){
         
         // Need to request medvac brands
         const base_url = window.location.origin;
@@ -91,7 +80,7 @@ export function ManagerPublicData(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
-                    medVacTypeList = response.data;
+                    thisObj.dataMedVacTypeList = response.data;
                     
                     if (callback_success){
                         callback_success(response.data);

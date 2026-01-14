@@ -24,8 +24,9 @@ export function UiSelectWithAddExpandable(input_settings){
     
     
     */
-    
+    const thisObj               = this;
     const settings              = input_settings;
+
     
     const elemIdExpandSection   = `${settings.uniqueKey}-show`;
     const elemIdServerErrorMsg  = `${settings.uniqueKey}-server-error`;
@@ -46,6 +47,8 @@ export function UiSelectWithAddExpandable(input_settings){
     
     let isExpandSectionExpanded = false;
     
+
+    this.callbackBeforeExpand   = null;
     
     this.getHtml = function(){
         
@@ -103,6 +106,10 @@ export function UiSelectWithAddExpandable(input_settings){
             isExpandSectionExpanded = !isExpandSectionExpanded;
             
             if (isExpandSectionExpanded) {
+                if (thisObj.callbackBeforeExpand){
+                    thisObj.callbackBeforeExpand();
+                }
+                
                 elemExpandSection.classList.add('expanded');
                 elemExpandSection.style.marginBottom = '15px';
                 
@@ -117,21 +124,25 @@ export function UiSelectWithAddExpandable(input_settings){
         
         
         elemExpandCancel.addEventListener('click', function() {
-            elemExpandSection.classList.remove('expanded');
-            elemExpandSection.style.marginBottom = 0;
-            isExpandSectionExpanded = false;
+            thisObj.closeExpandable();
         });
-        
-        
+    }
+
+
+    this.closeExpandable = function(){
+        elemExpandSection.classList.remove('expanded');
+        elemExpandSection.style.marginBottom = 0;
+        isExpandSectionExpanded = false;
     }
     
-	
-	this.afterHtmlRender = function(){
+    
+    this.afterHtmlRenderExpandable = function(){
+        
         this._findElements();
         this._bindEventListeners();
     }
     
-	
+    
     this.getElemSelect  = function(){
         return elemSelect;
     }
@@ -142,20 +153,29 @@ export function UiSelectWithAddExpandable(input_settings){
     }
     
 
-	this.getElemServerErrorMsg = function(){
-		return elemServerErrorMsg;
-	}
-
+    this.getElemServerErrorMsg = function(){
+        return elemServerErrorMsg;
+    }
 
     
-	this.setEntryCount = function(data){
-		elemEntryCount.textContent = ` (${data.length} Entries)`;
-	}
+    this.geValue = function(){
+        return elemSelect.value;
+    }
     
-	
+    
+    this.setEntryCount = function(data){
+        if (data.length == 1){
+            elemEntryCount.textContent = ` (${data.length} Entry)`;
+        }
+        else{
+            elemEntryCount.textContent = ` (${data.length} Entries)`;
+        }
+    }
+    
+    
     this.reset = function(){
-		elemSelect.selectedIndex = 0;
-		elemServerErrorMsg.style.display = 'none';
+        elemSelect.selectedIndex = 0;
+        elemServerErrorMsg.style.display = 'none';
     } 
     
 }

@@ -1181,6 +1181,11 @@ p {
 	white-space: nowrap;
 }
 
+.required{
+	margin-left: 5px;
+	color: red;
+}
+
 .center {
 	text-align: center;
 }

@@ -137,7 +137,7 @@ export function ManagerAddress(_navigation){
     }
     
     
-	this.requestAddressLevel2Data = function(address_level_1, callback_on_success){ 
+	this.requestDataAddressLevel2 = function(address_level_1, callback_on_success){ 
         const level_1_hid = address_level_1.hid;
         
         // Need to request address level list
@@ -181,7 +181,7 @@ export function ManagerAddress(_navigation){
     }
     
 	
-	this.requestAddressLevel3Data = function(address_level_2, callback_on_success){
+	this.requestDataAddressLevel3 = function(address_level_2, callback_on_success){
         const level_2_hid = address_level_2.hid;
         
         // Need to request address level list

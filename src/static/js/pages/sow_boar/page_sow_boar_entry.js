@@ -368,6 +368,8 @@ export function PageSowBoarEntry(input_settings){
         }
         
 		
+		
+		
         // Set tableMedVac 
         tableMedVac.beforeShow(dataSowBoar);
         
