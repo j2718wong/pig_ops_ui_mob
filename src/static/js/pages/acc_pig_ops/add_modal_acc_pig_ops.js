@@ -585,7 +585,7 @@ export function AddModalAccPigOps(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
     }

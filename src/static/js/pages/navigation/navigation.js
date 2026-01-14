@@ -234,7 +234,7 @@ function ManagerRequest(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
         
@@ -586,7 +586,7 @@ export function Navigation(){
         this.pigFarm.accountLists.setPigFarmAccountHid(pig_farm_account.account.account.hid);
         
         // Request account feed supplier
-        this.pigFarm.accountLists.requestSupplier(SUPPLIER_TYPE.FEED);
+        this.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.FEED);
     }
     
     

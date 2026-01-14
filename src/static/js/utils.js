@@ -227,7 +227,7 @@ export function createPaginationManager(config) {
         data,
         itemsPerPage,
         renderRow,
-		renderRowEmpty
+        renderRowEmpty
     } = config;
     
     let currentPage = 1;
@@ -280,16 +280,16 @@ export function createPaginationManager(config) {
         renderTable() {
             // Clear the current table body
             elemTableBody.innerHTML = '';
-			
-			if (data.length == 0){
-				if (renderRowEmpty){
-					const row = document.createElement('tr');
-					row.innerHTML = renderRowEmpty();
-					elemTableBody.appendChild(row);
-					
-					return;
-				}
-			}
+            
+            if (data.length == 0){
+                if (renderRowEmpty){
+                    const row = document.createElement('tr');
+                    row.innerHTML = renderRowEmpty();
+                    elemTableBody.appendChild(row);
+                    
+                    return;
+                }
+            }
             
             // Calculate start and end index for current page
             const startIndex = (currentPage - 1) * itemsPerPage;

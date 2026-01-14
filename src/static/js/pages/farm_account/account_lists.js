@@ -7,9 +7,9 @@
 import {SUPPLIER_TYPE}          from '../../constants.js';
 
 
-export function AccountLists(input_settings){
+export function AccountLists(_navigation){
     const thisObj               = this;
-    const navigation            = input_settings.navigation;
+    const navigation            = _navigation;
     
     this.dataSemenSupplierList  = null;
     this.dataFeedSupplierList   = null;
@@ -95,18 +95,18 @@ export function AccountLists(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
         
     }
     
     
-    this.requestDataAccMedVacList = function()(callback_success, elem_show_error){
+    this.requestDataAccMedVac = function(callback_success, elem_show_error){
         
         // Need to request medvac brands
         const base_url = window.location.origin;
-        const url = `${base_url}/acc_medvac/list?ahid=${accountHid}`;
+        const url = `${base_url}/account_medvac/list?ahid=${accountHid}`;
         
         
         $.ajax({
@@ -138,7 +138,7 @@ export function AccountLists(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
     }

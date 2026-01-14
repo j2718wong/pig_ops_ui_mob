@@ -102,30 +102,33 @@ export function UiSelectWithAddExpandable(input_settings){
     
     this._bindEventListeners = function(){
         elemEntryAdd.addEventListener('click', function() {
-            
-            isExpandSectionExpanded = !isExpandSectionExpanded;
-            
-            if (isExpandSectionExpanded) {
-                if (thisObj.callbackBeforeExpand){
-                    thisObj.callbackBeforeExpand();
-                }
-                
-                elemExpandSection.classList.add('expanded');
-                elemExpandSection.style.marginBottom = '15px';
-                
-                elemServerErrorMsg.style.display = 'none';
-                
-            } else {
-                elemExpandSection.classList.remove('expanded');
-                elemExpandSection.style.marginBottom = 0;
-            }
-            
+            thisObj.toggleExpandable();
         });
         
         
         elemExpandCancel.addEventListener('click', function() {
             thisObj.closeExpandable();
         });
+    }
+
+
+    this.toggleExpandable = function(){
+        isExpandSectionExpanded = !isExpandSectionExpanded;
+            
+        if (isExpandSectionExpanded) {
+            if (thisObj.callbackBeforeExpand){
+                thisObj.callbackBeforeExpand();
+            }
+            
+            elemExpandSection.classList.add('expanded');
+            elemExpandSection.style.marginBottom = '15px';
+            
+            elemServerErrorMsg.style.display = 'none';
+            
+        } else {
+            elemExpandSection.classList.remove('expanded');
+            elemExpandSection.style.marginBottom = 0;
+        }
     }
 
 
@@ -158,7 +161,7 @@ export function UiSelectWithAddExpandable(input_settings){
     }
 
     
-    this.geValue = function(){
+    this.getValue = function(){
         return elemSelect.value;
     }
     

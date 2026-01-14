@@ -140,13 +140,15 @@ export function ManagerAddress(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
     }
     
     
-    this.requestDataAddressLevel2 = function(address_level_1, callback_success, elem_show_error){ 
+    this.requestDataAddressLevel2 = function(address_level_1, callback_success, 
+            elem_show_error){ 
+        
         const level_1_hid = address_level_1.hid;
         
         // Need to request address level list
@@ -185,13 +187,14 @@ export function ManagerAddress(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
     }
     
     
-    this.requestDataAddressLevel3 = function(address_level_2, callback_success){
+    this.requestDataAddressLevel3 = function(address_level_2, callback_success,
+            elem_show_error){
         const level_2_hid = address_level_2.hid;
         
         // Need to request address level list
@@ -219,7 +222,8 @@ export function ManagerAddress(_navigation){
                     }
                 }
                 else {
-                    // TODO
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
                 }
             },
   
@@ -227,9 +231,86 @@ export function ManagerAddress(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
     }
     
+	
+	this.requestDataSupplierCountPerAddressLevel = function(supplier_type, 
+			address_level_1, address_level_2, callback_success, elem_show_error){
+        let param = '';
+        
+        switch (supplier_type){
+            case SUPPLIER_TYPE.FEED:{
+                param = 'is_fs';
+                break;
+            }
+            
+            case SUPPLIER_TYPE.SEMEN:{
+                param = 'is_ss';
+                break;
+            }
+            
+            case SUPPLIER_TYPE.GILT:{
+                param = 'is_gs';
+                break;
+            }
+        }
+        
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/supplier/list?ahid=${accountHid}&country_id&${param}=1`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    switch (supplier_type){
+                        case SUPPLIER_TYPE.FEED:{
+                            thisObj.dataFeedSupplierList = response.data;
+                            break;
+                        }
+                        
+                        case SUPPLIER_TYPE.SEMEN:{
+                            thisObj.dataSemenSupplierList = response.data;
+                            break;
+                        }
+                        
+                        case SUPPLIER_TYPE.GILT:{
+                            this.dataGiltSupplierList   = response.data;
+                            break;
+                        }
+                    }
+                    
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                    
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+        
+    }
+    
+	
 }

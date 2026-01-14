@@ -32,8 +32,12 @@ export function PigFarm(_navigation){
     
     
     this.getPigFarmAccountHid = function(){
-        // TODO
-		return null;
+        return thisObj.dataPigFarmAccount.account.account.hid;
+    }
+    
+    
+    this.getPigFarmHid = function(){
+        return this.dataPigFarm.pig_farm.hid;
     }
     
     
@@ -154,7 +158,7 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
         
@@ -169,7 +173,7 @@ export function PigFarm(_navigation){
         // Need to request sow_boar list
         
         const base_url = window.location.origin;
-        let url = `${base_url}/sow_boar/list?pfhid=${thisObj.dataPigFarm.pig_farm.hid}`;
+        let url = `${base_url}/sow_boar/list?pfhid=${thisObj.getPigFarmHid()}`;
         url += `&sex=${sex}`;
         
         if (is_sow == false){
@@ -210,10 +214,46 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
+    }
+    
+    
+    this.requestDataPigFarmStaff = function(callback_success, elem_show_error){
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_farm_staff/list?pfhid=${thisObj.getPigFarmHid()}`;
         
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataStaffList = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
         
     }
     

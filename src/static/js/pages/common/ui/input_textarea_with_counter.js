@@ -18,6 +18,7 @@ export function UiInputTextAreaWithCounter(input_settings){
         isRequired:     false,
         textMaxChars:   160,
         rows:           2,
+        invalidFeedBack: null,
         helpText:       'Describe the dosage given to pig. Sample: 2mL injection.'  
     }
     
@@ -40,7 +41,7 @@ export function UiInputTextAreaWithCounter(input_settings){
     
     
     this.getHtml = function(){
-        let _is_required = false;
+        let is_required = false;
         
         if ('isRequired' in settings){
             is_required = settings.isRequired;
@@ -54,19 +55,32 @@ export function UiInputTextAreaWithCounter(input_settings){
         }
         
         
+		let s_invalid = '';
+		if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
+            s_invalid = `<div class="invalid-feedback" id="${elemIdTextInv}">${settings.invalidFeedBack} </div>`;
+        }
+        
+		
+        let s_help = '';
+        if (settings.helpText && settings.helpText.length > 0){
+            s_help = `<div class="form-text">${settings.helpText}</div>`;
+        }
+        
+		
         return `
         <div class="${settings.className}">
             <label for="${elemIdText}" class="form-label">
                 ${settings.textLabel} ${s_required_mark}
                 <span id="${elemIdCharCounter}" class="char-counter">0/${settings.textMaxChars}</span>
             </label>
-            <input  type="text" class="form-control" 
+            <textarea  class="form-control" 
                     id="${elemIdText}" 
                     rows="${settings.rows}" 
                     maxlength="${settings.textMaxChars}" 
                     ${s_required}>
-            <div class="invalid-feedback" id="${elemIdTextInv}">Please enter a valid name. </div>
-            <div class="form-text">${settings.textHelpText}</div>
+            </textarea>
+            ${s_invalid}
+            ${s_help}
         </div>
         `;
         
@@ -110,7 +124,7 @@ export function UiInputTextAreaWithCounter(input_settings){
     }
     
     
-    this.geValue = function(){
+    this.getValue = function(){
         return elemText.value;
     }
     

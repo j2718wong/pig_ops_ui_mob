@@ -2325,6 +2325,8 @@ p {
 }
 
 .form-select {
+	border-width:2px;
+	border-color:var(--corporate-blue);
     font-size: 1.3rem;
 }
 
@@ -2407,7 +2409,7 @@ p {
 }
 
 .form-control {
-    border: 2px solid var(--corporate-border-blue);
+    border: 2px solid var(--corporate-blue);
     padding: 6px 6px;
     font-size: 1.3rem;
     transition: all 0.2s;

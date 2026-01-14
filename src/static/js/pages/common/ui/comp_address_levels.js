@@ -13,7 +13,7 @@ export function ComponentAddressLevels(input_settings){
     /* Typical settings
     settings = {
         uniqueKey:      ''
-        
+        navigation:     navigation
     }
     
     
@@ -22,11 +22,13 @@ export function ComponentAddressLevels(input_settings){
     const thisObj               = this;
     
     const navigation            = input_settings.navigation;
+    const managerAddress        = navigation.managerAddress;
+    
     const settings              = input_settings;
     
-	
-	const elemIdServerErrorMsg	= `${settings.uniqueKey}-adrs-server-error`;
-	
+    
+    const elemIdServerErrorMsg  = `${settings.uniqueKey}-adrs-server-error`;
+    
     const elemIdAddressLevel1      = `${settings.uniqueKey}-adrs-level1`;
     const elemIdAddressLevel1Label = `${settings.uniqueKey}-adrs-level1-label`;
     const elemIdAddressLevel1Count = `${settings.uniqueKey}-adrs-level1-count`;
@@ -54,24 +56,24 @@ export function ComponentAddressLevels(input_settings){
     let elemAddressLevel3Count     = null;
                                 
     
-	const commonSelectOptions 		= new CommonSelectOptions();
-	
+    const commonSelectOptions       = new CommonSelectOptions();
     
-	let curAddressLevel1			= null;
-	
-	
-	// This is a function to request an item count per address level 2
-	this.requestItemCountPerAddressLevel2 = null;
-	
-	
+    
+    let curAddressLevel1            = null;
+    
+    
+    // This is a function to request an item count per address level 2
+    this.requestItemCountPerAddressLevel2 = null;
+    
+    
     
     this.getHtml = function(){
       
         
         return `
-		
-		<div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
-		
+        
+        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+        
         <!-- 1. Address Level 1 -->
         <div class="form-group-select">
             <label for="${elemIdAddressLevel1}" class="form-label">
@@ -119,30 +121,30 @@ export function ComponentAddressLevels(input_settings){
     
     
     this._findElements = function(){
-		elemServerErrorMsg			= document.getElementById(elemIdServerErrorMsg);
-		
-        elemAddressLevel1          	= document.getElementById(elemIdAddressLevel1);
-        elemAddressLevel1Label     	= document.getElementById(elemIdAddressLevel1Label);
-        elemAddressLevel1Count     	= document.getElementById(elemIdAddressLevel1Count);
-								
-        elemAddressLevel2          	= document.getElementById(elemIdAddressLevel2);
-        elemAddressLevel2Label     	= document.getElementById(elemIdAddressLevel2Label);
-        elemAddressLevel2Count     	= document.getElementById(elemIdAddressLevel2Count);
-								
-        elemAddressLevel3          	= document.getElementById(elemIdAddressLevel3);
-        elemAddressLevel3Label     	= document.getElementById(elemIdAddressLevel3Label);
-        elemAddressLevel3Count     	= document.getElementById(elemIdAddressLevel3Count);
+        elemServerErrorMsg          = document.getElementById(elemIdServerErrorMsg);
+        
+        elemAddressLevel1           = document.getElementById(elemIdAddressLevel1);
+        elemAddressLevel1Label      = document.getElementById(elemIdAddressLevel1Label);
+        elemAddressLevel1Count      = document.getElementById(elemIdAddressLevel1Count);
+                                
+        elemAddressLevel2           = document.getElementById(elemIdAddressLevel2);
+        elemAddressLevel2Label      = document.getElementById(elemIdAddressLevel2Label);
+        elemAddressLevel2Count      = document.getElementById(elemIdAddressLevel2Count);
+                                
+        elemAddressLevel3           = document.getElementById(elemIdAddressLevel3);
+        elemAddressLevel3Label      = document.getElementById(elemIdAddressLevel3Label);
+        elemAddressLevel3Count      = document.getElementById(elemIdAddressLevel3Count);
         
     }
     
     
     this._bindEventListeners = function(){
         elemAddressLevel1.addEventListener('change', function(){
-			thisObj._onChangeAddressLevel1();
+            thisObj.onChangeAddressLevel1();
         });
         
         elemAddressLevel2.addEventListener('change', function(){
-            thisObj._onChangeAddressLevel2();
+            thisObj.onChangeAddressLevel2();
         });
         
         
@@ -180,15 +182,18 @@ export function ComponentAddressLevels(input_settings){
     this.geValueAddressLevel3 = function(){
         return elemAddressLeve3.value;
     }
-	
-	
-	this.show = function(){
-		const data = navigation.managerAddress.getAddressLevel1List();
-		commonSelectOptions.setDataAddressLevel(data, elemAddressLevel1);
-	}
-	
-	
-	this.requestAddressLevel1Data = function(){
+    
+    
+    this.beforeShow = function(){
+        const data = navigation.managerAddress.getAddressLevel1List();
+        commonSelectOptions.setDataAddressLevel(data, elemAddressLevel1);
+        
+        elemAddressLevel2.disabled = true;
+        elemAddressLevel3.disabled = true;
+    }
+    
+    
+    this.requestDataAddressLevel1 = function(){
         elemServerErrorMsg.style.display = 'none';
                 
         elemAddressLevel1.disabled = true;
@@ -202,97 +207,84 @@ export function ComponentAddressLevels(input_settings){
             commonSelectOptions.setDataAddressLevel(data, elemAddressLevel1);
         };
         
-        addressManager.requestAddressLevel1Data(callback_success);
+        managerAddress.requestDataAddressLevel1(callback_success);
     }
     
     
-    this.requestAddressLevel2Data = function(address_level_1){ 
+    this.requestDataAddressLevel2 = function(address_level_1){ 
         elemServerErrorMsg.style.display = 'none';
                 
         elemAddressLevel1   .disabled = true;
         elemAddressLevel2   .disabled = true;
         elemAddressLevel3   .disabled = true;
         
-        
-        let data_level_2 = null;
-        
             
-        let callback_success_request_level_2_data = function(data){
-            data_level_2 = data;
+        const callback_success = function(data){
             
-            
-            const level_1_hid = elemAddressLevel1.value;
-            thisObj.requestItemCountPerAddressLevel2(level_1_hid, 
-                callback_success_item_count);
+            if (thisObj.requestItemCountPerAddressLevel2){
+                const level_1_hid = elemAddressLevel1.value;
+                thisObj.requestItemCountPerAddressLevel2(level_1_hid, data);
+            }
+            else{
+                commonSelectOptions.setDataAddressLevel(data, elemAddressLevel2);
+            }
         };
         
-        addressManager.requestAddressLevel2Data(address_level_1, 
-            callback_success_request_level_2_data);
+        managerAddress.requestDataAddressLevel2(address_level_1, 
+            callback_success, elemServerErrorMsg);
     }
     
-	
-    this._onChangeAddressLevel1 = function(){
+    
+    this.onChangeAddressLevel1 = function(){
         commonSelectOptions.setDataAddressLevel([], elemAddressLevel3);
         
         const level_1_hid = elemAddressLevel1.val()
-        if (level_1_hid == '0'){return;}
         
-		
-		const addressManager	= navigation.addressManager;
-		
         
-        // Get address_level_1 data from addressManager
-        curAddressLevel1        = addressManager.getAddressLevel1(level_1_hid);
-        let level_2_addresses   = addressManager.getLevel2(curAddressLevel1);
+        // Get address_level_1 data from managerAddress
+        curAddressLevel1        = managerAddress.getAddressLevel1(level_1_hid);
+        let level_2_addresses   = managerAddress.getLevel2(curAddressLevel1);
         
         
         // Request data from server only if not yet requested
         if (level_2_addresses == null){
-            thisObj._requestAddressLevel2Data(curAddressLevel1);
+            thisObj.requestDataAddressLevel2(curAddressLevel1);
         }
         else{
             elemAddressLevel1.disabled = false;
             elemAddressLevel2.disabled = false;
-            
-            thisObj._replaceAddressLevel2SelectOptions(level_2_addresses);
+
         }
 
     }
     
     
-    this._onChangeAddressLevel2 = function(){
-        elemSaveError.hide();
+    this.onChangeAddressLevel2 = function(){
+        elemServerErrorMsg.style.display = 'none';
         
-        elemNameShow.hide();
         
         const level_2_hid = elemAddressLevel2.val()
-        if (level_2_hid == '0'){return;}
+
         
         
         // Get level_2 from  curAddressLevel1
-        curAddressLevel2        = addressManager.getAddressLevel2(
+        curAddressLevel2        = managerAddress.getAddressLevel2(
                                         curAddressLevel1, level_2_hid);
-        let level_3_addresses   = addressManager.getLevel3(curAddressLevel2);
+        let level_3_addresses   = managerAddress.getLevel3(curAddressLevel2);
         
         
         // Request data from server only if not yet requested
         if (level_3_addresses == null){
             // Request AddressLevel3
-            thisObj._requestAddressLevel3Data(curAddressLevel2);
+            thisObj.requestDataAddressLevel3(curAddressLevel2);
         }
         else {
             elemAddressLevel1.disabled = false;
             elemAddressLevel2.disabled = false;
             elemAddressLevel3.disabled = false;
             
-            let new_options = [];
-            new_options.push({value:"0", text:"Please Select"});
+            commonSelectOptions.setDataAddressLevel(level_3_addresses, elemAddressLevel3);
             
-            $(level_3_addresses).each(function(){
-                new_options.push({value:this.hid, text:this.name});
-            });
-            
-            thisObj._replaceSelectOptions(elemAddressLevel3, new_options);
         }
         
         
@@ -305,9 +297,32 @@ export function ComponentAddressLevels(input_settings){
             input_elem.removeClass('is-invalid');
         }
         
-        thisObj._requestAddressLevel2Items(level_2_hid);
+        thisObj.requestAddressLevel2Items(level_2_hid);
     }
     
-	
     
+    this.requestDataAddressLevel3 = function(address_level_2){
+        elemServerErrorMsg.style.display = 'none';
+                
+        elemAddressLevel1.disabled = true;
+        elemAddressLevel2.disabled = true;
+        elemAddressLevel3.disabled = true;
+
+        
+        let callback_success = function(data){
+            elemAddressLevel1.disabled = false;
+            elemAddressLevel2.disabled = false;
+            elemAddressLevel3.disabled = false;
+            
+            commonSelectOptions.setDataAddressLevel(data, elemAddressLevel3);
+        };
+
+        addressManager.requestAddressLevel3Data(address_level_2, 
+            callback_success);
+    }
+    
+    
+    this.reset = function(){
+        thisObj.beforeShow();
+    }
 }

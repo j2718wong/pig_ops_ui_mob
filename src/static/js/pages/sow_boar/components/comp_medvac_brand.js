@@ -9,6 +9,7 @@ import {UiSelectWithAddExpandable} from '../../common/ui/select_with_add_expanda
 
 import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
+import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
 
 
 export function ComponentMedVacBrand(input_settings){
@@ -49,6 +50,7 @@ export function ComponentMedVacBrand(input_settings){
                                     textLabel:      'Brand Name',
                                     isRequired:     true,
                                     textMaxChars:   MAXCHAR_MEDVAC_BRAND_NAME,
+                                    invalidFeedBack: 'Please enter a valid name.',
                                     textHelpText:   ''
                                 });
     
@@ -166,21 +168,11 @@ export function ComponentMedVacBrand(input_settings){
             else{
                 elemUiMedVacBrandName.setTextInvalid('Please enter a valid name.');
             }
-            
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
         }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
-            
-        }
+        addValidationClassToElem(input_elem, validation);
         
         
-        if (proceed_to_save == 0) {return;}
+        if (validation != 0) {return;}
         
         
         const user_hid      = navigation.userControl.getUserHid();
@@ -219,6 +211,7 @@ export function ComponentMedVacBrand(input_settings){
                     
                     const callback_success = function(data){
                         thisObj.setDataMedVacBrand(data, medvac_brand_hid);
+                        thisObj.closeExpandable();
                     };
                     
                     
@@ -237,7 +230,7 @@ export function ComponentMedVacBrand(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
 

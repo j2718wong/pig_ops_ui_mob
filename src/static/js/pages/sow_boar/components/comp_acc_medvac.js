@@ -9,6 +9,7 @@ import {UiSelectWithAddExpandable} from '../../common/ui/select_with_add_expanda
 
 import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
+import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
 
 
 export function ComponentAccMedVac(input_settings){
@@ -49,6 +50,7 @@ export function ComponentAccMedVac(input_settings){
                                     textLabel:      'MedVac Name',
                                     isRequired:     true,
                                     textMaxChars:   MAXCHAR_MEDVAC_NAME,
+                                    invalidFeedBack: 'Please enter a valid name.',
                                     textHelpText:   ''
                                 });
     
@@ -113,7 +115,7 @@ export function ComponentAccMedVac(input_settings){
             cur_entry = dataAccMedVacList[index];
             
             // Will check name for duplicate 
-            if (cur_entry.name.toUpperCase() == upper_name){
+            if (cur_entry.acc_medvac.name.toUpperCase() == upper_name){
                 if (exclude_hid){
                     if (cur_entry.hid != exclude_hid){
                         return cur_entry;
@@ -166,21 +168,11 @@ export function ComponentAccMedVac(input_settings){
             else{
                 elemUiAccMedVac.setTextInvalid('Please enter a valid name.');
             }
-            
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
         }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
-            
-        }
+        addValidationClassToElem(input_elem, validation);
         
         
-        if (proceed_to_save == 0) {return;}
+        if (validation != 0) {return;}
         
         
         // Check if user_account_hid is same with farm_account_hid;
@@ -205,7 +197,7 @@ export function ComponentAccMedVac(input_settings){
             'uhid':             user_hid,
             'name':             input_name
         };
-
+        
 
         // Element where to display server error message in this component
         const elemServerErrorMsg = thisObj.getElemServerErrorMsg();
@@ -213,9 +205,9 @@ export function ComponentAccMedVac(input_settings){
         
         $.ajax({
             type: 'POST',
-            contentName: "application/json",
-            dataName: 'json',
-            url: `${base_url}/acc_medvac/add`,
+            contentType: "application/json",
+            dataType: 'json',
+            url: `${base_url}/account_medvac/add`,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -225,15 +217,16 @@ export function ComponentAccMedVac(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const medvac_type_hid = response.medvac_type.hid;
+                    const account_medvac_hid = response.account_medvac.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataAccMedVac(data, medvac_type_hid);
+                        thisObj.setDataAccMedVac(data, account_medvac_hid);
+                        thisObj.closeExpandable();
                     };
                     
                     
                     
-                    navigation.managerPublicData.requestDataAccMedVac(
+                    navigation.pigFarm.accountLists.requestDataAccMedVac(
                         callback_success, elemServerErrorMsg)
                 }
                 else{
@@ -247,7 +240,7 @@ export function ComponentAccMedVac(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
 

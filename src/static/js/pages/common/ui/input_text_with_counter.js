@@ -16,7 +16,8 @@ export function UiInputTextWithCounter(input_settings){
         className:      'form-group-text',
         textLabel:      'Name',
         isRequired:     false,
-        textMaxChars:   ''
+        textMaxChars:   '',
+		invalidFeedBack: null,
         helpText:       ''  
     }
     
@@ -39,7 +40,7 @@ export function UiInputTextWithCounter(input_settings){
     
     
     this.getHtml = function(){
-        let _is_required = false;
+        let is_required = false;
         
         if ('isRequired' in settings){
             is_required = settings.isRequired;
@@ -53,6 +54,16 @@ export function UiInputTextWithCounter(input_settings){
         }
         
         
+		let s_invalid = '';
+		if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
+            s_invalid = `<div class="invalid-feedback" id="${elemIdTextInv}">${settings.invalidFeedBack} </div>`;
+        }
+		
+        let s_help = '';
+        if (settings.helpText && settings.helpText.length > 0){
+            s_help = `<div class="form-text">${settings.helpText}</div>`;
+        }
+        
         return `
         <div class="${settings.className}">
             <label for="${elemIdText}" class="form-label">
@@ -60,8 +71,8 @@ export function UiInputTextWithCounter(input_settings){
                 <span id="${elemIdCharCounter}" class="char-counter">0/${settings.textMaxChars}</span>
             </label>
             <input  type="text" class="form-control" id="${elemIdText}" maxlength="${settings.textMaxChars}" ${s_required}>
-            <div class="invalid-feedback" id="${elemIdTextInv}">Please enter a valid name. </div>
-            <div class="form-text">${settings.textHelpText}</div>
+            ${s_invalid}
+            ${s_help}
         </div>
         `;
         
@@ -105,7 +116,7 @@ export function UiInputTextWithCounter(input_settings){
     }
     
     
-    this.geValue = function(){
+    this.getValue = function(){
         return elemText.value;
     }
     

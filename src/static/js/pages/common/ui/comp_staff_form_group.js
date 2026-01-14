@@ -4,7 +4,11 @@
 
 'use strict';
 
-import {updateCharCounter}          from '../page_view_basic.js'
+import {updateCharCounter}      from '../page_view_basic.js'
+
+import {CommonSelectOptions}    from '../common_select_options.js';
+
+import {addValidationClassToElem} from './ui_utils.js';
 
 
 export function ComponentStaffFormGroup(input_settings){
@@ -27,47 +31,55 @@ export function ComponentStaffFormGroup(input_settings){
     
     
     */
+    const thisObj               = this;
     
     const settings              = input_settings;
+    const navigation            = settings.navigation;
+    
+    const MAXCHAR_STAFF_NAME    = 50;
     
     const elemIdExpandSection   = `${settings.uniqueKey}-add-show`;
     const elemIdText            = `${settings.uniqueKey}-add-text`;
     const elemIdTextInv         = `${settings.uniqueKey}-add-text-inv`;
-	const elemIdCharCounter		= `${settings.uniqueKey}-add-char-counter`;
+    const elemIdCharCounter     = `${settings.uniqueKey}-add-char-counter`;
         
     const elemIdServerErrorMsg  = `${settings.uniqueKey}-add-server-error`;
     const elemIdExpandCancel    = `${settings.uniqueKey}-add-cancel`;
     const elemIdExpandSave      = `${settings.uniqueKey}-add-save`;
     
     
+    const elemIdSelectGroup     = `${settings.uniqueKey}-select-group`;
     const elemIdSelect          = `${settings.uniqueKey}-select`;
     const elemIdEntryCount      = `${settings.uniqueKey}-entry-count`;
     const elemIdEntryAdd        = `${settings.uniqueKey}-entry-add`;
-	
-	const elemIdChkDoneByMe		= `${settings.uniqueKey}-done-by-me`;
+    
+    const elemIdChkDoneByMe     = `${settings.uniqueKey}-done-by-me`;
         
-		
+        
     let elemExpandSection       = null;
     let elemText                = null;
     let elemTextInv             = null;
-	let elemCharCounter			= null;
+    let elemCharCounter         = null;
     
     let elemServerErrorMsg      = null;
     let elemExpandCancel        = null;
     let elemExpandSave          = null;
     
+    let elemSelectGroup         = null;
     let elemSelect              = null;
     let elemEntryCount          = null;
     let elemEntryAdd            = null;
     
-	
-	let elemChkDoneByMe			= null;
-	
     
-	let dataStaffList			= null;
-	
-	
+    let elemChkDoneByMe         = null;
+    
+    
+    let dataStaffList           = null;
+    
+    
     let isExpandSectionExpanded = false;
+    
+    const commonSelectOptions   = new CommonSelectOptions();
     
     
     this.getHtml = function(){
@@ -76,7 +88,7 @@ export function ComponentStaffFormGroup(input_settings){
         let html_add_new = '';
         if (settings.includeAddNew){
             html_add_new = `
-                <button class="btn" type="button" id="${elemIdStaffAdd}">
+                <button class="btn" type="button" id="${elemIdEntryAdd}">
                     <i class="bi bi-plus"></i> New
                 </button>
             `;
@@ -98,6 +110,16 @@ export function ComponentStaffFormGroup(input_settings){
         }
         
         
+        let is_required = true;
+        
+        
+        let s_required = '';
+        let s_required_mark = '';
+        if (is_required){
+            s_required = 'required';
+            s_required_mark = `<span class="required">*</span>`;
+        }
+        
         
         
         return `
@@ -107,10 +129,10 @@ export function ComponentStaffFormGroup(input_settings){
                 
                 <div class="form-group">
                     <label for="${elemIdText}" class="form-label">
-                        ${settings.textLabel} ${s_required_mark}
-                        <span id="${elemIdCharCounter}" class="char-counter">0/${settings.textMaxChars}</span>
+                        Staff Name ${s_required_mark}
+                        <span id="${elemIdCharCounter}" class="char-counter">0/${MAXCHAR_STAFF_NAME}</span>
                     </label>
-                    <input  type="text" class="form-control" id="${elemIdText}" maxlength="${settings.textMaxChars}" ${s_required}>
+                    <input  type="text" class="form-control" id="${elemIdText}" maxlength="${MAXCHAR_STAFF_NAME}" ${s_required}>
                     <div class="invalid-feedback" id="${elemIdTextInv}">Please enter a valid name. </div>
                     <div class="form-text"></div>
                 </div>
@@ -122,12 +144,12 @@ export function ComponentStaffFormGroup(input_settings){
             </div>
         
         
-            <label for="${elemIdStaff}" class="form-label">
-                ${settings.labelSelect} <span class="entries-count" id=${elemIdStaffCount}></span>
+            <label for="${elemIdSelect}" class="form-label">
+                ${settings.labelSelect} <span class="entries-count" id=${elemIdEntryCount}></span>
             </label>
             
-            <div class="input-group" >
-                <select class="form-select" id="${elemIdStaff}">
+            <div class="input-group" id="${elemIdSelectGroup}">
+                <select class="form-select" id="${elemIdSelect}">
                     <option value="-1" selected disabled>No Entries</option>
                 </select>
                 ${html_add_new}
@@ -151,74 +173,111 @@ export function ComponentStaffFormGroup(input_settings){
         elemExpandSection       = document.getElementById(elemIdExpandSection);
         elemText                = document.getElementById(elemIdText);
         elemTextInv             = document.getElementById(elemIdTextInv);
-        elemCharCounter			= document.getElementById(elemIdCharCounter);
-		
+        elemCharCounter         = document.getElementById(elemIdCharCounter);
+        
         elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
         elemExpandCancel        = document.getElementById(elemIdExpandCancel);
         elemExpandSave          = document.getElementById(elemIdExpandSave);
         
+        elemSelectGroup         = document.getElementById(elemIdSelectGroup);
         elemSelect              = document.getElementById(elemIdSelect);
         elemEntryCount          = document.getElementById(elemIdEntryCount);
         elemEntryAdd            = document.getElementById(elemIdEntryAdd);
         
-		elemChkDoneByMe         = document.getElementById(elemIdChkDoneByMe);
+        elemChkDoneByMe         = document.getElementById(elemIdChkDoneByMe);
         
     }
     
     
     this._bindEventListeners = function(){
-		if (settings.includeAddNew){
-		
-			elemText.addEventListener('input', function(){
-				updateCharCounter(elemText, elemCharCounter, 
-					settings.textMaxChars);
-				
-				elemText.classList.remove('is-invalid');
-			});
-			
-			
-			elemEntryAdd.addEventListener('click', function() {
-				
-				isExpandSectionExpanded = !isExpandSectionExpanded;
-				
-				if (isExpandSectionExpanded) {
-					elemExpandSection.classList.add('expanded');
-					elemExpandSection.style.marginBottom = '15px';
-					
-					elemServerErrorMsg.style.display = 'none';
-					
-				} else {
-					elemExpandSection.classList.remove('expanded');
-					elemExpandSection.style.marginBottom = 0;
-				}
-				
-			});
-			
-			
-			elemExpandCancel.addEventListener('click', function() {
-				elemExpandSection.classList.remove('expanded');
-				elemExpandSection.style.marginBottom = 0;
-				isExpandSectionExpanded = false;
-			});
-			
-			
-			elemExpandSave.addEventListener('click', function() {
-				thisObj.onClickSave
-			});
+        if (settings.includeAddNew){
+        
+            elemText.addEventListener('input', function(){
+                updateCharCounter(elemText, elemCharCounter, 
+                    MAXCHAR_STAFF_NAME);
+                
+                elemText.classList.remove('is-invalid');
+            });
+            
+            
+            elemEntryAdd.addEventListener('click', function() {
+                
+                isExpandSectionExpanded = !isExpandSectionExpanded;
+                
+                if (isExpandSectionExpanded) {
+                    elemExpandSection.classList.add('expanded');
+                    elemExpandSection.style.marginBottom = '15px';
+                    
+                    elemServerErrorMsg.style.display = 'none';
+                    
+                } else {
+                    elemExpandSection.classList.remove('expanded');
+                    elemExpandSection.style.marginBottom = 0;
+                }
+                
+            });
+            
+            
+            elemExpandCancel.addEventListener('click', function() {
+                elemExpandSection.classList.remove('expanded');
+                elemExpandSection.style.marginBottom = 0;
+                isExpandSectionExpanded = false;
+            });
+            
+            
+            elemExpandSave.addEventListener('click', function() {
+                thisObj.onClickSave();
+            });
         
         }
-		
-		
-		if (settings.includeDoneByMe){
-			elemChkDoneByMe.addEventListener('change', function(event) {
-				if (event.currentTarget.checked) {
-					elemSelect.style.display = 'none';
-				} else {
-					elemSelect.style.display = 'block';
-				}
-			});
-		}
-		
+        
+        
+        if (settings.includeDoneByMe){
+            elemChkDoneByMe.addEventListener('change', function(event) {
+                
+                
+                
+                if (event.currentTarget.checked) {
+                    if (settings.includeAddNew){
+                        thisObj.closeExpandable();
+                    }
+                    
+                    elemSelectGroup.style.display = 'none';
+                } else {
+                    elemSelectGroup.style.display = 'flex';
+                    
+                    
+                }
+            });
+        }
+        
+    }
+    
+    
+    this.toggleExpandable = function(){
+        isExpandSectionExpanded = !isExpandSectionExpanded;
+            
+        if (isExpandSectionExpanded) {
+            if (thisObj.callbackBeforeExpand){
+                thisObj.callbackBeforeExpand();
+            }
+            
+            elemExpandSection.classList.add('expanded');
+            elemExpandSection.style.marginBottom = '15px';
+            
+            elemServerErrorMsg.style.display = 'none';
+            
+        } else {
+            elemExpandSection.classList.remove('expanded');
+            elemExpandSection.style.marginBottom = 0;
+        }
+    }
+    
+    
+    this.closeExpandable = function(){
+        elemExpandSection.classList.remove('expanded');
+        elemExpandSection.style.marginBottom = 0;
+        isExpandSectionExpanded = false;
     }
     
     
@@ -227,13 +286,22 @@ export function ComponentStaffFormGroup(input_settings){
         this._bindEventListeners();
     }
     
-	
-	this.setDataStaff = function(data, selected_entry_value){
-		dataStaffList = data;
-	}
-	
-	
-	this._getStaff = function(name, exclude_hid){
+    
+    this.setDataStaff = function(data, selected_entry_value){
+        dataStaffList = data;
+    
+        const elem_select = thisObj.getElemSelect();
+        
+        commonSelectOptions.setDataStaffList(dataStaffList, elem_select);
+        thisObj.setEntryCount(data);
+        
+        if (selected_entry_value){
+            elem_select.value = selected_entry_value;
+        }
+    }
+    
+    
+    this._getStaff = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         
         
@@ -247,7 +315,7 @@ export function ComponentStaffFormGroup(input_settings){
             cur_entry = dataStaffList[index];
             
             // Will check name for duplicate 
-            if (cur_entry.name.toUpperCase() == upper_name){
+            if (cur_entry.pig_farm_staff.name.toUpperCase() == upper_name){
                 if (exclude_hid){
                     if (cur_entry.hid != exclude_hid){
                         return cur_entry;
@@ -263,7 +331,7 @@ export function ComponentStaffFormGroup(input_settings){
         return null;
     }
     
-	
+    
     
     this.getElemSelect  = function(){
         return elemSelect;
@@ -285,11 +353,20 @@ export function ComponentStaffFormGroup(input_settings){
     this.reset = function(){
         elemSelect.selectedIndex = 0;
         elemServerErrorMsg.style.display = 'none';
+        
+        
+        if (settings.includeDoneByMe){
+            elemChkDoneByMe.checked = false;
+        }
+        
+        elemServerErrorMsg.style.display = 'none';
+        
+        
     } 
     
-	
-	this.onClickSave = function(){
-		let input_elem      = null;
+    
+    this.onClickSave = function(){
+        let input_elem      = null;
         let input_val       = null;
         let cur_field       = null;
         let validation      = -1;
@@ -306,7 +383,7 @@ export function ComponentStaffFormGroup(input_settings){
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_medvac_brand = thisObj._getMedVacBrand(input_name);
+            const cur_medvac_brand = thisObj._getStaff(input_name);
             if (cur_medvac_brand != null){
                 validation   = -1;
                 is_duplicate = 1;
@@ -319,31 +396,21 @@ export function ComponentStaffFormGroup(input_settings){
         
         if (validation != 0){
             if (is_duplicate > 0){
-                elemUiMedVacBrandName.setTextInvalid('Duplicate entry.');
+                elemTextInv.textContent = 'Duplicate entry.';
             }
             else{
-                elemUiMedVacBrandName.setTextInvalid('Please enter a valid name.');
+                elemTextInv.textContent = 'Please enter a valid name.';
             }
-            
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
         }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
-            
-        }
+        addValidationClassToElem(input_elem, validation);
         
         
-        if (proceed_to_save == 0) {return;}
+        if (validation != 0) {return;}
         
-		
-		
-		
-		// Check if user_account_hid is same with farm_account_hid;
+        
+        
+        
+        // Check if user_account_hid is same with farm_account_hid;
         const user_account_hid = navigation.userControl.getUserAccountHid();
         const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
         
@@ -352,26 +419,23 @@ export function ComponentStaffFormGroup(input_settings){
             return;
         } 
         
-		
-		
+        
+        
         
         const user_hid      = navigation.userControl.getUserHid();
-        const pig_farm_hid 	= navigation.userControl.getCurrentFarmHid();
-		
+        const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
+        
         const base_url      = window.location.origin;
 
         
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'pig_farm_hid':		pig_farm_hid,
-			'name':             input_name
+            'pig_farm_hid':     pig_farm_hid,
+            'name':             input_name
         };
 
 
-        // Element where to display server error message in this component
-        const elemServerErrorMsg = thisObj.getElemServerErrorMsg();
-        
         
         $.ajax({
             type: 'POST',
@@ -387,15 +451,16 @@ export function ComponentStaffFormGroup(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const new_entry_hid = response.medvac_brand.hid;
+                    const new_entry_hid = response.pig_farm_staff.hid;
                     
                     const callback_success = function(data){
                         thisObj.setDataStaff(data, new_entry_hid);
+                        thisObj.closeExpandable();
                     };
                     
                     
                     
-                    navigation.managerPublicData.requestDataMedVacBrand(
+                    navigation.pigFarm.requestDataPigFarmStaff(
                         callback_success, elemServerErrorMsg)
                 }
                 else{
@@ -409,10 +474,10 @@ export function ComponentStaffFormGroup(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
 
-	}
-	
+    }
+    
 }
