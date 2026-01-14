@@ -479,7 +479,7 @@ export function ProdEntryBirth(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
         

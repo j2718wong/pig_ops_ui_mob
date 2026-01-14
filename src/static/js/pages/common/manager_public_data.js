@@ -45,7 +45,7 @@ export function ManagerPublicData(_navigation){
                     }
                 }
                 else {
-                    navigation.errorServerMessage.receivedErrorMessage(
+                    navigation.serverError.receivedErrorMessage(
                         response, elem_show_error);
                     
                 }
@@ -55,7 +55,7 @@ export function ManagerPublicData(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
     }
@@ -87,7 +87,7 @@ export function ManagerPublicData(_navigation){
                     }
                 }
                 else {
-                    navigation.errorServerMessage.receivedErrorMessage(
+                    navigation.serverError.receivedErrorMessage(
                         response, elem_show_error);
                     
                 }
@@ -97,7 +97,7 @@ export function ManagerPublicData(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
     }

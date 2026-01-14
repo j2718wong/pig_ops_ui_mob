@@ -20,9 +20,8 @@ import {FIELD_VALIDATION_OK}    from '../../../models/model_basic.js'
 
 
 
-PageProdGestatingAdd.prototype = new PageViewPigFarmPage();
-export function PageProdGestatingAdd(input_settings){
-    PageViewPigFarmPage.call(this);
+export function PageCommonSupplier(input_settings){
+    PageCommonSupplier.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -31,12 +30,14 @@ export function PageProdGestatingAdd(input_settings){
     /*
     Typical settings = {
         navigation:             this,
+		headerTitle:			'Add Semen Supplier',
+		supplierType:			SUPPLIER_TYPE.SEMEN,
     };
     */
     const settings              = input_settings;
 
     
-    const elemDivContainer      = document.getElementById('container-prod-gesta-add');
+    const elemDivContainer      = document.getElementById('container-supplier-add-edit');
         
         
     let elemIdBtnClose          = null;
@@ -199,7 +200,7 @@ export function PageProdGestatingAdd(input_settings){
 
     <div class="modal-header gestating">
         <h5 class="modal-title" id="add-entry-acc-pig-ops-modal-label">
-            <i class="fas fa-plus me-2"></i><span>Add Prod Gestating</span>
+            <i class="fas fa-plus me-2"></i><span>${settingsheaderTitle}</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
@@ -207,141 +208,47 @@ export function PageProdGestatingAdd(input_settings){
     
     <div class="modal-body">
         
-        <!-- 1. Sow Field with Combined Warning -->
+        <!-- 1. Address Level 1 -->
         <div class="form-group-select">
-            <label for="${elemIdSow}" class="form-label">
-                Select Sow <span class="entries-count" id=${elemIdSowCount}></span>
+            <label for="${elemIdAdrsLevel1}" class="form-label">
+                ${elemIdLabelAdrsLevel1} <span class="entries-count" id=${elemIdAdrsLevel1Count}></span>
             </label>
                         
-            <div class="input-group" id="sowSelectGroup">
-                <select class="form-select" id="${elemIdSow}">
+            <div class="input-group">
+                <select class="form-select" id="${elemIdAdrsLevel1}">
                     <option value="-1" selected disabled>No Entries</option>
                 </select>
-                <button class="btn" type="button" id="${elemIdSowAdd}">
-                    <i class="bi bi-plus"></i> New
-                </button>
-            </div>
-            
-            <!-- Combined Breeding Status Warning -->
-            <div id="${elemIdSowStatusShow}" class="warning-box" style="display: none;">
-                <div class="warning-header">
-                    <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
-                    <span>Sow Already Bred</span>
-                </div>
-                <div class="warning-details">
-                    <span>
-                        This sow was last bred on <span id="${elemIdSowLastInsem}">Jan 15, 2024</span>
-                        with production <b>PID: <span id="${elemIdSowLastPid}">20</span></b>. 
-                        If this new entry will be saved, the previous production gestating  
-                        entry will be marked as <b>Not Pregnant</b> and will
-                        be removed from the Prod Gestating List.
-                        
-                        Please ensure this is an intentional breeding due to sow reheat.
-                    </span>
-                </div>
             </div>
         </div>
             
-        
-        <!-- 2. Date Mating -->
-        <div class="form-group-date">
-            <label for="${elemIdDateMating}" class="form-label">
-                Date Mating or Insemination
-            </label>
-            <input type="text" class="form-control" id="${elemIdDateMating}" required>
-            <div class="invalid-feedback">
-                Please enter a valid date.
-            </div>
-        </div>
-        
-        
-        <!-- 3. Insemination Type -->
+        <!-- 2. Address Level 2 -->
         <div class="form-group-select">
-            <label for="${elemIdInsemType}" class="form-label">
-                Insemination Type
+            <label for="${elemIdAdrsLevel2}" class="form-label">
+                ${elemIdLabelAdrsLevel2} <span class="entries-count" id=${elemIdAdrsLevel2Count}></span>
             </label>
                         
-            <select class="form-select" id="${elemIdInsemType}" required>
-                <option value="boar-mating" selected>Boar Mating</option>
-                <option value="ai-external">Artificial Insem External</option>
-                <option value="ai-internal">Artificial Insem Internal</option>
-            </select>
-        </div>
-        
-        <!-- 4. Boar Field -->
-        <div class="form-group-select" id="${elemIdBoarShow}">
-            <label for="${elemIdBoar}" class="form-label">
-                Select Boar <span class="entries-count" id=${elemIdBoarCount}></span>
-            </label>
-            
-            <div class="input-group" id="boarSelectGroup">
-                <select class="form-select" id="${elemIdBoar}">
+            <div class="input-group">
+                <select class="form-select" id="${elemIdAdrsLevel2}">
                     <option value="-1" selected disabled>No Entries</option>
                 </select>
-                <button class="btn" type="button" id="${elemIdBoarAdd}">
-                    <i class="bi bi-plus"></i> New
-                </button>
             </div>
         </div>
         
-        <div id="${elemIdAiShow}" class="ai-section" style="display: none;">
-            <!-- 1. Semen Supplier -->
-            <div class="form-group-select">
-                <label for="${elemIdSemenSupplier}" class="form-label">
-                    Semen Supplier <span class="entries-count" id=${elemIdSemenSupplierCount}></span>
-                </label>
-                
-                <div class="input-group" id="supplierSelectGroup">
-                    <select class="form-select" id="${elemIdSemenSupplier}">
-                        <option value="-1" selected disabled>No Entries</option>
-                    </select>
-                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSupplierModal">
-                        <i class="bi bi-plus"></i> New
-                    </button>
-                </div>
-                
-                <div id="${elemIdSemenSupplierInfo}"></div>
-            </div>
-            
-            <!-- 2. Semen Type -->
-            <div class="form-group-select">
-                <label for="${elemIdSemenType}" class="form-label">
-                    Semen Type <span class="entries-count" id=${elemIdSemenTypeCount}></span>
-                </label>
-            
-                <div class="input-group" id="semenTypeSelectGroup">
-                    <select class="form-select" id="${elemIdSemenType}">
-                        <option value="-1" selected disabled>No Entries</option>
-                    </select>
-                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSemenTypeModal">
-                        <i class="bi bi-plus"></i> New
-                    </button>
-                </div>
-            </div>
-            
-            <!-- 3. Semen Cost -->
-            <div class="form-group-number">
-                <label for="${elemIdSemenCost}" class="form-label">
-                    Semen Cost
-                </label>
-                
-                <input type="number" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0" value="0.00">
-                <div class="invalid-feedback">
-                    Please enter numeric value.
-                </div>
-            </div>
-        </div>
-        
-        
-        <div class="form-group-select" id="${elemIdBoarInternalShow}" style="display: none;">
-            <label for="${elemIdBoarInternal}" class="form-label">
-                Boar where Semen extracted <span class="entries-count" id=${elemIdBoarInternalCount}></span>
+		
+		<!-- 3. Address Level 3 -->
+        <div class="form-group-select">
+            <label for="${elemIdAdrsLevel3}" class="form-label">
+                ${elemIdLabelAdrsLevel3} <span class="entries-count" id=${elemIdAdrsLevel3Count}></span>
             </label>
-            
-            <select class="form-select" id="${elemIdBoarInternal}">
-                <option value="-1" selected disabled>No Entries</option>
-            </select>
+                        
+            <div class="input-group">
+                <select class="form-select" id="${elemIdAdrsLevel3}">
+                    <option value="-1" selected disabled>No Entries</option>
+                </select>
+            </div>
         </div>
+        
+		
         
         
         <!-- 5. Other Cost -->

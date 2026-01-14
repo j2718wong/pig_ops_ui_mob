@@ -154,7 +154,7 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
         
@@ -210,7 +210,7 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
         

@@ -9,7 +9,7 @@ import {PAGE_ID,
         REQUEST_ERROR_NUM}      from '../../constants.js';
         
 
-export function ErrorServerMessage(_navigation){
+export function ServerError(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
     
@@ -57,6 +57,11 @@ export function ErrorServerMessage(_navigation){
                 break;
             } 
         }
+    }
+    
+    
+    this.serverErrorThrown = function(jqXHR, textStatus, errorThrown){
+        // TODO 
     }
     
 }

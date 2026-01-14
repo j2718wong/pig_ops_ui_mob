@@ -1574,7 +1574,7 @@ export function PageSowBoarAddEdit(input_settings){
                     
                 }
                 else{
-                    navigation.errorServerMessage.receivedErrorMessage(
+                    navigation.serverError.receivedErrorMessage(
                         response, elemServerErrorMsg);
                 }
             },
@@ -1583,7 +1583,7 @@ export function PageSowBoarAddEdit(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
     }
@@ -1745,7 +1745,7 @@ export function PageSowBoarAddEdit(input_settings){
                     
                 }
                 else{
-                    navigation.errorServerMessage.receivedErrorMessage(
+                    navigation.serverError.receivedErrorMessage(
                         response, elemUpdateStatusErrorMsg);
                 }
             },
@@ -1754,7 +1754,7 @@ export function PageSowBoarAddEdit(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
     }

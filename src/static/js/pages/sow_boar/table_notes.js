@@ -230,7 +230,7 @@ export function TableNotes(input_settings){
                     }
                 }
                 else {
-                    navigation.errorServerMessage.receivedErrorMessage(
+                    navigation.serverError.receivedErrorMessage(
                         response, thisObj.elemServerErrorMsg);
                 }
             },
@@ -239,7 +239,7 @@ export function TableNotes(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
         

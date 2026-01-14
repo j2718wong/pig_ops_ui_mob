@@ -227,7 +227,7 @@ export function ComponentMedVacBrand(input_settings){
                         callback_success, elemServerErrorMsg)
                 }
                 else{
-                    navigation.errorServerMessage.receivedErrorMessage(response,
+                    navigation.serverError.receivedErrorMessage(response,
                         elemServerErrorMsg);
                 }
             },
@@ -237,7 +237,7 @@ export function ComponentMedVacBrand(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
 

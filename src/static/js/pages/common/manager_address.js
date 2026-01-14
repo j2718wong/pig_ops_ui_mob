@@ -5,12 +5,21 @@
 
 export function ManagerAddress(_navigation){
     const thisObj           = this;
-	const navigation 		= _navigation;
-	
+    const navigation        = _navigation;
+    
     
     // This will be ordered by what? for faster search
     let addressLevel1List   = null;
 
+
+    let curCountryHid       = null;
+    
+    
+    this.setCountryHid      = function(country_hid){
+        curCountryHid = country_hid;
+        thisObj.requestDataAddressLevel1(curCountryHid);
+    }
+    
     
     this.getAddressLevel1List  = function(){
         return addressLevel1List;
@@ -80,7 +89,7 @@ export function ManagerAddress(_navigation){
         address_level_2.level3 = data;
     }
     
-	
+    
     this.getAddressLevel3 = function(address_level_2, level_3_hid){
         
         if ('level3_addresses' in address_level_2){
@@ -131,18 +140,18 @@ export function ManagerAddress(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
     }
     
     
-	this.requestDataAddressLevel2 = function(address_level_1, callback_on_success){ 
+    this.requestDataAddressLevel2 = function(address_level_1, callback_success, elem_show_error){ 
         const level_1_hid = address_level_1.hid;
         
         // Need to request address level list
-        let url = gController.getBaseUrl();
-        url += '/address/level_2/list?level_1_hid=' + level_1_hid;
+        const base_url = window.location.origin;
+        const url = `${base_url}/address/level_2/list?level_1_hid=${level_1_hid}'`;
         
         
         $.ajax({
@@ -161,13 +170,14 @@ export function ManagerAddress(_navigation){
                     // Set address_level_1.level2 data; 
                     thisObj.setLevel2(address_level_1, response.data);
                                         
-                    if (callback_on_success){
-                        callback_on_success(response.data);
+                    if (callback_success){
+                        callback_success(response.data);
                     }
                     
                 }
                 else {
-                    // TODO
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
                 }
             },
   
@@ -175,13 +185,13 @@ export function ManagerAddress(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
     }
     
-	
-	this.requestDataAddressLevel3 = function(address_level_2, callback_on_success){
+    
+    this.requestDataAddressLevel3 = function(address_level_2, callback_success){
         const level_2_hid = address_level_2.hid;
         
         // Need to request address level list
@@ -204,8 +214,8 @@ export function ManagerAddress(_navigation){
                     // Set address_level_2.level3 data; 
                     thisObj.setLevel3(address_level_2, response.data);
                     
-                    if (callback_on_success){
-                        callback_on_success(response.data);
+                    if (callback_success){
+                        callback_success(response.data);
                     }
                 }
                 else {
@@ -217,7 +227,7 @@ export function ManagerAddress(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
     }

@@ -11,7 +11,7 @@ import {PIG_OPERATION_TYPE,
         SUPPLIER_TYPE}              from '../../constants.js';
 
 
-import {ErrorServerMessage}         from '../common/error_server_message.js';
+import {ServerError}         		from '../common/server_error.js';
 import {ManagerAddress}             from '../common/manager_address.js';
 import {ManagerPublicData}          from '../common/manager_public_data.js';
 
@@ -234,7 +234,7 @@ function ManagerRequest(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
         
@@ -323,7 +323,7 @@ export function Navigation(){
     
     
     this.userControl            = new UserControl(this);
-    this.errorServerMessage     = new ErrorServerMessage(this);
+    this.serverError     		= new ServerError(this);
     this.managerRequest         = new ManagerRequest(this);
     this.managerAddress         = new ManagerAddress(this);
     this.managerPublicData      = new ManagerPublicData(this)
@@ -577,7 +577,7 @@ export function Navigation(){
         
         // This waits for the logged in user for user authentication
         // before request
-        this.managerAddress.requestDataAddressLevel1(country_hid);
+        this.managerAddress.setCountryHid(country_hid);
         
         this.managerRequest.requestDataPigProdPublic(country_hid, 
                 thisObj.setDataPigProdPublic);

@@ -85,7 +85,7 @@ export function AccountLists(input_settings){
                     if (callback_success){callback_success(response.data);}
                 }
                 else {
-                    navigation.errorServerMessage.receivedErrorMessage(
+                    navigation.serverError.receivedErrorMessage(
                         response, elem_show_error);
                     
                 }
@@ -95,7 +95,7 @@ export function AccountLists(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
         
@@ -128,7 +128,7 @@ export function AccountLists(input_settings){
                     }
                 }
                 else {
-                    navigation.errorServerMessage.receivedErrorMessage(
+                    navigation.serverError.receivedErrorMessage(
                         response, elem_show_error);
                     
                 }
@@ -138,7 +138,7 @@ export function AccountLists(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                gfRequestError(jqXHR, textStatus, errorThrown, gController.getAppName());
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown)
             }
         });
     }
