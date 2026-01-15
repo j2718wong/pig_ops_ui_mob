@@ -1,4 +1,4 @@
-// January 2, 2026
+// January 15, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -44,8 +44,8 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 
-//PageMedVacAddEdit.prototype = new PageViewPigFarmPage();
-export function PageMedVacAddEdit(input_settings){
+
+export function PageHealthNotesAddEdit(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
@@ -79,7 +79,7 @@ export function PageMedVacAddEdit(input_settings){
     let elemIdInfoShow          = null;
     let elemIdInfo              = null;
     
-    let elemIdDateMedVac        = null;
+    let elemIdDateNotes        = null;
 
     let elemIdMedVacForShow         = null;
     let elemIdMedVacForLabel        = null;
@@ -119,7 +119,7 @@ export function PageMedVacAddEdit(input_settings){
     let elemInfoShow            = null;
     let elemInfo                = null;
     
-    let elemDateMedVac          = null;
+    let elemDateNotes          = null;
 
     
     let elemMedVacForShow           = null;
@@ -156,7 +156,7 @@ export function PageMedVacAddEdit(input_settings){
     
     // The settingsBreadcrumb.items is temporary; need to update dynamically
     const settingsBreadcrumb = {
-        uniqueKey:              'medvac-add-edit',
+        uniqueKey:              'health-notes-add-edit',
         navigation:             navigation,
         elemRoot:               elemDivContainer,    // Root element where to search for elements
                                             // so that not all document will be searched.
@@ -199,7 +199,7 @@ export function PageMedVacAddEdit(input_settings){
         elemIdInfoShow          = `medvac-add-edit-info-show`;
         elemIdInfo              = `medvac-add-edit-info`;
         
-        elemIdDateMedVac        = `medvac-add-edit-date-medvac`;
+        elemIdDateNotes        = `medvac-add-edit-date-medvac`;
         
         elemIdMedVacForShow     = `medvac-add-edit-medvac-for`;
         elemIdMedVacForLabel    = `medvac-add-edit-medvac-for-label`;
@@ -221,47 +221,8 @@ export function PageMedVacAddEdit(input_settings){
         
         
         
-        componentMedVacBrand    = new ComponentMedVacBrand({
-                                    navigation:             navigation,
-                                    uniqueKey:              'medvac-add-edit-brand-name',
-
-                                    titleExpandSection:     'Add New MedVac Brand',
-                                    htmlExpandSection:      null,
-                                    labelBtnExpandSave:     'Save MedVac Brand',
-                                    
-                                    labelSelect:            'Select MedVac Brand',
-                                    helpText:               'MedVac brand name or manufacturer'
-                                });
-        
-        
-        componentMedVacType     = new ComponentMedVacType({
-                                    navigation:             navigation,
-                                    uniqueKey:              'medvac-add-edit-type',
-
-                                    titleExpandSection:     'Add New MedVac Type',
-                                    htmlExpandSection:      null,
-                                    labelBtnExpandSave:     'Save MedVac Type',
-                                    
-                                    labelSelect:            'Select MedVac Type',
-                                    helpText:               'MedVac generic description or what it is for'
-                                });
-        
-        
-        componentAccMedVac      = new ComponentAccMedVac({
-                                    navigation:             navigation,
-                                    uniqueKey:              'medvac-add-edit-name',
-
-                                    titleExpandSection:     'Add New MedVac Name',
-                                    htmlExpandSection:      null,
-                                    labelBtnExpandSave:     'Save MedVac Name',
-                                    
-                                    labelSelect:            'Select MedVac Name',
-                                    helpText:               'MedVac product name'
-                                });
-        
-        
         elemUiNotes             = new UiInputTextAreaWithCounter({
-                                    uniqueKey:      'medvac-add-edit-notes',
+                                    uniqueKey:      'health-notes-add-edit-notes',
                                     
                                     className:      'form-group-text-area',
                                     textLabel:      'Notes',
@@ -271,31 +232,13 @@ export function PageMedVacAddEdit(input_settings){
                                 });
         
         
-        componentStaff          = new ComponentStaffFormGroup({
-                                    navigation:             navigation,
-                                    uniqueKey:              'medvac-add-edit-staff',
-                                    
-                                    includeAddNew:          true,
-                                    includeDoneByMe:        true,
-                                    
-                                    titleExpandSection:     'Add New Staff',
-                                    htmlExpandSection:      null,
-                                    labelBtnExpandSave:     'Save New Staff',
-                                    
-                                    labelSelect:            'Staff Member',
-                                    helpText:               'Who did the operation'
-                                    
-                                })
+      
     
         
         const html_breadcrumb       = componentBreadcrumb.getHtml();
 
-        const html_comp_medvac_brand = componentMedVacBrand.getHtml();
-        const html_comp_medvac_type = componentMedVacType.getHtml();
-        const html_comp_acc_medvac  = componentAccMedVac.getHtml();
         const html_ui_notes         = elemUiNotes.getHtml();
-        const html_comp_staff       = componentStaff.getHtml();
-        
+
         
         const html =`
 
@@ -319,48 +262,18 @@ export function PageMedVacAddEdit(input_settings){
         
         <!-- 1. Date MedVac -->
         <div class="form-group-date">
-            <label for="${elemIdDateMedVac}" class="form-label">Date</label>
-            <input type="text" class="form-control" id="${elemIdDateMedVac}" required>
+            <label for="${elemIdDateNotes}" class="form-label">Date</label>
+            <input type="text" class="form-control" id="${elemIdDateNotes}" required>
             <div class="invalid-feedback">
                 Please input date.
             </div>
-            <div class="form-text">Date when MedVac was given to pig.</div>
+            <div class="form-text">Date when this event happened.</div>
         </div>
         
-        <!-- Optional relation keys -->
-        <div class="form-group-check" id="${elemIdMedVacForShow}">
-            <label id="${elemIdMedVacForLabel}" class="form-label">MedVac For</label>
-            
-            <div id="${elemIdMedVacForPigOps}" class="checkbox-group">
-                <input type="checkbox" id="${elemIdMedVacForPigOpsChk}">
-                <label for="${elemIdMedVacForPigOpsChk}" class="checkbox-label" ${elemIdMedVacForPigOpsLabel}>
-                    Para pig ops
-                </label>
-            </div>
-            
-            <div id="${elemIdMedVacForPigHealth}" class="checkbox-group">
-                <input type="checkbox" id="${elemIdMedVacForPigHealthChk}">
-                <label for="${elemIdMedVacForPigHealthChk}" class="checkbox-label" ${elemIdMedVacForPigHealthLabel}>
-                    para Health Issue
-                </label>
-            </div>
-        </div>
-        
-        <!-- 2. MedVac Brand -->
-        ${html_comp_medvac_brand}
-        
-        <!-- 3. MedVac Type -->
-        ${html_comp_medvac_type}
-        
-        <!-- 4. Name -->
-        ${html_comp_acc_medvac}
+       
         
         <!-- 5. Notes -->
         ${html_ui_notes}
-        
-        <!-- 6. Staff -->
-        ${html_comp_staff}
-        
         
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
@@ -416,19 +329,19 @@ export function PageMedVacAddEdit(input_settings){
         elemInfoShow            = document.getElementById(elemIdInfoShow);
         elemInfo                = document.getElementById(elemIdInfo);
                                                           
-        elemDateMedVac          = document.getElementById(elemIdDateMedVac);
+        elemDateNotes          = document.getElementById(elemIdDateNotes);
         
-        elemMedVacForShow           = document.getElementById(elemIdMedVacForShow);
-        elemMedVacForLabel          = document.getElementById(elemIdMedVacForLabel);
+        elemMedVacForShow           = document.getElementById(elemIdVacForShow);
+        elemMedVacForLabel          = document.getElementById(elemIdVacForLabel);
                                                                     
-        elemMedVacForPigOps         = document.getElementById(elemIdMedVacForPigOps);
-        elemMedVacForPigOpsChk      = document.getElementById(elemIdMedVacForPigOpsChk);
-        elemMedVacForPigOpsLabel    = document.getElementById(elemIdMedVacForPigOpsLabel);
+        elemMedVacForPigOps         = document.getElementById(elemIdVacForPigOps);
+        elemMedVacForPigOpsChk      = document.getElementById(elemIdVacForPigOpsChk);
+        elemMedVacForPigOpsLabel    = document.getElementById(elemIdVacForPigOpsLabel);
                                                                     
                                                                     
-        elemMedVacForPigHealth      = document.getElementById(elemIdMedVacForPigHealth);
-        elemMedVacForPigHealthChk   = document.getElementById(elemIdMedVacForPigHealthChk); 
-        elemMedVacForPigHealthLabel = document.getElementById(elemIdMedVacForPigHealthLabel);
+        elemMedVacForPigHealth      = document.getElementById(elemIdVacForPigHealth);
+        elemMedVacForPigHealthChk   = document.getElementById(elemIdVacForPigHealthChk); 
+        elemMedVacForPigHealthLabel = document.getElementById(elemIdVacForPigHealthLabel);
         
                                                           
         elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
@@ -442,7 +355,7 @@ export function PageMedVacAddEdit(input_settings){
     this._processAfterHtmlRender = function(){
         
         
-        $('#'+elemIdDateMedVac).datepicker({
+        $('#'+elemIdDateNotes).datepicker({
             format: 'MM d, yyyy',  // This gives "January 31, 2026"
             autoclose: true,
             orientation: 'bottom',
@@ -451,14 +364,14 @@ export function PageMedVacAddEdit(input_settings){
             $('.datepicker').addClass('datepicker-material');
         });
         
-        //thisObj.setElemStaff(elemStaff, elemStaffCount);
+        thisObj.setElemStaff(elemStaff, elemStaffCount);
     }
     
     
     this._bindEventListeners = function(){
         
-        elemDateMedVac.addEventListener('change', function() {
-            console.log('elemDateMedVac chnage');
+        elemDateNotes.addEventListener('change', function() {
+            console.log('elemDateNotes chnage');
             thisObj._validateAfterChangeInput(this, 'date_medvac');
         });
         
@@ -481,34 +394,12 @@ export function PageMedVacAddEdit(input_settings){
     }
     
     
-    this.setDataMedVacBrand = function(data){
-        dataMedVacBrandList = data;
-        componentMedVacBrand.setDataMedVacBrand(data);
-    }
-    
-    
-    this.setDataMedVacType = function(data){
-        dataMedVacTypeList  = data;
-        componentMedVacType.setDataMedVacType(data);
-    }
-    
-    
-    this.setDataAccMedVac = function(data) {
-        componentAccMedVac.setDataAccMedVac(data);
-    }
-    
-    
-    this.setDataStaff = function(data){
-        componentStaff.setDataStaff(data);
-    }
-    
     
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
         // Remove validation classes
-        elemDateMedVac.value = '';
-		elemDateMedVac.classList.remove('is-valid', 'is-invalid');
+        let cur_elem = null;
         
         componentMedVacBrand.reset();
         componentMedVacType.reset();
@@ -522,17 +413,11 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.beforeShow = function(data_sow_boar, options){
-        // IMPORTANT;  When you set a select value while its parent container 
-        // is hidden (via display: none, visibility: hidden, or opacity: 0), 
-        // the browser doesn't properly render the selected state until the 
-        // container becomes visible.
-        
-        
         /*
         Typical options
         options ={
+			is_notes:				true,	// health issues if false
             is_add:                 true,   // false is edit
-            medvac_hid:             null,   // not null if edit
             callback_after_add:     thisObj.onSuccessAddEntry
             go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
@@ -541,11 +426,12 @@ export function PageMedVacAddEdit(input_settings){
         curDataSowBoar  = data_sow_boar;
         showOptions     = options;
         
-        
         // Need to update breadCrumb;
         // 1.) The first entry can be either be Sow List, Boar List, Gilt List, or Diposed List
         // 2.) The second entry is the Sow Boar name 
-
+        // 
+        // 
+        
         let list_name       = null;
         let sow_boar_name   = null;
         
@@ -563,7 +449,7 @@ export function PageMedVacAddEdit(input_settings){
             }
             else{
                 if (cur_sow_boar.status_id == SOW_STATUS.GROWING){
-                    if (cur_sow_boar.is_production_ready > 0){
+                    if (sow_boar.is_production_ready > 0){
                         list_name = 'Sow List';
                     }
                     else{
@@ -597,69 +483,10 @@ export function PageMedVacAddEdit(input_settings){
         thisObj._resetForm();
         
         
-        // Check if there is a public data dataMedVacBrandList and dataMedVacTypeList
-        const medvac_brand_list = navigation.managerPublicData.dataMedVacBrandList;
-        if (medvac_brand_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataMedVacBrand(data);
-            };
-            
-            navigation.managerPublicData.requestDataMedVacBrand(callback_success, elemServerErrorMsg)
-        }
-        else{
-            thisObj.setDataMedVacBrand(medvac_brand_list);
-        }
-        
-        
-        const medvac_type_list = navigation.managerPublicData.dataMedVacTypeList;
-        if (medvac_type_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataMedVacType(data);
-            };
-            
-            navigation.managerPublicData.requestDataMedVacType(callback_success, elemServerErrorMsg)
-        }
-        else{
-            thisObj.setDataMedVacType(medvac_type_list);
-        }
-        
-        
-        // check if there is an account dataAccMedVac
-        const acc_medvac_list = navigation.pigFarm.accountLists.dataAccMedVac;
-        if (acc_medvac_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataAccMedVac(data);
-            };
-            
-            navigation.pigFarm.accountLists.requestDataAccMedVac(callback_success, elemServerErrorMsg)
-        
-        }
-        else{
-            thisObj.setDataAccMedVac(data);
-        }
-        
-        
-        // Get Farm staff list
-        const staff_list = navigation.pigFarm.dataStaffList;
-        if (staff_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataStaff(data);
-            };
-            
-            navigation.pigFarm.requestDataPigFarmStaff(callback_success, elemServerErrorMsg)
-        
-        }
-        else{
-            thisObj.setDataStaff(staff_list);
-        }
         
         
         
-        // Set Page Title
+        
         let html;
         let sow_boar_reference;
         
@@ -670,31 +497,29 @@ export function PageMedVacAddEdit(input_settings){
             sow_boar_reference = curDataSowBoar.number;
         }
         
-        if (options.is_add){
-            html = `<i class="fas fa-plus me-2"></i>Add MedVac for <span>${sow_boar_reference}</span>`;
-        }
-        else{
-            html = `<i class="fas fa-edit me-2"></i>Edit MedVac for <span>${sow_boar_reference}</span>`;
-            
-           
-        }
+		
+		if (options.is_notes){
+			if (options.is_add){
+				html = `<i class="fas fa-plus me-2"></i>Add Notes for <span>${sow_boar_reference}</span>`;
+			}
+			else{
+				html = `<i class="fas fa-edit me-2"></i>Edit Notes for <span>${sow_boar_reference}</span>`;
+				
+				thisObj.populateForm(curDataSowBoar, medvac_hid);
+			}
+		}
+		else{
+			if (options.is_add){
+				html = `<i class="fas fa-plus me-2"></i>Add Health Issue for <span>${sow_boar_reference}</span>`;
+			}
+			else{
+				html = `<i class="fas fa-edit me-2"></i>Edit Health Issue for <span>${sow_boar_reference}</span>`;
+				
+				thisObj.populateForm(curDataSowBoar, medvac_hid);
+			}
+		}
         elemHeaderTitle.innerHTML = html;
                 
-        
-        // Make sure the input elements are enabled, in case 
-        // the previous entry was view a disposed sow_boar
-        thisObj.enableAllInputs();
-        
-        
-        // Show/Hide add only or edit only elements
-        if (options.is_add){
-            elemMedVacForShow.style.display = 'block';
-            componentStaff.showDoneByMe();
-        }
-        else{
-            elemMedVacForShow.style.display = 'none';
-            componentStaff.hideDoneByMe();
-        }
         
         
         // Update Close and cancel button on click
@@ -708,14 +533,6 @@ export function PageMedVacAddEdit(input_settings){
         };
         
       
-    }
-    
-    
-    this.show = function(){
-        if (showOptions.is_add == false){
-            // Necessary to display fully first the container
-            setTimeout(function(){thisObj.populateForm(curDataSowBoar, showOptions.medvac_hid);}, 100);
-        }
     }
     
     
@@ -734,58 +551,26 @@ export function PageMedVacAddEdit(input_settings){
         
         if (cur_medvac == null){return;}
         
-
-        // Set the datepicker to this date
-        const dt_medvac     = new Date(cur_medvac.medvac.date_medvac);
+        
+        const dt_medvac     = new Date(cur_medvac.date_medvac);
         const dt_medvac_s   = formatDate(dt_medvac);
-        elemDateMedVac.value = dt_medvac_s;
+        elemDateNotes.value = dt_medvac_s;
         
-        const $elemDateMedVac = $(elemDateMedVac);
-        $elemDateMedVac.datepicker('setDate', dt_medvac_s);
+        // Set the datepicker to this date
+        const $elemDateNotes = $(elemDateNotes);
+        $elemDateNotes.datepicker('setDate', cur_medvac.date_medvac);
+        
+        
 
-        
-        // Set MedVac brand
-        //componentMedVacBrand.setValue(cur_medvac.medvac.brand.hid);
-        componentMedVacBrand.setValue(cur_medvac.medvac.brand.hid);
-        
-        
-        // Set MedVac type
-        componentMedVacType.setValue(cur_medvac.medvac.type.hid);
-        
-        
-        // Set MedVac AccMedVac
-        componentAccMedVac.setValue(cur_medvac.medvac.acc_medvac.hid);
-        
-        
-        // Set Notes
-        elemUiNotes.setText(cur_medvac.medvac.notes);
-        
-        
-        // Set Staff 
-        componentStaff.setValue(cur_medvac.medvac.staff.hid)
     }
     
     
-    this.disableAllInputs = function(){
-        elemDateMedVac.disabled         = true;
+    this.show = function(){
+        thisObj._resetForm();
         
-        componentMedVacBrand.disableInputs();
-        componentMedVacType.disableInputs();
-        componentAccMedVac.disableInputs();
-        
-        elemUiNotes.disableInput();
+        console.log('PageAddGestating show');
     }
     
-    
-    this.enableAllInputs = function(){
-        elemDateMedVac.disabled         = false;
-        
-        componentMedVacBrand.enableInputs();
-        componentMedVacType.enableInputs();
-        componentAccMedVac.enableInputs();
-        
-        elemUiNotes.enableInput();
-    }
     
 
     this._validateAfterChangeInput = function(ev, input_field){
@@ -803,7 +588,7 @@ export function PageMedVacAddEdit(input_settings){
             switch(input_field){
                 
                 case 'date_medvac': {
-                    input_elem      = elemDateMedVac;
+                    input_elem      = elemDateNotes;
                     input_val       = input_elem.value;
                     
                     console.log('Test 1');
@@ -848,7 +633,7 @@ export function PageMedVacAddEdit(input_settings){
         let is_duplicate    = 0;
         
         
-        let input_date_medvac   = elemDateMedVac.value.trim();
+        let input_date_medvac   = elemDateNotes.value.trim();
         
         let input_medvac_brand  = componentMedVacBrand.getValue()
         let input_medvac_type   = componentMedVacType.getValue()
@@ -859,7 +644,7 @@ export function PageMedVacAddEdit(input_settings){
 
         let dt_medvac_s = null;
         
-        input_elem          = elemDateMedVac;
+        input_elem          = elemDateNotes;
         if (input_date_medvac.length == 0){
             validation = -1;
             addValidationClassToElem(input_elem, validation);
@@ -949,7 +734,7 @@ export function PageMedVacAddEdit(input_settings){
         };
         
         if (showOptions.is_add == false){
-            post_data['pig_medvac_hid'] = showOptions.medvac_hid;
+            
         }
         
         
@@ -973,24 +758,20 @@ export function PageMedVacAddEdit(input_settings){
             data: JSON.stringify(post_data),
   
             beforeSend: function(){
-                elemServerErrorMsg.style.display = 'none';
             },
   
             success: function(response){
                 if (response.result.num == 0){
                     if (showOptions.is_add == true){
-                        if (showOptions.callback_after_add){
-                            showOptions.callback_after_add();
-                        }
+                        showOptions.callback_after_add();
                         navigation.showThisPage(showOptions.go_back_page);
                     }
                     
                     else{
-                        if (showOptions.callback_after_edit){
-                            showOptions.callback_after_edit();
-                        }
-                        navigation.showThisPage(showOptions.go_back_page);
+                        
                     }
+                    
+                    
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

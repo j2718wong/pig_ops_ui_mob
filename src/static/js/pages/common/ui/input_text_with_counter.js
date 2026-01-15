@@ -17,7 +17,7 @@ export function UiInputTextWithCounter(input_settings){
         textLabel:      'Name',
         isRequired:     false,
         textMaxChars:   '',
-		invalidFeedBack: null,
+        invalidFeedBack: null,
         helpText:       ''  
     }
     
@@ -54,11 +54,11 @@ export function UiInputTextWithCounter(input_settings){
         }
         
         
-		let s_invalid = '';
-		if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
+        let s_invalid = '';
+        if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
             s_invalid = `<div class="invalid-feedback" id="${elemIdTextInv}">${settings.invalidFeedBack} </div>`;
         }
-		
+        
         let s_help = '';
         if (settings.helpText && settings.helpText.length > 0){
             s_help = `<div class="form-text">${settings.helpText}</div>`;
@@ -131,6 +131,16 @@ export function UiInputTextWithCounter(input_settings){
     
     this.setTextInvalid = function(text){
         elemTextInv.textContent = text;
+    }
+    
+    
+    this.disableInput = function(){
+        elemText.disabled = true;
+    }
+    
+    
+    this.enableInput = function(){
+        elemText.disabled = false;
     }
     
 }

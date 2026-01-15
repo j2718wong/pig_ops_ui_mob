@@ -16,7 +16,7 @@ import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
-		FORMAT_COMPACT_NO_SPACE,
+        FORMAT_COMPACT_NO_SPACE,
         createPaginationManager} from '../../utils.js';
 
 
@@ -92,11 +92,9 @@ export function TableMedVac(input_settings){
     }
     
     
-    
     this.beforeShow = function(data_sow_boar){
         dataSowBoar = data_sow_boar;
         
-        const data_sow_boar_medvac = null;
         if ('list_medvac' in dataSowBoar){
             // Set table entry list; This will set also the entry count;
             thisObj.setDataEntryList(dataSowBoar.list_medvac);
@@ -136,9 +134,9 @@ export function TableMedVac(input_settings){
         <table class="data-table" id="">
             <thead>
                 <colgroup>
-                    <col style="width: 25%;">
-                    <col style="width: 45%;">
-                    <col style="width: 50%;">
+                    <col style="width: 28%;">
+                    <col style="width: 32%;">
+                    <col style="width: 40%;">
                 </colgroup>
                 
                 <tr>
@@ -170,17 +168,23 @@ export function TableMedVac(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         
-        let  s_click = `gNavigation.pageSowBoarEntry.`;
+        let  s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
         
-        let s_medvac = `<span class="medvac-brand">${cur_entry.medvac.brand.name}</span>`;
-        s_medvac +=  `<span class="medvac-type">${cur_entry.medvac.type.name}</span>`;
+        let s_medvac = `
+            <span class="medvac-brand">${cur_entry.medvac.brand.name}</span><br>
+            <span class="medvac-type">${cur_entry.medvac.type.name}</span>
+        `;
         
-        let s_desc = `<span class="medvac-name">${cur_entry.medvac.name}</span>`;
-        s_desc += `<span class="medvac-notes">${cur_entry.medvac.notes}</span>`;
+        let s_desc = `
+            <span class="medvac-name">${cur_entry.medvac.acc_medvac.name}</span>
+            <span class="medvac-notes">${cur_entry.medvac.notes}</span>
+        `;
+        
+        const dt_medvac = new Date(cur_entry.medvac.date_medvac);
         
         const html = `
             <tr>
-                <td><span>${formatDate(cur_entry.medvac.date_medvac, FORMAT_COMPACT_NO_SPACE)}</span></td>
+                <td><span>${formatDate(dt_medvac, FORMAT_COMPACT_NO_SPACE)}</span></td>
                 <td onclick='${s_click}'>${s_medvac}</td>
                 <td onclick='${s_click}'>${s_desc}</td>
             </tr>
@@ -192,14 +196,14 @@ export function TableMedVac(input_settings){
 
     this.addToolTips = function(){
         const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
-        console.log('with_tooltips='+with_tooltips.length);
+
         for (const cur_entry of with_tooltips){
             new bootstrap.Tooltip(cur_entry);
         }
     }
     
     
-    this.searchSowBoar = function(key){
+    this.search = function(key){
         
     }
     
@@ -261,6 +265,20 @@ export function TableMedVac(input_settings){
        
     }
     
+    
+    this.getEntry = function(entry_hid){
+        if ('list_medvac' in dataSowBoar){
+            for (const cur_entry of dataSowBoar.list_medvac){
+                if (cur_entry.medvac.hid == entry_hid){
+                    return cur_entry;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    
     this.onClickAddEntry = function(){
         
         const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
@@ -283,4 +301,33 @@ export function TableMedVac(input_settings){
         thisObj.requestDataPigMedVac();
     }
     
+    
+    this.onSuccessEditEntry = function(){
+        thisObj.requestDataPigMedVac();
+    }
+    
+    
+    
+    this.onClickRowEntry = function(entry_hid){
+        const row_entry = thisObj.getEntry(entry_hid);
+        
+        if (row_entry){
+            const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        
+            const options ={
+                is_add:                 false,   // false is edit
+                medvac_hid:             entry_hid,
+                callback_after_edit:    thisObj.onSuccessEditEntry,
+                go_back_page:           go_back_page   // Go back to this page; this is Div element
+            }
+            
+            navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
+            const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+            navigation.showThisPage(page_container);
+            
+            // Important; otherwise select dropdown not rendered
+            navigation.pageMedVacAddEdit.show();
+        
+        }
+    }
 }

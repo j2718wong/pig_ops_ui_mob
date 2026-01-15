@@ -16,8 +16,8 @@ export function ComponentStaffFormGroup(input_settings){
     /* Typical settings
     settings = {
         uniqueKey:              ''
-        navigation:				navigation,
-		
+        navigation:             navigation,
+        
         includeAddNew:          true,
         includeDoneByMe:        true,
         
@@ -54,6 +54,7 @@ export function ComponentStaffFormGroup(input_settings){
     const elemIdEntryCount      = `${settings.uniqueKey}-entry-count`;
     const elemIdEntryAdd        = `${settings.uniqueKey}-entry-add`;
     
+    const elemIdDoneByMeShow    = `${settings.uniqueKey}-done-by-me-show`;
     const elemIdChkDoneByMe     = `${settings.uniqueKey}-done-by-me`;
         
         
@@ -72,6 +73,7 @@ export function ComponentStaffFormGroup(input_settings){
     let elemEntryAdd            = null;
     
     
+    let elemDoneByMeShow        = null;
     let elemChkDoneByMe         = null;
     
     
@@ -100,7 +102,7 @@ export function ComponentStaffFormGroup(input_settings){
         if (settings.includeDoneByMe){
             html_done_by_me =`
             <!-- Done by Me Checkbox -->
-            <div id="doneByMeContainer" class="checkbox-group">
+            <div id="${elemIdDoneByMeShow}" class="checkbox-group">
                 <input type="checkbox" id="${elemIdChkDoneByMe}">
                 <label for="${elemIdChkDoneByMe}" class="checkbox-label">
                     <i class="fas fa-user-check checkbox-icon"></i>
@@ -185,6 +187,7 @@ export function ComponentStaffFormGroup(input_settings){
         elemEntryCount          = document.getElementById(elemIdEntryCount);
         elemEntryAdd            = document.getElementById(elemIdEntryAdd);
         
+        elemDoneByMeShow        = document.getElementById(elemIdDoneByMeShow);
         elemChkDoneByMe         = document.getElementById(elemIdChkDoneByMe);
         
     }
@@ -333,7 +336,6 @@ export function ComponentStaffFormGroup(input_settings){
     }
     
     
-    
     this.getElemSelect  = function(){
         return elemSelect;
     }
@@ -346,6 +348,11 @@ export function ComponentStaffFormGroup(input_settings){
     
     this.getValue = function(){
         return elemSelect.value;
+    }
+    
+    
+    this.setValue = function(value){
+        elemSelect.value = value;
     }
     
     
@@ -365,8 +372,18 @@ export function ComponentStaffFormGroup(input_settings){
         
         elemServerErrorMsg.style.display = 'none';
         
-        
+        elemSelect.classList.remove('is-valid', 'is-invalid');
     } 
+    
+    
+    this.showDoneByMe = function(){
+        elemDoneByMeShow.style.display = 'flex';
+    }
+    
+    
+    this.hideDoneByMe = function(){
+        elemDoneByMeShow.style.display = 'none';
+    }
     
     
     this.onClickSave = function(){

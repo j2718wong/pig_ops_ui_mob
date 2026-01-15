@@ -21,8 +21,8 @@ import {formatDate,
 
 
 
-TableHealthIssues.prototype = new PageTableBasic();
-export function TableHealthIssues(input_settings){
+
+export function TableHealthIssue(input_settings){
     PageTableBasic.call(this);
     
     const thisObj               = this;

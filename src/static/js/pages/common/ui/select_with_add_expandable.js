@@ -166,6 +166,11 @@ export function UiSelectWithAddExpandable(input_settings){
     }
     
     
+    this.setValue = function(value){
+        elemSelect.value = value;
+    }
+    
+    
     this.setEntryCount = function(data){
         if (data.length == 1){
             elemEntryCount.textContent = ` (${data.length} Entry)`;
@@ -179,6 +184,20 @@ export function UiSelectWithAddExpandable(input_settings){
     this.reset = function(){
         elemSelect.selectedIndex = 0;
         elemServerErrorMsg.style.display = 'none';
+		
+		elemSelect.classList.remove('is-valid', 'is-invalid');
     } 
+    
+    
+    this.disableInputs = function(){
+        elemSelect.disabled = true;
+        elemEntryAdd.disabled = true;
+    }
+    
+    
+    this.enableInputs = function(){
+        elemSelect.disabled = false;
+        elemEntryAdd.disabled = false;
+    }
     
 }
