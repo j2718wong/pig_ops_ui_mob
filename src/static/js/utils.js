@@ -7,6 +7,8 @@
 export const FORMAT_LONG_MONTH      = 'long';
 export const FORMAT_SHORT_MONTH     = 'short';
 export const FORMAT_COMPACT         = 'compact';
+export const FORMAT_COMPACT_NO_SPACE= 'compact_no_space';
+
 export const FORMAT_MONTH_DATE_ONLY = 'month_date';
 
 
@@ -25,9 +27,9 @@ export function formatDate(dt, format){
         options.month = format;
     }
     
-    var day     = null;
-    var month   = null;
-    var year    = null;
+    let day     = null;
+    let month   = null;
+    let year    = null;
     
     if (format == FORMAT_COMPACT) {
         day     = String(dt.getDate()).padStart(2, '0');
@@ -35,6 +37,14 @@ export function formatDate(dt, format){
         year    = dt.getFullYear();
 
         return `${day} ${month} ${year}`;
+    }
+	
+	if (format == FORMAT_COMPACT_NO_SPACE) {
+        day     = String(dt.getDate()).padStart(2, '0');
+        month   = monthNames[dt.getMonth()];
+        year    = dt.getFullYear();
+
+        return `${day}${month}${year}`;
     }
     
     if (format == FORMAT_MONTH_DATE_ONLY){

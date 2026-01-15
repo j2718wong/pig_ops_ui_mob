@@ -16,7 +16,8 @@ export function ComponentStaffFormGroup(input_settings){
     /* Typical settings
     settings = {
         uniqueKey:              ''
-        
+        navigation:				navigation,
+		
         includeAddNew:          true,
         includeDoneByMe:        true,
         
@@ -338,10 +339,13 @@ export function ComponentStaffFormGroup(input_settings){
     }
     
     
-    
-    
     this.getElemEntrySave  = function(){
         return elemExpandSave;
+    }
+    
+    
+    this.getValue = function(){
+        return elemSelect.value;
     }
     
     

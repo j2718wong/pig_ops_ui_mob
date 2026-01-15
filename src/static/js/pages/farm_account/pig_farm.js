@@ -127,6 +127,21 @@ export function PigFarm(_navigation){
     }
     
     
+    this.getDataSowBoar = function(sex, sow_boar_hid){
+        let sow_boar_list  = this.dataSowList;
+        if (sex == 'M'){
+            sow_boar_list  = this.dataBoarList;
+        }
+        
+        if (sow_boar_list == null){return null;}
+        
+        for (const cur_entry of sow_boar_list){
+            if (cur_entry.hid == sow_boar_hid){return cur_entry}
+        }
+        return null;
+    } 
+    
+    
     this.requestDataPigProd = function(pig_prod_type, callback){
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
         
@@ -256,5 +271,7 @@ export function PigFarm(_navigation){
         });
         
     }
-    
+ 
+
+     
 }

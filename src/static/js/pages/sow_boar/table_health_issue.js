@@ -186,9 +186,37 @@ export function TableHealthIssues(input_settings){
         
 		let s_last_med = ''
 		let s_last_update = '';
-          
+		
+		
+		
+		const health_issue_hid = cur_entry.prod_notes.hid;
+		let last_med_health_issue =  null;
+		
+		// dataSowBoar.list_medvac is listed in date DESC
+		if ('list_medvac' in dataSowBoar){
+			// Get the first 
+			const  list_medvac = dataSowBoar.list_medvac;
+			
+			for (const cur_medvac in list_medvac){
+				if (cur_medvac.health_issue_hid == health_issue_hid){
+					last_med_health_issue = cur_medvac;
+					break;
+				}
+			}
+			
+		}
+		
+		
+		if (last_med_health_issue){
+			s_last_med = `
+				<span class="medvac-name">${last_med_health_issue.medvac.acc_medvac.name}</span>
+				<span class="medvac-notes">${last_med_health_issue.medvac.notes}</span>
+			`;
+			
+        }
+		
         const html = `
-            <tr>
+            <tr>=
                 <td><span>${cur_entry.prod_notes.date_notes}</span></td>
                 <td>${s_last_med}</td>
                 <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>

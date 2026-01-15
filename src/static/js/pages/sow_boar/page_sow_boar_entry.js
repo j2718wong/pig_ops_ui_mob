@@ -20,6 +20,7 @@ import {formatDate,
         createPaginationManager} from '../../utils.js';
 
 import {TableMedVac}            from './table_medvac.js'
+import {TableHealthIssue}       from './table_health_issue.js'
 
 
 PageSowBoarEntry.prototype = new PageViewPigFarmPage();
@@ -86,9 +87,12 @@ export function PageSowBoarEntry(input_settings){
 	
     let dataSowBoar             = null;
 	
+	let curActiveElemTab		= null;
 	
     let tableMedVac             = null;
-    
+	let tablePigHealth			= null;
+	let tableNotesSowBoar		= null;
+	
     
     
     this.init = function(){
@@ -234,12 +238,18 @@ export function PageSowBoarEntry(input_settings){
     
     
     this._processAfterHtmlRender = function(){
-        const settings_medvac = {
+        tableMedVac     = new TableMedVac({
             navigation:             settings.navigation,
             elemDivContainer:       elemTabMedVac
-        };
-        tableMedVac     = new TableMedVac(settings_medvac);
+        });
         tableMedVac.init();
+		
+		
+		tablePigHealth= new TableMedVac({
+            navigation:             settings.navigation,
+            elemDivContainer:       elemTabMedVac
+        });
+		
     }
     
     
@@ -254,8 +264,10 @@ export function PageSowBoarEntry(input_settings){
             console.log('switchTab tabId =' + tabId) ;
             allTabs.forEach(tab => tab.classList.remove('active'));
             const selectedTab = document.getElementById(tabId);
-            if (selectedTab) selectedTab.classList.add('active');
-            
+            if (selectedTab) {
+				selectedTab.classList.add('active');
+				curActiveElemTab = selectedTab;
+            }
             navItems.forEach(item => item.classList.remove('active'));
             
             if (tabId === elemIdTabMedVac   || 
@@ -344,7 +356,7 @@ export function PageSowBoarEntry(input_settings){
         
         elemEntryName.textContent = sow_reference;
         
-        // Set Entry hid
+        // Set Entry hid; 2026115 still in deliberation if to show sow_boar_hid
         /*
         let entry_hid = null;
         switch (options.sow_boar_type){
@@ -369,11 +381,84 @@ export function PageSowBoarEntry(input_settings){
         
 		
 		
-		
         // Set tableMedVac 
         tableMedVac.beforeShow(dataSowBoar);
         
-        
+        if ('notes' in dataSowBoar){
+			const test = 1;
+		}
+		else{
+			thisObj.requestDataSowBoarNotes(dataSowBoar);
+		}
+		
     }
+	
+	
+
+	
+	
+	// Note sow_boar.notes and sow_boar.health_issue are merged together in
+    // prod_notes table. There is a flag to tell if is  a health issue
+    this.requestDataSowBoarNotes = function(data_sow_boar, callback_success, elem_show_error){
+        const sow_boar_hid = data_sow_boar.hid;
+		
+		const base_url = window.location.origin;
+        let url = `${base_url}/pig_prod_notes/list?sow_boar_hid=${sow_boar_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                
+                if (response.result.num == 0){
+                    
+                    // response.data is ORDERED BY date DESC
+					const health_issues = [];
+					const notes = [];
+					
+					for (cur_entry of response.data){
+						if ('is_health_issue' in cur_entry.prod_notes){
+							health_issues.unshift(cur_entry);
+						}
+						else{
+							notes.unshift(cur_entry);
+						}
+					}
+					
+					data_sow_boar['health_issues'] = health_issues;
+					data_sow_boar['notes'] = notes;
+                    
+                    if (callback_success){callback_success(response.data);}
+                    
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+	
+	
+	/** 
+	This should open to MedVac edit page.
+	
+	*/
+	this.onClickTableRowMedVac = function(medvac_hid){
+		
+	}
 
 }

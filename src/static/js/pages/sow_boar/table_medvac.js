@@ -16,7 +16,7 @@ import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
-        sortList,
+		FORMAT_COMPACT_NO_SPACE,
         createPaginationManager} from '../../utils.js';
 
 
@@ -98,15 +98,12 @@ export function TableMedVac(input_settings){
         
         const data_sow_boar_medvac = null;
         if ('list_medvac' in dataSowBoar){
-            // TODO
-            const test = 1;
+            // Set table entry list; This will set also the entry count;
+            thisObj.setDataEntryList(dataSowBoar.list_medvac);
+            thisObj.renderTable(dataSowBoar.list_medvac);
         } else{
-            const callback_success = function(data){
-                // Set table entry list; This will set also the entry count;
-                thisObj.setDataEntryList(data);
-                thisObj.renderTable(data);
-            };
-            thisObj.requestData(callback_success);
+            
+            thisObj.requestDataPigMedVac();
         }
         
     }
@@ -139,8 +136,8 @@ export function TableMedVac(input_settings){
         <table class="data-table" id="">
             <thead>
                 <colgroup>
-                    <col style="width: 20%;">
-                    <col style="width: 30%;">
+                    <col style="width: 25%;">
+                    <col style="width: 45%;">
                     <col style="width: 50%;">
                 </colgroup>
                 
@@ -173,7 +170,7 @@ export function TableMedVac(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         
-        let  s_click = '';
+        let  s_click = `gNavigation.pageSowBoarEntry.`;
         
         let s_medvac = `<span class="medvac-brand">${cur_entry.medvac.brand.name}</span>`;
         s_medvac +=  `<span class="medvac-type">${cur_entry.medvac.type.name}</span>`;
@@ -183,8 +180,8 @@ export function TableMedVac(input_settings){
         
         const html = `
             <tr>
-                <td><span>${cur_entry.medvac.date_medvac}</span></td>
-                <td>${s_medvac}</td>
+                <td><span>${formatDate(cur_entry.medvac.date_medvac, FORMAT_COMPACT_NO_SPACE)}</span></td>
+                <td onclick='${s_click}'>${s_medvac}</td>
                 <td onclick='${s_click}'>${s_desc}</td>
             </tr>
         `;
@@ -207,7 +204,7 @@ export function TableMedVac(input_settings){
     }
     
     
-    this.requestData = function(callback){
+    this.requestDataPigMedVac = function(callback){
         const sow_boar_hid = dataSowBoar.hid;
         
         const base_url = window.location.origin;
@@ -228,8 +225,12 @@ export function TableMedVac(input_settings){
                 if (response.result.num == 0){
                     dataSowBoar['list_medvac'] = response.data;
                     
+                    // Set table entry list; This will set also the entry count;
+                    thisObj.setDataEntryList(response.data);
+                    thisObj.renderTable(response.data);
+                    
                     if (callback){
-                        callback(dataSowBoar['list_medvac']);
+                        callback(response.data);
                     }
                 }
                 else {
@@ -265,8 +266,9 @@ export function TableMedVac(input_settings){
         const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
         
         const options ={
-            is_add:         true,   // false is edit
-            go_back_page:   go_back_page   // Go back to this page; this is Div element
+            is_add:                 true,   // false is edit
+            callback_after_add:     thisObj.onSuccessAddEntry,
+            go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
         
         navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
@@ -274,6 +276,11 @@ export function TableMedVac(input_settings){
         navigation.showThisPage(page_container);
         
         
+    }
+    
+    
+    this.onSuccessAddEntry = function(){
+        thisObj.requestDataPigMedVac();
     }
     
 }

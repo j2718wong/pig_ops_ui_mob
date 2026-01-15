@@ -2498,13 +2498,25 @@ textarea.form-control {
 
 .form-group-date {
     background: var(--corporate-bg);
-    border-left: 4px solid #4236DC;
+    border-left: 4px solid #4236dc;
     padding-top:5px;
     padding-left: 8px;
     padding-right: 8px;
     padding-bottom:5px;
     margin-bottom: 8px;
 }
+
+
+.form-group-check {
+    background: var(--corporate-bg);
+    border-left: 4px solid #e83e8c;
+    padding-top:5px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom:5px;
+    margin-bottom: 8px;
+}
+
 
 
 /* Combined breeding status warning */
