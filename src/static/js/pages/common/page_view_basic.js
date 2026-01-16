@@ -15,10 +15,15 @@ export function replaceSelectOptions(select_elem, new_options){
         const cur_value = cur_entry.value;
         const cur_text  = cur_entry.text;
         
+        let classname = null;
+        if ('classname' in cur_entry){classname = cur_entry.classname;}
+        
         const new_option        = document.createElement('option');
         new_option.value        = cur_value;
         new_option.textContent  = cur_text;
-            
+        if (classname){
+            new_option.classList.add(classname);
+        }
             
         if ((cur_value == '0') || (cur_value == '-1')){
             new_option.disabled     = true;

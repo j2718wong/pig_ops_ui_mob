@@ -4,19 +4,23 @@
 
 'use strict';
 
+import {UiBasic}                    from './ui_basic.js';
+
 import {updateCharCounter}          from '../page_view_basic.js'
 
 
 export function UiInputTextWithCounter(input_settings){
+    UiBasic.call(this);
     
     /* Typical settings
     settings = {
         uniqueKey:      ''
         
+        isTextArea:     false,  //optional; for text areas
         className:      'form-group-text',
         textLabel:      'Name',
         isRequired:     false,
-        textMaxChars:   '',
+        textMaxChars:   160,
         invalidFeedBack: null,
         helpText:       ''  
     }
@@ -27,6 +31,8 @@ export function UiInputTextWithCounter(input_settings){
     const thisObj               = this;
     
     const settings              = input_settings;
+    
+    const elemIdUiShow          = `${settings.uniqueKey}-show`;
     
     const elemIdText            = `${settings.uniqueKey}-text`;
     const elemIdCharCounter     = `${settings.uniqueKey}-char-counter`;
@@ -64,13 +70,38 @@ export function UiInputTextWithCounter(input_settings){
             s_help = `<div class="form-text">${settings.helpText}</div>`;
         }
         
+        let s_input = '';
+        if ('isTextArea' in settings){
+            s_input = `
+            <textarea  
+                    class="form-control" 
+                    id="${elemIdText}" 
+                    rows="${settings.rows}" 
+                    maxlength="${settings.textMaxChars}" 
+                    ${s_required}>
+            </textarea>
+            `;
+        }
+        else{
+            s_input = `
+            <input  type="text" 
+                    class="form-control" 
+                    id="${elemIdText}" 
+                    maxlength="${settings.textMaxChars}" 
+                    ${s_required}>
+            `;
+        }
+        
+        
         return `
-        <div class="${settings.className}">
+        <div class="${settings.className}" id="${elemIdUiShow}">
             <label for="${elemIdText}" class="form-label">
                 ${settings.textLabel} ${s_required_mark}
                 <span id="${elemIdCharCounter}" class="char-counter">0/${settings.textMaxChars}</span>
             </label>
-            <input  type="text" class="form-control" id="${elemIdText}" maxlength="${settings.textMaxChars}" ${s_required}>
+            
+            ${s_input}
+            
             ${s_invalid}
             ${s_help}
         </div>
@@ -80,6 +111,7 @@ export function UiInputTextWithCounter(input_settings){
     
     
     this._findElements = function(){
+        thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
         
         elemText                = document.getElementById(elemIdText);
         elemCharCounter         = document.getElementById(elemIdCharCounter);
@@ -98,13 +130,14 @@ export function UiInputTextWithCounter(input_settings){
     }
     
     
-    this.afterHtmlRender = function(){
-        this._findElements();
-        this._bindEventListeners();
+    
+    this.getElemText  = function(){
+        return elemText;
     }
     
     
-    this.getElemText  = function(){
+    // Override parent method
+    this.getInputElements = function(){
         return elemText;
     }
     
@@ -131,16 +164,6 @@ export function UiInputTextWithCounter(input_settings){
     
     this.setTextInvalid = function(text){
         elemTextInv.textContent = text;
-    }
-    
-    
-    this.disableInput = function(){
-        elemText.disabled = true;
-    }
-    
-    
-    this.enableInput = function(){
-        elemText.disabled = false;
     }
     
 }

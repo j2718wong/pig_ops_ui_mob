@@ -7,7 +7,7 @@
 
 
 /**
- * Will add validation calss to a UI Element
+ * Will add validation class to a UI Element
  * 
  * @param {Element} input_elem - Element to add validation class
  * @param {validation} 0 =  VALIDATION_OK; >0 VALIDATION_ERROR

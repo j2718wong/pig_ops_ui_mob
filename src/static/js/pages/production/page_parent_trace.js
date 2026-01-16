@@ -4,23 +4,19 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
-        SUPPLIER_TYPE}          from '../../../constants.js';
+        SUPPLIER_TYPE}          from '../../constants.js';
 
-import {CommonSelectOptions}    from '../../common/common_select_options.js';
-
-import {ModelPigProduction}     from '../../../models/model_pig_production.js'
-
-import {FIELD_VALIDATION_OK}    from '../../../models/model_basic.js'
+import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';
 
 
 
-export function PageProdGestatingAdd(input_settings){
+export function PageParentTrace(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
@@ -146,45 +142,27 @@ export function PageProdGestatingAdd(input_settings){
     
     this.render = function(){
         
-        elemIdBtnClose          = `pig-prod-add-select-close`;
         
-        elemIdSow               = `pig-prod-add-select-sow`;
-        elemIdSowCount          = `pig-prod-add-select-sow-count`;
-        elemIdSowAdd            = `pig-prod-add-sow-add`;
-        elemIdSowStatusShow     = `pig-prod-add-sow-status-show`;
-        elemIdSowLastInsem      = `pig-prod-add-sow-last-insem`;
-        elemIdSowLastPid        = `pig-prod-add-sow-last-pid`;
-        elemIdDateMating        = `pig-prod-add-date-mating`;
-        elemIdInsemType         = `pig-prod-add-insem-type`;
+        elemUiSow         		= new UiSelectWithEntryCount({
+            uniqueKey:           'parent-trace-sow',
         
-        elemIdBoarShow          = `pig-prod-add-select-boar-show`;
-        elemIdBoar              = `pig-prod-add-select-boar`;
-        elemIdBoarCount         = `pig-prod-add-select-boar-count`;
-        elemIdBoarAdd           = `pig-prod-add-boar-add`;
+            labelSelect:         'Select Sow or Gilt'
+        });
         
+        elemUiBoar        		= new UiSelectWithEntryCount({
+            uniqueKey:           'parent-trace-boar',
         
-        elemIdAiShow            = `pig-prod-add-select-ai-show`;
-        elemIdSemenSupplier     = `pig-prod-add-select-semen-supplier`;
-        elemIdSemenSupplierCount= `pig-prod-add-select-semen-supplier-count`;
-        elemIdSemenSupplierInfo = `pig-prod-add-select-semen-supplier-info`;
-        elemIdSemenType         = `pig-prod-add-select-semen-type`;
-        elemIdSemenTypeCount    = `pig-prod-add-select-semen-type-count`;
-        elemIdSemenCost         = `pig-prod-add-semen-cost`;
+            labelSelect:         'Select Boar'
+        });
         
-        elemIdBoarInternalShow  = `pig-prod-add-boar-internal-show`;
-        elemIdBoarInternal      = `pig-prod-add-boar-internal`;
-        elemIdBoarInternalCount = `pig-prod-add-boar-internal-count`;
+		
+		const html_ui_number    = elemUiNumber.getHtml();
         
-        elemIdOtherCost         = `pig-prod-add-other-cost`;
+        const html_ui_sow    	= elemUiSow.getHtml();
+        const html_ui_boar   	= elemUiBoar.getHtml();
         
-        elemIdNotes             = `pig-prod-add-notes`;
-        elemIdNotesCharCounter  = `pig-prod-add-notes-char-counter`;
-        
-        elemIdStaff             = `pig-prod-add-staff`;
-        elemIdStaffCount        = `pig-prod-add-staff-count`;
-        elemIdStaffAdd          = `pig-prod-add-staff-add`;
-        elemIdChkDoneByMe       = `pig-prod-add-done-by-me'`;
-        
+		
+		
         elemIdBtnCancel         = `pig-prod-add-cancel`;
         elemIdBtnSave           = `pig-prod-add-save`;
         
@@ -198,205 +176,28 @@ export function PageProdGestatingAdd(input_settings){
 
     <div class="modal-header gestating">
         <h5 class="modal-title" id="add-entry-acc-pig-ops-modal-label">
-            <i class="fas fa-plus me-2"></i><span>Add Prod Gestating</span>
+            <i class="fas fa-plus me-2"></i><span>Parent Trace</span>
         </h5>
-        <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
     
     
     <div class="modal-body">
         
-        <!-- 1. Sow Field with Combined Warning -->
-        <div class="form-group-select">
-            <label for="${elemIdSow}" class="form-label">
-                Select Sow <span class="entries-count" id=${elemIdSowCount}></span>
-            </label>
-                        
-            <div class="input-group" id="sowSelectGroup">
-                <select class="form-select" id="${elemIdSow}">
-                    <option value="-1" selected disabled>No Entries</option>
-                </select>
-                <button class="btn" type="button" id="${elemIdSowAdd}">
-                    <i class="bi bi-plus"></i> New
-                </button>
-            </div>
-            
-            <!-- Combined Breeding Status Warning -->
-            <div id="${elemIdSowStatusShow}" class="warning-box" style="display: none;">
-                <div class="warning-header">
-                    <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
-                    <span>Sow Already Bred</span>
-                </div>
-                <div class="warning-details">
-                    <span>
-                        This sow was last bred on <span id="${elemIdSowLastInsem}">Jan 15, 2024</span>
-                        with production <b>PID: <span id="${elemIdSowLastPid}">20</span></b>. 
-                        If this new entry will be saved, the previous production gestating  
-                        entry will be marked as <b>Not Pregnant</b> and will
-                        be removed from the Prod Gestating List.
-                        
-                        Please ensure this is an intentional breeding due to sow reheat.
-                    </span>
-                </div>
-            </div>
-        </div>
+        <!-- 1. Sow Field -->
+        ${html_ui_sow}
             
         
-        <!-- 2. Date Mating -->
-        <div class="form-group-date">
-            <label for="${elemIdDateMating}" class="form-label">
-                Date Mating or Insemination
-            </label>
-            <input type="text" class="form-control" id="${elemIdDateMating}" required>
-            <div class="invalid-feedback">
-                Please enter a valid date.
-            </div>
-        </div>
+        <!-- 2. Boar Field -->
+        ${html_ui_sow}
+        
+		<button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
+			<i class="fas fa-save me-2"></i>Save
+		</button>
+		
         
         
-        <!-- 3. Insemination Type -->
-        <div class="form-group-select">
-            <label for="${elemIdInsemType}" class="form-label">
-                Insemination Type
-            </label>
-                        
-            <select class="form-select" id="${elemIdInsemType}" required>
-                <option value="boar-mating" selected>Boar Mating</option>
-                <option value="ai-external">Artificial Insem External</option>
-                <option value="ai-internal">Artificial Insem Internal</option>
-            </select>
-        </div>
-        
-        <!-- 4. Boar Field -->
-        <div class="form-group-select" id="${elemIdBoarShow}">
-            <label for="${elemIdBoar}" class="form-label">
-                Select Boar <span class="entries-count" id=${elemIdBoarCount}></span>
-            </label>
-            
-            <div class="input-group" id="boarSelectGroup">
-                <select class="form-select" id="${elemIdBoar}">
-                    <option value="-1" selected disabled>No Entries</option>
-                </select>
-                <button class="btn" type="button" id="${elemIdBoarAdd}">
-                    <i class="bi bi-plus"></i> New
-                </button>
-            </div>
-        </div>
-        
-        <div id="${elemIdAiShow}" class="ai-section" style="display: none;">
-            <!-- 1. Semen Supplier -->
-            <div class="form-group-select">
-                <label for="${elemIdSemenSupplier}" class="form-label">
-                    Semen Supplier <span class="entries-count" id=${elemIdSemenSupplierCount}></span>
-                </label>
-                
-                <div class="input-group" id="supplierSelectGroup">
-                    <select class="form-select" id="${elemIdSemenSupplier}">
-                        <option value="-1" selected disabled>No Entries</option>
-                    </select>
-                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSupplierModal">
-                        <i class="bi bi-plus"></i> New
-                    </button>
-                </div>
-                
-                <div id="${elemIdSemenSupplierInfo}"></div>
-            </div>
-            
-            <!-- 2. Semen Type -->
-            <div class="form-group-select">
-                <label for="${elemIdSemenType}" class="form-label">
-                    Semen Type <span class="entries-count" id=${elemIdSemenTypeCount}></span>
-                </label>
-            
-                <div class="input-group" id="semenTypeSelectGroup">
-                    <select class="form-select" id="${elemIdSemenType}">
-                        <option value="-1" selected disabled>No Entries</option>
-                    </select>
-                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSemenTypeModal">
-                        <i class="bi bi-plus"></i> New
-                    </button>
-                </div>
-            </div>
-            
-            <!-- 3. Semen Cost -->
-            <div class="form-group-number">
-                <label for="${elemIdSemenCost}" class="form-label">
-                    Semen Cost
-                </label>
-                
-                <input type="number" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0" value="0.00">
-                <div class="invalid-feedback">
-                    Please enter numeric value.
-                </div>
-            </div>
-        </div>
         
         
-        <div class="form-group-select" id="${elemIdBoarInternalShow}" style="display: none;">
-            <label for="${elemIdBoarInternal}" class="form-label">
-                Boar where Semen extracted <span class="entries-count" id=${elemIdBoarInternalCount}></span>
-            </label>
-            
-            <select class="form-select" id="${elemIdBoarInternal}">
-                <option value="-1" selected disabled>No Entries</option>
-            </select>
-        </div>
-        
-        
-        <!-- 5. Other Cost -->
-        <div class="form-group-number">
-            <label for="${elemIdOtherCost}" class="form-label">
-                Other Cost
-            </label>
-                
-            <input type="number" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">
-            <div class="invalid-feedback">
-                Please enter numeric value.
-            </div>
-        </div>
-        
-        
-        <!-- 6. Notes -->
-        <div class="form-group-text-area">
-            <label for="${elemIdNotes}" class="form-label">
-                Notes
-                <span id="${elemIdNotesCharCounter}" class="char-counter">0/160</span>
-            </label>
-            
-            <textarea class="form-control" id="${elemIdNotes}" rows="2" maxlength="160"></textarea>
-        </div>
-        
-        <!-- 7. Staff -->
-        <div class="form-group-select">
-            <label for="${elemIdStaff}" class="form-label">
-                Staff Member <span class="entries-count" id=${elemIdStaffCount}></span>
-            </label>
-            
-            <div class="input-group" >
-                <select class="form-select" id="${elemIdStaff}">
-                    <option value="-1" selected disabled>No Entries</option>
-                </select>
-                <button class="btn" type="button" id="${elemIdStaffAdd}">
-                    <i class="bi bi-plus"></i> New
-                </button>
-            </div>
-            
-            <div class="invalid-feedback">
-                Need to select if not done by you.
-            </div>
-            
-            <!-- Done by Me Checkbox -->
-            <div id="doneByMeContainer" class="checkbox-group">
-                <input type="checkbox" id="${elemIdChkDoneByMe}">
-                <label for="${elemIdChkDoneByMe}" class="checkbox-label">
-                    <i class="fas fa-user-check checkbox-icon"></i>
-                    Done by Me
-                </label>
-            </div>
-            
-            <div class="form-text">Who did the operation.</div>
-        
-        </div>
         
         <!-- Footer Buttons -->
         <div class="modal-footer">

@@ -11,7 +11,6 @@ import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
 import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
-import {UiInputTextAreaWithCounter} from '../common/ui/input_textarea_with_counter.js';
 import {ComponentStaffFormGroup} from '../common/ui/comp_staff_form_group.js';
 
 
@@ -221,9 +220,10 @@ export function PageHealthNotesAddEdit(input_settings){
         
         
         
-        elemUiNotes             = new UiInputTextAreaWithCounter({
+        elemUiNotes             = new UiInputTextWithCounter({
                                     uniqueKey:      'health-notes-add-edit-notes',
                                     
+									isTextArea:		true,
                                     className:      'form-group-text-area',
                                     textLabel:      'Notes',
                                     textMaxChars:   160,

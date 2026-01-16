@@ -11,7 +11,6 @@ import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
 import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
-import {UiInputTextAreaWithCounter} from '../common/ui/input_textarea_with_counter.js';
 import {ComponentStaffFormGroup} from '../common/ui/comp_staff_form_group.js';
 
 
@@ -67,9 +66,7 @@ export function PageMedVacAddEdit(input_settings){
 
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
-    
-    let elemIdBreadCrumb0       = null;
-    let elemIdBreadCrumb1       = null;
+
     
     let elemIdBtnClose          = null;
     
@@ -94,11 +91,6 @@ export function PageMedVacAddEdit(input_settings){
     let elemIdMedVacForPigHealthLabel = null;
 
     
-    let elemIdServerErrorMsg    = null;
-    let elemIdBtnCancel         = null;
-    let elemIdBtnSave           = null;
-    
-    
     let componentMedVacBrand    = null;
     let componentMedVacType     = null;
     let componentAccMedVac      = null;
@@ -107,9 +99,10 @@ export function PageMedVacAddEdit(input_settings){
     let componentStaff          = null;
     
     
+    let elemIdServerErrorMsg    = null;
+    let elemIdBtnCancel         = null;
+    let elemIdBtnSave           = null;
     
-    let elemBreadCrumb0         = null;
-    let elemBreadCrumb1         = null;
     
     let elemBtnClose            = null;
     
@@ -213,81 +206,81 @@ export function PageMedVacAddEdit(input_settings){
         elemIdMedVacForPigHealthChk     = `medvac-add-edit-medvac-for-pig-ops-chk`;
         elemIdMedVacForPigHealthLabel   = `medvac-add-edit-medvac-for-pig-ops-label`;
 
+        
+        componentMedVacBrand    = new ComponentMedVacBrand({
+            navigation:         navigation,
+            uniqueKey:          'medvac-add-edit-brand-name',
 
+            titleExpandSection: 'Add New MedVac Brand',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save MedVac Brand',
+            
+            labelSelect:        'Select MedVac Brand',
+            helpText:           'MedVac brand name or manufacturer'
+        });
+        
+        
+        componentMedVacType     = new ComponentMedVacType({
+            navigation:         navigation,
+            uniqueKey:          'medvac-add-edit-type',
+
+            titleExpandSection: 'Add New MedVac Type',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save MedVac Type',
+        
+            labelSelect:        'Select MedVac Type',
+            helpText:           'MedVac generic description or what it is for'
+        });
+        
+        
+        componentAccMedVac      = new ComponentAccMedVac({
+            navigation:         navigation,
+            uniqueKey:          'medvac-add-edit-name',
+
+            titleExpandSection: 'Add New MedVac Name',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save MedVac Name',
+        
+            labelSelect:        'Select MedVac Name',
+            helpText:           'MedVac product name'
+        });
+        
+        
+        elemUiNotes             = new UiInputTextWithCounter({
+            uniqueKey:          'medvac-add-edit-notes',
+            
+            isTextArea:         true,
+            className:          'form-group-text-area',
+            textLabel:          'Notes',
+            textMaxChars:       160,
+            rows:               3,
+            helpText:           'Describe the dosage given to pig. Sample: 2mL injection.'  
+        });
+        
+        
+        componentStaff          = new ComponentStaffFormGroup({
+            navigation:         navigation,
+            uniqueKey:          'medvac-add-edit-staff',
+            
+            includeAddNew:      true,
+            includeDoneByMe:    true,
+            
+            titleExpandSection: 'Add New Staff',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save New Staff',
+            
+            labelSelect:        'Staff Member',
+            helpText:           'Who did the operation'
+            
+        });
+    
+        
 
         elemIdServerErrorMsg    = `medvac-add-edit-server-error-msg`;
         elemIdBtnCancel         = `medvac-add-edit-cancel`;
         elemIdBtnSave           = `medvac-add-edit-save`;
         
-        
-        
-        componentMedVacBrand    = new ComponentMedVacBrand({
-                                    navigation:             navigation,
-                                    uniqueKey:              'medvac-add-edit-brand-name',
-
-                                    titleExpandSection:     'Add New MedVac Brand',
-                                    htmlExpandSection:      null,
-                                    labelBtnExpandSave:     'Save MedVac Brand',
-                                    
-                                    labelSelect:            'Select MedVac Brand',
-                                    helpText:               'MedVac brand name or manufacturer'
-                                });
-        
-        
-        componentMedVacType     = new ComponentMedVacType({
-                                    navigation:             navigation,
-                                    uniqueKey:              'medvac-add-edit-type',
-
-                                    titleExpandSection:     'Add New MedVac Type',
-                                    htmlExpandSection:      null,
-                                    labelBtnExpandSave:     'Save MedVac Type',
-                                    
-                                    labelSelect:            'Select MedVac Type',
-                                    helpText:               'MedVac generic description or what it is for'
-                                });
-        
-        
-        componentAccMedVac      = new ComponentAccMedVac({
-                                    navigation:             navigation,
-                                    uniqueKey:              'medvac-add-edit-name',
-
-                                    titleExpandSection:     'Add New MedVac Name',
-                                    htmlExpandSection:      null,
-                                    labelBtnExpandSave:     'Save MedVac Name',
-                                    
-                                    labelSelect:            'Select MedVac Name',
-                                    helpText:               'MedVac product name'
-                                });
-        
-        
-        elemUiNotes             = new UiInputTextAreaWithCounter({
-                                    uniqueKey:      'medvac-add-edit-notes',
-                                    
-                                    className:      'form-group-text-area',
-                                    textLabel:      'Notes',
-                                    textMaxChars:   160,
-                                    rows:           3,
-                                    helpText:       'Describe the dosage given to pig. Sample: 2mL injection.'  
-                                });
-        
-        
-        componentStaff          = new ComponentStaffFormGroup({
-                                    navigation:             navigation,
-                                    uniqueKey:              'medvac-add-edit-staff',
-                                    
-                                    includeAddNew:          true,
-                                    includeDoneByMe:        true,
-                                    
-                                    titleExpandSection:     'Add New Staff',
-                                    htmlExpandSection:      null,
-                                    labelBtnExpandSave:     'Save New Staff',
-                                    
-                                    labelSelect:            'Staff Member',
-                                    helpText:               'Who did the operation'
-                                    
-                                })
-    
-        
+           
         const html_breadcrumb       = componentBreadcrumb.getHtml();
 
         const html_comp_medvac_brand = componentMedVacBrand.getHtml();
@@ -773,7 +766,7 @@ export function PageMedVacAddEdit(input_settings){
         componentMedVacType.disableInputs();
         componentAccMedVac.disableInputs();
         
-        elemUiNotes.disableInput();
+        elemUiNotes.disableInputs();
     }
     
     
@@ -784,7 +777,7 @@ export function PageMedVacAddEdit(input_settings){
         componentMedVacType.enableInputs();
         componentAccMedVac.enableInputs();
         
-        elemUiNotes.enableInput();
+        elemUiNotes.enableInputs();
     }
     
 

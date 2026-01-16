@@ -46,7 +46,7 @@ export function ComponentBreadcrumb(input_settings){
         let index = 0;
         for (const cur_entry of settings.items){
             if (index > 0){
-                html_items += '<div class="breadcrumb-separator">/</div>';
+                html_items += '<div class="breadcrumb-separator">|</div>';
             }
             
             html_items += thisObj._getHtmlItem(cur_entry, index);

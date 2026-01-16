@@ -4,10 +4,13 @@
 
 'use strict';
 
+import {UiBasic}                    from './ui_basic.js';
+
 import {updateCharCounter}          from '../page_view_basic.js'
 
 
 export function UiSelectWithAddExpandable(input_settings){
+    UiBasic.call(this);
     
     /* Typical settings
     settings = {
@@ -27,7 +30,8 @@ export function UiSelectWithAddExpandable(input_settings){
     const thisObj               = this;
     const settings              = input_settings;
 
-    
+
+    const elemIdUiShow          = `${settings.uniqueKey}-show`;
     const elemIdExpandSection   = `${settings.uniqueKey}-show`;
     const elemIdServerErrorMsg  = `${settings.uniqueKey}-server-error`;
     const elemIdExpandCancel    = `${settings.uniqueKey}-cancel`;
@@ -52,10 +56,8 @@ export function UiSelectWithAddExpandable(input_settings){
     
     this.getHtml = function(){
         
-        
-        
         return `
-        <div class="form-group-select">
+        <div class="form-group-select" id="${elemIdUiShow}">
             <div class="expandable-section" id="${elemIdExpandSection}">
                 <h5>${settings.titleExpandSection}</h5>
                 
@@ -89,6 +91,8 @@ export function UiSelectWithAddExpandable(input_settings){
     
     
     this._findElements = function(){
+        thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
+        
         elemExpandSection       = document.getElementById(elemIdExpandSection);
         elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
         elemExpandCancel        = document.getElementById(elemIdExpandCancel);
@@ -110,6 +114,24 @@ export function UiSelectWithAddExpandable(input_settings){
             thisObj.closeExpandable();
         });
     }
+
+
+    this.afterHtmlRenderExpandable = function(){
+        this._findElements();
+        this._bindEventListeners();
+    }
+    
+
+    // Override parent method
+    this.getInputElements = function(){
+        const elems = [];
+        elems.push(elemSelect);
+        elems.push(elemEntryAdd);
+        
+        return elems;
+    }
+    
+
 
 
     this.toggleExpandable = function(){
@@ -136,13 +158,6 @@ export function UiSelectWithAddExpandable(input_settings){
         elemExpandSection.classList.remove('expanded');
         elemExpandSection.style.marginBottom = 0;
         isExpandSectionExpanded = false;
-    }
-    
-    
-    this.afterHtmlRenderExpandable = function(){
-        
-        this._findElements();
-        this._bindEventListeners();
     }
     
     
@@ -184,20 +199,10 @@ export function UiSelectWithAddExpandable(input_settings){
     this.reset = function(){
         elemSelect.selectedIndex = 0;
         elemServerErrorMsg.style.display = 'none';
-		
-		elemSelect.classList.remove('is-valid', 'is-invalid');
+        
+        elemSelect.classList.remove('is-valid', 'is-invalid');
     } 
     
     
-    this.disableInputs = function(){
-        elemSelect.disabled = true;
-        elemEntryAdd.disabled = true;
-    }
-    
-    
-    this.enableInputs = function(){
-        elemSelect.disabled = false;
-        elemEntryAdd.disabled = false;
-    }
-    
+       
 }

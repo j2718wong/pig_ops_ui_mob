@@ -371,16 +371,7 @@ export function PageProdGestatingEntry(input_settings){
         }
         */
         
-        .btn-success {
-            background-color: var(--success-border);
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .btn-success:active {
-            background-color: #0da271;
-            transform: translateY(1px);
-        }
+        
 
         /* Table */
         .notes-table {

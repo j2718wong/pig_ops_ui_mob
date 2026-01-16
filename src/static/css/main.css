@@ -1342,6 +1342,14 @@ p {
     transform: rotate(180deg);
 }
 
+
+
+.not-known {
+	color:danger-red;
+}
+
+
+
 /* Warning box styling */
 
 .warning-icon {
@@ -1466,6 +1474,20 @@ p {
 }
 
 
+.btn-full {
+	display: block;
+	width: 100%;
+	padding: 14px;
+	border: none;
+	border-radius: 8px;
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s;
+	text-align: center;
+}
+
+
 .btn-corporate {
     background-color: var(--corporate-blue);
     color: white;
@@ -1489,9 +1511,8 @@ p {
 
 
 .btn-success {
-    background-color: var(--success-border);
+    background-color: var(--success-green);
     color: white;
-    margin-bottom: 10px;
 }
 
 .btn-success:active {
@@ -1503,7 +1524,6 @@ p {
 .btn-cancel {
     background-color: var(--warning-border);
     color: white;
-    margin-bottom: 10px;
 }
 
 
@@ -2412,7 +2432,7 @@ p {
 
 .form-control {
     border: 2px solid var(--corporate-blue);
-    padding: 6px 6px;
+    padding: 5px 5px;
     font-size: 1.3rem;
     transition: all 0.2s;
     border-radius: 8px;
