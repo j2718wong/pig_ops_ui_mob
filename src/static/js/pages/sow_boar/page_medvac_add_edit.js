@@ -508,7 +508,7 @@ export function PageMedVacAddEdit(input_settings){
         
         // Remove validation classes
         elemDateMedVac.value = '';
-		elemDateMedVac.classList.remove('is-valid', 'is-invalid');
+        elemDateMedVac.classList.remove('is-valid', 'is-invalid');
         
         componentMedVacBrand.reset();
         componentMedVacType.reset();
@@ -570,6 +570,9 @@ export function PageMedVacAddEdit(input_settings){
                         list_name = 'Gilt List';
                     }
                 }
+                else{
+                    list_name = 'Sow List';
+                }
             }
         }
         
@@ -578,16 +581,13 @@ export function PageMedVacAddEdit(input_settings){
         
         if ((cur_sow_boar.name != null) && (cur_sow_boar.name.length >0)){
             sow_reference = cur_sow_boar.name;
-            
-            if (cur_sow_boar.number != null) {
-                sow_reference += ` (${cur_sow_boar.number})`;
-            }
-            
         }
         else{
             sow_reference = cur_sow_boar.number;
         }
         
+        console.log(`settingsBreadcrumb`);
+        console.log(settingsBreadcrumb);
         
         settingsBreadcrumb.items[0].label = list_name;
         settingsBreadcrumb.items[1].label = sow_reference;

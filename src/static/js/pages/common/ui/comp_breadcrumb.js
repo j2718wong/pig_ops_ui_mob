@@ -104,12 +104,10 @@ export function ComponentBreadcrumb(input_settings){
         const breadcrumbs = settings.elemRoot.querySelectorAll('.breadcrumb-link');
         
         breadcrumbs.forEach(breadcrumb_elem => {
-            breadcrumb_elem.addEventListener('click', () => {
-                const item_index    = breadcrumb_elem.getAttribute('data-index');
-                const breadcrumb_item = settings.items[item_index];
-
-                breadcrumb_elem.textContent = breadcrumb_item.label;
-            });
+            const item_index        = breadcrumb_elem.getAttribute('data-index');
+            const breadcrumb_item   = settings.items[item_index];
+            breadcrumb_elem.textContent = breadcrumb_item.label;
+            
         });
     }
     

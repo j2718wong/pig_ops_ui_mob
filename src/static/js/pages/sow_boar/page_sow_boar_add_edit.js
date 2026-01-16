@@ -1014,7 +1014,7 @@ export function PageSowBoarAddEdit(input_settings){
     
     this.populateForm = function(data_sow_boar){
         
-        sowBoarEntry.hid    =  
+        //sowBoarEntry.hid    =  
         
         
         elemName.value      = data_sow_boar.name;

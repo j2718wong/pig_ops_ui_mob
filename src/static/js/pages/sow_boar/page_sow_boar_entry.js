@@ -369,6 +369,26 @@ export function PageSowBoarEntry(input_settings){
         elemEntryId.textContent = entry_hid;
         */
         
+		
+		// Clicking on the SowBoar Name should open the SowBoar edit page
+		elemEntryName.onclick = function(){
+			const options_sow_boar ={
+                is_add:         false,
+                is_sow:         true,
+                go_back_page:   elemDivContainer   // Go back to this page
+            }
+            
+            
+			const callback = null;
+            
+            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            navigation.pageSowBoarAddEdit.callbackOnSuccessEdit = callback;
+            
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+            navigation.showThisPage(next_page)
+		}
+		
+		
         
         // Set arrow navigation
         elemNavPrevEntry.onclick = function(){
