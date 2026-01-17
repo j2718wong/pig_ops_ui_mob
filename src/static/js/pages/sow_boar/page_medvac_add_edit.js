@@ -4,12 +4,13 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
+import {PageSowBoarEntryComponent} from './page_sow_boar_entry_component.js';
+
 import {CommonSelectOptions}    from '../common/common_select_options.js';
 
 import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
-import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
+
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
 import {ComponentStaffFormGroup} from '../common/ui/comp_staff_form_group.js';
 
@@ -43,9 +44,12 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 
-//PageMedVacAddEdit.prototype = new PageViewPigFarmPage();
+
 export function PageMedVacAddEdit(input_settings){
-    PageViewPigFarmPage.call(this);
+    input_settings['uniqueKey'] = 'medvac-add-edit';
+    
+    PageSowBoarEntryComponent.call(this, input_settings);
+    
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -142,35 +146,7 @@ export function PageMedVacAddEdit(input_settings){
     
     let showOptions             = null;
     
-    
-    // This may not contain sex information
-    let curDataSowBoar          = null;
-    
-    
-    // The settingsBreadcrumb.items is temporary; need to update dynamically
-    const settingsBreadcrumb = {
-        uniqueKey:              'medvac-add-edit',
-        navigation:             navigation,
-        elemRoot:               elemDivContainer,    // Root element where to search for elements
-                                            // so that not all document will be searched.
-        
-        items:[
-            {
-                'label':        'SowList',
-                'gotoPageId':   PAGE_ID.SOW_BOAR_LIST
-            },
-            
-            {
-                'label':        'Adela',
-                'gotoPageId':   PAGE_ID.SOW_BOAR_ENTRY
-            }
-        ]
-        
-    }
-    
-    const componentBreadcrumb   = new ComponentBreadcrumb(settingsBreadcrumb);
-    
-    
+
     
     this.callbackOnSuccessAdd   = null;
     
@@ -281,7 +257,7 @@ export function PageMedVacAddEdit(input_settings){
         elemIdBtnSave           = `medvac-add-edit-save`;
         
            
-        const html_breadcrumb       = componentBreadcrumb.getHtml();
+        const html_breadcrumb       = thisObj.componentBreadcrumb.getHtml();
 
         const html_comp_medvac_brand = componentMedVacBrand.getHtml();
         const html_comp_medvac_type = componentMedVacType.getHtml();
@@ -383,7 +359,7 @@ export function PageMedVacAddEdit(input_settings){
     this.afterHtmlRender = function(){
         // Do the afterHtmlRender to UI elements first;
         
-        componentBreadcrumb.afterHtmlRender();
+        thisObj.afterHtmlRenderSowBoarEntryComponent();
 
         componentMedVacBrand.afterHtmlRender();
         componentMedVacType.afterHtmlRender();
@@ -531,60 +507,12 @@ export function PageMedVacAddEdit(input_settings){
         }
         */
         
-        curDataSowBoar  = data_sow_boar;
+        thisObj.curDataSowBoar  = data_sow_boar;
         showOptions     = options;
         
         
-        // Need to update breadCrumb;
-        // 1.) The first entry can be either be Sow List, Boar List, Gilt List, or Diposed List
-        // 2.) The second entry is the Sow Boar name 
-
-        let list_name       = null;
-       
-        
-        let cur_sow_boar = curDataSowBoar;
-        if ('sow_boar' in curDataSowBoar){
-            cur_sow_boar = curDataSowBoar.sow_boar;
-        }
-        
-        if ('dispose_status_id' in cur_sow_boar){
-            list_name = 'Disposed List'; 
-        }
-        else{
-            if ('farm_boar_id' in cur_sow_boar){
-                list_name = 'Boar List';
-            }
-            else{
-                if (cur_sow_boar.status_id == SOW_STATUS.GROWING){
-                    if (cur_sow_boar.is_production_ready > 0){
-                        list_name = 'Sow List';
-                    }
-                    else{
-                        list_name = 'Gilt List';
-                    }
-                }
-                else{
-                    list_name = 'Sow List';
-                }
-            }
-        }
-        
-        
-		// Update breadcrumb 
-        let sow_boar_reference   = '';
-        let sow_boar_name   = cur_sow_boar.name;
-        
-        if (sow_boar_name && sow_boar_name.length >0){
-            sow_boar_reference = sow_boar_name;
-        }
-        else{
-            sow_boar_reference = cur_sow_boar.number;
-        }
-        
-        
-        settingsBreadcrumb.items[0].label = list_name;
-        settingsBreadcrumb.items[1].label = sow_boar_reference;
-        componentBreadcrumb.refreshLabels();
+        // Update BreadCrumbs
+        const sow_boar_reference = thisObj.updateBreadCrumbs();
         
         
         thisObj._resetForm();
@@ -698,7 +626,7 @@ export function PageMedVacAddEdit(input_settings){
     this.show = function(){
         if (showOptions.is_add == false){
             // Necessary to display fully first the container
-            setTimeout(function(){thisObj.populateForm(curDataSowBoar, showOptions.medvac_hid);}, 100);
+            setTimeout(function(){thisObj.populateForm(thisObj.curDataSowBoar, showOptions.medvac_hid);}, 100);
         }
     }
     
@@ -892,13 +820,21 @@ export function PageMedVacAddEdit(input_settings){
         if (validation != 0) {return;}
         
         
-        input_elem = componentStaff.getElemSelect();
-        if (input_staff == '0'  || input_staff == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
+        let done_by_user = 0;
         
+        input_elem = componentStaff.getElemCheckBox();
+        if (input_elem.checked){
+            done_by_user = 1;
+        }
+        
+        if (done_by_user == 0){
+            input_elem = componentStaff.getElemSelect();
+            if (input_staff == '0'  || input_staff == '-1'){
+                validation = -1;
+            }
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
         
         
         
@@ -921,7 +857,7 @@ export function PageMedVacAddEdit(input_settings){
         // send post request
         let post_data = {
             'uhid':             user_hid,
-            'sow_boar_hid':     curDataSowBoar.hid,
+            'sow_boar_hid':     thisObj.curDataSowBoar.hid,
             
             'date_medvac':      dt_medvac_s,
             'medvac_brand_hid': input_medvac_brand,
@@ -932,7 +868,13 @@ export function PageMedVacAddEdit(input_settings){
             
         };
         
-        if (showOptions.is_add == false){
+        if (showOptions.is_add == true){
+            if (done_by_user > 0){
+                post_data['done_by_user'] = 1;
+            }
+        }
+        
+        else {
             post_data['pig_medvac_hid'] = showOptions.medvac_hid;
         }
         

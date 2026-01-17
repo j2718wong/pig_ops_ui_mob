@@ -341,6 +341,10 @@ export function ComponentStaffFormGroup(input_settings){
     }
     
     
+    this.getElemCheckBox = function(){
+        return elemChkDoneByMe;
+    }
+    
     this.getElemEntrySave  = function(){
         return elemExpandSave;
     }

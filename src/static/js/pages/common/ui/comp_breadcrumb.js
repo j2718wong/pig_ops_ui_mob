@@ -5,8 +5,12 @@
 'use strict';
 
 
+import {UiBasic}                    from './ui_basic.js';
+
 
 export function ComponentBreadcrumb(input_settings){
+    UiBasic.call(this);
+    
     /* Typical settings
     settings = {
         uniqueKey:              ''
@@ -38,6 +42,9 @@ export function ComponentBreadcrumb(input_settings){
     const settings              = input_settings;
     const navigation            = settings.navigation;
     
+    const elemIdUiShow          = `${settings.uniqueKey}-show`;
+    
+    
     
     this.getHtml = function(){
         
@@ -55,7 +62,7 @@ export function ComponentBreadcrumb(input_settings){
         
         
         const html = `
-            <div class="breadcrumb">
+            <div class="breadcrumb" id="${elemIdUiShow}">
                 ${html_items}
             </div>
         
@@ -75,7 +82,9 @@ export function ComponentBreadcrumb(input_settings){
     }
     
     
-    this._findElements = function(){}
+    this._findElements = function(){
+        thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
+    }
     
     
     this._bindEventListeners = function(){
@@ -91,12 +100,6 @@ export function ComponentBreadcrumb(input_settings){
                 
             });
         });
-    }
-    
-    
-    this.afterHtmlRender = function(){
-        this._findElements();
-        this._bindEventListeners();
     }
     
     
@@ -121,6 +124,14 @@ export function ComponentBreadcrumb(input_settings){
         
         for (const cur_entry of new_crumbs_items){
             settings.items.push(cur_entry);
+        }
+    }
+	
+	
+	// Override parent
+	this.show = function(){
+        if (thisObj.elemUiShow){
+            thisObj.elemUiShow.style.display = 'flex';
         }
     }
     

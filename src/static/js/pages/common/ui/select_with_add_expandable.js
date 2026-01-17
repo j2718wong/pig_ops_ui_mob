@@ -32,7 +32,7 @@ export function UiSelectWithAddExpandable(input_settings){
 
 
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
-    const elemIdExpandSection   = `${settings.uniqueKey}-show`;
+    const elemIdExpandSection   = `${settings.uniqueKey}-expand-show`;
     const elemIdServerErrorMsg  = `${settings.uniqueKey}-server-error`;
     const elemIdExpandCancel    = `${settings.uniqueKey}-cancel`;
     const elemIdExpandSave      = `${settings.uniqueKey}-save`;
@@ -146,6 +146,7 @@ export function UiSelectWithAddExpandable(input_settings){
             elemExpandSection.style.marginBottom = '15px';
             
             elemServerErrorMsg.style.display = 'none';
+
             
         } else {
             elemExpandSection.classList.remove('expanded');

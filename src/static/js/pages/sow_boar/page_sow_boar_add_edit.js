@@ -4,18 +4,21 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
+import {PageSowBoarEntryComponent} from './page_sow_boar_entry_component.js';
+
 
 import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
 
 import {TextTranslation}        from '../common/translation.js';
 
+import {addValidationClassToElem} from '../common/ui/ui_utils.js';
+
+import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
 import {UiInputDatePicker}      from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
 import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';
 import {UiInputCheckBox}        from '../common/ui/input_checkbox.js';
 
-import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
 import {PAGE_ID,
         SOW_BOAR_TYPE,
@@ -35,9 +38,11 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 
-PageSowBoarAddEdit.prototype = new PageViewPigFarmPage();
+
 export function PageSowBoarAddEdit(input_settings){
-    PageViewPigFarmPage.call(this);
+    input_settings['uniqueKey'] = 'sow-boar-add-edit';
+    
+    PageSowBoarEntryComponent.call(this, input_settings);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -166,12 +171,12 @@ export function PageSowBoarAddEdit(input_settings){
     
     let sowBoarEntry            = new ModelSowBoar();
     
-    // This may not contain sex information
-    let curDataSowBoar          = null;
     
     // This is an explicit computation during show;
     // true is Show Sow or Show Gilt; 
     let curIsSow                = null;
+    
+
     
     this.callbackOnSuccessAdd   = null;
     
@@ -284,10 +289,12 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdBtnCancel         = `sow-boar-add-edit-cancel`;
         elemIdBtnSave           = `sow-boar-add-edit-save`;
         
-        //const html_update_status = thisObj.getHtmlUpdateStatus();
+        // should show up only if edit
+        const html_breadcrumb       = thisObj.componentBreadcrumb.getHtml();
         
-        const html_ui_name      = elemUiName.getHtml();
-        const html_ui_number    = elemUiNumber.getHtml();
+        
+        const html_ui_name          = elemUiName.getHtml();
+        const html_ui_number        = elemUiNumber.getHtml();
         
         const html_ui_date_birth    = elemUiDateOfBirth.getHtml();
         const html_ui_parent_sow    = elemUiParentSow.getHtml();
@@ -301,7 +308,8 @@ export function PageSowBoarAddEdit(input_settings){
 
         
 <div class="form-container">
-
+    ${html_breadcrumb}
+    
     <div class="modal-header" style="padding-right:8px;">
         <h5 class="modal-title">
             <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Add Sow</span>
@@ -389,6 +397,7 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
+        thisObj.afterHtmlRenderSowBoarEntryComponent();
         
         elemUiName.afterHtmlRender();
         elemUiNumber.afterHtmlRender();
@@ -479,6 +488,7 @@ export function PageSowBoarAddEdit(input_settings){
         const elem_select = elemUiParentSow.getElemSelect();
         const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
         thisObj.commonSelectOptions.setDataSowList(data, elem_select, special_options);
+        elemUiParentSow.setEntryCount(sowList);
     }
     
     
@@ -488,6 +498,7 @@ export function PageSowBoarAddEdit(input_settings){
         const elem_select = elemUiParentBoar.getElemSelect();
         const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
         thisObj.commonSelectOptions.setDataBoarList(data, elem_select, special_options);
+        elemUiParentBoar.setEntryCount(boarList);
     }
     
         
@@ -628,10 +639,13 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         if (options.is_add){
-            curDataSowBoar = null;
+            thisObj.curDataSowBoar = null;
+            thisObj.componentBreadcrumb.hide();
         } 
         else{
-            curDataSowBoar = data_sow_boar;
+            thisObj.curDataSowBoar = data_sow_boar;
+            thisObj.componentBreadcrumb.show();
+            thisObj.updateBreadCrumbs();
         }
         
         
@@ -661,17 +675,17 @@ export function PageSowBoarAddEdit(input_settings){
                     html = `<i class="fas fa-plus me-2"></i>Add Sow`;
                 }
                 else{
-                    const sow_boar_name = curDataSowBoar.sow_boar.name;
+                    const sow_boar_name = thisObj.curDataSowBoar.sow_boar.name;
                     if (sow_boar_name && sow_boar_name.length >0){
                         sow_boar_reference = sow_boar_name;
                     }
                     else{
-                        sow_boar_reference = curDataSowBoar.sow_boar.number;
+                        sow_boar_reference = thisObj.curDataSowBoar.sow_boar.number;
                     }
                     
                     html = `<i class="fas fa-edit me-2"></i>Edit Sow: ${sow_boar_reference}`;
                     
-                    thisObj.populateForm(curDataSowBoar);
+                    thisObj.populateForm(thisObj.curDataSowBoar);
                 }
                 elemHeaderTitle.innerHTML = html;
                 
@@ -689,17 +703,17 @@ export function PageSowBoarAddEdit(input_settings){
                     html = `<i class="fas fa-plus me-2"></i>Add Boar`;
                 }
                 else{
-                    const sow_boar_name = curDataSowBoar.sow_boar.name;
+                    const sow_boar_name = thisObj.curDataSowBoar.sow_boar.name;
                     if (sow_boar_name && sow_boar_name.length >0){
                         sow_boar_reference = sow_boar_name;
                     }
                     else{
-                        sow_boar_reference = curDataSowBoar.sow_boar.number;
+                        sow_boar_reference = thisObj.curDataSowBoar.sow_boar.number;
                     }
                     
                     html = `<i class="fas fa-edit me-2"></i>Edit Boar: ${sow_boar_reference}`;
                     
-                    thisObj.populateForm(curDataSowBoar);
+                    thisObj.populateForm(thisObj.curDataSowBoar);
                 }
                 elemHeaderTitle.innerHTML = html;
                 
@@ -717,12 +731,12 @@ export function PageSowBoarAddEdit(input_settings){
                     elemInfoShow.style.display = 'block';
                 }
                 else{
-                    const sow_boar_name = curDataSowBoar.sow_boar.name;
+                    const sow_boar_name = thisObj.curDataSowBoar.sow_boar.name;
                     if (sow_boar_name && sow_boar_name.length >0){
                         sow_boar_reference = sow_boar_name;
                     }
                     else{
-                        sow_boar_reference = curDataSowBoar.sow_boar.number;
+                        sow_boar_reference = thisObj.curDataSowBoar.sow_boar.number;
                     }
                     
                     html = `<i class="fas fa-edit me-2"></i>Edit Gilt: ${sow_boar_reference}`;
@@ -786,7 +800,7 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiName.setValue(cur_sow_boar.name);
         elemUiNumber.setValue(cur_sow_boar.number);
         
-        if (cur_sow_boar.date_of_birth != null){
+        if (cur_sow_boar.date_of_birth){
             elemUiDateOfBirth.setDate(cur_sow_boar.date_of_birth);
         }
         
@@ -814,6 +828,20 @@ export function PageSowBoarAddEdit(input_settings){
             elemUiNotes.setValue(cur_sow_boar.add_notes);
         }
         
+        
+        // Delayed populate for dropdowns
+        if (cur_sow_boar.parent_sow_hid || cur_sow_boar.parent_boar_hid){
+            setTimeout(function(){
+                if (cur_sow_boar.parent_sow_hid){
+                    elemUiParentSow.setValue(cur_sow_boar.parent_sow_hid);
+                }
+                
+                if (cur_sow_boar.parent_boar_hid){
+                    elemUiParentBoar.setValue(cur_sow_boar.parent_boar_hid);
+                }
+                
+            }, 100);
+        }
         
     }
     
@@ -863,7 +891,7 @@ export function PageSowBoarAddEdit(input_settings){
                             
                             else {
                                 // edit
-                                const exclude_hid = curDataSowBoar.hid;
+                                const exclude_hid = thisObj.curDataSowBoar.hid;
                                 const cur_sow_boar = thisObj._getSowBoar(input_val, null, exclude_hid);
                                 
                                 if (cur_sow_boar != null){
@@ -916,7 +944,7 @@ export function PageSowBoarAddEdit(input_settings){
                             
                             } else{
                                 // edit
-                                const exclude_hid = curDataSowBoar.hid;
+                                const exclude_hid = thisObj.curDataSowBoar.hid;
                                 const cur_sow_boar = thisObj._getSowBoar(input_val, null, exclude_hid);
                                 
                                 if (cur_sow_boar != null){
@@ -1017,7 +1045,7 @@ export function PageSowBoarAddEdit(input_settings){
                 
                 } else{
                     // edit
-                    const exclude_hid = curDataSowBoar.hid;
+                    const exclude_hid = thisObj.curDataSowBoar.hid;
                     const cur_sow_boar = thisObj._getSowBoar(input_name, null, exclude_hid);
                     
                     if (cur_sow_boar != null){
@@ -1060,7 +1088,7 @@ export function PageSowBoarAddEdit(input_settings){
                 }
                 else{
                     // edit
-                    const exclude_hid = curDataSowBoar.hid;
+                    const exclude_hid = thisObj.curDataSowBoar.hid;
                     const cur_sow_boar = thisObj._getSowBoar(input_number, null, exclude_hid);
                     
                     if (cur_sow_boar != null){
@@ -1183,8 +1211,8 @@ export function PageSowBoarAddEdit(input_settings){
             // edit entry
             delete post_data.pfhid;
             
-            post_data['sow_boar_hid'] = curDataSowBoar.sow_boar.hid;
-            post_data['sow_status_id']= curDataSowBoar.sow_boar.status_id;
+            post_data['sow_boar_hid'] = thisObj.curDataSowBoar.sow_boar.hid;
+            post_data['sow_status_id']= thisObj.curDataSowBoar.sow_boar.status_id;
             
         }
         
@@ -1283,8 +1311,8 @@ export function PageSowBoarAddEdit(input_settings){
                     else{
                         // Edit action will
                         // 1.) replace this data only.
-                        curDataSowBoar.sow_boar = response.sow_boar;
-                        navigation.pageSowBoarEntry.beforeShow(curDataSowBoar);
+                        thisObj.curDataSowBoar.sow_boar = response.sow_boar;
+                        navigation.pageSowBoarEntry.beforeShow(thisObj.curDataSowBoar);
                         navigation.showThisPage(showOptions.go_back_page);
                     }
                     
