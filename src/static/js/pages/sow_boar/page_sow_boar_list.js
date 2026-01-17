@@ -499,7 +499,6 @@ ${html_style}
     
     
     this.setDataBoarList = function(data){
-        console.log('setDataBoarList');
         dataBoarList    = data;
 
     }
@@ -870,7 +869,7 @@ ${html_style}
         }
         
         
-        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
+        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
         s_click += `"${sow_boar.hid}");`;
         
         const html = `
@@ -1070,20 +1069,22 @@ ${html_style}
         }
         
         
-        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
+        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
         s_click += `"${sow_boar.hid}");`;
         
         let s_last_mate ='';
-        if (cur_entry.date_last_mate != null){
+        if (cur_entry.date_last_mate){
             s_last_mate = cur_entry.date_last_mate;
         }
         
+        let mate_count = 0;
+        if ('mate_count' in cur_entry){mate_count = cur_entry.mate_count;}
         
         const html = `
             <tr>
                 <td onclick='${s_click}'>${sow_reference}</td>
                 <td>${s_age}</td>
-                <td>${cur_entry.mate_count}</td>
+                <td>${mate_count}</td>
                 <td>${s_last_mate}</td>
             </tr>
         `;
@@ -1187,7 +1188,7 @@ ${html_style}
         }
         
         
-        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarName(';
+        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
         s_click += `'${sow_boar.hid}');`;
         
         const html = `
@@ -1410,88 +1411,8 @@ ${html_style}
         
        
     }
-    
-    
-    this.onClickSowBoarName = function(sow_boar_hid){
-        console.log(`onClickSowBoarName;  sow_boar_hid = ${sow_boar_hid}`);
-        
-        let index;
-        let cur_entry;
-        let cur_sow_boar_entry = null;
-        
-        switch (showOptions.sow_boar_type){
-            case SOW_BOAR_TYPE.SOW: {
-                for (cur_entry of curDataView){
-                    if (cur_entry.hid == sow_boar_hid){
-                        cur_sow_boar_entry = cur_entry;
-                        break;
-                    }
-                }
-                break;
-            }
-    
-            case SOW_BOAR_TYPE.BOAR: {
-                for (cur_entry of curDataView){
-                    if (cur_entry.hid == sow_boar_hid){
-                        cur_sow_boar_entry = cur_entry;
-                        break;
-                    }
-                }
-                break;
-            }
-    
-            case SOW_BOAR_TYPE.GILT:{
-                for (cur_entry of curDataView){
-                    if (cur_entry.hid == sow_boar_hid){
-                        cur_sow_boar_entry = cur_entry;
-                        break;
-                    }
-                }
-                break;
-            }
-            
-        }
-        
-        
-        const options_sow_boar ={
-            is_add:         false,   // false is edit
-            sow_boar_type:  showOptions.sow_boar_type,   
-            //farm_sow_boar_id: farm_sow_boar_id,
-            go_back_page:   elemDivContainer   // Go back to this page
-        };
-            
-            
-        const callback = function(new_sow_boar_hid){
-            switch (sow_boar_type){
-                case SOW_BOAR_TYPE.SOW: {
-                    thisObj.renderSowTable(dataSowList);
-                    break;
-                }
-        
-                case SOW_BOAR_TYPE.BOAR: {
-                    thisObj.renderBoarTable(dataBoarList);
-                    break;
-                }
-        
-                case SOW_BOAR_TYPE.GILT:{
-                    thisObj.renderGiltTable(dataGiltList);
-                    break;
-                }
-                
-            }
-        };
-            
-            
-        //navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
-        //navigation.pageSowBoarAddEdit.callbackOnSuccessEdit = callback;
-        
-        
-        //const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-        
-        thisObj.onClickSowBoarEntry(sow_boar_hid)
-    }
-        
-        
+         
+         
     this.onClickSowBoarEntry = function(sow_boar_hid){
         if (sow_boar_hid == null){
             // Go back to this page
@@ -1520,74 +1441,36 @@ ${html_style}
         let prev_entry  = null;
         let next_entry  = null;
         
+        
         for (index = 0; index< cur_sow_boar_list.length; index++){
             cur_entry = cur_sow_boar_list[index];
             
-            switch (showOptions.sow_boar_type){
-                case SOW_BOAR_TYPE.SOW:
-                case SOW_BOAR_TYPE.BOAR:
-                case SOW_BOAR_TYPE.GILT: { 
-                    if (cur_entry.hid == sow_boar_hid){
-                
-                        if ((index-1) >=0){
-                            prev_entry = cur_sow_boar_list[index-1];
-                            prev_sow_boar_hid = prev_entry.hid;
-                        }
-                        
-                        if ((index+1) < cur_sow_boar_list.length){
-                            next_entry = cur_sow_boar_list[index+1];
-                            next_sow_boar_hid = next_entry.hid;
-                        }
-                        
-                        const options = {
-                            sow_boar_type:      showOptions.sow_boar_type,
-                            prev_sow_boar_hid:  prev_sow_boar_hid,
-                            next_sow_boar_hid:  next_sow_boar_hid,
-                            data_index:     index+1,
-                            total_entries:  cur_sow_boar_list.length
-                        };
-                        
-                        navigation.pageSowBoarEntry.beforeShow(cur_entry, options);
-                        const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
-                        navigation.showThisPage(page_container);
-                        return;
-                    }
-                    
-                    break;
+            if (cur_entry.sow_boar.hid == sow_boar_hid){
+        
+                if ((index-1) >=0){
+                    prev_entry = cur_sow_boar_list[index-1];
+                    prev_sow_boar_hid = prev_entry.sow_boar.hid;
                 }
                 
-                case SOW_BOAR_TYPE.DISPOSED: { 
-                    if (cur_entry.sow_boar.hid == sow_boar_hid){
-                
-                        if ((index-1) >=0){
-                            prev_entry = cur_sow_boar_list[index-1];
-                            prev_sow_boar_hid = prev_entry.sow_boar.hid;
-                        }
-                        
-                        if ((index+1) < cur_sow_boar_list.length){
-                            next_entry = cur_sow_boar_list[index+1];
-                            next_sow_boar_hid = next_entry.sow_boar.hid;
-                        }
-                        
-                        const options = {
-                            sow_boar_type:      showOptions.sow_boar_type,
-                            prev_sow_boar_hid:  prev_sow_boar_hid,
-                            next_sow_boar_hid:  next_sow_boar_hid,
-                            data_index:     index+1,
-                            total_entries:  cur_sow_boar_list.length
-                        };
-                        
-                        navigation.pageSowBoarEntry.beforeShow(cur_entry, options);
-                        const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
-                        navigation.showThisPage(page_container);
-                        return;
-                    }
-                    
-                    break;
+                if ((index+1) < cur_sow_boar_list.length){
+                    next_entry = cur_sow_boar_list[index+1];
+                    next_sow_boar_hid = next_entry.sow_boar.hid;
                 }
+                
+                const options = {
+                    sow_boar_type:      showOptions.sow_boar_type,
+                    prev_sow_boar_hid:  prev_sow_boar_hid,
+                    next_sow_boar_hid:  next_sow_boar_hid,
+                    data_index:         index+1,
+                    total_entries:      cur_sow_boar_list.length
+                };
+                
+                navigation.pageSowBoarEntry.beforeShow(cur_entry, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                navigation.showThisPage(page_container);
+                return;
             }
-            
-            
+
         }
         
 
@@ -1598,8 +1481,6 @@ ${html_style}
     }
 
     
-        
-
     
     this.requestDisposedSowBoar = function(callback){
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()

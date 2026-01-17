@@ -505,7 +505,7 @@ export function PageProdGestatingAdd(input_settings){
             
             const options_sow_boar ={
                 is_add:         true,
-                is_sow:         true,
+                sow_boar_type:  SOW_BOAR_TYPE.SOW, 
                 go_back_page:   elemDivContainer   // Go back to this page
             }
             
@@ -533,7 +533,7 @@ export function PageProdGestatingAdd(input_settings){
             
             const options_sow_boar ={
                 is_add:         true,
-                is_sow:         false,
+                sow_boar_type:  SOW_BOAR_TYPE.BOAR,
                 go_back_page:   elemDivContainer   // Go back to this page
             }
             

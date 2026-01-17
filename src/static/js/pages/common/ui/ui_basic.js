@@ -21,9 +21,14 @@ export function UiBasic(){
     this._bindEventListenerss = function(){}
     
     
+    // Must be overridden
+    this._processAfterHtmlRender = function(){}
+    
+    
     this.afterHtmlRender = function(){
         this._findElements();
         this._bindEventListeners();
+        this._processAfterHtmlRender();
     }
     
     

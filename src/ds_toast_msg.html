@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Toast Notifications</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin-top: 30px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .btn-toast {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1055;
+            min-width: 250px;
+        }
+        
+        .custom-toast {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+        }
+        
+        .toast-header {
+            font-weight: 600;
+        }
+        
+        .toast-success {
+            border-left: 5px solid #28a745;
+        }
+        
+        .toast-error {
+            border-left: 5px solid #dc3545;
+        }
+        
+        .toast-warning {
+            border-left: 5px solid #ffc107;
+        }
+        
+        .toast-info {
+            border-left: 5px solid #17a2b8;
+        }
+        
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .example-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            border-left: 4px solid #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="bi bi-bell-fill me-2"></i> Bootstrap Toast Notifications</h1>
+            <p class="lead mb-0">Click the buttons below to show different types of toast notifications</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="bi bi-chat-square-text me-2"></i> Toast Types</h4>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-success btn-toast" id="showSuccessToast">
+                            <i class="bi bi-check-circle me-2"></i> Success Toast
+                        </button>
+                        
+                        <button class="btn btn-danger btn-toast" id="showErrorToast">
+                            <i class="bi bi-x-circle me-2"></i> Error Toast
+                        </button>
+                        
+                        <button class="btn btn-warning btn-toast" id="showWarningToast">
+                            <i class="bi bi-exclamation-triangle me-2"></i> Warning Toast
+                        </button>
+                        
+                        <button class="btn btn-info btn-toast" id="showInfoToast">
+                            <i class="bi bi-info-circle me-2"></i> Info Toast
+                        </button>
+                        
+                        <button class="btn btn-dark btn-toast" id="showAutoCloseToast">
+                            <i class="bi bi-clock me-2"></i> Auto-close Toast (3s)
+                        </button>
+                        
+                        <button class="btn btn-secondary btn-toast" id="showAllToasts">
+                            <i class="bi bi-collection me-2"></i> Show All Toasts
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0"><i class="bi bi-code-slash me-2"></i> How to Use</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Toasts are lightweight notifications designed to mimic push notifications.</p>
+                        
+                        <div class="example-container">
+                            <h6>Basic Toast Structure:</h6>
+                            <pre><code>&lt;div class="toast" role="alert"&gt;
+  &lt;div class="toast-header"&gt;
+    &lt;strong class="me-auto"&gt;Title&lt;/strong&gt;
+    &lt;button type="button" class="btn-close" 
+            data-bs-dismiss="toast"&gt;&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="toast-body"&gt;
+    Your message here
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                        
+                        <div class="example-container mt-3">
+                            <h6>JavaScript Initialization:</h6>
+                            <pre><code>// Initialize a toast
+const toast = new bootstrap.Toast(toastElement, options);
+
+// Show the toast
+toast.show();</code></pre>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-outline-primary w-100" id="clearToasts">
+                                <i class="bi bi-trash me-2"></i> Clear All Toasts
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0"><i class="bi bi-lightbulb me-2"></i> Toast Features</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="bi bi-arrows-move display-6 text-primary mb-3"></i>
+                                    <h5>Positioning</h5>
+                                    <p class="small">Place toasts anywhere on screen</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="bi bi-clock-history display-6 text-success mb-3"></i>
+                                    <h5>Auto-hide</h5>
+                                    <p class="small">Option to auto-dismiss after delay</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="bi bi-palette display-6 text-warning mb-3"></i>
+                                    <h5>Customizable</h5>
+                                    <p class="small">Style with CSS or utility classes</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <i class="bi bi-mouse display-6 text-danger mb-3"></i>
+                                    <h5>Interactive</h5>
+                                    <p class="small">Click to dismiss or take action</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-center text-muted">
+            <p>Bootstrap Toast Example • Click buttons to trigger notifications</p>
+        </div>
+    </div>
+
+    <!-- Toast Container - Where toasts will be displayed -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Toast counter for unique IDs
+        let toastCounter = 0;
+        
+        // Function to create and show a toast
+        function showToast(title, message, type = 'info', autoHide = true, delay = 5000) {
+            toastCounter++;
+            
+            // Create toast element
+            const toastId = 'toast-' + toastCounter;
+            const toast = document.createElement('div');
+            toast.className = `toast custom-toast toast-${type}`;
+            toast.id = toastId;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            // Set toast content based on type
+            let iconClass, headerClass;
+            switch(type) {
+                case 'success':
+                    iconClass = 'bi-check-circle-fill text-success';
+                    headerClass = 'text-success';
+                    break;
+                case 'error':
+                    iconClass = 'bi-x-circle-fill text-danger';
+                    headerClass = 'text-danger';
+                    break;
+                case 'warning':
+                    iconClass = 'bi-exclamation-triangle-fill text-warning';
+                    headerClass = 'text-warning';
+                    break;
+                default: // info
+                    iconClass = 'bi-info-circle-fill text-info';
+                    headerClass = 'text-info';
+            }
+            
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <i class="bi ${iconClass} me-2"></i>
+                    <strong class="me-auto ${headerClass}">${title}</strong>
+                    <small class="text-muted">just now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+            
+            // Add toast to container
+            document.getElementById('toastContainer').appendChild(toast);
+            
+            // Initialize and show the toast
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: autoHide,
+                delay: delay
+            });
+            
+            bsToast.show();
+            
+            // Remove toast from DOM after it's hidden
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.remove();
+            });
+            
+            return bsToast;
+        }
+        
+        // Event listeners for the toast buttons
+        document.getElementById('showSuccessToast').addEventListener('click', function() {
+            showToast(
+                'Success!', 
+                'Your action was completed successfully.', 
+                'success'
+            );
+        });
+        
+        document.getElementById('showErrorToast').addEventListener('click', function() {
+            showToast(
+                'Error!', 
+                'Something went wrong. Please try again.', 
+                'error'
+            );
+        });
+        
+        document.getElementById('showWarningToast').addEventListener('click', function() {
+            showToast(
+                'Warning!', 
+                'This action may have unintended consequences.', 
+                'warning'
+            );
+        });
+        
+        document.getElementById('showInfoToast').addEventListener('click', function() {
+            showToast(
+                'Information', 
+                'Here is some important information you should know.', 
+                'info'
+            );
+        });
+        
+        document.getElementById('showAutoCloseToast').addEventListener('click', function() {
+            showToast(
+                'Auto-close', 
+                'This toast will automatically close after 3 seconds.', 
+                'info',
+                true,
+                3000
+            );
+        });
+        
+        document.getElementById('showAllToasts').addEventListener('click', function() {
+            showToast('Success', 'First toast notification', 'success');
+            
+            setTimeout(() => {
+                showToast('Error', 'Second toast with error message', 'error');
+            }, 300);
+            
+            setTimeout(() => {
+                showToast('Warning', 'Third toast with warning', 'warning');
+            }, 600);
+            
+            setTimeout(() => {
+                showToast('Info', 'Fourth toast with information', 'info');
+            }, 900);
+        });
+        
+        document.getElementById('clearToasts').addEventListener('click', function() {
+            const container = document.getElementById('toastContainer');
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+        });
+        
+        // Show an initial info toast when page loads
+        window.addEventListener('DOMContentLoaded', (event) => {
+            setTimeout(() => {
+                showToast(
+                    'Welcome!', 
+                    'Click the buttons to see different types of toast notifications.', 
+                    'info'
+                );
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

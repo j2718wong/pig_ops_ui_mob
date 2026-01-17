@@ -89,10 +89,12 @@ export function PageSowBoarEntry(input_settings){
     
     let curActiveElemTab        = null;
     
-    this.tableMedVac             = null;
-    this.tablePigHealth          = null;
-    this.tableNotesSowBoar       = null;
+    this.tableMedVac            = null;
+    this.tablePigHealth         = null;
+    this.tableNotesSowBoar      = null;
     
+	
+	let showOptions				= null;
     
     
     this.init = function(){
@@ -318,14 +320,17 @@ export function PageSowBoarEntry(input_settings){
     }
     
     
-    
     this.beforeShow = function(data_sow_boar, options){
         dataSowBoar = data_sow_boar;
         
+		if (options) { // replace options only if specified
+			showOptions = options;
+		}
+		
         // Set Entry Title
         let s_title = '';
         
-        switch (options.sow_boar_type){
+        switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW:  {s_title = 'Sow '; break;}
             case SOW_BOAR_TYPE.BOAR: {s_title = 'Boar '; break;}
             case SOW_BOAR_TYPE.GILT: {s_title = 'Gilt '; break;}
@@ -333,70 +338,65 @@ export function PageSowBoarEntry(input_settings){
             case SOW_BOAR_TYPE.DISPOSED: {s_title = 'Disposed '; break;}
         }
         
-        s_title += `${options.data_index} Of ${options.total_entries}`;
+        s_title += `${showOptions.data_index} Of ${showOptions.total_entries}`;
         
         elemEntryTitle.textContent = s_title;
         
         
         // Set Entry Name 
         
-        let sow_reference = '';
+        let sow_reference   = '';
+        let sow_boar_name   = data_sow_boar.sow_boar.name;
+        let sow_boar_number = data_sow_boar.sow_boar.number;
         
-        if ((data_sow_boar.name != null) && (data_sow_boar.name.length >0)){
-            sow_reference = data_sow_boar.name;
+        if (sow_boar_name && sow_boar_name.length > 0){
+            sow_reference = sow_boar_name;
             
-            if (data_sow_boar.number != null) {
-                sow_reference += ` (${data_sow_boar.number})`;
+            if (sow_boar_number != null) {
+                sow_reference += ` (${sow_boar_number})`;
             }
             
         }
         else{
-            sow_reference = data_sow_boar.number;
+            sow_reference = sow_boar_number;
         }
         
         elemEntryName.textContent = sow_reference;
         
         // Set Entry hid; 2026115 still in deliberation if to show sow_boar_hid
         /*
-        let entry_hid = null;
-        switch (options.sow_boar_type){
-            case SOW_BOAR_TYPE.SOW:  {entry_hid = data_sow_boar.hid; break;}
-            case SOW_BOAR_TYPE.BOAR: {entry_hid = data_sow_boar.hid; break;}
-            case SOW_BOAR_TYPE.GILT: {entry_hid = data_sow_boar.hid; break;}
-            
-            case SOW_BOAR_TYPE.DISPOSED: {entry_hid = data_sow_boar.sow_boar.hid; break;}
-        }
+        let entry_hid = data_sow_boar.sow_boar.hid;
         elemEntryId.textContent = entry_hid;
         */
         
-		
-		// Clicking on the SowBoar Name should open the SowBoar edit page
-		elemEntryName.onclick = function(){
-			const options_sow_boar ={
+        
+        // Clicking on the SowBoar Name should open the SowBoar edit page
+        elemEntryName.onclick = function(){
+            const options_sow_boar ={
                 is_add:         false,
-                is_sow:         true,
+                sow_boar_type:  showOptions.sow_boar_type,
                 go_back_page:   elemDivContainer   // Go back to this page
             }
             
             
-			const callback = null;
+            const callback = null;
             
-            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar, dataSowBoar);
             navigation.pageSowBoarAddEdit.callbackOnSuccessEdit = callback;
             
             const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
             navigation.showThisPage(next_page)
-		}
-		
-		
+        }
+        
+        
         
         // Set arrow navigation
         elemNavPrevEntry.onclick = function(){
-            navigation.pageSowBoarList.onClickSowBoarEntry(options.prev_sow_boar_hid);
+            navigation.pageSowBoarList.onClickSowBoarEntry(showOptions.prev_sow_boar_hid);
         }
         
         elemNavNextEntry.onclick = function(){
-            navigation.pageSowBoarList.onClickSowBoarEntry(options.next_sow_boar_hid);
+            navigation.pageSowBoarList.onClickSowBoarEntry(showOptions.next_sow_boar_hid);
         }
         
         
@@ -418,7 +418,7 @@ export function PageSowBoarEntry(input_settings){
     // Note sow_boar.notes and sow_boar.health_issue are merged together in
     // prod_notes table. There is a flag to tell if is  a health issue
     this.requestDataSowBoarNotes = function(data_sow_boar, callback_success, elem_show_error){
-        const sow_boar_hid = data_sow_boar.hid;
+        const sow_boar_hid = data_sow_boar.sow_boar.hid;
         
         const base_url = window.location.origin;
         let url = `${base_url}/pig_prod_notes/list?sow_boar_hid=${sow_boar_hid}`;
@@ -441,7 +441,7 @@ export function PageSowBoarEntry(input_settings){
                     const health_issues = [];
                     const notes = [];
                     
-                    for (cur_entry of response.data){
+                    for (const cur_entry of response.data){
                         if ('is_health_issue' in cur_entry.prod_notes){
                             health_issues.unshift(cur_entry);
                         }

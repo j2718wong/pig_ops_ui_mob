@@ -171,12 +171,12 @@ export function TableMedVac(input_settings){
         let  s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
         
         let s_medvac = `
-            <span class="medvac-brand">${cur_entry.medvac.brand.name}</span><br>
+            <span class="medvac-brand"><b>${cur_entry.medvac.brand.name}</b></span><br>
             <span class="medvac-type">${cur_entry.medvac.type.name}</span>
         `;
         
         let s_desc = `
-            <span class="medvac-name">${cur_entry.medvac.acc_medvac.name}</span>
+            <span class="medvac-name"><b>${cur_entry.medvac.acc_medvac.name}</b></span>
             <span class="medvac-notes">${cur_entry.medvac.notes}</span>
         `;
         
@@ -209,7 +209,7 @@ export function TableMedVac(input_settings){
     
     
     this.requestDataPigMedVac = function(callback){
-        const sow_boar_hid = dataSowBoar.hid;
+        const sow_boar_hid = dataSowBoar.sow_boar.hid;
         
         const base_url = window.location.origin;
         const url = `${base_url}/pig_medvac/list?sow_boar_hid=${sow_boar_hid}`;

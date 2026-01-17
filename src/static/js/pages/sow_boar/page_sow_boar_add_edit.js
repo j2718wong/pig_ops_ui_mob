@@ -9,9 +9,12 @@ import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
 
 import {TextTranslation}        from '../common/translation.js';
+
+import {UiInputDatePicker}      from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
 import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';
 import {UiInputCheckBox}        from '../common/ui/input_checkbox.js';
+
 import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
 import {PAGE_ID,
@@ -19,11 +22,6 @@ import {PAGE_ID,
         SOW_STATUS,
         REQUEST_ERROR_NUM}      from '../../constants.js';
 
-
-import {formatDate,
-        FORMAT_SHORT_MONTH,
-        FORMAT_LONG_MONTH,
-        FORMAT_COMPACT}         from '../../utils.js';
 
 
 
@@ -69,9 +67,7 @@ export function PageSowBoarAddEdit(input_settings){
     
     let elemUiName              = null;
     let elemUiNumber            = null;
-    
-    let elemIdDateOfBirth       = null;
-    
+    let elemUiDateOfBirth       = null;
     let elemUiParentSow         = null;
     let elemUiParentBoar        = null;
     
@@ -197,7 +193,7 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdInfo              = `sow-boar-add-edit-info`;
         
         
-        elemUiName          = new UiInputTextWithCounter({
+        elemUiName              = new UiInputTextWithCounter({
             uniqueKey:          'sow-boar-add-edit-name',
         
             className:          'form-group-text',
@@ -209,7 +205,7 @@ export function PageSowBoarAddEdit(input_settings){
         });
         
         
-        elemUiNumber        = new UiInputTextWithCounter({
+        elemUiNumber            = new UiInputTextWithCounter({
             uniqueKey:          'sow-boar-add-edit-number',
         
             className:          'form-group-text',
@@ -220,8 +216,18 @@ export function PageSowBoarAddEdit(input_settings){
             helpText:           'This can be an eartag number of your pig.'
         });
         
-      
-        elemIdDateOfBirth       = `sow-boar-add-edit-date-of-birth`;
+        
+        
+        elemUiDateOfBirth       = new UiInputDatePicker({
+            uniqueKey:          'sow-boar-add-edit-date-birth',
+        
+            textLabel:          'Date of Birth',
+            isRequired:         false,
+            invalidFeedBack:    null,
+            helpText:           "Can be blank. This is use to calculate pig's age."
+        });
+        
+        
         elemIdBirthProdIdShow   = `sow-boar-add-edit-birth-prod-id-show`;
         elemIdBirthProdId       = `sow-boar-add-edit-birth-prod-id`;
         
@@ -283,6 +289,7 @@ export function PageSowBoarAddEdit(input_settings){
         const html_ui_name      = elemUiName.getHtml();
         const html_ui_number    = elemUiNumber.getHtml();
         
+        const html_ui_date_birth    = elemUiDateOfBirth.getHtml();
         const html_ui_parent_sow    = elemUiParentSow.getHtml();
         const html_ui_parent_boar   = elemUiParentBoar.getHtml();
         
@@ -317,13 +324,7 @@ export function PageSowBoarAddEdit(input_settings){
         ${html_ui_number}
         
         <!-- 3. Date of Birth -->
-        <div class="form-group-date">
-            <label for="${elemIdDateOfBirth}" class="form-label">
-                Date of Birth
-            </label>
-            <input type="text" class="form-control" id="${elemIdDateOfBirth}">
-            <div class="form-text">This is use to calculate pig's age.</div>
-        </div>
+        ${html_ui_date_birth}
         
         <!-- 4. Parent Sow Field -->
         ${html_ui_parent_sow}
@@ -392,6 +393,8 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiName.afterHtmlRender();
         elemUiNumber.afterHtmlRender();
         
+        elemUiDateOfBirth.afterHtmlRender();
+        
         elemUiParentSow.afterHtmlRender();
         elemUiParentBoar.afterHtmlRender();
         
@@ -413,7 +416,6 @@ export function PageSowBoarAddEdit(input_settings){
         
         elemInfoShow            = document.getElementById(elemIdInfoShow);
         
-        elemDateOfBirth         = document.getElementById(elemIdDateOfBirth);
         elemBirthProdIdShow     = document.getElementById(elemIdBirthProdIdShow);
         elemBirthProdId         = document.getElementById(elemIdBirthProdId);
         elemNumNipplesShow      = document.getElementById(elemIdNumNipplesShow);
@@ -428,18 +430,6 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this._processAfterHtmlRender = function(){
-        
-        
-        
-        
-        $('#'+elemIdDateOfBirth).datepicker({
-            format: 'MM d, yyyy',  // This gives "January 31, 2026"
-            autoclose: true,
-            orientation: 'bottom',
-            endDate: new Date() // Max date is today
-        }).on('show', function(e) {
-            $('.datepicker').addClass('datepicker-material');
-        });
 
     }
     
@@ -500,40 +490,7 @@ export function PageSowBoarAddEdit(input_settings){
         thisObj.commonSelectOptions.setDataBoarList(data, elem_select, special_options);
     }
     
-    
-    this._getSowBoarById = function(farm_sow_boar_id){
-        let cur_entry;
-        let index;
         
-        let sow_boar_list= null;
-        if ((showOptions.sow_boar_type == SOW_BOAR_TYPE.SOW) ||
-            (showOptions.sow_boar_type == SOW_BOAR_TYPE.GILT)){
-            sow_boar_list = sowList;
-        }
-        else{
-            sow_boar_list = boarList;
-        }
-        
-        for (index = 0; index < sow_boar_list.length; index++){
-            cur_entry = sow_boar_list[index];
-            if ((showOptions.sow_boar_type == SOW_BOAR_TYPE.SOW) ||
-                (showOptions.sow_boar_type == SOW_BOAR_TYPE.GILT)){
-                
-                if (cur_entry.farm_sow_id == farm_sow_boar_id){
-                    return cur_entry;
-                }
-            }
-            else{
-                if (cur_entry.farm_boar_id == farm_sow_boar_id){
-                    return cur_entry;
-                }
-            }
-        }
-        
-        return null;
-    }
-    
-    
     this._getSowBoar = function(name, number, exclude_hid){
         // Note: SowBoar name or number can be null; but not both null;
         // SowBoar number can also contain non numeric characters
@@ -636,9 +593,7 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiName.reset();
         elemUiNumber.reset();
         
-        cur_elem = elemDateOfBirth;
-        cur_elem.value = ''; 
-        cur_elem.classList.remove('is-valid', 'is-invalid'); 
+        elemUiDateOfBirth.reset();
         
         elemUiParentSow.reset();
         elemUiParentBoar.reset();
@@ -649,7 +604,7 @@ export function PageSowBoarAddEdit(input_settings){
     }
     
     
-    this.beforeShow = function(options){
+    this.beforeShow = function(options, data_sow_boar){
         /*
         Typical options
         options ={
@@ -660,6 +615,9 @@ export function PageSowBoarAddEdit(input_settings){
             go_back_page_id: PAGE_ID.SOW_BOAR_LIST, optional
             from_prod_pid:  null    // can be null or undefined
         }
+        
+        data_sow_boar is only provided if sow_boar edit, options.is_add = false
+        
         */
         thisObj._resetForm();
         
@@ -669,12 +627,11 @@ export function PageSowBoarAddEdit(input_settings){
         let sow_boar_reference;
         
         
-        // Show Update Status if edit
         if (options.is_add){
-            //elemUpdateStatusShow.style.display = 'none';
+            curDataSowBoar = null;
         } 
         else{
-            //elemUpdateStatusShow.style.display = 'block';
+            curDataSowBoar = data_sow_boar;
         }
         
         
@@ -704,13 +661,12 @@ export function PageSowBoarAddEdit(input_settings){
                     html = `<i class="fas fa-plus me-2"></i>Add Sow`;
                 }
                 else{
-                    curDataSowBoar = thisObj._getSowBoarById(options.farm_sow_boar_id);
-                    
-                    if (curDataSowBoar.name && curDataSowBoar.name.length >0){
-                        sow_boar_reference = curDataSowBoar.name;
+                    const sow_boar_name = curDataSowBoar.sow_boar.name;
+                    if (sow_boar_name && sow_boar_name.length >0){
+                        sow_boar_reference = sow_boar_name;
                     }
                     else{
-                        sow_boar_reference = curDataSowBoar.number;
+                        sow_boar_reference = curDataSowBoar.sow_boar.number;
                     }
                     
                     html = `<i class="fas fa-edit me-2"></i>Edit Sow: ${sow_boar_reference}`;
@@ -733,13 +689,12 @@ export function PageSowBoarAddEdit(input_settings){
                     html = `<i class="fas fa-plus me-2"></i>Add Boar`;
                 }
                 else{
-                    curDataSowBoar = thisObj._getSowBoarById(options.farm_sow_boar_id);
-                    
-                    if ((curDataSowBoar.name != null) && (curDataSowBoar.name.length >0)){
-                        sow_boar_reference = curDataSowBoar.name;
+                    const sow_boar_name = curDataSowBoar.sow_boar.name;
+                    if (sow_boar_name && sow_boar_name.length >0){
+                        sow_boar_reference = sow_boar_name;
                     }
                     else{
-                        sow_boar_reference = curDataSowBoar.number;
+                        sow_boar_reference = curDataSowBoar.sow_boar.number;
                     }
                     
                     html = `<i class="fas fa-edit me-2"></i>Edit Boar: ${sow_boar_reference}`;
@@ -762,7 +717,15 @@ export function PageSowBoarAddEdit(input_settings){
                     elemInfoShow.style.display = 'block';
                 }
                 else{
-                    html = `<i class="fas fa-edit me-2"></i>Edit Gilt`;
+                    const sow_boar_name = curDataSowBoar.sow_boar.name;
+                    if (sow_boar_name && sow_boar_name.length >0){
+                        sow_boar_reference = sow_boar_name;
+                    }
+                    else{
+                        sow_boar_reference = curDataSowBoar.sow_boar.number;
+                    }
+                    
+                    html = `<i class="fas fa-edit me-2"></i>Edit Gilt: ${sow_boar_reference}`;
                 }
                 elemHeaderTitle.innerHTML = html;
                 
@@ -774,7 +737,7 @@ export function PageSowBoarAddEdit(input_settings){
                 break;
             }
             
-            case SOW_BOAR_TYPE.GILT:{}
+            case SOW_BOAR_TYPE.DISPOSED:{}
             
         }
         
@@ -814,40 +777,41 @@ export function PageSowBoarAddEdit(input_settings){
     
     this.populateForm = function(data_sow_boar){
         
-        //sowBoarEntry.hid    =  
-        
-        
-        elemName.value      = data_sow_boar.name;
-        elemNumber.value    = data_sow_boar.number;
-        
-        if (data_sow_boar.date_of_birth != null){
-            const dt_dob    = new Date(data_sow_boar.date_of_birth);
-            const dt_dob_s  = formatDate(dt_dob);
-            elemDateOfBirth.value = dt_dob_s;
+        let cur_sow_boar = data_sow_boar;
+        if ('sow_boar' in data_sow_boar){
+            cur_sow_boar = data_sow_boar.sow_boar;
         }
         
         
-        if (data_sow_boar.is_external && data_sow_boar.is_external > 0) {
-            elemIsExternal.checked = true;
-        }
-        else{
-            elemIsExternal.checked = false;
+        elemUiName.setValue(cur_sow_boar.name);
+        elemUiNumber.setValue(cur_sow_boar.number);
+        
+        if (cur_sow_boar.date_of_birth != null){
+            elemUiDateOfBirth.setDate(cur_sow_boar.date_of_birth);
         }
         
-        if (data_sow_boar.is_production_ready > 0) {
-            elemIsProdReady.checked = true;
+        
+        if (cur_sow_boar.is_external && cur_sow_boar.is_external > 0) {
+            elemUiIsExternal.getElemCheckBox().checked = true;
         }
         else{
-            elemIsProdReady.checked = false;
+            elemUiIsExternal.getElemCheckBox().checked = false;
+        }
+        
+        if (cur_sow_boar.is_production_ready > 0) {
+            elemUiIsProdReady.getElemCheckBox().checked = true;
+        }
+        else{
+            elemUiIsProdReady.getElemCheckBox().checked = false;
         }
         
         
-        if (data_sow_boar.num_nipples ){
-            elemNumNipples.value = data_sow_boar.num_nipples;
+        if (cur_sow_boar.num_nipples ){
+            elemNumNipples.value = cur_sow_boar.num_nipples;
         }
         
-        if (data_sow_boar.add_notes ){
-            elemNotes.value = data_sow_boar.add_notes;
+        if (cur_sow_boar.add_notes ){
+            elemUiNotes.setValue(cur_sow_boar.add_notes);
         }
         
         
@@ -997,6 +961,11 @@ export function PageSowBoarAddEdit(input_settings){
     }
     
     
+    this._hasChanged = function(post_data){
+        
+    }
+    
+    
     this.onClickSaveButton = function(){
 
         let input_elem      = null;
@@ -1011,7 +980,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         let input_name      = elemUiName.getValue().trim();
         let input_number    = elemUiNumber.getValue().trim();
-        let input_date_birth= elemDateOfBirth.value.trim();
+        let input_date_birth= elemUiDateOfBirth.getValue().trim();
         let input_num_nipples   = elemNumNipples.value;
         
         let input_parent_sow_id = elemUiParentSow.getValue();
@@ -1019,11 +988,11 @@ export function PageSowBoarAddEdit(input_settings){
         
         let input_notes     = elemUiNotes.getValue().trim();
         
-        if (input_parent_sow_id == '1'){// I dont know option
+        if (input_parent_sow_id == '0' || input_parent_sow_id == '1'){// I dont know option
             input_parent_sow_id = null;
         }
         
-        if (input_parent_boar_id == '1'){// I dont know option
+        if (input_parent_boar_id == '0' || input_parent_boar_id == '1'){// I dont know option
             input_parent_boar_id = null;
         }
         
@@ -1136,7 +1105,7 @@ export function PageSowBoarAddEdit(input_settings){
         if (input_date_birth.length == 0){
             input_date_birth = null;
         } else{
-            input_elem          = elemDateOfBirth;
+            input_elem          = elemUiDateOfBirth.getElemText();
             
             // Convert date to YYYY-MM-DD format
             const dt_dob        = new Date(input_date_birth);
@@ -1214,8 +1183,8 @@ export function PageSowBoarAddEdit(input_settings){
             // edit entry
             delete post_data.pfhid;
             
-            post_data['sow_boar_hid'] = curDataSowBoar.hid;
-            post_data['sow_status_id']= curDataSowBoar.status_id;
+            post_data['sow_boar_hid'] = curDataSowBoar.sow_boar.hid;
+            post_data['sow_status_id']= curDataSowBoar.sow_boar.status_id;
             
         }
         
@@ -1312,16 +1281,11 @@ export function PageSowBoarAddEdit(input_settings){
                     }
                     
                     else{
-                        // Edit action will always go back to SowBoar List page.
-                        // Redraw first the SowBoar List page before show
-                        const callback_success = function(){
-                            navigation.pageSowBoarList.show(null);
-                            navigation.showThisPage(showOptions.go_back_page);
-                        };
-                        
-                        navigation.pigFarm.requestDataSowBoar(is_sow, 
-                            callback_success, callback_error);
-                        
+                        // Edit action will
+                        // 1.) replace this data only.
+                        curDataSowBoar.sow_boar = response.sow_boar;
+                        navigation.pageSowBoarEntry.beforeShow(curDataSowBoar);
+                        navigation.showThisPage(showOptions.go_back_page);
                     }
                     
                     

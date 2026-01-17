@@ -11,7 +11,9 @@ import {PIG_OPERATION_TYPE,
         SUPPLIER_TYPE}              from '../../constants.js';
 
 
-import {ServerError}         		from '../common/server_error.js';
+import {ServerError}                from '../common/server_error.js';
+import {ToastAlert}                 from '../common/toast_alert.js';
+
 import {ManagerAddress}             from '../common/manager_address.js';
 import {ManagerPublicData}          from '../common/manager_public_data.js';
 
@@ -323,7 +325,11 @@ export function Navigation(){
     
     
     this.userControl            = new UserControl(this);
-    this.serverError     		= new ServerError(this);
+    
+    this.toastAlert             = new ToastAlert();
+    this.serverError            = new ServerError(this);
+    
+    
     this.managerRequest         = new ManagerRequest(this);
     this.managerAddress         = new ManagerAddress(this);
     this.managerPublicData      = new ManagerPublicData(this)

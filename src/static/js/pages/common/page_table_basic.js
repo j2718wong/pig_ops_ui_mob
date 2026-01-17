@@ -154,8 +154,8 @@ export function PageTableBasic(){
                 Add Entry
             </button>
         </div>
-		
-	
+        
+    
     
         <div id="${elemIdServerErrorMsg}"></div>
     
@@ -255,21 +255,18 @@ export function PageTableBasic(){
         }*/
     }
     
-	
-	this.setOnClickAddEntry = function(callback){
-		
-		
-		elemAddEntryBtn.addEventListener('click', function() {
+    
+    this.setOnClickAddEntry = function(callback){
+        
+        
+        elemAddEntryBtn.addEventListener('click', function() {
             callback();
         });
-	}
-	
+    }
+    
     
     this.setDataEntryList = function(data_entry_list){
         dataEntryList = data_entry_list;    
-        console.log('PageTableBasic');
-        console.log('dataEntryList.length = ' + dataEntryList.length)
-        
         elemTableEntryCount.textContent = dataEntryList.length;
     }
     

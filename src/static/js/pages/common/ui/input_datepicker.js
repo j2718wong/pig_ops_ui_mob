@@ -1,26 +1,27 @@
-// January 13, 2026
+// January 17, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
 'use strict';
 
-import {UiBasic}                    from './ui_basic.js';
+import {UiBasic}                from './ui_basic.js';
 
-import {updateCharCounter}          from '../page_view_basic.js'
+import {formatDate,
+        FORMAT_SHORT_MONTH,
+        FORMAT_LONG_MONTH,
+        FORMAT_COMPACT}         from '../../../utils.js';
 
 
-export function UiInputTextWithCounter(input_settings){
+export function UiInputDatePicker(input_settings){
     UiBasic.call(this);
     
     /* Typical settings
     settings = {
         uniqueKey:      ''
         
-        isTextArea:     false,  //optional; for text areas
-        className:      'form-group-text',
+        
         textLabel:      'Name',
         isRequired:     false,
-        textMaxChars:   160,
         invalidFeedBack: null,
         helpText:       ''  
     }
@@ -35,12 +36,10 @@ export function UiInputTextWithCounter(input_settings){
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     
     const elemIdText            = `${settings.uniqueKey}-text`;
-    const elemIdCharCounter     = `${settings.uniqueKey}-char-counter`;
     const elemIdTextInv         = `${settings.uniqueKey}-text-inv`;
   
     
     let elemText                = null;
-    let elemCharCounter         = null;
     let elemTextInv             = null;
     
     
@@ -70,37 +69,19 @@ export function UiInputTextWithCounter(input_settings){
             s_help = `<div class="form-text">${settings.helpText}</div>`;
         }
         
-        let s_input = '';
-        if ('isTextArea' in settings){
-            s_input = `
-            <textarea  
-                    class="form-control" 
-                    id="${elemIdText}" 
-                    rows="${settings.rows}" 
-                    maxlength="${settings.textMaxChars}" 
-                    ${s_required}>
-            </textarea>
-            `;
-        }
-        else{
-            s_input = `
+        
+        
+        return `
+        <div class="form-group-date" id="${elemIdUiShow}">
+            <label for="${elemIdText}" class="form-label">
+                ${settings.textLabel} ${s_required_mark}
+            </label>
+            
             <input  type="text" 
                     class="form-control" 
                     id="${elemIdText}" 
                     maxlength="${settings.textMaxChars}" 
                     ${s_required}>
-            `;
-        }
-        
-        
-        return `
-        <div class="${settings.className}" id="${elemIdUiShow}">
-            <label for="${elemIdText}" class="form-label">
-                ${settings.textLabel} ${s_required_mark}
-                <span id="${elemIdCharCounter}" class="char-counter">0/${settings.textMaxChars}</span>
-            </label>
-            
-            ${s_input}
             
             ${s_invalid}
             ${s_help}
@@ -114,7 +95,6 @@ export function UiInputTextWithCounter(input_settings){
         thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
         
         elemText                = document.getElementById(elemIdText);
-        elemCharCounter         = document.getElementById(elemIdCharCounter);
         elemTextInv             = document.getElementById(elemIdTextInv);
     }
     
@@ -130,6 +110,28 @@ export function UiInputTextWithCounter(input_settings){
     }
     
     
+    this._processAfterHtmlRender = function(){
+        // The date picker is purposely set to give the text format
+        // so that there is no ambuiguity which number is date or month
+        // because the users are not that tech savvy.
+        //
+        // So there will be date format conversions along the way
+        // from getting data from the database, presenting to user 
+        // and going back to database.
+        
+        
+        // jquery to the rescue
+        $('#'+elemIdText).datepicker({
+            format: 'MM d, yyyy',  // This gives "January 31, 2026"
+            autoclose: true,
+            orientation: 'bottom',
+            endDate: new Date() // Max date is today
+        }).on('show', function(e) {
+            $('.datepicker').addClass('datepicker-material');
+        });
+    }
+    
+    
     
     this.getElemText  = function(){
         return elemText;
@@ -142,10 +144,19 @@ export function UiInputTextWithCounter(input_settings){
     }
     
     
-    this.setValue = function(text){
-        elemText.value      = text;
+    
+    /**
+    Will set date to datepicker.
+    @param date_str - date string in YYYY-MM-DD format
+    */
+    this.setDate = function(date_str){
+        const dt        = new Date(date_str);
+        const dt_s      = formatDate(dt);
+        elemText.value  = dt_s;
         
-        updateCharCounter(elemText, elemCharCounter, settings.textMaxChars);
+        // Set the datepicker to this date
+        const $elemText = $(elemText);
+        $elemText.datepicker('setDate', dt_s);
     }
     
     
@@ -157,9 +168,7 @@ export function UiInputTextWithCounter(input_settings){
     this.reset = function(){
         elemText.value = '';
         elemText.classList.remove('is-valid', 'is-invalid');
-        
-        updateCharCounter(elemText, elemCharCounter, settings.textMaxChars);
-    } 
+     } 
     
     
     this.setTextInvalid = function(text){

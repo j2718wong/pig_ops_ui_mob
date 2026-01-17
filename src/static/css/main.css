@@ -1795,6 +1795,44 @@ p {
 }
 
 
+
+.toast-container {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 1055;
+	min-width: 250px;
+}
+
+.custom-toast {
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+	margin-bottom: 15px;
+}
+
+.toast-header {
+	font-weight: 600;
+}
+
+.toast-success {
+	border-left: 5px solid #28a745;
+}
+
+.toast-error {
+	border-left: 5px solid #dc3545;
+}
+
+.toast-warning {
+	border-left: 5px solid #ffc107;
+}
+
+.toast-info {
+	border-left: 5px solid #17a2b8;
+}
+
+
+
 /********* END COMMON CONTROLS **********/
 
 

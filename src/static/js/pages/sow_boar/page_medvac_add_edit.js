@@ -540,7 +540,7 @@ export function PageMedVacAddEdit(input_settings){
         // 2.) The second entry is the Sow Boar name 
 
         let list_name       = null;
-        let sow_boar_name   = null;
+       
         
         let cur_sow_boar = curDataSowBoar;
         if ('sow_boar' in curDataSowBoar){
@@ -570,20 +570,20 @@ export function PageMedVacAddEdit(input_settings){
         }
         
         
-        let sow_reference = '';
+		// Update breadcrumb 
+        let sow_boar_reference   = '';
+        let sow_boar_name   = cur_sow_boar.name;
         
-        if ((cur_sow_boar.name != null) && (cur_sow_boar.name.length >0)){
-            sow_reference = cur_sow_boar.name;
+        if (sow_boar_name && sow_boar_name.length >0){
+            sow_boar_reference = sow_boar_name;
         }
         else{
-            sow_reference = cur_sow_boar.number;
+            sow_boar_reference = cur_sow_boar.number;
         }
         
-        console.log(`settingsBreadcrumb`);
-        console.log(settingsBreadcrumb);
         
         settingsBreadcrumb.items[0].label = list_name;
-        settingsBreadcrumb.items[1].label = sow_reference;
+        settingsBreadcrumb.items[1].label = sow_boar_reference;
         componentBreadcrumb.refreshLabels();
         
         
@@ -654,15 +654,6 @@ export function PageMedVacAddEdit(input_settings){
         
         // Set Page Title
         let html;
-        let sow_boar_reference;
-        
-        if (curDataSowBoar.name && curDataSowBoar.name.length >0){
-            sow_boar_reference = curDataSowBoar.name;
-        }
-        else{
-            sow_boar_reference = curDataSowBoar.number;
-        }
-        
         if (options.is_add){
             html = `<i class="fas fa-plus me-2"></i>Add MedVac for <span>${sow_boar_reference}</span>`;
         }
@@ -751,7 +742,7 @@ export function PageMedVacAddEdit(input_settings){
         
         
         // Set Notes
-        elemUiNotes.setText(cur_medvac.medvac.notes);
+        elemUiNotes.setValue(cur_medvac.medvac.notes);
         
         
         // Set Staff 
