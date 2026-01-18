@@ -1345,7 +1345,7 @@ p {
 
 
 .not-known {
-	color:danger-red;
+    color:danger-red;
 }
 
 
@@ -1475,16 +1475,16 @@ p {
 
 
 .btn-full {
-	display: block;
-	width: 100%;
-	padding: 14px;
-	border: none;
-	border-radius: 8px;
-	font-size: 16px;
-	font-weight: 600;
-	cursor: pointer;
-	transition: all 0.2s;
-	text-align: center;
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
 }
 
 
@@ -1797,39 +1797,205 @@ p {
 
 
 .toast-container {
-	position: fixed;
-	top: 20px;
-	right: 20px;
-	z-index: 1055;
-	min-width: 250px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1055;
+    min-width: 250px;
 }
 
 .custom-toast {
-	border-radius: 8px;
-	overflow: hidden;
-	box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-	margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-bottom: 15px;
 }
 
 .toast-header {
-	font-weight: 600;
+    font-weight: 600;
 }
 
 .toast-success {
-	border-left: 5px solid #28a745;
+    border-left: 5px solid #28a745;
 }
 
 .toast-error {
-	border-left: 5px solid #dc3545;
+    border-left: 5px solid #dc3545;
 }
 
 .toast-warning {
-	border-left: 5px solid #ffc107;
+    border-left: 5px solid #ffc107;
 }
 
 .toast-info {
-	border-left: 5px solid #17a2b8;
+    border-left: 5px solid #17a2b8;
 }
+
+
+/** MOre modal */
+.more-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	max-width: 500px;
+}
+
+
+/* Custom modal styling with extra large radius */
+.custom-modal {
+    border: none;
+    /*box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);*/
+
+}
+
+/* Modal styling - Fixed centering */
+.custom-modal .modal-dialog {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	margin: 0;
+	width: 100%;
+	max-width: none;
+}
+
+.custom-modal .modal-content {
+	/*border-radius: var(--modal-radius) !important;*/
+	border: none;
+	/*box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);*/
+	background-color: white;
+	width: 100%;
+	max-width: 400px;
+	margin: 20px;
+}
+
+
+
+/* Centered modal header with no border */
+.custom-modal .modal-header {
+    border-bottom: none;
+    padding: 10px 30px 20px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal .modal-title {
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--text-color);
+    letter-spacing: -0.5px;
+    text-align: center;
+}
+
+.custom-modal .modal-body {
+    padding: 0 30px 40px 30px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Menu item styling - no background on hover for touch */
+.more-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 24px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: var(--text-color);
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.more-menu-item:last-child {
+    border-bottom: none;
+}
+
+/* Touch-based interaction - active state for touch feedback */
+.more-menu-item:active {
+    transform: scale(0.995);
+    opacity: 0.9;
+}
+
+.more-menu-item.active {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.more-menu-text {
+    flex-grow: 1;
+    font-size: 20px;
+    font-weight: 500;
+}
+        
+
+
+/* Mobile-specific styles with touch optimization */
+@media (max-width: 576px) {
+    .custom-modal {
+        margin: 20px;
+    }
+    
+    .modal-dialog {
+        margin: 20px;
+        max-width: 100%;
+    }
+    
+    
+    .custom-modal .modal-header {
+        padding: 0;
+    }
+    
+    .custom-modal .modal-title {
+        font-size: 1.8rem;
+    }
+    
+    .custom-modal .modal-body {
+        padding: 0 25px 35px 25px;
+    }
+    
+    .more-menu-item {
+        padding: 5px 0;
+    }
+    
+    .more-menu-text {
+        font-size: 19px;
+    }
+    
+    
+    /* Touch-friendly tap targets */
+    .more-menu-item {
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+    }
+    
+    
+}
+
+@media (max-width: 400px) {
+    .custom-modal {
+        margin: 16px;
+    }
+    
+    .modal-dialog {
+        margin: 16px;
+    }
+    
+    .custom-modal .modal-header {
+        padding: 0
+    }
+    
+    .custom-modal .modal-body {
+        padding: 0 20px 30px 20px;
+    }
+    
+    .more-menu-text {
+        font-size: 18px;
+    }
+}
+
 
 
 

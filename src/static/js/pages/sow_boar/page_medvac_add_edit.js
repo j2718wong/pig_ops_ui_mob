@@ -91,7 +91,7 @@ export function PageMedVacAddEdit(input_settings){
     
     
     let elemIdMedVacForPigHealth    = null;
-    let elemIdMedVacForPigHealthChk = null;
+    let elemIdMedVacForPigHealthDate = null;
     let elemIdMedVacForPigHealthLabel = null;
 
     
@@ -128,7 +128,7 @@ export function PageMedVacAddEdit(input_settings){
     
     
     let elemMedVacForPigHealth      = null;
-    let elemMedVacForPigHealthChk   = null;
+    let elemMedVacForPigHealthDate   = null;
     let elemMedVacForPigHealthLabel = null;
     
     
@@ -189,7 +189,7 @@ export function PageMedVacAddEdit(input_settings){
 
 
         elemIdMedVacForPigHealth        = `medvac-add-edit-medvac-for-pig-ops`;
-        elemIdMedVacForPigHealthChk     = `medvac-add-edit-medvac-for-pig-ops-chk`;
+        elemIdMedVacForPigHealthDate    = `medvac-add-edit-medvac-for-pig-ops-date`;
         elemIdMedVacForPigHealthLabel   = `medvac-add-edit-medvac-for-pig-ops-label`;
 
         
@@ -221,6 +221,7 @@ export function PageMedVacAddEdit(input_settings){
         
         componentAccMedVac      = new ComponentAccMedVac({
             navigation:         navigation,
+            parentObj:          thisObj,
             uniqueKey:          'medvac-add-edit-name',
 
             titleExpandSection: 'Add New MedVac Name',
@@ -298,27 +299,30 @@ export function PageMedVacAddEdit(input_settings){
         <div class="warning-box" id="${elemIdInfoShow}" style="display:none;"></div>
         
         
-        <!-- 1. Date MedVac -->
-        ${html_date_medvac}
         
         <!-- Optional relation keys -->
         <div class="form-group-check" id="${elemIdMedVacForShow}">
-            <label id="${elemIdMedVacForLabel}" class="form-label">MedVac For</label>
+            <label id="${elemIdMedVacForLabel}" class="form-label">MedVac For Health Issue</label>
             
-            <div id="${elemIdMedVacForPigOps}" class="checkbox-group">
-                <input type="checkbox" id="${elemIdMedVacForPigOpsChk}">
-                <label for="${elemIdMedVacForPigOpsChk}" class="checkbox-label" ${elemIdMedVacForPigOpsLabel}>
-                    Para pig ops
+            <div id="${elemIdMedVacForPigHealth}">
+                <label id="${elemIdMedVacForPigHealthDate}">
+                    Decemer 6, 2025
                 </label>
+                
+                <b>
+                    <label id="${elemIdMedVacForPigHealthLabel}">
+                        Nakaigit sa iyang purol
+                    </label>
+                </b>
+                
             </div>
             
-            <div id="${elemIdMedVacForPigHealth}" class="checkbox-group">
-                <input type="checkbox" id="${elemIdMedVacForPigHealthChk}">
-                <label for="${elemIdMedVacForPigHealthChk}" class="checkbox-label" ${elemIdMedVacForPigHealthLabel}>
-                    para Health Issue
-                </label>
-            </div>
+            
         </div>
+        
+        <!-- 1. Date MedVac -->
+        ${html_date_medvac}
+        
         
         <!-- 2. MedVac Brand -->
         ${html_medvac_brand}
@@ -402,7 +406,7 @@ export function PageMedVacAddEdit(input_settings){
                                                                     
                                                                     
         elemMedVacForPigHealth      = document.getElementById(elemIdMedVacForPigHealth);
-        elemMedVacForPigHealthChk   = document.getElementById(elemIdMedVacForPigHealthChk); 
+        elemMedVacForPigHealthDate  = document.getElementById(elemIdMedVacForPigHealthDate); 
         elemMedVacForPigHealthLabel = document.getElementById(elemIdMedVacForPigHealthLabel);
         
                                                           
@@ -482,6 +486,7 @@ export function PageMedVacAddEdit(input_settings){
         options ={
             is_add:                 true,   // false is edit
             medvac_hid:             null,   // not null if edit
+            health_issue_entry:     null,   // not null if this is added from health issue
             callback_after_add:     thisObj.onSuccessAddEntry
             go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
@@ -567,8 +572,6 @@ export function PageMedVacAddEdit(input_settings){
         }
         else{
             html = `<i class="fas fa-edit me-2"></i>Edit MedVac</span>`;
-            
-           
         }
         elemHeaderTitle.innerHTML = html;
                 
@@ -586,6 +589,21 @@ export function PageMedVacAddEdit(input_settings){
         else{
             elemMedVacForShow.style.display = 'none';
             componentStaff.hideDoneByMe();
+        }
+        
+        
+        // ShowHide optional MedVac For
+        if ('health_issue_entry' in options){
+            elemMedVacForShow.style.display = 'block';
+            
+            const prod_notes = options.health_issue_entry.prod_notes;
+            
+            elemMedVacForPigHealthDate.textContent = prod_notes.date_notes; 
+            elemMedVacForPigHealthLabel.textContent = prod_notes.notes;
+            
+        }
+        else{
+            elemMedVacForShow.style.display = 'none';
         }
         
         
@@ -673,6 +691,14 @@ export function PageMedVacAddEdit(input_settings){
         elemUiNotes.enableInputs();
     }
     
+
+    this.getMedVacBrandAndTypeHid = function(){
+        return {
+            brand_hid:  componentMedVacBrand.getValue(),
+            type_hid:   componentMedVacType.getValue()
+        }
+    }
+
 
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
@@ -848,6 +874,12 @@ export function PageMedVacAddEdit(input_settings){
             if (done_by_user > 0){
                 post_data.done_by_user = 1;
                 delete post_data.staff_hid;
+            }
+            
+            if ('health_issue_entry' in showOptions){
+                const health_issue_hid = showOptions.health_issue_entry.prod_notes.hid;
+                post_data.health_issue_hid = health_issue_hid;
+                
             }
         }
         

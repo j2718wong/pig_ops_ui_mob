@@ -27,19 +27,21 @@ export function TableNotes(input_settings){
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    const parentObj             = input_settings.parentObj;
     
     
     /*
     Typical input_settings
     {
         navigation:             this,
-		uniqueKey:				'sow-boar-notes'
+        parentObj:              thisObj,
+        uniqueKey:              'sow-boar-notes'
         elemDivContainer:       '<element>'
     }   
     */  
     let settings                = input_settings;
     
-	
+    
     let elemDivContainer        = settings.elemDivContainer;
 
     let elemIdTableBody         = null;
@@ -64,13 +66,13 @@ export function TableNotes(input_settings){
     
     this.init = function(){
         
-		let settingsTable;
-		settingsTable = {
-			uniqueKey:      settings.uniqueKey,
-			tableTitle:     'Notes'
-		}
+        let settingsTable;
+        settingsTable = {
+            uniqueKey:      `${settings.uniqueKey}-table`,
+            tableTitle:     'Notes'
+        }
         
-		
+        
         thisObj.setSettings(settingsTable);
         
         const html_table = thisObj.getHtml();
@@ -96,20 +98,22 @@ export function TableNotes(input_settings){
     
     
     
-    this.beforeShow = function(data_sow_boar){
-        dataSowBoar = data_sow_boar;
+    this.beforeShow = function(data_sow_boar, options){
+        dataSowBoar     = data_sow_boar;
+        showOptions     = options;
         
-        const data_sow_boar_medvac = null;
-        if ('notes' in dataSowBoar){
-            // TODO
-            const test = 1;
+        if ('list_notes' in dataSowBoar){
+            thisObj.setDataEntryList(dataSowBoar.list_notes);
+            thisObj.renderTable(dataSowBoar.list_notes);
         } else{
-            const callback_success = function(data){
+            const callback_success = function(){
                 // Set table entry list; This will set also the entry count;
-                thisObj.setDataEntryList(data);
-                thisObj.renderTable(data);
+                thisObj.setDataEntryList(dataSowBoar.list_notes);
+                thisObj.renderTable(dataSowBoar.list_notes);
             };
-            thisObj.requestData(callback_success);
+            
+            parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success,
+                thisObj.elemServerErrorMsg);
         }
         
     }
@@ -142,15 +146,13 @@ export function TableNotes(input_settings){
         <table class="data-table" id="">
             <thead>
                 <colgroup>
-                    <col style="width: 20%;">
-                    <col style="width: 50%;">
-					<col style="width: 30%;">
+                    <col style="width: 28%;">
+                    <col style="width: 72%;">
                 </colgroup>
                 
                 <tr>
                     <th>Date</th>
                     <th>Notes</th>
-                    <th>Last Update</th>
                 </tr>
             </thead>
             <tbody id="${elemIdTableBody}">
@@ -167,9 +169,7 @@ export function TableNotes(input_settings){
     this.getHtmlTableRowEmpty = function(){
         const html = `
             <tr>
-                <td><div>No Entries</div></td>
-                <td><div>&nbsp;</div></td>
-                <td><div>&nbsp;</div></td>
+                <td colspan="2"><div>No Entries</div></td>
             </tr>
         `;
         return html;
@@ -177,75 +177,21 @@ export function TableNotes(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        
-        let s_click = '';
-        
-		let s_last_update = '';
+        let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+
+        const dt_notes = new Date(cur_entry.prod_notes.date_notes);
         
         const html = `
             <tr>
-                <td><span>${cur_entry.prod_notes.date_notes}</span></td>
-                <td>${cur_entry.prod_notes.notes}</td>
-                <td onclick='${s_click}'>${s_last_update}</td>
+                <td><span>${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
+                <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>
             </tr>
         `;
         
         return html;
     }
     
-
-    this.addToolTips = function(){
-        const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
-        console.log('with_tooltips='+with_tooltips.length);
-        for (const cur_entry of with_tooltips){
-            new bootstrap.Tooltip(cur_entry);
-        }
-    }
-    
-    
-  
-    this.requestData = function(callback){
-        const sow_boar_hid = dataSowBoar.hid;
-        
-        const base_url = window.location.origin;
-        const url = `${base_url}/pig_medvac/list?sow_boar_hid=${sow_boar_hid}`;
-        
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                thisObj.elemServerErrorMsg.style.display = 'none';
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    dataSowBoar['list_medvac'] = response.data;
-                    
-                    if (callback){
-                        callback(dataSowBoar['list_medvac']);
-                    }
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, thisObj.elemServerErrorMsg);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
-        
-    }
-    
-    
+      
     this.setUserLanguage = function(language_key){
         curUserLanguageKey = language_key;
         thisObj.onUserChangeLanguage();
@@ -262,15 +208,71 @@ export function TableNotes(input_settings){
         const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
         
         const options ={
-            is_add:         true,   // false is edit
-            go_back_page:   go_back_page   // Go back to this page; this is Div element
+            is_add:                 true,   // false is edit
+            callback_after_add:     thisObj.onSuccessAddEntry,
+            go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
         
-        navigation.pageNotesAddEdit.beforeShow(thisObj.curDataSowBoar, options);
+        navigation.pageNotesAddEdit.beforeShow(dataSowBoar, options);
         const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
         navigation.showThisPage(page_container);
         
         
     }
+    
+    
+    this.getEntry = function(entry_hid){
+        if ('list_notes' in dataSowBoar){
+            for (const cur_entry of dataSowBoar.list_notes){
+                if (cur_entry.prod_notes.hid == entry_hid){
+                    return cur_entry;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    this.onSuccessAddEntry = function(){
+        
+        const callback_success = function(data){
+            thisObj.setDataEntryList(dataSowBoar.list_notes);
+            thisObj.renderTable(dataSowBoar.list_notes);
+        };
+
+        parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success, 
+            thisObj.elemServerErrorMsg)
+    }
+    
+    
+    this.onClickRowEntry = function(entry_hid){
+        const row_entry = thisObj.getEntry(entry_hid);
+        thisObj.onClickEditEntry(row_entry);
+    }
+    
+    
+    this.onClickEditEntry = function(row_entry){
+
+        if (row_entry){
+            const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        
+            const options ={
+                is_add:                 false,   // false is edit
+                row_entry:              row_entry,
+                callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
+                go_back_page:           go_back_page   // Go back to this page; this is Div element
+            }
+            
+            navigation.pageNotesAddEdit.beforeShow(dataSowBoar, options);
+            const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
+            navigation.showThisPage(page_container);
+            
+
+        }
+    }
+    
+    
+    
     
 }

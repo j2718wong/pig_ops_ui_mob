@@ -34,6 +34,7 @@ export function TableHealthIssue(input_settings){
     {
         navigation:             this,
         parentObj:              thisObj,
+        uniqueKey:              'sow-boar-health',
         elemDivContainer:       elemTabHealth
     }   
     */  
@@ -66,7 +67,7 @@ export function TableHealthIssue(input_settings){
         
         let settingsTable;
         settingsTable = {
-            uniqueKey:      'sow-boar-health-table',
+            uniqueKey:      `${settings.uniqueKey}-table`,
             tableTitle:     'Health Issues'
         }
         
@@ -101,12 +102,16 @@ export function TableHealthIssue(input_settings){
         showOptions     = options;
 
         if ('list_health_issues' in dataSowBoar){
-            
             thisObj.setDataEntryList(dataSowBoar.list_health_issues);
             thisObj.renderTable(dataSowBoar.list_health_issues);
         } else{
-            console.log('to request notes');
-            thisObj.requestDataNotes();
+            const callback_success = function(){
+                thisObj.setDataEntryList(dataSowBoar.list_health_issues);
+                thisObj.renderTable(dataSowBoar.list_health_issues);
+            }
+            
+            parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success,
+                thisObj.elemServerErrorMsg);
         }
         
     
@@ -175,10 +180,7 @@ export function TableHealthIssue(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-    
-        let  s_click = '';
-        
-        s_click = `gNavigation.pageSowBoarEntry.tablePigHealth.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+        let s_click = `gNavigation.pageSowBoarEntry.tablePigHealth.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
         
         let s_last_med = ''
         let s_last_update = '';
@@ -188,27 +190,12 @@ export function TableHealthIssue(input_settings){
         const health_issue_hid = cur_entry.prod_notes.hid;
         let last_med_health_issue =  null;
         
-        // dataSowBoar.list_medvac is listed in date DESC
-        if ('list_medvac' in dataSowBoar){
-            // Get the first 
-            const  list_medvac = dataSowBoar.list_medvac;
-            
-            for (const cur_medvac in list_medvac){
-                if (cur_medvac.health_issue_hid == health_issue_hid){
-                    last_med_health_issue = cur_medvac;
-                    break;
-                }
-            }
-            
-        }
         
-        
-        if (last_med_health_issue){
+        if (cur_entry.pig_medvac){
             s_last_med = `
-                <span class="medvac-name">${last_med_health_issue.medvac.acc_medvac.name}</span>
-                <span class="medvac-notes">${last_med_health_issue.medvac.notes}</span>
+                <span class="medvac-name"><b>${cur_entry.pig_medvac.acc_medvac_name}</b></span>
+                <span class="medvac-notes">${cur_entry.pig_medvac.medvac_notes}</span>
             `;
-            
         }
         
         
@@ -225,76 +212,7 @@ export function TableHealthIssue(input_settings){
         return html;
     }
     
-
-    this.addToolTips = function(){
-        const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
-        console.log('with_tooltips='+with_tooltips.length);
-        for (const cur_entry of with_tooltips){
-            new bootstrap.Tooltip(cur_entry);
-        }
-    }
-    
-    
-    this.requestDataNotes = function(callback){
-        const sow_boar_hid = dataSowBoar.sow_boar.hid;
-        
-        const base_url = window.location.origin;
-        const url = `${base_url}/pig_prod_notes/list?sow_boar_hid=${sow_boar_hid}`;
-        
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                thisObj.elemServerErrorMsg.style.display = 'none';
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    
-                    const sow_boar_notes = [];
-                    const health_issues = [];
-                    
-                    for (const cur_entry of response.data){
-                        if ('is_health_issue' in cur_entry.prod_notes){
-                            health_issues.push(cur_entry);
-                        }
-                        else{
-                            sow_boar_notes.push(cur_entry);
-                        }
-                    }
-                    
-                    dataSowBoar.list_notes = sow_boar_notes;
-                    dataSowBoar.list_health_issues = health_issues;
-                    
-                    
-                    thisObj.setDataEntryList(dataSowBoar.list_health_issues);
-                    thisObj.renderTable(dataSowBoar.list_health_issues);
-                    
-                    if (callback){
-                        
-                    }
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, thisObj.elemServerErrorMsg);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
-        
-    }
-    
-    
+ 
     this.setUserLanguage = function(language_key){
         curUserLanguageKey = language_key;
         thisObj.onUserChangeLanguage();
@@ -308,8 +226,8 @@ export function TableHealthIssue(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        if ('health_issues' in dataSowBoar){
-            for (const cur_entry of dataSowBoar.health_issues){
+        if ('list_health_issues' in dataSowBoar){
+            for (const cur_entry of dataSowBoar.list_health_issues){
                 if (cur_entry.prod_notes.hid == entry_hid){
                     return cur_entry;
                 }
@@ -341,31 +259,55 @@ export function TableHealthIssue(input_settings){
     this.onSuccessAddEntry = function(){
         
         const callback_success = function(data){
-            console.log('To render again heakth issues');
-            thisObj.setDataEntryList(dataSowBoar.health_issues);
-            thisObj.renderTable(dataSowBoar.health_issues);
+            thisObj.setDataEntryList(dataSowBoar.list_health_issues);
+            thisObj.renderTable(dataSowBoar.list_health_issues);
+            
+            // need also to request pig_medvac data
+            parentObj.tableMedVac.requestDataPigMedVac();
         };
-        console.log('to reuest');
+
         parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success, 
             thisObj.elemServerErrorMsg)
     }
     
-    
-    this.onSuccessEditEntry = function(){
-        console.log('onSuccessEditEntry');
-    }
-    
-    
+
     this.onClickRowEntry = function(entry_hid){
         const row_entry = thisObj.getEntry(entry_hid);
         
+        console.log('entry_hid = ' + entry_hid);
+        console.log(row_entry);
+        
+        const menu_items = [
+            {   label: 'Edit',
+                action: thisObj.onClickEditEntry,
+                data:   row_entry
+            },
+            
+            {
+                label: 'Add MedVac',
+                action: thisObj.onClickAddMedVacEntry,
+                data:   row_entry
+            }
+            
+        ];
+        
+        const options = {
+            title: 'Health Issue'
+        };
+        
+        navigation.moreModal.beforeShow(menu_items, options);
+    }
+    
+    
+    this.onClickEditEntry = function(row_entry){
+
         if (row_entry){
             const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
         
             const options ={
                 is_add:                 false,   // false is edit
-                prod_notes_hid:         entry_hid,
-                callback_after_edit:    thisObj.onSuccessEditEntry,
+                row_entry:              row_entry,
+                callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
                 go_back_page:           go_back_page   // Go back to this page; this is Div element
             }
             
@@ -376,5 +318,24 @@ export function TableHealthIssue(input_settings){
 
         }
     }
+    
+    
+    this.onClickAddMedVacEntry = function(row_entry){
+        console.log('onClickAddMedVacEntry');
+        const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        
+        const options ={
+            is_add:                 true,   // false is edit
+            callback_after_add:     thisObj.onSuccessAddEntry,
+            health_issue_entry:     row_entry,
+            go_back_page:           go_back_page   // Go back to this page; this is Div element
+        }
+        
+        navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
+        const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+        navigation.showThisPage(page_container);
+       
+    }
+    
     
 }

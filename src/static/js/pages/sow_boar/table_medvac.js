@@ -193,15 +193,6 @@ export function TableMedVac(input_settings){
         return html;
     }
     
-
-    this.addToolTips = function(){
-        const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
-
-        for (const cur_entry of with_tooltips){
-            new bootstrap.Tooltip(cur_entry);
-        }
-    }
-    
     
     this.search = function(key){
         

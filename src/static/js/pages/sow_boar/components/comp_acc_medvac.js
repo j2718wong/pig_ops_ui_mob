@@ -16,15 +16,16 @@ export function ComponentAccMedVac(input_settings){
     /*
     Typical settings
     {
-        navigation:             navigation,
-        uniqueKey:              'medvac-add-edit-acc-medvac',
+        navigation:         navigation,
+        parentObj:          thisObj,
+        uniqueKey:          'medvac-add-edit-acc-medvac',
 
-        titleExpandSection:     'Add New MedVac Name',
-        htmlExpandSection:      null,
-        labelBtnExpandSave:     'Save MedVac Name',
+        titleExpandSection: 'Add New MedVac Name',
+        htmlExpandSection:  null,
+        labelBtnExpandSave: 'Save MedVac Name',
         
-        labelSelect:            'Select MedVac Name',
-        helpText:               'MedVac product name'
+        labelSelect:        'Select MedVac Name',
+        helpText:           'MedVac product name'
 
     }
     */
@@ -39,7 +40,7 @@ export function ComponentAccMedVac(input_settings){
     
     
     const thisObj           = this;
-    
+    const parentObj         = input_settings.parentObj;
     
     const MAXCHAR_MEDVAC_NAME   = 50;
     
@@ -197,6 +198,19 @@ export function ComponentAccMedVac(input_settings){
             'uhid':             user_hid,
             'name':             input_name
         };
+        
+        
+        // Append medvac_brand_hid and medvac_type_hid if there is any
+        const brand_type = parentObj.getMedVacBrandAndTypeHid();
+        if (brand_type){
+            if (brand_type.brand_hid && brand_type.brand_hid.length > 2){
+                post_data.medvac_brand_hid = brand_type.brand_hid;
+            }
+            
+            if (brand_type.type_hid && brand_type.type_hid.length > 2){
+                post_data.medvac_type_hid = brand_type.type_hid;
+            }
+        }
         
 
         // Element where to display server error message in this component

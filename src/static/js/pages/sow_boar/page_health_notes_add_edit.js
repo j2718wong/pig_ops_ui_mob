@@ -282,8 +282,8 @@ export function PageHealthNotesAddEdit(input_settings){
         Typical options
         options ={
             is_add:                 true,   // false is edit
-            prod_notes_hid:			null, 	// not null if edit
-			callback_after_add:     thisObj.onSuccessAddEntry
+            row_entry:              null,   // not null if edit; entry to be edited
+            callback_after_add:     thisObj.onSuccessAddEntry
             go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
         */
@@ -301,14 +301,14 @@ export function PageHealthNotesAddEdit(input_settings){
         
         let html;
         
-        if (settings.is_notes){
+        if (settings.isNotes){
             if (options.is_add){
                 html = `<i class="fas fa-plus me-2"></i>Add Notes`;
             }
             else{
                 html = `<i class="fas fa-edit me-2"></i>Edit Notes`;
                 
-                thisObj.populateForm(thisObj.curDataSowBoar, medvac_hid);
+                thisObj.populateForm(thisObj.curDataSowBoar, options.row_entry);
             }
         }
         else{
@@ -318,7 +318,7 @@ export function PageHealthNotesAddEdit(input_settings){
             else{
                 html = `<i class="fas fa-edit me-2"></i>Edit Health Issue`;
                 
-                thisObj.populateForm(thisObj.curDataSowBoar, medvac_hid);
+                thisObj.populateForm(thisObj.curDataSowBoar, options.row_entry);
             }
         }
         elemHeaderTitle.innerHTML = html;
@@ -339,31 +339,15 @@ export function PageHealthNotesAddEdit(input_settings){
     }
     
     
-    this.populateForm = function(data_sow_boar, medvac_hid){
+    this.populateForm = function(data_sow_boar, row_entry){
         
-        // Get medvac entry from data_sow_boar
-        const list_notes = data_sow_boar.list_notes;
+        const cur_notes  = row_entry;
         
-        let cur_notes = null;
-        for (const cur_entry of list_notes){
-            if (cur_entry.medvac.hid == medvac_hid){
-                cur_notes = cur_entry;
-                break;
-            }
-        }
-        
-        if (cur_notes == null){return;}
-        
-        
-        const dt_notes     = new Date(cur_notes.date_notes);
-        const dt_notes_s   = formatDate(dt_notes);
-        elemDateNotes.value = dt_notes_s;
         
         // Set the datepicker to this date
-        const $elemDateNotes = $(elemDateNotes);
-        $elemDateNotes.datepicker('setDate', cur_notes.date_notes);
-        
-        
+        elemUiDateNotes.setDate(cur_notes.prod_notes.date_notes);
+                
+        elemUiNotes.setValue(cur_notes.prod_notes.notes);
 
     }
     
@@ -504,7 +488,7 @@ export function PageHealthNotesAddEdit(input_settings){
         }
         else{
             delete post_data.sow_boar_hid;
-            post_data.pig_prod_notes_hid = showOptions.pig_prod_notes_hid;
+            post_data.pig_prod_notes_hid = showOptions.row_entry.prod_notes.hid;
         }
         
         

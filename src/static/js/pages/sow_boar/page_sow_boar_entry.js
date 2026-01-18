@@ -21,6 +21,8 @@ import {formatDate,
 
 import {TableMedVac}            from './table_medvac.js'
 import {TableHealthIssue}       from './table_health_issue.js'
+import {TableNotes}             from './table_notes.js'
+
 
 
 PageSowBoarEntry.prototype = new PageViewPigFarmPage();
@@ -257,6 +259,16 @@ export function PageSowBoarEntry(input_settings){
             elemDivContainer:       elemTabHealth
         });
         this.tablePigHealth.init();
+        
+        
+        this.tableSowBoarNotes = new TableNotes({
+            navigation:             settings.navigation,
+            parentObj:              thisObj,
+            uniqueKey:              'sow-boar-notes',
+            elemDivContainer:       elemTabNotes
+        });
+        this.tableSowBoarNotes.init();
+        
     }
     
     
@@ -458,20 +470,19 @@ export function PageSowBoarEntry(input_settings){
     this.beforeShowTab = function(){
         switch(curActiveTabId){
             case elemIdTabMedVac:{
-                console.log('Test 1');
                 thisObj.tableMedVac.beforeShow(dataSowBoar);
         
                 break;
             }
             
             case elemIdTabHealth:{
-                console.log('Test 2');
                 thisObj.tablePigHealth.beforeShow(dataSowBoar);
         
                 break;
             }
             
             case elemIdTabNotes:{
+                thisObj.tableSowBoarNotes.beforeShow(dataSowBoar);
                 break;
             }
             
@@ -536,7 +547,7 @@ export function PageSowBoarEntry(input_settings){
                     }
                     
                     data_sow_boar.list_health_issues = health_issues;
-                    data_sow_boar.list_notes 		= notes;
+                    data_sow_boar.list_notes        = notes;
                     
                     if (callback_success){callback_success(response.data);}
                 }    

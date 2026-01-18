@@ -13,6 +13,8 @@ import {PIG_OPERATION_TYPE,
 
 import {ServerError}                from '../common/server_error.js';
 import {ToastAlert}                 from '../common/toast_alert.js';
+import {MoreModal}                  from '../common/more_modal.js';
+
 
 import {ManagerAddress}             from '../common/manager_address.js';
 import {ManagerPublicData}          from '../common/manager_public_data.js';
@@ -334,6 +336,8 @@ export function Navigation(){
     this.toastAlert             = new ToastAlert();
     this.serverError            = new ServerError(this);
     
+    this.moreModal              = new MoreModal(this);
+    
     
     this.managerRequest         = new ManagerRequest(this);
     this.managerAddress         = new ManagerAddress(this);
@@ -450,6 +454,8 @@ export function Navigation(){
     this.init = function(){
         
         this.userControl.init();
+        
+        this.moreModal.init();
         
         this.pageAccountDisabled.init();
         this.pageUserDisabled.init();
