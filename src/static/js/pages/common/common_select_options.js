@@ -63,8 +63,7 @@ export function CommonSelectOptions(){
             }
         }
         
-        if (special_options){console.log(select_data);}
-        
+
         replaceSelectOptions(select_elem, select_data);
     }
     

@@ -273,7 +273,7 @@ export function PageTableBasic(){
         
     this.renderTable = function(entry_list){
         curDataView = entry_list;
-
+		
         const config = {
             elemPagination:     elemTablePagination,
             elemTableBody:      thisObj.getElemTableBody(),

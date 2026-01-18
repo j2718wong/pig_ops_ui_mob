@@ -19,6 +19,9 @@ const PAGE_ID = {
     SOW_BOAR_ENTRY:         13,
     
     MEDVAC_ADD_EDIT:        18,
+    HEALTH_ADD_EDIT:        19,
+    NOTES_ADD_EDIT:         20,
+    
     
     
     PROD_GESTA_LIST:        31,

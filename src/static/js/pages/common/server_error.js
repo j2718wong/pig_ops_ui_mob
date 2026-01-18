@@ -8,6 +8,36 @@
 import {PAGE_ID,
         REQUEST_ERROR_NUM}      from '../../constants.js';
         
+        
+export function debugElementVisibility(el) {
+  
+  if (!el) {
+    console.error(`Element #${elementId} not found!`);
+    return;
+  }
+  
+  console.log('=== DEBUG ELEMENT VISIBILITY ===');
+  console.log('innerHTML:', el.innerHTML);
+  console.log('textContent:', el.textContent);
+  console.log('outerHTML:', el.outerHTML);
+  
+  // Check styles
+  const style = window.getComputedStyle(el);
+  console.log('Display:', style.display);
+  console.log('Visibility:', style.visibility);
+  console.log('Opacity:', style.opacity);
+  console.log('Width/Height:', style.width, style.height);
+  console.log('Color/Background:', style.color, style.backgroundColor);
+  
+  // Check if in DOM
+  console.log('Is connected:', el.isConnected);
+  console.log('Parent:', el.parentElement);
+  
+  // Check for hidden attribute
+  console.log('Hidden attribute:', el.hidden);
+}
+
+        
 
 export function ServerError(_navigation){
     const thisObj               = this;
@@ -27,8 +57,14 @@ export function ServerError(_navigation){
             }
             
             
-            elem_show_error.innerHTML = html;
+            // Display first before innerHTML
             elem_show_error.style.display = 'block'
+            elem_show_error.innerHTML = html;
+            
+            
+        }
+        else{
+            console.log('\n\nServerError.receivedErrorMessage(); elem_show_error is null');
         }
         
         // Check special error numbers;

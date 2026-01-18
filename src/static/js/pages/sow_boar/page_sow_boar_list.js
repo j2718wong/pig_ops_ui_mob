@@ -846,6 +846,9 @@ ${html_style}
             let excess_days     = diff_days % 365;
             let num_months      = Math.round(excess_days / 30);
             
+            if (num_months == 12){
+                num_years += 1;  num_months = 0;
+            }
             
             if (num_years == 0){
                 s_age = `${num_months} months`;
@@ -868,6 +871,10 @@ ${html_style}
             }
         }
         
+        let s_num_piglets = ''
+        if ('num_piglets' in sow_boar){
+            s_num_piglets = sow_boar.num_piglets;
+        }
         
         let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
         s_click += `"${sow_boar.hid}");`;
@@ -877,7 +884,7 @@ ${html_style}
                 <td><span onclick='${s_click}'>${sow_reference}</span></td>
                 <td>${SOW_STATUS_NAME[sow_boar.status_id]}</td>
                 <td>${s_age}</td>
-                <td></td>
+                <td>${s_num_piglets}</td>
             </tr>
         `;
         
@@ -1072,13 +1079,10 @@ ${html_style}
         let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
         s_click += `"${sow_boar.hid}");`;
         
-        let s_last_mate ='';
-        if (cur_entry.date_last_mate){
-            s_last_mate = cur_entry.date_last_mate;
-        }
+        let s_last_mate = '';
+        if (sow_boar.date_last_mate){s_last_mate = sow_boar.date_last_mate;}
         
-        let mate_count = 0;
-        if ('mate_count' in cur_entry){mate_count = cur_entry.mate_count;}
+        let mate_count =  sow_boar.mate_count;
         
         const html = `
             <tr>
@@ -1366,11 +1370,11 @@ ${html_style}
         let filtered = [];
         
         for (const cur_entry of cur_list){
-            if (cur_entry.name && cur_entry.name.toUpperCase().includes(upper_key)){
+            if (cur_entry.sow_boar.name && cur_entry.sow_boar.name.toUpperCase().includes(upper_key)){
                 filtered.push(cur_entry)
             }
             else{
-                if (cur_entry.number && cur_entry.number.toUpperCase().includes(upper_key)){
+                if (cur_entry.sow_boar.number && cur_entry.sow_boar.number.toUpperCase().includes(upper_key)){
                     filtered.push(cur_entry)
                 }
             }

@@ -191,9 +191,7 @@ export function AddModalAccPigOps(input_settings){
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
-        
-        console.log('add_modal_acc members');
-        console.log(this);
+
     }
     
     

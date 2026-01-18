@@ -87,14 +87,15 @@ export function PageSowBoarEntry(input_settings){
     
     let dataSowBoar             = null;
     
+    let curActiveTabId          = null;
     let curActiveElemTab        = null;
     
     this.tableMedVac            = null;
     this.tablePigHealth         = null;
-    this.tableNotesSowBoar      = null;
+    this.tableSowBoarNotes      = null;
     
-	
-	let showOptions				= null;
+    
+    let showOptions             = null;
     
     
     this.init = function(){
@@ -242,16 +243,20 @@ export function PageSowBoarEntry(input_settings){
     this._processAfterHtmlRender = function(){
         this.tableMedVac     = new TableMedVac({
             navigation:             settings.navigation,
+            parentObj:              thisObj,
+            uniqueKey:              'sow-boar-medvac',
             elemDivContainer:       elemTabMedVac
         });
         this.tableMedVac.init();
         
-        /*
-        this.tablePigHealth= new TableMedVac({
-            navigation:             settings.navigation,
-            elemDivContainer:       elemTabMedVac
-        });*/
         
+        this.tablePigHealth = new TableHealthIssue({
+            navigation:             settings.navigation,
+            parentObj:              thisObj,
+            uniqueKey:              'sow-boar-health',
+            elemDivContainer:       elemTabHealth
+        });
+        this.tablePigHealth.init();
     }
     
     
@@ -264,12 +269,22 @@ export function PageSowBoarEntry(input_settings){
         
         function switchTab(tabId) {
             console.log('switchTab tabId =' + tabId) ;
+            
+            curActiveTabId = tabId;
+            
+            
             allTabs.forEach(tab => tab.classList.remove('active'));
             const selectedTab = document.getElementById(tabId);
             if (selectedTab) {
                 selectedTab.classList.add('active');
                 curActiveElemTab = selectedTab;
+                
+                thisObj.beforeShowTab();
             }
+            else{
+                console.log('tab not found');
+            }
+            
             navItems.forEach(item => item.classList.remove('active'));
             
             if (tabId === elemIdTabMedVac   || 
@@ -323,10 +338,10 @@ export function PageSowBoarEntry(input_settings){
     this.beforeShow = function(data_sow_boar, options){
         dataSowBoar = data_sow_boar;
         
-		if (options) { // replace options only if specified
-			showOptions = options;
-		}
-		
+        if (options) { // replace options only if specified
+            showOptions = options;
+        }
+        
         // Set Entry Title
         let s_title = '';
         
@@ -360,6 +375,30 @@ export function PageSowBoarEntry(input_settings){
         else{
             sow_reference = sow_boar_number;
         }
+        
+        
+        // Append SOW Status so that no ambuiguity
+        
+        if ('farm_sow_id' in data_sow_boar.sow_boar){
+        
+            switch(data_sow_boar.sow_boar.status_id){
+                case SOW_STATUS.GESTATING:{
+                    sow_reference += ' - Gesta'
+                    break;
+                }
+                
+                case SOW_STATUS.LACTATING:{
+                    sow_reference += ' - Lacta'
+                    break;
+                }
+                
+                case SOW_STATUS.WEANING:{
+                    sow_reference += ' - Wean'
+                    break;
+                }
+            }
+        }
+        
         
         elemEntryName.textContent = sow_reference;
         
@@ -401,8 +440,6 @@ export function PageSowBoarEntry(input_settings){
         
         
         
-        // Set tableMedVac 
-        this.tableMedVac.beforeShow(dataSowBoar);
         
         if ('notes' in dataSowBoar){
             const test = 1;
@@ -411,8 +448,56 @@ export function PageSowBoarEntry(input_settings){
             thisObj.requestDataSowBoarNotes(dataSowBoar);
         }
         
+        
+        thisObj.beforeShowTab();
+        
+        
     }
     
+    
+    this.beforeShowTab = function(){
+        switch(curActiveTabId){
+            case elemIdTabMedVac:{
+                console.log('Test 1');
+                thisObj.tableMedVac.beforeShow(dataSowBoar);
+        
+                break;
+            }
+            
+            case elemIdTabHealth:{
+                console.log('Test 2');
+                thisObj.tablePigHealth.beforeShow(dataSowBoar);
+        
+                break;
+            }
+            
+            case elemIdTabNotes:{
+                break;
+            }
+            
+            case elemIdTabOutput:{
+                break;
+            }
+            
+            case elemIdTabMates:{
+                break;
+            }
+            
+            case elemIdTabEdit:{
+                break;
+            }
+            
+            case elemIdTabStatus:{
+                break;
+            }
+            
+            default:{
+                thisObj.tableMedVac.beforeShow(dataSowBoar);
+                break;
+            }
+        }
+        
+    }
     
 
     // Note sow_boar.notes and sow_boar.health_issue are merged together in
@@ -443,15 +528,15 @@ export function PageSowBoarEntry(input_settings){
                     
                     for (const cur_entry of response.data){
                         if ('is_health_issue' in cur_entry.prod_notes){
-                            health_issues.unshift(cur_entry);
+                            health_issues.push(cur_entry);
                         }
                         else{
-                            notes.unshift(cur_entry);
+                            notes.push(cur_entry);
                         }
                     }
                     
-                    data_sow_boar['health_issues'] = health_issues;
-                    data_sow_boar['notes'] = notes;
+                    data_sow_boar.list_health_issues = health_issues;
+                    data_sow_boar.list_notes 		= notes;
                     
                     if (callback_success){callback_success(response.data);}
                 }    

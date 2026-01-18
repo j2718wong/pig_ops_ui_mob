@@ -4,24 +4,16 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
+import {PageSowBoarEntryComponent} from './page_sow_boar_entry_component.js';
+
 import {CommonSelectOptions}    from '../common/common_select_options.js';
 
 import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
 import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
+import {UiInputDatePicker}      from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
-import {ComponentStaffFormGroup} from '../common/ui/comp_staff_form_group.js';
 
-
-import {ComponentMedVacBrand}   from './components/comp_medvac_brand.js'
-import {ComponentMedVacType}    from './components/comp_medvac_type.js'
-import {ComponentAccMedVac}     from './components/comp_acc_medvac.js'
-
-
-import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
-
-import {TextTranslation}        from '../common/translation.js';
 
 
 import {PAGE_ID,
@@ -36,29 +28,22 @@ import {formatDate,
         FORMAT_COMPACT}         from '../../utils.js';
 
 
-
-import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
-
-import {ModelSowBoar}           from '../../models/model_sow_boar.js'
-
-
+import {debugElementVisibility} from '../common/server_error.js';
 
 
 export function PageHealthNotesAddEdit(input_settings){
-    PageViewPigFarmPage.call(this);
+    PageSowBoarEntryComponent.call(this, input_settings);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
-    const MAXCHAR_MEDVAC_BRAND_NAME   = 50;
-    const MAXCHAR_MEDVAC_TYPE   = 50;
-    
-    const MAXCHAR_MEDVAC_NAME   = 50;
     const MAXCHAR_NOTES         = 160;
     
     /*
     Typical settings = {
         navigation:             this,
+        uniqueKey:              'sow-boar-health',
+        isNotes:                true,   // false is for Health Issue
         elemDivContainer:       elemHiddenContMedVacAddEdit
     };
     */
@@ -66,9 +51,6 @@ export function PageHealthNotesAddEdit(input_settings){
 
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
-    
-    let elemIdBreadCrumb0       = null;
-    let elemIdBreadCrumb1       = null;
     
     let elemIdBtnClose          = null;
     
@@ -78,37 +60,15 @@ export function PageHealthNotesAddEdit(input_settings){
     let elemIdInfoShow          = null;
     let elemIdInfo              = null;
     
-    let elemIdDateNotes        = null;
+    let elemUiDateNotes         = null;
+    let elemUiNotes             = null;
 
-    let elemIdMedVacForShow         = null;
-    let elemIdMedVacForLabel        = null;
     
-    let elemIdMedVacForPigOps       = null;
-    let elemIdMedVacForPigOpsChk    = null;
-    let elemIdMedVacForPigOpsLabel  = null;
-    
-    
-    let elemIdMedVacForPigHealth    = null;
-    let elemIdMedVacForPigHealthChk = null;
-    let elemIdMedVacForPigHealthLabel = null;
-
     
     let elemIdServerErrorMsg    = null;
     let elemIdBtnCancel         = null;
     let elemIdBtnSave           = null;
     
-    
-    let componentMedVacBrand    = null;
-    let componentMedVacType     = null;
-    let componentAccMedVac      = null;
-    
-    let elemUiNotes             = null;
-    let componentStaff          = null;
-    
-    
-    
-    let elemBreadCrumb0         = null;
-    let elemBreadCrumb1         = null;
     
     let elemBtnClose            = null;
     
@@ -118,22 +78,6 @@ export function PageHealthNotesAddEdit(input_settings){
     let elemInfoShow            = null;
     let elemInfo                = null;
     
-    let elemDateNotes          = null;
-
-    
-    let elemMedVacForShow           = null;
-    let elemMedVacForLabel          = null;
-    
-    let elemMedVacForPigOps         = null;
-    let elemMedVacForPigOpsChk      = null;
-    let elemMedVacForPigOpsLabel    = null;
-    
-    
-    let elemMedVacForPigHealth      = null;
-    let elemMedVacForPigHealthChk   = null;
-    let elemMedVacForPigHealthLabel = null;
-    
-    
     
     let elemServerErrorMsg      = null;
     let elemBtnCancel           = null;
@@ -141,41 +85,7 @@ export function PageHealthNotesAddEdit(input_settings){
     
     
     
-    let dataMedVacBrandList     = null;
-    let dataMedVacTypeList      = null;
-    
-    
-    
     let showOptions             = null;
-    
-    
-    // This may not contain sex information
-    let curDataSowBoar          = null;
-    
-    
-    // The settingsBreadcrumb.items is temporary; need to update dynamically
-    const settingsBreadcrumb = {
-        uniqueKey:              'health-notes-add-edit',
-        navigation:             navigation,
-        elemRoot:               elemDivContainer,    // Root element where to search for elements
-                                            // so that not all document will be searched.
-        
-        items:[
-            {
-                'label':        'SowList',
-                'gotoPageId':   PAGE_ID.SOW_BOAR_LIST
-            },
-            
-            {
-                'label':        'Adela',
-                'gotoPageId':   PAGE_ID.SOW_BOAR_ENTRY
-            }
-        ]
-        
-    }
-    
-    const componentBreadcrumb   = new ComponentBreadcrumb(settingsBreadcrumb);
-    
     
     
     this.callbackOnSuccessAdd   = null;
@@ -190,53 +100,71 @@ export function PageHealthNotesAddEdit(input_settings){
     
     
     this.render = function(){
-        elemIdBtnClose          = `medvac-add-edit-close`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
-        elemIdHeaderTitle       = `medvac-add-edit-title`;
+        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         
             
-        elemIdInfoShow          = `medvac-add-edit-info-show`;
-        elemIdInfo              = `medvac-add-edit-info`;
+        elemIdInfoShow          = `${settings.uniqueKey}-info-show`;
+        elemIdInfo              = `${settings.uniqueKey}-info`;
         
-        elemIdDateNotes        = `medvac-add-edit-date-medvac`;
         
-        elemIdMedVacForShow     = `medvac-add-edit-medvac-for`;
-        elemIdMedVacForLabel    = `medvac-add-edit-medvac-for-label`;
         
-        elemIdMedVacForPigOps           = `medvac-add-edit-medvac-for-pig-ops`;
-        elemIdMedVacForPigOpsChk        = `medvac-add-edit-medvac-for-pig-ops-chk`;
-        elemIdMedVacForPigOpsLabel      = `medvac-add-edit-medvac-for-pig-ops-label`;
+        elemUiDateNotes         = new UiInputDatePicker({
+            uniqueKey:          `${settings.uniqueKey}-date`,
+        
+            textLabel:          'Date',
+            isRequired:         true,
+            invalidFeedBack:    'Please enter a date.',
+            helpText:           null
+        });
+        
+        
+        
+        let settings_notes = null;
+        if (settings.isNotes) {
+            settings_notes = {
+                uniqueKey:          `${settings.uniqueKey}-notes`,
+                
+                isTextArea:         true,
+                isRequired:         true,
+                className:          'form-group-text-area',
+                textLabel:          'Notes',
+                textMaxChars:       160,
+                rows:               3,
+                helpText:           null  
+            }
+        }
+        else{
+            settings_notes = {
+                uniqueKey:          `${settings.uniqueKey}-notes`,
+                
+                isTextArea:         true,
+                isRequired:         true,
+                className:          'form-group-text-area',
+                textLabel:          'Description',
+                textMaxChars:       160,
+                rows:               3,
+                helpText:           'Describe pig health problem.'
+            }
+        }
+        
+        
+        
+        elemUiNotes             = new UiInputTextWithCounter(settings_notes);
 
 
-        elemIdMedVacForPigHealth        = `medvac-add-edit-medvac-for-pig-ops`;
-        elemIdMedVacForPigHealthChk     = `medvac-add-edit-medvac-for-pig-ops-chk`;
-        elemIdMedVacForPigHealthLabel   = `medvac-add-edit-medvac-for-pig-ops-label`;
 
-
-
-        elemIdServerErrorMsg    = `medvac-add-edit-server-error-msg`;
-        elemIdBtnCancel         = `medvac-add-edit-cancel`;
-        elemIdBtnSave           = `medvac-add-edit-save`;
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
+        elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
+        elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         
-        
-        elemUiNotes             = new UiInputTextWithCounter({
-                                    uniqueKey:      'health-notes-add-edit-notes',
-                                    
-									isTextArea:		true,
-                                    className:      'form-group-text-area',
-                                    textLabel:      'Notes',
-                                    textMaxChars:   160,
-                                    rows:           3,
-                                    helpText:       'Describe the dosage given to pig. Sample: 2mL injection.'  
-                                });
-        
-        
-      
     
         
-        const html_breadcrumb       = componentBreadcrumb.getHtml();
-
+        const html_breadcrumb       = thisObj.componentBreadcrumb.getHtml();
+        
+        const html_ui_date_notes    = elemUiDateNotes.getHtml();
         const html_ui_notes         = elemUiNotes.getHtml();
 
         
@@ -260,19 +188,11 @@ export function PageHealthNotesAddEdit(input_settings){
         <div class="warning-box" id="${elemIdInfoShow}" style="display:none;"></div>
         
         
-        <!-- 1. Date MedVac -->
-        <div class="form-group-date">
-            <label for="${elemIdDateNotes}" class="form-label">Date</label>
-            <input type="text" class="form-control" id="${elemIdDateNotes}" required>
-            <div class="invalid-feedback">
-                Please input date.
-            </div>
-            <div class="form-text">Date when this event happened.</div>
-        </div>
+        <!-- 1. Date Notes -->
+        ${html_ui_date_notes}
         
-       
         
-        <!-- 5. Notes -->
+        <!-- 2. Notes -->
         ${html_ui_notes}
         
         
@@ -301,16 +221,11 @@ export function PageHealthNotesAddEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
-        // Do the afterHtmlRender to UI elements first;
-        
-        componentBreadcrumb.afterHtmlRender();
+        thisObj.afterHtmlRenderSowBoarEntryComponent();
 
-        componentMedVacBrand.afterHtmlRender();
-        componentMedVacType.afterHtmlRender();
-        componentAccMedVac.afterHtmlRender();
-        
+        elemUiDateNotes.afterHtmlRender();
         elemUiNotes.afterHtmlRender();
-        componentStaff.afterHtmlRender();
+        
         
         
         this._findElements();
@@ -329,61 +244,19 @@ export function PageHealthNotesAddEdit(input_settings){
         elemInfoShow            = document.getElementById(elemIdInfoShow);
         elemInfo                = document.getElementById(elemIdInfo);
                                                           
-        elemDateNotes          = document.getElementById(elemIdDateNotes);
-        
-        elemMedVacForShow           = document.getElementById(elemIdVacForShow);
-        elemMedVacForLabel          = document.getElementById(elemIdVacForLabel);
-                                                                    
-        elemMedVacForPigOps         = document.getElementById(elemIdVacForPigOps);
-        elemMedVacForPigOpsChk      = document.getElementById(elemIdVacForPigOpsChk);
-        elemMedVacForPigOpsLabel    = document.getElementById(elemIdVacForPigOpsLabel);
-                                                                    
-                                                                    
-        elemMedVacForPigHealth      = document.getElementById(elemIdVacForPigHealth);
-        elemMedVacForPigHealthChk   = document.getElementById(elemIdVacForPigHealthChk); 
-        elemMedVacForPigHealthLabel = document.getElementById(elemIdVacForPigHealthLabel);
-        
-                                                          
         elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
         elemBtnCancel           = document.getElementById(elemIdBtnCancel);
         elemBtnSave             = document.getElementById(elemIdBtnSave);
-        
-        
     }
     
     
     this._processAfterHtmlRender = function(){
         
-        
-        $('#'+elemIdDateNotes).datepicker({
-            format: 'MM d, yyyy',  // This gives "January 31, 2026"
-            autoclose: true,
-            orientation: 'bottom',
-            endDate: new Date() // Max date is today
-        }).on('show', function(e) {
-            $('.datepicker').addClass('datepicker-material');
-        });
-        
-        thisObj.setElemStaff(elemStaff, elemStaffCount);
     }
     
     
     this._bindEventListeners = function(){
-        
-        elemDateNotes.addEventListener('change', function() {
-            console.log('elemDateNotes chnage');
-            thisObj._validateAfterChangeInput(this, 'date_medvac');
-        });
-        
-        
-        elemBtnClose.addEventListener('click', function() {
-            //navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
-        });
-        
-        elemBtnCancel.addEventListener('click', function() {
-            //navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
-        });
-        
+             
         
         elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
@@ -398,16 +271,8 @@ export function PageHealthNotesAddEdit(input_settings){
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
-        // Remove validation classes
-        let cur_elem = null;
-        
-        componentMedVacBrand.reset();
-        componentMedVacType.reset();
-        componentAccMedVac.reset()
-        
-        
+        elemUiDateNotes.reset();
         elemUiNotes.reset(); 
-        componentStaff.reset();
         
     }
     
@@ -416,108 +281,46 @@ export function PageHealthNotesAddEdit(input_settings){
         /*
         Typical options
         options ={
-			is_notes:				true,	// health issues if false
             is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry
+            prod_notes_hid:			null, 	// not null if edit
+			callback_after_add:     thisObj.onSuccessAddEntry
             go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
         */
         
-        curDataSowBoar  = data_sow_boar;
+        thisObj.curDataSowBoar  = data_sow_boar;
         showOptions     = options;
         
-        // Need to update breadCrumb;
-        // 1.) The first entry can be either be Sow List, Boar List, Gilt List, or Diposed List
-        // 2.) The second entry is the Sow Boar name 
-        // 
-        // 
         
-        let list_name       = null;
-        let sow_boar_name   = null;
-        
-        let cur_sow_boar = curDataSowBoar;
-        if ('sow_boar' in curDataSowBoar){
-            cur_sow_boar = curDataSowBoar.sow_boar;
-        }
-        
-        if ('dispose_status_id' in cur_sow_boar){
-            list_name = 'Disposed List'; 
-        }
-        else{
-            if ('farm_boar_id' in cur_sow_boar){
-                list_name = 'Boar List';
-            }
-            else{
-                if (cur_sow_boar.status_id == SOW_STATUS.GROWING){
-                    if (sow_boar.is_production_ready > 0){
-                        list_name = 'Sow List';
-                    }
-                    else{
-                        list_name = 'Gilt List';
-                    }
-                }
-            }
-        }
-        
-        
-        let sow_reference = '';
-        
-        if ((cur_sow_boar.name != null) && (cur_sow_boar.name.length >0)){
-            sow_reference = cur_sow_boar.name;
-            
-            if (cur_sow_boar.number != null) {
-                sow_reference += ` (${cur_sow_boar.number})`;
-            }
-            
-        }
-        else{
-            sow_reference = cur_sow_boar.number;
-        }
-        
-        
-        settingsBreadcrumb.items[0].label = list_name;
-        settingsBreadcrumb.items[1].label = sow_reference;
-        componentBreadcrumb.refreshLabels();
+        // Update BreadCrumbs
+        const sow_boar_reference = thisObj.updateBreadCrumbs();
         
         
         thisObj._resetForm();
         
         
-        
-        
-        
-        
         let html;
-        let sow_boar_reference;
         
-        if (curDataSowBoar.name && curDataSowBoar.name.length >0){
-            sow_boar_reference = curDataSowBoar.name;
+        if (settings.is_notes){
+            if (options.is_add){
+                html = `<i class="fas fa-plus me-2"></i>Add Notes`;
+            }
+            else{
+                html = `<i class="fas fa-edit me-2"></i>Edit Notes`;
+                
+                thisObj.populateForm(thisObj.curDataSowBoar, medvac_hid);
+            }
         }
         else{
-            sow_boar_reference = curDataSowBoar.number;
+            if (options.is_add){
+                html = `<i class="fas fa-plus me-2"></i>Add Health Issue`;
+            }
+            else{
+                html = `<i class="fas fa-edit me-2"></i>Edit Health Issue`;
+                
+                thisObj.populateForm(thisObj.curDataSowBoar, medvac_hid);
+            }
         }
-        
-		
-		if (options.is_notes){
-			if (options.is_add){
-				html = `<i class="fas fa-plus me-2"></i>Add Notes for <span>${sow_boar_reference}</span>`;
-			}
-			else{
-				html = `<i class="fas fa-edit me-2"></i>Edit Notes for <span>${sow_boar_reference}</span>`;
-				
-				thisObj.populateForm(curDataSowBoar, medvac_hid);
-			}
-		}
-		else{
-			if (options.is_add){
-				html = `<i class="fas fa-plus me-2"></i>Add Health Issue for <span>${sow_boar_reference}</span>`;
-			}
-			else{
-				html = `<i class="fas fa-edit me-2"></i>Edit Health Issue for <span>${sow_boar_reference}</span>`;
-				
-				thisObj.populateForm(curDataSowBoar, medvac_hid);
-			}
-		}
         elemHeaderTitle.innerHTML = html;
                 
         
@@ -539,26 +342,26 @@ export function PageHealthNotesAddEdit(input_settings){
     this.populateForm = function(data_sow_boar, medvac_hid){
         
         // Get medvac entry from data_sow_boar
-        const list_medvac = data_sow_boar.list_medvac;
+        const list_notes = data_sow_boar.list_notes;
         
-        let cur_medvac = null;
-        for (const cur_entry of list_medvac){
+        let cur_notes = null;
+        for (const cur_entry of list_notes){
             if (cur_entry.medvac.hid == medvac_hid){
-                cur_medvac = cur_entry;
+                cur_notes = cur_entry;
                 break;
             }
         }
         
-        if (cur_medvac == null){return;}
+        if (cur_notes == null){return;}
         
         
-        const dt_medvac     = new Date(cur_medvac.date_medvac);
-        const dt_medvac_s   = formatDate(dt_medvac);
-        elemDateNotes.value = dt_medvac_s;
+        const dt_notes     = new Date(cur_notes.date_notes);
+        const dt_notes_s   = formatDate(dt_notes);
+        elemDateNotes.value = dt_notes_s;
         
         // Set the datepicker to this date
         const $elemDateNotes = $(elemDateNotes);
-        $elemDateNotes.datepicker('setDate', cur_medvac.date_medvac);
+        $elemDateNotes.datepicker('setDate', cur_notes.date_notes);
         
         
 
@@ -587,7 +390,7 @@ export function PageHealthNotesAddEdit(input_settings){
         if (ev.checkValidity()) {
             switch(input_field){
                 
-                case 'date_medvac': {
+                case 'date_notes': {
                     input_elem      = elemDateNotes;
                     input_val       = input_elem.value;
                     
@@ -633,19 +436,15 @@ export function PageHealthNotesAddEdit(input_settings){
         let is_duplicate    = 0;
         
         
-        let input_date_medvac   = elemDateNotes.value.trim();
-        
-        let input_medvac_brand  = componentMedVacBrand.getValue()
-        let input_medvac_type   = componentMedVacType.getValue()
-        let input_medvac_name   = componentAccMedVac.getValue()
+        let input_date_notes    = elemUiDateNotes.getValue().trim();
         let input_notes         = elemUiNotes.getValue().trim();
-        let input_staff         = componentStaff.getValue()
+
         
 
-        let dt_medvac_s = null;
+        let dt_notes_s = null;
         
-        input_elem          = elemDateNotes;
-        if (input_date_medvac.length == 0){
+        input_elem          = elemUiDateNotes.getElemText();
+        if (input_date_notes.length == 0){
             validation = -1;
             addValidationClassToElem(input_elem, validation);
             return;
@@ -654,52 +453,20 @@ export function PageHealthNotesAddEdit(input_settings){
         
         
         // Convert date to YYYY-MM-DD format
-        const dt_medvac     = new Date(input_date_medvac);
-        dt_medvac_s         = dt_medvac.toLocaleDateString('en-CA');
+        const dt_notes     = new Date(input_date_notes);
+        dt_notes_s         = dt_notes.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         
         
-        input_elem = componentMedVacBrand.getElemSelect();
-        if (input_medvac_brand == '0'  || input_medvac_brand == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        input_elem = componentMedVacType.getElemSelect();
-        if (input_medvac_type == '0'  || input_medvac_type == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        input_elem = componentAccMedVac.getElemSelect();
-        if (input_medvac_name == '0'  || input_medvac_name == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
+       
         input_elem = elemUiNotes.getElemText();
         if (input_notes.length == 0){
             validation = -1;
         }
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
-        
-        
-        input_elem = componentStaff.getElemSelect();
-        if (input_staff == '0'  || input_staff == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
         
         
         
@@ -715,26 +482,29 @@ export function PageHealthNotesAddEdit(input_settings){
         
         
         const user_hid      = navigation.userControl.getUserHid();
-        const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
         const base_url      = window.location.origin;
         
         
         // send post request
         let post_data = {
             'uhid':             user_hid,
-            'sow_boar_hid':     curDataSowBoar.hid,
+            'sow_boar_hid':     thisObj.curDataSowBoar.hid,
             
-            'date_medvac':      dt_medvac_s,
-            'medvac_brand_hid': input_medvac_brand,
-            'medvac_type_hid':  input_medvac_type,
-            'acc_medvac_hid':   input_medvac_name,
-            'notes':            input_notes,
-            'staff_hid':        input_staff
+            'date_notes':       dt_notes_s,
+            'notes':            input_notes
             
         };
         
-        if (showOptions.is_add == false){
+        if (showOptions.is_add == true){
+            post_data.sow_boar_hid = thisObj.curDataSowBoar.sow_boar.hid;
             
+            if (settings.isNotes == false){
+                post_data.is_health_issue = 1;
+            }
+        }
+        else{
+            delete post_data.sow_boar_hid;
+            post_data.pig_prod_notes_hid = showOptions.pig_prod_notes_hid;
         }
         
         
@@ -742,10 +512,10 @@ export function PageHealthNotesAddEdit(input_settings){
         let url;
         
         if (showOptions.is_add == true){
-            url = `${base_url}/pig_medvac/add`;
+            url = `${base_url}/pig_prod_notes/add`;
         }
         else{
-            url = `${base_url}/pig_medvac/update`;
+            url = `${base_url}/pig_prod_notes/update`;
         }
         
         $.ajax({
@@ -758,20 +528,26 @@ export function PageHealthNotesAddEdit(input_settings){
             data: JSON.stringify(post_data),
   
             beforeSend: function(){
+                
             },
   
             success: function(response){
                 if (response.result.num == 0){
                     if (showOptions.is_add == true){
-                        showOptions.callback_after_add();
+                        if (showOptions.callback_after_add){
+                            showOptions.callback_after_add();
+                        }
+                        
                         navigation.showThisPage(showOptions.go_back_page);
                     }
                     
                     else{
-                        
+                        if (showOptions.callback_after_edit){
+                            showOptions.callback_after_edit();
+                        }
+                        navigation.showThisPage(showOptions.go_back_page);
+                    
                     }
-                    
-                    
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

@@ -266,8 +266,8 @@ export function TableNotes(input_settings){
             go_back_page:   go_back_page   // Go back to this page; this is Div element
         }
         
-        navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
-        const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+        navigation.pageNotesAddEdit.beforeShow(thisObj.curDataSowBoar, options);
+        const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
         navigation.showThisPage(page_container);
         
         

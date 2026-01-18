@@ -13,7 +13,6 @@ import {TextTranslation}        from '../common/translation.js';
 
 import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
-import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
 import {UiInputDatePicker}      from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
 import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';

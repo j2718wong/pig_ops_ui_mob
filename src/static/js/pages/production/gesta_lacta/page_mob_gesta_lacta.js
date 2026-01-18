@@ -130,15 +130,16 @@ export function PageMobGestaLacta(input_settings){
     
     this._writeInlineStyle = function(){
         const html = `
-    <style>
+    <!--
+	<style>
         
         /* Updated Table Styles */
         
         .data-table.table-gesta-lacta th:nth-child(1) { width: 15%; }
         .data-table.table-gesta-lacta th:nth-child(2) { width: 20%; }
-        .data-table.table-gesta-lacta th:nth-child(3) { width: 25%; }
-        .data-table.table-gesta-lacta th:nth-child(4) { width: 30%; }
-    </style>
+        .data-table.table-gesta-lacta th:nth-child(3) { width: 30%; }
+        .data-table.table-gesta-lacta th:nth-child(4) { width: 40%; }
+    </style>-->
     `;
         return html;
     }
@@ -172,8 +173,15 @@ export function PageMobGestaLacta(input_settings){
             style_hide_add_button = 'display:none;';
             
             html_pig_prod_table = `
-            <!-- PogProd Gesta Table -->
+            <!-- PogProd Lacta Table -->
             <table class="data-table table-gesta-lacta">
+				<colgroup>
+					<col style="width: 15%;">
+					<col style="width: 20%;">
+					<col style="width: 30%;">
+					<col style="width: 35%;">
+				</colgroup>
+  
                 <thead>
                     <tr>
                         <th>PID</th>
@@ -190,8 +198,15 @@ export function PageMobGestaLacta(input_settings){
         
         else{
             html_pig_prod_table = `
-            <!-- PogProd Lacta Table -->
+            <!-- PogProd Gesta Table -->
             <table class="data-table table-gesta-lacta">
+				<colgroup>
+					<col style="width: 15%;">
+					<col style="width: 20%;">
+					<col style="width: 30%;">
+					<col style="width: 35%;">
+				</colgroup>
+  
                 <thead>
                     <tr>
                         <th>PID</th>
@@ -1349,11 +1364,14 @@ ${html_style}
             
             
             if (pending_operation){
+
+				
                 dt_target   = new Date(pending_operation.pig_prod_pig_ops.date_target);
                 dt_target_s  = formatDate(dt_target, FORMAT_COMPACT);
-            
+				operation_name = pending_operation.account_pig_ops.name;
+				
                 if (dt_current >= dt_target){
-                    operation_name = pending_operation.account_pig_ops.name;
+                    
                 }
                 
                 s_operation = `<div>${dt_target_s}</div><div>${operation_name}</div>`;

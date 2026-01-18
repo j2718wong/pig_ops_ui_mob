@@ -60,8 +60,6 @@ export function UiSelectWithEntryCount(input_settings){
         
         elemSelect              = document.getElementById(elemIdSelect);
         elemEntryCount          = document.getElementById(elemIdEntryCount);
-        
-        console.log('select _findElements');
     }
     
     

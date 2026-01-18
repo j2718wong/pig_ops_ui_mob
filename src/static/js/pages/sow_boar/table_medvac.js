@@ -134,7 +134,7 @@ export function TableMedVac(input_settings){
         <table class="data-table" id="">
             <thead>
                 <colgroup>
-                    <col style="width: 28%;">
+                    <col style="width: 28%; padding-right:0;">
                     <col style="width: 32%;">
                     <col style="width: 40%;">
                 </colgroup>
@@ -184,7 +184,7 @@ export function TableMedVac(input_settings){
         
         const html = `
             <tr>
-                <td><span>${formatDate(dt_medvac, FORMAT_COMPACT_NO_SPACE)}</span></td>
+                <td><span>${formatDate(dt_medvac, FORMAT_COMPACT)}</span></td>
                 <td onclick='${s_click}'>${s_medvac}</td>
                 <td onclick='${s_click}'>${s_desc}</td>
             </tr>

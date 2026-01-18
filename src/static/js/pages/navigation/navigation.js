@@ -32,6 +32,7 @@ import {PageSowBoarAddEdit}         from '../sow_boar/page_sow_boar_add_edit.js'
 import {PageSowBoarEntry}           from '../sow_boar/page_sow_boar_entry.js';
 
 import {PageMedVacAddEdit}          from '../sow_boar/page_medvac_add_edit.js';
+import {PageHealthNotesAddEdit}     from '../sow_boar/page_health_notes_add_edit.js';
 
 
 import {PageMobGestaLacta}          from '../production/gesta_lacta/page_mob_gesta_lacta.js';
@@ -263,6 +264,10 @@ export function Navigation(){
     const elemIdContSowBoarEntry        = 'container-sow-boar-entry';
     
     const elemIdContMedVacAddEdit       = 'container-medvac-add-edit';
+    const elemIdContHealthAddEdit       = 'container-health-add-edit';
+    const elemIdContNotesAddEdit        = 'container-notes-add-edit';
+    
+    
     
     const elemIdContProdGestaList       = 'container-prod-gesta-list';
     const elemIdContProdLactaList       = 'container-prod-lacta-list';
@@ -306,8 +311,8 @@ export function Navigation(){
     let elemHiddenContSowBoarEntry  = null;
     
     let elemHiddenContMedVacAddEdit = null;
-    
-    
+    let elemHiddenContHealthAddEdit = null;
+    let elemHiddenContNotesAddEdit  = null;
     
     let elemHiddenContProdGestaList = null;
     let elemHiddenContProdLactaList = null;
@@ -338,109 +343,109 @@ export function Navigation(){
     
     
     
-    const settingsAccountDisabled = {
+    this.pageAccountDisabled    = new PageAccountDisabled({
         navigation:             this,
         elemIdDivContainer:     elemIdContAccountDisabled
-    }
-    this.pageAccountDisabled    = new PageAccountDisabled(settingsAccountDisabled);
+    });
     
     
-    const settingsUserDisabled = {
+    this.pageUserDisabled       = new PageUserDisabled({
         navigation:             this,
         elemIdDivContainer:     elemIdContUserDisabled
-    }
-    this.pageUserDisabled       = new PageUserDisabled(settingsUserDisabled);
+    });
     
     
-    const settingsAccUnpaidBill = {
+    this.pageAccountUnpaidBill  = new PageAccountUnpaidBill({
         navigation:             this,
         elemIdDivContainer:     elemIdContAccountBillUnpaid
-    }
-    this.pageAccountUnpaidBill  = new PageAccountUnpaidBill(settingsAccUnpaidBill);
+    });
     
     
     
-    const settingsSowBoarList = {
+    this.pageSowBoarList        = new PageSowBoarList({
         navigation:             this,
         elemIdDivContainer:     elemIdContSowBoarList
-    }
-    this.pageSowBoarList        = new PageSowBoarList(settingsSowBoarList);
+    });
     
     
-    const settingsSowBoarAddEdit = {
+    this.pageSowBoarAddEdit     = new PageSowBoarAddEdit({
         navigation:             this,
         elemIdDivContainer:     elemIdContSowBoarAddEdit
-    }
-    this.pageSowBoarAddEdit     = new PageSowBoarAddEdit(settingsSowBoarAddEdit);
+    });
     
     
-    const settingsSowBoarEntry = {
+    this.pageSowBoarEntry       = new PageSowBoarEntry({
         navigation:             this,
         elemIdDivContainer:     elemIdContSowBoarEntry
-    }
-    this.pageSowBoarEntry       = new PageSowBoarEntry(settingsSowBoarEntry)
+    })
     
     
-    const settingsMedVacAddEdit = {
+    this.pageMedVacAddEdit      = new PageMedVacAddEdit({
         navigation:             this,
         elemIdDivContainer:     elemIdContMedVacAddEdit
-    }
-    this.pageMedVacAddEdit      = new PageMedVacAddEdit(settingsMedVacAddEdit);
+    });
     
     
-    const settingsProdGestating = {
+    this.pageHealthAddEdit      = new PageHealthNotesAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContHealthAddEdit,
+        uniqueKey:              'sow-boar-health-add-edit',
+        isNotes:                false
+    });
+    
+    
+    this.pageNotesAddEdit   = new PageHealthNotesAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContNotesAddEdit,
+        uniqueKey:              'sow-boar-notes-add-edit',
+        isNotes:                true
+    });
+    
+    
+    
+     
+    this.pageMobGestatingList   = new PageMobGestaLacta({
         navigation:             this,
         elemIdDivContainer:     elemIdContProdGestaList,
         isGesta:                true,
         uniqueKey:              'prod-gesta', // Use for uniqueness in elements
         pageTitle:              'Prod Gestating'
-    } 
-    this.pageMobGestatingList   = new PageMobGestaLacta(settingsProdGestating);
+    });
     
     
-    const settingsProdLactating = {
+    this.pageMobLactatingList   = new PageMobGestaLacta({
         navigation:             this,
         elemIdDivContainer:     elemHiddenContProdLactaList,
         isGesta:                false,
         uniqueKey:              'prod-lacta', // Use for uniqueness in elements
         pageTitle:              'Prod Lactating'
-    } 
-    this.pageMobLactatingList   = new PageMobGestaLacta(settingsProdLactating);
+    });
     
     
-    const settingsEditPigOps    = {
+    this.editModalProdPigOps    = new EditModalProdPigOps({
         navigation:             this
-    };
-    this.editModalProdPigOps    = new EditModalProdPigOps(settingsEditPigOps);
+    });
     
     
-    const settingsProdGestatingAdd = {
+    this.pageProdGestatingAdd   = new PageProdGestatingAdd({
         navigation:             this,
         elemIdDivContainer:     elemIdContProdGestaAdd
-    };
-    this.pageProdGestatingAdd   = new PageProdGestatingAdd(settingsProdGestatingAdd);
+    });
     
     
-    const settingsProdGestatingEntry = {
+    this.pageProdGestatingEntry = new PageProdGestatingEntry({
         navigation:             this,
         elemIdDivContainer:     elemIdContProdGestaEntry
-    };
-    this.pageProdGestatingEntry = new PageProdGestatingEntry(settingsProdGestatingEntry);
+    });
     
     
-    const settingsAccPigOps = {
+    this.pageAccPigOps          = new PageAccPigOps({
         navigation:             this,
         elemIdDivContainer:     elemIdContAccPigOps
-    }
-    this.pageAccPigOps          = new PageAccPigOps(settingsAccPigOps);
+    });
     
-    
-    
-    
-    let dataPigProdPublic       = null;
     
 
-    
     
     this.init = function(){
         
@@ -454,6 +459,8 @@ export function Navigation(){
         this.pageSowBoarAddEdit.init();
         this.pageSowBoarEntry.init();
         this.pageMedVacAddEdit.init();
+        this.pageHealthAddEdit.init();
+        this.pageNotesAddEdit.init();
         
         
         this.pageMobGestatingList.init();
@@ -509,6 +516,8 @@ export function Navigation(){
         elemHiddenContSowBoarEntry  = document.getElementById(elemIdContSowBoarEntry);
         
         elemHiddenContMedVacAddEdit = document.getElementById(elemIdContMedVacAddEdit);
+        elemHiddenContHealthAddEdit = document.getElementById(elemIdContHealthAddEdit);
+        elemHiddenContNotesAddEdit  = document.getElementById(elemIdContNotesAddEdit);
         
         
         elemHiddenContProdGestaList = document.getElementById(elemIdContProdGestaList);
@@ -585,8 +594,6 @@ export function Navigation(){
         // before request
         this.managerAddress.setCountryHid(country_hid);
         
-        this.managerRequest.requestDataPigProdPublic(country_hid, 
-                thisObj.setDataPigProdPublic);
             
         
         this.pigFarm.accountLists.setPigFarmAccountHid(pig_farm_account.account.account.hid);
@@ -654,11 +661,7 @@ export function Navigation(){
         this.pageMedVacAddEdit.setDataMedVacTypeList(data);
     }
     
-    
-    this.setDataPigProdPublic = function(data){
-        dataPigProdPublic = data;
-    }
-    
+
     
     // Update pig farm name on resize for responsive centering
     this.updatePigFarmName = function() {
@@ -705,8 +708,16 @@ export function Navigation(){
             case PAGE_ID.MEDVAC_ADD_EDIT:{
                 return elemHiddenContMedVacAddEdit;
             }
-    
-    
+            
+            case PAGE_ID.HEALTH_ADD_EDIT:{
+                return elemHiddenContHealthAddEdit;
+            }
+            
+            case PAGE_ID.NOTES_ADD_EDIT:{
+                return elemHiddenContNotesAddEdit;
+            }
+            
+             
     
             case PAGE_ID.PROD_GESTA_LIST:{
                 return elemHiddenContProdGestaList;
