@@ -101,13 +101,13 @@ export function TableHealthIssue(input_settings){
         dataSowBoar     = data_sow_boar;
         showOptions     = options;
 
-        if ('list_health_issues' in dataSowBoar){
-            thisObj.setDataEntryList(dataSowBoar.list_health_issues);
-            thisObj.renderTable(dataSowBoar.list_health_issues);
+        if ('list_health_issues' in dataSowBoar.data_details){
+            thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
+            thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
         } else{
             const callback_success = function(){
-                thisObj.setDataEntryList(dataSowBoar.list_health_issues);
-                thisObj.renderTable(dataSowBoar.list_health_issues);
+                thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
+                thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
             }
             
             parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success,
@@ -226,8 +226,8 @@ export function TableHealthIssue(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        if ('list_health_issues' in dataSowBoar){
-            for (const cur_entry of dataSowBoar.list_health_issues){
+        if ('list_health_issues' in dataSowBoar.data_details){
+            for (const cur_entry of dataSowBoar.data_details.list_health_issues){
                 if (cur_entry.prod_notes.hid == entry_hid){
                     return cur_entry;
                 }
@@ -259,8 +259,8 @@ export function TableHealthIssue(input_settings){
     this.onSuccessAddEntry = function(){
         
         const callback_success = function(data){
-            thisObj.setDataEntryList(dataSowBoar.list_health_issues);
-            thisObj.renderTable(dataSowBoar.list_health_issues);
+            thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
+            thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
             
             // need also to request pig_medvac data
             parentObj.tableMedVac.requestDataPigMedVac();

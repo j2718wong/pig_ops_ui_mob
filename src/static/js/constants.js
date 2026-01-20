@@ -22,6 +22,7 @@ const PAGE_ID = {
     HEALTH_ADD_EDIT:        19,
     NOTES_ADD_EDIT:         20,
     
+	BOAR_EXT_MATE_ADD_EDIT: 29,
     TRACE_PARENTS:         	30,
     
     

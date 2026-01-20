@@ -531,27 +531,40 @@ export function PageSowBoarEntry(input_settings){
         
         
         
-        
+        /*
         if ('notes' in dataSowBoar){
             const test = 1;
         }
         else{
             thisObj.requestDataSowBoarNotes(dataSowBoar);
         }
-        
-        
-        thisObj.beforeShowTab();
-        
+        */
+		
+		// Request SowBoar  data_details;
+		
+		
+		if ('data_details' in dataSowBoar){
+			// TODO ; still thinking what to do
+			thisObj.beforeShowTab();
+		}
+		else{
+			const callback_success = function(){
+				console.log('callback success')
+				thisObj.beforeShowTab();
+			}
+			thisObj.requestDataSowBoarDetails(dataSowBoar, callback_success);
+		}
+		
         
     }
     
     
     this.beforeShowTab = function(){
+		
         switch(curActiveTabId){
             case elemIdTabMedVac:{
                 thisObj.tableMedVac.beforeShow(dataSowBoar);
-        
-                break;
+		        break;
             }
             
             case elemIdTabHealth:{
@@ -574,16 +587,12 @@ export function PageSowBoarEntry(input_settings){
                 break;
             }
             
-            case elemIdTabEdit:{
-                break;
-            }
-            
             case elemIdTabStatus:{
                 break;
             }
             
             default:{
-                thisObj.tableMedVac.beforeShow(dataSowBoar);
+				thisObj.tableMedVac.beforeShow(dataSowBoar);
                 break;
             }
         }
@@ -626,8 +635,8 @@ export function PageSowBoarEntry(input_settings){
                         }
                     }
                     
-                    data_sow_boar.list_health_issues = health_issues;
-                    data_sow_boar.list_notes        = notes;
+                    data_sow_boar.data_details.list_health_issues = health_issues;
+                    data_sow_boar.data_details.list_notes        = notes;
                     
                     if (callback_success){callback_success(response.data);}
                 }    
@@ -645,6 +654,52 @@ export function PageSowBoarEntry(input_settings){
             }
         });
     }
+    
+    
+    
+    // This is a request to get sow_boar details that returns tables.
+    this.requestDataSowBoarDetails = function(data_sow_boar, callback_success, elem_show_error){
+        const sow_boar_hid = data_sow_boar.sow_boar.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/sow_boar/entry?sow_boar_hid=${sow_boar_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                
+                if (response.result.num == 0){
+                    
+                    // attach data to data_sow_boar
+                    data_sow_boar.data_details = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }    
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    
     
     
     

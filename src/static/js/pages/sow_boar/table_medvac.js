@@ -95,10 +95,11 @@ export function TableMedVac(input_settings){
     this.beforeShow = function(data_sow_boar){
         dataSowBoar = data_sow_boar;
         
-        if ('list_medvac' in dataSowBoar){
+        if ('data_details' in dataSowBoar){
+            
             // Set table entry list; This will set also the entry count;
-            thisObj.setDataEntryList(dataSowBoar.list_medvac);
-            thisObj.renderTable(dataSowBoar.list_medvac);
+            thisObj.setDataEntryList(dataSowBoar.data_details.list_medvac);
+            thisObj.renderTable(dataSowBoar.data_details.list_medvac);
         } else{
             
             thisObj.requestDataPigMedVac();
@@ -218,7 +219,7 @@ export function TableMedVac(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    dataSowBoar['list_medvac'] = response.data;
+                    dataSowBoar.data_details.list_medvac = response.data;
                     
                     // Set table entry list; This will set also the entry count;
                     thisObj.setDataEntryList(response.data);
@@ -258,8 +259,8 @@ export function TableMedVac(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        if ('list_medvac' in dataSowBoar){
-            for (const cur_entry of dataSowBoar.list_medvac){
+        if ('list_medvac' in dataSowBoar.data_details){
+            for (const cur_entry of dataSowBoar.data_details.list_medvac){
                 if (cur_entry.medvac.hid == entry_hid){
                     return cur_entry;
                 }
@@ -302,6 +303,7 @@ export function TableMedVac(input_settings){
     this.onClickRowEntry = function(entry_hid){
         const row_entry = thisObj.getEntry(entry_hid);
         
+
         if (row_entry){
             const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
         

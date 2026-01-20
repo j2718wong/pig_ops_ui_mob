@@ -17,6 +17,9 @@ export function AccountLists(_navigation){
     
     this.dataAccMedVacList      = null;
     
+    this.dataAccPigBuyer        = null;
+    this.dataAccBoarCustomer    = null;
+    
     
     let accountHid      = null;
     
@@ -104,7 +107,6 @@ export function AccountLists(_navigation){
     
     this.requestDataAccMedVac = function(callback_success, elem_show_error){
         
-        // Need to request medvac brands
         const base_url = window.location.origin;
         const url = `${base_url}/account_medvac/list?ahid=${accountHid}`;
         
@@ -143,4 +145,53 @@ export function AccountLists(_navigation){
         });
     }
     
+    
+    this.requestDataAccPigBuyer = function(callback_success, elem_show_error){
+        const base_url = window.location.origin;
+        const url = `${base_url}/account_pig_buyer/list?ahid=${accountHid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    const acc_boar_customer = []
+                    
+                    for (const cur_entry of response.data){
+                        if (cur_entry.pig_buyer.is_boar_customer > 0){
+                            acc_boar_customer.push(cur_entry);
+                        }
+                    }
+                    
+                    thisObj.dataAccPigBuyer = response.data;
+                    thisObj.dataAccBoarCustomer = acc_boar_customer;
+                    
+                    if (callback_success){callback_success(response.data);}
+                    
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                    
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+        
+    }
 }

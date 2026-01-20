@@ -12,17 +12,10 @@ import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
 
 import {UiInputDatePicker}          from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter}     from '../common/ui/input_text_with_counter.js';
-import {ComponentStaffFormGroup}    from '../common/ui/comp_staff_form_group.js';
 
 
-import {ComponentMedVacBrand}       from './components/comp_medvac_brand.js'
-import {ComponentMedVacType}        from './components/comp_medvac_type.js'
-import {ComponentAccMedVac}         from './components/comp_acc_medvac.js'
+import {ComponentAccBoarCustomer}   from './components/comp_acc_boar_customer.js'
 
-
-import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
-
-import {TextTranslation}        from '../common/translation.js';
 
 
 import {PAGE_ID,
@@ -45,8 +38,8 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 
-export function PageMedVacAddEdit(input_settings){
-    input_settings['uniqueKey'] = 'medvac-add-edit';
+export function PageBoarExtMateAddEdit(input_settings){
+    input_settings['uniqueKey'] = 'boar-ext-mate-add-edit';
     
     PageSowBoarEntryComponent.call(this, input_settings);
     
@@ -80,24 +73,11 @@ export function PageMedVacAddEdit(input_settings){
     let elemIdInfoShow          = null;
     let elemIdInfo              = null;
     
-    let elemUiDateMedVac        = null;
+    let elemUiDateMate        = null;
 
-    let elemIdMedVacForShow         = null;
-    let elemIdMedVacForLabel        = null;
     
-    let elemIdMedVacForPigOps       = null;
-    let elemIdMedVacForPigOpsChk    = null;
-    let elemIdMedVacForPigOpsLabel  = null;
-    
-    
-    let elemIdMedVacForPigHealth    = null;
-    let elemIdMedVacForPigHealthDate = null;
-    let elemIdMedVacForPigHealthLabel = null;
-
     
     let componentMedVacBrand    = null;
-    let componentMedVacType     = null;
-    let componentAccMedVac      = null;
     
     let elemUiNotes             = null;
     let componentStaff          = null;
@@ -116,7 +96,7 @@ export function PageMedVacAddEdit(input_settings){
     let elemInfoShow            = null;
     let elemInfo                = null;
     
-    let elemDateMedVac          = null;
+    let elemDateMate          = null;
 
     
     let elemMedVacForShow           = null;
@@ -160,42 +140,29 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.render = function(){
-        elemIdBtnClose          = `medvac-add-edit-close`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
-        elemIdHeaderTitle       = `medvac-add-edit-title`;
+        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         
             
-        elemIdInfoShow          = `medvac-add-edit-info-show`;
-        elemIdInfo              = `medvac-add-edit-info`;
+        elemIdInfoShow          = `${settings.uniqueKey}-info-show`;
+        elemIdInfo              = `${settings.uniqueKey}-info`;
         
         
-        elemUiDateMedVac        = new UiInputDatePicker({
-            uniqueKey:          'medvac-add-edit-date',
+        elemUiDateMate        = new UiInputDatePicker({
+            uniqueKey:          `${settings.uniqueKey}-date`,
         
-            textLabel:          'Date',
+            textLabel:          'Date Mate',
             isRequired:         true,
             invalidFeedBack:    'Please input date.',
-            helpText:           'Date when MedVac was given to pig.'
+            helpText:           'Date when boar was mated to External Sow.'
         });
         
         
         
-        elemIdMedVacForShow     = `medvac-add-edit-medvac-for`;
-        elemIdMedVacForLabel    = `medvac-add-edit-medvac-for-label`;
-        
-        elemIdMedVacForPigOps           = `medvac-add-edit-medvac-for-pig-ops`;
-        elemIdMedVacForPigOpsChk        = `medvac-add-edit-medvac-for-pig-ops-chk`;
-        elemIdMedVacForPigOpsLabel      = `medvac-add-edit-medvac-for-pig-ops-label`;
-
-
-        elemIdMedVacForPigHealth        = `medvac-add-edit-medvac-for-pig-ops`;
-        elemIdMedVacForPigHealthDate    = `medvac-add-edit-medvac-for-pig-ops-date`;
-        elemIdMedVacForPigHealthLabel   = `medvac-add-edit-medvac-for-pig-ops-label`;
-
-        
         componentMedVacBrand    = new ComponentMedVacBrand({
             navigation:         navigation,
-            uniqueKey:          'medvac-add-edit-brand-name',
+            uniqueKey:          '${settings.uniqueKey}-brand-name',
 
             titleExpandSection: 'Add New MedVac Brand',
             htmlExpandSection:  null,
@@ -206,35 +173,9 @@ export function PageMedVacAddEdit(input_settings){
         });
         
         
-        componentMedVacType     = new ComponentMedVacType({
-            navigation:         navigation,
-            uniqueKey:          'medvac-add-edit-type',
-
-            titleExpandSection: 'Add New MedVac Type',
-            htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save MedVac Type',
-        
-            labelSelect:        'Select MedVac Type',
-            helpText:           'MedVac generic description or what it is for'
-        });
-        
-        
-        componentAccMedVac      = new ComponentAccMedVac({
-            navigation:         navigation,
-            parentObj:          thisObj,
-            uniqueKey:          'medvac-add-edit-name',
-
-            titleExpandSection: 'Add New MedVac Name',
-            htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save MedVac Name',
-        
-            labelSelect:        'Select MedVac Name',
-            helpText:           'MedVac product name'
-        });
-        
-        
+       
         elemUiNotes             = new UiInputTextWithCounter({
-            uniqueKey:          'medvac-add-edit-notes',
+            uniqueKey:          '${settings.uniqueKey}-notes',
             
             isTextArea:         true,
             className:          'form-group-text-area',
@@ -248,7 +189,7 @@ export function PageMedVacAddEdit(input_settings){
         
         componentStaff          = new ComponentStaffFormGroup({
             navigation:         navigation,
-            uniqueKey:          'medvac-add-edit-staff',
+            uniqueKey:          '${settings.uniqueKey}-staff',
             
             includeAddNew:      true,
             includeDoneByMe:    true,
@@ -264,14 +205,14 @@ export function PageMedVacAddEdit(input_settings){
     
         
 
-        elemIdServerErrorMsg    = `medvac-add-edit-server-error-msg`;
-        elemIdBtnCancel         = `medvac-add-edit-cancel`;
-        elemIdBtnSave           = `medvac-add-edit-save`;
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
+        elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
+        elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
            
         const html_breadcrumb   = thisObj.componentBreadcrumb.getHtml();
         
-        const html_date_medvac  = elemUiDateMedVac.getHtml();
+        const html_date_medvac  = elemUiDateMate.getHtml();
         const html_medvac_brand = componentMedVacBrand.getHtml();
         const html_medvac_type  = componentMedVacType.getHtml();
         const html_acc_medvac   = componentAccMedVac.getHtml();
@@ -288,7 +229,7 @@ export function PageMedVacAddEdit(input_settings){
     
     <div class="modal-header" style="padding-right:8px;">
         <h5 class="modal-title">
-            <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Add Sow</span>
+            <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Add External Mate</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
@@ -300,25 +241,7 @@ export function PageMedVacAddEdit(input_settings){
         
         
         
-        <!-- Optional relation keys -->
-        <div class="form-group-check" id="${elemIdMedVacForShow}">
-            <label id="${elemIdMedVacForLabel}" class="form-label">MedVac For Health Issue</label>
-            
-            <div id="${elemIdMedVacForPigHealth}">
-                <label id="${elemIdMedVacForPigHealthDate}">
-                    Decemer 6, 2025
-                </label>
-                
-                <b>
-                    <label id="${elemIdMedVacForPigHealthLabel}">
-                        Nakaigit sa iyang purol
-                    </label>
-                </b>
-                
-            </div>
-            
-            
-        </div>
+        
         
         <!-- 1. Date MedVac -->
         ${html_date_medvac}
@@ -370,7 +293,7 @@ export function PageMedVacAddEdit(input_settings){
         
         thisObj.afterHtmlRenderSowBoarEntryComponent();
 
-        elemUiDateMedVac.afterHtmlRender();
+        elemUiDateMate.afterHtmlRender();
         
         componentMedVacBrand.afterHtmlRender();
         componentMedVacType.afterHtmlRender();
@@ -461,7 +384,7 @@ export function PageMedVacAddEdit(input_settings){
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
-        elemUiDateMedVac.reset();
+        elemUiDateMate.reset();
         
         componentMedVacBrand.reset();
         componentMedVacType.reset();
@@ -480,7 +403,7 @@ export function PageMedVacAddEdit(input_settings){
         // the browser doesn't properly render the selected state until the 
         // container becomes visible.
         
-        console.log('apge_medvac_add_edit before show');
+        
         /*
         Typical options
         options ={
@@ -632,7 +555,7 @@ export function PageMedVacAddEdit(input_settings){
     this.populateForm = function(data_sow_boar, medvac_hid){
         
         // Get medvac entry from data_sow_boar
-        const list_medvac = data_sow_boar.data_details.list_medvac;
+        const list_medvac = data_sow_boar.list_medvac;
         
         let cur_medvac = null;
         for (const cur_entry of list_medvac){
@@ -646,7 +569,7 @@ export function PageMedVacAddEdit(input_settings){
         
 
         // Set the datepicker to this date
-        elemUiDateMedVac.setDate(cur_medvac.medvac.date_medvac);
+        elemUiDateMate.setDate(cur_medvac.medvac.date_medvac);
         
         
         // Set MedVac brand
@@ -671,7 +594,7 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.disableAllInputs = function(){
-        elemUiDateMedVac.disableInputs();
+        elemUiDateMate.disableInputs();
         
         componentMedVacBrand.disableInputs();
         componentMedVacType.disableInputs();
@@ -682,7 +605,7 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.enableAllInputs = function(){
-        elemUiDateMedVac.enableInputs();
+        elemUiDateMate.enableInputs();
         
         componentMedVacBrand.enableInputs();
         componentMedVacType.enableInputs();
@@ -715,7 +638,7 @@ export function PageMedVacAddEdit(input_settings){
             switch(input_field){
                 
                 case 'date_medvac': {
-                    input_elem      = elemDateMedVac;
+                    input_elem      = elemDateMate;
                     input_val       = input_elem.value;
                     
                     console.log('Test 1');
@@ -760,7 +683,7 @@ export function PageMedVacAddEdit(input_settings){
         let is_duplicate    = 0;
         
         
-        let input_date_medvac   = elemUiDateMedVac.getValue().trim();
+        let input_date_medvac   = elemUiDateMate.getValue().trim();
         
         let input_medvac_brand  = componentMedVacBrand.getValue();
         let input_medvac_type   = componentMedVacType.getValue();
@@ -771,7 +694,7 @@ export function PageMedVacAddEdit(input_settings){
 
         let dt_medvac_s = null;
         
-        input_elem          = elemDateMedVac;
+        input_elem          = elemDateMate;
         if (input_date_medvac.length == 0){
             validation = -1;
             addValidationClassToElem(input_elem, validation);
@@ -781,7 +704,7 @@ export function PageMedVacAddEdit(input_settings){
         
         
         // Convert date to YYYY-MM-DD format
-        input_elem          = elemUiDateMedVac.getElemText();
+        input_elem          = elemUiDateMate.getElemText();
         
         const dt_medvac     = new Date(input_date_medvac);
         dt_medvac_s         = dt_medvac.toLocaleDateString('en-CA');

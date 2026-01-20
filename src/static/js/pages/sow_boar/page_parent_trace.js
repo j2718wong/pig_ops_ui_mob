@@ -250,6 +250,7 @@ export function PageParentTrace(input_settings){
         elemLinkBoarList.addEventListener('click', function() {
 			elemSowBoarTrace.style.display = 'none';
 			
+			/*
 			const data_list = [];
 			
 			for(const cur_entry of dataBoarList){
@@ -257,6 +258,9 @@ export function PageParentTrace(input_settings){
 			}
 			
 			thisObj.renderTableBody(data_list);
+			*/
+			
+			thisObj.renderTableBody(dataBoarList);
 		});
         
         
@@ -328,7 +332,9 @@ export function PageParentTrace(input_settings){
         else{
             const callback_success = function(data){
                 let cur_sow_boar = null;
-                for (const cur_entry of data){
+				
+				let cur_entry;
+                for (cur_entry of data){
 					console.log('cur_entry.sow_boar.sex ='+ cur_entry.sow_boar.sex );
                     if (cur_entry.sow_boar.sex = 'M'){
                         cur_sow_boar = thisObj.getDataBoar(cur_entry.sow_boar.hid);

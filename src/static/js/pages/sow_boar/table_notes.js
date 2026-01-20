@@ -102,14 +102,14 @@ export function TableNotes(input_settings){
         dataSowBoar     = data_sow_boar;
         showOptions     = options;
         
-        if ('list_notes' in dataSowBoar){
-            thisObj.setDataEntryList(dataSowBoar.list_notes);
-            thisObj.renderTable(dataSowBoar.list_notes);
+        if ('list_notes' in dataSowBoar.data_details){
+            thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
+            thisObj.renderTable(dataSowBoar.data_details.list_notes);
         } else{
             const callback_success = function(){
                 // Set table entry list; This will set also the entry count;
-                thisObj.setDataEntryList(dataSowBoar.list_notes);
-                thisObj.renderTable(dataSowBoar.list_notes);
+                thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
+                thisObj.renderTable(dataSowBoar.data_details.list_notes);
             };
             
             parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success,
@@ -222,8 +222,8 @@ export function TableNotes(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        if ('list_notes' in dataSowBoar){
-            for (const cur_entry of dataSowBoar.list_notes){
+        if ('list_notes' in dataSowBoar.data_details){
+            for (const cur_entry of dataSowBoar.data_details.list_notes){
                 if (cur_entry.prod_notes.hid == entry_hid){
                     return cur_entry;
                 }
@@ -237,8 +237,8 @@ export function TableNotes(input_settings){
     this.onSuccessAddEntry = function(){
         
         const callback_success = function(data){
-            thisObj.setDataEntryList(dataSowBoar.list_notes);
-            thisObj.renderTable(dataSowBoar.list_notes);
+            thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
+            thisObj.renderTable(dataSowBoar.data_details.list_notes);
         };
 
         parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success, 
