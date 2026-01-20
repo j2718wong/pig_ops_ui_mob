@@ -1,0 +1,11 @@
+search Group button
+
+
+1.) Create a search input and button combination
+that has these features
+- on input, will display dropdown entries with the begginging letters
+- on click search button will perform another action; no code on button click
+optmized for mobile view 
+
+2.) when using mobile view, remove the "Search" Text.The input element and  
+the search lens button should be in one line, not separate lines 

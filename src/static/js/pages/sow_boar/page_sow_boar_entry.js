@@ -22,7 +22,7 @@ import {formatDate,
 import {TableMedVac}            from './table_medvac.js'
 import {TableHealthIssue}       from './table_health_issue.js'
 import {TableNotes}             from './table_notes.js'
-
+import {TablePigletsOutput}     from './table_piglets_output.js'
 
 
 PageSowBoarEntry.prototype = new PageViewPigFarmPage();
@@ -55,6 +55,9 @@ export function PageSowBoarEntry(input_settings){
     
     let elemIdShowMore          = null;
     let elemIdShowMoreDropDown  = null;
+    
+    let elemIdOutput            = null;
+    let elemIdMates             = null;
     
     let elemIdTabMedVac         = null;
     let elemIdTabHealth         = null;
@@ -95,6 +98,7 @@ export function PageSowBoarEntry(input_settings){
     this.tableMedVac            = null;
     this.tablePigHealth         = null;
     this.tableSowBoarNotes      = null;
+    this.tablePigletsOutput     = null;
     
     
     let showOptions             = null;
@@ -124,13 +128,71 @@ export function PageSowBoarEntry(input_settings){
         elemIdShowMoreDropDown  = `sow-boar-entry-show-more-dropdown`;
         
         
+        elemIdOutput            = `sow-boar-output-btn`;
+        elemIdMates             = `sow-boar-mates-btn`;
+        
+        
         elemIdTabMedVac         = `sow-boar-medvac`;
         elemIdTabHealth         = `sow-boar-health`;
         elemIdTabNotes          = `sow-boar-notes`;
         elemIdTabOutput         = `sow-boar-output`;
         elemIdTabMates          = `sow-boar-mates`;
-        elemIdTabEdit           = `sow-boar-edit`;
         elemIdTabStatus         = `sow-boar-status`;
+           
+           
+        const html_sow_tabs = `
+        <div class="tabs-container">
+            <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
+            <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
+            <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
+            <button class="tab-button" data-tab="${elemIdTabOutput}" id="">Output</button>
+            
+            <button class="tab-button" id="${elemIdShowMore}">
+                More
+                <!--
+                <div class="show-more-dropdown">
+                    <div class="dropdown-item" data-tab="${elemIdTabMates}">Mates</div>
+                    <div class="dropdown-item" data-tab="${elemIdTabStatus}">Status</div>
+                </div>
+                -->
+            </button>
+        </div>
+        
+        `;
+        
+        
+        const html_gilt_tabs = `
+        <div class="tabs-container">
+            <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
+            <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
+            <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
+            <button class="tab-button" data-tab="${elemIdTabStatus}">Status</button>
+        </div>
+        
+        `;
+        
+        
+        const html_boar_tabs = `
+        <div class="tabs-container">
+            <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
+            <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
+            <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
+            <button class="tab-button" data-tab="${elemIdTabMates}">Mates</button>
+            
+            <button class="tab-button show-more-container" id="${elemIdShowMore}">
+                More
+                <!--
+                <div class="show-more-dropdown" id="${elemIdShowMoreDropDown}">
+                    <div class="dropdown-item" data-tab="${elemIdTabStatus}">Status</div>
+                </div>
+                -->
+            </button>
+        </div>
+        
+        `;
+        
+           
+           
            
         const html = `
 
@@ -159,8 +221,8 @@ export function PageSowBoarEntry(input_settings){
             <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
             <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
             <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
-            <button class="tab-button" data-tab="${elemIdTabOutput}">Output</button>
-            <button class="tab-button" data-tab="${elemIdTabMates}" style="display: none">Mates</button>
+            <button class="tab-button" data-tab="${elemIdTabOutput}" id="${elemIdOutput}">Output</button>
+            <button class="tab-button" data-tab="${elemIdTabMates}" id="${elemIdMates}" style="display: none">Mates</button>
             
             <div class="tab-button show-more-container" id="${elemIdShowMore}">
                 More
@@ -269,6 +331,17 @@ export function PageSowBoarEntry(input_settings){
         });
         this.tableSowBoarNotes.init();
         
+        
+        this.tablePigletsOutput = new TablePigletsOutput({
+            navigation:             settings.navigation,
+            parentObj:              thisObj,
+            uniqueKey:              'sow-piglets-output',
+            elemDivContainer:       elemTabOutput
+        });
+        this.tablePigletsOutput.init();
+        
+        
+        
     }
     
     
@@ -302,12 +375,12 @@ export function PageSowBoarEntry(input_settings){
             if (tabId === elemIdTabMedVac   || 
                 tabId === elemIdTabHealth   || 
                 tabId === elemIdTabNotes    || 
-                tabId === elemTabIdOutput) {
+                tabId === elemIdTabOutput) {
                 const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
                 if (activeNav) activeNav.classList.add('active');
             }
             
-            showMoreDropdown.classList.remove('active');
+            //showMoreDropdown.classList.remove('active');
         }
         
         navItems.forEach(item => {
@@ -317,6 +390,8 @@ export function PageSowBoarEntry(input_settings){
             });
         });
         
+        
+        /*
         dropdownItems.forEach(item => {
             item.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
@@ -325,22 +400,26 @@ export function PageSowBoarEntry(input_settings){
                 navItems.forEach(nav => nav.classList.remove('active'));
                 showMoreControl.classList.add('active');
             });
-        });
+        });*/
         
         showMoreControl.addEventListener('click', function(e) {
             console.log('Test');
+            
+            /*
             showMoreDropdown.classList.toggle('active');
             if (e.target === this || e.target.classList.contains('nav-text')) {
                 e.stopPropagation();
                 showMoreDropdown.classList.toggle('active');
-            }
+            }*/
         });
         
+        
+        /*
         document.addEventListener('click', function(e) {
             if (!showMoreControl.contains(e.target)) {
                 showMoreDropdown.classList.remove('active');
             }
-        });
+        });*/
         
 
         
@@ -487,6 +566,7 @@ export function PageSowBoarEntry(input_settings){
             }
             
             case elemIdTabOutput:{
+                thisObj.tablePigletsOutput.beforeShow(dataSowBoar);
                 break;
             }
             

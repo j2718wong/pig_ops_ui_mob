@@ -1428,8 +1428,9 @@ p {
 .data-table {
     width: 100%;
     border-collapse: collapse;
-    /*margin-top: 8px;*/
-    table-layout: fixed;
+    box-sizing: border-box;
+    table-layout: fixed; 
+	display: table;
 }
 
 .data-table th {
@@ -1455,6 +1456,8 @@ p {
     vertical-align: top;
     overflow: hidden;
     text-overflow: ellipsis;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 .data-table tr:nth-child(even) {

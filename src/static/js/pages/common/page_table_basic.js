@@ -34,6 +34,7 @@ export function PageTableBasic(){
     let elemIdTableEntryCount   = null;
     let elemIdTableInfo         = null;
     
+    let elemIdSeachAddControl   = null;
     let elemIdSearchInput       = null;
     let elemIdAddEntryBtn       = null;
     let elemIdFilterControls    = null;
@@ -55,6 +56,7 @@ export function PageTableBasic(){
     let elemTableEntryCount     = null;
     let elemTableInfo           = null;
 
+    let elemSeachAddControl     = null;
     let elemSearchInput         = null;
     let elemAddEntryBtn         = null;
     let elemFilterControls      = null;
@@ -107,6 +109,7 @@ export function PageTableBasic(){
         elemIdTableEntryCount   = `${settings.uniqueKey}-table-entry-count`;
         elemIdTableInfo         = `${settings.uniqueKey}-table-info`;
         
+        elemIdSeachAddControl   = `${settings.uniqueKey}-search-add-control`;
         elemIdSearchInput       = `${settings.uniqueKey}-mobile-search-input`;
         elemIdAddEntryBtn       = `${settings.uniqueKey}-mobile-add-entry-btn`;
         elemIdFilterControls    = `${settings.uniqueKey}-mobile-filter-control`;
@@ -122,6 +125,24 @@ export function PageTableBasic(){
         
         elemIdTableContent      = `${settings.uniqueKey}-table-content`;
            
+        
+        let html_search_add     = `
+        <div class="mobile-controls" id="${elemIdSeachAddControl}">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Search">
+            </div>
+            <button class="btn-add-entry" id="${elemIdAddEntryBtn}">
+                <i class="fas fa-plus"></i>
+                Add Entry
+            </button>
+        </div>
+        `;
+        
+        if (settings.noSearchAdd){
+            html_search_add = '';
+        }
+        
         
         const html_table = thisObj.getHtmlTableHeader();
            
@@ -144,17 +165,7 @@ export function PageTableBasic(){
     
     <div>
         <!-- Search and Add Entry Controls -->
-        <div class="mobile-controls">
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Search">
-            </div>
-            <button class="btn-add-entry" id="${elemIdAddEntryBtn}">
-                <i class="fas fa-plus"></i>
-                Add Entry
-            </button>
-        </div>
-        
+        ${html_search_add}
     
     
         <div id="${elemIdServerErrorMsg}"></div>
@@ -206,6 +217,7 @@ export function PageTableBasic(){
         elemTableEntryCount     = document.getElementById(elemIdTableEntryCount);
         elemTableInfo           = document.getElementById(elemIdTableInfo);
 
+        elemSeachAddControl     = document.getElementById(elemIdSeachAddControl);
         elemSearchInput         = document.getElementById(elemIdSearchInput);
         elemAddEntryBtn         = document.getElementById(elemIdAddEntryBtn);
         elemFilterControls      = document.getElementById(elemIdFilterControls);
@@ -232,11 +244,14 @@ export function PageTableBasic(){
     
     this._bindEventListeners = function(){
         
-        elemSearchInput.addEventListener('input', function() {
-            const search_term = this.value.toUpperCase().trim();
-            thisObj.searchEntry(search_term);
-            
-        });
+        if ('noSearchAdd' in settings){}
+        else{
+            elemSearchInput.addEventListener('input', function() {
+                const search_term = this.value.toUpperCase().trim();
+                thisObj.searchEntry(search_term);
+                
+            });
+        }
         
     }
     
@@ -257,11 +272,12 @@ export function PageTableBasic(){
     
     
     this.setOnClickAddEntry = function(callback){
-        
-        
-        elemAddEntryBtn.addEventListener('click', function() {
-            callback();
-        });
+        if ('noSearchAdd' in settings){}
+        else{
+            elemAddEntryBtn.addEventListener('click', function() {
+                callback();
+            });
+        }
     }
     
     
@@ -273,7 +289,7 @@ export function PageTableBasic(){
         
     this.renderTable = function(entry_list){
         curDataView = entry_list;
-		
+        
         const config = {
             elemPagination:     elemTablePagination,
             elemTableBody:      thisObj.getElemTableBody(),

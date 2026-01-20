@@ -36,6 +36,11 @@ export function UiSelectWithEntryCount(input_settings){
     
     
     this.getHtml = function(){
+        let s_help = '';
+        
+        if (settings.helpText){
+            s_help = settings.helpText;
+        }
         
         return `
         <div class="form-group-select" id="${elemIdUiShow}">
@@ -47,7 +52,7 @@ export function UiSelectWithEntryCount(input_settings){
                 <option value="-1" selected disabled>No Entries</option>
             </select>
             
-            <div class="form-text">${settings.helpText}</div>
+            ${s_help}
         </div>
         `
         ;

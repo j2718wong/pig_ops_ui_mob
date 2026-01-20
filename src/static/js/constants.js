@@ -22,6 +22,7 @@ const PAGE_ID = {
     HEALTH_ADD_EDIT:        19,
     NOTES_ADD_EDIT:         20,
     
+    TRACE_PARENTS:         	30,
     
     
     PROD_GESTA_LIST:        31,

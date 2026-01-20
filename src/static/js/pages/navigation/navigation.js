@@ -35,6 +35,7 @@ import {PageSowBoarEntry}           from '../sow_boar/page_sow_boar_entry.js';
 
 import {PageMedVacAddEdit}          from '../sow_boar/page_medvac_add_edit.js';
 import {PageHealthNotesAddEdit}     from '../sow_boar/page_health_notes_add_edit.js';
+import {PageParentTrace}            from '../sow_boar/page_parent_trace.js';
 
 
 import {PageMobGestaLacta}          from '../production/gesta_lacta/page_mob_gesta_lacta.js';
@@ -270,6 +271,9 @@ export function Navigation(){
     const elemIdContNotesAddEdit        = 'container-notes-add-edit';
     
     
+    const elemIdContParentTrace         = 'container-trace-parents';
+    
+    
     
     const elemIdContProdGestaList       = 'container-prod-gesta-list';
     const elemIdContProdLactaList       = 'container-prod-lacta-list';
@@ -315,6 +319,7 @@ export function Navigation(){
     let elemHiddenContMedVacAddEdit = null;
     let elemHiddenContHealthAddEdit = null;
     let elemHiddenContNotesAddEdit  = null;
+    let elemHiddenContParentTrace   = null;
     
     let elemHiddenContProdGestaList = null;
     let elemHiddenContProdLactaList = null;
@@ -398,13 +403,18 @@ export function Navigation(){
     });
     
     
-    this.pageNotesAddEdit   = new PageHealthNotesAddEdit({
+    this.pageNotesAddEdit       = new PageHealthNotesAddEdit({
         navigation:             this,
         elemIdDivContainer:     elemIdContNotesAddEdit,
         uniqueKey:              'sow-boar-notes-add-edit',
         isNotes:                true
     });
     
+    
+    this.pageParentTrace        = new PageParentTrace({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContParentTrace
+    });
     
     
      
@@ -467,6 +477,8 @@ export function Navigation(){
         this.pageMedVacAddEdit.init();
         this.pageHealthAddEdit.init();
         this.pageNotesAddEdit.init();
+		
+		this.pageParentTrace.init();
         
         
         this.pageMobGestatingList.init();
@@ -524,7 +536,7 @@ export function Navigation(){
         elemHiddenContMedVacAddEdit = document.getElementById(elemIdContMedVacAddEdit);
         elemHiddenContHealthAddEdit = document.getElementById(elemIdContHealthAddEdit);
         elemHiddenContNotesAddEdit  = document.getElementById(elemIdContNotesAddEdit);
-        
+        elemHiddenContParentTrace  	= document.getElementById(elemIdContParentTrace);
         
         elemHiddenContProdGestaList = document.getElementById(elemIdContProdGestaList);
         elemHiddenContProdLactaList = document.getElementById(elemIdContProdLactaList);
@@ -640,6 +652,8 @@ export function Navigation(){
     
     
     this.setDataSowList = function(data){
+		this.pigFarm.dataSowList = data;
+		
         this.pageSowBoarList.setDataSowList(data);
         this.pageSowBoarAddEdit.setDataSowList(data);
         
@@ -650,6 +664,8 @@ export function Navigation(){
     
     
     this.setDataBoarList = function(data){
+		this.pigFarm.dataBoarList = data;
+		
         this.pageSowBoarList.setDataBoarList(data);
         this.pageSowBoarAddEdit.setDataBoarList(data);
         
@@ -723,7 +739,12 @@ export function Navigation(){
                 return elemHiddenContNotesAddEdit;
             }
             
-             
+            case PAGE_ID.TRACE_PARENTS:{
+                return elemHiddenContParentTrace;
+            }
+            
+
+            
     
             case PAGE_ID.PROD_GESTA_LIST:{
                 return elemHiddenContProdGestaList;
@@ -907,6 +928,17 @@ export function Navigation(){
                 break;
             }
             
+            case 'disposed':{
+                thisObj._onClickNavSowBoar(is_mobile, SOW_BOAR_TYPE.DISPOSED);
+                break;
+            }
+            
+            case 'trace_parents':{
+                thisObj._onClickNavParentTrace(is_mobile);
+                break;
+            }
+            
+            
             
             case 'prod-gesta':{
                 thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.GESTATING);
@@ -1031,6 +1063,12 @@ export function Navigation(){
     }
     
     
+	this._onClickNavParentTrace = function(is_mobile){
+		thisObj.showThisPage(elemHiddenContParentTrace);
+		thisObj.pageParentTrace.show();
+	}
+	
+	
     this._onClickNavProdGestaLacta = function(is_mobile, operation_type){
         
         if (is_mobile == null){ 

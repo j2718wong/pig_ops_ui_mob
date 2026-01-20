@@ -27,6 +27,7 @@ export function PigFarm(_navigation){
     this.dataStaffList          = null;
     
     
+	
     let accountHasUnpaidBill    = false;
     let accountDueBillHid       = null;
     
