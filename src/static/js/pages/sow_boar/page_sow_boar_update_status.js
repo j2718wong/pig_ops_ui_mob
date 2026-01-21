@@ -4,14 +4,14 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
-import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
-
-import {TextTranslation}        from '../common/translation.js';
+import {UiInputDatePicker}      from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
-import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';
-import {UiInputCheckBox}		from '../common/ui/input_checkbox.js';
+import {UiInputCheckBox}        from '../common/ui/input_checkbox.js';
+
+import {getSowBoarReference}    from '../common/common_app.js';
+
+import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
 
 import {PAGE_ID,
@@ -30,12 +30,10 @@ import {formatDate,
 import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
 
 
-import {UiInputTextWithCounter} from '../../common/ui/input_text_with_counter.js';
 
 
 
 export function PageSowBoarUpdateStatus(input_settings){
-    PageSowBoarEntryComponent.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -44,10 +42,13 @@ export function PageSowBoarUpdateStatus(input_settings){
     
     /*
     Typical settings = {
-        navigation:             this
+        navigation:             this,
+        uniqueKey:              'sow-boar-update-status'
     };
     */
     const settings              = input_settings;
+    
+    const elemDivContainer      = settings.elemDivContainer;
 
     
     // Collapsible  panel elements
@@ -57,10 +58,15 @@ export function PageSowBoarUpdateStatus(input_settings){
     let elemIdPanelTitle        = null;
     let elemIdPanelArrowIcon    = null;
     let elemIdPanelBody         = null;
-    let elemIdDateStatus        = null;
+    
+    
+    let elemUiDateStatus        = null;
+    let elemUiNotes             = null;
+    
+    //let elemIdDateStatus        = null;
     let elemIdStatusInv         = null;
     
-	let elemIdServerErrorMsg  	= null;
+    let elemIdServerErrorMsg    = null;
     let elemIdBtnUpdateStatus   = null;
     
     let elemUpdateStatusShow    = null;
@@ -70,15 +76,20 @@ export function PageSowBoarUpdateStatus(input_settings){
     let elemPanelArrowIcon      = null;
     let elemPanelBody           = null;
     let elemDateStatus          = null;
+    
     let elemStatusInv           = null;
-    let elemStatusNotes         = null;
-    let elemStatusNotesCharCounter = null;
-    let elemServerErrorMsg = null;
+    let elemServerErrorMsg      = null;
     let elemBtnUpdateStatus     = null;
 
     let showOptions             = null;
     
-
+    
+    let curDataSowBoar          = null;
+    
+    this.callbackOnSuccessUpdate = null;
+    
+    
+    
     
     this.init = function(){
         this.render();
@@ -87,34 +98,50 @@ export function PageSowBoarUpdateStatus(input_settings){
     
     
     this.getHtml = function(){
-        elemIdUpdateStatusShow  = `sow-boar-update-status-show`;
+        elemIdUpdateStatusShow  = `${settings.uniqueKey}-show`;
         
-        elemIdPanelHeader       = `sow-boar-update-status-panel-header`;
-        elemIdPanelTitle        = `sow-boar-update-status-panel-title`;
-        elemIdPanelArrowIcon    = `sow-boar-update-status-panel-arrow`;
-        elemIdPanelBody         = `sow-boar-update-status-panel-body`;
-        elemIdDateStatus        = `sow-boar-update-status-date-status`;
-        elemIdStatusInv         = `sow-boar-update-status-status-inv`;
+        elemIdPanelHeader       = `${settings.uniqueKey}-panel-header`;
+        elemIdPanelTitle        = `${settings.uniqueKey}-panel-title`;
+        elemIdPanelArrowIcon    = `${settings.uniqueKey}-panel-arrow`;
+        elemIdPanelBody         = `${settings.uniqueKey}-panel-body`;
         
-		
-		elemUiNotes             = new UiInputTextWithCounter({
-            uniqueKey:          'sow-boar-update-status-notes',
+        elemIdStatusInv         = `${settings.uniqueKey}-status-inv`;
+        
+        elemUiDateStatus        = new UiInputDatePicker({
+            uniqueKey:          `${settings.uniqueKey}-date`,
+        
+            className:          'mb-3',
+            textLabel:          'Date Status',
+            isRequired:         true,
+            invalidFeedBack:    'Please enter a date.',
+            helpText:           null
+        });
+        
+        
+        elemUiNotes             = new UiInputTextWithCounter({
+            uniqueKey:          `${settings.uniqueKey}-notes`,
             
             isTextArea:         true,
-            className:          'form-group-text-area',
+            className:          'mb-4',
             textLabel:          'Notes',
-            textMaxChars:       160,
+            isRequired:         true,
+            textMaxChars:       MAXCHAR_NOTES,
             rows:               3,
-            helpText:           null  
+            helpText:           'Please add some notes.'  
         });
-		
-		
-        elemIdServerErrorMsg 	= `sow-boar-update-status-btn-update-status-error-msg`;
+        
+        
+        elemIdServerErrorMsg    = `sow-boar-update-status-btn-update-status-error-msg`;
         elemIdBtnUpdateStatus   = `sow-boar-update-status-btn-update-status`;
+        
+        
+        const html_ui_date_status   = elemUiDateStatus.getHtml();
+        const html_ui_notes         = elemUiNotes.getHtml();
+        
         
         const html = `
         <!-- Collapsible Panel -->
-        <div class="collapsible-panel mb-4" id="${elemIdUpdateStatusShow}">
+        <div class="collapsible-panel mb-4" id="${elemIdUpdateStatusShow}" style="margin-top:10px; padding-top:10px; border-top: 2px solid var(--corporate-blue);">
             <!-- Header with arrow icon -->
             <div class="collapsible-header" id="${elemIdPanelHeader}">
                 <span id="${elemIdPanelTitle}">Update Pig Status</span>
@@ -138,10 +165,7 @@ export function PageSowBoarUpdateStatus(input_settings){
                 
                 
                 <!-- Date Status input -->
-                <div class="mb-3">
-                    <label for="${elemIdDateStatus}" class="form-label">Date Status <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="${elemIdDateStatus}" required>
-                </div>
+                ${html_ui_date_status}
                 
                 <!-- Radio buttons -->
                 <div class="mb-3">
@@ -180,14 +204,7 @@ export function PageSowBoarUpdateStatus(input_settings){
                 </div>
                 
                 <!-- Notes input -->
-                <div class="mb-4">
-                    <label for="${elemIdStatusNotes}" class="form-label">
-                        Notes <span class="text-danger">*</span>
-                        <span id="${elemIdStatusNotesCharCounter}" class="char-counter">0/${MAXCHAR_NOTES}</span>
-                    </label>
-                    <textarea class="form-control" id="${elemIdStatusNotes}" rows="3" placeholder="Add any additional notes here..." required></textarea>
-                    <div class="invalid-feedback">Please add some notes. </div>
-                </div>
+                ${html_ui_notes}
                 
                 <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
                 
@@ -207,6 +224,11 @@ export function PageSowBoarUpdateStatus(input_settings){
     
     
     this.afterHtmlRender = function(){
+        
+        elemUiDateStatus.afterHtmlRender();
+        elemUiNotes.afterHtmlRender();
+        
+        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -221,30 +243,22 @@ export function PageSowBoarUpdateStatus(input_settings){
         elemPanelTitle          = document.getElementById(elemIdPanelTitle);
         elemPanelArrowIcon      = document.getElementById(elemIdPanelArrowIcon);
         elemPanelBody           = document.getElementById(elemIdPanelBody);
-        elemDateStatus          = document.getElementById(elemIdDateStatus);
-		
-        elemServerErrorMsg		= document.getElementById(elemIdServerErrorMsg);
+        
+        elemStatusInv           = document.getElementById(elemIdStatusInv);
+        elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
         elemBtnUpdateStatus     = document.getElementById(elemIdBtnUpdateStatus);
     }
     
     
     this._processAfterHtmlRender = function(){
-        
-        $('#'+elemIdDateStatus).datepicker({
-            format: 'MM d, yyyy',  // This gives "January 31, 2026"
-            autoclose: true,
-            orientation: 'bottom',
-            endDate: new Date() // Max date is today
-        }).on('show', function(e) {
-            $('.datepicker').addClass('datepicker-material');
-        });
-        
     }
     
     
     this._bindEventListeners = function(){
         
-     
+        elemPanelHeader.addEventListener('click', function() {
+            thisObj.togglePanel();
+        });
         
         elemBtnUpdateStatus.addEventListener('click', function() {
             thisObj.onClickUpdateStatus();
@@ -256,16 +270,10 @@ export function PageSowBoarUpdateStatus(input_settings){
         // Clear previous Form values and validation classes
         
         // Remove validation classes
-        let cur_elem = null;
         
 
-        cur_elem = elemDateStatus;
-        cur_elem.value = ''; 
-        cur_elem.classList.remove('is-valid', 'is-invalid'); 
-        
-        cur_elem = elemStatusNotes;
-        cur_elem.value = ''; 
-        cur_elem.classList.remove('is-valid', 'is-invalid'); 
+        elemUiDateStatus.reset();
+        elemUiNotes.reset();  
         
         const radios = elemDivContainer.querySelectorAll('input[name="statusOption"]');
         for (const cur_entry of radios){
@@ -278,19 +286,15 @@ export function PageSowBoarUpdateStatus(input_settings){
     }
     
     
-    this.beforeShow = function(options){
-        /*
-        Typical options
-        options ={
-            is_add:         true,   // false is edit
-            sow_boar_type:  1,   
-            farm_sow_boar_id: 1,    // only needed for edit
-            go_back_page:   elemDivContainer,   // Go back to this page; this is Div element
-            go_back_page_id: PAGE_ID.SOW_BOAR_LIST, optional
-            from_prod_pid:  null    // can be null or undefined
-        }
-        */
+    this.beforeShow = function(data_sow_boar, options){
+
+        curDataSowBoar = data_sow_boar;
         
+        const sow_boar_name = getSowBoarReference(curDataSowBoar.sow_boar);
+        
+        elemPanelTitle.textContent = 'Update Pig Status: ' + sow_boar_name;
+        
+        thisObj._resetForm()
         
         if (!elemPanelBody.classList.contains('collapsed')) {
             thisObj.togglePanel();
@@ -299,9 +303,12 @@ export function PageSowBoarUpdateStatus(input_settings){
     
        
     this.show = function(){
-        thisObj._resetForm();
-        
-        console.log('PageAddGestating show');
+        elemUpdateStatusShow.style.display = 'block';
+    }
+    
+    
+    this.hide = function(){
+        elemUpdateStatusShow.style.display = 'none';
     }
     
     
@@ -334,39 +341,36 @@ export function PageSowBoarUpdateStatus(input_settings){
         
        
         
-        let input_date_status= elemDateStatus.value.trim();
-        let input_notes     = elemStatusNotes.value.trim();
+        let input_date_status= elemUiDateStatus.getValue().trim();
+        let input_notes     = elemUiNotes.getValue().trim();
         
-        input_elem          = elemDateStatus;
-        cur_field           = sowBoarEntry.fieldBirthDate;
+
         
         let dt_status_s     = null;
         
+        input_elem          = elemUiDateStatus.getElemText();
         if (input_date_status.length == 0){
             validation = -1;
-        }
-        else{
-            // Convert date to YYYY-MM-DD format
-            const dt_status     = new Date(input_date_status);
-            
-            dt_status_s         = dt_status.toLocaleDateString('en-CA');
-            validation          = 0;
-        }
-            
-        if (validation != FIELD_VALIDATION_OK){
+            addValidationClassToElem(input_elem, validation);
+            return;
+        } 
         
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
-        }
         
-        if (proceed_to_save == 0) {return;}
+        // Convert date to YYYY-MM-DD format
+        const dt_status     = new Date(input_date_status);
+        dt_status_s         = dt_status.toLocaleDateString('en-CA');
+        validation          = 0
+        addValidationClassToElem(input_elem, validation);
+        if (validation != 0) {return;}
+        
+        
+        input_elem = elemUiNotes.getElemText();
+        if (input_notes.length == 0){
+            validation = -1;
+        }
+        addValidationClassToElem(input_elem, validation);
+        if (validation != 0) {return;}
+        
         
           
         const checkedRadio = elemDivContainer.querySelector('input[name="statusOption"]:checked');
@@ -427,7 +431,7 @@ export function PageSowBoarUpdateStatus(input_settings){
         // send post request
         let post_data = {
             'uhid':             user_hid,
-            'sow_boar_hid':     curDataSowBoar.hid,
+            'sow_boar_hid':     curDataSowBoar.sow_boar.hid,
             
             'dispose_status_id': dispose_status_id,
             'date_dispose':     dt_status_s,
@@ -453,28 +457,11 @@ export function PageSowBoarUpdateStatus(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     
-                    const callback_error = function(error_code, error_desc){
-                        let html;
-                        if ((error_desc != null) && (error_desc.length > 0)){
-                            html = `<span>${error_desc}</span>`;
-                        }
-                        else{
-                            html = `<span>${error_code}</span>`;
-                        }
-                        
-                        elemServerErrorMsg.innerHTML = html;
-                        elemServerErrorMsg.style.display = 'block'
-                    };
+                    if (thisObj.callbackOnSuccessUpdate){
+                        thisObj.callbackOnSuccessUpdate();
+                    }
                     
-                    const callback_success = function(){
-                        navigation.pageSowBoarList.show(null);
-                        navigation.showThisPage(showOptions.go_back_page);
-                    };
-                    
-                    navigation.pigFarm.requestDataSowBoar(showOptions.is_sow, 
-                        callback_success, callback_error);
-                        
-                    
+                   
                     
                 }
                 else{

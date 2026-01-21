@@ -28,6 +28,7 @@ import {TableNotes}             from './table_notes.js'
 import {TablePigletsOutput}     from './table_piglets_output.js'
 
 import {TableMates}             from './table_mates.js'
+import {TableGiltOps}           from './table_gilt_ops.js'
 
 
 
@@ -64,13 +65,14 @@ export function PageSowBoarEntry(input_settings){
     
     let elemIdTabBtnOutput      = null;
     let elemIdTabBtnMates       = null;
+    let elemIdTabBtnGiltOps     = null;
     
     let elemIdTabMedVac         = null;
     let elemIdTabHealth         = null;
     let elemIdTabNotes          = null;
     let elemIdTabOutput         = null;
     let elemIdTabMates          = null;
-    let elemIdTabEdit           = null;
+    let elemIdTabGiltOps        = null;
     let elemIdTabStatus         = null;
     
     let elemIdTabMore           = null;
@@ -78,7 +80,7 @@ export function PageSowBoarEntry(input_settings){
     
     let elemTabBtnOutput        = null;
     let elemTabBtnMates         = null;
-    
+    let elemTabBtnGiltOps       = null;
     
     
     let elemNavPrevEntry        = null;
@@ -97,7 +99,7 @@ export function PageSowBoarEntry(input_settings){
     let elemTabNotes            = null;
     let elemTabOutput           = null;
     let elemTabMates            = null;
-    let elemTabEdit             = null;
+    let elemTabGiltOps          = null;
     let elemTabStatus           = null;
     
     
@@ -147,71 +149,76 @@ export function PageSowBoarEntry(input_settings){
         
         elemIdTabBtnOutput      = `sow-boar-output-btn`;
         elemIdTabBtnMates       = `sow-boar-mates-btn`;
-        
+        elemIdTabBtnGiltOps     = `sow-boar-gilt-ops-btn`;
         
         elemIdTabMedVac         = `sow-boar-medvac`;
         elemIdTabHealth         = `sow-boar-health`;
         elemIdTabNotes          = `sow-boar-notes`;
         elemIdTabOutput         = `sow-boar-output`;
         elemIdTabMates          = `sow-boar-mates`;
+        elemIdTabGiltOps        = `sow-boar-gilt-ops`;
         elemIdTabStatus         = `sow-boar-status`;
         
         
         elemIdTabMore           = `sow-boar-more`;
            
-           
-        const html_sow_tabs = `
-        <div class="tabs-container">
-            <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
-            <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
-            <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
-            <button class="tab-button" data-tab="${elemIdTabOutput}" id="">Output</button>
-            
-            <button class="tab-button" id="${elemIdShowMore}">
-                More
-                <!--
-                <div class="show-more-dropdown">
-                    <div class="dropdown-item" data-tab="${elemIdTabMates}">Mates</div>
-                    <div class="dropdown-item" data-tab="${elemIdTabStatus}">Status</div>
-                </div>
-                -->
-            </button>
-        </div>
+        /**
+        The number of tabs available are dynamic by sow_boar_type.
         
-        `;
+        Because of space constrainst in mobile view,
+        Only a maximum of 4 menus buttons can be directly used.
+        The excess menus are available via the global dynamic More Modal.       
+        
+        It maybe possible that more tabs will be added in the future,
+        and will be added in the More Modal function. 
         
         
-        const html_gilt_tabs = `
-        <div class="tabs-container">
-            <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
-            <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
-            <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
-            <button class="tab-button" data-tab="${elemIdTabStatus}">Status</button>
-        </div>
-        
-        `;
+        2026-01-21
+        There maybe a better way to dynamically create the buttons
+        particulary for bigger screen  like tablets; and this is needed in 
+        the future for bigger screens to transfer the function in More Modal  
+        directly in the tab buttons.
+        As of this writing, this is manually switched until changed. 
         
         
-        const html_boar_tabs = `
-        <div class="tabs-container">
-            <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
-            <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
-            <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
-            <button class="tab-button" data-tab="${elemIdTabMates}">Mates</button>
-            
-            <button class="tab-button show-more-container" id="${elemIdShowMore}">
-                More
-                <!--
-                <div class="show-more-dropdown" id="${elemIdShowMoreDropDown}">
-                    <div class="dropdown-item" data-tab="${elemIdTabStatus}">Status</div>
-                </div>
-                -->
-            </button>
-        </div>
+        In the desktop version,
+        none of this will show up since all data are in tables form.
         
-        `;
         
-           
+        For Sow 
+        - MedVac
+        - Health
+        - Notes
+        - Output
+        
+        - Mates (via More Modal)
+        
+        For Boar 
+        - MedVac
+        - Health
+        - Notes
+        - Mates
+        
+        - Mates External (via More Modal)
+        
+        For Gilts 
+        - MedVac
+        - Health
+        - Notes
+        - Gilt Ops
+        
+        
+        Note the Edit SowBoar function is embedded in the SowBoar name 
+        in the page title. This is to conserve menu space.
+        
+        Originally the Sowboar Update Status is also planned to be put in the
+        menu buttons or via the More Modal function. It turns out all of the 
+        contents in the tabs are in table form.
+        
+        
+        As of writing the SowBoar Update Status will be put inside edit page.
+        
+        */
            
            
         const html = `
@@ -241,8 +248,10 @@ export function PageSowBoarEntry(input_settings){
             <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
             <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
             <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
-            <button class="tab-button" data-tab="${elemIdTabOutput}" id="${elemIdTabBtnOutput}">Output</button>
-            <button class="tab-button" data-tab="${elemIdTabMates}" id="${elemIdTabBtnMates}" style="display: none">Mates</button>
+            
+            <button class="tab-button" data-tab="${elemIdTabOutput}"    id="${elemIdTabBtnOutput}">Output</button>
+            <button class="tab-button" data-tab="${elemIdTabMates}"     id="${elemIdTabBtnMates}" style="display: none">Mates</button>
+            <button class="tab-button" data-tab="${elemIdTabGiltOps}"   id="${elemIdTabBtnGiltOps}" style="display: none">Mates</button>
             
             <button class="tab-button" data-tab="${elemIdTabMore}" id="${elemIdShowMore}">
                 More
@@ -271,11 +280,11 @@ export function PageSowBoarEntry(input_settings){
         </div>
         
         <div id="${elemIdTabMates}" class="tab-content">
-            <h2 class="tab-title">Piglets Output</h2>
+            <h2 class="tab-title">Mates</h2>
         </div>
         
-        <div id="${elemIdTabEdit}" class="tab-content">
-            <h2 class="tab-title">Edit</h2>
+        <div id="${elemIdTabGiltOps}" class="tab-content">
+            <h2 class="tab-title">Gilt Ops</h2>
         </div>
         
         <div id="${elemIdTabStatus}" class="tab-content">
@@ -306,6 +315,7 @@ export function PageSowBoarEntry(input_settings){
         
         elemTabBtnOutput        = document.getElementById(elemIdTabBtnOutput);
         elemTabBtnMates         = document.getElementById(elemIdTabBtnMates);
+        elemTabBtnGiltOps       = document.getElementById(elemIdTabBtnGiltOps);
         
         elemShowMore            = document.getElementById(elemIdShowMore);
         elemShowMoreDropDown    = document.getElementById(elemIdShowMoreDropDown);
@@ -316,7 +326,7 @@ export function PageSowBoarEntry(input_settings){
         elemTabNotes            = document.getElementById(elemIdTabNotes);
         elemTabOutput           = document.getElementById(elemIdTabOutput);
         elemTabMates            = document.getElementById(elemIdTabMates);
-        elemTabEdit             = document.getElementById(elemIdTabEdit);
+        elemTabGiltOps          = document.getElementById(elemIdTabGiltOps);
         elemTabStatus           = document.getElementById(elemIdTabStatus);
         
         allTabs                 = elemDivContainer.querySelectorAll('.tab-content');
@@ -327,7 +337,7 @@ export function PageSowBoarEntry(input_settings){
     
     
     this._processAfterHtmlRender = function(){
-        this.tableMedVac     = new TableMedVac({
+        this.tableMedVac        = new TableMedVac({
             navigation:             settings.navigation,
             parentObj:              thisObj,
             uniqueKey:              'sow-boar-medvac',
@@ -336,7 +346,7 @@ export function PageSowBoarEntry(input_settings){
         this.tableMedVac.init();
         
         
-        this.tablePigHealth = new TableHealthIssue({
+        this.tablePigHealth     = new TableHealthIssue({
             navigation:             settings.navigation,
             parentObj:              thisObj,
             uniqueKey:              'sow-boar-health',
@@ -370,6 +380,17 @@ export function PageSowBoarEntry(input_settings){
             elemDivContainer:       elemTabMates
         });
         this.tableMates.init();
+        
+        
+        this.tableGiltOps       = new TableGiltOps({
+            navigation:             settings.navigation,
+            parentObj:              thisObj,
+            uniqueKey:              'sow-boar-gilt-ops',
+            elemDivContainer:       elemTabGiltOps
+        });
+        this.tableGiltOps.init();
+        
+        
     }
     
     
@@ -413,13 +434,6 @@ export function PageSowBoarEntry(input_settings){
     
     
     this._bindEventListeners = function(){
-        
-        const dropdownItems = elemDivContainer.querySelectorAll('.dropdown-item');
-        const showMoreControl = elemShowMore;
-        const showMoreDropdown = elemShowMoreDropDown;
-        
-       
-        
         navItems.forEach(item => {
             item.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
@@ -428,45 +442,9 @@ export function PageSowBoarEntry(input_settings){
         });
         
         
-        /*
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const tabId = this.getAttribute('data-tab');
-                switchTab(tabId);
-                showMoreControl.querySelector('.nav-text').textContent = this.textContent;
-                navItems.forEach(nav => nav.classList.remove('active'));
-                showMoreControl.classList.add('active');
-            });
-        });*/
-        
-        /*
-        showMoreControl.addEventListener('click', function(e) {
-            console.log('Test');
-            
-            
-            showMoreDropdown.classList.toggle('active');
-            if (e.target === this || e.target.classList.contains('nav-text')) {
-                e.stopPropagation();
-                showMoreDropdown.classList.toggle('active');
-            }
-            
-            
-        });*/
-        
-        
-        /*
-        document.addEventListener('click', function(e) {
-            if (!showMoreControl.contains(e.target)) {
-                showMoreDropdown.classList.remove('active');
-            }
-        });*/
-        
         elemShowMore.addEventListener('click', function(e) {
             thisObj.configureShowMore();
         });
-        
-        
-
         
     }
     
@@ -477,6 +455,9 @@ export function PageSowBoarEntry(input_settings){
         if (options) { // replace options only if specified
             showOptions = options;
         }
+        
+        console.log('options');
+        console.log(options);
         
         // Set Entry Title
         let s_title = '';
@@ -517,6 +498,11 @@ export function PageSowBoarEntry(input_settings){
                     sow_boar_name += ' - Wean'
                     break;
                 }
+                
+                default:{
+                    sow_boar_name += ' - Prod Ready'
+                    break;
+                }
             }
         }
         
@@ -538,11 +524,10 @@ export function PageSowBoarEntry(input_settings){
                 go_back_page:   elemDivContainer   // Go back to this page
             }
             
-            
-            const callback = null;
+
             
             navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar, dataSowBoar);
-            navigation.pageSowBoarAddEdit.callbackOnSuccessEdit = callback;
+            navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(thisObj.onSuccessUpdateStatus);
             
             const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
             navigation.showThisPage(next_page)
@@ -550,7 +535,7 @@ export function PageSowBoarEntry(input_settings){
         
         
         
-        // Set arrow navigation
+        // Set left-right arrow navigation
         elemNavPrevEntry.onclick = function(){
             navigation.pageSowBoarList.onClickSowBoarEntry(showOptions.prev_sow_boar_hid);
         }
@@ -564,13 +549,37 @@ export function PageSowBoarEntry(input_settings){
         // Setup tabs navigation
         if ('farm_sow_id' in data_sow_boar.sow_boar){
             // sows and gilts
-            elemTabBtnOutput.style.display = 'block';
-            elemTabBtnMates.style.display = 'none';
+            //
+            // gilt is status_id = SOW_STATUS.GROWING and  is_production_ready = 0
+            
+            let is_sow = 1;
+            if (data_sow_boar.sow_boar.status_id == SOW_STATUS.GROWING && 
+                data_sow_boar.sow_boar.is_production_ready == 0){is_sow = 0;}
+            
+            if (is_sow > 0){
+            
+                elemTabBtnOutput.style.display = 'block';
+                elemTabBtnMates.style.display = 'none';
+                
+                elemShowMore.style.display = 'block';
+            }
+            else{
+                
+                elemTabBtnOutput.style.display = 'none';
+                elemTabBtnMates.style.display = 'none';
+                
+                elemTabBtnGiltOps.style.display = 'block';
+
+                elemShowMore.style.display = 'none';
+                
+            }
         }
         else{
             // boars
             elemTabBtnOutput.style.display = 'none';
             elemTabBtnMates.style.display = 'block';
+            
+            elemShowMore.style.display = 'block';
         }
       
         
@@ -654,7 +663,7 @@ export function PageSowBoarEntry(input_settings){
     
     this.beforeShowTab = function(){
         if (dataSowBoar == null){return;}
-		
+        
         switch(curActiveTabId){
             case elemIdTabMedVac:{
                 thisObj.tableMedVac.beforeShow(dataSowBoar);
@@ -685,13 +694,16 @@ export function PageSowBoarEntry(input_settings){
                 break;
             }
             
+            case elemIdTabGiltOps:{
+                thisObj.tableGiltOps.beforeShow(dataSowBoar);
+                break;
+            }
+            
             case elemIdTabStatus:{
                 break;
             }
             
             default:{
-				console.log(`dataSowBoar`);
-				console.log(dataSowBoar);
                 thisObj.tableMedVac.beforeShow(dataSowBoar);
                 break;
             }
@@ -805,7 +817,17 @@ export function PageSowBoarEntry(input_settings){
     
     
     
-    
+    this.onSuccessUpdateStatus = function(){
+        // This is triggered when a sow_boar is deleted or disposed.
+        if (showOptions.sow_boar_list){
+            // Remove sow_boar
+            const index = showOptions.data_index -1; // This is base 1 counting number
+            showOptions.sow_boar_list.splice(index, 1);
+            
+            // Go back to sow_boar_list
+            navigation._onClickNavSowBoar(null, showOptions.sow_boar_type);
+        }
+    }
     
     
     /** 

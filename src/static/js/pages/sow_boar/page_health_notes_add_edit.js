@@ -437,8 +437,8 @@ export function PageHealthNotesAddEdit(input_settings){
         
         
         // Convert date to YYYY-MM-DD format
-        const dt_notes     = new Date(input_date_notes);
-        dt_notes_s         = dt_notes.toLocaleDateString('en-CA');
+        const dt_notes      = new Date(input_date_notes);
+        dt_notes_s          = dt_notes.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}

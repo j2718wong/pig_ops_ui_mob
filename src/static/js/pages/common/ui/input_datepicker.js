@@ -19,7 +19,7 @@ export function UiInputDatePicker(input_settings){
     settings = {
         uniqueKey:      ''
         
-        
+        className:      'form-group-date',
         textLabel:      'Name',
         isRequired:     false,
         invalidFeedBack: null,
@@ -45,7 +45,11 @@ export function UiInputDatePicker(input_settings){
     
     
     this.getHtml = function(){
-        let is_required = false;
+        let className = 'form-group-date';
+		if (settings.className){className = settings.className;}
+        
+		
+		let is_required = false;
         
         if ('isRequired' in settings){
             is_required = settings.isRequired;
@@ -69,10 +73,10 @@ export function UiInputDatePicker(input_settings){
             s_help = `<div class="form-text">${settings.helpText}</div>`;
         }
         
-        
+		
         
         return `
-        <div class="form-group-date" id="${elemIdUiShow}">
+        <div class="${className}" id="${elemIdUiShow}">
             <label for="${elemIdText}" class="form-label">
                 ${settings.textLabel} ${s_required_mark}
             </label>

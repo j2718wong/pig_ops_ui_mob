@@ -749,8 +749,8 @@ ${html_style}
         };
         
         
-		// 
-		navigation.pageSowBoarEntry.resetToFirstTab();
+        // 
+        navigation.pageSowBoarEntry.resetToFirstTab();
     }
     
     
@@ -1467,6 +1467,7 @@ ${html_style}
                     sow_boar_type:      showOptions.sow_boar_type,
                     prev_sow_boar_hid:  prev_sow_boar_hid,
                     next_sow_boar_hid:  next_sow_boar_hid,
+                    sow_boar_list:      cur_sow_boar_list,
                     data_index:         index+1,
                     total_entries:      cur_sow_boar_list.length
                 };

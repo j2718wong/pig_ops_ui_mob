@@ -1,0 +1,39 @@
+Create a Pig  Feed Buy input HTML for mobile view.
+use corporate blue themes and ligth colors
+
+Feed Buy summary Section
+1.) a fixed table with these columns
+
+Feed Type 
+Num Sacks 
+SubTotal - money cost
+
+2.) These inputs are read only and updated
+ in every feed buy input change
+
+
+3.) These are the fixed Feed Type
+- Gesta
+- Lacta
+- Booster
+- PreStart
+- Starter
+- Grower
+- Finisher
+
+4.) There should also be a Grand Total row at the bottom.
+
+
+Feed Buy input section
+1.) accordion or collapsible with up to 7 sections with each section is a Feed Type.
+2.) The section title must also include the number of sacks
+visible when the section is collapsed
+
+3.) Each of the section should have
+- number of Sacks input; numeric integer only
+- weight per sack input; default to 50kg
+- price per sack; numeric 
+- Subtotal  ; read only (computed by  number of Sacks times price per sack)
+
+
+Improve the section title sacks counter such that they are in line vertically.

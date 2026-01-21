@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered More Modal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --modal-radius: 48px; /* Extra large radius */
+            --primary-color: #4a6cf7;
+            --text-color: #1a1a1a;
+            --light-gray: #f8f9fa;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            padding: 20px;
+            background-color: #f5f7fb;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Main container */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        /* Trigger button styling */
+        #moreModalTrigger {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 50px;
+            padding: 18px 36px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.3);
+            transition: all 0.3s ease;
+            width: auto;
+        }
+        
+        #moreModalTrigger:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(74, 108, 247, 0.4);
+        }
+        
+        /* Modal styling - Fixed centering */
+        .custom-modal .modal-dialog {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            width: 100%;
+            max-width: none;
+        }
+        
+        .custom-modal .modal-content {
+            border-radius: var(--modal-radius) !important;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            background-color: white;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px;
+        }
+        
+        /* Centered modal header */
+        .custom-modal .modal-header {
+            border-bottom: none;
+            padding: 40px 30px 20px 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .custom-modal .modal-title {
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--text-color);
+            letter-spacing: -0.5px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .custom-modal .modal-body {
+            padding: 0 30px 40px 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+            width: 100%;
+        }
+        
+        /* Menu item styling */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 24px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: var(--text-color);
+            border-bottom: 1px solid #f0f0f0;
+            width: 100%;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Touch-based interaction */
+        .menu-item:active {
+            transform: scale(0.995);
+            opacity: 0.9;
+        }
+        
+        .menu-item.active {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        .menu-text {
+            flex-grow: 1;
+            font-size: 20px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        /* Tab content styling */
+        .tab-content {
+            padding: 20px 0;
+            width: 100%;
+        }
+        
+        .tab-pane {
+            display: none;
+            width: 100%;
+        }
+        
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .tab-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            letter-spacing: -0.5px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .tab-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 17px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        /* Back button */
+        .back-to-menu {
+            display: flex;
+            align-items: center;
+            padding: 16px 0 30px 0;
+            cursor: pointer;
+            color: #666;
+            font-weight: 600;
+            font-size: 17px;
+            margin-bottom: 10px;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .back-to-menu:active {
+            transform: scale(0.98);
+            opacity: 0.8;
+        }
+        
+        .back-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        /* Mobile-specific styles - FIXED CENTERING */
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .container {
+                padding: 0 10px;
+                width: 100%;
+            }
+            
+            .custom-modal .modal-dialog {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                margin: 0;
+            }
+            
+            .custom-modal .modal-content {
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+                border-radius: var(--modal-radius) !important;
+            }
+            
+            .custom-modal .modal-header {
+                padding: 35px 25px 15px 25px;
+            }
+            
+            .custom-modal .modal-title {
+                font-size: 1.8rem;
+            }
+            
+            .custom-modal .modal-body {
+                padding: 0 25px 35px 25px;
+            }
+            
+            .menu-item {
+                padding: 22px 0;
+                min-height: 64px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .menu-text {
+                font-size: 19px;
+                text-align: center;
+            }
+            
+            .tab-content {
+                padding: 15px 0;
+            }
+            
+            .back-to-menu {
+                min-height: 56px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .custom-modal .modal-header {
+                padding: 30px 20px 10px 20px;
+            }
+            
+            .custom-modal .modal-body {
+                padding: 0 20px 30px 20px;
+            }
+            
+            .menu-text {
+                font-size: 18px;
+            }
+        }
+        
+        /* Hide the default modal close button */
+        .btn-close {
+            display: none !important;
+        }
+        
+        /* Content cards */
+        .content-card {
+            background-color: var(--light-gray);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: none;
+            width: 100%;
+        }
+        
+        .content-card h5 {
+            color: var(--text-color);
+            margin-bottom: 16px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+        
+        .content-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            max-width: 500px;
+            width: 100%;
+            padding: 0 20px;
+        }
+        
+        /* Touch feedback */
+        .touch-hint {
+            margin-top: 10px;
+            color: #666;
+            font-size: 15px;
+            text-align: center;
+        }
+        
+        /* Form elements */
+        .form-check {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            margin-top: 0;
+            margin-right: 8px;
+        }
+        
+        .form-check-label {
+            font-size: 17px;
+        }
+        
+        .form-select {
+            padding: 12px 16px;
+            font-size: 17px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        /* Scrollbar */
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .modal-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4" style="color: var(--text-color); font-weight: 700; text-align: center;">Centered More Modal</h1>
+        <p class="mb-4" style="color: #666; text-align: center; max-width: 500px;">Perfectly centered on all screen sizes with large radius corners</p>
+        
+        <!-- Trigger button -->
+        <button type="button" class="btn" id="moreModalTrigger" data-bs-toggle="modal" data-bs-target="#moreModal">
+            Open More Modal
+        </button>
+        
+        <!-- Modal -->
+        <div class="modal fade custom-modal" id="moreModal" tabindex="-1" aria-labelledby="moreModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Centered Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="moreModalLabel">More</h5>
+                    </div>
+                    
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <!-- Menu Items List -->
+                        <div id="menuItems">
+                            <div class="menu-item active" data-tab="profile">
+                                <div class="menu-text">My Profile</div>
+                            </div>
+                            
+                            <div class="menu-item" data-tab="settings">
+                                <div class="menu-text">Settings</div>
+                            </div>
+                            
+                            <div class="menu-item" data-tab="notifications">
+                                <div class="menu-text">Notifications</div>
+                            </div>
+                            
+                            <div class="menu-item" data-tab="privacy">
+                                <div class="menu-text">Privacy & Security</div>
+                            </div>
+                            
+                            <div class="menu-item" data-tab="help">
+                                <div class="menu-text">Help & Support</div>
+                            </div>
+                            
+                            <div class="menu-item" data-tab="about">
+                                <div class="menu-text">About</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab Content -->
+                        <div id="tabContent">
+                            <!-- Back to menu button -->
+                            <div class="back-to-menu" id="backToMenu">
+                                <div class="back-icon">←</div>
+                                <div>Back to Menu</div>
+                            </div>
+                            
+                            <!-- Profile Tab -->
+                            <div class="tab-pane active" id="profileTab">
+                                <div class="tab-title">My Profile</div>
+                                <div class="tab-description">
+                                    Manage your personal information
+                                </div>
+                                <div class="content-card">
+                                    <h5>Account Information</h5>
+                                    <p>Update your name, email, and personal details.</p>
+                                </div>
+                                <div class="content-card">
+                                    <h5>Preferences</h5>
+                                    <p>Customize how you interact with the application.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Settings Tab -->
+                            <div class="tab-pane" id="settingsTab">
+                                <div class="tab-title">Settings</div>
+                                <div class="tab-description">
+                                    Customize your preferences
+                                </div>
+                                <div class="content-card">
+                                    <h5>Display</h5>
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="theme" id="lightTheme" checked>
+                                            <label class="form-check-label" for="lightTheme">Light Mode</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="theme" id="darkTheme">
+                                            <label class="form-check-label" for="darkTheme">Dark Mode</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="content-card">
+                                    <h5>Language</h5>
+                                    <div class="mb-3">
+                                        <select class="form-select">
+                                            <option selected>English</option>
+                                            <option>Spanish</option>
+                                            <option>French</option>
+                                            <option>German</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Notifications Tab -->
+                            <div class="tab-pane" id="notificationsTab">
+                                <div class="tab-title">Notifications</div>
+                                <div class="tab-description">
+                                    Control your notifications
+                                </div>
+                                <div class="content-card">
+                                    <h5>Notification Preferences</h5>
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+                                            <label class="form-check-label" for="pushNotifications">Push Notifications</label>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="emailNotifications">
+                                            <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Privacy Tab -->
+                            <div class="tab-pane" id="privacyTab">
+                                <div class="tab-title">Privacy & Security</div>
+                                <div class="tab-description">
+                                    Manage your privacy settings
+                                </div>
+                                <div class="content-card">
+                                    <h5>Data Privacy</h5>
+                                    <p>Control how your data is collected and used.</p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="analyticsData" checked>
+                                        <label class="form-check-label" for="analyticsData">Share anonymous usage data</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Help Tab -->
+                            <div class="tab-pane" id="helpTab">
+                                <div class="tab-title">Help & Support</div>
+                                <div class="tab-description">
+                                    Frequently asked questions
+                                </div>
+                                <div class="content-card">
+                                    <h5>FAQs</h5>
+                                    <div class="mb-3">
+                                        <p><strong>How do I reset my password?</strong></p>
+                                        <p>Go to your profile settings and select "Change Password".</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- About Tab -->
+                            <div class="tab-pane" id="aboutTab">
+                                <div class="tab-title">About</div>
+                                <div class="tab-description">
+                                    Learn more about our application
+                                </div>
+                                <div class="content-card">
+                                    <h5>App Information</h5>
+                                    <p><strong>Version:</strong> 2.1.0</p>
+                                    <p><strong>Developer:</strong> Company Name</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Perfectly centered on mobile with <strong>48px radius</strong></p>
+            <p>All elements centered with proper alignment</p>
+            <p class="touch-hint">Test on different screen sizes - modal stays centered</p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            const backToMenuBtn = document.getElementById('backToMenu');
+            const menuContainer = document.getElementById('menuItems');
+            const tabContainer = document.getElementById('tabContent');
+            
+            // Initially hide the tab content
+            tabContainer.style.display = 'none';
+            
+            // Handle menu item clicks
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active menu item
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show the corresponding tab
+                    showTab(tabId);
+                });
+            });
+            
+            // Handle back to menu button click
+            backToMenuBtn.addEventListener('click', function() {
+                // Hide tab content, show menu
+                tabContainer.style.display = 'none';
+                menuContainer.style.display = 'block';
+            });
+            
+            // Function to show a specific tab
+            function showTab(tabId) {
+                // Hide all tab panes
+                tabPanes.forEach(pane => {
+                    pane.classList.remove('active');
+                });
+                
+                // Show the selected tab pane
+                const activeTab = document.getElementById(tabId + 'Tab');
+                if (activeTab) {
+                    activeTab.classList.add('active');
+                }
+                
+                // Show tab content, hide menu
+                menuContainer.style.display = 'none';
+                tabContainer.style.display = 'block';
+                
+                // Scroll to top of tab content
+                tabContainer.scrollTop = 0;
+            }
+            
+            // Add touch feedback
+            menuItems.forEach(item => {
+                item.addEventListener('touchstart', function() {
+                    this.style.opacity = '0.9';
+                });
+                
+                item.addEventListener('touchend', function() {
+                    this.style.opacity = '1';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

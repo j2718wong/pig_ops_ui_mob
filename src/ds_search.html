@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile-Optimized Search with Hit Count</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .title p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 100%;
+            margin: 0 auto 40px;
+        }
+        
+        .search-form {
+            display: flex;
+            width: 100%;
+        }
+        
+        .search-input-wrapper {
+            position: relative;
+            flex-grow: 1;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 18px 50px 18px 20px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 12px 0 0 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        
+        .search-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #95a5a6;
+        }
+        
+        .search-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 0 12px 12px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .search-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .search-button:active {
+            background-color: #1f639b;
+            transform: translateY(1px);
+        }
+        
+        .search-button-text {
+            margin-left: 8px;
+        }
+        
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        
+        .dropdown.show {
+            display: block;
+        }
+        
+        .dropdown-header {
+            padding: 12px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            color: #7f8c8d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .total-hits {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .dropdown-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f1f1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .dropdown-item.highlighted {
+            background-color: #e8f4fc;
+        }
+        
+        .dropdown-item-content {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .dropdown-icon {
+            margin-right: 12px;
+            color: #3498db;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .dropdown-text {
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-grow: 1;
+        }
+        
+        .hit-count-badge {
+            background-color: #e8f4fc;
+            color: #3498db;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-left: 10px;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dropdown-item:hover .hit-count-badge {
+            background-color: #d1ecf1;
+            color: #1c7ed6;
+        }
+        
+        .hit-count-icon {
+            margin-right: 4px;
+            font-size: 11px;
+        }
+        
+        .dropdown-empty {
+            padding: 30px 20px;
+            text-align: center;
+            color: #95a5a6;
+            font-style: italic;
+        }
+        
+        .dropdown-empty i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+            color: #bdc3c7;
+        }
+        
+        .instructions {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+        }
+        
+        .instructions h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .instructions ul {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+        
+        .instructions li {
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .instructions li:last-child {
+            border-bottom: none;
+        }
+        
+        .instructions .icon {
+            color: #3498db;
+            margin-right: 12px;
+            margin-top: 3px;
+        }
+        
+        .feature-highlight {
+            background-color: #e8f6ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .feature-highlight h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .mobile-note {
+            background-color: #fff8e1;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .mobile-note i {
+            color: #ff9800;
+            margin-right: 8px;
+        }
+        
+        /* Mobile Styles - Single line layout */
+        @media (max-width: 768px) {
+            .title h1 {
+                font-size: 1.8rem;
+            }
+            
+            .search-form {
+                flex-direction: row; /* Keep input and button on same line */
+            }
+            
+            .search-input {
+                border-radius: 12px 0 0 12px; /* Keep rounded left side */
+                padding: 16px 45px 16px 16px;
+                font-size: 16px;
+            }
+            
+            .search-button {
+                border-radius: 0 12px 12px 0; /* Keep rounded right side */
+                padding: 0; /* Reset padding for mobile */
+                width: 60px; /* Fixed width for mobile button */
+                min-width: 60px; /* Prevent button from shrinking */
+            }
+            
+            /* Hide the "Search" text on mobile */
+            .search-button-text {
+                display: none;
+            }
+            
+            .search-icon {
+                right: 16px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .instructions {
+                padding: 20px;
+            }
+            
+            .dropdown-item {
+                padding: 12px 16px;
+            }
+            
+            .dropdown-text {
+                font-size: 15px;
+            }
+            
+            .hit-count-badge {
+                padding: 3px 8px;
+                font-size: 12px;
+            }
+            
+            .mobile-note {
+                display: block;
+            }
+        }
+        
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .title h1 {
+                font-size: 1.6rem;
+            }
+            
+            .title p {
+                font-size: 1rem;
+            }
+            
+            .search-input {
+                padding: 14px 40px 14px 14px;
+                font-size: 15px;
+            }
+            
+            .search-button {
+                width: 50px; /* Even smaller on very small screens */
+                min-width: 50px;
+            }
+            
+            .dropdown-header {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+            
+            .dropdown-item {
+                padding: 10px 16px;
+            }
+            
+            .dropdown-text {
+                font-size: 14px;
+            }
+            
+            .hit-count-badge {
+                padding: 2px 6px;
+                font-size: 11px;
+            }
+            
+            .hit-count-icon {
+                margin-right: 2px;
+            }
+        }
+        
+        /* Very small devices */
+        @media (max-width: 360px) {
+            .search-button {
+                width: 45px;
+                min-width: 45px;
+            }
+            
+            .search-input {
+                padding: 12px 35px 12px 12px;
+                font-size: 14px;
+            }
+            
+            .dropdown-text {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>Mobile-Optimized Search</h1>
+            <p>Single-line layout with compact search button on mobile</p>
+        </div>
+        
+        <div class="mobile-note">
+            <i class="fas fa-mobile-alt"></i>
+            <strong>Mobile Optimized:</strong> On mobile view, the "Search" text is hidden and the button becomes a compact circle with just the search icon. Input and button stay on one line.
+        </div>
+        
+        <div class="search-container">
+            <form class="search-form" id="searchForm">
+                <div class="search-input-wrapper">
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="searchInput" 
+                        placeholder="Search products, services, info..." 
+                        autocomplete="off"
+                    >
+                    <div class="search-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+                <button type="submit" class="search-button" id="searchButton" aria-label="Search">
+                    <i class="fas fa-search"></i>
+                    <span class="search-button-text">Search</span>
+                </button>
+            </form>
+            
+            <div class="dropdown" id="dropdown">
+                <!-- Dropdown items will be dynamically inserted here -->
+            </div>
+        </div>
+        
+        <div class="feature-highlight">
+            <h3><i class="fas fa-chart-bar"></i> Mobile-Optimized Features</h3>
+            <p>On mobile devices: 1) Search button shows only the magnifying glass icon (no text), 2) Input and button remain on a single line, 3) Button becomes a compact circle for better touch targets, 4) Layout adapts to various screen sizes.</p>
+        </div>
+        
+        <div class="instructions">
+            <h2>How It Works</h2>
+            <ul>
+                <li>
+                    <span class="icon"><i class="fas fa-desktop"></i></span>
+                    <span><strong>Desktop View</strong> - Button shows "Search" text with icon.</span>
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-mobile-alt"></i></span>
+                    <span><strong>Mobile View</strong> - Button shows only the search icon in a compact circle.</span>
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-chart-line"></i></span>
+                    <span><strong>Hit count badges</strong> - Show estimated matches in the database.</span>
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-search"></i></span>
+                    <span><strong>Single-line layout</strong> - Input and button always stay on same line.</span>
+                </li>
+                <li>
+                    <span class="icon"><i class="fas fa-touch-pointer"></i></span>
+                    <span><strong>Touch-friendly</strong> - Larger touch targets for mobile users.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for dropdown suggestions with hit counts
+        const suggestions = [
+            { text: "Apple iPhone 15 Pro", hits: 1245 },
+            { text: "Apple MacBook Pro", hits: 892 },
+            { text: "Samsung Galaxy S24", hits: 1103 },
+            { text: "Sony PlayStation 5", hits: 2456 },
+            { text: "Microsoft Surface Pro", hits: 567 },
+            { text: "Amazon Echo Dot", hits: 1342 },
+            { text: "Google Pixel 8", hits: 721 },
+            { text: "Nintendo Switch OLED", hits: 1890 },
+            { text: "Bose QuietComfort Headphones", hits: 634 },
+            { text: "Dell XPS Laptop", hits: 478 },
+            { text: "Apple Watch Series 9", hits: 932 },
+            { text: "Samsung 4K Smart TV", hits: 1256 },
+            { text: "Canon EOS R5 Camera", hits: 389 },
+            { text: "Logitech MX Master Mouse", hits: 412 },
+            { text: "Apple iPad Air", hits: 765 },
+            { text: "Microsoft Xbox Series X", hits: 1543 },
+            { text: "Amazon Kindle Paperwhite", hits: 987 },
+            { text: "GoPro Hero 12", hits: 521 },
+            { text: "Fitbit Charge 6", hits: 654 },
+            { text: "Razer Blade Laptop", hits: 298 }
+        ];
+
+        // Simulated content database for more realistic hit counts
+        const contentDatabase = [
+            "Apple continues to dominate the smartphone market with the new iPhone 15 Pro featuring advanced camera technology.",
+            "The iPhone 15 Pro's performance exceeds all expectations according to recent reviews.",
+            "Samsung Galaxy S24 competes directly with Apple's iPhone in the premium smartphone segment.",
+            "Sony's PlayStation 5 remains the most popular gaming console with record sales this quarter.",
+            "Microsoft Surface Pro tablets are popular among professionals for their versatility.",
+            "Amazon Echo Dot smart speakers are found in millions of homes worldwide.",
+            "Google Pixel 8 offers exceptional camera quality and clean Android experience.",
+            "Nintendo Switch OLED model provides enhanced display for portable gaming.",
+            "Bose QuietComfort headphones are renowned for their noise cancellation technology.",
+            "Dell XPS laptops are frequently recommended for developers and content creators.",
+            "Apple Watch Series 9 includes new health monitoring features and faster processor.",
+            "Samsung 4K Smart TVs offer exceptional picture quality and smart features.",
+            "Canon EOS R5 is a professional mirrorless camera favored by photographers.",
+            "Logitech MX Master mouse is popular for its ergonomic design and precision.",
+            "Apple iPad Air provides a balance of performance and affordability in tablets.",
+            "Microsoft Xbox Series X delivers high-performance gaming with 4K resolution.",
+            "Amazon Kindle Paperwhite is the best-selling e-reader with waterproof design.",
+            "GoPro Hero 12 is the latest action camera with improved stabilization.",
+            "Fitbit Charge 6 fitness tracker includes built-in GPS and heart rate monitoring.",
+            "Razer Blade laptops are gaming machines with high-refresh-rate displays."
+        ];
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const dropdown = document.getElementById('dropdown');
+        const searchForm = document.getElementById('searchForm');
+        const searchButton = document.getElementById('searchButton');
+        
+        // Track highlighted dropdown item
+        let highlightedIndex = -1;
+        
+        // Calculate hit counts based on query and content database
+        function calculateHitCounts(query) {
+            if (!query) return [];
+            
+            const queryLower = query.toLowerCase();
+            const results = [];
+            
+            // Check each suggestion
+            suggestions.forEach(item => {
+                const textLower = item.text.toLowerCase();
+                
+                // Check if suggestion starts with query
+                if (textLower.startsWith(queryLower)) {
+                    // Calculate additional hits from content database
+                    let additionalHits = 0;
+                    
+                    contentDatabase.forEach(content => {
+                        const contentLower = content.toLowerCase();
+                        // Count occurrences of the suggestion in content
+                        if (contentLower.includes(textLower)) {
+                            // Simple count - in reality would be more sophisticated
+                            const regex = new RegExp(textLower, 'gi');
+                            const matches = content.match(regex);
+                            additionalHits += matches ? matches.length : 0;
+                        }
+                        
+                        // Also count occurrences of just the query in content
+                        if (contentLower.includes(queryLower)) {
+                            const regex = new RegExp(queryLower, 'gi');
+                            const matches = content.match(regex);
+                            additionalHits += matches ? Math.floor(matches.length / 2) : 0;
+                        }
+                    });
+                    
+                    // Combine base hits with calculated additional hits
+                    const totalHits = item.hits + additionalHits;
+                    
+                    results.push({
+                        text: item.text,
+                        hits: totalHits,
+                        // For sorting: higher hits first, then alphabetical
+                        sortScore: totalHits * 1000 - textLower.charCodeAt(0)
+                    });
+                }
+            });
+            
+            // Sort by hit count (descending)
+            return results.sort((a, b) => b.hits - a.hits);
+        }
+        
+        // Format hit count with commas for thousands
+        function formatHitCount(count) {
+            return count.toLocaleString();
+        }
+        
+        // Display dropdown with filtered suggestions and hit counts
+        function showDropdown(items) {
+            // Clear previous dropdown items
+            dropdown.innerHTML = '';
+            
+            if (items.length === 0) {
+                dropdown.innerHTML = `
+                    <div class="dropdown-empty">
+                        <i class="fas fa-search"></i>
+                        No matching results found
+                    </div>
+                `;
+                dropdown.classList.add('show');
+                return;
+            }
+            
+            // Calculate total hits
+            const totalHits = items.reduce((sum, item) => sum + item.hits, 0);
+            
+            // Create dropdown header
+            const header = document.createElement('div');
+            header.className = 'dropdown-header';
+            header.innerHTML = `
+                <span>${items.length} suggestion${items.length !== 1 ? 's' : ''} found</span>
+                <span class="total-hits">Total hits: ${formatHitCount(totalHits)}</span>
+            `;
+            dropdown.appendChild(header);
+            
+            // Create dropdown items
+            items.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'dropdown-item';
+                div.innerHTML = `
+                    <div class="dropdown-item-content">
+                        <span class="dropdown-icon"><i class="fas fa-search"></i></span>
+                        <span class="dropdown-text">${item.text}</span>
+                    </div>
+                    <div class="hit-count-badge">
+                        <span class="hit-count-icon"><i class="fas fa-chart-bar"></i></span>
+                        <span class="hit-count">${formatHitCount(item.hits)}</span>
+                    </div>
+                `;
+                
+                // Handle click on dropdown item
+                div.addEventListener('click', () => {
+                    searchInput.value = item.text;
+                    dropdown.classList.remove('show');
+                    highlightedIndex = -1;
+                });
+                
+                // Handle mouseover to highlight item
+                div.addEventListener('mouseover', () => {
+                    removeHighlight();
+                    div.classList.add('highlighted');
+                    highlightedIndex = index;
+                });
+                
+                dropdown.appendChild(div);
+            });
+            
+            dropdown.classList.add('show');
+        }
+        
+        // Remove highlight from all dropdown items
+        function removeHighlight() {
+            const items = dropdown.querySelectorAll('.dropdown-item');
+            items.forEach(item => item.classList.remove('highlighted'));
+        }
+        
+        // Handle search input events
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim();
+            const filteredItems = calculateHitCounts(query);
+            
+            if (query && filteredItems.length > 0) {
+                showDropdown(filteredItems);
+                highlightedIndex = -1;
+            } else {
+                dropdown.classList.remove('show');
+            }
+        });
+        
+        // Handle focus on search input
+        searchInput.addEventListener('focus', () => {
+            const query = searchInput.value.trim();
+            const filteredItems = calculateHitCounts(query);
+            
+            if (query && filteredItems.length > 0) {
+                showDropdown(filteredItems);
+            }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!searchInput.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+                highlightedIndex = -1;
+            }
+        });
+        
+        // Handle keyboard navigation in dropdown
+        searchInput.addEventListener('keydown', (event) => {
+            const items = dropdown.querySelectorAll('.dropdown-item');
+            
+            if (items.length === 0) return;
+            
+            // Arrow down
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                removeHighlight();
+                highlightedIndex = (highlightedIndex + 1) % items.length;
+                items[highlightedIndex].classList.add('highlighted');
+                items[highlightedIndex].scrollIntoView({ block: 'nearest' });
+            }
+            
+            // Arrow up
+            if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                removeHighlight();
+                highlightedIndex = highlightedIndex <= 0 ? items.length - 1 : highlightedIndex - 1;
+                items[highlightedIndex].classList.add('highlighted');
+                items[highlightedIndex].scrollIntoView({ block: 'nearest' });
+            }
+            
+            // Enter key
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (highlightedIndex >= 0 && items[highlightedIndex]) {
+                    // Get the text from the highlighted item
+                    const itemText = items[highlightedIndex].querySelector('.dropdown-text').textContent;
+                    searchInput.value = itemText;
+                    dropdown.classList.remove('show');
+                    highlightedIndex = -1;
+                } else {
+                    // Submit the form
+                    searchForm.dispatchEvent(new Event('submit'));
+                }
+            }
+            
+            // Escape key
+            if (event.key === 'Escape') {
+                dropdown.classList.remove('show');
+                highlightedIndex = -1;
+            }
+        });
+        
+        // Handle form submission (search button click)
+        searchForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const query = searchInput.value.trim();
+            
+            // In a real application, this would trigger the search action
+            if (query) {
+                // Find the hit count for this query
+                let hitCount = 0;
+                const filteredItems = calculateHitCounts(query);
+                if (filteredItems.length > 0) {
+                    // Find exact match
+                    const exactMatch = filteredItems.find(item => 
+                        item.text.toLowerCase() === query.toLowerCase()
+                    );
+                    hitCount = exactMatch ? exactMatch.hits : filteredItems[0].hits;
+                }
+                
+                alert(`Performing search for: "${query}"\n\nEstimated matches in database: ${formatHitCount(hitCount)}\n\nIn a real application, this would display all content containing this term.`);
+            } else {
+                alert('Please enter a search term');
+            }
+            
+            // Close dropdown
+            dropdown.classList.remove('show');
+            highlightedIndex = -1;
+        });
+        
+        // Handle search button click
+        searchButton.addEventListener('click', () => {
+            console.log('Search button clicked - form submission will handle the action');
+        });
+        
+        // Add sample placeholder text rotation for demonstration
+        const placeholders = [
+            "Search products, services, info...",
+            "Try 'iPhone' or 'Samsung'...",
+            "Type 'Microsoft' or 'Amazon'...",
+            "Search for electronics, gadgets...",
+            "Find products with hit counts..."
+        ];
+        
+        let placeholderIndex = 0;
+        setInterval(() => {
+            searchInput.placeholder = placeholders[placeholderIndex];
+            placeholderIndex = (placeholderIndex + 1) % placeholders.length;
+        }, 3000);
+        
+        // Initialize with sample data if input has value on page load
+        window.addEventListener('load', () => {
+            // Set a sample value to demonstrate the hit counts
+            setTimeout(() => {
+                searchInput.value = 'Apple';
+                searchInput.dispatchEvent(new Event('input'));
+                
+                // Log current screen size for debugging
+                console.log(`Screen width: ${window.innerWidth}px, Mobile layout: ${window.innerWidth <= 768 ? 'Active' : 'Inactive'}`);
+            }, 500);
+        });
+        
+        // Log screen size changes for debugging
+        window.addEventListener('resize', () => {
+            console.log(`Screen resized to: ${window.innerWidth}px, Mobile layout: ${window.innerWidth <= 768 ? 'Active' : 'Inactive'}`);
+        });
+    </script>
+</body>
+</html>

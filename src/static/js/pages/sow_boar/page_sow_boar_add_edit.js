@@ -19,6 +19,11 @@ import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';
 import {UiInputCheckBox}        from '../common/ui/input_checkbox.js';
 
 
+import {getSowBoarReference}    from '../common/common_app.js';
+
+
+import {PageSowBoarUpdateStatus} from './page_sow_boar_update_status.js';
+
 import {PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
@@ -175,7 +180,11 @@ export function PageSowBoarAddEdit(input_settings){
     // true is Show Sow or Show Gilt; 
     let curIsSow                = null;
     
-
+    let sowBoarUpdateStatus     = new PageSowBoarUpdateStatus({
+        navigation:             navigation,
+        uniqueKey:              'sow-boar-update-status',
+        elemDivContainer:       elemDivContainer
+    });
     
     this.callbackOnSuccessAdd   = null;
     
@@ -303,6 +312,10 @@ export function PageSowBoarAddEdit(input_settings){
         const html_ui_is_prod_ready = elemUiIsProdReady.getHtml();
         const html_ui_notes         = elemUiNotes.getHtml();
         
+        
+        const html_update_status    = sowBoarUpdateStatus.getHtml();
+        
+        
         const html =`
 
         
@@ -383,6 +396,12 @@ export function PageSowBoarAddEdit(input_settings){
                 <i class="fas fa-save me-2"></i>Save
             </button>
         </div>
+        
+        
+        <!-- Update Status collapsible section-->
+        ${html_update_status}
+        
+        
     </div>
 </div>
 
@@ -411,6 +430,8 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiIsProdReady.afterHtmlRender();
         elemUiNotes.afterHtmlRender();
         
+        sowBoarUpdateStatus.afterHtmlRender();
+        
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -438,7 +459,10 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this._processAfterHtmlRender = function(){
-
+        
+        
+        
+        
     }
     
     
@@ -498,6 +522,11 @@ export function PageSowBoarAddEdit(input_settings){
         const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
         thisObj.commonSelectOptions.setDataBoarList(data, elem_select, special_options);
         elemUiParentBoar.setEntryCount(boarList);
+    }
+    
+    
+    this.setCallbackOnSuccessUpdateStatus = function(callback){
+        sowBoarUpdateStatus.callbackOnSuccessUpdate = callback;
     }
     
         
@@ -634,17 +663,19 @@ export function PageSowBoarAddEdit(input_settings){
         showOptions = options;
         
         let html;
-        let sow_boar_reference;
-        
-        
+
         if (options.is_add){
             thisObj.curDataSowBoar = null;
             thisObj.componentBreadcrumb.hide();
+            
+            sowBoarUpdateStatus.hide();
         } 
         else{
             thisObj.curDataSowBoar = data_sow_boar;
             thisObj.componentBreadcrumb.show();
             thisObj.updateBreadCrumbs();
+            
+            sowBoarUpdateStatus.show();
         }
         
         
@@ -674,15 +705,9 @@ export function PageSowBoarAddEdit(input_settings){
                     html = `<i class="fas fa-plus me-2"></i>Add Sow`;
                 }
                 else{
-                    const sow_boar_name = thisObj.curDataSowBoar.sow_boar.name;
-                    if (sow_boar_name && sow_boar_name.length >0){
-                        sow_boar_reference = sow_boar_name;
-                    }
-                    else{
-                        sow_boar_reference = thisObj.curDataSowBoar.sow_boar.number;
-                    }
+                    const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
                     
-                    html = `<i class="fas fa-edit me-2"></i>Edit Sow: ${sow_boar_reference}`;
+                    html = `<i class="fas fa-edit me-2"></i>Edit Sow: ${sow_boar_name}`;
                     
                     thisObj.populateForm(thisObj.curDataSowBoar);
                 }
@@ -702,15 +727,9 @@ export function PageSowBoarAddEdit(input_settings){
                     html = `<i class="fas fa-plus me-2"></i>Add Boar`;
                 }
                 else{
-                    const sow_boar_name = thisObj.curDataSowBoar.sow_boar.name;
-                    if (sow_boar_name && sow_boar_name.length >0){
-                        sow_boar_reference = sow_boar_name;
-                    }
-                    else{
-                        sow_boar_reference = thisObj.curDataSowBoar.sow_boar.number;
-                    }
+                    const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
                     
-                    html = `<i class="fas fa-edit me-2"></i>Edit Boar: ${sow_boar_reference}`;
+                    html = `<i class="fas fa-edit me-2"></i>Edit Boar: ${sow_boar_name}`;
                     
                     thisObj.populateForm(thisObj.curDataSowBoar);
                 }
@@ -730,15 +749,9 @@ export function PageSowBoarAddEdit(input_settings){
                     elemInfoShow.style.display = 'block';
                 }
                 else{
-                    const sow_boar_name = thisObj.curDataSowBoar.sow_boar.name;
-                    if (sow_boar_name && sow_boar_name.length >0){
-                        sow_boar_reference = sow_boar_name;
-                    }
-                    else{
-                        sow_boar_reference = thisObj.curDataSowBoar.sow_boar.number;
-                    }
+                    const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
                     
-                    html = `<i class="fas fa-edit me-2"></i>Edit Gilt: ${sow_boar_reference}`;
+                    html = `<i class="fas fa-edit me-2"></i>Edit Gilt: ${sow_boar_name}`;
                 }
                 elemHeaderTitle.innerHTML = html;
                 
@@ -785,6 +798,8 @@ export function PageSowBoarAddEdit(input_settings){
         };
         
         
+        // Propagate data_sow_boar to sowBoarUpdateStatus
+        sowBoarUpdateStatus.beforeShow(data_sow_boar);
     }
     
     
@@ -1332,5 +1347,9 @@ export function PageSowBoarAddEdit(input_settings){
         });
     }
     
+    
+    this.onSuccessUpdateStatus = function(){
+        
+    }
     
 }   

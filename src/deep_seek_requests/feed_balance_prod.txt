@@ -1,0 +1,23 @@
+Create a HTML table for pig feed_balance input
+
+
+1.) The table is 3 columns and fixed 7 rows;
+
+Column 1: "Feed Type"; fixed Read only
+- Gesta
+- Lacta
+- Booster
+- PreStart
+- Starter
+- Grower
+- Finisher
+
+Column 2: "Buy"; integer; read only read from database
+
+column 3: "Balance"
+
+- numeric input; 
+- each cell has an up/down button
+- the button step is 0.5
+- can also directly enter into the cell
+ 

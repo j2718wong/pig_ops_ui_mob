@@ -3,561 +3,631 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fixed Percentage Column Widths Table</title>
+    <title>Pig Feed Balance Input</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            padding: 20px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
+            background-color: #f8f9fa;
+            padding: 20px 10px;
         }
         
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 900px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             padding: 20px;
+            margin: 0 auto;
         }
         
         h1 {
             color: #2c3e50;
             margin-bottom: 10px;
-            text-align: center;
+            font-size: 1.8rem;
         }
         
-        .subtitle {
+        .description {
             color: #7f8c8d;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-        
-        .demo-section {
-            background-color: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .section-title {
-            color: #3498db;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .width-indicator {
-            background-color: #f8f9fa;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: #2c3e50;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .width-display {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .width-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
-            background-color: white;
-            border-radius: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        
-        .width-bar {
-            width: 60px;
-            height: 8px;
-            background-color: #3498db;
-            border-radius: 4px;
-        }
-        
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
             margin-bottom: 25px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
+            font-size: 1rem;
         }
         
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 22px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-        }
-        
-        button#removeRows {
-            background-color: #e74c3c;
-        }
-        
-        button#removeRows:hover {
-            background-color: #c0392b;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
-        }
-        
-        button#addRows {
-            background-color: #2ecc71;
-        }
-        
-        button#addRows:hover {
-            background-color: #27ae60;
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
-        }
-        
-        button#toggleEmpty {
-            background-color: #9b59b6;
-        }
-        
-        button#toggleEmpty:hover {
-            background-color: #8e44ad;
-            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
-        }
-        
-        button i {
-            font-style: normal;
-            font-size: 1.2em;
-        }
-        
-        /* Table styling */
-        .table-container {
+        .table-responsive {
+            margin-bottom: 25px;
             overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            margin-top: 10px;
+            -webkit-overflow-scrolling: touch;
         }
         
         table {
             width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed; /* This ensures column widths are fixed */
-        }
-        
-        /* Column widths are defined via colgroup in HTML */
-        
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            min-width: 600px;
+            margin-bottom: 0;
         }
         
         th {
-            background: linear-gradient(to bottom, #3498db, #2980b9);
+            background-color: #3498db;
             color: white;
             font-weight: 600;
-            position: sticky;
-            top: 0;
+            padding: 12px 10px;
+            white-space: nowrap;
         }
         
-        tr:nth-child(even) {
+        td {
+            padding: 12px 10px;
+            vertical-align: middle;
+            min-height: 70px;
+        }
+        
+        .readonly-cell {
             background-color: #f8f9fa;
+            font-weight: 500;
+            min-width: 100px;
         }
         
-        tr:hover {
-            background-color: #eef7ff;
-            transform: scale(1.002);
-            transition: transform 0.1s ease;
+        .balance-cell {
+            min-width: 200px;
         }
         
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
+        .number-input-container {
+            display: flex;
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
         }
         
-        .status-active {
-            background-color: #2ecc71;
+        .number-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-right: none;
+            border-radius: 6px 0 0 6px;
+            text-align: right;
+            font-size: 1rem;
+            height: 50px;
+            min-width: 0;
+            width: 100%;
         }
         
-        .status-inactive {
-            background-color: #e74c3c;
+        .step-buttons {
+            display: flex;
+            flex-direction: column;
+            width: 60px;
+            flex-shrink: 0;
         }
         
-        .status-pending {
-            background-color: #f39c12;
+        .step-btn {
+            flex: 1;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            min-height: 25px;
+            line-height: 1;
+            transition: background-color 0.2s;
         }
         
-        .empty-table-message {
-            text-align: center;
-            padding: 40px 20px;
-            color: #7f8c8d;
-            font-style: italic;
-            background-color: #f9f9f9;
+        .step-btn:hover {
+            background-color: #e9ecef;
         }
         
-        .percentage-display {
-            font-weight: bold;
-            color: #2c3e50;
-            background-color: rgba(52, 152, 219, 0.1);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.85em;
+        .step-btn.up {
+            border-bottom: none;
+            border-radius: 0 6px 0 0;
         }
         
-        .code-snippet {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 20px;
+        .step-btn.down {
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 6px 0;
+            margin-top: -1px;
+        }
+        
+        .btn-custom {
+            padding: 12px 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            margin: 5px;
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
             border-radius: 8px;
-            overflow-x: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            margin-top: 20px;
-            line-height: 1.5;
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 4px solid #3498db;
         }
         
-        .code-highlight {
-            color: #f1c40f;
+        .instructions h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
         }
         
-        .footer {
+        .footer-note {
             text-align: center;
-            margin-top: 30px;
             color: #7f8c8d;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid #eee;
         }
         
-        .note {
-            background-color: #fff8e1;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 20px;
-            border-left: 4px solid #ffc107;
+        tr:nth-child(even) td {
+            background-color: #f9f9f9;
         }
         
-        .note strong {
-            color: #ff9800;
+        tr:hover td {
+            background-color: #f1f8ff;
         }
         
-        .responsive-test {
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                border-radius: 8px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .description {
+                font-size: 0.95rem;
+            }
+            
+            .number-input-container {
+                max-width: 100%;
+            }
+            
+            .step-buttons {
+                width: 70px;
+            }
+            
+            .step-btn {
+                font-size: 20px;
+                min-height: 27px;
+            }
+            
+            .number-input {
+                height: 54px;
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+            
+            .btn-custom {
+                padding: 14px 20px;
+                margin: 8px 0;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+            
+            .instructions {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .step-buttons {
+                width: 80px;
+            }
+            
+            .step-btn {
+                font-size: 22px;
+                min-height: 30px;
+            }
+            
+            .number-input {
+                height: 60px;
+                font-size: 1.2rem;
+            }
+            
+            .description {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Fix for very small screens */
+        @media (max-width: 400px) {
+            .step-buttons {
+                width: 70px;
+            }
+            
+            .step-btn {
+                font-size: 20px;
+            }
+            
+            .number-input {
+                font-size: 1.1rem;
+                padding: 12px;
+            }
+        }
+        
+        /* Fix for button alignment */
+        .step-buttons {
+            align-items: stretch;
+        }
+        
+        .step-btn {
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Ensure buttons stay aligned */
+        .step-btn.up {
+            align-items: flex-end;
+            padding-bottom: 2px;
+        }
+        
+        .step-btn.down {
+            align-items: flex-start;
+            padding-top: 2px;
+        }
+        
+        /* Make buttons easier to tap on mobile */
+        .step-btn {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        /* Improve focus states for accessibility */
+        .step-btn:focus,
+        .number-input:focus {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+            z-index: 1;
+        }
+        
+        .number-input:focus {
+            position: relative;
+        }
+        
+        .btn-group-custom {
             display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
         
-        .responsive-btn {
-            background-color: #95a5a6;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
+        /* Fix input overflow on small screens */
+        input[type="number"] {
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+            appearance: textfield;
         }
         
-        .responsive-btn:hover {
-            background-color: #7f8c8d;
-        }
-        
-        .responsive-btn.active {
-            background-color: #3498db;
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Fixed Percentage Column Widths Table</h1>
-        <p class="subtitle">Column widths maintain their percentage proportions even with no table rows</p>
+        <h1 class="text-center">Pig Feed Balance Input</h1>
+        <p class="text-center description">Update feed balance values for each feed type. Use up/down buttons or directly input values.</p>
         
-        <div class="demo-section">
-            <h2 class="section-title">
-                <span>Table with Percentage-Based Column Widths</span>
-                <span class="width-indicator">Total: 100%</span>
-            </h2>
-            
-            <div class="width-display">
-                <div class="width-item">
-                    <div class="width-bar" style="width: 30%; background-color: #3498db;"></div>
-                    <span>Name: <span class="percentage-display">30%</span></span>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="col-4">Feed Type</th>
+                        <th class="col-3">Buy (kg)</th>
+                        <th class="col-5">Balance (kg)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Gesta -->
+                    <tr>
+                        <td class="readonly-cell">Gesta</td>
+                        <td class="readonly-cell">150</td>
+                        <td class="balance-cell">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input" value="0" step="0.5" min="0" data-feed="gesta">
+                                <div class="step-buttons">
+                                    <button type="button" class="step-btn up" data-feed="gesta" aria-label="Increase value">▲</button>
+                                    <button type="button" class="step-btn down" data-feed="gesta" aria-label="Decrease value">▼</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Lacta -->
+                    <tr>
+                        <td class="readonly-cell">Lacta</td>
+                        <td class="readonly-cell">200</td>
+                        <td class="balance-cell">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input" value="0" step="0.5" min="0" data-feed="lacta">
+                                <div class="step-buttons">
+                                    <button type="button" class="step-btn up" data-feed="lacta" aria-label="Increase value">▲</button>
+                                    <button type="button" class="step-btn down" data-feed="lacta" aria-label="Decrease value">▼</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Booster -->
+                    <tr>
+                        <td class="readonly-cell">Booster</td>
+                        <td class="readonly-cell">180</td>
+                        <td class="balance-cell">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input" value="0" step="0.5" min="0" data-feed="booster">
+                                <div class="step-buttons">
+                                    <button type="button" class="step-btn up" data-feed="booster" aria-label="Increase value">▲</button>
+                                    <button type="button" class="step-btn down" data-feed="booster" aria-label="Decrease value">▼</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- PreStart -->
+                    <tr>
+                        <td class="readonly-cell">PreStart</td>
+                        <td class="readonly-cell">120</td>
+                        <td class="balance-cell">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input" value="0" step="0.5" min="0" data-feed="prestart">
+                                <div class="step-buttons">
+                                    <button type="button" class="step-btn up" data-feed="prestart" aria-label="Increase value">▲</button>
+                                    <button type="button" class="step-btn down" data-feed="prestart" aria-label="Decrease value">▼</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Starter -->
+                    <tr>
+                        <td class="readonly-cell">Starter</td>
+                        <td class="readonly-cell">250</td>
+                        <td class="balance-cell">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input" value="0" step="0.5" min="0" data-feed="starter">
+                                <div class="step-buttons">
+                                    <button type="button" class="step-btn up" data-feed="starter" aria-label="Increase value">▲</button>
+                                    <button type="button" class="step-btn down" data-feed="starter" aria-label="Decrease value">▼</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Grower -->
+                    <tr>
+                        <td class="readonly-cell">Grower</td>
+                        <td class="readonly-cell">300</td>
+                        <td class="balance-cell">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input" value="0" step="0.5" min="0" data-feed="grower">
+                                <div class="step-buttons">
+                                    <button type="button" class="step-btn up" data-feed="grower" aria-label="Increase value">▲</button>
+                                    <button type="button" class="step-btn down" data-feed="grower" aria-label="Decrease value">▼</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Finisher -->
+                    <tr>
+                        <td class="readonly-cell">Finisher</td>
+                        <td class="readonly-cell">280</td>
+                        <td class="balance-cell">
+                            <div class="number-input-container">
+                                <input type="number" class="number-input" value="0" step="0.5" min="0" data-feed="finisher">
+                                <div class="step-buttons">
+                                    <button type="button" class="step-btn up" data-feed="finisher" aria-label="Increase value">▲</button>
+                                    <button type="button" class="step-btn down" data-feed="finisher" aria-label="Decrease value">▼</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="btn-group-custom">
+            <button type="button" class="btn btn-success btn-custom" id="submitBtn">Save Balance Updates</button>
+            <button type="button" class="btn btn-primary btn-custom" id="demoBtn">Load Demo Data</button>
+            <button type="button" class="btn btn-danger btn-custom" id="resetBtn">Reset to Default</button>
+        </div>
+        
+        <div class="instructions">
+            <h4>Instructions</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul>
+                        <li><strong>Feed Type</strong> column is read-only</li>
+                        <li><strong>Buy</strong> column shows current inventory (read from database)</li>
+                        <li><strong>Balance</strong> column allows input of adjusted values</li>
+                    </ul>
                 </div>
-                <div class="width-item">
-                    <div class="width-bar" style="width: 20%; background-color: #2ecc71;"></div>
-                    <span>Position: <span class="percentage-display">20%</span></span>
+                <div class="col-md-6">
+                    <ul>
+                        <li>Click up/down buttons to adjust by 0.5 kg increments</li>
+                        <li>Directly type a value into the input field</li>
+                        <li>Use keyboard up/down arrows when focused on the input</li>
+                    </ul>
                 </div>
-                <div class="width-item">
-                    <div class="width-bar" style="width: 15%; background-color: #e74c3c;"></div>
-                    <span>Status: <span class="percentage-display">15%</span></span>
-                </div>
-                <div class="width-item">
-                    <div class="width-bar" style="width: 15%; background-color: #f39c12;"></div>
-                    <span>Department: <span class="percentage-display">15%</span></span>
-                </div>
-                <div class="width-item">
-                    <div class="width-bar" style="width: 20%; background-color: #9b59b6;"></div>
-                    <span>Email: <span class="percentage-display">20%</span></span>
-                </div>
-            </div>
-            
-            <div class="controls">
-                <button id="addRows">
-                    <i>+</i> Add Sample Rows
-                </button>
-                <button id="removeRows">
-                    <i>−</i> Remove All Rows
-                </button>
-                <button id="toggleEmpty">
-                    <i>⇄</i> Toggle Empty/Full
-                </button>
-            </div>
-            
-            <div class="table-container">
-                <table id="percentageTable">
-                    <!-- Percentage column widths defined in colgroup -->
-                    <colgroup>
-                        <col style="width: 30%;"> <!-- Name -->
-                        <col style="width: 20%;"> <!-- Position -->
-                        <col style="width: 15%;"> <!-- Status -->
-                        <col style="width: 15%;"> <!-- Department -->
-                        <col style="width: 20%;"> <!-- Email -->
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Status</th>
-                            <th>Department</th>
-                            <th>Email</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <!-- Initial rows -->
-                        <tr>
-                            <td>Alexandra Johnson</td>
-                            <td>Senior Software Engineer</td>
-                            <td><span class="status-indicator status-active"></span>Active</td>
-                            <td>Engineering</td>
-                            <td>alexandra.j@example.com</td>
-                        </tr>
-                        <tr>
-                            <td>Michael Rodriguez</td>
-                            <td>Product Manager</td>
-                            <td><span class="status-indicator status-active"></span>Active</td>
-                            <td>Product</td>
-                            <td>michael.r@company.org</td>
-                        </tr>
-                        <tr>
-                            <td>Sophia Williams</td>
-                            <td>UX/UI Designer</td>
-                            <td><span class="status-indicator status-pending"></span>Pending</td>
-                            <td>Design</td>
-                            <td>sophia.w@designstudio.com</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <div id="emptyMessage" class="empty-table-message" style="display: none;">
-                    <h3>Table is Empty</h3>
-                    <p>No rows are present, but column widths remain fixed at their percentage values:</p>
-                    <p><strong>30% | 20% | 15% | 15% | 20%</strong></p>
-                    <p>Try resizing the browser window to see how percentages maintain proportions.</p>
-                </div>
-            </div>
-            
-            <div class="responsive-test">
-                <div>Test table responsiveness:</div>
-                <div class="responsive-btn" onclick="resizeContainer('narrow')">Narrow View</div>
-                <div class="responsive-btn" onclick="resizeContainer('medium')">Medium View</div>
-                <div class="responsive-btn active" onclick="resizeContainer('wide')">Wide View</div>
             </div>
         </div>
         
-        <div class="demo-section">
-            <h2 class="section-title">Implementation Code</h2>
-            
-            <p>The following HTML creates a table with fixed percentage column widths:</p>
-            
-            <div class="code-snippet">
-<pre>&lt;table id="percentageTable"&gt;
-    <span class="code-highlight">&lt;!-- Percentage-based column widths --&gt;</span>
-    &lt;colgroup&gt;
-        &lt;col <span class="code-highlight">style="width: 30%;"</span>&gt; &lt;!-- Name --&gt;
-        &lt;col <span class="code-highlight">style="width: 20%;"</span>&gt; &lt;!-- Position --&gt;
-        &lt;col <span class="code-highlight">style="width: 15%;"</span>&gt; &lt;!-- Status --&gt;
-        &lt;col <span class="code-highlight">style="width: 15%;"</span>&gt; &lt;!-- Department --&gt;
-        &lt;col <span class="code-highlight">style="width: 20%;"</span>&gt; &lt;!-- Email --&gt;
-    &lt;/colgroup&gt;
-    &lt;thead&gt;
-        &lt;tr&gt;
-            &lt;th&gt;Name&lt;/th&gt;
-            &lt;th&gt;Position&lt;/th&gt;
-            &lt;th&gt;Status&lt;/th&gt;
-            &lt;th&gt;Department&lt;/th&gt;
-            &lt;th&gt;Email&lt;/th&gt;
-        &lt;/tr&gt;
-    &lt;/thead&gt;
-    &lt;tbody id="tableBody"&gt;
-        <span class="code-highlight">&lt;!-- Table rows go here --&gt;</span>
-    &lt;/tbody&gt;
-&lt;/table&gt;</pre>
-            </div>
-            
-            <p>The essential CSS that makes this work:</p>
-            
-            <div class="code-snippet">
-<pre>table {
-    width: 100%;
-    border-collapse: collapse;
-    <span class="code-highlight">table-layout: fixed;</span> <span class="code-highlight">/* Critical for fixed percentages */</span>
-}
-
-<span class="code-highlight">/* Column widths are controlled by colgroup */</span>
-col {
-    <span class="code-highlight">/* Widths defined in HTML, not CSS */</span>
-}</pre>
-            </div>
-            
-            <div class="note">
-                <p><strong>Important Note:</strong> With <code>table-layout: fixed</code>, the browser calculates column widths based on:</p>
-                <ol>
-                    <li>Explicit widths set on <code>&lt;col&gt;</code> elements (as percentages in this case)</li>
-                    <li>If no <code>&lt;col&gt;</code> widths are set, the first row of cells determines column widths</li>
-                    <li>When there are no rows, the <code>&lt;col&gt;</code> widths are essential for maintaining layout</li>
-                </ol>
-                <p>Percentages in <code>&lt;col&gt;</code> elements are relative to the total table width, not the viewport.</p>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p>Table column widths remain fixed at their percentage values (30%, 20%, 15%, 15%, 20%) even with no rows.</p>
-            <p>Try adding/removing rows and resizing the browser to see the percentages in action.</p>
+        <div class="footer-note">
+            <p>Note: All values are in kilograms (kg). Step increment is fixed at 0.5 kg.</p>
         </div>
     </div>
 
     <script>
+        // Simple data storage
+        const feedData = {
+            gesta: { buy: 150, balance: 0 },
+            lacta: { buy: 200, balance: 0 },
+            booster: { buy: 180, balance: 0 },
+            prestart: { buy: 120, balance: 0 },
+            starter: { buy: 250, balance: 0 },
+            grower: { buy: 300, balance: 0 },
+            finisher: { buy: 280, balance: 0 }
+        };
+        
+        // Function to update value
+        function updateBalance(feedType, newValue) {
+            const inputField = document.querySelector(`.number-input[data-feed="${feedType}"]`);
+            inputField.value = newValue;
+            feedData[feedType].balance = newValue;
+            console.log(`Updated ${feedType}: ${newValue} kg`);
+        }
+        
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            const tableBody = document.getElementById('tableBody');
-            const emptyMessage = document.getElementById('emptyMessage');
-            const addRowsBtn = document.getElementById('addRows');
-            const removeRowsBtn = document.getElementById('removeRows');
-            const toggleEmptyBtn = document.getElementById('toggleEmpty');
-            
-            // Sample data for adding rows
-            const sampleData = [
-                { name: "Alexandra Johnson", position: "Senior Software Engineer", status: "active", department: "Engineering", email: "alexandra.j@example.com" },
-                { name: "Michael Rodriguez", position: "Product Manager", status: "active", department: "Product", email: "michael.r@company.org" },
-                { name: "Sophia Williams", position: "UX/UI Designer", status: "pending", department: "Design", email: "sophia.w@designstudio.com" },
-                { name: "James Wilson", position: "Data Scientist", status: "active", department: "Analytics", email: "james.w@datacorp.com" },
-                { name: "Emma Thompson", position: "Marketing Director", status: "active", department: "Marketing", email: "emma.t@marketplace.com" },
-                { name: "Daniel Lee", position: "DevOps Engineer", status: "inactive", department: "Operations", email: "daniel.l@cloudservices.io" },
-                { name: "Olivia Martinez", position: "HR Manager", status: "active", department: "Human Resources", email: "olivia.m@hrpartners.net" },
-                { name: "William Chen", position: "Financial Analyst", status: "pending", department: "Finance", email: "william.c@financegroup.biz" }
-            ];
-            
-            // Function to update the empty message visibility
-            function updateEmptyMessage() {
-                const hasRows = tableBody.children.length > 0;
-                emptyMessage.style.display = hasRows ? 'none' : 'block';
-            }
-            
-            // Function to add sample rows
-            function addSampleRows() {
-                // Clear existing rows
-                tableBody.innerHTML = '';
-                
-                // Add new rows from sample data
-                sampleData.forEach(item => {
-                    const row = document.createElement('tr');
+            // Set up up/down buttons
+            document.querySelectorAll('.step-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const feedType = this.getAttribute('data-feed');
+                    const inputField = this.closest('.number-input-container').querySelector('.number-input');
+                    let currentValue = parseFloat(inputField.value) || 0;
                     
-                    let statusClass = "status-active";
-                    if (item.status === "inactive") statusClass = "status-inactive";
-                    if (item.status === "pending") statusClass = "status-pending";
+                    if (this.classList.contains('up')) {
+                        // Increase by 0.5
+                        currentValue += 0.5;
+                    } else {
+                        // Decrease by 0.5, but not below 0
+                        currentValue = Math.max(0, currentValue - 0.5);
+                    }
                     
-                    row.innerHTML = `
-                        <td>${item.name}</td>
-                        <td>${item.position}</td>
-                        <td><span class="status-indicator ${statusClass}"></span>${item.status.charAt(0).toUpperCase() + item.status.slice(1)}</td>
-                        <td>${item.department}</td>
-                        <td>${item.email}</td>
-                    `;
+                    updateBalance(feedType, currentValue);
                     
-                    tableBody.appendChild(row);
+                    // Visual feedback for mobile
+                    this.style.backgroundColor = '#dee2e6';
+                    setTimeout(() => {
+                        this.style.backgroundColor = '';
+                    }, 150);
                 });
                 
-                updateEmptyMessage();
-            }
-            
-            // Function to remove all rows
-            function removeAllRows() {
-                tableBody.innerHTML = '';
-                updateEmptyMessage();
-            }
-            
-            // Function to toggle between empty and full table
-            function toggleEmptyTable() {
-                if (tableBody.children.length === 0) {
-                    addSampleRows();
-                } else {
-                    removeAllRows();
-                }
-            }
-            
-            // Function to resize the container for testing
-            window.resizeContainer = function(size) {
-                const container = document.querySelector('.table-container');
-                const buttons = document.querySelectorAll('.responsive-btn');
+                // Add touch feedback for mobile
+                button.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.backgroundColor = '#dee2e6';
+                }, { passive: false });
                 
-                // Update active button
-                buttons.forEach(btn => btn.classList.remove('active'));
-                event.target.classList.add('active');
+                button.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    setTimeout(() => {
+                        this.style.backgroundColor = '';
+                    }, 150);
+                }, { passive: false });
+            });
+            
+            // Handle direct input changes
+            document.querySelectorAll('.number-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const feedType = this.getAttribute('data-feed');
+                    let value = parseFloat(this.value) || 0;
+                    
+                    // Round to nearest 0.5 if needed
+                    if (this.value.includes('.')) {
+                        const decimal = this.value.split('.')[1];
+                        if (decimal && decimal.length > 1) {
+                            value = Math.round(value * 2) / 2;
+                            this.value = value;
+                        }
+                    }
+                    
+                    // Ensure value is not negative
+                    if (value < 0) {
+                        value = 0;
+                        this.value = 0;
+                    }
+                    
+                    feedData[feedType].balance = value;
+                });
                 
-                // Set container width based on size
-                if (size === 'narrow') {
-                    container.style.width = '400px';
-                } else if (size === 'medium') {
-                    container.style.width = '700px';
-                } else {
-                    container.style.width = '100%';
+                // Keyboard arrow support
+                input.addEventListener('keydown', function(e) {
+                    const feedType = this.getAttribute('data-feed');
+                    let currentValue = parseFloat(this.value) || 0;
+                    
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        currentValue += 0.5;
+                        updateBalance(feedType, currentValue);
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        currentValue = Math.max(0, currentValue - 0.5);
+                        updateBalance(feedType, currentValue);
+                    }
+                });
+                
+                // Fix for iOS Safari
+                input.addEventListener('focus', function() {
+                    this.style.fontSize = '16px'; // Prevent iOS zoom
+                });
+            });
+            
+            // Demo data button
+            document.getElementById('demoBtn').addEventListener('click', function() {
+                const demoValues = {
+                    gesta: 45.5,
+                    lacta: 78.0,
+                    booster: 62.5,
+                    prestart: 35.0,
+                    starter: 120.5,
+                    grower: 185.0,
+                    finisher: 150.5
+                };
+                
+                // Update all inputs
+                for (const feedType in demoValues) {
+                    updateBalance(feedType, demoValues[feedType]);
                 }
-            };
+                
+                alert('Demo data loaded!');
+            });
             
-            // Event listeners
-            addRowsBtn.addEventListener('click', addSampleRows);
-            removeRowsBtn.addEventListener('click', removeAllRows);
-            toggleEmptyBtn.addEventListener('click', toggleEmptyTable);
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                if (confirm('Reset all balance values to 0?')) {
+                    for (const feedType in feedData) {
+                        updateBalance(feedType, 0);
+                    }
+                    console.log('All balances reset to 0');
+                }
+            });
             
-            // Initialize
-            updateEmptyMessage();
+            // Submit button
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                let summary = "Balance updates to save:\n\n";
+                for (const feedType in feedData) {
+                    const feedName = feedType.charAt(0).toUpperCase() + feedType.slice(1);
+                    summary += `${feedName}: ${feedData[feedType].balance} kg\n`;
+                }
+                
+                alert("Data saved!\n\n" + summary);
+                console.log('Feed data submitted:', feedData);
+            });
+            
+            // Fix for mobile input zoom
+            document.addEventListener('touchstart', function(e) {
+                if (e.target.type === 'number') {
+                    e.target.style.fontSize = '16px';
+                }
+            });
         });
     </script>
 </body>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pig Feed Buy System - Mobile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            padding-bottom: 30px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a5fb4 0%, #2d7cd6 100%);
+            color: white;
+            padding: 18px 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(26, 95, 180, 0.2);
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        header h1 i {
+            font-size: 1.3rem;
+        }
+        
+        .summary-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #1a5fb4;
+        }
+        
+        .summary-section h2 {
+            color: #1a5fb4;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        .summary-table th {
+            background-color: #e8f1ff;
+            color: #1a5fb4;
+            text-align: left;
+            padding: 12px 8px;
+            font-weight: 600;
+        }
+        
+        .summary-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .total-row {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            color: #1a5fb4;
+        }
+        
+        .money {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+        
+        .input-section {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+        
+        .input-section h2 {
+            background-color: #1a5fb4;
+            color: white;
+            padding: 16px 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .accordion-header {
+            background-color: #e8f1ff;
+            color: #1a5fb4;
+            padding: 16px 15px;
+            border-bottom: 1px solid #d4e3ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .accordion-header:hover {
+            background-color: #dde9ff;
+        }
+        
+        .accordion-header.active {
+            background-color: #d4e3ff;
+            border-bottom: none;
+        }
+        
+        .feed-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .feed-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sack-count {
+            background-color: #1a5fb4;
+            color: white;
+            height: 24px;
+            min-width: 24px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        
+        .accordion-icon {
+            color: #1a5fb4;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .accordion-header.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+        
+        .accordion-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .accordion-content.show {
+            max-height: 500px;
+        }
+        
+        .input-group {
+            padding: 20px 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .input-group:last-child {
+            border-bottom: none;
+        }
+        
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .input-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .input-label {
+            color: #444;
+            font-weight: 500;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+        
+        .input-field {
+            flex: 1;
+            text-align: right;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #cce0ff;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            text-align: right;
+            background-color: #f8fbff;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #1a5fb4;
+            box-shadow: 0 0 0 2px rgba(26, 95, 180, 0.1);
+        }
+        
+        input[readonly] {
+            background-color: #f0f7ff;
+            color: #1a5fb4;
+            font-weight: 600;
+            border-color: #d4e3ff;
+        }
+        
+        .unit {
+            color: #666;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: #1a5fb4;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #15549c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(26, 95, 180, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: #e8f1ff;
+            color: #1a5fb4;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #dde9ff;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 480px) {
+            .input-row {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            
+            .input-label {
+                margin-bottom: 8px;
+            }
+            
+            .input-field {
+                width: 100%;
+                text-align: left;
+            }
+            
+            header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .feed-title {
+                font-size: 0.95rem;
+            }
+            
+            .sack-count {
+                height: 22px;
+                min-width: 22px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px 15px;
+            color: #888;
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #cce0ff;
+        }
+        
+        /* New styles for improved inline sack counter */
+        .feed-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sack-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+        
+        .sack-badge {
+            background-color: #1a5fb4;
+            color: white;
+            height: 22px;
+            min-width: 22px;
+            border-radius: 11px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shopping-cart"></i> Pig Feed Buy System</h1>
+        </header>
+        
+        <section class="summary-section">
+            <h2><i class="fas fa-table"></i> Feed Buy Summary</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Feed Type</th>
+                        <th>Num Sacks</th>
+                        <th class="money">SubTotal</th>
+                    </tr>
+                </thead>
+                <tbody id="summaryBody">
+                    <!-- Summary rows will be dynamically generated here -->
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="2">Grand Total</td>
+                        <td id="grandTotal" class="money">$0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+        
+        <section class="input-section">
+            <h2><i class="fas fa-edit"></i> Feed Buy Input</h2>
+            
+            <div id="accordionContainer">
+                <!-- Accordion items will be dynamically generated here -->
+            </div>
+        </section>
+        
+        <div class="actions">
+            <button class="btn-secondary" id="resetBtn">
+                <i class="fas fa-redo"></i> Reset All
+            </button>
+            <button class="btn-primary" id="calculateBtn">
+                <i class="fas fa-calculator"></i> Calculate Total
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Feed types data
+        const feedTypes = [
+            { id: 'gesta', name: 'Gesta', sacks: 0, price: 0, subtotal: 0 },
+            { id: 'lacta', name: 'Lacta', sacks: 0, price: 0, subtotal: 0 },
+            { id: 'booster', name: 'Booster', sacks: 0, price: 0, subtotal: 0 },
+            { id: 'prestart', name: 'PreStart', sacks: 0, price: 0, subtotal: 0 },
+            { id: 'starter', name: 'Starter', sacks: 0, price: 0, subtotal: 0 },
+            { id: 'grower', name: 'Grower', sacks: 0, price: 0, subtotal: 0 },
+            { id: 'finisher', name: 'Finisher', sacks: 0, price: 0, subtotal: 0 }
+        ];
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSummaryTable();
+            renderAccordion();
+            attachEventListeners();
+            updateAllSubtotals();
+        });
+        
+        // Render the summary table
+        function renderSummaryTable() {
+            const summaryBody = document.getElementById('summaryBody');
+            summaryBody.innerHTML = '';
+            
+            let grandTotal = 0;
+            
+            feedTypes.forEach(feed => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${feed.name}</td>
+                    <td>${feed.sacks}</td>
+                    <td class="money">$${feed.subtotal.toFixed(2)}</td>
+                `;
+                summaryBody.appendChild(row);
+                
+                grandTotal += feed.subtotal;
+            });
+            
+            // Update grand total
+            document.getElementById('grandTotal').textContent = `$${grandTotal.toFixed(2)}`;
+        }
+        
+        // Render the accordion input sections
+        function renderAccordion() {
+            const accordionContainer = document.getElementById('accordionContainer');
+            accordionContainer.innerHTML = '';
+            
+            if (feedTypes.length === 0) {
+                accordionContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No feed types available</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            feedTypes.forEach((feed, index) => {
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'accordion-item';
+                accordionItem.innerHTML = `
+                    <div class="accordion-header ${index === 0 ? 'active' : ''}" data-feed-id="${feed.id}">
+                        <div class="feed-title">
+                            <div class="feed-title-wrapper">
+                                <span>${feed.name}</span>
+                                <span class="sack-indicator">
+                                    <span class="sack-badge">${feed.sacks}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="accordion-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="accordion-content ${index === 0 ? 'show' : ''}" id="content-${feed.id}">
+                        <div class="input-group">
+                            <div class="input-row">
+                                <div class="input-label">Number of Sacks</div>
+                                <div class="input-field">
+                                    <input type="number" 
+                                           id="${feed.id}-sacks" 
+                                           min="0" 
+                                           step="1" 
+                                           value="${feed.sacks}"
+                                           data-feed-id="${feed.id}"
+                                           data-field="sacks">
+                                    <span class="unit">sacks</span>
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-label">Weight per Sack</div>
+                                <div class="input-field">
+                                    <input type="number" 
+                                           id="${feed.id}-weight" 
+                                           min="1" 
+                                           step="0.1" 
+                                           value="50"
+                                           readonly>
+                                    <span class="unit">kg</span>
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-label">Price per Sack</div>
+                                <div class="input-field">
+                                    <input type="number" 
+                                           id="${feed.id}-price" 
+                                           min="0" 
+                                           step="0.01" 
+                                           value="${feed.price}"
+                                           data-feed-id="${feed.id}"
+                                           data-field="price">
+                                    <span class="unit">$</span>
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-label">Subtotal</div>
+                                <div class="input-field">
+                                    <input type="text" 
+                                           id="${feed.id}-subtotal" 
+                                           value="$${feed.subtotal.toFixed(2)}"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                accordionContainer.appendChild(accordionItem);
+            });
+        }
+        
+        // Attach event listeners to inputs and buttons
+        function attachEventListeners() {
+            // Accordion toggle
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    // Close all other accordion items
+                    document.querySelectorAll('.accordion-header').forEach(h => {
+                        if (h !== this) {
+                            h.classList.remove('active');
+                            const contentId = h.getAttribute('data-feed-id');
+                            document.getElementById(`content-${contentId}`).classList.remove('show');
+                        }
+                    });
+                    
+                    // Toggle current accordion item
+                    this.classList.toggle('active');
+                    const contentId = this.getAttribute('data-feed-id');
+                    const content = document.getElementById(`content-${contentId}`);
+                    content.classList.toggle('show');
+                });
+            });
+            
+            // Input changes for sacks and price
+            document.querySelectorAll('input[data-field]').forEach(input => {
+                input.addEventListener('input', function() {
+                    const feedId = this.getAttribute('data-feed-id');
+                    const field = this.getAttribute('data-field');
+                    const value = parseFloat(this.value) || 0;
+                    
+                    // Update feed data
+                    const feed = feedTypes.find(f => f.id === feedId);
+                    if (feed) {
+                        feed[field] = value;
+                        updateSubtotal(feedId);
+                    }
+                });
+            });
+            
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to reset all inputs? This will clear all sack counts and prices.')) {
+                    feedTypes.forEach(feed => {
+                        feed.sacks = 0;
+                        feed.price = 0;
+                        feed.subtotal = 0;
+                    });
+                    
+                    // Reset all input fields
+                    document.querySelectorAll('input[data-field="sacks"]').forEach(input => {
+                        input.value = '0';
+                    });
+                    
+                    document.querySelectorAll('input[data-field="price"]').forEach(input => {
+                        input.value = '0';
+                    });
+                    
+                    updateAllSubtotals();
+                }
+            });
+            
+            // Calculate button (already calculated live, but this is for emphasis)
+            document.getElementById('calculateBtn').addEventListener('click', function() {
+                updateAllSubtotals();
+                
+                // Show a brief animation on the grand total
+                const grandTotalEl = document.getElementById('grandTotal');
+                grandTotalEl.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    grandTotalEl.style.transform = 'scale(1)';
+                }, 300);
+                
+                // Show success message
+                const grandTotal = feedTypes.reduce((total, feed) => total + feed.subtotal, 0);
+                alert(`Total calculated: $${grandTotal.toFixed(2)}`);
+            });
+        }
+        
+        // Update subtotal for a specific feed type
+        function updateSubtotal(feedId) {
+            const feed = feedTypes.find(f => f.id === feedId);
+            if (!feed) return;
+            
+            // Calculate subtotal
+            feed.subtotal = feed.sacks * feed.price;
+            
+            // Update the subtotal input
+            const subtotalInput = document.getElementById(`${feedId}-subtotal`);
+            if (subtotalInput) {
+                subtotalInput.value = `$${feed.subtotal.toFixed(2)}`;
+            }
+            
+            // Update the sack count badge in the accordion header
+            const sackBadgeEl = document.querySelector(`.accordion-header[data-feed-id="${feedId}"] .sack-badge`);
+            if (sackBadgeEl) {
+                sackBadgeEl.textContent = feed.sacks;
+            }
+            
+            // Update the summary table
+            renderSummaryTable();
+        }
+        
+        // Update all subtotals
+        function updateAllSubtotals() {
+            feedTypes.forEach(feed => {
+                updateSubtotal(feed.id);
+            });
+        }
+    </script>
+</body>
+</html>

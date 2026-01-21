@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pig Feed Balance Input</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 1rem;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            text-align: left;
+            padding: 16px 15px;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f8ff;
+        }
+        
+        .readonly-cell {
+            background-color: #f5f5f5;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .number-input-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .number-input {
+            width: 120px;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            text-align: right;
+        }
+        
+        .number-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .step-buttons {
+            display: flex;
+            flex-direction: column;
+            margin-left: 8px;
+        }
+        
+        .step-btn {
+            width: 32px;
+            height: 24px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .step-btn:hover {
+            background-color: #e2e2e2;
+        }
+        
+        .step-btn:active {
+            background-color: #d4d4d4;
+        }
+        
+        .step-btn.up {
+            border-top-right-radius: 4px;
+            border-bottom: 0.5px solid #ccc;
+        }
+        
+        .step-btn.down {
+            border-bottom-right-radius: 4px;
+            border-top: 0.5px solid #ccc;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        #submitBtn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        #submitBtn:hover {
+            background-color: #27ae60;
+        }
+        
+        #resetBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        #resetBtn:hover {
+            background-color: #c0392b;
+        }
+        
+        #demoBtn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        #demoBtn:hover {
+            background-color: #2980b9;
+        }
+        
+        .summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .summary h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            th, td {
+                padding: 12px 10px;
+            }
+            
+            .number-input {
+                width: 100px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pig Feed Balance Input</h1>
+            <p class="description">Update feed balance values for each feed type. Use up/down buttons or directly input values.</p>
+        </header>
+        
+        <table id="feedTable">
+            <thead>
+                <tr>
+                    <th>Feed Type</th>
+                    <th>Buy (Sacks)</th>
+                    <th>Balance (Sacks)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be generated by JavaScript -->
+            </tbody>
+        </table>
+        
+        <div class="summary">
+            <h3>Instructions</h3>
+            <p>1. Feed Type column is read-only and displays the fixed feed categories.</p>
+            <p>2. Buy column shows the current inventory (read-only, typically loaded from database).</p>
+            <p>3. Balance column allows input of adjusted values. You can:</p>
+            <ul>
+                <li>Click the up/down buttons to adjust by 0.5 kg increments</li>
+                <li>Directly type a value into the input field</li>
+                <li>Use keyboard up/down arrows when focused on the input</li>
+            </ul>
+        </div>
+        
+        <div class="controls">
+            <button id="submitBtn">Save Balance Updates</button>
+            <button id="demoBtn">Load Demo Data</button>
+            <button id="resetBtn">Reset to Default</button>
+        </div>
+        
+        <div class="footer">
+            <p>Note: All values are in kilograms (kg). Step increment is fixed at 0.5 kg.</p>
+        </div>
+    </div>
+
+    <script>
+        // Feed data with fixed types and sample buy values
+        const feedData = [
+            { type: "Gesta", buy: 150, balance: 0 },
+            { type: "Lacta", buy: 200, balance: 0 },
+            { type: "Booster", buy: 180, balance: 0 },
+            { type: "PreStart", buy: 120, balance: 0 },
+            { type: "Starter", buy: 250, balance: 0 },
+            { type: "Grower", buy: 300, balance: 0 },
+            { type: "Finisher", buy: 280, balance: 0 }
+        ];
+        
+        // Initialize table with data
+        function initializeTable() {
+            const tbody = document.querySelector('#feedTable tbody');
+            tbody.innerHTML = '';
+            
+            feedData.forEach((feed, index) => {
+                const row = document.createElement('tr');
+                
+                // Feed Type cell (read-only)
+                const typeCell = document.createElement('td');
+                typeCell.textContent = feed.type;
+                typeCell.className = 'readonly-cell';
+                
+                // Buy cell (read-only)
+                const buyCell = document.createElement('td');
+                buyCell.textContent = feed.buy;
+                buyCell.className = 'readonly-cell';
+                
+                // Balance cell with input and buttons
+                const balanceCell = document.createElement('td');
+                
+                const inputContainer = document.createElement('div');
+                inputContainer.className = 'number-input-container';
+                
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'number-input';
+                input.value = feed.balance;
+                input.step = 0.5;
+                input.min = 0;
+                input.dataset.index = index;
+                
+                // Add up/down buttons
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'step-buttons';
+                
+                const upButton = document.createElement('button');
+                upButton.type = 'button';
+                upButton.className = 'step-btn up';
+                upButton.textContent = '▲';
+                upButton.addEventListener('click', () => {
+                    input.stepUp();
+                    updateFeedBalance(index, parseFloat(input.value));
+                });
+                
+                const downButton = document.createElement('button');
+                downButton.type = 'button';
+                downButton.className = 'step-btn down';
+                downButton.textContent = '▼';
+                downButton.addEventListener('click', () => {
+                    input.stepDown();
+                    updateFeedBalance(index, parseFloat(input.value));
+                });
+                
+                // Update balance when input changes
+                input.addEventListener('change', () => {
+                    updateFeedBalance(index, parseFloat(input.value));
+                });
+                
+                // Also allow keyboard up/down arrows
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        input.stepUp();
+                        updateFeedBalance(index, parseFloat(input.value));
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        input.stepDown();
+                        updateFeedBalance(index, parseFloat(input.value));
+                    }
+                });
+                
+                // Assemble the balance cell
+                buttonContainer.appendChild(upButton);
+                buttonContainer.appendChild(downButton);
+                inputContainer.appendChild(input);
+                inputContainer.appendChild(buttonContainer);
+                balanceCell.appendChild(inputContainer);
+                
+                // Add cells to row
+                row.appendChild(typeCell);
+                row.appendChild(buyCell);
+                row.appendChild(balanceCell);
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Update feed balance in data array
+        function updateFeedBalance(index, newBalance) {
+            feedData[index].balance = newBalance;
+            console.log(`Updated ${feedData[index].type} balance to ${newBalance} kg`);
+        }
+        
+        // Load demo data
+        function loadDemoData() {
+            // Sample balance data for demonstration
+            const demoBalances = [45.5, 78.0, 62.5, 35.0, 120.5, 185.0, 150.5];
+            
+            feedData.forEach((feed, index) => {
+                feed.balance = demoBalances[index];
+            });
+            
+            // Update all input fields
+            document.querySelectorAll('.number-input').forEach((input, index) => {
+                input.value = demoBalances[index];
+            });
+            
+            alert('Demo data loaded. Click "Save Balance Updates" to save these values.');
+        }
+        
+        // Reset all balance values to 0
+        function resetBalances() {
+            if (confirm('Are you sure you want to reset all balance values to 0?')) {
+                feedData.forEach(feed => {
+                    feed.balance = 0;
+                });
+                
+                // Update all input fields
+                document.querySelectorAll('.number-input').forEach(input => {
+                    input.value = 0;
+                });
+                
+                console.log('All balances reset to 0');
+            }
+        }
+        
+        // Submit/save balance updates
+        function submitBalances() {
+            // In a real application, this would send data to a server
+            console.log('Submitting feed balance updates:', feedData);
+            
+            // Show summary of changes
+            let summary = "Balance updates submitted:\n\n";
+            feedData.forEach(feed => {
+                summary += `${feed.type}: ${feed.balance} kg\n`;
+            });
+            
+            alert(summary);
+        }
+        
+        // Event listeners for buttons
+        document.getElementById('demoBtn').addEventListener('click', loadDemoData);
+        document.getElementById('resetBtn').addEventListener('click', resetBalances);
+        document.getElementById('submitBtn').addEventListener('click', submitBalances);
+        
+        // Initialize the table on page load
+        document.addEventListener('DOMContentLoaded', initializeTable);
+    </script>
+</body>
+</html>
