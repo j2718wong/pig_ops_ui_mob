@@ -35,7 +35,7 @@ import {UiInputTextWithCounter} from '../../common/ui/input_text_with_counter.js
 
 
 export function PageSowBoarUpdateStatus(input_settings){
-    PageViewPigFarmPage.call(this);
+    PageSowBoarEntryComponent.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -114,7 +114,7 @@ export function PageSowBoarUpdateStatus(input_settings){
         
         const html = `
         <!-- Collapsible Panel -->
-        <div class="collapsible-panel mb-4" id="${elemIdUpdateStatusShow}" style="display:none;">
+        <div class="collapsible-panel mb-4" id="${elemIdUpdateStatusShow}">
             <!-- Header with arrow icon -->
             <div class="collapsible-header" id="${elemIdPanelHeader}">
                 <span id="${elemIdPanelTitle}">Update Pig Status</span>
@@ -244,10 +244,7 @@ export function PageSowBoarUpdateStatus(input_settings){
     
     this._bindEventListeners = function(){
         
-        elemPanelHeader.addEventListener('click', function() {
-            thisObj.togglePanel();
-        });
-        
+     
         
         elemBtnUpdateStatus.addEventListener('click', function() {
             thisObj.onClickUpdateStatus();

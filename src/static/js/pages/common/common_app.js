@@ -5,22 +5,22 @@
 'use strict';
 
 
-export function getSowBoarReference(data_sow, inc_sow_boar_num){
-    let sow_reference = '';
+export function getSowBoarReference(sow_boar, inc_sow_boar_num){
+    let reference = '';
     
-    if ((data_sow.name != null) && (data_sow.name.length >0)){
-        sow_reference = data_sow.name;
+    if (sow_boar.name  && sow_boar.name.length >0){
+        reference = sow_boar.name;
         
         if (inc_sow_boar_num){
-            if (data_sow.number != null) {
-                sow_reference += ` (${data_sow.number})`;
+            if (sow_boar.number != null) {
+                reference += ` (${sow_boar.number})`;
             }
         }
         
     }
     else{
-        sow_reference = data_sow.number;
+        reference = sow_boar.number;
     }
     
-    return sow_reference;
+    return reference;
 }

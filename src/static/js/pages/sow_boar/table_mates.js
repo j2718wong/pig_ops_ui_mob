@@ -1,10 +1,14 @@
-// January 12, 2026
+// January 21, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
 'use strict';
 
 import {PageTableBasic}         from '../common/page_table_basic.js';
+
+
+import {getSowBoarReference}    from '../common/common_app.js';
+
 
 import {APPLICATION,
         PAGE_ID,
@@ -21,8 +25,7 @@ import {formatDate,
 
 
 
-
-export function TableNotes(input_settings){
+export function TableMates(input_settings){
     PageTableBasic.call(this);
     
     const thisObj               = this;
@@ -69,7 +72,8 @@ export function TableNotes(input_settings){
         let settingsTable;
         settingsTable = {
             uniqueKey:      `${settings.uniqueKey}-table`,
-            tableTitle:     'Notes'
+            noSearchAdd:    true,
+            tableTitle:     'Mates'
         }
         
         
@@ -102,18 +106,17 @@ export function TableNotes(input_settings){
         dataSowBoar     = data_sow_boar;
         showOptions     = options;
         
-        if ('list_notes' in dataSowBoar.data_details){
-            thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
-            thisObj.renderTable(dataSowBoar.data_details.list_notes);
+        if ('list_mates' in dataSowBoar.data_details){
+            thisObj.setDataEntryList(dataSowBoar.data_details.list_mates);
+            thisObj.renderTable(dataSowBoar.data_details.list_mates);
         } else{
             const callback_success = function(){
                 // Set table entry list; This will set also the entry count;
-                thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
-                thisObj.renderTable(dataSowBoar.data_details.list_notes);
+                thisObj.setDataEntryList(dataSowBoar.list_notes);
+                thisObj.renderTable(dataSowBoar.list_notes);
             };
             
-            parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success,
-                thisObj.elemServerErrorMsg);
+            
         }
         
     }
@@ -146,14 +149,17 @@ export function TableNotes(input_settings){
         <table class="data-table" id="">
             <thead>
                 <colgroup>
-                    <col style="width: 28%;">
-                    <col style="width: 72%;">
+                    <col style="width: 30%;">
+                    <col style="width: 20%;">
+                    <col style="width: 50%;">
                 </colgroup>
                 
                 <tr>
                     <th>Date</th>
-                    <th>Notes</th>
+                    <th>P_ID</th>
+                    <th>Mate</th>
                 </tr>
+                
             </thead>
             <tbody id="${elemIdTableBody}">
             </tbody>
@@ -169,7 +175,7 @@ export function TableNotes(input_settings){
     this.getHtmlTableRowEmpty = function(){
         const html = `
             <tr>
-                <td colspan="2"><div>No Entries</div></td>
+                <td colspan="3"><div>No Entries</div></td>
             </tr>
         `;
         return html;
@@ -177,14 +183,18 @@ export function TableNotes(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+        //let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.hid}");`;
 
-        const dt_notes = new Date(cur_entry.prod_notes.date_notes);
+        const dt_mate = new Date(cur_entry.date_mate);
+        
+        const sow_boar_name     = getSowBoarReference(dataSowBoar.sow_boar, false)
+        const sow_boar_mate_name = getSowBoarReference(cur_entry.mate_sow_boar, false)
         
         const html = `
             <tr>
-                <td><span>${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
-                <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>
+                <td><span>${formatDate(dt_mate, FORMAT_COMPACT)}</span></td>
+                <td >${cur_entry.farm_prod_id}</td>
+                <td >${sow_boar_name} <span class="love-icon">❤️</span> ${sow_boar_mate_name}</td>
             </tr>
         `;
         
@@ -201,75 +211,6 @@ export function TableNotes(input_settings){
     this.onUserChangeLanguage = function(){
         
        
-    }
-    
-    this.onClickAddEntry = function(){
-        
-        const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
-        
-        const options ={
-            is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
-        }
-        
-        navigation.pageNotesAddEdit.beforeShow(dataSowBoar, options);
-        const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
-        navigation.showThisPage(page_container);
-        
-        
-    }
-    
-    
-    this.getEntry = function(entry_hid){
-        if ('list_notes' in dataSowBoar.data_details){
-            for (const cur_entry of dataSowBoar.data_details.list_notes){
-                if (cur_entry.prod_notes.hid == entry_hid){
-                    return cur_entry;
-                }
-            }
-        }
-        
-        return null;
-    }
-    
-    
-    this.onSuccessAddEntry = function(){
-        
-        const callback_success = function(data){
-            thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
-            thisObj.renderTable(dataSowBoar.data_details.list_notes);
-        };
-
-        parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success, 
-            thisObj.elemServerErrorMsg)
-    }
-    
-    
-    this.onClickRowEntry = function(entry_hid){
-        const row_entry = thisObj.getEntry(entry_hid);
-        thisObj.onClickEditEntry(row_entry);
-    }
-    
-    
-    this.onClickEditEntry = function(row_entry){
-
-        if (row_entry){
-            const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
-        
-            const options ={
-                is_add:                 false,   // false is edit
-                row_entry:              row_entry,
-                callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
-                go_back_page:           go_back_page   // Go back to this page; this is Div element
-            }
-            
-            navigation.pageNotesAddEdit.beforeShow(dataSowBoar, options);
-            const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
-            navigation.showThisPage(page_container);
-            
-
-        }
     }
     
     

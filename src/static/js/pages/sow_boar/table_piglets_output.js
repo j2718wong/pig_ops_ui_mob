@@ -21,7 +21,7 @@ import {formatDate,
 
 
 
-TablePigletsOutput.prototype = new PageTableBasic();
+
 export function TablePigletsOutput(input_settings){
     PageTableBasic.call(this);
     
@@ -70,7 +70,7 @@ export function TablePigletsOutput(input_settings){
         settingsTable = {
             uniqueKey:      `${settings.uniqueKey}-table`,
             noSearchAdd:    true,
-            tableTitle:     'Notes'
+            tableTitle:     'Piglets Output'
         }
         
         
@@ -103,9 +103,9 @@ export function TablePigletsOutput(input_settings){
         dataSowBoar     = data_sow_boar;
         showOptions     = options;
         
-        if ('list_output' in dataSowBoar){
-            thisObj.setDataEntryList(dataSowBoar.list_output);
-            thisObj.renderTable(dataSowBoar.list_output);
+        if ('list_output' in dataSowBoar.data_details){
+            thisObj.setDataEntryList(dataSowBoar.data_details.list_output);
+            thisObj.renderTable(dataSowBoar.data_details.list_output);
         } else{
             const callback_success = function(){
                 // Set table entry list; This will set also the entry count;

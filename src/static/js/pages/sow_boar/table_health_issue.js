@@ -274,8 +274,6 @@ export function TableHealthIssue(input_settings){
     this.onClickRowEntry = function(entry_hid){
         const row_entry = thisObj.getEntry(entry_hid);
         
-        console.log('entry_hid = ' + entry_hid);
-        console.log(row_entry);
         
         const menu_items = [
             {   label: 'Edit',

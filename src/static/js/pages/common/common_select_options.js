@@ -8,7 +8,8 @@ import {replaceSelectOptions}   from './page_view_basic.js';
 
 import {SOW_STATUS}             from '../../constants.js';
         
-        
+import {getSowBoarReference}	from './common_app.js'
+
         
 export function CommonSelectOptions(){
     
@@ -38,8 +39,6 @@ export function CommonSelectOptions(){
         }
         
         for (const cur_sow_boar of data){
-            let reference;
-            
             // This is because there is this data can come into
             // minimum and not minimum info.
             const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
@@ -48,18 +47,9 @@ export function CommonSelectOptions(){
                 cur_entry.status_id == SOW_STATUS.GESTATING ||
                 cur_entry.status_id == SOW_STATUS.WEANING) {
             
-                if (cur_entry.name != null && cur_entry.name.length > 0){
-                    reference = cur_entry.name;
-                    
-                    if (cur_entry.number != null &&  cur_entry.number.length > 0) {
-                        reference +=  ' (' + cur_entry.number + ')';
-                    }
-                }
-                else{
-                    reference = cur_entry.number;
-                }
+                const sow_boar_name = getSowBoarReference(cur_entry, true);
                 
-                select_data.push({value: cur_entry.hid, text: reference});
+                select_data.push({value: cur_entry.hid, text: sow_boar_name});
             }
         }
         
@@ -81,25 +71,14 @@ export function CommonSelectOptions(){
         select_data.push({value:"0", text:"Please Select"});
         
         for (const cur_sow_boar of data){
-            let reference;
             
             // This is because there is this data can come into
             // minimum and not minimum info.
             const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
             
+            const sow_boar_name = getSowBoarReference(cur_entry, true);
             
-            if (cur_entry.name != null && cur_entry.name.length > 0){
-                reference = cur_entry.name;
-                
-                if (cur_entry.number != null &&  cur_entry.number.length > 0) {
-                    reference +=  ' (' + cur_entry.number + ')';
-                }
-            }
-            else{
-                reference = cur_entry.number;
-            }
-            
-            select_data.push({value: cur_entry.hid, text: reference});
+            select_data.push({value: cur_entry.hid, text: sow_boar_name});
         }
         
         replaceSelectOptions(select_elem, select_data);

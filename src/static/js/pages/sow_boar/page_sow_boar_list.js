@@ -749,6 +749,8 @@ ${html_style}
         };
         
         
+		// 
+		navigation.pageSowBoarEntry.resetToFirstTab();
     }
     
     

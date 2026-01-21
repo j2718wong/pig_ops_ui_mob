@@ -4,7 +4,10 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}          from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
+
+import {getSowBoarReference}    from '../common/common_app.js';
+
 
 import {APPLICATION,
         PAGE_ID,
@@ -23,6 +26,9 @@ import {TableMedVac}            from './table_medvac.js'
 import {TableHealthIssue}       from './table_health_issue.js'
 import {TableNotes}             from './table_notes.js'
 import {TablePigletsOutput}     from './table_piglets_output.js'
+
+import {TableMates}             from './table_mates.js'
+
 
 
 PageSowBoarEntry.prototype = new PageViewPigFarmPage();
@@ -56,8 +62,8 @@ export function PageSowBoarEntry(input_settings){
     let elemIdShowMore          = null;
     let elemIdShowMoreDropDown  = null;
     
-    let elemIdOutput            = null;
-    let elemIdMates             = null;
+    let elemIdTabBtnOutput      = null;
+    let elemIdTabBtnMates       = null;
     
     let elemIdTabMedVac         = null;
     let elemIdTabHealth         = null;
@@ -66,6 +72,12 @@ export function PageSowBoarEntry(input_settings){
     let elemIdTabMates          = null;
     let elemIdTabEdit           = null;
     let elemIdTabStatus         = null;
+    
+    let elemIdTabMore           = null;
+    
+    
+    let elemTabBtnOutput        = null;
+    let elemTabBtnMates         = null;
     
     
     
@@ -89,6 +101,9 @@ export function PageSowBoarEntry(input_settings){
     let elemTabStatus           = null;
     
     
+    let allTabs                 = null;
+    let navItems                = null;
+    
     
     let dataSowBoar             = null;
     
@@ -99,6 +114,8 @@ export function PageSowBoarEntry(input_settings){
     this.tablePigHealth         = null;
     this.tableSowBoarNotes      = null;
     this.tablePigletsOutput     = null;
+    
+    this.tableMates             = null;
     
     
     let showOptions             = null;
@@ -128,8 +145,8 @@ export function PageSowBoarEntry(input_settings){
         elemIdShowMoreDropDown  = `sow-boar-entry-show-more-dropdown`;
         
         
-        elemIdOutput            = `sow-boar-output-btn`;
-        elemIdMates             = `sow-boar-mates-btn`;
+        elemIdTabBtnOutput      = `sow-boar-output-btn`;
+        elemIdTabBtnMates       = `sow-boar-mates-btn`;
         
         
         elemIdTabMedVac         = `sow-boar-medvac`;
@@ -138,6 +155,9 @@ export function PageSowBoarEntry(input_settings){
         elemIdTabOutput         = `sow-boar-output`;
         elemIdTabMates          = `sow-boar-mates`;
         elemIdTabStatus         = `sow-boar-status`;
+        
+        
+        elemIdTabMore           = `sow-boar-more`;
            
            
         const html_sow_tabs = `
@@ -221,16 +241,12 @@ export function PageSowBoarEntry(input_settings){
             <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
             <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
             <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
-            <button class="tab-button" data-tab="${elemIdTabOutput}" id="${elemIdOutput}">Output</button>
-            <button class="tab-button" data-tab="${elemIdTabMates}" id="${elemIdMates}" style="display: none">Mates</button>
+            <button class="tab-button" data-tab="${elemIdTabOutput}" id="${elemIdTabBtnOutput}">Output</button>
+            <button class="tab-button" data-tab="${elemIdTabMates}" id="${elemIdTabBtnMates}" style="display: none">Mates</button>
             
-            <div class="tab-button show-more-container" id="${elemIdShowMore}">
+            <button class="tab-button" data-tab="${elemIdTabMore}" id="${elemIdShowMore}">
                 More
-                <div class="show-more-dropdown" id="${elemIdShowMoreDropDown}">
-                    <div class="dropdown-item" data-tab="${elemIdTabEdit}">Edit</div>
-                    <div class="dropdown-item" data-tab="${elemIdTabStatus}">Status</div>
-                </div>
-            </div>
+            </button>
         </div>
         
     </div>
@@ -288,6 +304,9 @@ export function PageSowBoarEntry(input_settings){
         elemEntryId             = document.getElementById(elemIdEntryId);
         elemEntryName           = document.getElementById(elemIdEntryName);
         
+        elemTabBtnOutput        = document.getElementById(elemIdTabBtnOutput);
+        elemTabBtnMates         = document.getElementById(elemIdTabBtnMates);
+        
         elemShowMore            = document.getElementById(elemIdShowMore);
         elemShowMoreDropDown    = document.getElementById(elemIdShowMoreDropDown);
                 
@@ -299,6 +318,9 @@ export function PageSowBoarEntry(input_settings){
         elemTabMates            = document.getElementById(elemIdTabMates);
         elemTabEdit             = document.getElementById(elemIdTabEdit);
         elemTabStatus           = document.getElementById(elemIdTabStatus);
+        
+        allTabs                 = elemDivContainer.querySelectorAll('.tab-content');
+        navItems                = elemDivContainer.querySelectorAll('.tab-button');
         
                 
     }
@@ -341,23 +363,25 @@ export function PageSowBoarEntry(input_settings){
         this.tablePigletsOutput.init();
         
         
-        
+        this.tableMates         = new TableMates({
+            navigation:             settings.navigation,
+            parentObj:              thisObj,
+            uniqueKey:              'sow-boar-mates',
+            elemDivContainer:       elemTabMates
+        });
+        this.tableMates.init();
     }
     
     
-    this._bindEventListeners = function(){
-        const navItems      = elemDivContainer.querySelectorAll('.tab-button:not(.show-more-container)');
-        const dropdownItems = elemDivContainer.querySelectorAll('.dropdown-item');
-        const allTabs       = elemDivContainer.querySelectorAll('.tab-content');
-        const showMoreControl = elemShowMore;
-        const showMoreDropdown = elemShowMoreDropDown;
+    this.switchTab = function(tabId){
         
-        function switchTab(tabId) {
-            console.log('switchTab tabId =' + tabId) ;
+        console.log('switchTab tabId =' + tabId) ;
             
-            curActiveTabId = tabId;
-            
-            
+        curActiveTabId = tabId;
+        
+        
+        if (tabId != elemIdTabMore){
+        
             allTabs.forEach(tab => tab.classList.remove('active'));
             const selectedTab = document.getElementById(tabId);
             if (selectedTab) {
@@ -369,24 +393,37 @@ export function PageSowBoarEntry(input_settings){
             else{
                 console.log('tab not found');
             }
-            
-            navItems.forEach(item => item.classList.remove('active'));
-            
-            if (tabId === elemIdTabMedVac   || 
-                tabId === elemIdTabHealth   || 
-                tabId === elemIdTabNotes    || 
-                tabId === elemIdTabOutput) {
-                const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
-                if (activeNav) activeNav.classList.add('active');
-            }
-            
-            //showMoreDropdown.classList.remove('active');
         }
+        
+        navItems.forEach(item => item.classList.remove('active'));
+        
+        if (tabId === elemIdTabMedVac   || 
+            tabId === elemIdTabHealth   || 
+            tabId === elemIdTabNotes    || 
+            tabId === elemIdTabOutput   ||
+            tabId === elemIdTabMore   ) {
+            const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
+            if (activeNav) activeNav.classList.add('active');
+        }
+        else{
+            
+        }
+            
+    }
+    
+    
+    this._bindEventListeners = function(){
+        
+        const dropdownItems = elemDivContainer.querySelectorAll('.dropdown-item');
+        const showMoreControl = elemShowMore;
+        const showMoreDropdown = elemShowMoreDropDown;
+        
+       
         
         navItems.forEach(item => {
             item.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
-                switchTab(tabId);
+                thisObj.switchTab(tabId);
             });
         });
         
@@ -402,16 +439,19 @@ export function PageSowBoarEntry(input_settings){
             });
         });*/
         
+        /*
         showMoreControl.addEventListener('click', function(e) {
             console.log('Test');
             
-            /*
+            
             showMoreDropdown.classList.toggle('active');
             if (e.target === this || e.target.classList.contains('nav-text')) {
                 e.stopPropagation();
                 showMoreDropdown.classList.toggle('active');
-            }*/
-        });
+            }
+            
+            
+        });*/
         
         
         /*
@@ -420,6 +460,11 @@ export function PageSowBoarEntry(input_settings){
                 showMoreDropdown.classList.remove('active');
             }
         });*/
+        
+        elemShowMore.addEventListener('click', function(e) {
+            thisObj.configureShowMore();
+        });
+        
         
 
         
@@ -451,47 +496,32 @@ export function PageSowBoarEntry(input_settings){
         
         // Set Entry Name 
         
-        let sow_reference   = '';
-        let sow_boar_name   = data_sow_boar.sow_boar.name;
-        let sow_boar_number = data_sow_boar.sow_boar.number;
+        let sow_boar_name   = getSowBoarReference(data_sow_boar.sow_boar);
         
-        if (sow_boar_name && sow_boar_name.length > 0){
-            sow_reference = sow_boar_name;
-            
-            if (sow_boar_number != null) {
-                sow_reference += ` (${sow_boar_number})`;
-            }
-            
-        }
-        else{
-            sow_reference = sow_boar_number;
-        }
-        
-        
-        // Append SOW Status so that no ambuiguity
+        // Append SOW Status so that no ambiguity
         
         if ('farm_sow_id' in data_sow_boar.sow_boar){
         
             switch(data_sow_boar.sow_boar.status_id){
                 case SOW_STATUS.GESTATING:{
-                    sow_reference += ' - Gesta'
+                    sow_boar_name += ' - Gesta'
                     break;
                 }
                 
                 case SOW_STATUS.LACTATING:{
-                    sow_reference += ' - Lacta'
+                    sow_boar_name += ' - Lacta'
                     break;
                 }
                 
                 case SOW_STATUS.WEANING:{
-                    sow_reference += ' - Wean'
+                    sow_boar_name += ' - Wean'
                     break;
                 }
             }
         }
         
         
-        elemEntryName.textContent = sow_reference;
+        elemEntryName.textContent = sow_boar_name;
         
         // Set Entry hid; 2026115 still in deliberation if to show sow_boar_hid
         /*
@@ -531,40 +561,104 @@ export function PageSowBoarEntry(input_settings){
         
         
         
-        /*
-        if ('notes' in dataSowBoar){
-            const test = 1;
+        // Setup tabs navigation
+        if ('farm_sow_id' in data_sow_boar.sow_boar){
+            // sows and gilts
+            elemTabBtnOutput.style.display = 'block';
+            elemTabBtnMates.style.display = 'none';
         }
         else{
-            thisObj.requestDataSowBoarNotes(dataSowBoar);
+            // boars
+            elemTabBtnOutput.style.display = 'none';
+            elemTabBtnMates.style.display = 'block';
         }
-        */
-		
-		// Request SowBoar  data_details;
-		
-		
-		if ('data_details' in dataSowBoar){
-			// TODO ; still thinking what to do
-			thisObj.beforeShowTab();
-		}
-		else{
-			const callback_success = function(){
-				console.log('callback success')
-				thisObj.beforeShowTab();
-			}
-			thisObj.requestDataSowBoarDetails(dataSowBoar, callback_success);
-		}
-		
+      
+        
+        // Request SowBoar data_details 
+        if ('data_details' in dataSowBoar){
+            // TODO ; still thinking what to do
+            thisObj.beforeShowTab();
+        }
+        else{
+            const callback_success = function(){
+                thisObj.beforeShowTab();
+            }
+            thisObj.requestDataSowBoarDetails(dataSowBoar, callback_success);
+        }
+        
+        
+    }
+    
+    
+    this.configureShowMore = function(){
+        
+        const on_click_mates = function(data){
+            thisObj.switchTab(elemIdTabMates);
+            
+        };
+        
+        if ('farm_sow_id' in dataSowBoar.sow_boar){
+            
+            const sow_boar_name = getSowBoarReference(dataSowBoar.sow_boar);
+            
+            const menu_items = [
+                {   label: 'Mates',
+                    action: on_click_mates,
+                    data:   dataSowBoar
+                },
+                
+                {
+                    label: 'Update Status',
+                    action: null,
+                    data:   dataSowBoar
+                }
+                
+            ];
+            
+            const options = {
+                title: sow_boar_name
+            };
+            
+            navigation.moreModal.beforeShow(menu_items, options);
+            
+        }
+        
+        else{
+            const sow_boar_name = getSowBoarReference(dataSowBoar.sow_boar);
+            
+            const menu_items = [
+                {   label: 'External Mates',
+                    action: null,
+                    data:   dataSowBoar
+                },
+                
+                {
+                    label: 'Update Status',
+                    action: null,
+                    data:   dataSowBoar
+                }
+                
+            ];
+            
+            const options = {
+                title: sow_boar_name
+            };
+            
+            navigation.moreModal.beforeShow(menu_items, options);
+        }
+            
+        
         
     }
     
     
     this.beforeShowTab = function(){
+        if (dataSowBoar == null){return;}
 		
         switch(curActiveTabId){
             case elemIdTabMedVac:{
                 thisObj.tableMedVac.beforeShow(dataSowBoar);
-		        break;
+                break;
             }
             
             case elemIdTabHealth:{
@@ -579,11 +673,15 @@ export function PageSowBoarEntry(input_settings){
             }
             
             case elemIdTabOutput:{
-                thisObj.tablePigletsOutput.beforeShow(dataSowBoar);
+                // This is only applicable to sows only
+                if ('farm_sow_id' in dataSowBoar.sow_boar){
+                    thisObj.tablePigletsOutput.beforeShow(dataSowBoar);
+                }
                 break;
             }
             
             case elemIdTabMates:{
+                thisObj.tableMates.beforeShow(dataSowBoar);
                 break;
             }
             
@@ -592,11 +690,18 @@ export function PageSowBoarEntry(input_settings){
             }
             
             default:{
-				thisObj.tableMedVac.beforeShow(dataSowBoar);
+				console.log(`dataSowBoar`);
+				console.log(dataSowBoar);
+                thisObj.tableMedVac.beforeShow(dataSowBoar);
                 break;
             }
         }
         
+    }
+    
+
+    this.resetToFirstTab = function(){
+        thisObj.switchTab(elemIdTabMedVac);
     }
     
 
