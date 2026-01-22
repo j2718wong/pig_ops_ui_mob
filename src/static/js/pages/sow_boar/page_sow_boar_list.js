@@ -587,7 +587,7 @@ ${html_style}
                 }
                 
 
-                elemTableSow.style.display      = 'block';
+                elemTableSow.style.display      = 'table';
                 elemTableBoar.style.display     = 'none';
                 elemTableGilt.style.display     = 'none';
                 elemTableDisposed.style.display = 'none';
@@ -618,7 +618,7 @@ ${html_style}
                 elemFilterControls.style.display = 'none';
                 
                 elemTableSow.style.display      = 'none';
-                elemTableBoar.style.display     = 'block';
+                elemTableBoar.style.display     = 'table';
                 elemTableGilt.style.display     = 'none';
                 elemTableDisposed.style.display = 'none';
                 
@@ -650,7 +650,7 @@ ${html_style}
                 
                 elemTableSow.style.display      = 'none';
                 elemTableBoar.style.display     = 'none';
-                elemTableGilt.style.display     = 'block';
+                elemTableGilt.style.display     = 'table';
                 elemTableDisposed.style.display = 'none';
                 
                 thisObj.renderGiltTable(dataGiltList);
@@ -695,7 +695,7 @@ ${html_style}
                 elemTableSow.style.display      = 'none';
                 elemTableBoar.style.display     = 'none';
                 elemTableGilt.style.display     = 'none';
-                elemTableDisposed.style.display = 'block';
+                elemTableDisposed.style.display = 'table';
                 
                 
                 break;

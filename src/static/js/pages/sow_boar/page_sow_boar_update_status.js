@@ -289,6 +289,7 @@ export function PageSowBoarUpdateStatus(input_settings){
     this.beforeShow = function(data_sow_boar, options){
 
         curDataSowBoar = data_sow_boar;
+		if (data_sow_boar == null){return;}
         
         const sow_boar_name = getSowBoarReference(curDataSowBoar.sow_boar);
         

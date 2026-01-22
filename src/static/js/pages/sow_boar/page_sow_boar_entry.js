@@ -32,7 +32,6 @@ import {TableGiltOps}           from './table_gilt_ops.js'
 
 
 
-PageSowBoarEntry.prototype = new PageViewPigFarmPage();
 export function PageSowBoarEntry(input_settings){
     PageViewPigFarmPage.call(this);
     
@@ -500,7 +499,9 @@ export function PageSowBoarEntry(input_settings){
                 }
                 
                 default:{
-                    sow_boar_name += ' - Prod Ready'
+                    if (data_sow_boar.is_production_ready > 0){
+                        sow_boar_name += ' - Prod Ready'
+                    }
                     break;
                 }
             }

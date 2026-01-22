@@ -17,13 +17,14 @@ const PAGE_ID = {
     SOW_BOAR_LIST:          11,
     SOW_BOAR_ADD_EDIT:      12,
     SOW_BOAR_ENTRY:         13,
+    SOW_BOAR_DISPOSED:      14,
     
     MEDVAC_ADD_EDIT:        18,
     HEALTH_ADD_EDIT:        19,
     NOTES_ADD_EDIT:         20,
     
-	BOAR_EXT_MATE_ADD_EDIT: 29,
-    TRACE_PARENTS:         	30,
+    BOAR_EXT_MATE_ADD_EDIT: 29,
+    TRACE_PARENTS:          30,
     
     
     PROD_GESTA_LIST:        31,

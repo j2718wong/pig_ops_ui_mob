@@ -58,12 +58,13 @@ export function PageSowBoarAddEdit(input_settings){
     /*
     Typical settings = {
         navigation:             this
+		elemIdDivContainer:     elemIdContSowBoarAddEdit
     };
     */
     const settings              = input_settings;
 
     
-    const elemDivContainer      = document.getElementById('container-sow-boar-add-edit');
+    const elemDivContainer      = settings.elemIdDivContainer;
         
         
     let elemIdBtnClose          = null;
@@ -752,6 +753,8 @@ export function PageSowBoarAddEdit(input_settings){
                     const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
                     
                     html = `<i class="fas fa-edit me-2"></i>Edit Gilt: ${sow_boar_name}`;
+                    
+                    thisObj.populateForm(thisObj.curDataSowBoar);
                 }
                 elemHeaderTitle.innerHTML = html;
                 
@@ -765,14 +768,6 @@ export function PageSowBoarAddEdit(input_settings){
             
             case SOW_BOAR_TYPE.DISPOSED:{}
             
-        }
-        
-        
-        if(options.is_add){
-            //elemUpdateStatusShow.style.display = 'none;'
-        } else{
-            console.log('to display');
-            //elemUpdateStatusShow.style.display = 'block'
         }
         
         
@@ -1133,10 +1128,10 @@ export function PageSowBoarAddEdit(input_settings){
             elemUiName.setTextInvalid('Cannot be both blank.');
             elemUiNumber.setTextInvalid('Cannot be both blank.');
             
-            input_elem          = elemUiName.getTextElem();
+            input_elem          = elemUiName.getElemText();
             addValidationClassToElem(input_elem, validation);
             
-            input_elem          = elemUiNumber.getTextElem();
+            input_elem          = elemUiNumber.getElemText();
             addValidationClassToElem(input_elem, validation);
         }
         if (validation != 0) {return;}

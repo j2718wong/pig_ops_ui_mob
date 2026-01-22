@@ -265,6 +265,8 @@ export function Navigation(){
     const elemIdContSowBoarList         = 'container-sow-boar-list';
     const elemIdContSowBoarAddEdit      = 'container-sow-boar-add-edit';
     const elemIdContSowBoarEntry        = 'container-sow-boar-entry';
+    const elemIdContSowBoarDisposed     = 'container-sow-boar-disposed';
+    
     
     const elemIdContMedVacAddEdit       = 'container-medvac-add-edit';
     const elemIdContHealthAddEdit       = 'container-health-add-edit';
@@ -315,6 +317,8 @@ export function Navigation(){
     let elemHiddenContSowBoarList   = null;
     let elemHiddenContSowBoarAddEdit= null;
     let elemHiddenContSowBoarEntry  = null;
+    let elemHiddenContSowBoarDisposed = null;
+    
     
     let elemHiddenContMedVacAddEdit = null;
     let elemHiddenContHealthAddEdit = null;
@@ -381,12 +385,18 @@ export function Navigation(){
         navigation:             this,
         elemIdDivContainer:     elemIdContSowBoarAddEdit
     });
-    
+   
     
     this.pageSowBoarEntry       = new PageSowBoarEntry({
         navigation:             this,
         elemIdDivContainer:     elemIdContSowBoarEntry
     })
+    
+    
+    this.pageSowBoarDiposed     = new PageSowBoarDisposed({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContSowBoarDisposed
+    });
     
     
     this.pageMedVacAddEdit      = new PageMedVacAddEdit({
@@ -474,11 +484,13 @@ export function Navigation(){
         this.pageSowBoarList.init();
         this.pageSowBoarAddEdit.init();
         this.pageSowBoarEntry.init();
+        this.pageSowBoarDisposed.init();
+        
         this.pageMedVacAddEdit.init();
         this.pageHealthAddEdit.init();
         this.pageNotesAddEdit.init();
-		
-		this.pageParentTrace.init();
+        
+        this.pageParentTrace.init();
         
         
         this.pageMobGestatingList.init();
@@ -532,11 +544,13 @@ export function Navigation(){
         elemHiddenContSowBoarList   = document.getElementById(elemIdContSowBoarList);
         elemHiddenContSowBoarAddEdit= document.getElementById(elemIdContSowBoarAddEdit);
         elemHiddenContSowBoarEntry  = document.getElementById(elemIdContSowBoarEntry);
+        elemHiddenContSowBoarDisposed = document.getElementById(elemIdContSowBoarDisposed);
+        
         
         elemHiddenContMedVacAddEdit = document.getElementById(elemIdContMedVacAddEdit);
         elemHiddenContHealthAddEdit = document.getElementById(elemIdContHealthAddEdit);
         elemHiddenContNotesAddEdit  = document.getElementById(elemIdContNotesAddEdit);
-        elemHiddenContParentTrace  	= document.getElementById(elemIdContParentTrace);
+        elemHiddenContParentTrace   = document.getElementById(elemIdContParentTrace);
         
         elemHiddenContProdGestaList = document.getElementById(elemIdContProdGestaList);
         elemHiddenContProdLactaList = document.getElementById(elemIdContProdLactaList);
@@ -652,8 +666,8 @@ export function Navigation(){
     
     
     this.setDataSowList = function(data){
-		this.pigFarm.dataSowList = data;
-		
+        this.pigFarm.dataSowList = data;
+        
         this.pageSowBoarList.setDataSowList(data);
         this.pageSowBoarAddEdit.setDataSowList(data);
         
@@ -664,8 +678,8 @@ export function Navigation(){
     
     
     this.setDataBoarList = function(data){
-		this.pigFarm.dataBoarList = data;
-		
+        this.pigFarm.dataBoarList = data;
+        
         this.pageSowBoarList.setDataBoarList(data);
         this.pageSowBoarAddEdit.setDataBoarList(data);
         
@@ -724,6 +738,10 @@ export function Navigation(){
     
             case PAGE_ID.SOW_BOAR_ENTRY:{
                 return elemHiddenContSowBoarEntry;
+            }
+    
+            case PAGE_ID.SOW_BOAR_DISPOSED:{
+                return elemHiddenContSowBoarDisposed;
             }
     
     
@@ -1063,12 +1081,12 @@ export function Navigation(){
     }
     
     
-	this._onClickNavParentTrace = function(is_mobile){
-		thisObj.showThisPage(elemHiddenContParentTrace);
-		thisObj.pageParentTrace.show();
-	}
-	
-	
+    this._onClickNavParentTrace = function(is_mobile){
+        thisObj.showThisPage(elemHiddenContParentTrace);
+        thisObj.pageParentTrace.show();
+    }
+    
+    
     this._onClickNavProdGestaLacta = function(is_mobile, operation_type){
         
         if (is_mobile == null){ 

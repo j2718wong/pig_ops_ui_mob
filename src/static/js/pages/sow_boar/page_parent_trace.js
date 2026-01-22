@@ -6,13 +6,18 @@
 
 import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
+import {PageTableBasic}         from '../common/page_table_basic.js';
+
 import {PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
+        SOW_BOAR_TYPE,
         PIG_OPERATION_TYPE,
         SUPPLIER_TYPE}          from '../../constants.js';
 
 import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';
+
+import {getSowBoarReference}    from '../common/common_app.js';
 
 
 
@@ -38,21 +43,21 @@ export function PageParentTrace(input_settings){
     let elemIdLinkSowList       = null;
     let elemIdLinkBoarList      = null;
     
-    let elemIdSowBoarTrace		= null;
+    let elemIdSowBoarTrace      = null;
     
-	let elemUiSow               = null;
+    let elemUiSow               = null;
     let elemUiBoar              = null;
     
     
     let elemIdBtnTrace          = null;
     let elemIdServerErrorMsg    = null;
-	
+    
     let elemIdTable             = null;
     let elemIdTableBody         = null;
     
-	
-	
-	let elemSowBoarTrace		= null;
+    
+    
+    let elemSowBoarTrace        = null;
     
     let elemLinkParentTrace     = null;
     let elemLinkSowList         = null;
@@ -74,6 +79,15 @@ export function PageParentTrace(input_settings){
     let curDataBoar             = null;
     
     
+    let sowBoarTable            = new PageTableBasic();
+    
+    sowBoarTable.setSettings({
+        uniqueKey:      `parent-trace-sow-boar-table`,
+        noSearchAdd:    true,
+        itemsPerPage:   20,
+        tableTitle:     'Sow List'
+    });
+    
     
     this.init = function(){
         this.render();
@@ -86,7 +100,7 @@ export function PageParentTrace(input_settings){
         elemIdLinkSowList       = `parent-trace-link-1`;
         elemIdLinkBoarList      = `parent-trace-link-2`;
         
-		elemIdSowBoarTrace		= `parent-trace-sow-boar`;
+        elemIdSowBoarTrace      = `parent-trace-sow-boar`;
         
         elemUiSow               = new UiSelectWithEntryCount({
             uniqueKey:           'parent-trace-sow',
@@ -103,16 +117,16 @@ export function PageParentTrace(input_settings){
         
         elemIdBtnTrace          = `parent-trace-btn-trace`;
         
-		
-		elemIdServerErrorMsg    = `parent-trace-server-error`;
+        
+        elemIdServerErrorMsg    = `parent-trace-server-error`;
         elemIdTable             = `parent-trace-table`;
         elemIdTableBody         = `parent-trace-tbody`;
         
-		
-		const html_ui_sow       = elemUiSow.getHtml();
+        
+        const html_ui_sow       = elemUiSow.getHtml();
         const html_ui_boar      = elemUiBoar.getHtml();
         
-		
+        const html_sow_boar_table = sowBoarTable.getHtml();
         
         const html =`
 
@@ -147,18 +161,18 @@ export function PageParentTrace(input_settings){
             
         </div>
         
-		<div id="${elemIdSowBoarTrace}">
-			<!-- 1. Sow Field -->
-			${html_ui_sow}
-				
-			
-			<!-- 2. Boar Field -->
-			${html_ui_boar}
-			
-			<button type="button" class="btn-full btn-success" id="${elemIdBtnTrace}">
-				Parent Trace
-			</button>
-		</div>
+        <div id="${elemIdSowBoarTrace}">
+            <!-- 1. Sow Field -->
+            ${html_ui_sow}
+                
+            
+            <!-- 2. Boar Field -->
+            ${html_ui_boar}
+            
+            <button type="button" class="btn-full btn-success" id="${elemIdBtnTrace}">
+                Parent Trace
+            </button>
+        </div>
         
         <br>
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
@@ -210,8 +224,8 @@ export function PageParentTrace(input_settings){
         elemLinkSowList         = document.getElementById(elemIdLinkSowList);
         elemLinkBoarList        = document.getElementById(elemIdLinkBoarList);
         
-		elemSowBoarTrace		= document.getElementById(elemIdSowBoarTrace);
-		
+        elemSowBoarTrace        = document.getElementById(elemIdSowBoarTrace);
+        
         elemBtnTrace            = document.getElementById(elemIdBtnTrace);
         
         elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
@@ -230,38 +244,38 @@ export function PageParentTrace(input_settings){
         
         
         elemLinkParentTrace.addEventListener('click', function() {
-			elemSowBoarTrace.style.display = 'block';
+            elemSowBoarTrace.style.display = 'block';
         });
         
         elemLinkSowList.addEventListener('click', function() {
-			elemSowBoarTrace.style.display = 'none';
-			
-			/*
-			const data_list = [];
-			
-			for(const cur_entry of dataSowList){
-				data_list.push(cur_entry.parent_trace);
-			}
-			*/
-			thisObj.renderTableBody(dataSowList);
-			
+            elemSowBoarTrace.style.display = 'none';
+            
+            /*
+            const data_list = [];
+            
+            for(const cur_entry of dataSowList){
+                data_list.push(cur_entry.parent_trace);
+            }
+            */
+            thisObj.renderTableBody(dataSowList);
+            
         });
         
         elemLinkBoarList.addEventListener('click', function() {
-			elemSowBoarTrace.style.display = 'none';
-			
-			/*
-			const data_list = [];
-			
-			for(const cur_entry of dataBoarList){
-				data_list.push(cur_entry.parent_trace);
-			}
-			
-			thisObj.renderTableBody(data_list);
-			*/
-			
-			thisObj.renderTableBody(dataBoarList);
-		});
+            elemSowBoarTrace.style.display = 'none';
+            
+            /*
+            const data_list = [];
+            
+            for(const cur_entry of dataBoarList){
+                data_list.push(cur_entry.parent_trace);
+            }
+            
+            thisObj.renderTableBody(data_list);
+            */
+            
+            thisObj.renderTableBody(dataBoarList);
+        });
         
         
         
@@ -309,8 +323,8 @@ export function PageParentTrace(input_settings){
         
         console.log('navigation.pigFarm.dataPigFarm');
         console.log(navigation.pigFarm.dataPigFarm);
-		
-		dataSowList     = navigation.pigFarm.dataSowList;
+        
+        dataSowList     = navigation.pigFarm.dataSowList;
         dataBoarList    = navigation.pigFarm.dataBoarList;
         
         
@@ -332,31 +346,23 @@ export function PageParentTrace(input_settings){
         else{
             const callback_success = function(data){
                 let cur_sow_boar = null;
-				
-				let cur_entry;
+                
+                let cur_entry;
                 for (cur_entry of data){
-					console.log('cur_entry.sow_boar.sex ='+ cur_entry.sow_boar.sex );
-                    if (cur_entry.sow_boar.sex = 'M'){
+                    if (cur_entry.sow_boar.sex == 'M'){
                         cur_sow_boar = thisObj.getDataBoar(cur_entry.sow_boar.hid);
                     }
                     else{
                         cur_sow_boar = thisObj.getDataSow(cur_entry.sow_boar.hid);
-						if (cur_sow_boar == null){
-							
-						}
                     }
                     
                     if (cur_sow_boar != null){
                         cur_sow_boar['parent_trace'] = cur_entry;
-						console.log(`cur_sow_boar`);
-						console.log(cur_sow_boar);
-						
                     }
                 }
-				
-				console.log(`dataSowList`);
-				console.log(dataSowList);
-				navigation.pigFarm.dataPigFarm.hasRequestedParentTrace = true;
+
+
+                navigation.pigFarm.dataPigFarm.hasRequestedParentTrace = true;
             };
             
             
@@ -386,36 +392,36 @@ export function PageParentTrace(input_settings){
         curDataBoar  = this.getDataBoar(boar_hid);
         
         
-		
         
-		if (('parent_trace' in curDataSow) && ('parent_trace' in curDataBoar)){
-			const data_list = [];
-			data_list.push(curDataSow);
-			data_list.push(curDataBoar);
-			
-			thisObj.renderTableBody(data_list);
-		}
-		else{
-			const callback_success = function(data){
-				for (const cur_entry of data){
-					if (cur_entry.sow_boar.hid == curDataSow.sow_boar.hid){
-						curDataSow.parent_trace = cur_entry;
-					}
-					
-					if (cur_entry.sow_boar.hid == curDataBoar.sow_boar.hid){
-						curDataBoar.parent_trace = cur_entry;
-					}
-				}
-				
-				const data_list = [];
-				data_list.push(curDataSow);
-				data_list.push(curDataBoar);
-				
-				thisObj.renderTableBody(data_list);
-			};
-			
-			thisObj.requestDataParentTrace(sow_hid, boar_hid, null, callback_success,
-				callback_success, elemServerErrorMsg);
+        
+        if (('parent_trace' in curDataSow) && ('parent_trace' in curDataBoar)){
+            const data_list = [];
+            data_list.push(curDataSow);
+            data_list.push(curDataBoar);
+            
+            thisObj.renderTableBody(data_list);
+        }
+        else{
+            const callback_success = function(data){
+                for (const cur_entry of data){
+                    if (cur_entry.sow_boar.hid == curDataSow.sow_boar.hid){
+                        curDataSow.parent_trace = cur_entry;
+                    }
+                    
+                    if (cur_entry.sow_boar.hid == curDataBoar.sow_boar.hid){
+                        curDataBoar.parent_trace = cur_entry;
+                    }
+                }
+                
+                const data_list = [];
+                data_list.push(curDataSow);
+                data_list.push(curDataBoar);
+                
+                thisObj.renderTableBody(data_list);
+            };
+            
+            thisObj.requestDataParentTrace(sow_hid, boar_hid, null, callback_success,
+                callback_success, elemServerErrorMsg);
         }
     }
     
@@ -466,71 +472,35 @@ export function PageParentTrace(input_settings){
     this.renderTableBody = function(data){
         elemTable.style.display = 'table';
         
-			
+            
         
-		const table_data = []; 
+        const table_data = []; 
         
-		console.log(data);
-		for (const cur_entry of data){
-			let sow_boar_reference = '';
-			if (cur_entry.sow_boar.name && cur_entry.sow_boar.name.length > 0){
-				sow_boar_reference = cur_entry.sow_boar.name;
-			}
-			else{
-				sow_boar_reference = cur_entry.sow_boar.number;
-			}
-			
-			
-			
-			let cur_parent_sow = '';
-			let cur_parent_boar = '';
-			let cur_parent_trace = cur_entry.parent_trace;
-
-			
-			if (cur_parent_trace.parent_sow.name  && cur_parent_trace.parent_sow.name.length > 0){
-				cur_parent_sow = cur_parent_trace.parent_sow.name;
-			}
-			else{
-				if (cur_parent_trace.parent_sow.number  && cur_parent_trace.parent_sow.number.length > 0){
-					cur_parent_sow = cur_parent_trace.parent_sow.number;
-				}
-				else{
-					cur_parent_sow = '';
-				}
-			}
-        
-			if (cur_parent_trace.parent_boar.name  && cur_parent_trace.parent_boar.name.length > 0){
-				cur_parent_boar = cur_parent_trace.parent_boar.name;
-			}
-			else{
-				if (cur_parent_trace.parent_boar.number  && cur_parent_trace.parent_boar.number.length > 0){
-					cur_parent_boar = cur_parent_trace.parent_boar.number;
-				}
-				else{
-					cur_parent_boar = '';
-				}
-			}
-			
-			
-			table_data.push({
-                'sow_boar_name':    sow_boar_reference,
-                'parent_sow_name':  cur_parent_sow,
-                'parent_boar_name': cur_parent_boar
+        for (const cur_entry of data){
+            const sow_boar_name  = getSowBoarReference(cur_entry.sow_boar);
+            
+            const cur_parent_trace = cur_entry.parent_trace;
+            const cur_parent_sow = getSowBoarReference(cur_parent_trace.parent_sow);
+            const cur_parent_boar = getSowBoarReference(cur_parent_trace.parent_boar);
+            
+            table_data.push({
+                'sow_boar_hid':     cur_entry.sow_boar.hid,
+                'sow_boar_name':    sow_boar_name,
+                'parent_sow_name':  (cur_parent_sow) ? cur_parent_sow : '',
+                'parent_boar_name': (cur_parent_boar)? cur_parent_boar: ''
             });
-			
-		}
+            
+        }
         
-        
-       
         
         
         let html = '';
         
         for (const cur_entry of table_data) {
-            const s_click = '';
+            const s_click = `gNavigation.pageParentTrace.onClickSowBoarName('${cur_entry.sow_boar_hid}');`;
             const html_row = `
             <tr>
-                <td onclick='${s_click}'><span>${cur_entry.sow_boar_name}</span></td>
+                <td onclick="${s_click}"><span>${cur_entry.sow_boar_name}</span></td>
                 <td >${cur_entry.parent_sow_name}</td>
                 <td >${cur_entry.parent_boar_name}</td>
             </tr>
@@ -543,4 +513,37 @@ export function PageParentTrace(input_settings){
         
     }
     
+    
+    this.onClickSowBoarName = function(sow_boar_hid){
+        console.log('Parent Trace onClickSowBoarName sow_boar_hid = ' + sow_boar_hid);
+        
+        
+        let data_sow_boar = null;
+        
+        let sow_boar_type = SOW_BOAR_TYPE.SOW;
+        data_sow_boar  = thisObj.getDataSow(sow_boar_hid);
+        
+        if (data_sow_boar == null){
+            sow_boar_type = SOW_BOAR_TYPE.BOAR;
+            data_sow_boar  = thisObj.getDataBoar(sow_boar_hid);
+        }
+        
+        if (data_sow_boar == null){return;}
+        
+        
+        const options_sow_boar ={
+            is_add:         false,
+            sow_boar_type:  sow_boar_type,
+            go_back_page:   elemDivContainer   // Go back to this page
+        }
+        
+        
+        
+        
+        navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar, data_sow_boar);
+        //navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(thisObj.onSuccessUpdateStatus);
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+        navigation.showThisPage(next_page)
+    } 
 }   
