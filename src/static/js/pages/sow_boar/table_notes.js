@@ -116,6 +116,14 @@ export function TableNotes(input_settings){
                 thisObj.elemServerErrorMsg);
         }
         
+        
+        const elem = thisObj.getElemSearchAddControl();
+        if ('dispose_status_id' in dataSowBoar.sow_boar){
+            elem.style.display = 'none';
+        }
+        else{
+            elem.style.display = 'flex';
+        }
     }
     
         
@@ -178,6 +186,10 @@ export function TableNotes(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+
+        if ('dispose_status_id' in dataSowBoar.sow_boar){
+            s_click = '';
+        }
 
         const dt_notes = new Date(cur_entry.prod_notes.date_notes);
         

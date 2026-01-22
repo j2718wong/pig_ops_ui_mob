@@ -660,12 +660,6 @@ export function PageSowBoarEntry(input_settings){
                 {   label: 'Mates',
                     action: on_click_mates,
                     data:   dataSowBoar
-                },
-                
-                {
-                    label: 'Update Status',
-                    action: null,
-                    data:   dataSowBoar
                 }
                 
             ];
@@ -683,12 +677,6 @@ export function PageSowBoarEntry(input_settings){
             
             const menu_items = [
                 {   label: 'External Mates',
-                    action: null,
-                    data:   dataSowBoar
-                },
-                
-                {
-                    label: 'Update Status',
                     action: null,
                     data:   dataSowBoar
                 }

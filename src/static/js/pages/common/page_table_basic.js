@@ -29,7 +29,7 @@ export function PageTableBasic(){
     let settings                = null;
     
     
-	let elemIdTableContainer	= null;
+    let elemIdTableContainer    = null;
     let elemIdTableTitle        = null;
     let elemIdTableEntryCount   = null;
     let elemIdTableInfo         = null;
@@ -52,7 +52,7 @@ export function PageTableBasic(){
     let elemIdTableContent      = null;
     
 
-	let elemTableContainer		= null
+    let elemTableContainer      = null
     let elemTableTitle          = null;
     let elemTableEntryCount     = null;
     let elemTableInfo           = null;
@@ -106,8 +106,8 @@ export function PageTableBasic(){
     
     this.getHtml = function(){
      
-		elemIdTableContainer	= `${settings.uniqueKey}-table-container`;
-	 
+        elemIdTableContainer    = `${settings.uniqueKey}-table-container`;
+     
         elemIdTableTitle        = `${settings.uniqueKey}-table-title`;
         elemIdTableEntryCount   = `${settings.uniqueKey}-table-entry-count`;
         elemIdTableInfo         = `${settings.uniqueKey}-table-info`;
@@ -218,8 +218,8 @@ export function PageTableBasic(){
     
     
     this._findElements = function(){
-        elemTableContainer		= document.getElementById(elemTableContainer);
-		
+        elemTableContainer      = document.getElementById(elemTableContainer);
+        
         elemTableTitle          = document.getElementById(elemIdTableTitle);
         elemTableEntryCount     = document.getElementById(elemIdTableEntryCount);
         elemTableInfo           = document.getElementById(elemIdTableInfo);
@@ -325,6 +325,11 @@ export function PageTableBasic(){
     }
     
     
+    this.getElemSearchAddControl = function(){
+        return elemSeachAddControl;
+    }
+    
+    
     this.getElemTableTitle = function(){
         return elemTableTitle;
     } 
@@ -338,12 +343,12 @@ export function PageTableBasic(){
     this.getElemTableContainer = function(){
         return elemTableContainer;
     }
-	
-	
-	this.getElemTableContent = function(){
-		return elemTableContent;
+    
+    
+    this.getElemTableContent = function(){
+        return elemTableContent;
     }
-	
+    
     
     // Need to overwrite
     this.getHtmlTableRowEmpty = function(){

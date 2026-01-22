@@ -114,7 +114,14 @@ export function TableHealthIssue(input_settings){
                 thisObj.elemServerErrorMsg);
         }
         
-    
+        
+        const elem = thisObj.getElemSearchAddControl();
+        if ('dispose_status_id' in dataSowBoar.sow_boar){
+            elem.style.display = 'none';
+        }
+        else{
+            elem.style.display = 'flex';
+        }
     }
     
         
@@ -181,6 +188,10 @@ export function TableHealthIssue(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         let s_click = `gNavigation.pageSowBoarEntry.tablePigHealth.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+        
+        if ('dispose_status_id' in dataSowBoar.sow_boar){
+            s_click = '';
+        }
         
         let s_last_med = ''
         let s_last_update = '';

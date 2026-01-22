@@ -240,7 +240,7 @@ export function PageSowBoarDisposed(input_settings){
             textValue:          ''
         });
         
-		
+        
         elemReadOnlyDisposedBy   = new ComponentReadOnly({
             uniqueKey:          `${settings.uniqueKey}-disposed-by`,
         
@@ -248,7 +248,7 @@ export function PageSowBoarDisposed(input_settings){
             textLabel:          'Disposed By',
             textValue:          ''
         });
-		
+        
         
         // should show up only if edit
         const html_breadcrumb       = thisObj.componentBreadcrumb.getHtml();
@@ -271,7 +271,7 @@ export function PageSowBoarDisposed(input_settings){
         const html_ui_is_prod_ready = elemReadOnlyIsProdReady.getHtml();
         const html_ui_notes         = elemReadOnlyNotes.getHtml();
         
-		const html_ui_disposed_by  	= elemReadOnlyDisposedBy.getHtml();
+        const html_ui_disposed_by   = elemReadOnlyDisposedBy.getHtml();
         
         
         const html =`
@@ -290,7 +290,7 @@ export function PageSowBoarDisposed(input_settings){
     
     <div class="modal-body">
         <!-- Mobile Info Box -->
-		<!--
+        <!--
         <div class="warning-box" id="${elemIdInfoShow}">
         </div>
         -->
@@ -327,8 +327,8 @@ export function PageSowBoarDisposed(input_settings){
         ${html_ui_notes}
         
         
-		${html_ui_disposed_by}
-		
+        ${html_ui_disposed_by}
+        
     </div>
 </div>
 
@@ -350,14 +350,14 @@ export function PageSowBoarDisposed(input_settings){
         
         elemReadOnlyParentSow.afterHtmlRender();
         elemReadOnlyParentBoar.afterHtmlRender();
-		elemReadOnlyNumNipples.afterHtmlRender();
+        elemReadOnlyNumNipples.afterHtmlRender();
         elemReadOnlyBirthProdId.afterHtmlRender();
         
         elemReadOnlyIsExternal.afterHtmlRender();
         elemReadOnlyIsProdReady.afterHtmlRender();
         elemReadOnlyNotes.afterHtmlRender();
         
-		elemReadOnlyDisposedBy.afterHtmlRender();
+        elemReadOnlyDisposedBy.afterHtmlRender();
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -387,18 +387,18 @@ export function PageSowBoarDisposed(input_settings){
     }
     
     
-	this._resetForm = function(){
-		elemReadOnlyName.reset();
+    this._resetForm = function(){
+        elemReadOnlyName.reset();
         elemReadOnlyNumber.reset();
-		elemReadOnlyDateBirth.reset();
-		elemReadOnlyParentSow.reset();
+        elemReadOnlyDateBirth.reset();
+        elemReadOnlyParentSow.reset();
         elemReadOnlyParentBoar.reset();
-		elemReadOnlyNumNipples.reset();
-		elemReadOnlyNotes.reset();
-		
-		elemReadOnlyDisposedBy.reset();
-	}
-	
+        elemReadOnlyNumNipples.reset();
+        elemReadOnlyNotes.reset();
+        
+        elemReadOnlyDisposedBy.reset();
+    }
+    
         
     this.beforeShow = function(options, data_sow_boar){
         /*
@@ -410,18 +410,18 @@ export function PageSowBoarDisposed(input_settings){
 
         
         */
-		
-		thisObj._resetForm();
+        
+        thisObj._resetForm();
         
         showOptions = options;
         
         let html;
 
         
-		thisObj.curDataSowBoar = data_sow_boar;
-		thisObj.componentBreadcrumb.show();
-		thisObj.updateBreadCrumbs();
-		
+        thisObj.curDataSowBoar = data_sow_boar;
+        thisObj.componentBreadcrumb.show();
+        thisObj.updateBreadCrumbs();
+        
         
         
         
@@ -520,9 +520,9 @@ export function PageSowBoarDisposed(input_settings){
             elemReadOnlyNotes.setValue('');
         }
         
-		const last_update = cur_sow_boar.last_update;
-		
-		let disposed_by = `${last_update.name_first} ${last_update.name_last} on ${cur_sow_boar.date_dispose}`
+        const last_update = cur_sow_boar.last_update;
+        
+        let disposed_by = `${last_update.name_first} ${last_update.name_last} on ${cur_sow_boar.date_dispose}`
         elemReadOnlyDisposedBy.setValue(disposed_by);
         
     }

@@ -105,6 +105,17 @@ export function TableMedVac(input_settings){
             thisObj.requestDataPigMedVac();
         }
         
+        
+        const elem = thisObj.getElemSearchAddControl();
+        if ('dispose_status_id' in dataSowBoar.sow_boar){
+            elem.style.display = 'none';
+        }
+        else{
+            elem.style.display = 'flex';
+        }
+        
+        
+        
     }
     
         
@@ -171,6 +182,10 @@ export function TableMedVac(input_settings){
         
         let  s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
         
+		if ('dispose_status_id' in dataSowBoar.sow_boar){
+            s_click = '';
+        }
+		
         let s_medvac = `
             <span class="medvac-brand"><b>${cur_entry.medvac.brand.name}</b></span><br>
             <span class="medvac-type">${cur_entry.medvac.type.name}</span>
