@@ -160,17 +160,17 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.render = function(){
-        elemIdBtnClose          = `medvac-add-edit-close`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
-        elemIdHeaderTitle       = `medvac-add-edit-title`;
+        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         
             
-        elemIdInfoShow          = `medvac-add-edit-info-show`;
-        elemIdInfo              = `medvac-add-edit-info`;
+        elemIdInfoShow          = `${settings.uniqueKey}-info-show`;
+        elemIdInfo              = `${settings.uniqueKey}-info`;
         
         
         elemUiDateMedVac        = new UiInputDatePicker({
-            uniqueKey:          'medvac-add-edit-date',
+            uniqueKey:          `${settings.uniqueKey}-date`,
         
             textLabel:          'Date',
             isRequired:         true,
@@ -180,22 +180,22 @@ export function PageMedVacAddEdit(input_settings){
         
         
         
-        elemIdMedVacForShow     = `medvac-add-edit-medvac-for`;
-        elemIdMedVacForLabel    = `medvac-add-edit-medvac-for-label`;
+        elemIdMedVacForShow     = `${settings.uniqueKey}-medvac-for`;
+        elemIdMedVacForLabel    = `${settings.uniqueKey}-medvac-for-label`;
         
-        elemIdMedVacForPigOps           = `medvac-add-edit-medvac-for-pig-ops`;
-        elemIdMedVacForPigOpsChk        = `medvac-add-edit-medvac-for-pig-ops-chk`;
-        elemIdMedVacForPigOpsLabel      = `medvac-add-edit-medvac-for-pig-ops-label`;
+        elemIdMedVacForPigOps           = `${settings.uniqueKey}-medvac-for-pig-ops`;
+        elemIdMedVacForPigOpsChk        = `${settings.uniqueKey}-medvac-for-pig-ops-chk`;
+        elemIdMedVacForPigOpsLabel      = `${settings.uniqueKey}-medvac-for-pig-ops-label`;
 
 
-        elemIdMedVacForPigHealth        = `medvac-add-edit-medvac-for-pig-ops`;
-        elemIdMedVacForPigHealthDate    = `medvac-add-edit-medvac-for-pig-ops-date`;
-        elemIdMedVacForPigHealthLabel   = `medvac-add-edit-medvac-for-pig-ops-label`;
+        elemIdMedVacForPigHealth        = `${settings.uniqueKey}-medvac-for-pig-ops`;
+        elemIdMedVacForPigHealthDate    = `${settings.uniqueKey}-medvac-for-pig-ops-date`;
+        elemIdMedVacForPigHealthLabel   = `${settings.uniqueKey}-medvac-for-pig-ops-label`;
 
         
         componentMedVacBrand    = new ComponentMedVacBrand({
             navigation:         navigation,
-            uniqueKey:          'medvac-add-edit-brand-name',
+            uniqueKey:          `${settings.uniqueKey}-brand-name`,
 
             titleExpandSection: 'Add New MedVac Brand',
             htmlExpandSection:  null,
@@ -208,7 +208,7 @@ export function PageMedVacAddEdit(input_settings){
         
         componentMedVacType     = new ComponentMedVacType({
             navigation:         navigation,
-            uniqueKey:          'medvac-add-edit-type',
+            uniqueKey:          `${settings.uniqueKey}-type`,
 
             titleExpandSection: 'Add New MedVac Type',
             htmlExpandSection:  null,
@@ -222,7 +222,7 @@ export function PageMedVacAddEdit(input_settings){
         componentAccMedVac      = new ComponentAccMedVac({
             navigation:         navigation,
             parentObj:          thisObj,
-            uniqueKey:          'medvac-add-edit-name',
+            uniqueKey:          `${settings.uniqueKey}-name`,
 
             titleExpandSection: 'Add New MedVac Name',
             htmlExpandSection:  null,
@@ -234,7 +234,7 @@ export function PageMedVacAddEdit(input_settings){
         
         
         elemUiNotes             = new UiInputTextWithCounter({
-            uniqueKey:          'medvac-add-edit-notes',
+            uniqueKey:          `${settings.uniqueKey}-notes`,
             
             isTextArea:         true,
             className:          'form-group-text-area',
@@ -248,7 +248,7 @@ export function PageMedVacAddEdit(input_settings){
         
         componentStaff          = new ComponentStaffFormGroup({
             navigation:         navigation,
-            uniqueKey:          'medvac-add-edit-staff',
+            uniqueKey:          `${settings.uniqueKey}-staff`,
             
             includeAddNew:      true,
             includeDoneByMe:    true,
@@ -264,9 +264,9 @@ export function PageMedVacAddEdit(input_settings){
     
         
 
-        elemIdServerErrorMsg    = `medvac-add-edit-server-error-msg`;
-        elemIdBtnCancel         = `medvac-add-edit-cancel`;
-        elemIdBtnSave           = `medvac-add-edit-save`;
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
+        elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
+        elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
            
         const html_breadcrumb   = thisObj.componentBreadcrumb.getHtml();

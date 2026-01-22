@@ -32,6 +32,7 @@ import {PageAccountUnpaidBill}      from '../a_user_control/page_account_unpaid_
 import {PageSowBoarList}            from '../sow_boar/page_sow_boar_list.js';
 import {PageSowBoarAddEdit}         from '../sow_boar/page_sow_boar_add_edit.js';
 import {PageSowBoarEntry}           from '../sow_boar/page_sow_boar_entry.js';
+import {PageSowBoarDisposed}        from '../sow_boar/page_sow_boar_disposed.js';
 
 import {PageMedVacAddEdit}          from '../sow_boar/page_medvac_add_edit.js';
 import {PageHealthNotesAddEdit}     from '../sow_boar/page_health_notes_add_edit.js';
@@ -393,7 +394,7 @@ export function Navigation(){
     })
     
     
-    this.pageSowBoarDiposed     = new PageSowBoarDisposed({
+    this.pageSowBoarDisposed     = new PageSowBoarDisposed({
         navigation:             this,
         elemIdDivContainer:     elemIdContSowBoarDisposed
     });

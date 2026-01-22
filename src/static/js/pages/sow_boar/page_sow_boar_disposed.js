@@ -11,7 +11,7 @@ import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_b
 
 import {TextTranslation}        from '../common/translation.js';
 
-import {ComponentReadOnly}      from '../common/ui/component_read_only_field.js';
+import {ComponentReadOnly}      from '../common/ui/comp_read_only_field.js';
 
 import {getSowBoarReference}    from '../common/common_app.js';
 
@@ -42,7 +42,7 @@ export function PageSowBoarDisposed(input_settings){
     const settings              = input_settings;
 
     
-    const elemDivContainer      = settings.elemDivContainer;
+    const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
         
     let elemIdBtnClose          = null;
@@ -57,7 +57,7 @@ export function PageSowBoarDisposed(input_settings){
     let elemReadOnlyNumber      = null;
     let elemReadOnlyDateBirth   = null;
     let elemReadOnlyParentSow   = null;
-    let elemReadOnlyParentBoar 	= null;
+    let elemReadOnlyParentBoar  = null;
     
     
     let elemReadOnlyBirthProdId = null;
@@ -65,12 +65,16 @@ export function PageSowBoarDisposed(input_settings){
     
     let elemReadOnlyIsExternal  = null;
     let elemReadOnlyIsProdReady = null;
-    let elemReadOnlyNotes      	= null;
+    let elemReadOnlyNotes       = null;
     
-    let elemReadOnlyDisposedDate  	= null;
-	let elemReadOnlyDisposedStatus 	= null;
-	let elemReadOnlyDisposedBy  	= null;
+
+    let elemReadOnlyDisposedBy  = null;
     
+    
+    let elemBtnClose            = null
+    let elemHeaderTitle         = null;
+    
+    let elemInfoShow            = null;
     
     
     /** The disposed entry has a different structure that the sow or boar entry.
@@ -139,7 +143,7 @@ export function PageSowBoarDisposed(input_settings){
     
     this.render = function(){
         
-		elemIdBtnClose          = `${settings.uniqueKey}-close`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         
@@ -148,48 +152,48 @@ export function PageSowBoarDisposed(input_settings){
         elemIdInfo              = `${settings.uniqueKey}-info`;
         
         
-        elemReadOnlyName     	= new ComponentReadOnly({
+        elemReadOnlyName        = new ComponentReadOnly({
             uniqueKey:          `${settings.uniqueKey}-name`,
         
             className:          'form-group-text',
             textLabel:          'Name',
-            textValue:         	''
+            textValue:          ''
         });
         
         
-        elemReadOnlyNumber   	= new ComponentReadOnly({
+        elemReadOnlyNumber      = new ComponentReadOnly({
             uniqueKey:          `${settings.uniqueKey}-number`,
         
             className:          'form-group-text',
             textLabel:          'Number',
-            textValue:         	''
+            textValue:          ''
         });
         
         
-        elemReadOnlyDateBirth	= new ComponentReadOnly({
+        elemReadOnlyDateBirth   = new ComponentReadOnly({
             uniqueKey:          `${settings.uniqueKey}-date-birth`,
         
             className:          'form-group-text',
-            textLabel:          'Number',
-            textValue:         	''
+            textLabel:          'Date of Birth',
+            textValue:          ''
         });
         
         
-        elemReadOnlyBirthProdId	= new ComponentReadOnly({
+        elemReadOnlyBirthProdId = new ComponentReadOnly({
             uniqueKey:          `${settings.uniqueKey}-birth-prod-id`,
         
             className:          'form-group-select',
             textLabel:          'Birth Prod ID',
-            textValue:         	''
+            textValue:          ''
         });
         
-		
+        
         elemReadOnlyParentSow    = new ComponentReadOnly({
             uniqueKey:          `${settings.uniqueKey}-parent-sow`,
         
             className:          'form-group-select',
             textLabel:          'Parent Sow',
-            textValue:         	''
+            textValue:          ''
         });
         
         elemReadOnlyParentBoar   = new ComponentReadOnly({
@@ -197,7 +201,7 @@ export function PageSowBoarDisposed(input_settings){
         
             className:          'form-group-select',
             textLabel:          'Parent Boar',
-            textValue:         	''
+            textValue:          ''
         });
         
         
@@ -206,16 +210,16 @@ export function PageSowBoarDisposed(input_settings){
         
             className:          'form-group-select',
             textLabel:          'Number of  Nipples',
-            textValue:         	''
+            textValue:          ''
         });
-		
+        
         
         elemReadOnlyIsExternal   = new ComponentReadOnly({
             uniqueKey:          `${settings.uniqueKey}-is-external`,
         
             className:          'form-group-check',
             textLabel:          'Is External?',
-            textValue:         	''
+            textValue:          ''
         });
         
         
@@ -224,7 +228,7 @@ export function PageSowBoarDisposed(input_settings){
         
             className:          'form-group-check',
             textLabel:          'Is Ready for Mating?',
-            textValue:         	''
+            textValue:          ''
         });
         
         
@@ -233,11 +237,19 @@ export function PageSowBoarDisposed(input_settings){
         
             className:          'form-group-text',
             textLabel:          'Notes',
-            textValue:         	''
+            textValue:          ''
         });
         
-        
 		
+        elemReadOnlyDisposedBy   = new ComponentReadOnly({
+            uniqueKey:          `${settings.uniqueKey}-disposed-by`,
+        
+            className:          'form-group-text',
+            textLabel:          'Disposed By',
+            textValue:          ''
+        });
+		
+        
         // should show up only if edit
         const html_breadcrumb       = thisObj.componentBreadcrumb.getHtml();
         
@@ -246,18 +258,20 @@ export function PageSowBoarDisposed(input_settings){
         const html_ui_number        = elemReadOnlyNumber.getHtml();
         
         const html_ui_date_birth    = elemReadOnlyDateBirth.getHtml();
-		const html_ui_birth_prod_id	= elemReadOnlyBirthProdId.getHtml();
-		
-		
+        const html_ui_birth_prod_id = elemReadOnlyBirthProdId.getHtml();
+        
+        
         const html_ui_parent_sow    = elemReadOnlyParentSow.getHtml();
         const html_ui_parent_boar   = elemReadOnlyParentBoar.getHtml();
         
-		const html_ui_num_nipples	= elemReadOnlyNumNipples.getHtml();
-		
-		
+        const html_ui_num_nipples   = elemReadOnlyNumNipples.getHtml();
+        
+        
         const html_ui_is_external   = elemReadOnlyIsExternal.getHtml();
         const html_ui_is_prod_ready = elemReadOnlyIsProdReady.getHtml();
         const html_ui_notes         = elemReadOnlyNotes.getHtml();
+        
+		const html_ui_disposed_by  	= elemReadOnlyDisposedBy.getHtml();
         
         
         const html =`
@@ -276,9 +290,10 @@ export function PageSowBoarDisposed(input_settings){
     
     <div class="modal-body">
         <!-- Mobile Info Box -->
+		<!--
         <div class="warning-box" id="${elemIdInfoShow}">
         </div>
-        
+        -->
         
         <!-- 1. Name -->
         ${html_ui_name}
@@ -312,6 +327,8 @@ export function PageSowBoarDisposed(input_settings){
         ${html_ui_notes}
         
         
+		${html_ui_disposed_by}
+		
     </div>
 </div>
 
@@ -333,12 +350,14 @@ export function PageSowBoarDisposed(input_settings){
         
         elemReadOnlyParentSow.afterHtmlRender();
         elemReadOnlyParentBoar.afterHtmlRender();
+		elemReadOnlyNumNipples.afterHtmlRender();
         elemReadOnlyBirthProdId.afterHtmlRender();
         
         elemReadOnlyIsExternal.afterHtmlRender();
         elemReadOnlyIsProdReady.afterHtmlRender();
         elemReadOnlyNotes.afterHtmlRender();
         
+		elemReadOnlyDisposedBy.afterHtmlRender();
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -368,41 +387,42 @@ export function PageSowBoarDisposed(input_settings){
     }
     
     
+	this._resetForm = function(){
+		elemReadOnlyName.reset();
+        elemReadOnlyNumber.reset();
+		elemReadOnlyDateBirth.reset();
+		elemReadOnlyParentSow.reset();
+        elemReadOnlyParentBoar.reset();
+		elemReadOnlyNumNipples.reset();
+		elemReadOnlyNotes.reset();
+		
+		elemReadOnlyDisposedBy.reset();
+	}
+	
         
     this.beforeShow = function(options, data_sow_boar){
         /*
         Typical options
         options ={
-            is_add:         true,   // false is edit
-            sow_boar_type:  1,   
-            farm_sow_boar_id: 1,    // only needed for edit
-            go_back_page:   elemDivContainer,   // Go back to this page; this is Div element
-            go_back_page_id: PAGE_ID.SOW_BOAR_LIST, optional
-            from_prod_pid:  null    // can be null or undefined
+            sow_boar_type:  showOptions.sow_boar_type,
+            go_back_page:   elemDivContainer   // Go back to this page
         }
-        
-        data_sow_boar is only provided if sow_boar edit, options.is_add = false
+
         
         */
-        thisObj._resetForm();
+		
+		thisObj._resetForm();
         
         showOptions = options;
         
         let html;
 
-        if (options.is_add){
-            thisObj.curDataSowBoar = null;
-            thisObj.componentBreadcrumb.hide();
-            
-            sowBoarUpdateStatus.hide();
-        } 
-        else{
-            thisObj.curDataSowBoar = data_sow_boar;
-            thisObj.componentBreadcrumb.show();
-            thisObj.updateBreadCrumbs();
-            
-            sowBoarUpdateStatus.show();
-        }
+        
+		thisObj.curDataSowBoar = data_sow_boar;
+		thisObj.componentBreadcrumb.show();
+		thisObj.updateBreadCrumbs();
+		
+        
         
         
         // Sow sow-only info else hide
@@ -425,86 +445,7 @@ export function PageSowBoarDisposed(input_settings){
         
         
         // Change Header title
-        switch(options.sow_boar_type){
-            case SOW_BOAR_TYPE.SOW: {
-                if (options.is_add){
-                    html = `<i class="fas fa-plus me-2"></i>Add Sow`;
-                }
-                else{
-                    const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
-                    
-                    html = `<i class="fas fa-edit me-2"></i>Edit Sow: ${sow_boar_name}`;
-                    
-                    thisObj.populateForm(thisObj.curDataSowBoar);
-                }
-                elemHeaderTitle.innerHTML = html;
-                
-                elemInfoShow.style.display = 'none';
-                
-                // Hide Boar Only info
-                elemReadOnlyIsExternal.hide();
-                elemNumNipplesShow.style.display = 'block';
-                
-                break;
-            }
-    
-            case SOW_BOAR_TYPE.BOAR: {
-                if (options.is_add){
-                    html = `<i class="fas fa-plus me-2"></i>Add Boar`;
-                }
-                else{
-                    const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
-                    
-                    html = `<i class="fas fa-edit me-2"></i>Edit Boar: ${sow_boar_name}`;
-                    
-                    thisObj.populateForm(thisObj.curDataSowBoar);
-                }
-                elemHeaderTitle.innerHTML = html;
-                
-                elemInfoShow.style.display = 'none';
-                
-                // Boars can be external to the farm
-                elemReadOnlyIsExternal.show();
-                elemNumNipplesShow.style.display = 'none';
-                break;
-            }
-    
-            case SOW_BOAR_TYPE.GILT:{
-                if (options.is_add){
-                    html = `<i class="fas fa-plus me-2"></i>Add Gilt`;
-                    elemInfoShow.style.display = 'block';
-                }
-                else{
-                    const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
-                    
-                    html = `<i class="fas fa-edit me-2"></i>Edit Gilt: ${sow_boar_name}`;
-                    
-                    thisObj.populateForm(thisObj.curDataSowBoar);
-                }
-                elemHeaderTitle.innerHTML = html;
-                
-                
-                // Hide Boar Only info
-                elemReadOnlyIsExternal.hide();
-                elemNumNipplesShow.style.display = 'block';
-                
-                break;
-            }
-            
-            case SOW_BOAR_TYPE.DISPOSED:{}
-            
-        }
-        
-        
-        // Hide elemBirthProdIdShow
-        // BirthProdId will only show up if a production piglet is eartag or
-        //  a pig is taken from existing production entry  
-        if ('from_prod_pid' in options){
-            elemBirthProdIdShow.style.display = 'block';
-        }
-        else{
-            elemBirthProdIdShow.style.display = 'none';
-        }
+        thisObj.populateForm(data_sow_boar);
         
         
         // Update Close and cancel button on click
@@ -513,13 +454,7 @@ export function PageSowBoarDisposed(input_settings){
             navigation.showThisPage(showOptions.go_back_page);
         };
         
-        elemBtnCancel.onclick = function() {
-            navigation.showThisPage(showOptions.go_back_page);
-        };
         
-        
-        // Propagate data_sow_boar to sowBoarUpdateStatus
-        sowBoarUpdateStatus.beforeShow(data_sow_boar);
     }
     
     
@@ -535,9 +470,25 @@ export function PageSowBoarDisposed(input_settings){
         elemReadOnlyNumber.setValue(cur_sow_boar.number);
         
         if (cur_sow_boar.date_of_birth){
-            elemReadOnlyDateBirth.setDate(cur_sow_boar.date_of_birth);
+            elemReadOnlyDateBirth.setValue(cur_sow_boar.date_of_birth);
         }
         
+        
+        const parent_sow = {
+            'name':     (cur_sow_boar.parent_sow_name)? cur_sow_boar.parent_sow_name: '',
+            'number':   (cur_sow_boar.parent_sow_number)? cur_sow_boar.parent_sow_number: ''
+        };
+        const parent_sow_name = getSowBoarReference(parent_sow)
+        
+        const parent_boar = {
+            'name':     (cur_sow_boar.parent_boar_name)? cur_sow_boar.parent_boar_name: '',
+            'number':   (cur_sow_boar.parent_boar_number)? cur_sow_boar.parent_boar_number: ''
+        };
+        const parent_boar_name = getSowBoarReference(parent_boar)
+        
+        
+        elemReadOnlyParentSow.setValue(parent_sow_name);
+        elemReadOnlyParentBoar.setValue(parent_boar_name);       
         
         if (cur_sow_boar.is_external && cur_sow_boar.is_external > 0) {
             elemReadOnlyIsExternal.setValue('Yes');
@@ -556,33 +507,23 @@ export function PageSowBoarDisposed(input_settings){
         
         if (cur_sow_boar.num_nipples ){
             elemReadOnlyNumNipples.show();
-			elemReadOnlyNumNipples.setValue(cur_sow_boar.num_nipples);
+            elemReadOnlyNumNipples.setValue(cur_sow_boar.num_nipples);
         }
-		else{
-			elemReadOnlyNumNipples.hide();
-		}
+        else{
+            elemReadOnlyNumNipples.hide();
+        }
         
         if (cur_sow_boar.add_notes ){
             elemReadOnlyNotes.setValue(cur_sow_boar.add_notes);
         }
-		else{
-			elemReadOnlyNotes.setValue('');
-		}
-        
-        
-        // Delayed populate for dropdowns
-        if (cur_sow_boar.parent_sow_hid || cur_sow_boar.parent_boar_hid){
-            setTimeout(function(){
-                if (cur_sow_boar.parent_sow_hid){
-                    elemReadOnlyParentSow.setValue(cur_sow_boar.parent_sow_hid);
-                }
-                
-                if (cur_sow_boar.parent_boar_hid){
-                    elemReadOnlyParentBoar.setValue(cur_sow_boar.parent_boar_hid);
-                }
-                
-            }, 100);
+        else{
+            elemReadOnlyNotes.setValue('');
         }
+        
+		const last_update = cur_sow_boar.last_update;
+		
+		let disposed_by = `${last_update.name_first} ${last_update.name_last} on ${cur_sow_boar.date_dispose}`
+        elemReadOnlyDisposedBy.setValue(disposed_by);
         
     }
     

@@ -1,4 +1,4 @@
-// January 17, 2026
+// January 22, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -15,12 +15,20 @@ import {PAGE_ID,
         SOW_STATUS}             from '../../constants.js';
 
 
-export function PageSowBoarEntryComponent(input_settings){
+export function PageProdEntryComponent(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
+	/**
+	Typical settings:
+	{
+		pigProdType:		PIG_PROD_TYPE.GESTATING
+		
+	}
+	
+	*/
     const settings              = input_settings;
 
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
@@ -64,8 +72,13 @@ export function PageSowBoarEntryComponent(input_settings){
     
     this.updateBreadCrumbs = function(){
         // Need to update breadCrumb;
-        // 1.) The first entry can be either be Sow List, Boar List, Gilt List, or Diposed List
-        // 2.) The second entry is the Sow Boar name 
+        // 1.) The first entry can be either be Prod Gesta List, Prod Lacta List, Fattening List
+        // 2.) The second entry is 
+		//
+		// if ProdGesta: Sow Name
+		// if ProdLacta: Sow Name
+		// if Fattening: PID <number>
+		
 
         let list_name       = null;
        

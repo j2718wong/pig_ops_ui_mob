@@ -8,12 +8,12 @@
 import {UiBasic}                    from './ui_basic.js';
 
 
-export function ComponentFeedsInput(input_settings){
+export function ComponentFeedBuyInput(input_settings){
     UiBasic.call(this);
     
     /* Typical settings
     settings = {
-        uniqueKey:              '',
+        uniqueKey:              'feed-buy',
         elemRoot:               element,    // Root element where to search for elements
                                             // so that not all document will be searched.
         
@@ -111,16 +111,17 @@ export function ComponentFeedsInput(input_settings){
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>${settings.header.col1Name}</th>
-                            <th class="fi-col2">${settings.header.col2Name}</th>
-                            <th>${settings.header.col3Name}</th>
+                            <th>Feed<br>Type</th>
+                            <th>Num<br> Sacks</th>
+                            <th class="kg-input">kg /<br> Sack</th>
+							<th>Price ₱</th>
+							<th>Subtotal</th>
                         </tr>
                     </thead>
                     
                     <tbody id="${elemIdFeedInputBody}">
                         <tr id="${elemIdFinisherRow}">
-                            <td class="readonly-cell">Finisher</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdFinisherCol2}">150</td>
+                            <td class="fb-feed-type">Finisher</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdFinisherInput}" value="0" step="0.5" min="0" data-feed="finisher">
@@ -130,12 +131,20 @@ export function ComponentFeedsInput(input_settings){
                                     </div>
                                 </div>
                             </td>
+							<td class="input-cell kg-input">
+								<input type="text" class="simple-input" >
+							</td>
+							<td class="input-cell price-input">
+								<input type="text" class="simple-input" value="" step="1" min="0" data-feed="finisher">
+							</td>
+							<td class="subtotal-cell">
+								<div class="subtotal-value" data-feed="finisher">₱ 0.00</div>
+							</td>
                         </tr>
                         
                         
                         <tr id="${elemIdGrowerRow}">
-                            <td class="readonly-cell">Grower</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdGrowerCol2}">150</td>
+                            <td class="fb-feed-type">Grower</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdGrowerInput}" value="0" step="0.5" min="0" data-feed="grower">
@@ -145,12 +154,20 @@ export function ComponentFeedsInput(input_settings){
                                     </div>
                                 </div>
                             </td>
+							<td class="input-cell kg-input">
+								<input type="text" class="simple-input" >
+							</td>
+							<td class="input-cell price-input">
+								<input type="text" class="simple-input" value="" step="1" min="0" data-feed="grower">
+							</td>
+							<td class="subtotal-cell">
+								<div class="subtotal-value" data-feed="grower">₱ 0.00</div>
+							</td>
                         </tr>
                         
                         
                         <tr id="${elemIdStarterRow}">
-                            <td class="readonly-cell">Starter</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdStarterCol2}">150</td>
+                            <td class="fb-feed-type">Starter</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdStarterInput}" value="0" step="0.5" min="0" data-feed="starter">
@@ -160,12 +177,20 @@ export function ComponentFeedsInput(input_settings){
                                     </div>
                                 </div>
                             </td>
+							<td class="input-cell kg-input">
+								<input type="text" class="simple-input" >
+							</td>
+							<td class="input-cell price-input">
+								<input type="text" class="simple-input" value="" step="1" min="0" data-feed="starter">
+							</td>
+							<td class="subtotal-cell">
+								<div class="subtotal-value" data-feed="starter">₱ 0.00</div>
+							</td>
                         </tr>
                         
                         
                         <tr id="${elemIdPreStarterRow}">
-                            <td class="readonly-cell">PreStart</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdPreStarterCol2}">150</td>
+                            <td class="fb-feed-type">PreStart</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdPreStarterInput}" value="0" step="0.5" min="0" data-feed="prestarter">
@@ -175,11 +200,19 @@ export function ComponentFeedsInput(input_settings){
                                     </div>
                                 </div>
                             </td>
+							<td class="input-cell kg-input">
+								<input type="text" class="simple-input" >
+							</td>
+							<td class="input-cell price-input">
+								<input type="text" class="simple-input" value="" step="1" min="0" data-feed="prestarter">
+							</td>
+							<td class="subtotal-cell">
+								<div class="subtotal-value" data-feed="prestarter">₱ 0.00</div>
+							</td>
                         </tr>
                         
                         <tr id="${elemIdBoosterRow}">
-                            <td class="readonly-cell">Booster</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdBoosterCol2}">150</td>
+                            <td class="fb-feed-type">Booster</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdBoosterInput}" value="0" step="0.5" min="0" data-feed="booster">
@@ -189,12 +222,20 @@ export function ComponentFeedsInput(input_settings){
                                     </div>
                                 </div>
                             </td>
+							<td class="input-cell kg-input">
+								<input type="text" class="simple-input " >
+							</td>
+							<td class="input-cell price-input">
+								<input type="text" class="simple-input" value="" step="1" min="0" data-feed="booster">
+							</td>
+							<td class="subtotal-cell">
+								<div class="subtotal-value" data-feed="booster">₱ 0.00</div>
+							</td>
                         </tr>
                         
                         
                         <tr id="${elemIdLactaRow}">
-                            <td class="readonly-cell">Lacta</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdLactaCol2}">150</td>
+                            <td class="fb-feed-type">Lacta</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdLactaInput}" value="0" step="0.5" min="0" data-feed="lacta">
@@ -204,11 +245,19 @@ export function ComponentFeedsInput(input_settings){
                                     </div>
                                 </div>
                             </td>
+							<td class="input-cell kg-input">
+								<input type="text" class="simple-input" >
+							</td>
+							<td class="input-cell price-input">
+								<input type="text" class="simple-input" value="" step="1" min="0" data-feed="gesta">
+							</td>
+							<td class="subtotal-cell">
+								<div class="subtotal-value" data-feed="gesta">₱ 0.00</div>
+							</td>
                         </tr>
                         
                         <tr id="${elemIdGestaRow}">
-                            <td class="readonly-cell">Gesta</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdGestaCol2}">150</td>
+                            <td class="fb-feed-type">Gesta</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdGestaInput}" value="0" step="0.5" min="0" data-feed="gesta">
@@ -218,7 +267,22 @@ export function ComponentFeedsInput(input_settings){
                                     </div>
                                 </div>
                             </td>
+							<td class="input-cell kg-input">
+								<input type="text" class="simple-input" >
+							</td>
+							<td class="input-cell price-input">
+								<input type="text" class="simple-input" value="" step="1" min="0" data-feed="gesta">
+							</td>
+							<td class="subtotal-cell">
+								<div class="subtotal-value" data-feed="gesta">₱ 0.00</div>
+							</td>
+							
                         </tr>
+						
+						<tr class="total-row">
+							<td colspan="4" class="total-label">TOTAL VALUE</td>
+							<td class="total-value" id="total-value">₱ 0.00</td>
+						</tr>
                     
                     </tbody>
                     
@@ -240,31 +304,24 @@ export function ComponentFeedsInput(input_settings){
         elemFeedInputBody       = document.getElementById(elemIdFeedInputBody);
                                   
         elemFinisherRow         = document.getElementById(elemIdFinisherRow);
-        elemFinisherCol2        = document.getElementById(elemIdFinisherCol2);
         elemFinisherInput       = document.getElementById(elemIdFinisherInput);
                                   
         elemGrowerRow           = document.getElementById(elemIdGrowerRow);
-        elemGrowerCol2          = document.getElementById(elemIdGrowerCol2);
         elemGrowerInput         = document.getElementById(elemIdGrowerInput);
                                   
         elemStarterRow          = document.getElementById(elemIdStarterRow);
-        elemStarterCol2         = document.getElementById(elemIdStarterCol2);
         elemStarterInput        = document.getElementById(elemIdStarterInput);
                                   
         elemPreStarterRow       = document.getElementById(elemIdPreStarterRow);
-        elemPreStarterCol2      = document.getElementById(elemIdPreStarterCol2);
         elemPreStarterInput     = document.getElementById(elemIdPreStarterInput);
                                   
         elemBoosterRow          = document.getElementById(elemIdBoosterRow);
-        elemBoosterCol2         = document.getElementById(elemIdBoosterCol2);
         elemBoosterInput        = document.getElementById(elemIdBoosterInput);
                                   
         elemLactaRow            = document.getElementById(elemIdLactaRow);
-        elemLactaCol2           = document.getElementById(elemIdLactaCol2);
         elemLactaInput          = document.getElementById(elemIdLactaInput);
                                   
         elemGestaRow            = document.getElementById(elemIdGestaRow);
-        elemGestaCol2           = document.getElementById(elemIdGestaCol2);
         elemGestaInput          = document.getElementById(elemIdGestaInput);
         
     }

@@ -46,12 +46,13 @@ export function ComponentReadOnly(input_settings){
                 ${settings.textLabel}
             </label>
             
-            <b>
-                <label id="${elemIdValue}">
-                    ${settings.textLabel}
-                </label>
-            </b>
-            
+            <div>
+                <b>
+                    <label id="${elemIdValue}">
+                        ${settings.textLabel}
+                    </label>
+                </b>
+            </div>
         </div>
         `;
         
@@ -61,8 +62,8 @@ export function ComponentReadOnly(input_settings){
     this._findElements = function(){
         thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
         
-        elemLabel               = document.getElementById(elemIdText);
-        elemValue               = document.getElementById(elemIdCharCounter);
+        elemLabel               = document.getElementById(elemIdLabel);
+        elemValue               = document.getElementById(elemIdValue);
     }
     
     
@@ -88,6 +89,7 @@ export function ComponentReadOnly(input_settings){
     
     
     this.reset = function(){
+		elemValue.textContent = '';
     } 
     
     

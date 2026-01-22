@@ -162,26 +162,16 @@ export function PageSowBoarList(input_settings){
     <style>
         
         /* Updated Table Styles */
-        .data-table.table-sow th {position:sticky; top: 0;}
-        .data-table.table-sow td {position:sticky; top: 0;}
-        
-        .data-table.table-boar th:nth-child(1) { width: 30%; }
-        .data-table.table-boar th:nth-child(2) { width: 30%; }
-        .data-table.table-boar th:nth-child(3) { width: 15%; }
-        .data-table.table-boar th:nth-child(4) { width: 25%; }
-        
-        .data-table.table-boar td:nth-child(3) { text-align: center; }
-        
-        .data-table.table-gilt th:nth-child(1) { width: 25%; }
-        .data-table.table-gilt th:nth-child(2) { width: 25%; }
-        .data-table.table-gilt th:nth-child(3) { width: 50%; }
+        .table-sow td {padding-right:0}
+       
+        .data-table.table-boar td:nth-child(3) { text-align: center;}
+        .table-boar td {padding-right:0}
         
         
-        .data-table.table-disposed th:nth-child(1) { width: 25%; }
-        .data-table.table-disposed th:nth-child(2) { width: 25%; }
-        .data-table.table-disposed th:nth-child(3) { width: 25%; }
-        .data-table.table-disposed th:nth-child(4) { width: 25%; }
+        .table-gilt td {padding-right:0}
         
+        .table-disposed td {padding-right:0}
+		
       </style>
     `;
         return html;
@@ -328,6 +318,13 @@ ${html_style}
         
         
         <table class="data-table table-boar" id="${elemIdTableBoar}">
+            <colgroup>
+                <col style="width: 30%;">
+                <col style="width: 25%;">
+                <col style="width: 20%;">
+                <col style="width: 25%;">
+            </colgroup>
+            
             <thead>
                 <tr>
                     <th>Boar</th>
@@ -343,6 +340,12 @@ ${html_style}
         
         
         <table class="data-table table-gilt" id="${elemIdTableGilt}">
+            <colgroup>
+                <col style="width: 25%;">
+                <col style="width: 25%;">
+                <col style="width: 50%;">
+            </colgroup>
+            
             <thead>
                 <tr>
                     <th>Gilt</th>
@@ -357,7 +360,14 @@ ${html_style}
         
         
         <table class="data-table table-disposed" id="${elemIdTableDisposed}">
-            <thead>
+            <colgroup>
+                <col style="width: 30%;">
+                <col style="width: 20%;">
+                <col style="width: 30%;">
+                <col style="width: 20%;">
+            </colgroup>
+			
+			<thead>
                 <tr>
                     <th>Date</th>
                     <th>Pig Type</th>
@@ -1292,11 +1302,14 @@ ${html_style}
                     
         }
         
+		let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
+        s_click += `'${sow_boar.hid}');`;
+		
         const html = `
             <tr>
                 <td>${cur_entry.sow_boar.date_dispose}</td>
                 <td>${pig_type}</td>
-                <td>${sow_reference}</td>
+                <td onclick="${s_click}">${sow_reference}</td>
                 <td>${s_status}</td>
             </tr>
         `;

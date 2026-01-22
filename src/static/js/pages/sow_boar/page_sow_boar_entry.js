@@ -475,34 +475,65 @@ export function PageSowBoarEntry(input_settings){
         
         
         // Set Entry Name 
+        console.log('data_sow_boar');
+        console.log(data_sow_boar);
         
         let sow_boar_name   = getSowBoarReference(data_sow_boar.sow_boar);
         
         // Append SOW Status so that no ambiguity
         
-        if ('farm_sow_id' in data_sow_boar.sow_boar){
-        
-            switch(data_sow_boar.sow_boar.status_id){
-                case SOW_STATUS.GESTATING:{
-                    sow_boar_name += ' - Gesta'
+        if ('dispose_status_id' in data_sow_boar.sow_boar){
+            switch(data_sow_boar.sow_boar.dispose_status_id){
+                case SOW_STATUS.CULLED:{
+                    sow_boar_name += ' - Culled';
+                    break;
+                }
+                case SOW_STATUS.DEAD:{
+                    sow_boar_name += ' - Dead';
+                    break;
+                }
+                case SOW_STATUS.SOLD:{
+                    sow_boar_name += ' - Sold';
                     break;
                 }
                 
-                case SOW_STATUS.LACTATING:{
-                    sow_boar_name += ' - Lacta'
-                    break;
-                }
-                
-                case SOW_STATUS.WEANING:{
-                    sow_boar_name += ' - Wean'
+                case SOW_STATUS.DELETE:{
+                    sow_boar_name += ' - Deleted';
                     break;
                 }
                 
                 default:{
-                    if (data_sow_boar.is_production_ready > 0){
-                        sow_boar_name += ' - Prod Ready'
-                    }
                     break;
+                }
+                
+            }
+            
+        }
+        else{
+            if ('farm_sow_id' in data_sow_boar.sow_boar){
+            
+                switch(data_sow_boar.sow_boar.status_id){
+                    case SOW_STATUS.GESTATING:{
+                        sow_boar_name += ' - Gesta'
+                        break;
+                    }
+                    
+                    case SOW_STATUS.LACTATING:{
+                        sow_boar_name += ' - Lacta'
+                        break;
+                    }
+                    
+                    case SOW_STATUS.WEANING:{
+                        sow_boar_name += ' - Wean'
+                        break;
+                    }
+                    
+                    default:{
+                        if (data_sow_boar.is_production_ready > 0){
+                            sow_boar_name += ' - Prod Ready'
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -518,22 +549,36 @@ export function PageSowBoarEntry(input_settings){
         
         
         // Clicking on the SowBoar Name should open the SowBoar edit page
-        elemEntryName.onclick = function(){
-            const options_sow_boar ={
-                is_add:         false,
-                sow_boar_type:  showOptions.sow_boar_type,
-                go_back_page:   elemDivContainer   // Go back to this page
-            }
-            
+        if (options.sow_boar_type != SOW_BOAR_TYPE.DISPOSED){
+            elemEntryName.onclick = function(){
+                const options_sow_boar ={
+                    is_add:         false,
+                    sow_boar_type:  showOptions.sow_boar_type,
+                    go_back_page:   elemDivContainer   // Go back to this page
+                }
 
-            
-            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar, dataSowBoar);
-            navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(thisObj.onSuccessUpdateStatus);
-            
-            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-            navigation.showThisPage(next_page)
+                
+                navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar, dataSowBoar);
+                navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(thisObj.onSuccessUpdateStatus);
+                
+                const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+                navigation.showThisPage(next_page)
+            }
+        } 
+        else{
+            elemEntryName.onclick = function(){
+                const options_sow_boar ={
+                    sow_boar_type:  showOptions.sow_boar_type,
+                    go_back_page:   elemDivContainer   // Go back to this page
+                }
+
+                
+                navigation.pageSowBoarDisposed.beforeShow(options_sow_boar, dataSowBoar);
+                
+                const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_DISPOSED);
+                navigation.showThisPage(next_page)
+            }
         }
-        
         
         
         // Set left-right arrow navigation

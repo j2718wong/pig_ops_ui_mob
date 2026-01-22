@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pig Feed Balance Input</title>
+    <!-- Bootstrap 5 CSS -->
+    
+	<link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="static/css/main.css">
+	
+	
+	<script type="module" src="static/js/pages/common/ui/comp_feed_buy_input.js"></script>
+	
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Pig Feed Balance Input</h1>
+        <p class="text-center description">Update feed balance values for each feed type. Use up/down buttons or directly input values.</p>
+        
+        <div class="table-responsive" id="container-table">
+            
+			
+        </div>
+        
+        <div class="btn-group-custom">
+            <button type="button" class="btn btn-success btn-custom" id="submitBtn">Save Balance Updates</button>
+            <button type="button" class="btn btn-primary btn-custom" id="demoBtn">Load Demo Data</button>
+            <button type="button" class="btn btn-danger btn-custom" id="resetBtn">Reset to Default</button>
+        </div>
+        
+        
+        <div class="footer-note">
+            <p>Note: All values are in kilograms (kg). Step increment is fixed at 0.5 kg.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import {ComponentFeedBuyInput}   from './static/js/pages/common/ui/comp_feed_buy_input.js'
+		
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+			let comp_input = new ComponentFeedBuyInput({
+				uniqueKey: 'feed-balance',
+				header: {
+					col1Name:	'Feed Type',
+					col2Name:	'Feed Buy <br>(sacks)',
+					col3Name:	'Balance <br>(sacks)'
+				}
+				
+			});
+			
+			const html_input = comp_input.getHtml();
+			
+			const elemContTable  = document.getElementById('container-table');
+			elemContTable.innerHTML = html_input;
+			
+			comp_input.afterHtmlRender();
+        });
+    </script>
+</body>
+</html>

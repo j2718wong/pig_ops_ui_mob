@@ -1258,7 +1258,6 @@ p {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 90px;
 }
 
 .breadcrumb-link:hover {
@@ -1430,7 +1429,7 @@ p {
     border-collapse: collapse;
     box-sizing: border-box;
     table-layout: fixed; 
-	display: table;
+    display: table;
 }
 
 .data-table th {
@@ -1456,8 +1455,8 @@ p {
     vertical-align: top;
     overflow: hidden;
     text-overflow: ellipsis;
-	word-wrap: break-word;
-	overflow-wrap: break-word;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .data-table tr:nth-child(even) {
@@ -1837,12 +1836,12 @@ p {
 
 /** MOre modal */
 .more-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
 }
 
 
@@ -1855,23 +1854,23 @@ p {
 
 /* Modal styling - Fixed centering */
 .custom-modal .modal-dialog {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	min-height: 100vh;
-	margin: 0;
-	width: 100%;
-	max-width: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    width: 100%;
+    max-width: none;
 }
 
 .custom-modal .modal-content {
-	/*border-radius: var(--modal-radius) !important;*/
-	border: none;
-	/*box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);*/
-	background-color: white;
-	width: 100%;
-	max-width: 400px;
-	margin: 20px;
+    /*border-radius: var(--modal-radius) !important;*/
+    border: none;
+    /*box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);*/
+    background-color: white;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px;
 }
 
 
@@ -3520,5 +3519,90 @@ textarea.form-control {
 
 
 
+/*********START OF FEED INPUT ***********************/
+.fi-input-cell {
+    min-width: 150px;
+}
 
+.fi-number-input-container {
+    display: flex;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.fi-number-input {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ced4da;
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    text-align: right;
+    font-size: 1rem;
+    height: 50px;
+    min-width: 60px;
+    width: 100%;
+}
+
+.fi-step-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 60px;
+    flex-shrink: 0;
+}
+
+.fi-step-btn {
+    flex: 1;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    min-height: 25px;
+    line-height: 1;
+    transition: background-color 0.2s;
+}
+
+.fi-step-btn:hover {
+    background-color: #e9ecef;
+}
+
+.fi-step-btn.up {
+    border-bottom: none;
+    border-radius: 0 6px 0 0;
+}
+
+.fi-step-btn.down {
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 6px 0;
+    margin-top: -1px;
+}
+
+/*********END OF FEED INPUT ***********************/
+
+
+/*********** FEED BUY INPUT ***********************/
+.fb-feed-type{
+	min-width: 50px;
+}
+
+.kg-input {
+	min-width: 50px;
+}
+
+.kg-input {
+	min-width: 50px;
+}
+
+
+.simple-input {
+	width:100%;
+	border-radius: 6px 6px 6px 6px;
+	font-size: 18px;
+	padding: 8px 5px;
+	text-align: right;
+}
 

@@ -58,13 +58,13 @@ export function PageSowBoarAddEdit(input_settings){
     /*
     Typical settings = {
         navigation:             this
-		elemIdDivContainer:     elemIdContSowBoarAddEdit
+        elemIdDivContainer:     elemIdContSowBoarAddEdit
     };
     */
     const settings              = input_settings;
 
     
-    const elemDivContainer      = settings.elemIdDivContainer;
+    const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
         
     let elemIdBtnClose          = null;
@@ -198,17 +198,17 @@ export function PageSowBoarAddEdit(input_settings){
     
     this.render = function(){
         
-        elemIdBtnClose          = `sow-boar-add-edit-close`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
-        elemIdHeaderTitle       = `sow-boar-add-edit-title`;
+        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         
             
-        elemIdInfoShow          = `sow-boar-add-edit-info-show`;
-        elemIdInfo              = `sow-boar-add-edit-info`;
+        elemIdInfoShow          = `${settings.uniqueKey}-info-show`;
+        elemIdInfo              = `${settings.uniqueKey}-info`;
         
         
         elemUiName              = new UiInputTextWithCounter({
-            uniqueKey:          'sow-boar-add-edit-name',
+            uniqueKey:          `${settings.uniqueKey}-name`,
         
             className:          'form-group-text',
             textLabel:          'Name',
@@ -220,7 +220,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         elemUiNumber            = new UiInputTextWithCounter({
-            uniqueKey:          'sow-boar-add-edit-number',
+            uniqueKey:          `${settings.uniqueKey}-number`,
         
             className:          'form-group-text',
             textLabel:          'Number',
@@ -233,7 +233,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         elemUiDateOfBirth       = new UiInputDatePicker({
-            uniqueKey:          'sow-boar-add-edit-date-birth',
+            uniqueKey:          `${settings.uniqueKey}-date-birth`,
         
             textLabel:          'Date of Birth',
             isRequired:         false,
@@ -242,30 +242,30 @@ export function PageSowBoarAddEdit(input_settings){
         });
         
         
-        elemIdBirthProdIdShow   = `sow-boar-add-edit-birth-prod-id-show`;
-        elemIdBirthProdId       = `sow-boar-add-edit-birth-prod-id`;
+        elemIdBirthProdIdShow   = `${settings.uniqueKey}-birth-prod-id-show`;
+        elemIdBirthProdId       = `${settings.uniqueKey}-birth-prod-id`;
         
         elemUiParentSow         = new UiSelectWithEntryCount({
-            uniqueKey:           'sow-boar-add-edit-parent-sow',
+            uniqueKey:           `${settings.uniqueKey}-parent-sow`,
         
             labelSelect:         'Select Parent Sow',
             helpText:            'This can be None if you dont know.'
         });
         
         elemUiParentBoar        = new UiSelectWithEntryCount({
-            uniqueKey:           'sow-boar-add-edit-parent-boar',
+            uniqueKey:           `${settings.uniqueKey}-parent-boar`,
         
             labelSelect:         'Select Parent Boar',
             helpText:            'This can be None if you dont know.'
         });
         
         
-        elemIdNumNipplesShow    = `sow-boar-add-edit-num-nipples-show`;
-        elemIdNumNipples        = `sow-boar-add-edit-num-nipples`;
+        elemIdNumNipplesShow    = `${settings.uniqueKey}-num-nipples-show`;
+        elemIdNumNipples        = `${settings.uniqueKey}-num-nipples`;
         
         
         elemUiIsExternal        = new UiInputCheckBox({
-            uniqueKey:          'sow-boar-add-edit-is-external',
+            uniqueKey:          `${settings.uniqueKey}-is-external`,
         
             textLabel:          'Is External?',
             checkBoxLabel:      'External. Not owned by the pig farm.',
@@ -274,7 +274,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         elemUiIsProdReady       = new UiInputCheckBox({
-            uniqueKey:          'sow-boar-add-edit-is-prod-ready',
+            uniqueKey:          `${settings.uniqueKey}-is-prod-ready`,
         
             textLabel:          'Is Ready for Mating?',
             checkBoxLabel:      'Production Ready',
@@ -283,7 +283,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         elemUiNotes             = new UiInputTextWithCounter({
-            uniqueKey:          'sow-boar-add-edit-notes',
+            uniqueKey:          `${settings.uniqueKey}-notes`,
             
             isTextArea:         true,
             className:          'form-group-text-area',
@@ -294,9 +294,9 @@ export function PageSowBoarAddEdit(input_settings){
         });
         
         
-        elemIdServerErrorMsg    = `sow-boar-add-edit-server-error-msg`;
-        elemIdBtnCancel         = `sow-boar-add-edit-cancel`;
-        elemIdBtnSave           = `sow-boar-add-edit-save`;
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
+        elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
+        elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         // should show up only if edit
         const html_breadcrumb       = thisObj.componentBreadcrumb.getHtml();
