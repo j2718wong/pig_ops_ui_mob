@@ -34,7 +34,7 @@ export function PageProdGestatingEntry(input_settings){
 
     
    
-    const elemDivContainer      = document.getElementById('container-prod-gesta-entry');
+    const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
         
     let elemIdNavPrevEntry      = null;
@@ -60,7 +60,7 @@ export function PageProdGestatingEntry(input_settings){
     
     
     
-    
+    let elemIdTabMore			= null;
     
     
     
@@ -203,7 +203,6 @@ export function PageProdGestatingEntry(input_settings){
         }
 
         .love-icon {
-            margin: 0 8px;
             font-size: 18px;
             color: #f472b6; /* Pink color for love icon */
         }
@@ -484,6 +483,7 @@ export function PageProdGestatingEntry(input_settings){
         elemIdShowMoreDropDown  = `pig-prod-entry-show-more-dropdown`;
         
         
+		elemIdTabMore			= `prod-gesta-more`;
 
         const html_style        = thisObj._writeInlineStyle();
         
@@ -497,28 +497,26 @@ export function PageProdGestatingEntry(input_settings){
 
     ${html_style}
         
-    <!-- Fixed Top Section -->
-    <div class="top-section">
-        <div class="navigation-bar">
-            <div class="nav-left-right">
-                <button class="nav-button" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
-                <span class="nav-title" id="${elemIdEntryTitle}">1 of 4</span>
-                <button class="nav-button" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
-            </div>
+    
+    <div class="mobile-container">
+		<div class="nav-left-right">
+			<button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
+			<span class="nav-title" id="${elemIdEntryTitle}">1 of 4</span>
+			<button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
+		</div>
+		
+		<div class="entry-info">
+			<div class="pid-and-sow">
+				<div class="sow-name">
+					<span style="margin-right:10px;">(PID <span id="${elemIdPigProdPid}">1</span>)</span>
+					<span id="${elemIdHeaderSowName}">Sow</span>
+					<span class="love-icon">❤️</span>
+					<span id="${elemIdHeaderBoarName}">Boar</span>
+				</div>
+			</div>
+		</div>
             
-            <div class="entry-info">
-                <div class="pid-and-sow">
-                    <div class="sow-name">
-                        <span style="margin-right:10px;">(PID <span id="${elemIdPigProdPid}">1</span>)</span>
-                        <span id="${elemIdHeaderSowName}">Sow</span>
-                        <span class="love-icon">❤️</span>
-                        <span id="${elemIdHeaderBoarName}">Boar</span>
-                    </div>
-                </div>
-            </div>
             
-            
-        </div>
         
         <!-- Tabs Navigation -->
         <div class="tabs-container">
@@ -526,22 +524,14 @@ export function PageProdGestatingEntry(input_settings){
             <button class="tab-button" data-tab="birth">Birth</button>
             <button class="tab-button" data-tab="insem">Insem</button>
             <button class="tab-button" data-tab="notes">Notes</button>
-            <!--
-            <div class="tab-button show-more-container" id="${elemIdShowMore}">
-                More ...
-                <div class="show-more-dropdown" id="${elemIdShowMoreDropDown}">
-                    <div class="dropdown-item" data-tab="feed-summary">Feed Summary</div>
-                    <div class="dropdown-item" data-tab="feed-buy">Feed Buy</div>
-                    <div class="dropdown-item" data-tab="medvac">MedVac</div>
-                    <div class="dropdown-item" data-tab="notes">Notes</div>
-                    <div class="dropdown-item" data-tab="status">Status</div>
-                </div>
-            </div> -->
+            <button class="tab-button" data-tab="${elemIdTabMore}" id="${elemIdShowMore}">
+                More
+            </button>
         </div>
     </div>
     
     <!-- Tab Content Area - Scrolls below fixed sections -->
-    <div class="tab-content-area">
+    <div class="tab-content-area" style="margin-top:0;">
         <!-- Tab Content -->
         
         <div id="pig-ops-tab" class="tab-content active">

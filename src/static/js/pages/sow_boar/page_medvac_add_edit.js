@@ -46,8 +46,6 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 export function PageMedVacAddEdit(input_settings){
-    input_settings['uniqueKey'] = 'medvac-add-edit';
-    
     PageSowBoarEntryComponent.call(this, input_settings);
     
     

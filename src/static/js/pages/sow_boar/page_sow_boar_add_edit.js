@@ -44,8 +44,6 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 export function PageSowBoarAddEdit(input_settings){
-    input_settings['uniqueKey'] = 'sow-boar-add-edit';
-    
     PageSowBoarEntryComponent.call(this, input_settings);
     
     const thisObj               = this;

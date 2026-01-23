@@ -60,7 +60,6 @@ export function PageSowBoarEntry(input_settings){
     let elemIdEntryName         = null;
     
     let elemIdShowMore          = null;
-    let elemIdShowMoreDropDown  = null;
     
     let elemIdTabBtnOutput      = null;
     let elemIdTabBtnMates       = null;
@@ -91,7 +90,7 @@ export function PageSowBoarEntry(input_settings){
     let elemEntryName           = null;
     
     let elemShowMore            = null;
-    let elemShowMoreDropDown    = null;
+
     
     let elemTabMedVac           = null;
     let elemTabHealth           = null;
@@ -134,21 +133,20 @@ export function PageSowBoarEntry(input_settings){
     
     this.render = function(){
         
-        elemIdNavPrevEntry      = `sow-boar-entry-page-title-prev`;
-        elemIdNavNextEntry      = `sow-boar-entry-page-title-next`;
+        elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
+        elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
         
-        elemIdEntryTitle        = `sow-boar-entry-page-title`;
+        elemIdEntryTitle        = `${settings.uniqueKey}-page-title`;
         
-        elemIdEntryId           = `sow-boar-entry-id`;
-        elemIdEntryName         = `sow-boar-entry-name`;
+        elemIdEntryId           = `${settings.uniqueKey}-id`;
+        elemIdEntryName         = `${settings.uniqueKey}-name`;
         
-        elemIdShowMore          = `sow-boar-entry-show-more`;
-        elemIdShowMoreDropDown  = `sow-boar-entry-show-more-dropdown`;
+        elemIdShowMore          = `${settings.uniqueKey}-show-more`;
         
         
-        elemIdTabBtnOutput      = `sow-boar-output-btn`;
-        elemIdTabBtnMates       = `sow-boar-mates-btn`;
-        elemIdTabBtnGiltOps     = `sow-boar-gilt-ops-btn`;
+        elemIdTabBtnOutput      = `${settings.uniqueKey}-output`;
+        elemIdTabBtnMates       = `${settings.uniqueKey}-mates`;
+        elemIdTabBtnGiltOps     = `${settings.uniqueKey}-gilt-ops`;
         
         elemIdTabMedVac         = `sow-boar-medvac`;
         elemIdTabHealth         = `sow-boar-health`;
@@ -317,7 +315,6 @@ export function PageSowBoarEntry(input_settings){
         elemTabBtnGiltOps       = document.getElementById(elemIdTabBtnGiltOps);
         
         elemShowMore            = document.getElementById(elemIdShowMore);
-        elemShowMoreDropDown    = document.getElementById(elemIdShowMoreDropDown);
                 
                 
         elemTabMedVac           = document.getElementById(elemIdTabMedVac);

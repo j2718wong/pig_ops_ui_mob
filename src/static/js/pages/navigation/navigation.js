@@ -384,25 +384,29 @@ export function Navigation(){
     
     this.pageSowBoarAddEdit     = new PageSowBoarAddEdit({
         navigation:             this,
-        elemIdDivContainer:     elemIdContSowBoarAddEdit
+        elemIdDivContainer:     elemIdContSowBoarAddEdit,
+        uniqueKey:              'sow-boar-add-edit'
     });
    
     
     this.pageSowBoarEntry       = new PageSowBoarEntry({
         navigation:             this,
-        elemIdDivContainer:     elemIdContSowBoarEntry
+        elemIdDivContainer:     elemIdContSowBoarEntry,
+        uniqueKey:              'sow-boar-entry'
     })
     
     
     this.pageSowBoarDisposed     = new PageSowBoarDisposed({
         navigation:             this,
-        elemIdDivContainer:     elemIdContSowBoarDisposed
+        elemIdDivContainer:     elemIdContSowBoarDisposed,
+        uniqueKey:              'sow-boar-disposed'
     });
     
     
     this.pageMedVacAddEdit      = new PageMedVacAddEdit({
         navigation:             this,
-        elemIdDivContainer:     elemIdContMedVacAddEdit
+        elemIdDivContainer:     elemIdContMedVacAddEdit,
+        uniqueKey:              'medvac-add-edit'
     });
     
     
