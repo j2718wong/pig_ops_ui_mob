@@ -135,8 +135,8 @@ export function PageSowBoarUpdateStatus(input_settings){
         elemIdBtnUpdateStatus   = `sow-boar-update-status-btn-update-status`;
         
         
-        const html_ui_date_status   = elemUiDateStatus.getHtml();
-        const html_ui_notes         = elemUiNotes.getHtml();
+        const html_date_status   = elemUiDateStatus.getHtml();
+        const html_notes         = elemUiNotes.getHtml();
         
         
         const html = `
@@ -165,7 +165,7 @@ export function PageSowBoarUpdateStatus(input_settings){
                 
                 
                 <!-- Date Status input -->
-                ${html_ui_date_status}
+                ${html_date_status}
                 
                 <!-- Radio buttons -->
                 <div class="mb-3">
@@ -204,7 +204,7 @@ export function PageSowBoarUpdateStatus(input_settings){
                 </div>
                 
                 <!-- Notes input -->
-                ${html_ui_notes}
+                ${html_notes}
                 
                 <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
                 

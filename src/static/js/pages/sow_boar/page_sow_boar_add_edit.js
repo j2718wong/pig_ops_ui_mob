@@ -185,6 +185,7 @@ export function PageSowBoarAddEdit(input_settings){
         elemDivContainer:       elemDivContainer
     });
     
+    
     this.callbackOnSuccessAdd   = null;
     
     
@@ -297,19 +298,19 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         // should show up only if edit
-        const html_breadcrumb       = thisObj.componentBreadcrumb.getHtml();
+        const html_breadcrumb   = thisObj.componentBreadcrumb.getHtml();
         
         
-        const html_ui_name          = elemUiName.getHtml();
-        const html_ui_number        = elemUiNumber.getHtml();
+        const html_name         = elemUiName.getHtml();
+        const html_number       = elemUiNumber.getHtml();
         
-        const html_ui_date_birth    = elemUiDateOfBirth.getHtml();
-        const html_ui_parent_sow    = elemUiParentSow.getHtml();
-        const html_ui_parent_boar   = elemUiParentBoar.getHtml();
+        const html_date_birth   = elemUiDateOfBirth.getHtml();
+        const html_parent_sow   = elemUiParentSow.getHtml();
+        const html_parent_boar  = elemUiParentBoar.getHtml();
         
-        const html_ui_is_external   = elemUiIsExternal.getHtml();
-        const html_ui_is_prod_ready = elemUiIsProdReady.getHtml();
-        const html_ui_notes         = elemUiNotes.getHtml();
+        const html_is_external  = elemUiIsExternal.getHtml();
+        const html_is_prod_ready= elemUiIsProdReady.getHtml();
+        const html_notes        = elemUiNotes.getHtml();
         
         
         const html_update_status    = sowBoarUpdateStatus.getHtml();
@@ -337,19 +338,19 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         <!-- 1. Name -->
-        ${html_ui_name}
+        ${html_name}
         
         <!-- 2. Number -->
-        ${html_ui_number}
+        ${html_number}
         
         <!-- 3. Date of Birth -->
-        ${html_ui_date_birth}
+        ${html_date_birth}
         
         <!-- 4. Parent Sow Field -->
-        ${html_ui_parent_sow}
+        ${html_parent_sow}
         
         <!-- 5. Parent Boar Field -->
-        ${html_ui_parent_boar}
+        ${html_parent_boar}
         
         
         
@@ -374,14 +375,14 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         <!-- 4. Is External -->
-        ${html_ui_is_external}
+        ${html_is_external}
         
         <!-- 5. Is Production Ready -->
-        ${html_ui_is_prod_ready}
+        ${html_is_prod_ready}
         
         
         <!-- 6. Notes -->
-        ${html_ui_notes}
+        ${html_notes}
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
@@ -439,20 +440,20 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this._findElements = function(){
-        elemHeaderTitle         = document.getElementById(elemIdHeaderTitle);
-        elemBtnClose            = document.getElementById(elemIdBtnClose);
+        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
+        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         
-        elemInfoShow            = document.getElementById(elemIdInfoShow);
+        elemInfoShow            = elemDivContainer.querySelector('#'+elemIdInfoShow);
         
-        elemBirthProdIdShow     = document.getElementById(elemIdBirthProdIdShow);
-        elemBirthProdId         = document.getElementById(elemIdBirthProdId);
-        elemNumNipplesShow      = document.getElementById(elemIdNumNipplesShow);
-        elemNumNipples          = document.getElementById(elemIdNumNipples);
+        elemBirthProdIdShow     = elemDivContainer.querySelector('#'+elemIdBirthProdIdShow);
+        elemBirthProdId         = elemDivContainer.querySelector('#'+elemIdBirthProdId);
+        elemNumNipplesShow      = elemDivContainer.querySelector('#'+elemIdNumNipplesShow);
+        elemNumNipples          = elemDivContainer.querySelector('#'+elemIdNumNipples);
         
         
-        elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
-        elemBtnCancel           = document.getElementById(elemIdBtnCancel);
-        elemBtnSave             = document.getElementById(elemIdBtnSave);
+        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
+        elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
+        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
         
     }
     
@@ -507,20 +508,42 @@ export function PageSowBoarAddEdit(input_settings){
     this.setDataSowList = function(data){
         sowList = data;
         
+        
+        // Filter out gilts; cannot be a parent sow 
+        const filtered = [];
+        for(const cur_entry of data){
+            if (cur_entry.sow_boar.status_id == SOW_STATUS.GROWING){continue;}
+            filtered.push(cur_entry);
+        }
+        
+        // TODO: how to add disposed sows
+        
+        
         const elem_select = elemUiParentSow.getElemSelect();
         const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
-        thisObj.commonSelectOptions.setDataSowList(data, elem_select, special_options);
-        elemUiParentSow.setEntryCount(sowList);
+        thisObj.commonSelectOptions.setDataSowList(filtered, elem_select, special_options);
+        elemUiParentSow.setEntryCount(filtered);
     }
     
     
     this.setDataBoarList = function(data){
         boarList = data;
         
+        
+        // Filter out not production ready; cannot be a parent sow 
+        const filtered = [];
+        for(const cur_entry of data){
+            if (cur_entry.sow_boar.is_production_ready == 0){continue;}
+            filtered.push(cur_entry);
+        }
+        
+        
+        // TODO: how to add disposed boars
+        
         const elem_select = elemUiParentBoar.getElemSelect();
         const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
-        thisObj.commonSelectOptions.setDataBoarList(data, elem_select, special_options);
-        elemUiParentBoar.setEntryCount(boarList);
+        thisObj.commonSelectOptions.setDataBoarList(filtered, elem_select, special_options);
+        elemUiParentBoar.setEntryCount(filtered);
     }
     
     
@@ -1002,10 +1025,7 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this.onClickSaveButton = function(){
-
         let input_elem      = null;
-        let input_val       = null;
-        let cur_field       = null;
         let validation      = -1;
         let proceed_to_save = 1;
         
@@ -1013,15 +1033,15 @@ export function PageSowBoarAddEdit(input_settings){
         
        
         
-        let input_name      = elemUiName.getValue().trim();
-        let input_number    = elemUiNumber.getValue().trim();
-        let input_date_birth= elemUiDateOfBirth.getValue().trim();
+        let input_name          = elemUiName.getValue().trim();
+        let input_number        = elemUiNumber.getValue().trim();
+        let input_date_birth    = elemUiDateOfBirth.getValue().trim();
         let input_num_nipples   = elemNumNipples.value;
         
         let input_parent_sow_id = elemUiParentSow.getValue();
         let input_parent_boar_id= elemUiParentBoar.getValue();
         
-        let input_notes     = elemUiNotes.getValue().trim();
+        let input_notes         = elemUiNotes.getValue().trim();
         
         if (input_parent_sow_id == '0' || input_parent_sow_id == '1'){// I dont know option
             input_parent_sow_id = null;
@@ -1340,9 +1360,5 @@ export function PageSowBoarAddEdit(input_settings){
         });
     }
     
-    
-    this.onSuccessUpdateStatus = function(){
-        
-    }
-    
+
 }   

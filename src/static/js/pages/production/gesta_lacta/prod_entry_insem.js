@@ -14,18 +14,14 @@ import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
 
-ProdEntryInsem.prototype = new PageViewPigFarmPage();
+
 export function ProdEntryInsem(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
+	const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj;
     
-    /*
-    Typical settings = {
-        parentObj:              this,
-    };
-    */
     const settings              = input_settings;
 
     const MAXCHAR_INSEM_NOTES   = 160;

@@ -458,7 +458,8 @@ export function Navigation(){
     
     this.pageProdGestatingAdd   = new PageProdGestatingAdd({
         navigation:             this,
-        elemIdDivContainer:     elemIdContProdGestaAdd
+        elemIdDivContainer:     elemIdContProdGestaAdd,
+        uniqueKey:              'prod-add-gesta'
     });
     
     

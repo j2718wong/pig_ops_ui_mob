@@ -126,7 +126,7 @@ export function PageMedVacAddEdit(input_settings){
     
     
     let elemMedVacForPigHealth      = null;
-    let elemMedVacForPigHealthDate   = null;
+    let elemMedVacForPigHealthDate  = null;
     let elemMedVacForPigHealthLabel = null;
     
     
@@ -257,7 +257,6 @@ export function PageMedVacAddEdit(input_settings){
             
             labelSelect:        'Staff Member',
             helpText:           'Who did the operation'
-            
         });
     
         
@@ -386,31 +385,31 @@ export function PageMedVacAddEdit(input_settings){
     
     this._findElements = function(){
                                                           
-        elemBtnClose            = document.getElementById(elemIdBtnClose);
+        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
                                                           
-        elemHeaderTitle         = document.getElementById(elemIdHeaderTitle);
+        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
                                                           
                                                           
-        elemInfoShow            = document.getElementById(elemIdInfoShow);
-        elemInfo                = document.getElementById(elemIdInfo);
+        elemInfoShow            = elemDivContainer.querySelector('#'+elemIdInfoShow);
+        elemInfo                = elemDivContainer.querySelector('#'+elemIdInfo);
                                                           
         
-        elemMedVacForShow           = document.getElementById(elemIdMedVacForShow);
-        elemMedVacForLabel          = document.getElementById(elemIdMedVacForLabel);
+        elemMedVacForShow           = elemDivContainer.querySelector('#'+elemIdMedVacForShow);
+        elemMedVacForLabel          = elemDivContainer.querySelector('#'+elemIdMedVacForLabel);
                                                                     
-        elemMedVacForPigOps         = document.getElementById(elemIdMedVacForPigOps);
-        elemMedVacForPigOpsChk      = document.getElementById(elemIdMedVacForPigOpsChk);
-        elemMedVacForPigOpsLabel    = document.getElementById(elemIdMedVacForPigOpsLabel);
+        elemMedVacForPigOps         = elemDivContainer.querySelector('#'+elemIdMedVacForPigOps);
+        elemMedVacForPigOpsChk      = elemDivContainer.querySelector('#'+elemIdMedVacForPigOpsChk);
+        elemMedVacForPigOpsLabel    = elemDivContainer.querySelector('#'+elemIdMedVacForPigOpsLabel);
                                                                     
                                                                     
-        elemMedVacForPigHealth      = document.getElementById(elemIdMedVacForPigHealth);
-        elemMedVacForPigHealthDate  = document.getElementById(elemIdMedVacForPigHealthDate); 
-        elemMedVacForPigHealthLabel = document.getElementById(elemIdMedVacForPigHealthLabel);
+        elemMedVacForPigHealth      = elemDivContainer.querySelector('#'+elemIdMedVacForPigHealth);
+        elemMedVacForPigHealthDate  = elemDivContainer.querySelector('#'+elemIdMedVacForPigHealthDate); 
+        elemMedVacForPigHealthLabel = elemDivContainer.querySelector('#'+elemIdMedVacForPigHealthLabel);
         
                                                           
-        elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
-        elemBtnCancel           = document.getElementById(elemIdBtnCancel);
-        elemBtnSave             = document.getElementById(elemIdBtnSave);
+        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
+        elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
+        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
         
         
     }
@@ -748,10 +747,7 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.onClickSaveButton = function(){
-
         let input_elem      = null;
-        let input_val       = null;
-        let cur_field       = null;
         let validation      = 0;
         let proceed_to_save = 1;
         

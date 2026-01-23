@@ -3606,3 +3606,16 @@ textarea.form-control {
 	text-align: right;
 }
 
+
+/** removes bootstrap native spin button when input type is number.*/
+/* For Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+/* For Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

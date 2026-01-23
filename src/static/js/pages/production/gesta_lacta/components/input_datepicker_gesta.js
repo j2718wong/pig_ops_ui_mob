@@ -4,26 +4,26 @@
 
 'use strict';
 
-import {UiBasic}                from './ui_basic.js';
+import {UiBasic}                from '../../../common/ui/ui_basic.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT}         from '../../../utils.js';
+        FORMAT_COMPACT}         from '../../../../utils.js';
 
 
-export function UiInputDatePicker(input_settings){
+export function UiInputDatePickerGesta(input_settings){
     UiBasic.call(this);
     
     /* Typical settings
     settings = {
-        uniqueKey:      ''
+        uniqueKey:              '',
         
-        className:      'form-group-date',
-        textLabel:      'Name',
-        isRequired:     false,
-        invalidFeedBack: null,
-        helpText:       ''  
+        className:              'form-group-date',
+        textLabel:              'Name',
+        isRequired:             false,
+        invalidFeedBack:        null,
+        helpText:               ''  
     }
     
     
@@ -33,15 +33,18 @@ export function UiInputDatePicker(input_settings){
     
     const settings              = input_settings;
     
+    const NUM_MSECS_1DAY        = 24*60*60*1000;
+    
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     
     const elemIdText            = `${settings.uniqueKey}-text`;
     const elemIdTextInv         = `${settings.uniqueKey}-text-inv`;
-  
+    
+    const elemIdGestationDays   = `${settings.uniqueKey}-gestation`;
     
     let elemText                = null;
     let elemTextInv             = null;
-    
+    let elemGestationDays       = null;
     
     
     this.getHtml = function(){
@@ -86,6 +89,8 @@ export function UiInputDatePicker(input_settings){
                     id="${elemIdText}" 
                     ${s_required}>
             
+            <div id="${elemIdGestationDays}" style="font-size: 14px; margin-top: 5px;" >Gestation period: -- days</div>
+            
             ${s_invalid}
             ${s_help}
         </div>
@@ -99,11 +104,30 @@ export function UiInputDatePicker(input_settings){
         
         elemText                = document.getElementById(elemIdText);
         elemTextInv             = document.getElementById(elemIdTextInv);
+        
+        elemGestationDays       = document.getElementById(elemIdGestationDays);
     }
     
     
     this._bindEventListeners = function(){
+        elemText.addEventListener('change', function(){
+            
+            const input_date    = elemText.value;
+            
+            // Convert date to YYYY-MM-DD format
+            const dt_date       = new Date(input_date);
+            
+            
+            const dt_current = new Date();
+            dt_current.setHours(0, 0, 0, 0);
         
+        
+            const diff_msecs          = dt_current - dt_date;
+            
+            let   diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+        
+            elemGestationDays.textContent = `Gestation period: ${diff_days} days`;
+        });
     }
     
     

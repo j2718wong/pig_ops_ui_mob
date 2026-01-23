@@ -60,7 +60,7 @@ export function PageProdGestatingEntry(input_settings){
     
     
     
-    let elemIdTabMore			= null;
+    let elemIdTabMore           = null;
     
     
     
@@ -75,27 +75,27 @@ export function PageProdGestatingEntry(input_settings){
     const prodEntryPigOps       = new ProdEntryPigOps(settingsPigOps);
     prodEntryPigOps.setNavigation(navigation);
     
-	
-    const settingsInsem = {
-        parentObj:              this
-    }
-    const prodEntryInsem        = new ProdEntryInsem(settingsInsem);
-    prodEntryInsem.setNavigation(navigation);
     
-	
-    const settingsBirth = {
-        parentObj:              this
-    }
-    const prodEntryBirth        = new ProdEntryBirth(settingsBirth);
-    prodEntryBirth.setNavigation(navigation);
-	
+    const prodEntryInsem        = new ProdEntryInsem({
+        navigation:             navigation,
+		parentObj:              this,
+		uniqueKey:              'pig-prod-insem'
+    });
+
+    
+    const prodEntryBirth        = new ProdEntryBirth({
+        navigation:             navigation,
+		parentObj:              this,
+        uniqueKey:              'pig-prod-birth'
+    });
+    
     
     const settingsNotes = {
         parentObj:              this
     } 
     const prodEntryNotes        = new ProdEntryNotes(settingsNotes);
     prodEntryNotes.setNavigation(navigation);
-	
+    
     
     this.init = function(){
         this.render();
@@ -483,7 +483,7 @@ export function PageProdGestatingEntry(input_settings){
         elemIdShowMoreDropDown  = `pig-prod-entry-show-more-dropdown`;
         
         
-		elemIdTabMore			= `prod-gesta-more`;
+        elemIdTabMore           = `prod-gesta-more`;
 
         const html_style        = thisObj._writeInlineStyle();
         
@@ -499,22 +499,22 @@ export function PageProdGestatingEntry(input_settings){
         
     
     <div class="mobile-container">
-		<div class="nav-left-right">
-			<button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
-			<span class="nav-title" id="${elemIdEntryTitle}">1 of 4</span>
-			<button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
-		</div>
-		
-		<div class="entry-info">
-			<div class="pid-and-sow">
-				<div class="sow-name">
-					<span style="margin-right:10px;">(PID <span id="${elemIdPigProdPid}">1</span>)</span>
-					<span id="${elemIdHeaderSowName}">Sow</span>
-					<span class="love-icon">❤️</span>
-					<span id="${elemIdHeaderBoarName}">Boar</span>
-				</div>
-			</div>
-		</div>
+        <div class="nav-left-right">
+            <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
+            <span class="nav-title" id="${elemIdEntryTitle}">1 of 4</span>
+            <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        
+        <div class="entry-info">
+            <div class="pid-and-sow">
+                <div class="sow-name">
+                    <span style="margin-right:10px;">(PID <span id="${elemIdPigProdPid}">1</span>)</span>
+                    <span id="${elemIdHeaderSowName}">Sow</span>
+                    <span class="love-icon">❤️</span>
+                    <span id="${elemIdHeaderBoarName}">Boar</span>
+                </div>
+            </div>
+        </div>
             
             
         
@@ -717,18 +717,18 @@ export function PageProdGestatingEntry(input_settings){
     
     this.show = function(data_pig_prod, options){
         console.log('PageAddGestating show');
-		
-		/** Typicla options 
-		const options = {
-			prev_prod_pid:  prev_prod_pid,
-			next_prod_pid:  next_prod_pid,
-			data_index:     index+1,
-			total_entries:  data_pig_prod_list.length
-		};
-		
+        
+        /** Typicla options 
+        const options = {
+            prev_prod_pid:  prev_prod_pid,
+            next_prod_pid:  next_prod_pid,
+            data_index:     index+1,
+            total_entries:  data_pig_prod_list.length
+        };
+        
         */
-		
-		
+        
+        
         // Set Header Data
         const title = `Prod Gestating ${options.data_index} Of ${options.total_entries}`;
         elemEntryTitle.textContent = title;

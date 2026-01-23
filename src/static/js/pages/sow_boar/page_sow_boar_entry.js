@@ -48,7 +48,6 @@ export function PageSowBoarEntry(input_settings){
     
     
     // This is needed as ths will be first element to be rendered
-    //let elemDivContainer        = document.getElementById('container-sow-boar-list');
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
     let elemIdNavPrevEntry      = null;
@@ -302,28 +301,28 @@ export function PageSowBoarEntry(input_settings){
     
     
     this._findElements = function(){
-        elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
-        elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
+        elemNavPrevEntry        = elemDivContainer.querySelector('#'+elemIdNavPrevEntry);
+        elemNavNextEntry        = elemDivContainer.querySelector('#'+elemIdNavNextEntry);
         
-        elemEntryTitle          = document.getElementById(elemIdEntryTitle);
+        elemEntryTitle          = elemDivContainer.querySelector('#'+elemIdEntryTitle);
         
-        elemEntryId             = document.getElementById(elemIdEntryId);
-        elemEntryName           = document.getElementById(elemIdEntryName);
+        elemEntryId             = elemDivContainer.querySelector('#'+elemIdEntryId);
+        elemEntryName           = elemDivContainer.querySelector('#'+elemIdEntryName);
         
-        elemTabBtnOutput        = document.getElementById(elemIdTabBtnOutput);
-        elemTabBtnMates         = document.getElementById(elemIdTabBtnMates);
-        elemTabBtnGiltOps       = document.getElementById(elemIdTabBtnGiltOps);
+        elemTabBtnOutput        = elemDivContainer.querySelector('#'+elemIdTabBtnOutput);
+        elemTabBtnMates         = elemDivContainer.querySelector('#'+elemIdTabBtnMates);
+        elemTabBtnGiltOps       = elemDivContainer.querySelector('#'+elemIdTabBtnGiltOps);
         
-        elemShowMore            = document.getElementById(elemIdShowMore);
+        elemShowMore            = elemDivContainer.querySelector('#'+elemIdShowMore);
                 
                 
-        elemTabMedVac           = document.getElementById(elemIdTabMedVac);
-        elemTabHealth           = document.getElementById(elemIdTabHealth);
-        elemTabNotes            = document.getElementById(elemIdTabNotes);
-        elemTabOutput           = document.getElementById(elemIdTabOutput);
-        elemTabMates            = document.getElementById(elemIdTabMates);
-        elemTabGiltOps          = document.getElementById(elemIdTabGiltOps);
-        elemTabStatus           = document.getElementById(elemIdTabStatus);
+        elemTabMedVac           = elemDivContainer.querySelector('#'+elemIdTabMedVac);
+        elemTabHealth           = elemDivContainer.querySelector('#'+elemIdTabHealth);
+        elemTabNotes            = elemDivContainer.querySelector('#'+elemIdTabNotes);
+        elemTabOutput           = elemDivContainer.querySelector('#'+elemIdTabOutput);
+        elemTabMates            = elemDivContainer.querySelector('#'+elemIdTabMates);
+        elemTabGiltOps          = elemDivContainer.querySelector('#'+elemIdTabGiltOps);
+        elemTabStatus           = elemDivContainer.querySelector('#'+elemIdTabStatus);
         
         allTabs                 = elemDivContainer.querySelectorAll('.tab-content');
         navItems                = elemDivContainer.querySelectorAll('.tab-button');

@@ -162,10 +162,10 @@ export function PageHealthNotesAddEdit(input_settings){
         
     
         
-        const html_breadcrumb       = thisObj.componentBreadcrumb.getHtml();
+        const html_breadcrumb   = thisObj.componentBreadcrumb.getHtml();
         
-        const html_ui_date_notes    = elemUiDateNotes.getHtml();
-        const html_ui_notes         = elemUiNotes.getHtml();
+        const html_date_notes   = elemUiDateNotes.getHtml();
+        const html_notes        = elemUiNotes.getHtml();
 
         
         const html =`
@@ -189,11 +189,11 @@ export function PageHealthNotesAddEdit(input_settings){
         
         
         <!-- 1. Date Notes -->
-        ${html_ui_date_notes}
+        ${html_date_notes}
         
         
         <!-- 2. Notes -->
-        ${html_ui_notes}
+        ${html_notes}
         
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
@@ -236,17 +236,17 @@ export function PageHealthNotesAddEdit(input_settings){
     
     this._findElements = function(){
                                                           
-        elemBtnClose            = document.getElementById(elemIdBtnClose);
+        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
                                                           
-        elemHeaderTitle         = document.getElementById(elemIdHeaderTitle);
+        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
                                                           
                                                           
-        elemInfoShow            = document.getElementById(elemIdInfoShow);
-        elemInfo                = document.getElementById(elemIdInfo);
+        elemInfoShow            = elemDivContainer.querySelector('#'+elemIdInfoShow);
+        elemInfo                = elemDivContainer.querySelector('#'+elemIdInfo);
                                                           
-        elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
-        elemBtnCancel           = document.getElementById(elemIdBtnCancel);
-        elemBtnSave             = document.getElementById(elemIdBtnSave);
+        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
+        elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
+        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
     }
     
     

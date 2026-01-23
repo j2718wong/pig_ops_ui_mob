@@ -123,8 +123,8 @@ export function PageParentTrace(input_settings){
         elemIdTableBody         = `parent-trace-tbody`;
         
         
-        const html_ui_sow       = elemUiSow.getHtml();
-        const html_ui_boar      = elemUiBoar.getHtml();
+        const html_sow          = elemUiSow.getHtml();
+        const html_boar         = elemUiBoar.getHtml();
         
         const html_sow_boar_table = sowBoarTable.getHtml();
         
@@ -163,11 +163,11 @@ export function PageParentTrace(input_settings){
         
         <div id="${elemIdSowBoarTrace}">
             <!-- 1. Sow Field -->
-            ${html_ui_sow}
+            ${html_sow}
                 
             
             <!-- 2. Boar Field -->
-            ${html_ui_boar}
+            ${html_boar}
             
             <button type="button" class="btn-full btn-success" id="${elemIdBtnTrace}">
                 Parent Trace

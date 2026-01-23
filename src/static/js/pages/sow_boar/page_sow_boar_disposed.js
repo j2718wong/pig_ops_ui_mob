@@ -251,27 +251,27 @@ export function PageSowBoarDisposed(input_settings){
         
         
         // should show up only if edit
-        const html_breadcrumb       = thisObj.componentBreadcrumb.getHtml();
+        const html_breadcrumb   = thisObj.componentBreadcrumb.getHtml();
         
         
-        const html_ui_name          = elemReadOnlyName.getHtml();
-        const html_ui_number        = elemReadOnlyNumber.getHtml();
+        const html_name         = elemReadOnlyName.getHtml();
+        const html_number       = elemReadOnlyNumber.getHtml();
         
-        const html_ui_date_birth    = elemReadOnlyDateBirth.getHtml();
-        const html_ui_birth_prod_id = elemReadOnlyBirthProdId.getHtml();
-        
-        
-        const html_ui_parent_sow    = elemReadOnlyParentSow.getHtml();
-        const html_ui_parent_boar   = elemReadOnlyParentBoar.getHtml();
-        
-        const html_ui_num_nipples   = elemReadOnlyNumNipples.getHtml();
+        const html_date_birth   = elemReadOnlyDateBirth.getHtml();
+        const html_birth_prod_id= elemReadOnlyBirthProdId.getHtml();
         
         
-        const html_ui_is_external   = elemReadOnlyIsExternal.getHtml();
-        const html_ui_is_prod_ready = elemReadOnlyIsProdReady.getHtml();
-        const html_ui_notes         = elemReadOnlyNotes.getHtml();
+        const html_parent_sow   = elemReadOnlyParentSow.getHtml();
+        const html_parent_boar  = elemReadOnlyParentBoar.getHtml();
         
-        const html_ui_disposed_by   = elemReadOnlyDisposedBy.getHtml();
+        const html_num_nipples  = elemReadOnlyNumNipples.getHtml();
+        
+        
+        const html_is_external  = elemReadOnlyIsExternal.getHtml();
+        const html_is_prod_ready= elemReadOnlyIsProdReady.getHtml();
+        const html_notes        = elemReadOnlyNotes.getHtml();
+        
+        const html_disposed_by   = elemReadOnlyDisposedBy.getHtml();
         
         
         const html =`
@@ -296,38 +296,38 @@ export function PageSowBoarDisposed(input_settings){
         -->
         
         <!-- 1. Name -->
-        ${html_ui_name}
+        ${html_name}
         
         <!-- 2. Number -->
-        ${html_ui_number}
+        ${html_number}
         
         <!-- 3. Date of Birth -->
-        ${html_ui_date_birth}
+        ${html_date_birth}
         
         <!-- 4. Parent Sow Field -->
-        ${html_ui_parent_sow}
+        ${html_parent_sow}
         
         <!-- 5. Parent Boar Field -->
-        ${html_ui_parent_boar}
+        ${html_parent_boar}
         
         
-        ${html_ui_birth_prod_id}
+        ${html_birth_prod_id}
         
         
         <!-- Number of Sow nipples -->
-        ${html_ui_num_nipples}
+        ${html_num_nipples}
         
         <!-- 4. Is External -->
-        ${html_ui_is_external}
+        ${html_is_external}
         
         <!-- 5. Is Production Ready -->
-        ${html_ui_is_prod_ready}
+        ${html_is_prod_ready}
         
         <!-- 6. Notes -->
-        ${html_ui_notes}
+        ${html_notes}
         
         
-        ${html_ui_disposed_by}
+        ${html_disposed_by}
         
     </div>
 </div>
