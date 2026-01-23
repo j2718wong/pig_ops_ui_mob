@@ -286,7 +286,7 @@ export function Navigation(){
     
     const elemIdContAccPigOps           = 'container-acc-pig-ops';
     
-    
+    const elemIdContSupplierAddEdit		= 'container-supplier-add-edit';
     
     
     
@@ -335,6 +335,9 @@ export function Navigation(){
     let elemHiddenContAccPigOps     = null;
     
     
+	let elemHiddenContSupplierAddEdit = null;
+	
+	
     this.pageData                   = null;
     
     
@@ -343,7 +346,7 @@ export function Navigation(){
     
     this.userControl            = new UserControl(this);
     
-    this.toastAlert             = new ToastAlert();
+    this.toastAlert             = new ToastAlert(this);
     this.serverError            = new ServerError(this);
     
     this.moreModal              = new MoreModal(this);
@@ -565,6 +568,7 @@ export function Navigation(){
     
         elemHiddenContAccPigOps     = document.getElementById(elemIdContAccPigOps);
         
+		elemHiddenContSupplierAddEdit = document.getElementById(elemIdContSupplierAddEdit);
     }
     
     
@@ -790,7 +794,12 @@ export function Navigation(){
             case PAGE_ID.ACC_PIG_OPS: {
                 return elemHiddenContAccPigOps;
             }
-    
+			
+			
+			case PAGE_ID.SUPPLIER_ADD_EDIT:{
+				return elemHiddenContSupplierAddEdit;
+			}
+			
         }
         
         return null;

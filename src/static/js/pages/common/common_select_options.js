@@ -8,7 +8,7 @@ import {replaceSelectOptions}   from './page_view_basic.js';
 
 import {SOW_STATUS}             from '../../constants.js';
         
-import {getSowBoarReference}	from './common_app.js'
+import {getSowBoarReference}    from './common_app.js'
 
         
 export function CommonSelectOptions(){
@@ -58,7 +58,7 @@ export function CommonSelectOptions(){
     }
     
     
-    this.setDataBoarList = function(data, select_elem){
+    this.setDataBoarList = function(data, select_elem, special_options){
         
         let select_data = [];
         if (data.length == 0){
@@ -69,6 +69,11 @@ export function CommonSelectOptions(){
         
         
         select_data.push({value:"0", text:"Please Select"});
+        if (special_options){
+            // do not use this
+            // select_data.push(...special_options);
+            for (const cur_option of special_options){select_data.push(cur_option);}
+        }
         
         for (const cur_sow_boar of data){
             
@@ -106,6 +111,29 @@ export function CommonSelectOptions(){
         
         replaceSelectOptions(select_elem, select_data);
     }
+    
+    
+    this.setDataSemenTypeList = function(data, select_elem){
+        
+        let select_data = [];
+        if (data.length == 0){
+            select_data.push({value:"-1", text:"No Entries"});
+            replaceSelectOptions(select_elem, select_data);
+            return;
+        }
+        
+        
+        select_data = [];
+        select_data.push({value:"0", text:"Please Select"});
+        
+        for (const cur_entry of data){
+            select_data.push({value: cur_entry.hid, 
+                text: cur_entry.name});
+        }
+        
+        replaceSelectOptions(select_elem, select_data);
+    }
+    
     
     
     this.setDataStaffList = function(data, select_elem){

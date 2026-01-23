@@ -1278,6 +1278,24 @@ p {
 }
 
 
+.expandable {
+	overflow: hidden;
+	padding-top:0 !important;
+	padding-bottom:0 !important;
+	margin-top:0 !important;
+
+    max-height: 0;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.expandable.expanded{
+	max-height: 500px;
+	
+	/*should restore the previous padding and margin before un expanded*/
+
+}
+
+
 /* Add Notes Section */
 .expandable-section {
     background-color: white;

@@ -48,23 +48,20 @@ export function ServerError(_navigation){
         let error_code = response.result.code;
         let error_desc = response.result.desc;
         
+		let html = `<span>${error_code}</span>`;
+		
+		if (error_desc && error_desc.length > 0){
+			html += `<br><span>${error_desc}</span>`;
+		}
+		
         if (elem_show_error) {
-            let html;
-            html = `<span>${error_code}</span>`;
-            
-            if (error_desc && error_desc.length > 0){
-                html += `<br><span>${error_desc}</span>`;
-            }
-            
-            
             // Display first before innerHTML
             elem_show_error.style.display = 'block'
             elem_show_error.innerHTML = html;
-            
-            
-        }
+		}
         else{
             console.log('\n\nServerError.receivedErrorMessage(); elem_show_error is null');
+			navigation.toastAlert.showToast('Oops something is wrong', html, 'error');
         }
         
         // Check special error numbers;

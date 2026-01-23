@@ -33,7 +33,11 @@ const PAGE_ID = {
     PROD_LACTA_LIST:        34, 
     
     
-    ACC_PIG_OPS:            50
+    
+    ACC_PIG_OPS:            50,
+    
+    
+    SUPPLIER_ADD_EDIT:      60
     
 };
 

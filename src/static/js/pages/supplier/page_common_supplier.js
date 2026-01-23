@@ -98,9 +98,9 @@ export function PageCommonSupplier(input_settings){
         
 <div class="form-container">
 
-    <div class="modal-header gestating">
-        <h5 class="modal-title" id="add-entry-acc-pig-ops-modal-label">
-            <i class="fas fa-plus me-2"></i><span>${settingsheaderTitle}</span>
+    <div class="modal-header">
+        <h5 class="modal-title">
+            <i class="fas fa-plus me-2"></i><span>${settings.headerTitle}</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>

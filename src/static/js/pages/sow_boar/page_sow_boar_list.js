@@ -400,37 +400,37 @@ ${html_style}
     
     
     this._findElements = function(){
-        elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
-        elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
+        elemNavPrevEntry        = elemDivContainer.querySelector('#'+elemIdNavPrevEntry);
+        elemNavNextEntry        = elemDivContainer.querySelector('#'+elemIdNavNextEntry);
         
-        elemPageTitle           = document.getElementById(elemIdPageTitle);
-        elemPageHeaderAlarm     = document.getElementById(elemIdPageHeaderAlarm);
-        elemPageHeaderEntryCount = document.getElementById(elemIdPageHeaderEntryCount);
-        elemPageInfo            = document.getElementById(elemIdPageInfo);
+        elemPageTitle           = elemDivContainer.querySelector('#'+elemIdPageTitle);
+        elemPageHeaderAlarm     = elemDivContainer.querySelector('#'+elemIdPageHeaderAlarm);
+        elemPageHeaderEntryCount = elemDivContainer.querySelector('#'+elemIdPageHeaderEntryCount);
+        elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
 
-        elemSearchInput         = document.getElementById(elemIdSearchInput);
-        elemAddEntryBtn         = document.getElementById(elemIdAddEntryBtn);
-        elemFilterControls      = document.getElementById(elemIdFilterControls);
+        elemSearchInput         = elemDivContainer.querySelector('#'+elemIdSearchInput);
+        elemAddEntryBtn         = elemDivContainer.querySelector('#'+elemIdAddEntryBtn);
+        elemFilterControls      = elemDivContainer.querySelector('#'+elemIdFilterControls);
         
-        elemTableRowCount       = document.getElementById(elemIdTableRowCount);
-        elemTablePagination     = document.getElementById(elemIdTablePagination);
-        elemTablePrevPage       = document.getElementById(elemIdTablePrevPage);
-        elemTableCurPage        = document.getElementById(elemIdTableCurPage);
-        elemTableTotalPages     = document.getElementById(elemIdTableTotalPages);
-        elemTableNextPage       = document.getElementById(elemIdTableNextPage);
+        elemTableRowCount       = elemDivContainer.querySelector('#'+elemIdTableRowCount);
+        elemTablePagination     = elemDivContainer.querySelector('#'+elemIdTablePagination);
+        elemTablePrevPage       = elemDivContainer.querySelector('#'+elemIdTablePrevPage);
+        elemTableCurPage        = elemDivContainer.querySelector('#'+elemIdTableCurPage);
+        elemTableTotalPages     = elemDivContainer.querySelector('#'+elemIdTableTotalPages);
+        elemTableNextPage       = elemDivContainer.querySelector('#'+elemIdTableNextPage);
         
         
-        elemTableSow            = document.getElementById(elemIdTableSow);
-        elemTableSowBody        = document.getElementById(elemIdTableSowBody);
+        elemTableSow            = elemDivContainer.querySelector('#'+elemIdTableSow);
+        elemTableSowBody        = elemDivContainer.querySelector('#'+elemIdTableSowBody);
         
-        elemTableBoar           = document.getElementById(elemIdTableBoar);
-        elemTableBoarBody       = document.getElementById(elemIdTableBoarBody);
+        elemTableBoar           = elemDivContainer.querySelector('#'+elemIdTableBoar);
+        elemTableBoarBody       = elemDivContainer.querySelector('#'+elemIdTableBoarBody);
         
-        elemTableGilt           = document.getElementById(elemIdTableGilt);
-        elemTableGiltBody       = document.getElementById(elemIdTableGiltBody);
+        elemTableGilt           = elemDivContainer.querySelector('#'+elemIdTableGilt);
+        elemTableGiltBody       = elemDivContainer.querySelector('#'+elemIdTableGiltBody);
         
-        elemTableDisposed       = document.getElementById(elemIdTableDisposed);
-        elemTableDisposedBody   = document.getElementById(elemIdTableDisposedBody);
+        elemTableDisposed       = elemDivContainer.querySelector('#'+elemIdTableDisposed);
+        elemTableDisposedBody   = elemDivContainer.querySelector('#'+elemIdTableDisposedBody);
         
     }
     

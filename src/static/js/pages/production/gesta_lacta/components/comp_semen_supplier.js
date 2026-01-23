@@ -1,4 +1,4 @@
-// January 13, 2026
+// January 23, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -6,7 +6,6 @@
 
 import {PAGE_ID,
         SOW_STATUS,
-        SOW_BOAR_TYPE,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
         SUPPLIER_TYPE}          from '../../../../constants.js';
@@ -22,7 +21,7 @@ import {UiBasic}                from '../../../common/ui/ui_basic.js';
 import {CommonSelectOptions}    from '../../../common/common_select_options.js';
 
 
-export function SelectBoarGesta(input_settings){
+export function ComponentSemenSupplier(input_settings){
     UiBasic.call(this);
     
     /* Typical settings
@@ -53,13 +52,19 @@ export function SelectBoarGesta(input_settings){
     const elemIdEntryCount      = `${settings.uniqueKey}-entry-count`;
     const elemIdEntryAdd        = `${settings.uniqueKey}-entry-add`;
     
+    const elemIdSupplierInfo    = `${settings.uniqueKey}-info`;
         
     let elemSelect              = null;
     let elemEntryCount          = null;
     let elemEntryAdd            = null;
     
+    let elemSupplierInfo        = null;
     
-    let dataBoarList             = null;
+    
+    let dataSupplierList        = null;
+    
+    
+    let componentSemenType      = null;
     
     
     this.getHtml = function(){
@@ -80,6 +85,7 @@ export function SelectBoarGesta(input_settings){
                 </button>
             </div>
             
+            <div id="${elemIdSupplierInfo}"></div>
         </div>
         `
         ;
@@ -88,24 +94,28 @@ export function SelectBoarGesta(input_settings){
     
     
     this._findElements = function(){
-        thisObj.elemUiShow      = pageDivContainer.querySelector('#'+elemIdUiShow);
-       
+        thisObj.elemUiShow      = pageDivContainer.querySelector('#'+elemIdUiShow)
+                                 
         elemSelect              = pageDivContainer.querySelector('#'+elemIdSelect);
         elemEntryCount          = pageDivContainer.querySelector('#'+elemIdEntryCount);
         elemEntryAdd            = pageDivContainer.querySelector('#'+elemIdEntryAdd);
+        
+        elemSupplierInfo        = pageDivContainer.querySelector('#'+elemIdSupplierInfo);
     }
     
     
     this._bindEventListeners = function(){
         
+        elemSelect.addEventListener('change', function() {
+            thisObj.onChangeSemenSupplier();
+        });
         
         elemEntryAdd.addEventListener('click', function() {
-            // Should open BoarBoarAddEdit page.
+            // Should open SemenSupplierAddEdit page.
             // after success add or cancel/close should go back to this page
             
-            const options_sow_boar ={
+            const options_supplier ={
                 is_add:         true,
-                sow_boar_type:  SOW_BOAR_TYPE.BOAR, 
                 go_back_page:   settings.pageDivContainer   // Go back to this page
             }
             
@@ -119,7 +129,7 @@ export function SelectBoarGesta(input_settings){
                 elemSelect.value = new_sow_boar_hid;
             };
             
-            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            navigation.pageSowBoarAddEdit.beforeShow(options_supplier);
             navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback_success;
             
             const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
@@ -129,7 +139,12 @@ export function SelectBoarGesta(input_settings){
         
     }
 
-
+    
+    this.setComponentSemenType = function(component){
+        componentSemenType = component;
+        componentSemenType.hide(); // hidden until there is a change in semen supplier
+    }
+    
     
     this.getElemSelect  = function(){
         return elemSelect;
@@ -163,46 +178,78 @@ export function SelectBoarGesta(input_settings){
     } 
     
     
-    this.refreshList = function(){
-        this.setDataBoarList(navigation.pigFarm.dataBoarList);
-    }
     
-    
-    this.setDataBoarList = function(data){
-        dataBoarList = data;
-        
-        // Exclude not production ready
-        let filtered = [];
-        for (const cur_entry of data){
-            if (cur_entry.sow_boar.is_production_ready > 0){
-                filtered.push(cur_entry);
-            }
-        }
+    this.setDataSemenSupplierList = function(data){
+        dataSupplierList = data;
 
-        commonSelectOptions.setDataBoarList(filtered, elemSelect);
-        thisObj.setEntryCount(filtered)
+
+        commonSelectOptions.setDataSemenSupplierList(data, elemSelect);
+        thisObj.setEntryCount(data)
+    }
+    
+   
+    
+    this.onChangeSemenSupplier = function(semen_hid){
+        elemSelect.classList.remove('is-valid', 'is-invalid');
+        
+        const supplier_hid = elemSelect.value;
+        
+        
+        // Need to request semen_supplier_semen
+        const base_url = window.location.origin;
+        const url = `${base_url}/semen_sup_semen/list?semen_supplier_hid=${supplier_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    let semen_supplier = thisObj.getDataSemenSupplier(supplier_hid);
+                    
+                    const elem_select_semen_type = componentSemenType.getElemSelect();
+                    
+                    
+                    if (semen_hid){
+                        componentSemenType.setDataSemenTypeList(response.data, semen_hid);
+                    }
+                    else{
+                        componentSemenType.setDataSemenTypeList(response.data);
+                    }
+                    
+                    componentSemenType.show();
+                    
+                    
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, null);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
     }
     
     
-    this.getDataBoar = function(sow_hid){
-        for (const cur_entry of sowList){
-            if (cur_entry.sow_boar.hid == sow_hid){return cur_entry;}
+    this.getDataSemenSupplier = function(supplier_hid){
+        for (const cur_entry of dataSupplierList){
+            if (cur_entry.hid == supplier_hid){return cur_entry;}
         } 
         
         return null;
     }
        
-    
-    /*
-    // Override parent
-    this.show = function(){
-        thisObj.elemUiShow.classList.add('expanded');
-    }
-    
-    
-    // Override parent
-    this.hide = function(){
-        thisObj.elemUiShow.classList.remove('expanded');
-    }
-    */
 }

@@ -15,6 +15,9 @@ import {PAGE_ID,
 
 import {SelectSowGesta}         from './components/select_sow_gesta.js';
 import {SelectBoarGesta}        from './components/select_boar_gesta.js';
+import {ComponentSemenSupplier} from './components/comp_semen_supplier.js';
+import {ComponentSemenType}     from './components/comp_semen_type.js';
+
 
 import {UiInputDatePicker}      from '../../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter} from '../../common/ui/input_text_with_counter.js';
@@ -57,9 +60,7 @@ export function PageProdGestatingAdd(input_settings){
     
     
     let elemIdAiShow            = null;
-    let elemIdSemenSupplier     = null;
-    let elemIdSemenSupplierCount= null;
-    let elemIdSemenSupplierInfo = null;
+   
     let elemIdSemenType         = null;
     let elemIdSemenTypeCount    = null;
     let elemIdSemenCost         = null;
@@ -85,12 +86,11 @@ export function PageProdGestatingAdd(input_settings){
     
     
     let elemAiShow              = null;
-    let elemSemenSupplier       = null;
-    let elemSemenSupplierCount  = null;
-    let elemSemenSupplierInfo   = null;
-    let elemSemenType           = null;
-    let elemSemenTypeCount      = null;
+    
     let elemSemenCost           = null;
+    
+    let componentSemenSupplier  = null;
+    let componentSemenType      = null;
     
     
     let componentSelectBoarInt  = null;
@@ -98,11 +98,7 @@ export function PageProdGestatingAdd(input_settings){
     let elemOtherCost           = null;
     
   
-    
-    let elemStaff               = null;
-    let elemStaffCount          = null;
-    let elemStaffAdd            = null;
-    let elemChkDoneByMe         = null;
+
     
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
@@ -166,11 +162,33 @@ export function PageProdGestatingAdd(input_settings){
         
         
         elemIdAiShow            = `${settings.uniqueKey}-select-ai-show`;
-        elemIdSemenSupplier     = `${settings.uniqueKey}-select-semen-supplier`;
-        elemIdSemenSupplierCount= `${settings.uniqueKey}-select-semen-supplier-count`;
-        elemIdSemenSupplierInfo = `${settings.uniqueKey}-select-semen-supplier-info`;
-        elemIdSemenType         = `${settings.uniqueKey}-select-semen-type`;
-        elemIdSemenTypeCount    = `${settings.uniqueKey}-select-semen-type-count`;
+        
+        
+        componentSemenSupplier  = new ComponentSemenSupplier({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-semen-supplier`,
+            
+            pageDivContainer:   elemDivContainer,
+            
+            labelSelect:        'Semen Supplier',
+            helpText:           null
+        });
+        
+        
+        componentSemenType      = new ComponentSemenType({
+            navigation:         navigation,
+            parentObj:          thisObj,
+            uniqueKey:          `${settings.uniqueKey}-semen-type`,
+
+            titleExpandSection: 'Add New Semen Type',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save Semen Type',
+            
+            labelSelect:        'Select Semen Type',
+            helpText:           'Supplier Semen Type'
+        });
+        
+        
         elemIdSemenCost         = `${settings.uniqueKey}-semen-cost`;
         
         
@@ -227,7 +245,9 @@ export function PageProdGestatingAdd(input_settings){
         const html_date_mating  = elemUiDateMating.getHtml();
         const html_select_boar  = componentSelectBoar.getHtml();
         
-        const html_select_boar_int = componentSelectBoarInt.getHtml();
+        const html_semen_supplier   = componentSemenSupplier.getHtml();
+        const html_semen_type       = componentSemenType.getHtml();
+        const html_select_boar_int  = componentSelectBoarInt.getHtml();
         
         const html_notes        = elemUiNotes.getHtml();
         const html_staff        = componentStaff.getHtml();
@@ -272,38 +292,10 @@ export function PageProdGestatingAdd(input_settings){
         
         <div id="${elemIdAiShow}" class="ai-section" style="display: none;">
             <!-- 1. Semen Supplier -->
-            <div class="form-group-select">
-                <label for="${elemIdSemenSupplier}" class="form-label">
-                    Semen Supplier <span class="entries-count" id=${elemIdSemenSupplierCount}></span>
-                </label>
-                
-                <div class="input-group" id="supplierSelectGroup">
-                    <select class="form-select" id="${elemIdSemenSupplier}">
-                        <option value="-1" selected disabled>No Entries</option>
-                    </select>
-                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSupplierModal">
-                        <i class="bi bi-plus"></i> New
-                    </button>
-                </div>
-                
-                <div id="${elemIdSemenSupplierInfo}"></div>
-            </div>
+            ${html_semen_supplier}
             
             <!-- 2. Semen Type -->
-            <div class="form-group-select">
-                <label for="${elemIdSemenType}" class="form-label">
-                    Semen Type <span class="entries-count" id=${elemIdSemenTypeCount}></span>
-                </label>
-            
-                <div class="input-group" id="semenTypeSelectGroup">
-                    <select class="form-select" id="${elemIdSemenType}">
-                        <option value="-1" selected disabled>No Entries</option>
-                    </select>
-                    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#newSemenTypeModal">
-                        <i class="bi bi-plus"></i> New
-                    </button>
-                </div>
-            </div>
+            ${html_semen_type}
             
             <!-- 3. Semen Cost -->
             <div class="form-group-number">
@@ -367,10 +359,15 @@ export function PageProdGestatingAdd(input_settings){
         elemUiDateMating.afterHtmlRender();
         componentSelectBoar.afterHtmlRender();
         
+        componentSemenSupplier.afterHtmlRender();
+        componentSemenType.afterHtmlRender();
         componentSelectBoarInt.afterHtmlRender();
         
         elemUiNotes.afterHtmlRender();
         componentStaff.afterHtmlRender();
+		
+		
+		componentSemenSupplier.setComponentSemenType(componentSemenType);
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -381,16 +378,11 @@ export function PageProdGestatingAdd(input_settings){
     this._findElements = function(){
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         
-        elemInsemType         	= elemDivContainer.querySelector('#'+elemIdAiShow);
+        elemInsemType           = elemDivContainer.querySelector('#'+elemIdInsemType);
         
         elemAiShow              = elemDivContainer.querySelector('#'+elemIdAiShow);
-        elemSemenSupplier       = elemDivContainer.querySelector('#'+elemIdSemenSupplier);
-        elemSemenSupplierCount  = elemDivContainer.querySelector('#'+elemIdSemenSupplierCount);
-        elemSemenType           = elemDivContainer.querySelector('#'+elemIdSemenType);
-        elemSemenTypeCount      = elemDivContainer.querySelector('#'+elemIdSemenTypeCount);
-        elemSemenCost           = elemDivContainer.querySelector('#'+elemIdSemenCost);
         
-
+        elemSemenCost           = elemDivContainer.querySelector('#'+elemIdSemenCost);
         
         elemOtherCost           = elemDivContainer.querySelector('#'+elemIdOtherCost);
         
@@ -412,26 +404,26 @@ export function PageProdGestatingAdd(input_settings){
        
         elemInsemType.addEventListener('change', function() {
             const selected_value = elemInsemType.value;
-            
+            console.log('elemInsemType.chnage');
             switch (selected_value) {
                 case 'boar-mating': {
-                    elemBoarShow.style.display = 'block';
+                    componentSelectBoar.show();
                     elemAiShow.style.display = 'none';
-                    elemBoarInternalShow.style.display = 'none';
+                    componentSelectBoarInt.hide();
                     break;
                 }
                 
                 case 'ai-external': {
-                    elemBoarShow.style.display = 'none';
+                    componentSelectBoar.hide();
                     elemAiShow.style.display = 'block';
-                    elemBoarInternalShow.style.display = 'none';
+                    componentSelectBoarInt.hide();
                     break;
                 }
                 
                 case 'ai-internal': {
-                    elemBoarShow.style.display = 'none';
+                    componentSelectBoar.hide();
                     elemAiShow.style.display = 'none';
-                    elemBoarInternalShow.style.display = 'block';
+                    componentSelectBoarInt.show();
                     break;
                 }
             }
@@ -474,12 +466,7 @@ export function PageProdGestatingAdd(input_settings){
   
     
     this.setDataSemenSupplierList = function(data){
-        semenSupplierList = data;
-        
-        
-        thisObj.commonSelectOptions.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
-        
-        elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} Entries)`;
+        componentSemenSupplier.setDataSemenSupplierList(data);
     }
     
     
@@ -493,26 +480,18 @@ export function PageProdGestatingAdd(input_settings){
         elemUiDateMating.reset();
         
         
-        
-        
-        
-        
         // This is needed as there is a switch in inputs
         elemInsemType.selectedIndex = 0;
         const event = new Event('change');
         elemInsemType.dispatchEvent(event); 
-        
+        componentSelectBoar.show();
         
         componentSelectBoar.reset();
         componentSelectBoarInt.reset();
-		componentSelectBoarInt.hide();
+        componentSelectBoarInt.hide();
         
-        elemSemenSupplier.selectedIndex = 0;
-        elemSemenSupplier.classList.remove('is-valid', 'is-invalid');
-        
-        
-        elemSemenType.selectedIndex = 0;
-        elemSemenType.classList.remove('is-valid', 'is-invalid');
+        componentSemenSupplier.reset();
+        componentSemenType.reset();
         
         
         elemSemenCost.value = '';
@@ -546,73 +525,6 @@ export function PageProdGestatingAdd(input_settings){
     }
     
         
-    this._onChangeSemenSupplier = function(semen_hid){
-        elemSemen       .removeClass('is-invalid');
-        elemSemen       .removeClass('is-valid');
-        
-        const supplier_hid = elemSemenSupplier.value
-        
-        
-        // Need to request semen_supplier_semen
-        const base_url = window.location.origin;
-        const url = `${base_url}/semen_sup_semen/list?semen_supplier_hid={supplier_hid}`;
-        
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    
-                    
-                    let semen_supplier = thisObj.getSemenSupplier(supplier_hid);
-                  
-                  
-                    
-                    
-                    let new_options = [];
-                    if (response.data.length == 0){
-                        new_options.push({value:"-1", text:"No Entries"});
-                        thisObj._replaceSelectOptions(
-                            elemSemen, new_options);
-                        elemSemenShow.show();
-                        return;
-                    }
-                    
-                    
-                    new_options.push({value:"0", text:"Please Select"});
-                    
-                    $(response.data).each(function(){
-                        new_options.push({value:this.hid, text:this.name});
-                    });
-                    
-                    thisObj._replaceSelectOptions(elemSemen, new_options);
-                    elemSemenShow.show();
-                    
-                    if (semen_hid){
-                        elemSemen.val(semen_hid).change();
-                    }
-                    
-                }
-                else {
-                    // TODO
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
-    }
     
     
     this._validateAfterChangeInput = function(ev, input_field){
@@ -666,15 +578,15 @@ export function PageProdGestatingAdd(input_settings){
     
     
     this.onClickSaveButton = function(){
-        let input_elem		= null;
-        let validation		= -1;
+        let input_elem      = null;
+        let validation      = -1;
         let proceed_to_save = 1;
         
 
         let input_sow_hid           = componentSelectSow.getValue();
         let input_insem_type        = elemInsemType.value;
         let input_boar_hid          = componentSelectBoar.getValue();
-		let input_boar_int_hid      = componentSelectBoarInt.getValue();
+        let input_boar_int_hid      = componentSelectBoarInt.getValue();
         let input_date_mating       = elemUiDateMating.getValue();
         let input_semen_supplier_hid = elemSemenSupplier.value;
         let input_semen_type_hid    = elemSemenType.value;
@@ -692,66 +604,66 @@ export function PageProdGestatingAdd(input_settings){
         if (validation != 0) {return;}
         
         
-		switch (input_insem_type){
-			case 'boar-mating': {
-				input_elem          = componentSelectBoar.getElemSelect();
-				if (input_boar_hid == '0'  || input_boar_hid == '-1'){
-					validation = -1;
-				}
-				addValidationClassToElem(input_elem, validation);
-				if (validation != 0) {return;}
-			
-				break;
-			}
+        switch (input_insem_type){
+            case 'boar-mating': {
+                input_elem          = componentSelectBoar.getElemSelect();
+                if (input_boar_hid == '0'  || input_boar_hid == '-1'){
+                    validation = -1;
+                }
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
             
-			case 'ai-external': {
-				input_elem          = elemSemenSupplier;
-				
-				if (input_semen_supplier_hid  == '0'){
-					if (input_elem.classList.contains('is-invalid') == false){
-						input_elem.classList.add('is-invalid');
-					}
-					proceed_to_save = 0;
-				}
-				else{
-					if (input_elem.classList.contains('is-valid') == false){
-						input_elem.classList.add('is-valid');
-					}
-				}
-				
-				
-				input_elem          = elemSemenType;
-				
-				if (input_semen_type_hid  == '0'){
-					if (input_elem.classList.contains('is-invalid') == false){
-						input_elem.classList.add('is-invalid');
-					}
-					proceed_to_save = 0;
-				}
-				else{
-					if (input_elem.classList.contains('is-valid') == false){
-						input_elem.classList.add('is-valid');
-					}
-				}
-			
-			
-				if (proceed_to_save == 0) {return;}
-				
-				break;
-			}
-		
-			case 'ai-internal':{
-				input_elem          = componentSelectBoarInt.getElemSelect();
-				if (input_boar_int_hid == '0'  || input_boar_int_hid == '-1'){
-					validation = -1;
-				}
-				addValidationClassToElem(input_elem, validation);
-				if (validation != 0) {return;}
-			
-				break;
-			}
-		
-		}
+                break;
+            }
+            
+            case 'ai-external': {
+                input_elem          = elemSemenSupplier;
+                
+                if (input_semen_supplier_hid  == '0'){
+                    if (input_elem.classList.contains('is-invalid') == false){
+                        input_elem.classList.add('is-invalid');
+                    }
+                    proceed_to_save = 0;
+                }
+                else{
+                    if (input_elem.classList.contains('is-valid') == false){
+                        input_elem.classList.add('is-valid');
+                    }
+                }
+                
+                
+                input_elem          = elemSemenType;
+                
+                if (input_semen_type_hid  == '0'){
+                    if (input_elem.classList.contains('is-invalid') == false){
+                        input_elem.classList.add('is-invalid');
+                    }
+                    proceed_to_save = 0;
+                }
+                else{
+                    if (input_elem.classList.contains('is-valid') == false){
+                        input_elem.classList.add('is-valid');
+                    }
+                }
+            
+            
+                if (proceed_to_save == 0) {return;}
+                
+                break;
+            }
+        
+            case 'ai-internal':{
+                input_elem          = componentSelectBoarInt.getElemSelect();
+                if (input_boar_int_hid == '0'  || input_boar_int_hid == '-1'){
+                    validation = -1;
+                }
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            
+                break;
+            }
+        
+        }
         
         input_elem          = elemUiDateMating.getElemText();
         cur_field           = newEntry.fieldInsemDate;
