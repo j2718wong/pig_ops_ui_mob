@@ -61,12 +61,13 @@ export function CommonSelectOptions(){
     this.setDataBoarList = function(data, select_elem, special_options){
         
         let select_data = [];
-        if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
-            replaceSelectOptions(select_elem, select_data);
-            return;
+        if (!special_options) {
+            if (data.length == 0){
+                select_data.push({value:"-1", text:"No Entries"});
+                replaceSelectOptions(select_elem, select_data);
+                return;
+            }
         }
-        
         
         select_data.push({value:"0", text:"Please Select"});
         if (special_options){
@@ -226,15 +227,16 @@ export function CommonSelectOptions(){
     
     
     
-    this.setDataAddressLevel = function(data, select_elem){
+    this.setDataAddressLevel = function(data, select_elem, special_options){
         
         let select_data = [];
-        if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
-            replaceSelectOptions(select_elem, select_data);
-            return;
+        if (!special_options){
+            if (data.length == 0){
+                select_data.push({value:"-1", text:"No Entries"});
+                replaceSelectOptions(select_elem, select_data);
+                return;
+            }
         }
-        
         
         select_data = [];
         select_data.push({value:"0", text:"Please Select"});

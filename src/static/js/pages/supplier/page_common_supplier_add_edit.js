@@ -4,75 +4,87 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
-        SUPPLIER_TYPE}          from '../../../constants.js';
+        SUPPLIER_TYPE}          from '../../constants.js';
 
-import {CommonSelectOptions}    from '../../common/common_select_options.js';
+import {CommonSelectOptions}    from '../common/common_select_options.js';
 
-import {ComponentAddressLevels} from '../../common/ui/comp_address_levels.js'
+import {ComponentAddressLevels} from '../common/ui/comp_address_levels.js'
 
-import {FIELD_VALIDATION_OK}    from '../../../models/model_basic.js'
+import {ComponentCommonSupplier}  from './comp_common_supplier.js';
 
 
-
-export function PageCommonSupplier(input_settings){
+export function PageCommonSupplierAddEdit(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
-    
+    const managerAddress        = navigation.managerAddress;
     
     /*
     Typical settings = {
         navigation:             this,
-		headerTitle:			'Add Semen Supplier',
-		supplierType:			SUPPLIER_TYPE.SEMEN,
+        elemIdDivContainer:     elemIdContSupplierAddEdit,
+        uniqueKey:              'supplier-add-edit'
     };
     */
     const settings              = input_settings;
 
     
-    const elemDivContainer      = document.getElementById('container-supplier-add-edit');
+    const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
-	// These can be controlled; normally this is for development
-	// purpose any analytics purpose only;
-	let SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_1 = true;
-	let SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_2 = true;
-	let SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_3 = true;
+    // These can be controlled; normally this is for development
+    // purpose any analytics purpose only;
+    let SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_1 = true;
+    let SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_2 = true;
+    let SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_3 = true;
         
-		
+    
+    let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
+    
+    let elemIdBtnCancel         = null;
+    let elemIdBtnSave           = null;
+    
+    
+    let elemHeaderTitle         = null;
+    let elemBtnClose            = null;
     
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
     
     
+    let showOptions             = null;
     
     
-    const settingsAddressLevels = {
-        uniqueKey:      'supplier-address'
-        navigation:		navigation
-    }
-    const compAddressLevels 	= new ComponentAddressLevels(settingsAddressLevels);
-    
-	
-    const settingsNewSupplier = {
-        uniqueKey:              'supplier-add'
+    const compAddressLevels     = new ComponentAddressLevels({
+        navigation:             navigation,
+        uniqueKey:              `${settings.uniqueKey}-address`,
+        elemDivContainer:       elemDivContainer,
         
+        level1Label:            'Select Province or Region',
+        level2Label:            'Select City or Municipality',
+        level3Label:            'Select Baranggay'
+    });
+    
+    
+    const compCommonSupplier    = new ComponentCommonSupplier({
+        navigation:             navigation,
+        uniqueKey:              `${settings.uniqueKey}-add`,
+      
         titleExpandSection:     'Add New Supplier',
         htmlExpandSection:      null,
-        labelBtnExpandSave:    	'Save New Supplier',
+        labelBtnExpandSave:     'Save New Supplier',
         
-        labelSelect:            'Select Supplier'
-        helpText:               ''
+        labelSelect:            'Select Supplier',
+        helpText:               null
         
-    }
-    const elemUiSupplierList 	= new UiSelectWithAddExpandable(settingsNewSupplier);
+    });
     
     
     this.init = function(){
@@ -83,16 +95,17 @@ export function PageCommonSupplier(input_settings){
     
     this.render = function(){
         
-        elemIdBtnClose          = `supplier-close`;
+        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
-        elemIdBtnCancel         = `supplier-cancel`;
-        elemIdBtnSave           = `supplier-save`;
+        elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
+        elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         
-		const html_address_levels 	= compAddressLevels.getHtml();
-		const html_supplier_list 	= elemUiSupplierList.getHtml();
+        const html_address_levels   = compAddressLevels.getHtml();
+        const html_supplier_list    = compCommonSupplier.getHtml();
         
-		
+        
         const html =`
 
         
@@ -100,7 +113,7 @@ export function PageCommonSupplier(input_settings){
 
     <div class="modal-header">
         <h5 class="modal-title">
-            <i class="fas fa-plus me-2"></i><span>${settings.headerTitle}</span>
+            <i class="fas fa-plus me-2"></i><span id="${elemIdHeaderTitle}">Add Semen Supplier</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
@@ -109,7 +122,7 @@ export function PageCommonSupplier(input_settings){
     <div class="modal-body">
         
         ${html_address_levels}
-		
+        
         ${html_supplier_list}
         
         
@@ -133,6 +146,9 @@ export function PageCommonSupplier(input_settings){
     
     
     this.afterHtmlRender = function(){
+        compAddressLevels.afterHtmlRender();
+        compCommonSupplier.afterHtmlRender();
+        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -140,29 +156,24 @@ export function PageCommonSupplier(input_settings){
     
     
     this._findElements = function(){
-        elemBtnClose            = document.getElementById(elemIdBtnClose);
+        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
+        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
             
-        elemBtnCancel           = document.getElementById(elemIdBtnCancel);
-        elemBtnSave             = document.getElementById(elemIdBtnSave);
+        elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
+        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
     }
     
     
     this._processAfterHtmlRender = function(){
-        
-        
+        compAddressLevels.callbackOnChangeLevel1 = this.onChangeAddressLevel1;
+        compAddressLevels.callbackOnChangeLevel2 = this.onChangeAddressLevel2;
     }
     
     
     this._bindEventListeners = function(){
         
         
-        elemBtnClose.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
-        });
         
-        elemBtnCancel.addEventListener('click', function() {
-        //    navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
-        });
         
         
         elemBtnSave.addEventListener('click', function() {
@@ -184,18 +195,100 @@ export function PageCommonSupplier(input_settings){
     }
     
     
-    this.beforeShow = function(){
+    this.beforeShow = function(options){
+        /*
+        
+        Typical options 
+        {
+            is_add:         true,
+            supplier_type:  SUPPLIER_TYPE.SEMEN,
+            go_back_page:   settings.pageDivContainer   // Go back to this page
+        }
+        
+        */
+        
+        
         thisObj._resetForm();
+        
+        
+        showOptions = options;
+        
+        
+        // Set title
+        let title = '';
+        
+        switch(showOptions.supplier_type){
+            case SUPPLIER_TYPE.FEED: {
+                title = 'Add New Feed Supplier';
+                break;
+            }
+            
+            case SUPPLIER_TYPE.SEMEN: {
+                title = 'Add New Semen Supplier';
+                break;
+            }
+            
+            case SUPPLIER_TYPE.GILT: {
+                title = 'Add New Gilt Supplier';
+                break;
+            }
+        }
+        
+        elemHeaderTitle.textContent  = title;
+        
+        compCommonSupplier.setSupplierType(showOptions.supplier_type);
+        
+        
+        // Hide Supplier List
+        compCommonSupplier.hide();
+        
+        
+        // Update Close and cancel button on click
+        
+        elemBtnClose.onclick = function() {
+            navigation.showThisPage(showOptions.go_back_page);
+        };
+        
+        elemBtnCancel.onclick = function() {
+            navigation.showThisPage(showOptions.go_back_page);
+        };
     }
     
-	
-	this.getSupplierCountPerAddressLevel1 =  function(){
-		if (SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_1 == false){return;}
-		
-		
-	}
-	
-	
+    
+    this.getSupplierCountPerAddressLevel1 =  function(){
+        if (SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_1 == false){return;}
+        
+        
+    }
+    
+    
+    this.onChangeAddressLevel1 = function(level_1_hid){
+        // Get suppliers at addressLevel
+        
+        // Hide Supplier List
+        compCommonSupplier.hide();
+        
+        
+        const address_level_1 = managerAddress.getAddressLevel1(level_1_hid);
+        
+        if ('list_supplier' in address_level_1){
+            
+        }
+        else{
+            managerAddress.requestDataSupplier(address_level_1);
+        }
+    }
+    
+    this.onChangeAddressLevel2 = function(level_2_hid){
+        // Get suppliers at addressLevel2
+        
+        
+        // Hide Supplier List
+        compCommonSupplier.show();
+        
+    }
+    
+    
         
     this.onClickSaveButton = function(){
         let input_elem;

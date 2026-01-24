@@ -49,7 +49,7 @@ import {PageProdGestatingEntry}     from '../production/gesta_lacta/page_prod_ge
 
 import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
 
-
+import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_edit.js';
 
 
 function UserControl(_navigation) {
@@ -286,7 +286,7 @@ export function Navigation(){
     
     const elemIdContAccPigOps           = 'container-acc-pig-ops';
     
-    const elemIdContSupplierAddEdit		= 'container-supplier-add-edit';
+    const elemIdContSupplierAddEdit     = 'container-supplier-add-edit';
     
     
     
@@ -335,9 +335,9 @@ export function Navigation(){
     let elemHiddenContAccPigOps     = null;
     
     
-	let elemHiddenContSupplierAddEdit = null;
-	
-	
+    let elemHiddenContSupplierAddEdit = null;
+    
+    
     this.pageData                   = null;
     
     
@@ -478,6 +478,12 @@ export function Navigation(){
     });
     
     
+    this.pageSupplierAddEdit    = new PageCommonSupplierAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContSupplierAddEdit,
+        uniqueKey:              'supplier-add-edit'
+    });
+    
 
     
     this.init = function(){
@@ -510,6 +516,7 @@ export function Navigation(){
         
         this.pageAccPigOps.init();
         
+        this.pageSupplierAddEdit.init();
         
         this.afterHtmlRender();
         
@@ -568,7 +575,7 @@ export function Navigation(){
     
         elemHiddenContAccPigOps     = document.getElementById(elemIdContAccPigOps);
         
-		elemHiddenContSupplierAddEdit = document.getElementById(elemIdContSupplierAddEdit);
+        elemHiddenContSupplierAddEdit = document.getElementById(elemIdContSupplierAddEdit);
     }
     
     
@@ -629,12 +636,12 @@ export function Navigation(){
         this.pigFarm.setDataPigFarmAccount(pig_farm_account);
         
         
-        const country_hid   = user_current_farm.location.country.hid;
+        const country   = user_current_farm.location.country;
 
         
         // This waits for the logged in user for user authentication
         // before request
-        this.managerAddress.setCountryHid(country_hid);
+        this.managerAddress.setCurCountry(country);
         
             
         
@@ -794,12 +801,12 @@ export function Navigation(){
             case PAGE_ID.ACC_PIG_OPS: {
                 return elemHiddenContAccPigOps;
             }
-			
-			
-			case PAGE_ID.SUPPLIER_ADD_EDIT:{
-				return elemHiddenContSupplierAddEdit;
-			}
-			
+            
+            
+            case PAGE_ID.SUPPLIER_ADD_EDIT:{
+                return elemHiddenContSupplierAddEdit;
+            }
+            
         }
         
         return null;

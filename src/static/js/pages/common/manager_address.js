@@ -12,12 +12,17 @@ export function ManagerAddress(_navigation){
     let addressLevel1List   = null;
 
 
-    let curCountryHid       = null;
+    let curCountry          = null;
     
     
-    this.setCountryHid      = function(country_hid){
-        curCountryHid = country_hid;
-        thisObj.requestDataAddressLevel1(curCountryHid);
+    this.setCurCountry      = function(country){
+        curCountry = country;
+        thisObj.requestDataAddressLevel1(curCountry.hid);
+    }
+    
+    
+    this.getCurCountry  = function(){
+        return curCountry;
     }
     
     
@@ -43,7 +48,7 @@ export function ManagerAddress(_navigation){
     }
     
     
-    this.getLevel2 = function(address_level_1){
+    this.getLevel2Addresses = function(address_level_1){
         if ('level2' in address_level_1){
             return address_level_1.level2;
         }
@@ -52,7 +57,7 @@ export function ManagerAddress(_navigation){
     }
     
     
-    this.setLevel2 = function(address_level_1, data){
+    this.setLevel2Addresses = function(address_level_1, data){
         address_level_1.level2 = data;
     }
     
@@ -76,7 +81,7 @@ export function ManagerAddress(_navigation){
     }
   
     
-    this.getLevel3 = function(address_level_2){
+    this.getLevel3Addresses = function(address_level_2){
         if ('level3' in address_level_2){
             return address_level_2.level3;
         }
@@ -85,7 +90,7 @@ export function ManagerAddress(_navigation){
     }
     
     
-    this.setLevel3 = function(address_level_2, data){
+    this.setLevel3Addresses = function(address_level_2, data){
         address_level_2.level3 = data;
     }
     
@@ -109,7 +114,8 @@ export function ManagerAddress(_navigation){
     }
     
     
-    this.requestDataAddressLevel1 = function(country_hid){
+    this.requestDataAddressLevel1 = function(country_hid, callback_success,
+            elem_show_error){
         // Need to request address level list
         const base_url = window.location.origin;
         const url = `${base_url}/address/level_1/list?country_hid=${country_hid}`;
@@ -130,9 +136,13 @@ export function ManagerAddress(_navigation){
                     // Set managerAddress.setAddressLevel1List
                     thisObj.setAddressLevel1List(response.data);
                   
+					if (callback_success){
+						callback_success(response.data);
+					}
                 }
                 else {
-                    // TODO
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
                 }
             },
   
@@ -153,7 +163,7 @@ export function ManagerAddress(_navigation){
         
         // Need to request address level list
         const base_url = window.location.origin;
-        const url = `${base_url}/address/level_2/list?level_1_hid=${level_1_hid}'`;
+        const url = `${base_url}/address/level_2/list?level_1_hid=${level_1_hid}`;
         
         
         $.ajax({
@@ -170,7 +180,7 @@ export function ManagerAddress(_navigation){
                 if (response.result.num == 0){
                    
                     // Set address_level_1.level2 data; 
-                    thisObj.setLevel2(address_level_1, response.data);
+                    thisObj.setLevel2Addresses(address_level_1, response.data);
                                         
                     if (callback_success){
                         callback_success(response.data);
@@ -198,8 +208,8 @@ export function ManagerAddress(_navigation){
         const level_2_hid = address_level_2.hid;
         
         // Need to request address level list
-        let url = gController.getBaseUrl();
-        url += '/address/level_3/list?level_2_hid=' + level_2_hid;
+        const base_url = window.location.origin;
+        const url = `${base_url}/address/level_3/list?level_2_hid=${level_2_hid}`;
         
         
         $.ajax({
@@ -215,7 +225,7 @@ export function ManagerAddress(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                     // Set address_level_2.level3 data; 
-                    thisObj.setLevel3(address_level_2, response.data);
+                    thisObj.setLevel3Addresses(address_level_2, response.data);
                     
                     if (callback_success){
                         callback_success(response.data);
@@ -236,9 +246,56 @@ export function ManagerAddress(_navigation){
         });
     }
     
+    
+	this.requestDataSupplier = function(address_level_1, callback_success, 
+            elem_show_error){ 
+        
+		
+        const level_1_hid = address_level_1.hid;
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/supplier/list?level_1_hid=${level_1_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                   
+                    // Set address_level_1.list_supplier data; 
+                    address_level_1.list_supplier = response.data;
+                                        
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
+                    
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    } 
 	
-	this.requestDataSupplierCountPerAddressLevel = function(supplier_type, 
-			address_level_1, address_level_2, callback_success, elem_show_error){
+	
+    this.requestDataSupplierCountPerAddressLevel = function(supplier_type, 
+            address_level_1, address_level_2, callback_success, elem_show_error){
         let param = '';
         
         switch (supplier_type){
@@ -312,5 +369,5 @@ export function ManagerAddress(_navigation){
         
     }
     
-	
+    
 }

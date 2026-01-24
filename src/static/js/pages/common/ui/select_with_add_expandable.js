@@ -33,6 +33,7 @@ export function UiSelectWithAddExpandable(input_settings){
 
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     const elemIdExpandSection   = `${settings.uniqueKey}-expand-show`;
+	const elemIdExpandSectionTitle = `${settings.uniqueKey}-expand-title`;
     const elemIdServerErrorMsg  = `${settings.uniqueKey}-server-error`;
     const elemIdExpandCancel    = `${settings.uniqueKey}-cancel`;
     const elemIdExpandSave      = `${settings.uniqueKey}-save`;
@@ -41,6 +42,7 @@ export function UiSelectWithAddExpandable(input_settings){
     const elemIdEntryAdd        = `${settings.uniqueKey}-entry-add`;
         
     let elemExpandSection       = null;
+	let elemExpandSectionTitle	= null;
     let elemServerErrorMsg      = null;
     let elemExpandCancel        = null;
     let elemExpandSave          = null;
@@ -56,10 +58,16 @@ export function UiSelectWithAddExpandable(input_settings){
     
     this.getHtml = function(){
         
+        let s_help = '';
+        if (settings.helpText){
+            s_help = settings.helpText;
+        }
+        
+        
         return `
         <div class="form-group-select" id="${elemIdUiShow}">
             <div class="expandable-section" id="${elemIdExpandSection}">
-                <h5>${settings.titleExpandSection}</h5>
+                <h5 id="${elemIdExpandSectionTitle}">${settings.titleExpandSection}</h5>
                 
                 ${settings.htmlExpandSection}
                 
@@ -82,7 +90,7 @@ export function UiSelectWithAddExpandable(input_settings){
                     <i class="bi bi-plus"></i> New
                 </button>
             </div>
-            <div class="form-text">${settings.helpText}</div>
+            ${s_help}
         </div>
         `
         ;
@@ -94,6 +102,7 @@ export function UiSelectWithAddExpandable(input_settings){
         thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
         
         elemExpandSection       = document.getElementById(elemIdExpandSection);
+		elemExpandSectionTitle	= document.getElementById(elemIdExpandSectionTitle);
         elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
         elemExpandCancel        = document.getElementById(elemIdExpandCancel);
         elemExpandSave          = document.getElementById(elemIdExpandSave);
@@ -161,6 +170,11 @@ export function UiSelectWithAddExpandable(input_settings){
         isExpandSectionExpanded = false;
     }
     
+	
+	this.getElemExpandSectionTitle = function(){
+		return elemExpandSectionTitle;
+	}
+	
     
     this.getElemSelect  = function(){
         return elemSelect;

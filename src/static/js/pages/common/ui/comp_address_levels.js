@@ -5,15 +5,21 @@
 'use strict';
 
 
-import {CommonSelectOptions}    from './common_select_options.js';
+import {CommonSelectOptions}    from '../common_select_options.js';
 
 
 export function ComponentAddressLevels(input_settings){
     
     /* Typical settings
     settings = {
-        uniqueKey:      ''
-        navigation:     navigation
+        navigation:             navigation,
+        uniqueKey:              '',
+        elemDivContainer:       elemDivContainer,
+        
+                
+        level1Label:            'Select Province or Region',
+        level2Label:            'Select City or Municipality',
+        level3Label:            'Select Baranggay'
     }
     
     
@@ -25,41 +31,47 @@ export function ComponentAddressLevels(input_settings){
     const managerAddress        = navigation.managerAddress;
     
     const settings              = input_settings;
+    const elemDivContainer      = settings.elemDivContainer;
     
     
-    const elemIdServerErrorMsg  = `${settings.uniqueKey}-adrs-server-error`;
+    const elemIdServerErrorMsg      = `${settings.uniqueKey}-adrs-server-error`;
     
-    const elemIdAddressLevel1      = `${settings.uniqueKey}-adrs-level1`;
-    const elemIdAddressLevel1Label = `${settings.uniqueKey}-adrs-level1-label`;
-    const elemIdAddressLevel1Count = `${settings.uniqueKey}-adrs-level1-count`;
+    const elemIdCountry             = `${settings.uniqueKey}-country`;
     
-    const elemIdAddressLevel2      = `${settings.uniqueKey}-adrs-level2`;
-    const elemIdAddressLevel2Label = `${settings.uniqueKey}-adrs-level2-label`;
-    const elemIdAddressLevel2Count = `${settings.uniqueKey}-adrs-level2-count`;
-    
-    const elemIdAddressLevel3      = `${settings.uniqueKey}-adrs-level3`;
-    const elemIdAddressLevel3Label = `${settings.uniqueKey}-adrs-level3-label`;
-    const elemIdAddressLevel3Count = `${settings.uniqueKey}-adrs-level3-count`;
-    
+    const elemIdAddressLevel1       = `${settings.uniqueKey}-adrs-level1`;
+    const elemIdAddressLevel1Count  = `${settings.uniqueKey}-adrs-level1-count`;
+        
+    const elemIdAddressLevel2       = `${settings.uniqueKey}-adrs-level2`;
+    const elemIdAddressLevel2Count  = `${settings.uniqueKey}-adrs-level2-count`;
+        
+    const elemIdAddressLevel3       = `${settings.uniqueKey}-adrs-level3`;
+    const elemIdAddressLevel3Count  = `${settings.uniqueKey}-adrs-level3-count`;
     
     
-    let elemAddressLevel1          = null;
-    let elemAddressLevel1Label     = null;
-    let elemAddressLevel1Count     = null; 
-                                
-    let elemAddressLevel2          = null;
-    let elemAddressLevel2Label     = null;
-    let elemAddressLevel2Count     = null;
-                                
-    let elemAddressLevel3          = null;
-    let elemAddressLevel3Label     = null;
-    let elemAddressLevel3Count     = null;
+    let elemServerErrorMsg          = null;
+    
+    let elemCountry                 = null;
+    
+    let elemAddressLevel1           = null;
+    let elemAddressLevel1Count      = null; 
+                                    
+    let elemAddressLevel2           = null;
+    let elemAddressLevel2Count      = null;
+                                    
+    let elemAddressLevel3           = null;
+    let elemAddressLevel3Count      = null;
                                 
     
     const commonSelectOptions       = new CommonSelectOptions();
     
     
     let curAddressLevel1            = null;
+    let curAddressLevel2            = null;
+    
+    
+    this.callbackOnChangeLevel1     = null;
+    this.callbackOnChangeLevel2     = null;
+    this.callbackOnChangeLevel3     = null;
     
     
     // This is a function to request an item count per address level 2
@@ -74,44 +86,54 @@ export function ComponentAddressLevels(input_settings){
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
+        <div class="form-group-check">
+            <label class="form-label">Country</label>
+            
+            <div>
+                <b>
+                    <label id="${elemIdCountry}">
+                        Philippines
+                    </label>
+                </b>
+                
+            </div>            
+        </div>
+        
+        
+        
         <!-- 1. Address Level 1 -->
         <div class="form-group-select">
             <label for="${elemIdAddressLevel1}" class="form-label">
-                ${elemIdAddressLevel1Label} <span class="entries-count" id=${elemIdAddressLevel1Count}></span>
+                ${settings.level1Label} <span class="entries-count" id=${elemIdAddressLevel1Count}></span>
             </label>
                         
-            <div class="input-group">
-                <select class="form-select" id="${elemIdAddressLevel1}">
-                    <option value="-1" selected disabled>No Entries</option>
-                </select>
-            </div>
+            <select class="form-select" id="${elemIdAddressLevel1}">
+                <option value="-1" selected disabled>No Entries</option>
+            </select>
+            
         </div>
             
         <!-- 2. Address Level 2 -->
         <div class="form-group-select">
             <label for="${elemIdAddressLevel2}" class="form-label">
-                ${elemIdLabelAddressLevel2} <span class="entries-count" id=${elemIdAddressLevel2Count}></span>
+                ${settings.level2Label} <span class="entries-count" id=${elemIdAddressLevel2Count}></span>
             </label>
                         
-            <div class="input-group">
-                <select class="form-select" id="${elemIdAddressLevel2}">
-                    <option value="-1" selected disabled>No Entries</option>
-                </select>
-            </div>
+            <select class="form-select" id="${elemIdAddressLevel2}">
+                <option value="0" selected disabled>Please Select</option>
+            </select>
         </div>
         
         
         <!-- 3. Address Level 3 -->
         <div class="form-group-select">
             <label for="${elemIdAddressLevel3}" class="form-label">
-                ${elemIdLabelAddressLevel3} <span class="entries-count" id=${elemIdAddressLevel3Count}></span>
+                ${settings.level3Label} <span class="entries-count" id=${elemIdAddressLevel3Count}></span>
             </label>
                         
-            <div class="input-group">
-                <select class="form-select" id="${elemIdAddressLevel3}">
-                    <option value="-1" selected disabled>No Entries</option>
-                </select>
-            </div>
+            <select class="form-select" id="${elemIdAddressLevel3}">
+                <option value="0" selected disabled>Please Select</option>
+            </select>
         </div>
         
         
@@ -121,19 +143,18 @@ export function ComponentAddressLevels(input_settings){
     
     
     this._findElements = function(){
-        elemServerErrorMsg          = document.getElementById(elemIdServerErrorMsg);
+        elemServerErrorMsg          = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         
-        elemAddressLevel1           = document.getElementById(elemIdAddressLevel1);
-        elemAddressLevel1Label      = document.getElementById(elemIdAddressLevel1Label);
-        elemAddressLevel1Count      = document.getElementById(elemIdAddressLevel1Count);
+        elemCountry                 = elemDivContainer.querySelector('#'+elemIdCountry);
+        
+        elemAddressLevel1           = elemDivContainer.querySelector('#'+elemIdAddressLevel1);
+        elemAddressLevel1Count      = elemDivContainer.querySelector('#'+elemIdAddressLevel1Count);
                                 
-        elemAddressLevel2           = document.getElementById(elemIdAddressLevel2);
-        elemAddressLevel2Label      = document.getElementById(elemIdAddressLevel2Label);
-        elemAddressLevel2Count      = document.getElementById(elemIdAddressLevel2Count);
+        elemAddressLevel2           = elemDivContainer.querySelector('#'+elemIdAddressLevel2);
+        elemAddressLevel2Count      = elemDivContainer.querySelector('#'+elemIdAddressLevel2Count);
                                 
-        elemAddressLevel3           = document.getElementById(elemIdAddressLevel3);
-        elemAddressLevel3Label      = document.getElementById(elemIdAddressLevel3Label);
-        elemAddressLevel3Count      = document.getElementById(elemIdAddressLevel3Count);
+        elemAddressLevel3           = elemDivContainer.querySelector('#'+elemIdAddressLevel3);
+        elemAddressLevel3Count      = elemDivContainer.querySelector('#'+elemIdAddressLevel3Count);
         
     }
     
@@ -185,8 +206,20 @@ export function ComponentAddressLevels(input_settings){
     
     
     this.beforeShow = function(){
+        
+        
+        const cur_country = navigation.managerAddress.getCurCountry();
+        elemCountry.textContent = cur_country.name;
+        
         const data = navigation.managerAddress.getAddressLevel1List();
         commonSelectOptions.setDataAddressLevel(data, elemAddressLevel1);
+        
+        elemAddressLevel2.selectedIndex = 0;
+        elemAddressLevel2.dispatchEvent(new Event('change')); 
+        
+        elemAddressLevel3.selectedIndex = 0;
+        elemAddressLevel3.dispatchEvent(new Event('change')); 
+        
         
         elemAddressLevel2.disabled = true;
         elemAddressLevel3.disabled = true;
@@ -207,7 +240,10 @@ export function ComponentAddressLevels(input_settings){
             commonSelectOptions.setDataAddressLevel(data, elemAddressLevel1);
         };
         
-        managerAddress.requestDataAddressLevel1(callback_success);
+        const country_hid = managerAddress.getCurCountry().hid;
+        
+        managerAddress.requestDataAddressLevel1(country_hid, callback_success, 
+                elemServerErrorMsg);
     }
     
     
@@ -226,6 +262,9 @@ export function ComponentAddressLevels(input_settings){
                 thisObj.requestItemCountPerAddressLevel2(level_1_hid, data);
             }
             else{
+                elemAddressLevel1   .disabled = false;
+                elemAddressLevel2   .disabled = false;
+        
                 commonSelectOptions.setDataAddressLevel(data, elemAddressLevel2);
             }
         };
@@ -236,14 +275,14 @@ export function ComponentAddressLevels(input_settings){
     
     
     this.onChangeAddressLevel1 = function(){
-        commonSelectOptions.setDataAddressLevel([], elemAddressLevel3);
+        commonSelectOptions.setDataAddressLevel([], elemAddressLevel3, []);
         
-        const level_1_hid = elemAddressLevel1.val()
+        const level_1_hid = elemAddressLevel1.value;
         
         
         // Get address_level_1 data from managerAddress
         curAddressLevel1        = managerAddress.getAddressLevel1(level_1_hid);
-        let level_2_addresses   = managerAddress.getLevel2(curAddressLevel1);
+        let level_2_addresses   = managerAddress.getLevel2Addresses(curAddressLevel1);
         
         
         // Request data from server only if not yet requested
@@ -255,6 +294,12 @@ export function ComponentAddressLevels(input_settings){
             elemAddressLevel2.disabled = false;
 
         }
+        
+        if (thisObj.callbackOnChangeLevel1){
+            thisObj.callbackOnChangeLevel1(level_1_hid);
+        }
+        
+        
 
     }
     
@@ -263,14 +308,14 @@ export function ComponentAddressLevels(input_settings){
         elemServerErrorMsg.style.display = 'none';
         
         
-        const level_2_hid = elemAddressLevel2.val()
+        const level_2_hid = elemAddressLevel2.value;
 
-        
+        if (level_2_hid == '0' || level_2_hid == '-1'){return;}
         
         // Get level_2 from  curAddressLevel1
         curAddressLevel2        = managerAddress.getAddressLevel2(
                                         curAddressLevel1, level_2_hid);
-        let level_3_addresses   = managerAddress.getLevel3(curAddressLevel2);
+        let level_3_addresses   = managerAddress.getLevel3Addresses(curAddressLevel2);
         
         
         // Request data from server only if not yet requested
@@ -288,16 +333,10 @@ export function ComponentAddressLevels(input_settings){
         }
         
         
-        // Request AddressLevel2Items
-        elemSelectResShow.hide();
         
-        let input_elem = elemAdrsItemSelect;
-            
-        if (input_elem.hasClass('is-invalid') == true){
-            input_elem.removeClass('is-invalid');
+        if (thisObj.callbackOnChangeLevel2){
+            thisObj.callbackOnChangeLevel2(level_2_hid);
         }
-        
-        thisObj.requestAddressLevel2Items(level_2_hid);
     }
     
     
@@ -317,8 +356,8 @@ export function ComponentAddressLevels(input_settings){
             commonSelectOptions.setDataAddressLevel(data, elemAddressLevel3);
         };
 
-        addressManager.requestAddressLevel3Data(address_level_2, 
-            callback_success);
+        managerAddress.requestDataAddressLevel3(address_level_2, 
+            callback_success, elemServerErrorMsg);
     }
     
     

@@ -116,23 +116,23 @@ export function ComponentSemenSupplier(input_settings){
             
             const options_supplier ={
                 is_add:         true,
+                supplier_type:  SUPPLIER_TYPE.SEMEN,
                 go_back_page:   settings.pageDivContainer   // Go back to this page
-            }
-            
-            
-            const callback_success = function(new_sow_boar_hid){
-                const cur_sow = thisObj.getDataBoar(new_sow_boar_hid);
-                
-                if (cur_sow == null){return;}
-                if (cur_sow.sow_boar.is_production_ready == 0){return;}
-                
-                elemSelect.value = new_sow_boar_hid;
             };
             
-            navigation.pageSowBoarAddEdit.beforeShow(options_supplier);
-            navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback_success;
             
-            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+            const callback_success = function(new_supplier_hid){
+                const cur_supplier = thisObj.getDataSemenSupplier(new_supplier_hid);
+                
+                if (cur_supplier == null){return;}
+                
+                elemSelect.value = new_supplier_hid;
+            };
+            
+            navigation.pageSupplierAddEdit.beforeShow(options_supplier);
+            navigation.pageSupplierAddEdit.callbackOnSuccessAdd = callback_success;
+            
+            const next_page = navigation.getPageContainer(PAGE_ID.SUPPLIER_ADD_EDIT);
             navigation.showThisPage(next_page)
         });
         

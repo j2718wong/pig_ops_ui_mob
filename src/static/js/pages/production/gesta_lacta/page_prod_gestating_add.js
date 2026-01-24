@@ -365,9 +365,9 @@ export function PageProdGestatingAdd(input_settings){
         
         elemUiNotes.afterHtmlRender();
         componentStaff.afterHtmlRender();
-		
-		
-		componentSemenSupplier.setComponentSemenType(componentSemenType);
+        
+        
+        componentSemenSupplier.setComponentSemenType(componentSemenType);
         
         this._findElements();
         this._processAfterHtmlRender();
