@@ -14,13 +14,14 @@ export function UiSelectWithAddExpandable(input_settings){
     
     /* Typical settings
     settings = {
-        uniqueKey:              ''
+        uniqueKey:              '',
+        elemDivContainer:       elemDivContainer,
         
         titleExpandSection:     'Add New MedVac Brand',
         htmlExpandSection:      '',
-        labelBtnExpandSave:    '',
+        labelBtnExpandSave:     '',
         
-        labelSelect:            ''
+        labelSelect:            '',
         helpText:               ''
         
     }
@@ -30,10 +31,11 @@ export function UiSelectWithAddExpandable(input_settings){
     const thisObj               = this;
     const settings              = input_settings;
 
+    const elemDivContainer      = settings.elemDivContainer;
 
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     const elemIdExpandSection   = `${settings.uniqueKey}-expand-show`;
-	const elemIdExpandSectionTitle = `${settings.uniqueKey}-expand-title`;
+    const elemIdExpandSectionTitle = `${settings.uniqueKey}-expand-title`;
     const elemIdServerErrorMsg  = `${settings.uniqueKey}-server-error`;
     const elemIdExpandCancel    = `${settings.uniqueKey}-cancel`;
     const elemIdExpandSave      = `${settings.uniqueKey}-save`;
@@ -42,7 +44,7 @@ export function UiSelectWithAddExpandable(input_settings){
     const elemIdEntryAdd        = `${settings.uniqueKey}-entry-add`;
         
     let elemExpandSection       = null;
-	let elemExpandSectionTitle	= null;
+    let elemExpandSectionTitle  = null;
     let elemServerErrorMsg      = null;
     let elemExpandCancel        = null;
     let elemExpandSave          = null;
@@ -56,6 +58,7 @@ export function UiSelectWithAddExpandable(input_settings){
 
     this.callbackBeforeExpand   = null;
     
+	
     this.getHtml = function(){
         
         let s_help = '';
@@ -102,7 +105,7 @@ export function UiSelectWithAddExpandable(input_settings){
         thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
         
         elemExpandSection       = document.getElementById(elemIdExpandSection);
-		elemExpandSectionTitle	= document.getElementById(elemIdExpandSectionTitle);
+        elemExpandSectionTitle  = document.getElementById(elemIdExpandSectionTitle);
         elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
         elemExpandCancel        = document.getElementById(elemIdExpandCancel);
         elemExpandSave          = document.getElementById(elemIdExpandSave);
@@ -141,8 +144,6 @@ export function UiSelectWithAddExpandable(input_settings){
     }
     
 
-
-
     this.toggleExpandable = function(){
         isExpandSectionExpanded = !isExpandSectionExpanded;
             
@@ -170,11 +171,11 @@ export function UiSelectWithAddExpandable(input_settings){
         isExpandSectionExpanded = false;
     }
     
-	
-	this.getElemExpandSectionTitle = function(){
-		return elemExpandSectionTitle;
-	}
-	
+    
+    this.getElemExpandSectionTitle = function(){
+        return elemExpandSectionTitle;
+    }
+    
     
     this.getElemSelect  = function(){
         return elemSelect;

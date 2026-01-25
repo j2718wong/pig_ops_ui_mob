@@ -27,6 +27,7 @@ export function ComponentSemenSupplier(input_settings){
     /* Typical settings
     settings = {
         navigation:             navigation,
+        parentObj:              thisObj,
         uniqueKey:              ''
         
         pageDivContainer:       elemDivContainer,
@@ -39,8 +40,11 @@ export function ComponentSemenSupplier(input_settings){
     
     */
     const thisObj               = this;
-    const settings              = input_settings;
+    const parentObj             = input_settings.parentObj;
     const navigation            = input_settings.navigation;
+    
+    const settings              = input_settings;
+    
     
     const pageDivContainer      = settings.pageDivContainer;
     
@@ -175,78 +179,55 @@ export function ComponentSemenSupplier(input_settings){
         elemSelect.selectedIndex = 0;
         
         elemSelect.classList.remove('is-valid', 'is-invalid');
+        
+        elemSupplierInfo.innerHTML = '';
     } 
     
     
-    
-    this.setDataSemenSupplierList = function(data){
+    this.setDataSupplierList = function(data){
         dataSupplierList = data;
 
 
-        commonSelectOptions.setDataSemenSupplierList(data, elemSelect);
+        commonSelectOptions.setDataSupplierList(data, elemSelect);
         thisObj.setEntryCount(data)
     }
     
    
+    this.populateSupplierDetails = function(supplier_hid){
+        const cur_supplier = this.getDataSemenSupplier(supplier_hid);
+        const supplier_address = cur_supplier.location.address;
+        let s = '';
+        
+        s = `${supplier_address.level_1.name}, ${supplier_address.level_2.name}`;
+        if ('hid' in supplier_address.level_3){
+            s += `, ${supplier_address.level_3.name}`
+        }
+        elemSupplierInfo.innerHTML = s;
+        
+    }
     
-    this.onChangeSemenSupplier = function(semen_hid){
+    
+    this.onChangeSemenSupplier = function(){
         elemSelect.classList.remove('is-valid', 'is-invalid');
         
         const supplier_hid = elemSelect.value;
         
+        thisObj.populateSupplierDetails(supplier_hid);
         
-        // Need to request semen_supplier_semen
-        const base_url = window.location.origin;
-        const url = `${base_url}/semen_sup_semen/list?semen_supplier_hid=${supplier_hid}`;
+        const callback_success = function(data) {
+            componentSemenType.setSupplierHid(supplier_hid);
+            componentSemenType.setDataSemenTypeList(data);
+            componentSemenType.show();
+        };
         
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    
-                    let semen_supplier = thisObj.getDataSemenSupplier(supplier_hid);
-                    
-                    const elem_select_semen_type = componentSemenType.getElemSelect();
-                    
-                    
-                    if (semen_hid){
-                        componentSemenType.setDataSemenTypeList(response.data, semen_hid);
-                    }
-                    else{
-                        componentSemenType.setDataSemenTypeList(response.data);
-                    }
-                    
-                    componentSemenType.show();
-                    
-                    
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, null);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
+        navigation.managerPublicData.requestDataSemenSupplierSemen(supplier_hid, 
+			callback_success);
     }
     
     
     this.getDataSemenSupplier = function(supplier_hid){
         for (const cur_entry of dataSupplierList){
-            if (cur_entry.hid == supplier_hid){return cur_entry;}
+            if (cur_entry.supplier.hid == supplier_hid){return cur_entry;}
         } 
         
         return null;

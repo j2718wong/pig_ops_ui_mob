@@ -36,11 +36,10 @@ export function ComponentSemenType(input_settings){
     UiSelectWithAddExpandable.call(this, input_settings);
     
     
-    const navigation        = input_settings.navigation;
-    
-    
     const thisObj           = this;
     const parentObj         = input_settings.parentObj;
+    const navigation        = input_settings.navigation;
+    
     
     const MAXCHAR_SEMEN_TYPE_NAME   = 50;
     
@@ -58,6 +57,7 @@ export function ComponentSemenType(input_settings){
     input_settings.htmlExpandSection = elemUiSemenType.getHtml();
     
     
+    let supplierHid             = null;
     let dataSemenTypeList       = null;
     
     let elemSemenType           = null;
@@ -85,6 +85,11 @@ export function ComponentSemenType(input_settings){
         this.callbackBeforeExpand = function(){
             elemUiSemenType.reset()
         }
+    }
+    
+    
+    this.setSupplierHid = function(supplier_hid){
+        supplierHid = supplier_hid;
     }
     
     
@@ -140,7 +145,7 @@ export function ComponentSemenType(input_settings){
         
         let is_duplicate    = 0;
         
-		input_elem          = thisObj.getElemSelect();
+        input_elem          = thisObj.getElemSelect();
         let input_name      = elemSemenType.value.trim();
         
        
@@ -149,7 +154,7 @@ export function ComponentSemenType(input_settings){
             // check for duplicates
             validation = 0;
             const cur_semen_type = thisObj.getSemenType(input_name);
-            if (cur_medvac_type != null){
+            if (cur_semen_type != null){
                 validation   = -1;
                 is_duplicate = 1;
             }
@@ -192,22 +197,13 @@ export function ComponentSemenType(input_settings){
         
         // send post request
         const post_data = {
-            'uhid':             user_hid,
-            'name':             input_name
+            'uhid':                 user_hid,
+            'semen_supplier_hid':   supplierHid,
+            'name':                 input_name
         };
         
         
-        // Append medvac_brand_hid and medvac_type_hid if there is any
-        const brand_type = parentObj.getMedVacBrandAndTypeHid();
-        if (brand_type){
-            if (brand_type.brand_hid && brand_type.brand_hid.length > 2){
-                post_data.medvac_brand_hid = brand_type.brand_hid;
-            }
-            
-            if (brand_type.type_hid && brand_type.type_hid.length > 2){
-                post_data.medvac_type_hid = brand_type.type_hid;
-            }
-        }
+        
         
 
         // Element where to display server error message in this component
@@ -218,7 +214,7 @@ export function ComponentSemenType(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
-            url: `${base_url}/account_medvac/add`,
+            url: `${base_url}/semen_sup_semen/add`,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -228,17 +224,15 @@ export function ComponentSemenType(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const account_medvac_hid = response.account_medvac.hid;
+                    const semen_sup_semen_hid = response.semen_sup_semen.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataSemenTypeList(data, account_medvac_hid);
+                        thisObj.setDataSemenTypeList(data, semen_sup_semen_hid);
                         thisObj.closeExpandable();
                     };
                     
-                    
-                    
-                    navigation.pigFarm.accountLists.requestDataSemenType(
-                        callback_success, elemServerErrorMsg)
+                    navigation.managerPublicData.requestDataSemenSupplierSemen(
+                        supplierHid, callback_success, elemServerErrorMsg);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(response,

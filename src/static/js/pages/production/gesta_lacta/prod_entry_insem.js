@@ -401,9 +401,9 @@ export function ProdEntryInsem(input_settings){
     }
     
     
-    this.setDataSemenSupplierList = function(data){
+    this.setDataSupplierList = function(data){
         semenSupplierList = data;
-        thisObj.commonSelectOptions.setDataSemenSupplierList(semenSupplierList, elemSemenSupplier);
+        thisObj.commonSelectOptions.setDataSupplierList(semenSupplierList, elemSemenSupplier);
     
         elemSemenSupplierCount.textContent   = ` (${semenSupplierList.length} entries)`;
     }

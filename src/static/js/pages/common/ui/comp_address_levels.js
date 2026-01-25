@@ -13,6 +13,7 @@ export function ComponentAddressLevels(input_settings){
     /* Typical settings
     settings = {
         navigation:             navigation,
+        parentObj:              this,
         uniqueKey:              '',
         elemDivContainer:       elemDivContainer,
         
@@ -26,8 +27,9 @@ export function ComponentAddressLevels(input_settings){
     */
     
     const thisObj               = this;
-    
     const navigation            = input_settings.navigation;
+    const parentObj             = input_settings.parentObj;
+    
     const managerAddress        = navigation.managerAddress;
     
     const settings              = input_settings;
@@ -65,9 +67,9 @@ export function ComponentAddressLevels(input_settings){
     const commonSelectOptions       = new CommonSelectOptions();
     
     
-    let curAddressLevel1            = null;
-    let curAddressLevel2            = null;
-    
+    this.curAddressLevel1           = null;
+    this.curAddressLevel2           = null;
+    this.curAddressLevel3           = null;
     
     this.callbackOnChangeLevel1     = null;
     this.callbackOnChangeLevel2     = null;
@@ -276,23 +278,27 @@ export function ComponentAddressLevels(input_settings){
     
     this.onChangeAddressLevel1 = function(){
         commonSelectOptions.setDataAddressLevel([], elemAddressLevel3, []);
+		elemAddressLevel3.disabled = true;
         
         const level_1_hid = elemAddressLevel1.value;
         
         
         // Get address_level_1 data from managerAddress
-        curAddressLevel1        = managerAddress.getAddressLevel1(level_1_hid);
-        let level_2_addresses   = managerAddress.getLevel2Addresses(curAddressLevel1);
+        this.curAddressLevel1   = managerAddress.getAddressLevel1(level_1_hid);
+        let level_2_addresses   = managerAddress.getLevel2Addresses(
+                                        thisObj.curAddressLevel1);
         
         
         // Request data from server only if not yet requested
         if (level_2_addresses == null){
-            thisObj.requestDataAddressLevel2(curAddressLevel1);
+            thisObj.requestDataAddressLevel2(thisObj.curAddressLevel1);
         }
         else{
             elemAddressLevel1.disabled = false;
             elemAddressLevel2.disabled = false;
 
+			commonSelectOptions.setDataAddressLevel(level_2_addresses, 
+					elemAddressLevel2);
         }
         
         if (thisObj.callbackOnChangeLevel1){
@@ -312,16 +318,17 @@ export function ComponentAddressLevels(input_settings){
 
         if (level_2_hid == '0' || level_2_hid == '-1'){return;}
         
-        // Get level_2 from  curAddressLevel1
-        curAddressLevel2        = managerAddress.getAddressLevel2(
-                                        curAddressLevel1, level_2_hid);
-        let level_3_addresses   = managerAddress.getLevel3Addresses(curAddressLevel2);
+        // Get level_2 from  this.curAddressLevel1
+        this.curAddressLevel2   = managerAddress.getAddressLevel2(
+                                    this.curAddressLevel1, level_2_hid);
+        let level_3_addresses   = managerAddress.getLevel3Addresses(
+                                    this.curAddressLevel2);
         
         
         // Request data from server only if not yet requested
         if (level_3_addresses == null){
             // Request AddressLevel3
-            thisObj.requestDataAddressLevel3(curAddressLevel2);
+            this.requestDataAddressLevel3(this.curAddressLevel2);
         }
         else {
             elemAddressLevel1.disabled = false;
@@ -337,6 +344,18 @@ export function ComponentAddressLevels(input_settings){
         if (thisObj.callbackOnChangeLevel2){
             thisObj.callbackOnChangeLevel2(level_2_hid);
         }
+    }
+    
+    
+    this.onChangeAddressLevel3 = function(){
+        const level_3_hid = elemAddressLevel3.value;
+
+        if (level_3_hid == '0' || level_3_hid == '-1'){return;}
+        
+        // Get level_3 from  this.curAddressLevel2
+        this.curAddressLevel3   = managerAddress.getAddressLevel3(
+                                    this.curAddressLevel2, level_3_hid);
+
     }
     
     
@@ -363,5 +382,17 @@ export function ComponentAddressLevels(input_settings){
     
     this.reset = function(){
         thisObj.beforeShow();
+    }
+    
+    
+    this.getAddressHids = function(){
+        const country_hid = managerAddress.getCurCountry().hid;
+        
+        return {
+            'country_hid': country_hid,
+            'level_1_hid': elemAddressLevel1.value,
+            'level_2_hid': elemAddressLevel2.value,
+            'level_3_hid': elemAddressLevel3.value
+        } 
     }
 }

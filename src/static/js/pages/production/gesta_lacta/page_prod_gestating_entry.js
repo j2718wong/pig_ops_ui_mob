@@ -704,8 +704,8 @@ export function PageProdGestatingEntry(input_settings){
     }
     
     
-    this.setDataSemenSupplierList = function(data){
-        prodEntryInsem.setDataSemenSupplierList(data);
+    this.setDataSupplierList = function(data){
+        prodEntryInsem.setDataSupplierList(data);
     }
     
     

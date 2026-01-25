@@ -16,7 +16,6 @@ export function ManagerPublicData(_navigation){
     this.dataMedVacTypeList = null;
     
     
-    
     this.requestDataMedVacBrand = function(callback_success, elem_show_error){
         // Get the country hid of the pig farm account
         const country_hid = navigation.pigFarm.getCountryHid();
@@ -101,4 +100,44 @@ export function ManagerPublicData(_navigation){
             }
         });
     }
+    
+    
+    this.requestDataSemenSupplierSemen = function(supplier_hid, callback_success, 
+                elem_show_error){
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/semen_sup_semen/list?semen_supplier_hid=${supplier_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (callback_success) {callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    
+    
 }

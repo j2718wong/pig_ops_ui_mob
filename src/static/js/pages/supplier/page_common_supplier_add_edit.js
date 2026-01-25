@@ -62,8 +62,13 @@ export function PageCommonSupplierAddEdit(input_settings){
     let showOptions             = null;
     
     
+    let curAddressLevel1        = null;
+    let curAddressLevel2        = null;
+    
+    
     const compAddressLevels     = new ComponentAddressLevels({
         navigation:             navigation,
+        parentObj:              this,
         uniqueKey:              `${settings.uniqueKey}-address`,
         elemDivContainer:       elemDivContainer,
         
@@ -75,8 +80,10 @@ export function PageCommonSupplierAddEdit(input_settings){
     
     const compCommonSupplier    = new ComponentCommonSupplier({
         navigation:             navigation,
+        parentObj:              this,
         uniqueKey:              `${settings.uniqueKey}-add`,
-      
+        elemDivContainer:       elemDivContainer,
+        
         titleExpandSection:     'Add New Supplier',
         htmlExpandSection:      null,
         labelBtnExpandSave:     'Save New Supplier',
@@ -167,6 +174,7 @@ export function PageCommonSupplierAddEdit(input_settings){
     this._processAfterHtmlRender = function(){
         compAddressLevels.callbackOnChangeLevel1 = this.onChangeAddressLevel1;
         compAddressLevels.callbackOnChangeLevel2 = this.onChangeAddressLevel2;
+        compAddressLevels.callbackOnChangeLevel3 = this.onChangeAddressLevel3;
     }
     
     
@@ -262,32 +270,154 @@ export function PageCommonSupplierAddEdit(input_settings){
     }
     
     
-    this.onChangeAddressLevel1 = function(level_1_hid){
-        // Get suppliers at addressLevel
+    this.filterBySupplierType = function(supplier_list){
+        const filtered = [];
         
+        for (const cur_entry of  supplier_list){
+            
+            switch(showOptions.supplier_type){
+                case SUPPLIER_TYPE.FEED: {
+                    if (cur_entry.supplier.is_fs > 0){
+                        filtered.push(cur_entry);
+                    }
+                    break;
+                }
+                
+                case SUPPLIER_TYPE.SEMEN: {
+                    if (cur_entry.supplier.is_ss > 0){
+                        filtered.push(cur_entry);
+                    }
+                    break;
+                }
+                
+                case SUPPLIER_TYPE.GILT: {
+                    if (cur_entry.supplier.is_gs > 0){
+                        filtered.push(cur_entry);
+                    }
+                    break;
+                }
+            }
+        }
+        
+        return filtered;
+    }
+    
+    
+    this.onChangeAddressLevel1 = function(level_1_hid){
         // Hide Supplier List
         compCommonSupplier.hide();
-        
-        
-        const address_level_1 = managerAddress.getAddressLevel1(level_1_hid);
-        
-        if ('list_supplier' in address_level_1){
-            
-        }
-        else{
-            managerAddress.requestDataSupplier(address_level_1);
-        }
     }
+    
     
     this.onChangeAddressLevel2 = function(level_2_hid){
-        // Get suppliers at addressLevel2
+        // Get suppliers at addressLevel
+        curAddressLevel2 = compAddressLevels.curAddressLevel2;
         
+        /*
+        if showOptions.supplier_type  == SUPPLIER_TYPE.SEMEN or SUPPLIER_TYPE.GILT
+            show compCommonSupplier;
+            This is because there are few semen suppliers and gilt suppliers
+            
+            
+        if showOptions.supplier_type  == SUPPLIER_TYPE.FEED
+            hide compCommonSupplier; // should be shown only at level 3
+        */
         
-        // Hide Supplier List
-        compCommonSupplier.show();
+        if ('list_supplier' in curAddressLevel2){
+            // set all suppliers in addressLevel2
+            compCommonSupplier.setDataSupplierListLevel2(curAddressLevel2.list_supplier);
+            
+            // todo How to update curAddressLevel2.list_supplier
+            if (showOptions.supplier_type == SUPPLIER_TYPE.SEMEN || 
+                showOptions.supplier_type == SUPPLIER_TYPE.GILT){
+                
+                compCommonSupplier.show();
+                
+                // Set compCommonSupplier dropdown.
+                const filtered = thisObj.filterBySupplierType(
+                        curAddressLevel2.list_supplier); 
+                compCommonSupplier.setDataSupplier(filtered);
+            }
+            else{
+                compCommonSupplier.hide();
+            }
+        }
+        else{
+            const callback_success = function(data){
+                // set all suppliers in addressLevel2
+                compCommonSupplier.setDataSupplierListLevel2(data);
+            
+                
+                if (showOptions.supplier_type == SUPPLIER_TYPE.SEMEN || 
+                    showOptions.supplier_type == SUPPLIER_TYPE.GILT){
+                    
+                    compCommonSupplier.show();
+                    
+                    // Set compCommonSupplier dropdown.
+                    const filtered = thisObj.filterBySupplierType(
+                            curAddressLevel2.list_supplier); 
+                    compCommonSupplier.setDataSupplier(filtered);
+                }
+                else{
+                    compCommonSupplier.hide();
+                }
+            };
+            
+            managerAddress.requestDataSupplier(curAddressLevel2, callback_success);
+        }
+        
         
     }
     
+    
+    this.onChangeAddressLevel3 = function(level_3_hid){
+        // Get suppliers at addressLevel3
+        
+        console.log(' supplier_add_edit onChangeAddressLevel3');
+        
+        
+        // Filter which of the suppliers in curAddressLevel2 are in level_3_hid
+        const filtered_level_2 = [];
+        const list_supplier = curAddressLevel2.list_supplier;
+        
+        for (const cur_entry of  list_supplier){
+            if (cur_entry.location.address.level_3 == level_3_hid){
+                filtered_level_2.push(cur_entry);
+            }
+        }
+        
+        
+        const filtered  = thisObj.filterBySupplierType(filtered_level_2); 
+        
+        
+        // The filtered supplier_by type should be shown in the 
+        // compCommonSupplier dropdown.
+        compCommonSupplier.setDataSupplier(filtered);
+        
+    }
+    
+    
+	this.onSuccessAddSupplier = function(supplier_hid){
+        const callback_success = function(data){
+            // set all suppliers in addressLevel2
+            compCommonSupplier.setDataSupplierListLevel2(data);
+        
+            
+            // Set compCommonSupplier dropdown.
+            const filtered = thisObj.filterBySupplierType(
+                    curAddressLevel2.list_supplier); 
+            compCommonSupplier.setDataSupplier(filtered, supplier_hid);
+            
+        };
+        
+        managerAddress.requestDataSupplier(curAddressLevel2, callback_success);
+        
+    }
+    
+	
+    this.getAddressHids = function(){
+        return compAddressLevels.getAddressHids();
+    }
     
         
     this.onClickSaveButton = function(){
@@ -490,21 +620,6 @@ export function PageCommonSupplierAddEdit(input_settings){
         });
     }
     
-    
-    this.onSuccessAddGestatingEntry = function(){
-        const pig_prod_type = PIG_PROD_TYPE.GESTATING;
-        
-        const callback = function(data){
-            navigation.setDataPigProdList(data);
-            
-            thisObj.show(); 
-            
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
-        };
-        
-        navigation.managerRequest.requestDataPigProd(pig_prod_type, callback);
-        
-    }
     
     
 }   

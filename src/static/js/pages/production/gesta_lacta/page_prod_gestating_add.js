@@ -166,6 +166,7 @@ export function PageProdGestatingAdd(input_settings){
         
         componentSemenSupplier  = new ComponentSemenSupplier({
             navigation:         navigation,
+			parentObj:          thisObj,
             uniqueKey:          `${settings.uniqueKey}-semen-supplier`,
             
             pageDivContainer:   elemDivContainer,
@@ -440,6 +441,7 @@ export function PageProdGestatingAdd(input_settings){
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         });
         
+		
         elemBtnCancel.addEventListener('click', function() {
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         });
@@ -465,8 +467,10 @@ export function PageProdGestatingAdd(input_settings){
     
   
     
-    this.setDataSemenSupplierList = function(data){
-        componentSemenSupplier.setDataSemenSupplierList(data);
+    this.setDataSupplierList = function(data){
+		console.log('setDataSupplierList');
+		console.log(data);
+        componentSemenSupplier.setDataSupplierList(data);
     }
     
     
@@ -517,16 +521,14 @@ export function PageProdGestatingAdd(input_settings){
         // Request semen_supplier if not yet requested
         if (account_semen_suppliers == null){
             navigation.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.SEMEN,
-                    thisObj.setDataSemenSupplierList);
+                    thisObj.setDataSupplierList);
         }
         else{
-            thisObj.setDataSemenSupplierList(account_semen_suppliers);
+            thisObj.setDataSupplierList(account_semen_suppliers);
         }
     }
     
         
-    
-    
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
     

@@ -92,7 +92,7 @@ export function CommonSelectOptions(){
     }
     
     
-    this.setDataSemenSupplierList = function(data, select_elem){
+    this.setDataSupplierList = function(data, select_elem){
         
         let select_data = [];
         if (data.length == 0){

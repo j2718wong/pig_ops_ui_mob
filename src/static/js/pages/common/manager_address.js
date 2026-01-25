@@ -136,9 +136,9 @@ export function ManagerAddress(_navigation){
                     // Set managerAddress.setAddressLevel1List
                     thisObj.setAddressLevel1List(response.data);
                   
-					if (callback_success){
-						callback_success(response.data);
-					}
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(
@@ -247,14 +247,14 @@ export function ManagerAddress(_navigation){
     }
     
     
-	this.requestDataSupplier = function(address_level_1, callback_success, 
+    this.requestDataSupplier = function(address_level_2, callback_success, 
             elem_show_error){ 
         
-		
-        const level_1_hid = address_level_1.hid;
+        
+        const level_2_hid = address_level_2.hid;
         
         const base_url = window.location.origin;
-        const url = `${base_url}/supplier/list?level_1_hid=${level_1_hid}`;
+        const url = `${base_url}/supplier/list?level_2_hid=${level_2_hid}`;
         
         
         $.ajax({
@@ -270,8 +270,8 @@ export function ManagerAddress(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                    
-                    // Set address_level_1.list_supplier data; 
-                    address_level_1.list_supplier = response.data;
+                    // Set address_level_2.list_supplier data; 
+                    address_level_2.list_supplier = response.data;
                                         
                     if (callback_success){
                         callback_success(response.data);
@@ -292,8 +292,8 @@ export function ManagerAddress(_navigation){
             }
         });
     } 
-	
-	
+    
+    
     this.requestDataSupplierCountPerAddressLevel = function(supplier_type, 
             address_level_1, address_level_2, callback_success, elem_show_error){
         let param = '';
