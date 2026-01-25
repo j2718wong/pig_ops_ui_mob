@@ -1636,7 +1636,7 @@ ${html_style}
         let pig_prod_type = PIG_PROD_TYPE.GESTATING;
         if (settings.isGesta == false){pig_prod_type = PIG_PROD_TYPE.LACTATING;}
 
-        const callback = function(data){
+        const callback_success = function(data){
             navigation.setDataPigProdList(data);
             
             thisObj.show(); 
@@ -1644,7 +1644,7 @@ ${html_style}
             navigation.editModalProdPigOps.hide();
         };
         
-        navigation.managerRequest.requestDataPigProd(pig_prod_type, callback);
+        navigation.pigFarm.requestDataPigProd(pig_prod_type, callback_success);
         
     }
 }

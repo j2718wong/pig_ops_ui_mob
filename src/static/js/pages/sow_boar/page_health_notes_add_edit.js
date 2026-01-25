@@ -438,6 +438,12 @@ export function PageHealthNotesAddEdit(input_settings){
         
         // Convert date to YYYY-MM-DD format
         const dt_notes      = new Date(input_date_notes);
+        if (isNaN(dt_notes.getTime())){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
         dt_notes_s          = dt_notes.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);

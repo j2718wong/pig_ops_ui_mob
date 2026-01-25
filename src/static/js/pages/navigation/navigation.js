@@ -683,9 +683,6 @@ export function Navigation(){
         this.pageSowBoarList.setDataSowList(data);
         this.pageSowBoarAddEdit.setDataSowList(data);
         
-        this.pageProdGestatingAdd.setDataSowList(data);
-        this.pageProdGestatingEntry.setDataSowList(data);
-        
     }
     
     
@@ -694,9 +691,7 @@ export function Navigation(){
         
         this.pageSowBoarList.setDataBoarList(data);
         this.pageSowBoarAddEdit.setDataBoarList(data);
-        
-        this.pageProdGestatingAdd.setDataBoarList(data);
-        this.pageProdGestatingEntry.setDataBoarList(data);
+
     }
     
     

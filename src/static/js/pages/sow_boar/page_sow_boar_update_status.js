@@ -131,8 +131,8 @@ export function PageSowBoarUpdateStatus(input_settings){
         });
         
         
-        elemIdServerErrorMsg    = `sow-boar-update-status-btn-update-status-error-msg`;
-        elemIdBtnUpdateStatus   = `sow-boar-update-status-btn-update-status`;
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-error-msg`;
+        elemIdBtnUpdateStatus   = `${settings.uniqueKey}-btn`;
         
         
         const html_date_status   = elemUiDateStatus.getHtml();
@@ -289,7 +289,7 @@ export function PageSowBoarUpdateStatus(input_settings){
     this.beforeShow = function(data_sow_boar, options){
 
         curDataSowBoar = data_sow_boar;
-		if (data_sow_boar == null){return;}
+        if (data_sow_boar == null){return;}
         
         const sow_boar_name = getSowBoarReference(curDataSowBoar.sow_boar);
         
@@ -359,8 +359,14 @@ export function PageSowBoarUpdateStatus(input_settings){
         
         // Convert date to YYYY-MM-DD format
         const dt_status     = new Date(input_date_status);
+        if (isNaN(dt_status.getTime())){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
         dt_status_s         = dt_status.toLocaleDateString('en-CA');
-        validation          = 0
+        validation          = 0;
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         

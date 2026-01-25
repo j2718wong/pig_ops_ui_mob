@@ -936,31 +936,31 @@ ${html_style}
         
         let s_status = SOW_STATUS_NAME[sow_boar.status_id];
         
-		let s_click_gesta = '';
-		if (html_due_warning){
-			if ('last_farm_prod_id' in sow_boar){
-				s_click_gesta = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
-				s_click_gesta += `"${sow_boar.hid}", ${sow_boar.last_farm_prod_id});`;
-			}
-			
-			s_status = `<span class="due-soon">${s_status}</span>`;
-			s_status += '<br>' + html_due_warning;
-		}
-		
+        let s_click_gesta = '';
+        if (html_due_warning){
+            if ('last_farm_prod_id' in sow_boar){
+                s_click_gesta = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
+                s_click_gesta += `"${sow_boar.hid}", ${sow_boar.last_farm_prod_id});`;
+            }
+            
+            s_status = `<span class="due-soon">${s_status}</span>`;
+            s_status += '<br>' + html_due_warning;
+        }
+        
        
         let html;
         
-		html = `
-		<tr>
-			<td><span onclick='${s_click}'>${sow_reference}</span></td>
-			<td onclick='${s_click_gesta}'>${s_status}</td>
-			<td>${s_age}</td>
-			<td>${s_num_piglets}</td>
-		</tr>
-		`;
-		
-		
-		
+        html = `
+        <tr>
+            <td><span onclick='${s_click}'>${sow_reference}</span></td>
+            <td onclick='${s_click_gesta}'>${s_status}</td>
+            <td>${s_age}</td>
+            <td>${s_num_piglets}</td>
+        </tr>
+        `;
+        
+        
+        
         return html;
     }
     
@@ -1320,7 +1320,7 @@ ${html_style}
     this.getHtmlTableRowDisposed = function(cur_entry){
         let pig_type = '';
         
-        if (cur_entry.sow_boar.sex == 'M'){
+        if (cur_entry.sow_boar.farm_boar_id){
             pig_type = 'Boar';
         }
         else{
@@ -1501,10 +1501,10 @@ ${html_style}
             return;
         }
     
-		if (pig_prod_id){
-			navigation.onClickProdGestatingEntry(pig_prod_id);
-			return;
-		}
+        if (pig_prod_id){
+            navigation.onClickProdGestatingEntry(pig_prod_id);
+            return;
+        }
     
         let cur_sow_boar_list = null;
         
@@ -1516,7 +1516,11 @@ ${html_style}
             case SOW_BOAR_TYPE.DISPOSED: {cur_sow_boar_list = dataDisposedList; break;}
         }
         
+        this.gotoSowBoarEntryPage(cur_sow_boar_list, sow_boar_hid, showOptions.sow_boar_type); 
+    }
         
+        
+    this.gotoSowBoarEntryPage = function(sow_boar_list, sow_boar_hid, sow_boar_type){
         let prev_sow_boar_hid = null;
         let next_sow_boar_hid = null;
         
@@ -1525,29 +1529,33 @@ ${html_style}
         let prev_entry  = null;
         let next_entry  = null;
         
+        if (sow_boar_list == null){
+            sow_boar_list = dataSowList;
+            sow_boar_type = SOW_BOAR_TYPE.SOW;
+        }
         
-        for (index = 0; index< cur_sow_boar_list.length; index++){
-            cur_entry = cur_sow_boar_list[index];
+        for (index = 0; index< sow_boar_list.length; index++){
+            cur_entry = sow_boar_list[index];
             
             if (cur_entry.sow_boar.hid == sow_boar_hid){
         
                 if ((index-1) >=0){
-                    prev_entry = cur_sow_boar_list[index-1];
+                    prev_entry = sow_boar_list[index-1];
                     prev_sow_boar_hid = prev_entry.sow_boar.hid;
                 }
                 
-                if ((index+1) < cur_sow_boar_list.length){
-                    next_entry = cur_sow_boar_list[index+1];
+                if ((index+1) < sow_boar_list.length){
+                    next_entry = sow_boar_list[index+1];
                     next_sow_boar_hid = next_entry.sow_boar.hid;
                 }
                 
                 const options = {
-                    sow_boar_type:      showOptions.sow_boar_type,
+                    sow_boar_type:      sow_boar_type,
                     prev_sow_boar_hid:  prev_sow_boar_hid,
                     next_sow_boar_hid:  next_sow_boar_hid,
-                    sow_boar_list:      cur_sow_boar_list,
+                    sow_boar_list:      sow_boar_list,
                     data_index:         index+1,
-                    total_entries:      cur_sow_boar_list.length
+                    total_entries:      sow_boar_list.length
                 };
                 
                 navigation.pageSowBoarEntry.beforeShow(cur_entry, options);

@@ -707,8 +707,14 @@ export function PageBoarExtMateAddEdit(input_settings){
         input_elem          = elemUiDateMate.getElemText();
         
         const dt_medvac     = new Date(input_date_medvac);
-        dt_medvac_s         = dt_medvac.toLocaleDateString('en-CA');
-        validation          = 0
+		if (isNaN(dt_medvac.getTime())){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+		
+		dt_medvac_s         = dt_medvac.toLocaleDateString('en-CA');
+		validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         

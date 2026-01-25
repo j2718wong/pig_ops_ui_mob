@@ -1167,12 +1167,16 @@ export function PageSowBoarAddEdit(input_settings){
             
             // Convert date to YYYY-MM-DD format
             const dt_dob        = new Date(input_date_birth);
+            if (isNaN(dt_dob.getTime())){
+                validation      = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+            
+            
             dt_dob_s            = dt_dob.toLocaleDateString('en-CA');
-            
             validation          = 0; // validated by bootstrap
-            
             addValidationClassToElem(input_elem, validation);
-            
         }
         if (validation != 0) {return;}
         

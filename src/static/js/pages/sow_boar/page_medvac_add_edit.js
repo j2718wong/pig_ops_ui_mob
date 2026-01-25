@@ -61,7 +61,8 @@ export function PageMedVacAddEdit(input_settings){
     /*
     Typical settings = {
         navigation:             this,
-        elemDivContainer:       elemHiddenContMedVacAddEdit
+        elemIdDivContainer:     elemIdContMedVacAddEdit,
+        uniqueKey:              'medvac-add-edit'
     };
     */
     const settings              = input_settings;
@@ -778,6 +779,13 @@ export function PageMedVacAddEdit(input_settings){
         input_elem          = elemUiDateMedVac.getElemText();
         
         const dt_medvac     = new Date(input_date_medvac);
+        if (isNaN(dt_medvac.getTime())){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+            
+        
         dt_medvac_s         = dt_medvac.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);

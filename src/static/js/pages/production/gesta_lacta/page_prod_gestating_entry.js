@@ -79,6 +79,7 @@ export function PageProdGestatingEntry(input_settings){
     const prodEntryInsem        = new ProdEntryInsem({
         navigation:             navigation,
 		parentObj:              this,
+		elemIdDivContainer:     elemDivContainer,
 		uniqueKey:              'pig-prod-insem'
     });
 
@@ -693,24 +694,9 @@ export function PageProdGestatingEntry(input_settings){
         
     }
     
-    
-    this.setDataSowList = function(data){
-        prodEntryInsem.setDataSowList(data);
-    }
-    
-    
-    this.setDataBoarList = function(data){
-        prodEntryInsem.setDataBoarList(data);
-    }
-    
-    
-    this.setDataSupplierList = function(data){
-        prodEntryInsem.setDataSupplierList(data);
-    }
-    
+
     
     this.setDataStaffList = function(data){
-        prodEntryInsem.setDataStaffList(data);
         prodEntryBirth.setDataStaffList(data);
     }
     

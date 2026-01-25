@@ -58,7 +58,7 @@ export function UiSelectWithAddExpandable(input_settings){
 
     this.callbackBeforeExpand   = null;
     
-	
+    
     this.getHtml = function(){
         
         let s_help = '';
@@ -220,5 +220,21 @@ export function UiSelectWithAddExpandable(input_settings){
     } 
     
     
+    this.enabled = function(){
+        elemSelect.disabled = false;
+        
+        if (elemEntryAdd){
+            elemEntryAdd.disabled = false;
+        }
+    }
+    
+    
+    this.disabled = function(){
+        elemSelect.disabled = true;
+        
+        if (elemEntryAdd){
+            elemEntryAdd.disabled = true;
+        }
+    }
        
 }

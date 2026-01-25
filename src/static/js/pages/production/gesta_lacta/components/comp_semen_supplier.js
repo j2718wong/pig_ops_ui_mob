@@ -246,5 +246,23 @@ export function ComponentSemenSupplier(input_settings){
         
         return null;
     }
-       
+     
+    
+    this.enabled = function(){
+        elemSelect.disabled = false;
+        
+        if (elemEntryAdd){
+            elemEntryAdd.disabled = false;
+        }
+    }
+    
+    
+    this.disabled = function(){
+        elemSelect.disabled = true;
+        
+        if (elemEntryAdd){
+            elemEntryAdd.disabled = true;
+        }
+    }
+     
 }

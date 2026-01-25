@@ -111,8 +111,6 @@ export function PageProdGestatingAdd(input_settings){
     
     
     
-    
-    
     this.init = function(){
         this.render();
         this.afterHtmlRender();
@@ -457,17 +455,6 @@ export function PageProdGestatingAdd(input_settings){
     }
     
     
-    this.setDataSowList = function(data){
-        componentSelectSow.setDataSowList(data);
-    }
-    
-    
-    this.setDataBoarList = function(data){
-        componentSelectBoar.setDataBoarList(data);
-        componentSelectBoarInt.setDataBoarList(data);
-    }
-    
-    
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
@@ -509,10 +496,13 @@ export function PageProdGestatingAdd(input_settings){
     this.show = function(){
         thisObj._resetForm();
         
+        componentSelectSow.beforeShow();
+        
+        componentSelectBoar.beforeShow();
+        componentSelectBoarInt.beforeShow();
+        
         componentSemenSupplier.beforeShow();
         componentStaff.beforeShow();
-        
-        
     }
     
         
@@ -643,6 +633,12 @@ export function PageProdGestatingAdd(input_settings){
         
         // Convert date to YYYY-MM-DD format
         const dt_mating     = new Date(input_date_mating);
+        if (isNaN(dt_mating.getTime())){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
         const dt_mating_s   = dt_mating.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);
@@ -679,6 +675,7 @@ export function PageProdGestatingAdd(input_settings){
             'boar_hid':         input_boar_hid,
             'semen_supplier_hid':   input_semen_supplier_hid,
             'semen_sup_semen_hid':  input_semen_type_hid,
+            'semen_ai_boar_hid':    input_boar_int_hid,
             
             'insem_staff_hid':  input_staff_hid,
             'done_by_user':     done_by_user,
@@ -703,6 +700,31 @@ export function PageProdGestatingAdd(input_settings){
         }
         else{
             delete post_data.boar_hid;
+        }
+        
+        
+        switch (input_insem_type){
+            case 'boar-mating': {
+                delete post_data.semen_supplier_hid;
+                delete post_data.semen_sup_semen_hid;
+                delete post_data.semen_ai_boar_hid;
+            
+                break;
+            }
+            
+            case 'ai-external': {
+                delete post_data.boar_hid;
+                delete post_data.semen_ai_boar_hid;
+                break;
+            }
+        
+            case 'ai-internal':{
+                delete post_data.boar_hid;
+                delete post_data.semen_supplier_hid;
+                delete post_data.semen_sup_semen_hid;
+            
+                break;
+            }
         }
         
         
@@ -743,7 +765,7 @@ export function PageProdGestatingAdd(input_settings){
     this.onSuccessAddGestatingEntry = function(){
         const pig_prod_type = PIG_PROD_TYPE.GESTATING;
         
-        const callback = function(data){
+        const callback_success = function(data){
             navigation.setDataPigProdList(data);
             
             thisObj.show(); 
@@ -751,7 +773,7 @@ export function PageProdGestatingAdd(input_settings){
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         };
         
-        navigation.managerRequest.requestDataPigProd(pig_prod_type, callback);
+        navigation.pigFarm.requestDataPigProd(pig_prod_type, callback_success);
         
     }
     

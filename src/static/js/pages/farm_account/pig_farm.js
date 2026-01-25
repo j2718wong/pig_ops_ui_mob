@@ -145,7 +145,7 @@ export function PigFarm(_navigation){
     } 
     
     
-    this.requestDataPigProd = function(pig_prod_type, callback){
+    this.requestDataPigProd = function(pig_prod_type, callback_success, elem_show_error){
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
         
         const is_mob_view = 1; // TODO for desktop view
@@ -165,10 +165,11 @@ export function PigFarm(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
-                    if (callback){callback(response.data);}
+                    if (callback_success){callback_success(response.data);}
                 }
                 else {
-                    // TODO
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
                 }
             },
   

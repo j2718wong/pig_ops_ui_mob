@@ -184,6 +184,11 @@ export function SelectBoarGesta(input_settings){
     }
     
     
+    this.beforeShow = function(){
+        this.setDataBoarList(navigation.pigFarm.dataBoarList);
+    }
+    
+    
     this.getDataBoar = function(sow_hid){
         for (const cur_entry of sowList){
             if (cur_entry.sow_boar.hid == sow_hid){return cur_entry;}
@@ -193,6 +198,24 @@ export function SelectBoarGesta(input_settings){
     }
        
     
+	this.enabled = function(){
+        elemSelect.disabled = false;
+        
+        if (elemEntryAdd){
+            elemEntryAdd.disabled = false;
+        }
+    }
+    
+    
+    this.disabled = function(){
+        elemSelect.disabled = true;
+        
+        if (elemEntryAdd){
+            elemEntryAdd.disabled = true;
+        }
+    }
+	
+	
     /*
     // Override parent
     this.show = function(){
