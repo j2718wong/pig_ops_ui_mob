@@ -193,6 +193,20 @@ export function ComponentSemenSupplier(input_settings){
     }
     
    
+    this.beforeShow = function(){
+        const account_semen_suppliers = navigation.pigFarm.accountLists.dataSemenSupplierList;
+        
+        // Request semen_supplier if not yet requested
+        if (account_semen_suppliers == null){
+            navigation.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.SEMEN,
+                    thisObj.setDataSupplierList);
+        }
+        else{
+            thisObj.setDataSupplierList(account_semen_suppliers);
+        }
+    }
+    
+   
     this.populateSupplierDetails = function(supplier_hid){
         const cur_supplier = this.getDataSemenSupplier(supplier_hid);
         const supplier_address = cur_supplier.location.address;
@@ -221,7 +235,7 @@ export function ComponentSemenSupplier(input_settings){
         };
         
         navigation.managerPublicData.requestDataSemenSupplierSemen(supplier_hid, 
-			callback_success);
+            callback_success);
     }
     
     

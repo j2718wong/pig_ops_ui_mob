@@ -451,8 +451,6 @@ export function PageSowBoarEntry(input_settings){
             showOptions = options;
         }
         
-        console.log('options');
-        console.log(options);
         
         // Set Entry Title
         let s_title = '';
@@ -471,8 +469,6 @@ export function PageSowBoarEntry(input_settings){
         
         
         // Set Entry Name 
-        console.log('data_sow_boar');
-        console.log(data_sow_boar);
         
         let sow_boar_name   = getSowBoarReference(data_sow_boar.sow_boar);
         
@@ -545,7 +541,7 @@ export function PageSowBoarEntry(input_settings){
         
         
         // Clicking on the SowBoar Name should open the SowBoar edit page
-        if (options.sow_boar_type != SOW_BOAR_TYPE.DISPOSED){
+        if (showOptions.sow_boar_type != SOW_BOAR_TYPE.DISPOSED){
             elemEntryName.onclick = function(){
                 const options_sow_boar ={
                     is_add:         false,

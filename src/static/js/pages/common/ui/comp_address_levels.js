@@ -36,7 +36,7 @@ export function ComponentAddressLevels(input_settings){
     const elemDivContainer      = settings.elemDivContainer;
     
     
-    const elemIdServerErrorMsg      = `${settings.uniqueKey}-adrs-server-error`;
+    const elemIdServerErrorMsg      = `${settings.uniqueKey}-server-error-msg`;
     
     const elemIdCountry             = `${settings.uniqueKey}-country`;
     

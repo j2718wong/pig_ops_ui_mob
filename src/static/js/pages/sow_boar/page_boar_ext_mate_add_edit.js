@@ -376,8 +376,8 @@ export function PageBoarExtMateAddEdit(input_settings){
     }
     
     
-    this.setDataStaff = function(data){
-        componentStaff.setDataStaff(data);
+    this.setDataStaffList = function(data){
+        componentStaff.setDataStaffList(data);
     }
     
     
@@ -476,14 +476,14 @@ export function PageBoarExtMateAddEdit(input_settings){
         if (staff_list == null){
             
             const callback_success = function(data){
-                thisObj.setDataStaff(data);
+                thisObj.setDataStaffList(data);
             };
             
             navigation.pigFarm.requestDataPigFarmStaff(callback_success, elemServerErrorMsg)
         
         }
         else{
-            thisObj.setDataStaff(staff_list);
+            thisObj.setDataStaffList(staff_list);
         }
         
         

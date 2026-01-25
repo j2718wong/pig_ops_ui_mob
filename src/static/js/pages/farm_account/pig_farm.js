@@ -79,8 +79,8 @@ export function PigFarm(_navigation){
             }
         }
         
-        
-        navigation.setDataStaffList(data.staff_list);
+        this.dataStaffList = data.staff_list;
+		
         navigation.setDataSowList(data.sow_list);
         navigation.setDataBoarList(data.boar_list);
             
@@ -106,10 +106,12 @@ export function PigFarm(_navigation){
     
     
     this.setDataStaffList = function(data) {
-        navigation.pageMobGestatingList.setDataStaffList(data);
+        this.dataStaffList = data;
+		
+		navigation.pageMobGestatingList.setDataStaffList(data);
         navigation.pageMobLactatingList.setDataStaffList(data);
-        navigation.pageProdGestatingAdd.setDataStaffList(data);
-        navigation.pageProdGestatingEntry.setDataStaffList(data);
+        //navigation.pageProdGestatingAdd.setDataStaffList(data);
+        //navigation.pageProdGestatingEntry.setDataStaffList(data);
         
         navigation.pageMedVacAddEdit.setDataStaffList(data);
         
@@ -181,7 +183,7 @@ export function PigFarm(_navigation){
     }
     
     
-    this.requestDataSowBoar = function(is_sow, callback_success, callback_error){
+    this.requestDataSowBoar = function(is_sow, callback_success, elem_show_error){
 
         const sex               = is_sow? 'F':'M';
 
@@ -220,9 +222,8 @@ export function PigFarm(_navigation){
                     if (callback_success){callback_success(response.data);}
                 }
                 else {
-                    if (callback_error){
-                        callback_error(response.result.code, response.result.desc);
-                    }
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
                 }
             },
   

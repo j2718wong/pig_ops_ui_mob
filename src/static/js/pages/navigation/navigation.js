@@ -671,11 +671,6 @@ export function Navigation(){
     }
     
     
-    this.setDataStaffList = function(data){
-        this.pigFarm.setDataStaffList(data);
-    }
-    
-    
     this.setDataPigProdList = function(data){
         thisObj.pageMobGestatingList.setDataPigProdList(data);
         thisObj.pageMobLactatingList.setDataPigProdList(data);

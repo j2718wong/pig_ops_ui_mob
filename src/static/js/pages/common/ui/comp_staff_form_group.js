@@ -291,7 +291,7 @@ export function ComponentStaffFormGroup(input_settings){
     }
     
     
-    this.setDataStaff = function(data, selected_entry_value){
+    this.setDataStaffList = function(data, selected_entry_value){
         dataStaffList = data;
     
         const elem_select = thisObj.getElemSelect();
@@ -302,6 +302,11 @@ export function ComponentStaffFormGroup(input_settings){
         if (selected_entry_value){
             elem_select.value = selected_entry_value;
         }
+    }
+    
+    
+    this.beforeShow = function(){
+        this.setDataStaffList(navigation.pigFarm.dataStaffList);
     }
     
     
@@ -344,6 +349,7 @@ export function ComponentStaffFormGroup(input_settings){
     this.getElemCheckBox = function(){
         return elemChkDoneByMe;
     }
+    
     
     this.getElemEntrySave  = function(){
         return elemExpandSave;
@@ -479,7 +485,7 @@ export function ComponentStaffFormGroup(input_settings){
                     const new_entry_hid = response.pig_farm_staff.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataStaff(data, new_entry_hid);
+                        thisObj.setDataStaffList(data, new_entry_hid);
                         thisObj.closeExpandable();
                     };
                     

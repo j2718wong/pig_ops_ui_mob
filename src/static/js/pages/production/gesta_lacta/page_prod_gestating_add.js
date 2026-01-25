@@ -25,6 +25,9 @@ import {ComponentStaffFormGroup} from '../../common/ui/comp_staff_form_group.js'
 
 import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
+
+import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
+
 import {ModelPigProduction}     from '../../../models/model_pig_production.js'
 
 import {FIELD_VALIDATION_OK}    from '../../../models/model_basic.js'
@@ -60,18 +63,21 @@ export function PageProdGestatingAdd(input_settings){
     
     
     let elemIdAiShow            = null;
+    
+    let componentSemenSupplier  = null;
+    let componentSemenType      = null;
+    let componentSelectBoarInt  = null;
    
-    let elemIdSemenType         = null;
-    let elemIdSemenTypeCount    = null;
+
     let elemIdSemenCost         = null;
   
-
     
     let elemIdOtherCost         = null;
     
     let elemUiNotes             = null;
     let componentStaff          = null;
     
+    let elemIdServerErrorMsg    = null;
     
     let elemIdBtnCancel         = null;
     let elemIdBtnSave           = null;
@@ -89,23 +95,15 @@ export function PageProdGestatingAdd(input_settings){
     
     let elemSemenCost           = null;
     
-    let componentSemenSupplier  = null;
-    let componentSemenType      = null;
-    
-    
-    let componentSelectBoarInt  = null;
+   
     
     let elemOtherCost           = null;
     
   
-
+    let elemServerErrorMsg      = null;
     
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
-    
-    
-    let boarList                = null;
-    let semenSupplierList       = null;
     
     
     
@@ -166,7 +164,7 @@ export function PageProdGestatingAdd(input_settings){
         
         componentSemenSupplier  = new ComponentSemenSupplier({
             navigation:         navigation,
-			parentObj:          thisObj,
+            parentObj:          thisObj,
             uniqueKey:          `${settings.uniqueKey}-semen-supplier`,
             
             pageDivContainer:   elemDivContainer,
@@ -237,6 +235,8 @@ export function PageProdGestatingAdd(input_settings){
             helpText:           'Who did the operation'
         });
         
+        
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
         elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
@@ -334,6 +334,8 @@ export function PageProdGestatingAdd(input_settings){
         <!-- 7. Staff -->
         ${html_staff}
         
+        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+        
         <!-- Footer Buttons -->
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" data-bs-dismiss="modal" style="margin-right:10px;">
@@ -388,7 +390,7 @@ export function PageProdGestatingAdd(input_settings){
         elemOtherCost           = elemDivContainer.querySelector('#'+elemIdOtherCost);
         
         
-       
+        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
             
         elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
         elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
@@ -441,7 +443,7 @@ export function PageProdGestatingAdd(input_settings){
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         });
         
-		
+        
         elemBtnCancel.addEventListener('click', function() {
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         });
@@ -465,16 +467,7 @@ export function PageProdGestatingAdd(input_settings){
         componentSelectBoarInt.setDataBoarList(data);
     }
     
-  
     
-    this.setDataSupplierList = function(data){
-		console.log('setDataSupplierList');
-		console.log(data);
-        componentSemenSupplier.setDataSupplierList(data);
-    }
-    
-    
-   
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
@@ -516,16 +509,10 @@ export function PageProdGestatingAdd(input_settings){
     this.show = function(){
         thisObj._resetForm();
         
-        const account_semen_suppliers = navigation.pigFarm.accountLists.dataSemenSupplierList;
+        componentSemenSupplier.beforeShow();
+        componentStaff.beforeShow();
         
-        // Request semen_supplier if not yet requested
-        if (account_semen_suppliers == null){
-            navigation.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.SEMEN,
-                    thisObj.setDataSupplierList);
-        }
-        else{
-            thisObj.setDataSupplierList(account_semen_suppliers);
-        }
+        
     }
     
         
@@ -581,7 +568,7 @@ export function PageProdGestatingAdd(input_settings){
     
     this.onClickSaveButton = function(){
         let input_elem      = null;
-        let validation      = -1;
+        let validation      = 0;
         let proceed_to_save = 1;
         
 
@@ -590,15 +577,17 @@ export function PageProdGestatingAdd(input_settings){
         let input_boar_hid          = componentSelectBoar.getValue();
         let input_boar_int_hid      = componentSelectBoarInt.getValue();
         let input_date_mating       = elemUiDateMating.getValue();
-        let input_semen_supplier_hid = elemSemenSupplier.value;
-        let input_semen_type_hid    = elemSemenType.value;
+        let input_semen_supplier_hid = componentSemenSupplier.getValue();
+        let input_semen_type_hid    = componentSemenType.getValue();
         let input_semen_cost        = elemSemenCost.value;
         let input_other_cost        = elemOtherCost.value;
         let input_insem_notes       = elemUiNotes.getValue();
-        let input_staff_hid         = elemStaff.getValue();
+        let input_staff_hid         = componentStaff.getValue();
         
         
         input_elem          = componentSelectSow.getElemSelect();
+        
+
         if (input_sow_hid == '0'  || input_sow_hid == '-1'){
             validation = -1;
         }
@@ -619,37 +608,20 @@ export function PageProdGestatingAdd(input_settings){
             }
             
             case 'ai-external': {
-                input_elem          = elemSemenSupplier;
-                
-                if (input_semen_supplier_hid  == '0'){
-                    if (input_elem.classList.contains('is-invalid') == false){
-                        input_elem.classList.add('is-invalid');
-                    }
-                    proceed_to_save = 0;
+                input_elem          = componentSemenSupplier.getElemSelect();
+                if (input_semen_supplier_hid == '0'  || input_semen_supplier_hid == '-1'){
+                    validation = -1;
                 }
-                else{
-                    if (input_elem.classList.contains('is-valid') == false){
-                        input_elem.classList.add('is-valid');
-                    }
-                }
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
                 
                 
-                input_elem          = elemSemenType;
-                
-                if (input_semen_type_hid  == '0'){
-                    if (input_elem.classList.contains('is-invalid') == false){
-                        input_elem.classList.add('is-invalid');
-                    }
-                    proceed_to_save = 0;
+                input_elem          = componentSemenType.getElemSelect();
+                if (input_semen_type_hid == '0'  || input_semen_type_hid == '-1'){
+                    validation = -1;
                 }
-                else{
-                    if (input_elem.classList.contains('is-valid') == false){
-                        input_elem.classList.add('is-valid');
-                    }
-                }
-            
-            
-                if (proceed_to_save == 0) {return;}
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
                 
                 break;
             }
@@ -668,7 +640,6 @@ export function PageProdGestatingAdd(input_settings){
         }
         
         input_elem          = elemUiDateMating.getElemText();
-        cur_field           = newEntry.fieldInsemDate;
         
         // Convert date to YYYY-MM-DD format
         const dt_mating     = new Date(input_date_mating);
@@ -689,7 +660,7 @@ export function PageProdGestatingAdd(input_settings){
         
         if (done_by_user == 0){
             input_elem = componentStaff.getElemSelect();
-            if (input_staff == '0'  || input_staff == '-1'){
+            if (input_staff_hid == '0'  || input_staff_hid == '-1'){
                 validation = -1;
             }
             addValidationClassToElem(input_elem, validation);
@@ -745,11 +716,16 @@ export function PageProdGestatingAdd(input_settings){
             data: JSON.stringify(post_data),
   
             beforeSend: function(){
+                elemServerErrorMsg.style.display = 'none';
             },
   
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.onSuccessAddGestatingEntry();
+                }
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elemServerErrorMsg);
                 }
             },
   

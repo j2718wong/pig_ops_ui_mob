@@ -513,7 +513,9 @@ export function PageSowBoarAddEdit(input_settings){
         const filtered = [];
         for(const cur_entry of data){
             if (cur_entry.sow_boar.status_id == SOW_STATUS.GROWING){continue;}
+            
             filtered.push(cur_entry);
+            
         }
         
         // TODO: how to add disposed sows
@@ -774,6 +776,7 @@ export function PageSowBoarAddEdit(input_settings){
                     const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
                     
                     html = `<i class="fas fa-edit me-2"></i>Edit Gilt: ${sow_boar_name}`;
+                    elemInfoShow.style.display = 'none';
                     
                     thisObj.populateForm(thisObj.curDataSowBoar);
                 }
@@ -1285,20 +1288,6 @@ export function PageSowBoarAddEdit(input_settings){
                     }
                     
                     
-                    const callback_error = function(error_code, error_desc){
-                        let html;
-                        if ((error_desc != null) && (error_desc.length > 0)){
-                            html = `<span>${error_desc}</span>`;
-                        }
-                        else{
-                            html = `<span>${error_code}</span>`;
-                        }
-                        
-                        elemServerErrorMsg.innerHTML = html;
-                        elemServerErrorMsg.style.display = 'block'
-                    };
-                    
-                    
                     if (showOptions.is_add == true){
                         // Add action can either go back to SowBoar List page 
                         // or AddGestating Entry page
@@ -1308,13 +1297,13 @@ export function PageSowBoarAddEdit(input_settings){
                             if (showOptions.go_back_page_id == PAGE_ID.SOW_BOAR_LIST){
                                 // This should go to SowBoar List page 
                                 
-                                let callback_success = function(){
+                                const callback_success = function(){
                                     navigation.pageSowBoarList.show(null);
                                     navigation.showThisPage(showOptions.go_back_page);
                                 };
                                 
                                 navigation.pigFarm.requestDataSowBoar(is_sow, 
-                                    callback_success, callback_error);
+                                    callback_success, elemServerErrorMsg);
 
                                 return;
                             }
@@ -1331,11 +1320,24 @@ export function PageSowBoarAddEdit(input_settings){
                         };
                         
                         navigation.pigFarm.requestDataSowBoar(is_sow, 
-                            callback_success, callback_error);
+                            callback_success, elemServerErrorMsg);
                         
                     }
                     
                     else{
+                        // The change in sow_boar.is_production_ready flag 
+                        // will trigger to request sow_boar list again.
+                        if (thisObj.curDataSowBoar.sow_boar.is_production_ready != post_data.is_production_ready){
+                            const callback_success = function(){
+                                navigation.pageSowBoarList.show(null);
+                                navigation.showThisPage(showOptions.go_back_page);
+                            };
+                            
+                            navigation.pigFarm.requestDataSowBoar(is_sow, 
+                                callback_success, elemServerErrorMsg);
+                            return;
+                        }
+                        
                         // Edit action will
                         // 1.) replace this data only.
                         thisObj.curDataSowBoar.sow_boar = response.sow_boar;

@@ -171,7 +171,7 @@ export function PageSowBoarList(input_settings){
         .table-gilt td {padding-right:0}
         
         .table-disposed td {padding-right:0}
-		
+        
       </style>
     `;
         return html;
@@ -366,8 +366,8 @@ ${html_style}
                 <col style="width: 30%;">
                 <col style="width: 20%;">
             </colgroup>
-			
-			<thead>
+            
+            <thead>
                 <tr>
                     <th>Date</th>
                     <th>Pig Type</th>
@@ -883,23 +883,84 @@ ${html_style}
             }
         }
         
+        
+        let dt_expected_birth = null;
+        let html_due_warning = null;
+        
+        
+        if ('date_expected_birth' in sow_boar){
+            const date_expected_birth =  sow_boar.date_expected_birth;
+            dt_expected_birth = new Date(date_expected_birth);
+            
+            diff_msecs          = dt_expected_birth - dtCurrentDate;
+            diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+            
+            if ((diff_days >= 3) && (diff_days <= 7)) {
+                html_due_warning = `<span class="due-soon">Due ${diff_days} Days</span>`;
+            } 
+            
+            if ((diff_days == 1) || (diff_days == 2)) {
+                html_due_warning = `<span class="due-soon">Due Soon</span>`;
+            } 
+            
+            if (diff_days == 0) {
+                html_due_warning = `<span class="due-soon">Due Today</span>`;
+            }
+            
+            if (diff_days < 0) {
+                html_due_warning = `<span class="due-soon">Overdue</span>`;
+            }
+        }
+        
+        
+        
         let s_num_piglets = ''
-        if ('num_piglets' in sow_boar){
-            s_num_piglets = sow_boar.num_piglets;
+        let num_pig_wean_f = 0;
+        let num_pig_wean_m = 0;
+        
+        if ('num_pig_wean_f' in sow_boar){
+            num_pig_wean_f = sow_boar.num_pig_wean_f;
+        }
+        
+        if ('num_pig_wean_m' in sow_boar){
+            num_pig_wean_m = sow_boar.num_pig_wean_m;
+        }
+        
+        let num_piglets = num_pig_wean_f + num_pig_wean_m;
+        if (num_piglets > 0){
+            s_num_piglets = `${num_piglets} (${sow_boar.num_births}B)`;
         }
         
         let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
         s_click += `"${sow_boar.hid}");`;
         
-        const html = `
-            <tr>
-                <td><span onclick='${s_click}'>${sow_reference}</span></td>
-                <td>${SOW_STATUS_NAME[sow_boar.status_id]}</td>
-                <td>${s_age}</td>
-                <td>${s_num_piglets}</td>
-            </tr>
-        `;
+        let s_status = SOW_STATUS_NAME[sow_boar.status_id];
         
+		let s_click_gesta = '';
+		if (html_due_warning){
+			if ('last_farm_prod_id' in sow_boar){
+				s_click_gesta = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
+				s_click_gesta += `"${sow_boar.hid}", ${sow_boar.last_farm_prod_id});`;
+			}
+			
+			s_status = `<span class="due-soon">${s_status}</span>`;
+			s_status += '<br>' + html_due_warning;
+		}
+		
+       
+        let html;
+        
+		html = `
+		<tr>
+			<td><span onclick='${s_click}'>${sow_reference}</span></td>
+			<td onclick='${s_click_gesta}'>${s_status}</td>
+			<td>${s_age}</td>
+			<td>${s_num_piglets}</td>
+		</tr>
+		`;
+		
+		
+		
         return html;
     }
     
@@ -1302,9 +1363,9 @@ ${html_style}
                     
         }
         
-		let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
+        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
         s_click += `'${sow_boar.hid}');`;
-		
+        
         const html = `
             <tr>
                 <td>${cur_entry.sow_boar.date_dispose}</td>
@@ -1432,7 +1493,7 @@ ${html_style}
     }
          
          
-    this.onClickSowBoarEntry = function(sow_boar_hid){
+    this.onClickSowBoarEntry = function(sow_boar_hid, pig_prod_id){
         if (sow_boar_hid == null){
             // Go back to this page
             const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
@@ -1440,6 +1501,10 @@ ${html_style}
             return;
         }
     
+		if (pig_prod_id){
+			navigation.onClickProdGestatingEntry(pig_prod_id);
+			return;
+		}
     
         let cur_sow_boar_list = null;
         
@@ -1500,7 +1565,6 @@ ${html_style}
 
     }
 
-    
     
     this.requestDisposedSowBoar = function(callback){
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
