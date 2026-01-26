@@ -363,9 +363,6 @@ export function PageSowBoarEntry(input_settings){
         componentTabsWithMore.afterHtmlRender();
         
         this._findElements();
-		
-		
-		
         this._processAfterHtmlRender();
         this._bindEventListeners();
     }

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PIG_OPERATION_TYPE,
@@ -20,7 +20,7 @@ import {formatDate,
 import {getSowBoarReference}    from '../../common/common_app.js';
 
 
-PageMobGestaLacta.prototype = new PageViewPigFarmPage();
+
 export function PageMobGestaLacta(input_settings){
     PageViewPigFarmPage.call(this);
     
@@ -97,7 +97,7 @@ export function PageMobGestaLacta(input_settings){
     
     
     // if false, current  pig prod view is table
-    let curPigProdViewIsCards   = true;
+    let curPigProdViewIsCards   = false;
     
     
     let dataPigProdList         = null;
@@ -128,42 +128,26 @@ export function PageMobGestaLacta(input_settings){
         
     }
     
-    this._writeInlineStyle = function(){
-        const html = `
-    <!--
-	<style>
-        
-        /* Updated Table Styles */
-        
-        .data-table.table-gesta-lacta th:nth-child(1) { width: 15%; }
-        .data-table.table-gesta-lacta th:nth-child(2) { width: 20%; }
-        .data-table.table-gesta-lacta th:nth-child(3) { width: 30%; }
-        .data-table.table-gesta-lacta th:nth-child(4) { width: 40%; }
-    </style>-->
-    `;
-        return html;
-    }
-    
     
     this.render = function(){
-        elemIdNavPrevEntry      = `page-title-${settings.uniqueKey}-prev`;
-        elemIdNavNextEntry      = `page-title-${settings.uniqueKey}-next`;
+        elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
+        elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
         
-        elemIdPageTitle         = `page-title-${settings.uniqueKey}-list`;
-        elemIdPageHeaderAlarm   = `page-title-${settings.uniqueKey}-alarm`;
-        elemIdEntryCount        = `page-title-${settings.uniqueKey}-prod-count`;
-        elemIdPageInfo          = `page-info-${settings.uniqueKey}-list`;
+        elemIdPageTitle         = `${settings.uniqueKey}-page-title-list`;
+        elemIdPageHeaderAlarm   = `${settings.uniqueKey}-page-title-alarm`;
+        elemIdEntryCount        = `${settings.uniqueKey}-page-title-prod-count`;
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
         
         elemIdPigProdList       = `${settings.uniqueKey}-card-list`;
-        elemIdCardContainer     = `mobile-list-container-${settings.uniqueKey}`;
-        elemIdPigProdTable      = `mobile-pig-prod-${settings.uniqueKey}-table`;
-        elemIdPigProdTableBody  = `mobile-pig-prod-${settings.uniqueKey}-tbody`;
+        elemIdCardContainer     = `${settings.uniqueKey}-mobile-list-container`;
+        elemIdPigProdTable      = `${settings.uniqueKey}-mobile-pig-prod-table`;
+        elemIdPigProdTableBody  = `${settings.uniqueKey}-mobile-pig-prod-tbody`;
         
         elemIdPigOpsAlarmTable  = `${settings.uniqueKey}-alarm-table`;
         
         
-        elemIdSearchInput       = `mobile-search-input-${settings.uniqueKey}`;
-        elemIdAddEntryBtn       = `mobile-add-entry-btn-${settings.uniqueKey}`;
+        elemIdSearchInput       = `${settings.uniqueKey}-mobile-search-input`;
+        elemIdAddEntryBtn       = `${settings.uniqueKey}-mobile-add-entry-btn`;
            
            
         let html_pig_prod_table = '';
@@ -175,12 +159,12 @@ export function PageMobGestaLacta(input_settings){
             html_pig_prod_table = `
             <!-- PogProd Lacta Table -->
             <table class="data-table table-gesta-lacta">
-				<colgroup>
-					<col style="width: 15%;">
-					<col style="width: 20%;">
-					<col style="width: 30%;">
-					<col style="width: 35%;">
-				</colgroup>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 30%;">
+                    <col style="width: 35%;">
+                </colgroup>
   
                 <thead>
                     <tr>
@@ -200,12 +184,12 @@ export function PageMobGestaLacta(input_settings){
             html_pig_prod_table = `
             <!-- PogProd Gesta Table -->
             <table class="data-table table-gesta-lacta">
-				<colgroup>
-					<col style="width: 15%;">
-					<col style="width: 20%;">
-					<col style="width: 30%;">
-					<col style="width: 35%;">
-				</colgroup>
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 30%;">
+                    <col style="width: 35%;">
+                </colgroup>
   
                 <thead>
                     <tr>
@@ -221,14 +205,10 @@ export function PageMobGestaLacta(input_settings){
             `;
         }
            
-        
-        const html_style        = thisObj._writeInlineStyle();
            
            
         const html = `
         
-${html_style}
-
 
 <div class="mobile-container">
     <div class="nav-left-right">
@@ -268,9 +248,9 @@ ${html_style}
         </div>
 
         <!-- Card Container -->
-        <div class="card-container-pig-prod" id="${elemIdCardContainer}"></div>
+        <div class="card-container-pig-prod" id="${elemIdCardContainer}" style="display:none;"></div>
         
-        <div id="${elemIdPigProdTable}" style="display:none;">
+        <div id="${elemIdPigProdTable}" >
             ${html_pig_prod_table}
         </div>
     </div>
@@ -529,28 +509,14 @@ ${html_style}
         dt_current.setHours(0, 0, 0, 0);
         
         
-        let sow_name = '';
-        if ((data_pig_prod.sow.name != null) && (data_pig_prod.sow.name.length > 0)){
-            sow_name = data_pig_prod.sow.name;
-        }
-        else{
-            sow_name = data_pig_prod.sow.number;
-        }
-        
-        
+        let sow_name = getSowBoarReference(data_pig_prod.sow);
+		
         const insemination = data_pig_prod.insemination;
         
         let boar_name = '';
         switch (insemination.insem_type){
             case 'B':{
-                const boar = insemination.boar;
-                
-                if ((boar.name != null) && (boar.name.length > 0)){
-                    boar_name = boar.name;
-                }
-                else{
-                    boar_name = boar.number;
-                }
+                boar_name = getSowBoarReference(insemination.boar);
                 break;
             }
             
@@ -562,14 +528,7 @@ ${html_style}
             
             case 'AI_N':{
                 const internal_boar = insemination.ai.internal_boar;
-                
-                if ((internal_boar.name != null) && (internal_boar.name.length > 0)){
-                    boar_name = internal_boar.name;
-                }
-                else{
-                    boar_name = internal_boar.number;
-                }
-                
+                boar_name = getSowBoarReference(internal_boar);
                 boar_name += '(via AI)';
                 
                 break;
@@ -1365,11 +1324,11 @@ ${html_style}
             
             if (pending_operation){
 
-				
+                
                 dt_target   = new Date(pending_operation.pig_prod_pig_ops.date_target);
                 dt_target_s  = formatDate(dt_target, FORMAT_COMPACT);
-				operation_name = pending_operation.account_pig_ops.name;
-				
+                operation_name = pending_operation.account_pig_ops.name;
+                
                 if (dt_current >= dt_target){
                     
                 }
@@ -1385,9 +1344,14 @@ ${html_style}
             
             
             
+			// Clicking on SowName should go to SowBoar Page
+			// Clicking on PID or important date should open Gesta or Lacta Page
+			
+			let s_click_sow = `gNavigation.pageSowBoarList.gotoSowBoarEntryPage(null, "${data_sow.hid}")`;
             
-            let s_click = null;
+            let s_click = '';
             if (is_gesta){
+				s_click = `gNavigation.onClickProdGestatingEntry(${pid});`;
             }
             else{
             }
@@ -1395,11 +1359,9 @@ ${html_style}
             
             html_tbody += `
             <tr>
-                <td>${pid}</td>
-                <td class="sow-name"  role="button" onclick="${s_click}" style="margin-left:0; padding-left:0;">${sow_reference}</td>
-                <td class="date" role="button" onclick="${s_click}">
-                    ${s_date_important}
-                </td style="margin-left:0; padding-left:0;">
+                <td onclick="${s_click}">${pid}</td>
+                <td class="sow-name"  role="button" onclick='${s_click_sow}' style="margin-left:0; padding-left:0;">${sow_reference}</td>
+                <td class="date" role="button" onclick='${s_click}'>${s_date_important}</td>
                 <td class="operation" style="margin-left:0; padding-left:0;">
                     ${s_operation}
                 </td>

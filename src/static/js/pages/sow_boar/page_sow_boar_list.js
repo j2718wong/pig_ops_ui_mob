@@ -1532,6 +1532,12 @@ ${html_style}
         if (sow_boar_list == null){
             sow_boar_list = dataSowList;
             sow_boar_type = SOW_BOAR_TYPE.SOW;
+            
+            
+            // Use default show options
+            showOptions = {
+                sow_boar_type: sow_boar_type
+            }
         }
         
         for (index = 0; index< sow_boar_list.length; index++){
@@ -1557,6 +1563,7 @@ ${html_style}
                     data_index:         index+1,
                     total_entries:      sow_boar_list.length
                 };
+                
                 
                 navigation.pageSowBoarEntry.beforeShow(cur_entry, options);
                 const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);

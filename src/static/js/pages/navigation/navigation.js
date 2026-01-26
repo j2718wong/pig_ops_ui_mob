@@ -1226,7 +1226,7 @@ export function Navigation(){
             return;
         }
         
-        console.log('onClickProdGestatingEntry; pig_prod_pid = ' + pig_prod_pid);
+        
         thisObj.showThisPage(elemHiddenContProdGestaEntry);
         
         // Get the data_pig_prod from pageMobGestatingList

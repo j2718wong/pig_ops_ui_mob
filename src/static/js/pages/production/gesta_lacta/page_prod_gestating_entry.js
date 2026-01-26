@@ -738,6 +738,8 @@ export function PageProdGestatingEntry(input_settings){
     
     
     this.afterHtmlRender = function(){
+		componentTabsWithMore.afterHtmlRender();
+		
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -792,6 +794,8 @@ export function PageProdGestatingEntry(input_settings){
         });
         this.prodEntryBirth.init();
         
+		
+		componentTabsWithMore.beforeShowTab = thisObj.beforeShowTab;
     }
     
     
@@ -896,15 +900,21 @@ export function PageProdGestatingEntry(input_settings){
         const options_pig_prod_ops ={
             show_gesta:   true
         }
-        prodEntryPigOps.show(data_pig_prod, options_pig_prod_ops);
+        this.prodEntryPigOps.show(data_pig_prod, options_pig_prod_ops);
         
         
         // Set Insemination tab
         const options_insem ={
             is_read_only:   false
         }
-        prodEntryInsem.show(data_pig_prod, options_insem);
+        this.prodEntryInsem.show(data_pig_prod, options_insem);
         
     }
+    
+	
+	this.beforeShowTab = function(tab_id){
+		
+		
+	}
     
 }   
