@@ -78,15 +78,16 @@ export function PageProdGestatingEntry(input_settings){
     
     const prodEntryInsem        = new ProdEntryInsem({
         navigation:             navigation,
-		parentObj:              this,
-		elemIdDivContainer:     elemDivContainer,
-		uniqueKey:              'pig-prod-insem'
+        parentObj:              this,
+        elemIdDivContainer:     elemDivContainer,
+        uniqueKey:              'pig-prod-insem'
     });
 
     
     const prodEntryBirth        = new ProdEntryBirth({
         navigation:             navigation,
-		parentObj:              this,
+        parentObj:              this,
+        elemIdDivContainer:     elemDivContainer,
         uniqueKey:              'pig-prod-birth'
     });
     

@@ -41,7 +41,8 @@ export function PageSowBoarEntry(input_settings){
     /*
     Typical settings = {
         navigation:             this,
-        elemIdDivContainer:     elemIdContSowBoarEntry
+        elemIdDivContainer:     elemIdContSowBoarEntry,
+		uniqueKey:              'sow-boar-entry'
     };
     */
     const settings              = input_settings;

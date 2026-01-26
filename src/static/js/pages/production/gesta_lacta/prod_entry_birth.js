@@ -4,22 +4,22 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}   		from '../../common/page_view_basic.js';
 
 import {SOW_STATUS,
-        PIG_OPERATION_TYPE}     from '../../../constants.js';
+        PIG_OPERATION_TYPE}     	from '../../../constants.js';
 
-import {getSowBoarReference}    from '../../common/common_app.js';
+import {getSowBoarReference}    	from '../../common/common_app.js';
 
-import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
+import {addValidationClassToElem} 	from '../../common/ui/ui_utils.js';
 
-import {UiInputDatePickerGesta} from './components/input_datepicker_gesta.js';
+import {UiInputDatePickerGesta} 	from './components/input_datepicker_gesta.js';
 
-import {ComponentStaffFormGroup} from '../../common/ui/comp_staff_form_group.js';
-import {ComponentPlusMinusInput} from '../../common/ui/comp_plus_minus_input.js';
+import {ComponentStaffFormGroup} 	from '../../common/ui/comp_staff_form_group.js';
+import {ComponentPlusMinusInput} 	from '../../common/ui/comp_plus_minus_input.js';
 
 
-import {CommonSelectOptions}    from '../../common/common_select_options.js';
+import {CommonSelectOptions}    	from '../../common/common_select_options.js';
 
 
 
@@ -31,13 +31,23 @@ export function ProdEntryBirth(input_settings){
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj;
     
+	
+	/*
+    Typical settings = {
+        navigation:             navigation,
+        parentObj:              this,
+        elemIdDivContainer:     elemIdContMedVacAddEdit,
+        uniqueKey:              'medvac-add-edit'
+    };
+    */
     const settings              = input_settings;
     
+	const elemDivContainer      = settings.elemIdDivContainer;
     
     let elemIdContentContainer  = null;
     
     let elemIdCannotUpdate      = null;
-    
+    let elemIdSow				= null;
     let elemIdDateExpected      = null;
     
     let elemUiDateBirth         = null;
@@ -56,14 +66,14 @@ export function ProdEntryBirth(input_settings){
     let elemContentContainer    = null;
     
     let elemCannotUpdate        = null;
-    
+    let elemSow					= null;
     let elemDateExpected        = null;
     
     
     let elemBtnSave             = null;
     
     
-    let pigProdData             = null;
+    let curDataPigProd             = null;
     
 
     
@@ -82,6 +92,7 @@ export function ProdEntryBirth(input_settings){
                 
         elemIdCannotUpdate      = `${settings.uniqueKey}-cannot-update`;
         
+		elemIdSow               = `${settings.uniqueKey}-sow`;
         elemIdDateExpected      = `${settings.uniqueKey}-date-expected`;
         
         elemUiDateBirth         = new UiInputDatePickerGesta({
@@ -178,6 +189,13 @@ export function ProdEntryBirth(input_settings){
         <b>This cannot be undone.</b>
     </div>
     
+	<!-- 1. Sow Field cannot be edited. -->
+    <div class="form-group-text">
+        <label class="form-label">Sow Name</label>
+        <span class="" id="${elemIdSow}"></span>
+    </div>
+    
+	
     <div class="form-group-text">
         <label for="${elemIdDateExpected}" class="form-label">Date Expected</label>
         <span class="" id="${elemIdDateExpected}"></span>
@@ -223,13 +241,13 @@ export function ProdEntryBirth(input_settings){
     
     
     this._findElements = function(){
-        elemContentContainer    = document.getElementById(elemIdContentContainer);
+        elemContentContainer    = elemDivContainer.querySelector('#'+elemIdContentContainer);
         
-        elemCannotUpdate        = document.getElementById(elemIdCannotUpdate);
+        elemCannotUpdate        = elemDivContainer.querySelector('#'+elemIdCannotUpdate);
+        elemSow        			= elemDivContainer.querySelector('#'+elemIdSow);
+        elemDateExpected        = elemDivContainer.querySelector('#'+elemIdDateExpected);
         
-        elemDateExpected        = document.getElementById(elemIdDateExpected);
-        
-        elemBtnSave             = document.getElementById(elemIdBtnSave);
+        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
     
     }
     
@@ -245,9 +263,11 @@ export function ProdEntryBirth(input_settings){
     
     
     this.show = function(data_pig_prod, options){
-        pigProdData = data_pig_prod;
-        
-        const data_sow = data_pig_prod.sow;
+        curDataPigProd = data_pig_prod;
+        console.log(`curDataPigProd`);
+		console.log(curDataPigProd);
+		
+        const data_sow = curDataPigProd.sow;
         let sow_reference =  getSowBoarReference(data_sow, true);
         
         elemSow.textContent = sow_reference;
