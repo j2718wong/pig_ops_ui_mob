@@ -17,7 +17,6 @@ import {ProdEntryBirth}         from './prod_entry_birth.js'
 
 
 
-PageProdGestatingEntry.prototype = new PageViewPigFarmPage();
 export function PageProdGestatingEntry(input_settings){
     PageViewPigFarmPage.call(this);
     
@@ -27,7 +26,9 @@ export function PageProdGestatingEntry(input_settings){
     
     /*
     Typical settings = {
-        navigation:             this
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdGestaEntry
+        uniqueKey:              'prod-gesta'
     };
     */
     const settings              = input_settings;
@@ -38,58 +39,341 @@ export function PageProdGestatingEntry(input_settings){
         
         
     let elemIdNavPrevEntry      = null;
+    let elemIdNavNextEntry      = null;
+    
     let elemIdEntryTitle        = null;
+    
     let elemIdPigProdPid        = null;
     let elemIdHeaderSowName     = null;
     let elemIdHeaderBoarName    = null;
-    let elemIdNavNextEntry      = null;
     
-    let elemIdShowMore          = null;
-    let elemIdShowMoreDropDown  = null;
     
+    let elemIdTabsContainer     = null;
+    let elemIdTabContentArea    = null;
+    
+    
+    let componentTabsWithMore   = null;
+    
+    let elemIdTabGestaPigOps        = `prod-gesta-pigops`;
+    let elemIdTabGestaBirth         = `prod-gesta-birth`;
+    let elemIdTabGestaInsem         = `prod-gesta-insem`;
+    let elemIdTabGestaNotes         = `prod-gesta-notes`;
+        
+    let elemIdTabLactaPigOps        = `prod-lacta-pigops`;
+    let elemIdTabLactaBirth         = `prod-lacta-birth`;
+    let elemIdTabLactaWean          = `prod-lacta-wean`;
+    let elemIdTabLactaMedVac        = `prod-lacta-medvac`;
+    
+    let elemIdTabLactaHealth        = `prod-lacta-health`;
+    let elemIdTabLactaPigDead       = `prod-lacta-pig-dead`;
+    let elemIdTabLactaFeedSummary   = `prod-lacta-feed-summary`;
+    let elemIdTabLactaFeedAdd       = `prod-lacta-feed-add`;
+    let elemIdTabLactaNotes         = `prod-lacta-notes`;
+    let elemIdTabLactaInsem         = `prod-lacta-insem`;
+    
+    
+    let elemIdTabFattenerFeedSummary= `prod-fattener-feed-summary`;
+    let elemIdTabFattenerFeedAdd    = `prod-fattener-feed-add`;
+    let elemIdTabFattenerFeedBalance= `prod-fattener-feed-balance`;
+    let elemIdTabFattenerHarvest    = `prod-fattener-harvest`;
+    
+    let elemIdTabFattenerMedVac     = `prod-fattener-medvac`;
+    let elemIdTabFattenerHealth     = `prod-fattener-health`;
+    let elemIdTabFattenerNotes      = `prod-fattener-notes`;
+    let elemIdTabFattenerPigCount   = `prod-fattener-count`;
+    let elemIdTabFattenerPigDead    = `prod-fattener-pig-dead`;
+    let elemIdTabFattenerWean       = `prod-fattener-wean`;
+    let elemIdTabFattenerBirth      = `prod-fattener-birth`;
+    let elemIdTabFattenerInsem      = `prod-fattener-insem`;
+    
+    
+    
+    let elemIdTabPGroupFeedSummary  = `prod-pgroup-feed-summary`;
+    let elemIdTabPGroupFeedAdd      = `prod-pgroup-feed-add`;
+    let elemIdTabPGroupFeedBalance  = `prod-pgroup-feed-balance`;
+    let elemIdTabPGroupHarvest      = `prod-pgroup-harvest`;
+    
+    let elemIdTabPGroupMedVac       = `prod-pgroup-medvac`;
+    let elemIdTabPGroupHealth       = `prod-pgroup-health`;
+    let elemIdTabPGroupNotes        = `prod-pgroup-notes`;
+    let elemIdTabPGroupPigCount     = `prod-pgroup-count`;
+    let elemIdTabPGroupPigDead      = `prod-pgroup-pig-dead`;
+    
+    
+    
+    let tabsProdGesta = [
+        {
+            data_tab_id:    elemIdTabGestaPigOps,
+            label:          'PigOps'
+        },
+        
+        {
+            data_tab_id:    elemIdTabGestaBirth,
+            label:          'Birth'
+        },
+        
+        {
+            data_tab_id:    elemIdTabGestaInsem,
+            label:          'Insem'
+        },
+        
+        {
+            data_tab_id:    elemIdTabGestaNotes,
+            label:          'Notes'
+        }
+    ];
+    
+    
+    let tabsProdLacta = [
+        {
+            data_tab_id:    elemIdTabLactaPigOps,
+            label:          'PigOps'
+        },
+        
+        {
+            data_tab_id:    elemIdTabLactaBirth,
+            label:          'Birth'
+        },
+        
+        {
+            data_tab_id:    elemIdTabLactaWean,
+            label:          'Wean'
+        },
+        
+        {
+            data_tab_id:    elemIdTabLactaMedVac,
+            label:          'MedVac'
+        },
+        
+        
+        {
+            data_tab_id:    elemIdTabLactaHealth,
+            label:          'Health'
+        },
+        
+        {
+            data_tab_id:    elemIdTabLactaPigDead,
+            label:          'Pig Dead'
+        },
+        
+        {
+            data_tab_id:    elemIdTabLactaFeedSummary,
+            label:          'Feed Summary'
+        },
+        
+        {
+            data_tab_id:    elemIdTabLactaFeedAdd,
+            label:          'Feed Add'
+        },
+        
+        
+        {
+            data_tab_id:    elemIdTabGestaNotes,
+            label:          'Notes'
+        },
+        
+        {
+            data_tab_id:    elemIdTabGestaInsem,
+            label:          'Insem'
+        }
+    ];
+    
+    
+    let tabsProdFattener = [
+        {
+            data_tab_id:    elemIdTabFattenerFeedSummary,
+            label:          'Summary'
+        },
+        
+        {
+            data_tab_id:    elemIdTabFattenerFeedAdd,
+            label:          'FeedAdd'
+        },
+        
+        {
+            data_tab_id:    elemIdTabFattenerFeedBalance,
+            label:          'FeedBal'
+        },
+        
+        {
+            data_tab_id:    elemIdTabFattenerHarvest,
+            label:          'Harvest'
+        },
+        
+        
+        {
+            data_tab_id:    elemIdTabFattenerMedVac,
+            label:          'MedVac'
+        },
+        
+        {
+            data_tab_id:    elemIdTabFattenerHealth,
+            label:          'Health'
+        },
+        
+        {
+            data_tab_id:    elemIdTabFattenerNotes,
+            label:          'Notes'
+        },
+        
+        
+        {
+            data_tab_id:    elemIdTabFattenerPigCount,
+            label:          'Pig Count'
+        },
+        
+        {
+            data_tab_id:    elemIdTabFattenerPigDead,
+            label:          'Pig Dead'
+        },
+        
+        
+        {
+            data_tab_id:    elemIdTabFattenerWean,
+            label:          'Wean'
+        },
+        
+        {
+            data_tab_id:    elemIdTabFattenerBirth,
+            label:          'Birth'
+        },
+        
+        {
+            data_tab_id:    elemIdTabFattenerInsem,
+            label:          'Insem'
+        }
+    ];
+
+    
+    let tabsProdGroup = [
+        {
+            data_tab_id:    elemIdTabPGroupFeedSummary,
+            label:          'Summary'
+        },
+        
+        {
+            data_tab_id:    elemIdTabPGroupFeedAdd,
+            label:          'FeedAdd'
+        },
+        
+        {
+            data_tab_id:    elemIdTabPGroupFeedBalance,
+            label:          'FeedBal'
+        },
+        
+        {
+            data_tab_id:    elemIdTabPGroupHarvest,
+            label:          'Harvest'
+        },
+        
+        
+        {
+            data_tab_id:    elemIdTabPGroupMedVac,
+            label:          'MedVac'
+        },
+        
+        {
+            data_tab_id:    elemIdTabPGroupHealth,
+            label:          'Health'
+        },
+        
+        {
+            data_tab_id:    elemIdTabPGroupNotes,
+            label:          'Notes'
+        },
+        
+        
+        {
+            data_tab_id:    elemIdTabPGroupPigCount,
+            label:          'Pig Count'
+        },
+        
+        {
+            data_tab_id:    elemIdTabPGroupPigDead,
+            label:          'Pig Dead'
+        }
+        
+        {
+            data_tab_id:    elemIdTabPGroupPigDead,
+            label:          'Pig Dead'
+        }
+        
+        
+    ];
+
+    
+    
+	let elemTabGestaPigOps        	= null;
+    let elemTabGestaBirth         	= null;
+    let elemTabGestaInsem         	= null;
+    let elemTabGestaNotes         	= null;
+										
+    let elemTabLactaPigOps        	= null;
+    let elemTabLactaBirth         	= null;
+    let elemTabLactaWean          	= null;
+    let elemTabLactaMedVac        	= null;
+										
+    let elemTabLactaHealth        	= null;
+    let elemTabLactaPigDead       	= null;
+    let elemTabLactaFeedSummary   	= null;
+    let elemTabLactaFeedAdd       	= null;
+    let elemTabLactaNotes         	= null;
+    let elemTabLactaInsem         	= null;
+										
+										
+    let elemTabFattenerFeedSummary	= null;
+    let elemTabFattenerFeedAdd    	= null;
+    let elemTabFattenerFeedBalance	= null;
+    let elemTabFattenerHarvest    	= null;
+										
+    let elemTabFattenerMedVac     	= null;
+    let elemTabFattenerHealth     	= null;
+    let elemTabFattenerNotes      	= null;
+    let elemTabFattenerPigCount   	= null;
+    let elemTabFattenerPigDead    	= null;
+    let elemTabFattenerWean       	= null;
+    let elemTabFattenerBirth      	= null;
+    let elemTabFattenerInsem      	= null;
+    
+    
+    
+    let elemTabPGroupFeedSummary  	= null;
+    let elemTabPGroupFeedAdd      	= null;
+    let elemTabPGroupFeedBalance  	= null;
+    let elemTabPGroupHarvest      	= null;
+										
+    let elemTabPGroupMedVac       	= null;
+    let elemTabPGroupHealth       	= null;
+    let elemTabPGroupNotes        	= null;
+    let elemTabPGroupPigCount     	= null;
+    let elemTabPGroupPigDead      	= null;
+    
+	
+	
+	
+	
     
     let elemNavPrevEntry        = null;
+    let elemNavNextEntry        = null;
+    
     let elemEntryTitle          = null;
+    
     let elemPigProdPid          = null;
     let elemHeaderSowName       = null;
     let elemHeaderBoarName      = null;
-    let elemNavNextEntry        = null;
-    
-    let elemShowMore            = null;
-    let elemShowMoreDropDown    = null;
     
     
-    
-    let elemIdTabMore           = null;
+    let elemTabsContainer       = null;
+    let elemTabContentArea      = null;
     
     
     
+        
     let sowList                 = null;
     let boarList                = null;
-    let semenSupplierList       = null;
     
     
-    const settingsPigOps = {
-        parentObj:              this
-    }
-    const prodEntryPigOps       = new ProdEntryPigOps(settingsPigOps);
-    prodEntryPigOps.setNavigation(navigation);
     
-    
-    const prodEntryInsem        = new ProdEntryInsem({
-        navigation:             navigation,
-        parentObj:              this,
-        elemIdDivContainer:     elemDivContainer,
-        uniqueKey:              'pig-prod-insem'
-    });
-
-    
-    const prodEntryBirth        = new ProdEntryBirth({
-        navigation:             navigation,
-        parentObj:              this,
-        elemIdDivContainer:     elemDivContainer,
-        uniqueKey:              'pig-prod-birth'
-    });
     
     
     const settingsNotes = {
@@ -108,72 +392,7 @@ export function PageProdGestatingEntry(input_settings){
     this._writeInlineStyle = function(){
         const html = `
     <style>
-        
-        :root{
-            --height-fixed-prod-entry: 130px;
-        }
-
-        /* Fixed Top Section */
-        .top-section {
-            position: fixed;
-            top: 60px;
-            left: 0;
-            width: 100%;
-            background-color: var(--corporate-blue);
-            color: white;
-            z-index: 150;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .navigation-bar {
-            display: block;
-            align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        
-
-        /* Show More Dropdown */
-        .show-more-container {
-            position: relative;
-        }
-        
-        .show-more-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            width: 140px;
-            display: none;
-            z-index: 1001;
-            margin-top: 2px;
-        }
-        
-        .show-more-dropdown.active {
-            display: block;
-        }
-        
-        .dropdown-item {
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--medium-gray);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text-dark);
-            font-size: 14px;
-        }
-        
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-        
-        .dropdown-item:hover {
-            background-color: var(--light-gray);
-            color: var(--corporate-blue);
-        }
-
+      
 
         .entry-info {
             display: flex;
@@ -209,67 +428,8 @@ export function PageProdGestatingEntry(input_settings){
             color: #f472b6; /* Pink color for love icon */
         }
 
-        /* Tabs Navigation */
-        .tabs-container {
-            display: flex;
-            overflow-y: auto;
-            background-color: var(--corporate-blue);
-            padding: 0 5px;
-            -webkit-overflow-scrolling: touch;
-        }
 
-        .tab-button {
-            flex: 1;
-            min-width: 80px;
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.7);
-            padding: 12px 10px;
-            font-size: 16px;
-            font-weight: 600;
-            text-align: center;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        .tab-button.active {
-            color: white;
-            border-bottom-color: white;
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-
-        /* Tab Content Area - Scrolls below fixed sections */
-        .tab-content-area {
-            margin-top: var(--height-fixed-prod-entry); /* Height of top nav (60px) + top section (120px) */
-            padding: 0 0 20px 0;
-            overflow-y: auto;
-            max-height: calc(200vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
-        }
-
-        /* Individual Tab Content */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
         
-        .tab-title {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: var(--corporate-blue);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
 
         /* Form Styles */
         .form-group {
@@ -471,30 +631,67 @@ export function PageProdGestatingEntry(input_settings){
         return html;
     }
     
+	
+	
+	this.getHtmlTabContents = function(tabs){
+		let s_active = '';
+		let html = '';
+		
+		let index = 0;
+		
+		for (const cur_entry of tabs){
+			s_active = '';
+			in (index == 0){s_active = 'active';}
+			
+			html += `
+			<div id="${cur_entry.data_tab_id}" class="tab-content ${s_active}">
+				<h2 class="tab-title">${cur_entry.label}</h2>
+			</div>
+        
+			`;
+			
+			index += 1;
+		}
+		return html;
+	}
+	
     
     this.render = function(){
         
-        elemIdNavPrevEntry      = `pig-prod-entry-prev-entry`;
-        elemIdEntryTitle        = `pig-prod-entry-title`;
-        elemIdPigProdPid        = `pig-prod-entry-pig-prod-pid`;
-        elemIdHeaderSowName     = `pig-prod-entry-header-sow-name`;
-        elemIdHeaderBoarName    = `pig-prod-entry-header-boar-name`;
-        elemIdNavNextEntry      = `pig-prod-entry-next-entry`;
-        
-        elemIdShowMore          = `pig-prod-entry-show-more`;
-        elemIdShowMoreDropDown  = `pig-prod-entry-show-more-dropdown`;
+        elemIdNavPrevEntry      = `${settings.uniqueKey}-prev-entry`;
+        elemIdNavNextEntry      = `${settings.uniqueKey}-next-entry`;
         
         
-        elemIdTabMore           = `prod-gesta-more`;
+        elemIdEntryTitle        = `${settings.uniqueKey}-title`;
+        
+        elemIdPigProdPid        = `${settings.uniqueKey}-pig-prod-pid`;
+        elemIdHeaderSowName     = `${settings.uniqueKey}-header-sow-name`;
+        elemIdHeaderBoarName    = `${settings.uniqueKey}-header-boar-name`;
+        
+
+        
+        elemIdTabsContainer     = `${settings.uniqueKey}-tabs-container`;
+        elemIdTabContentArea    = `${settings.uniqueKey}-tab-content`;
+
+
+        componentTabsWithMore   = new ComponentTabsWithMore({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-tab`,
+            elemIdDivContainer:     settings.elemIdDivContainer,
+            elemIdTabsContainer:    elemIdTabsContainer,
+            elemIdTabContentArea:   elemIdTabContentArea,
+            
+            showMoreTitle:      null, // this dynamically change
+            
+            tabs:               tabsProdGesta
+        });
 
         const html_style        = thisObj._writeInlineStyle();
         
-        const html_pig_ops      = prodEntryPigOps.getHtml();
-        const html_tab_insem    = prodEntryInsem.getHtml();
-        const html_tab_birth    = prodEntryBirth.getHtml();
-        const html_tab_notes    = prodEntryNotes.getHtml();
-        
-        
+		const html_tab_buttons 	= componentTabsWithMore.getHtml();
+        const html_tab_contents	= thisObj.getHtmlTabContents(tabsProdGesta);
+		
+		
         const html =`
 
     ${html_style}
@@ -521,60 +718,18 @@ export function PageProdGestatingEntry(input_settings){
             
         
         <!-- Tabs Navigation -->
-        <div class="tabs-container">
-            <button class="tab-button active" data-tab="pig-ops">Pig Ops</button>
-            <button class="tab-button" data-tab="birth">Birth</button>
-            <button class="tab-button" data-tab="insem">Insem</button>
-            <button class="tab-button" data-tab="notes">Notes</button>
-            <button class="tab-button" data-tab="${elemIdTabMore}" id="${elemIdShowMore}">
-                More
-            </button>
+        <div class="tabs-container" id="${elemIdTabsContainer}">
+            ${html_tab_buttons}
         </div>
     </div>
     
-    <!-- Tab Content Area - Scrolls below fixed sections -->
-    <div class="tab-content-area" style="margin-top:0;">
-        <!-- Tab Content -->
-        
-        <div id="pig-ops-tab" class="tab-content active">
-            ${html_pig_ops}
-        </div>
-        
-        <div id="birth-tab" class="tab-content">
-            ${html_tab_birth}
-        </div>
-        
-        <div id="insem-tab" class="tab-content">
-            ${html_tab_insem}
-        </div>
-
-        
-        <div id="feed-summary-tab" class="tab-content">
-            <h2 class="tab-title">Feed Summary</h2>
-        </div>
-        
-        <div id="feed-buy-tab" class="tab-content">
-            <h2 class="tab-title">Feed Buy</h2>
-        </div>
-        
-        <div id="medvac-tab" class="tab-content">
-            <h2 class="tab-title">MedVac</h2>
-        </div>
-        
-        
-        <div id="status-tab" class="tab-content">
-            <h2 class="tab-title">Status</h2>
-        </div>
-        
-        
-        <!-- Notes Tab -->
-        <div id="notes-tab" class="tab-content">
-            ${html_tab_notes}
-        </div>
+    <!-- Tab Content Area Gesta-->
+    <div class="tab-content-area" id="${elemIdTabContentArea}" style="margin-top:0;">
+        ${html_tab_contents}
     </div>
         `;
-        
-        
+		
+	    
         
         elemDivContainer.innerHTML = html;
     }
@@ -588,108 +743,57 @@ export function PageProdGestatingEntry(input_settings){
     
     
     this._findElements = function(){
-        elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
-        elemEntryTitle          = document.getElementById(elemIdEntryTitle);
-        elemPigProdPid          = document.getElementById(elemIdPigProdPid);
-        elemHeaderSowName       = document.getElementById(elemIdHeaderSowName);
-        elemHeaderBoarName      = document.getElementById(elemIdHeaderBoarName);
-        elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
+        elemNavPrevEntry        = elemDivContainer.querySelector('#'+elemIdNavPrevEntry);
+        elemNavNextEntry        = elemDivContainer.querySelector('#'+elemIdNavNextEntry);
         
-        elemShowMore            = document.getElementById(elemIdShowMore);
-        elemShowMoreDropDown    = document.getElementById(elemIdShowMoreDropDown);
+        elemEntryTitle          = elemDivContainer.querySelector('#'+elemIdEntryTitle);
         
+        elemPigProdPid          = elemDivContainer.querySelector('#'+elemIdPigProdPid);
+        elemHeaderSowName       = elemDivContainer.querySelector('#'+elemIdHeaderSowName);
+        elemHeaderBoarName      = elemDivContainer.querySelector('#'+elemIdHeaderBoarName);
+        
+        
+        elemTabsContainer       = elemDivContainer.querySelector('#'+elemIdTabsContainer);
+        elemTabContentArea      = elemDivContainer.querySelector('#'+elemIdTabContentArea);
+        
+		elemTabGestaPigOps      = elemDivContainer.querySelector('#'+elemIdTabGestaPigOps);
+		elemTabGestaBirth       = elemDivContainer.querySelector('#'+elemIdTabGestaBirth);
+		elemTabGestaInsem       = elemDivContainer.querySelector('#'+elemIdTabGestaInsem);
+		elemTabGestaNotes       = elemDivContainer.querySelector('#'+elemIdTabGestaNotes);
        
     }
     
     
     this._processAfterHtmlRender = function(){
-        prodEntryPigOps.afterHtmlRender();
-        prodEntryInsem.afterHtmlRender();
-        prodEntryBirth.afterHtmlRender();
-        prodEntryNotes.afterHtmlRender();
+		this.prodEntryPigOps   	= new ProdEntryPigOps({
+			navigation:			navigation,
+			parentObj:          this,
+			uniqueKey:          'pig-prod-gesta-insem',
+			elemDivContainer:   elemTabGestaPigOps
+		});
+    
+    
+		this.prodEntryInsem   	= new ProdEntryInsem({
+			navigation:         navigation,
+			parentObj:          this,
+			uniqueKey:          'pig-prod-gesta-insem',
+			elemDivContainer: 	elemTabGestaInsem
+		});
+		prodEntryInsem.init();
+		
+		
+		const prodEntryBirth    = new ProdEntryBirth({
+			navigation:         navigation,
+			parentObj:          this,
+			uniqueKey:          'pig-prod-gesta-birth',
+			elemDivContainer: 	elemTabGestaBirth
+		});
+		prodEntryBirth.init();
+		
     }
     
     
     this._bindEventListeners = function(){
-        
-        // This is used for 4 sub tabs with no drop down.
-        const tabButtons  = elemDivContainer.querySelectorAll('.tab-button');
-        const tabContents = elemDivContainer.querySelectorAll('.tab-content');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.getAttribute('data-tab');
-                
-                // Update active tab button
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                // Show corresponding content
-                tabContents.forEach(content => content.classList.remove('active'));
-                document.getElementById(`${tabId}-tab`).classList.add('active');
-                
-                // Scroll to top of content area
-                elemDivContainer.querySelector('.tab-content-area').scrollTop = 0;
-            });
-        });
-        
-        
-        /*
-        // This is for 3 tabs + More ...
-        const navItems      = elemDivContainer.querySelectorAll('.tab-button:not(.show-more-container)');
-        const dropdownItems = elemDivContainer.querySelectorAll('.dropdown-item');
-        const allTabs       = elemDivContainer.querySelectorAll('.tab-content');
-        const showMoreControl = elemShowMore;
-        const showMoreDropdown = elemShowMoreDropDown;
-        
-        function switchTab(tabId) {
-            console.log('switchTab tabId') 
-            allTabs.forEach(tab => tab.classList.remove('active'));
-            const selectedTab = document.getElementById(tabId);
-            if (selectedTab) selectedTab.classList.add('active');
-            
-            navItems.forEach(item => item.classList.remove('active'));
-            
-            if (tabId === 'pig-ops' || tabId === 'birth' || tabId === 'insem') {
-                const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
-                if (activeNav) activeNav.classList.add('active');
-            }
-            
-            showMoreDropdown.classList.remove('active');
-        }
-        
-        navItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const tabId = this.getAttribute('data-tab');
-                switchTab(tabId);
-            });
-        });
-        
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const tabId = this.getAttribute('data-tab');
-                switchTab(tabId);
-                showMoreControl.querySelector('.nav-text').textContent = this.textContent;
-                navItems.forEach(nav => nav.classList.remove('active'));
-                showMoreControl.classList.add('active');
-            });
-        });
-        
-        showMoreControl.addEventListener('click', function(e) {
-            console.log('Test');
-            if (e.target === this || e.target.classList.contains('nav-text')) {
-                e.stopPropagation();
-                showMoreDropdown.classList.toggle('active');
-            }
-        });
-        
-        document.addEventListener('click', function(e) {
-            if (!showMoreControl.contains(e.target)) {
-                showMoreDropdown.classList.remove('active');
-            }
-        });
-        
-        */
         
         
         

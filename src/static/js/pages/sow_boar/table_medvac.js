@@ -63,16 +63,15 @@ export function TableMedVac(input_settings){
     
     this.init = function(){
         
-        const settingsTable = {
+        thisObj.setSettingsTable({
             uniqueKey:      'sow-boar-medvac',
             tableTitle:     'Medicines & Vaccines'
-        }
+        });
         
-        thisObj.setSettings(settingsTable);
+        const html = thisObj.getHtml();
+        elemDivContainer.innerHTML = html;
         
-        const html_table = thisObj.getHtml();
         
-        elemDivContainer.innerHTML = html_table;
         thisObj.afterHtmlRender();  // This will call the parent method 
         thisObj.afterHtmlRenderThis();
 
@@ -182,10 +181,10 @@ export function TableMedVac(input_settings){
         
         let  s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
         
-		if ('dispose_status_id' in dataSowBoar.sow_boar){
+        if ('dispose_status_id' in dataSowBoar.sow_boar){
             s_click = '';
         }
-		
+        
         let s_medvac = `
             <span class="medvac-brand"><b>${cur_entry.medvac.brand.name}</b></span><br>
             <span class="medvac-type">${cur_entry.medvac.type.name}</span>

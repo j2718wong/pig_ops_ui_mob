@@ -69,19 +69,16 @@ export function TableGiltOps(input_settings){
     
     this.init = function(){
         
-        let settingsTable;
-        settingsTable = {
+        thisObj.setSettingsTable({
             uniqueKey:      `${settings.uniqueKey}-table`,
             noSearchAdd:    true,
             tableTitle:     'Gilt Operations'
-        }
+        });
+        
+        const html = thisObj.getHtml();
+        elemDivContainer.innerHTML = html;
         
         
-        thisObj.setSettings(settingsTable);
-        
-        const html_table = thisObj.getHtml();
-        
-        elemDivContainer.innerHTML = html_table;
         thisObj.afterHtmlRender();  // This will call the parent method 
         thisObj.afterHtmlRenderThis();
 

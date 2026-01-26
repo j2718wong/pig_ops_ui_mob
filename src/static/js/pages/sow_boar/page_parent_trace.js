@@ -81,7 +81,7 @@ export function PageParentTrace(input_settings){
     
     let sowBoarTable            = new PageTableBasic();
     
-    sowBoarTable.setSettings({
+    sowBoarTable.setSettingsTable({
         uniqueKey:      `parent-trace-sow-boar-table`,
         noSearchAdd:    true,
         itemsPerPage:   20,

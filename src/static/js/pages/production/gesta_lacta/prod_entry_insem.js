@@ -36,8 +36,9 @@ export function ProdEntryInsem(input_settings){
     Typical settings = {
         navigation:             navigation,
         parentObj:              this,
-        elemIdDivContainer:     elemIdContMedVacAddEdit,
-        uniqueKey:              'medvac-add-edit'
+        uniqueKey:              'pig-prod-insem',
+        elemDivContainer:       elemIdContMedVacAddEdit
+        
     };
     */
     const settings              = input_settings;
@@ -111,6 +112,12 @@ export function ProdEntryInsem(input_settings){
     this.init = function(){
         this.render();
         this.afterHtmlRender();
+    }
+    
+    
+    this.render = function(){
+        const html = this.getHtml();
+        elemDivContainer.innerHTML = html;
     }
     
     
@@ -404,7 +411,6 @@ export function ProdEntryInsem(input_settings){
     }
     
     
-   
     
     this.show = function(data_pig_prod, options){
         curDataPigProd = data_pig_prod;
@@ -762,10 +768,10 @@ export function ProdEntryInsem(input_settings){
         });
     }
     
-	
-	
-	this.onSuccessEditGestatingEntry = function(){
-		
-	}
+    
+    
+    this.onSuccessEditGestatingEntry = function(){
+        
+    }
     
 }

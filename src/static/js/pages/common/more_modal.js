@@ -36,6 +36,10 @@ export function MoreModal(_navigation){
     let elemMoreItem3           = null;
     let elemMoreItem4           = null;
     let elemMoreItem5           = null;
+	let elemMoreItem6           = null;
+	let elemMoreItem7           = null;
+	
+	
     
     let moreItems               = [];
     
@@ -60,6 +64,8 @@ export function MoreModal(_navigation){
         elemIdMoreItem3         = `more-item-3`;
         elemIdMoreItem4         = `more-item-4`;
         elemIdMoreItem5         = `more-item-5`;
+        elemIdMoreItem6         = `more-item-6`;
+        elemIdMoreItem7         = `more-item-7`;
         
         
         
@@ -100,6 +106,15 @@ export function MoreModal(_navigation){
                             <div class="more-menu-item" id="${elemIdMoreItem5}">
                                 <div class="menu-text">Item 5</div>
                             </div>
+							
+							<div class="more-menu-item" id="${elemIdMoreItem6}">
+                                <div class="menu-text">Item 6</div>
+                            </div>
+							
+							<div class="more-menu-item" id="${elemIdMoreItem7}">
+                                <div class="menu-text">Item 7</div>
+                            </div>
+							
                         </div>
                     </div>
                 </div>
@@ -128,8 +143,9 @@ export function MoreModal(_navigation){
         elemMoreItem3           = document.getElementById(elemIdMoreItem3);
         elemMoreItem4           = document.getElementById(elemIdMoreItem4);
         elemMoreItem5           = document.getElementById(elemIdMoreItem5);
-
-    }
+		elemMoreItem6           = document.getElementById(elemIdMoreItem6);
+		elemMoreItem7           = document.getElementById(elemIdMoreItem7);
+	}
     
     
     this._processAfterHtmlRender = function(){
@@ -139,6 +155,8 @@ export function MoreModal(_navigation){
         moreItems.push(elemMoreItem3);
         moreItems.push(elemMoreItem4);
         moreItems.push(elemMoreItem5);
+		moreItems.push(elemMoreItem6);
+		moreItems.push(elemMoreItem7);
         
         moreModal   = bootstrap.Modal.getOrCreateInstance(elemMoreModal);
     }

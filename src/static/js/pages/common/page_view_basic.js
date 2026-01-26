@@ -100,7 +100,7 @@ export function PageViewBasic(){
     
     
     
-PageViewPigFarmPage.prototype = new PageViewBasic();
+
 export function PageViewPigFarmPage(){  
     const thisObj       = this;
     

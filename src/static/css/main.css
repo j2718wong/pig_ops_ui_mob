@@ -2018,6 +2018,69 @@ p {
 
 
 
+/* Tabs Navigation */
+.tabs-container {
+	display: flex;
+	overflow-y: auto;
+	background-color: var(--corporate-blue);
+	padding: 0 5px;
+	-webkit-overflow-scrolling: touch;
+}
+
+.tab-button {
+	flex: 1;
+	min-width: 80px;
+	background: none;
+	border: none;
+	color: rgba(255, 255, 255, 0.7);
+	padding: 12px 10px;
+	font-size: 16px;
+	font-weight: 600;
+	text-align: center;
+	border-bottom: 3px solid transparent;
+	transition: all 0.2s;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.tab-button.active {
+	color: white;
+	border-bottom-color: white;
+	background-color: rgba(255, 255, 255, 0.05);
+}
+
+
+/* Tab Content Area - Scrolls below fixed sections */
+.tab-content-area {
+	margin-top: 0;
+	padding: 0 0 20px 0;
+	overflow-y: auto;
+	max-height: calc(200vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
+}
+
+/* Individual Tab Content */
+.tab-content {
+	display: none;
+}
+
+.tab-content.active {
+	display: block;
+	animation: fadeIn 0.3s ease;
+}
+
+.tab-title {
+	font-size: 1.3rem;
+	margin-bottom: 10px;
+	color: var(--corporate-blue);
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+
+
 
 /********* END COMMON CONTROLS **********/
 

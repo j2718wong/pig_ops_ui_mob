@@ -21,6 +21,9 @@ import {formatDate,
         FORMAT_COMPACT,
         sortList,
         createPaginationManager} from '../../utils.js';
+        
+import {ComponentTabsWithMore}  from '../../common/ui/comp_staff_form_group.js';
+        
 
 import {TableMedVac}            from './table_medvac.js'
 import {TableHealthIssue}       from './table_health_issue.js'
@@ -42,7 +45,7 @@ export function PageSowBoarEntry(input_settings){
     Typical settings = {
         navigation:             this,
         elemIdDivContainer:     elemIdContSowBoarEntry,
-		uniqueKey:              'sow-boar-entry'
+        uniqueKey:              'sow-boar-entry'
     };
     */
     const settings              = input_settings;
@@ -59,26 +62,104 @@ export function PageSowBoarEntry(input_settings){
     let elemIdEntryId           = null;
     let elemIdEntryName         = null;
     
-    let elemIdShowMore          = null;
+    let elemIdTabsContainer     = null;
+    let elemIdTabContentArea    = null;
     
-    let elemIdTabBtnOutput      = null;
-    let elemIdTabBtnMates       = null;
-    let elemIdTabBtnGiltOps     = null;
+    let componentTabsWithMore   = null;
     
-    let elemIdTabMedVac         = null;
-    let elemIdTabHealth         = null;
-    let elemIdTabNotes          = null;
-    let elemIdTabOutput         = null;
-    let elemIdTabMates          = null;
-    let elemIdTabGiltOps        = null;
-    let elemIdTabStatus         = null;
+    let elemIdTabMedVac         = `sow-boar-medvac`;
+    let elemIdTabHealth         = `sow-boar-health`;
+    let elemIdTabNotes          = `sow-boar-notes`;
+    let elemIdTabOutput         = `sow-boar-output`;
+    let elemIdTabMates          = `sow-boar-mates`;
+    let elemIdTabMatesExt       = `sow-boar-mates-ext`;
+    let elemIdTabGiltOps        = `sow-boar-gilt-ops`;
+        
     
-    let elemIdTabMore           = null;
+    let tabsSowEntry = [
+        {
+            data_tab_id:    elemIdTabMedVac,
+            label:          'MedVac'
+        },
+        
+        {
+            data_tab_id:    elemIdTabHealth,
+            label:          'Health'
+        },
+        
+        {
+            data_tab_id:    elemIdTabNotes,
+            label:          'Notes'
+        },
+        
+        {
+            data_tab_id:    elemIdTabOutput,
+            label:          'Output'
+        },
+        
+        {
+            data_tab_id:    elemIdTabMates,
+            label:          'Mates'
+        }
+        
+    ];
     
     
-    let elemTabBtnOutput        = null;
-    let elemTabBtnMates         = null;
-    let elemTabBtnGiltOps       = null;
+    let tabsBoarEntry = [
+        {
+            data_tab_id:    elemIdTabMedVac,
+            label:          'MedVac'
+        },
+        
+        {
+            data_tab_id:    elemIdTabHealth,
+            label:          'Health'
+        },
+        
+        {
+            data_tab_id:    elemIdTabNotes,
+            label:          'Notes'
+        },
+        
+        {
+            data_tab_id:    elemIdTabMates,
+            label:          'Mates'
+        },
+        
+        {
+            data_tab_id:    elemIdTabMatesExt,
+            label:          'Mates External'
+        }
+        
+    ];
+    
+    
+    let tabsGiltEntry = [
+        {
+            data_tab_id:    elemIdTabMedVac,
+            label:          'MedVac'
+        },
+        
+        {
+            data_tab_id:    elemIdTabHealth,
+            label:          'Health'
+        },
+        
+        {
+            data_tab_id:    elemIdTabNotes,
+            label:          'Notes'
+        },
+        
+        {
+            data_tab_id:    elemIdTabGiltOps,
+            label:          'Gilt Ops'
+        }
+        
+    ];
+    
+    
+    let curActiveTabs = tabsSowEntry;
+
     
     
     let elemNavPrevEntry        = null;
@@ -89,8 +170,9 @@ export function PageSowBoarEntry(input_settings){
     let elemEntryId             = null;
     let elemEntryName           = null;
     
-    let elemShowMore            = null;
-
+    
+    let elemTabsContainer       = null;
+    let elemTabContentArea      = null;
     
     let elemTabMedVac           = null;
     let elemTabHealth           = null;
@@ -107,8 +189,6 @@ export function PageSowBoarEntry(input_settings){
     
     let dataSowBoar             = null;
     
-    let curActiveTabId          = null;
-    let curActiveElemTab        = null;
     
     this.tableMedVac            = null;
     this.tablePigHealth         = null;
@@ -141,30 +221,28 @@ export function PageSowBoarEntry(input_settings){
         elemIdEntryId           = `${settings.uniqueKey}-id`;
         elemIdEntryName         = `${settings.uniqueKey}-name`;
         
-        elemIdShowMore          = `${settings.uniqueKey}-show-more`;
+        elemIdTabsContainer     = `${settings.uniqueKey}-tabs-container`;
+        elemIdTabContentArea    = `${settings.uniqueKey}-tab-content`;
+
+
+        componentTabsWithMore   = new ComponentTabsWithMore({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-tab`,
+            elemIdDivContainer:     settings.elemIdDivContainer,
+            elemIdTabsContainer:    elemIdTabsContainer,
+            elemIdTabContentArea:   elemIdTabContentArea,
+            
+            showMoreTitle:      null, // this dynamically change
+            
+            tabs:               curActiveTabs
+        });
         
         
-        elemIdTabBtnOutput      = `${settings.uniqueKey}-output`;
-        elemIdTabBtnMates       = `${settings.uniqueKey}-mates`;
-        elemIdTabBtnGiltOps     = `${settings.uniqueKey}-gilt-ops`;
-        
-        elemIdTabMedVac         = `sow-boar-medvac`;
-        elemIdTabHealth         = `sow-boar-health`;
-        elemIdTabNotes          = `sow-boar-notes`;
-        elemIdTabOutput         = `sow-boar-output`;
-        elemIdTabMates          = `sow-boar-mates`;
-        elemIdTabGiltOps        = `sow-boar-gilt-ops`;
-        elemIdTabStatus         = `sow-boar-status`;
-        
-        
-        elemIdTabMore           = `sow-boar-more`;
-           
         /**
         The number of tabs available are dynamic by sow_boar_type.
         
         Because of space constrainst in mobile view,
         Only a maximum of 4 menus buttons can be directly used.
-        The excess menus are available via the global dynamic More Modal.       
         
         It maybe possible that more tabs will be added in the future,
         and will be added in the More Modal function. 
@@ -216,7 +294,9 @@ export function PageSowBoarEntry(input_settings){
         As of writing the SowBoar Update Status will be put inside edit page.
         
         */
-           
+        
+        const html_tab_buttons      = componentTabsWithMore.getHtml();
+        
            
         const html = `
 
@@ -241,26 +321,16 @@ export function PageSowBoarEntry(input_settings){
         </div>
         
         <!-- Tabs Navigation -->
-        <div class="tabs-container">
-            <button class="tab-button active" data-tab="${elemIdTabMedVac}">MedVac</button>
-            <button class="tab-button" data-tab="${elemIdTabHealth}">Health</button>
-            <button class="tab-button" data-tab="${elemIdTabNotes}">Notes</button>
-            
-            <button class="tab-button" data-tab="${elemIdTabOutput}"    id="${elemIdTabBtnOutput}">Output</button>
-            <button class="tab-button" data-tab="${elemIdTabMates}"     id="${elemIdTabBtnMates}" style="display: none">Mates</button>
-            <button class="tab-button" data-tab="${elemIdTabGiltOps}"   id="${elemIdTabBtnGiltOps}" style="display: none">Mates</button>
-            
-            <button class="tab-button" data-tab="${elemIdTabMore}" id="${elemIdShowMore}">
-                More
-            </button>
+        <div class="tabs-container" id="${elemIdTabsContainer}">
+            ${html_tab_buttons}
         </div>
         
     </div>
     
      <!-- Tab Content Area - Scrolls below fixed sections -->
-    <div class="tab-content-area" style="margin-top:0;">
+    <div class="tab-content-area" id="${elemIdTabContentArea}" style="margin-top:0;">
         <div id="${elemIdTabMedVac}" class="tab-content active">
-            <h2 class="tab-title">Medicines Vaccine</h2>
+            <h2 class="tab-title">Medicines And Vaccines</h2>
         </div>
         
         
@@ -295,6 +365,9 @@ export function PageSowBoarEntry(input_settings){
     
     
     this.afterHtmlRender = function(){
+        
+        componentTabsWithMore.afterHtmlRender();
+        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -310,12 +383,8 @@ export function PageSowBoarEntry(input_settings){
         elemEntryId             = elemDivContainer.querySelector('#'+elemIdEntryId);
         elemEntryName           = elemDivContainer.querySelector('#'+elemIdEntryName);
         
-        elemTabBtnOutput        = elemDivContainer.querySelector('#'+elemIdTabBtnOutput);
-        elemTabBtnMates         = elemDivContainer.querySelector('#'+elemIdTabBtnMates);
-        elemTabBtnGiltOps       = elemDivContainer.querySelector('#'+elemIdTabBtnGiltOps);
-        
-        elemShowMore            = elemDivContainer.querySelector('#'+elemIdShowMore);
-                
+        elemTabsContainer       = elemDivContainer.querySelector('#'+elemIdTabsContainer);
+        elemTabContentArea      = elemDivContainer.querySelector('#'+elemIdTabContentArea);
                 
         elemTabMedVac           = elemDivContainer.querySelector('#'+elemIdTabMedVac);
         elemTabHealth           = elemDivContainer.querySelector('#'+elemIdTabHealth);
@@ -387,66 +456,13 @@ export function PageSowBoarEntry(input_settings){
         this.tableGiltOps.init();
         
         
-    }
-    
-    
-    this.switchTab = function(tabId){
-        
-        console.log('switchTab tabId =' + tabId) ;
-            
-        curActiveTabId = tabId;
-        
-        
-        if (tabId != elemIdTabMore){
-        
-            allTabs.forEach(tab => tab.classList.remove('active'));
-            const selectedTab = document.getElementById(tabId);
-            if (selectedTab) {
-                selectedTab.classList.add('active');
-                curActiveElemTab = selectedTab;
-                
-                thisObj.beforeShowTab();
-            }
-            else{
-                console.log('tab not found');
-            }
-        }
-        
-        navItems.forEach(item => item.classList.remove('active'));
-        
-        if (tabId === elemIdTabMedVac   || 
-            tabId === elemIdTabHealth   || 
-            tabId === elemIdTabNotes    || 
-            tabId === elemIdTabOutput   ||
-            tabId === elemIdTabMore   ) {
-            const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
-            if (activeNav) activeNav.classList.add('active');
-        }
-        else{
-            
-        }
-            
-    }
-    
-    
-    this._bindEventListeners = function(){
-        navItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const tabId = this.getAttribute('data-tab');
-                thisObj.switchTab(tabId);
-            });
-        });
-        
-        
-        elemShowMore.addEventListener('click', function(e) {
-            thisObj.configureShowMore();
-        });
-        
+        componentTabsWithMore.beforeShowTab = thisObj.beforeShowTab;
     }
     
     
     this.beforeShow = function(data_sow_boar, options){
         dataSowBoar = data_sow_boar;
+        componentTabsWithMore.curData = data_sow_boar;
         
         if (options) { // replace options only if specified
             showOptions = options;
@@ -457,12 +473,59 @@ export function PageSowBoarEntry(input_settings){
         let s_title = '';
         
         switch (showOptions.sow_boar_type){
-            case SOW_BOAR_TYPE.SOW:  {s_title = 'Sow '; break;}
-            case SOW_BOAR_TYPE.BOAR: {s_title = 'Boar '; break;}
-            case SOW_BOAR_TYPE.GILT: {s_title = 'Gilt '; break;}
+            case SOW_BOAR_TYPE.SOW:  {
+                s_title = 'Sow '; 
+                
+                if (curActiveTabs != tabsSowEntry){
+                    componentTabsWithMore.changeTabButtons(tabsSowEntry);
+                    curActiveTabs = tabsSowEntry;
+                }
+                
+                break;
+            }
+            case SOW_BOAR_TYPE.BOAR: {
+                s_title = 'Boar '; 
+                
+                if (curActiveTabs != tabsBoarEntry){
+                    componentTabsWithMore.changeTabButtons(tabsBoarEntry);
+                    curActiveTabs = tabsBoarEntry;
+                }
+                
+                break;
+            }
             
-            case SOW_BOAR_TYPE.DISPOSED: {s_title = 'Disposed '; break;}
+            case SOW_BOAR_TYPE.GILT: {
+                s_title = 'Gilt '; 
+                
+                if (curActiveTabs != tabsGiltEntry){
+                    componentTabsWithMore.changeTabButtons(tabsGiltEntry);
+                    curActiveTabs = tabsGiltEntry;
+                }
+                
+                break;
+            }
+            
+            case SOW_BOAR_TYPE.DISPOSED: {
+                s_title = 'Disposed '; 
+                
+                // For disposed entry, the tabs can only be either sow tabs or 
+                // boar tabs;
+                if (data_sow_boar.sow_boar.farm_sow_id){
+                    //  Disposed entry is a sow
+                    if (curActiveTabs != tabsSowEntry){
+                        componentTabsWithMore.changeTabButtons(tabsSowEntry);
+                        curActiveTabs = tabsSowEntry;
+                    } else{
+                        componentTabsWithMore.changeTabButtons(tabsBoarEntry);
+                        curActiveTabs = tabsBoarEntry;
+                    }
+                }
+                
+                break;
+            }
         }
+        
+        
         
         s_title += `${showOptions.data_index} Of ${showOptions.total_entries}`;
         
@@ -584,44 +647,7 @@ export function PageSowBoarEntry(input_settings){
         }
         
         
-        
-        // Setup tabs navigation
-        if ('farm_sow_id' in data_sow_boar.sow_boar){
-            // sows and gilts
-            //
-            // gilt is status_id = SOW_STATUS.GROWING and  is_production_ready = 0
-            
-            let is_sow = 1;
-            if (data_sow_boar.sow_boar.status_id == SOW_STATUS.GROWING && 
-                data_sow_boar.sow_boar.is_production_ready == 0){is_sow = 0;}
-            
-            if (is_sow > 0){
-            
-                elemTabBtnOutput.style.display = 'block';
-                elemTabBtnMates.style.display = 'none';
                 
-                elemShowMore.style.display = 'block';
-            }
-            else{
-                
-                elemTabBtnOutput.style.display = 'none';
-                elemTabBtnMates.style.display = 'none';
-                
-                elemTabBtnGiltOps.style.display = 'block';
-
-                elemShowMore.style.display = 'none';
-                
-            }
-        }
-        else{
-            // boars
-            elemTabBtnOutput.style.display = 'none';
-            elemTabBtnMates.style.display = 'block';
-            
-            elemShowMore.style.display = 'block';
-        }
-      
-        
         // Request SowBoar data_details 
         if ('data_details' in dataSowBoar){
             // TODO ; still thinking what to do
@@ -637,61 +663,12 @@ export function PageSowBoarEntry(input_settings){
         
     }
     
+
     
-    this.configureShowMore = function(){
-        
-        const on_click_mates = function(data){
-            thisObj.switchTab(elemIdTabMates);
-            
-        };
-        
-        if ('farm_sow_id' in dataSowBoar.sow_boar){
-            
-            const sow_boar_name = getSowBoarReference(dataSowBoar.sow_boar);
-            
-            const menu_items = [
-                {   label: 'Mates',
-                    action: on_click_mates,
-                    data:   dataSowBoar
-                }
-                
-            ];
-            
-            const options = {
-                title: sow_boar_name
-            };
-            
-            navigation.moreModal.beforeShow(menu_items, options);
-            
-        }
-        
-        else{
-            const sow_boar_name = getSowBoarReference(dataSowBoar.sow_boar);
-            
-            const menu_items = [
-                {   label: 'External Mates',
-                    action: null,
-                    data:   dataSowBoar
-                }
-                
-            ];
-            
-            const options = {
-                title: sow_boar_name
-            };
-            
-            navigation.moreModal.beforeShow(menu_items, options);
-        }
-            
-        
-        
-    }
-    
-    
-    this.beforeShowTab = function(){
+    this.beforeShowTab = function(tab_id){
         if (dataSowBoar == null){return;}
         
-        switch(curActiveTabId){
+        switch(tab_id){
             case elemIdTabMedVac:{
                 thisObj.tableMedVac.beforeShow(dataSowBoar);
                 break;

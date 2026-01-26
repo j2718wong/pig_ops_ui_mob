@@ -9,25 +9,25 @@ import {UiBasic}                    from './ui_basic.js';
 
 /* This will create a tab navigation like this.
 1.) Because of space constraints in mobile screens, some tabs are available via 
-	"More" button.
-	
+    "More" button.
+    
 2.) The "More" Button is implemented via the global navigation.moreModal.
 
 3.) The tabs buttons can dynamically change with screen size.
-	If bigger screens, no "More" control at all if the tabs can fit in the 
-	screen.
-	
+    If bigger screens, no "More" control at all if the tabs can fit in the 
+    screen.
+    
 
 
 <!-- Tabs Navigation -->
 <div class="tabs-container" id="elemIdTabsContainer">
-	<button class="tab-button active" data-tab="pig-ops">Pig Ops</button>
-	<button class="tab-button" data-tab="birth">Birth</button>
-	<button class="tab-button" data-tab="insem">Insem</button>
-	<button class="tab-button" data-tab="notes">Notes</button>
-	<button class="tab-button" data-tab="${elemIdTabMore}" id="${elemIdShowMore}">
-		More
-	</button>
+    <button class="tab-button active" data-tab="pig-ops">Pig Ops</button>
+    <button class="tab-button" data-tab="birth">Birth</button>
+    <button class="tab-button" data-tab="insem">Insem</button>
+    <button class="tab-button" data-tab="notes">Notes</button>
+    <button class="tab-button" data-tab="${elemIdTabMore}" id="${elemIdShowMore}">
+        More
+    </button>
 </div>
 */
 
@@ -44,6 +44,7 @@ export function ComponentTabsWithMore(input_settings){
         uniqueKey:              'sow-boar-entry',
         elemIdDivContainer:     elemIdContSowBoarEntry,
         elemIdTabsContainer:    elemIdTabsContainer,
+        elemIdTabContentArea:   elemIdTabContentArea,
         
         showMoreTitle:          null,
         
@@ -85,8 +86,10 @@ export function ComponentTabsWithMore(input_settings){
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
     // This is needed as ths will be first element to be rendered
-    let elemTabsContainer       = document.getElementById(settings.elemIdTabsContainer);
+    let elemTabsContainer       = elemDivContainer.querySelector('#'+settings.elemIdTabsContainer);
     
+    
+    let elemTabContentArea      = elemDivContainer.querySelector('#'+settings.elemIdTabContentArea);
     
     
     /**
@@ -110,7 +113,6 @@ export function ComponentTabsWithMore(input_settings){
     
     
     let curActiveTabId          = null;
-    let curActiveElemTab        = null;
     
     
     // This must be set
@@ -209,7 +211,6 @@ export function ComponentTabsWithMore(input_settings){
             const selectedTab = elemDivContainer.querySelector('#'+tabId);
             if (selectedTab) {
                 selectedTab.classList.add('active');
-                curActiveElemTab = selectedTab;
                 
                 if (thisObj.beforeShowTab){
                     thisObj.beforeShowTab(tabId);
@@ -221,8 +222,10 @@ export function ComponentTabsWithMore(input_settings){
         }
         
         navItems.forEach(item => item.classList.remove('active'));
-        const activeNav = document.querySelector(`[data-tab="${tabId}"]`);
-        if (activeNav) {activeNav.classList.add('active');}
+        const activeNav = elemTabsContainer.querySelector(`[data-tab="${tabId}"]`);
+        if (activeNav) {activeNav.classList.add('active');} else{
+            elemShowMore.classList.add('active');
+        }
         
     }
     
@@ -244,7 +247,7 @@ export function ComponentTabsWithMore(input_settings){
     }
     
     
-    this.configureShowMore = function(){
+    this.configureShowMore = function(show_more_options){
         
         if (settings.tabs.length <= MAX_NUM_BUTTONS_BEFORE_MORE){return;}
         
@@ -265,9 +268,18 @@ export function ComponentTabsWithMore(input_settings){
             });
         }
         
+        let show_more_title = '';
+        if (show_more_options){
+            if (show_more_options.showMoreTitle){
+                show_more_title = show_more_options.showMoreTitle;
+            }
+        }
+        else{
+            show_more_title = settings.showMoreTitle;
+        }
             
         const options = {
-            title: settings.showMoreTitle
+            title: show_more_title
         };
         
         navigation.moreModal.beforeShow(menu_items, options);
@@ -276,11 +288,9 @@ export function ComponentTabsWithMore(input_settings){
     
     
     this.changeTabButtons = function(tabs){
-        // This will change tbe tab buttons dynamically
+        // This will change the tab buttons dynamically
         // The tabs structure should be the same with settings.tabs
-        // The previous 
-        
-        // settings.tabs will be overwritten
+        // The previous  ettings.tabs will be overwritten
         settings.tabs = tabs;
         
         

@@ -99,7 +99,7 @@ export function PageTableBasic(){
     }
     
     
-    this.setSettings = function(input_settings){
+    this.setSettingsTable = function(input_settings){
         settings = input_settings;
     }
     

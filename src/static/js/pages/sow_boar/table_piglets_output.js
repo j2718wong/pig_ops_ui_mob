@@ -66,15 +66,11 @@ export function TablePigletsOutput(input_settings){
     
     this.init = function(){
         
-        let settingsTable;
-        settingsTable = {
+        thisObj.setSettingsTable({
             uniqueKey:      `${settings.uniqueKey}-table`,
             noSearchAdd:    true,
             tableTitle:     'Piglets Output'
-        }
-        
-        
-        thisObj.setSettings(settingsTable);
+        });
         
         const html_table = thisObj.getHtml();
         

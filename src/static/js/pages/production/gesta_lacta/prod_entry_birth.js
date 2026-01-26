@@ -4,22 +4,22 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}   		from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
 
 import {SOW_STATUS,
-        PIG_OPERATION_TYPE}     	from '../../../constants.js';
+        PIG_OPERATION_TYPE}         from '../../../constants.js';
 
-import {getSowBoarReference}    	from '../../common/common_app.js';
+import {getSowBoarReference}        from '../../common/common_app.js';
 
-import {addValidationClassToElem} 	from '../../common/ui/ui_utils.js';
+import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
-import {UiInputDatePickerGesta} 	from './components/input_datepicker_gesta.js';
+import {UiInputDatePickerGesta}     from './components/input_datepicker_gesta.js';
 
-import {ComponentStaffFormGroup} 	from '../../common/ui/comp_staff_form_group.js';
-import {ComponentPlusMinusInput} 	from '../../common/ui/comp_plus_minus_input.js';
+import {ComponentStaffFormGroup}    from '../../common/ui/comp_staff_form_group.js';
+import {ComponentPlusMinusInput}    from '../../common/ui/comp_plus_minus_input.js';
 
 
-import {CommonSelectOptions}    	from '../../common/common_select_options.js';
+import {CommonSelectOptions}        from '../../common/common_select_options.js';
 
 
 
@@ -31,23 +31,23 @@ export function ProdEntryBirth(input_settings){
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj;
     
-	
-	/*
+    
+    /*
     Typical settings = {
         navigation:             navigation,
         parentObj:              this,
-        elemIdDivContainer:     elemIdContMedVacAddEdit,
-        uniqueKey:              'medvac-add-edit'
+        uniqueKey:              'pig-prod-birth',
+        elemIdDivContainer:     elemIdContMedVacAddEdit
     };
     */
     const settings              = input_settings;
     
-	const elemDivContainer      = settings.elemIdDivContainer;
+    const elemDivContainer      = settings.elemIdDivContainer;
     
     let elemIdContentContainer  = null;
     
     let elemIdCannotUpdate      = null;
-    let elemIdSow				= null;
+    let elemIdSow               = null;
     let elemIdDateExpected      = null;
     
     let elemUiDateBirth         = null;
@@ -57,7 +57,7 @@ export function ProdEntryBirth(input_settings){
     let componentNumMale        = null;
     let componentNumDead        = null;
     
-	let componentStaff			= null;
+    let componentStaff          = null;
     
     let elemIdBtnSave           = null;
     
@@ -66,7 +66,7 @@ export function ProdEntryBirth(input_settings){
     let elemContentContainer    = null;
     
     let elemCannotUpdate        = null;
-    let elemSow					= null;
+    let elemSow                 = null;
     let elemDateExpected        = null;
     
     
@@ -85,6 +85,12 @@ export function ProdEntryBirth(input_settings){
         this.afterHtmlRender();
     }
     
+	
+	this.render = function(){
+        const html = this.getHtml();
+        elemDivContainer.innerHTML = html_table;
+    }
+	
     
     this.getHtml = function(){
         
@@ -92,7 +98,7 @@ export function ProdEntryBirth(input_settings){
                 
         elemIdCannotUpdate      = `${settings.uniqueKey}-cannot-update`;
         
-		elemIdSow               = `${settings.uniqueKey}-sow`;
+        elemIdSow               = `${settings.uniqueKey}-sow`;
         elemIdDateExpected      = `${settings.uniqueKey}-date-expected`;
         
         elemUiDateBirth         = new UiInputDatePickerGesta({
@@ -105,48 +111,48 @@ export function ProdEntryBirth(input_settings){
             helpText:           null
         });
         
-		
-		componentNumFemale		= new ComponentPlusMinusInput({
-			uniqueKey:      	`${settings.uniqueKey}-num-female`,
-			
-			className:      	'form-group',
-			iconLabel:      	'<i class="fas fa-venus" style="color: var(--icon-pink);"></i>',
-			textLabel:      	'Number of Live Female Piglets',
-			minValue:       	0,
-			step:           	1,
-			isRequired:     	true,
-			invalidFeedBack:	null,
-			helpText:       	null
-		});
-		
         
-		componentNumMale		= new ComponentPlusMinusInput({
-			uniqueKey:      	`${settings.uniqueKey}-num-male`,
-			
-			className:      	'form-group',
-			iconLabel:      	'<i class="fas fa-mars" style="color: var(--icon-blue);"></i>',
-			textLabel:      	'Number of Live Male Piglets',
-			minValue:       	0,
-			step:           	1,
-			isRequired:     	true,
-			invalidFeedBack:	null,
-			helpText:       	null
-		});
-		
-		
-		componentNumDead		= new ComponentPlusMinusInput({
-			uniqueKey:      	`${settings.uniqueKey}-num-dead`,
-			
-			className:      	'form-group',
-			textLabel:      	'Number of Stillbirth Piglets',
-			minValue:       	0,
-			step:           	1,
-			isRequired:     	false,
-			invalidFeedBack:	null,
-			helpText:       	null
-		});
-		
-		
+        componentNumFemale      = new ComponentPlusMinusInput({
+            uniqueKey:          `${settings.uniqueKey}-num-female`,
+            
+            className:          'form-group',
+            iconLabel:          '<i class="fas fa-venus" style="color: var(--icon-pink);"></i>',
+            textLabel:          'Number of Live Female Piglets',
+            minValue:           0,
+            step:               1,
+            isRequired:         true,
+            invalidFeedBack:    null,
+            helpText:           null
+        });
+        
+        
+        componentNumMale        = new ComponentPlusMinusInput({
+            uniqueKey:          `${settings.uniqueKey}-num-male`,
+            
+            className:          'form-group',
+            iconLabel:          '<i class="fas fa-mars" style="color: var(--icon-blue);"></i>',
+            textLabel:          'Number of Live Male Piglets',
+            minValue:           0,
+            step:               1,
+            isRequired:         true,
+            invalidFeedBack:    null,
+            helpText:           null
+        });
+        
+        
+        componentNumDead        = new ComponentPlusMinusInput({
+            uniqueKey:          `${settings.uniqueKey}-num-dead`,
+            
+            className:          'form-group',
+            textLabel:          'Number of Stillbirth Piglets',
+            minValue:           0,
+            step:               1,
+            isRequired:         false,
+            invalidFeedBack:    null,
+            helpText:           null
+        });
+        
+        
         
         componentStaff          = new ComponentStaffFormGroup({
             navigation:         navigation,
@@ -169,13 +175,13 @@ export function ProdEntryBirth(input_settings){
         
         const html_date_birth   = elemUiDateBirth.getHtml();
         
-		const html_num_female	= componentNumFemale.getHtml();
-		const html_num_male		= componentNumMale.getHtml();
-		const html_num_dead		= componentNumDead.getHtml();
+        const html_num_female   = componentNumFemale.getHtml();
+        const html_num_male     = componentNumMale.getHtml();
+        const html_num_dead     = componentNumDead.getHtml();
 
 
-		const html_staff        = componentStaff.getHtml();
-		
+        const html_staff        = componentStaff.getHtml();
+        
         const html = `
 <div class="modal-body" id="${elemIdContentContainer}">
     <h2 class="tab-title">
@@ -189,13 +195,13 @@ export function ProdEntryBirth(input_settings){
         <b>This cannot be undone.</b>
     </div>
     
-	<!-- 1. Sow Field cannot be edited. -->
+    <!-- 1. Sow Field cannot be edited. -->
     <div class="form-group-text">
         <label class="form-label">Sow Name</label>
         <span class="" id="${elemIdSow}"></span>
     </div>
     
-	
+    
     <div class="form-group-text">
         <label for="${elemIdDateExpected}" class="form-label">Date Expected</label>
         <span class="" id="${elemIdDateExpected}"></span>
@@ -205,10 +211,10 @@ export function ProdEntryBirth(input_settings){
     
     <!-- Number of Female Piglets with plus/minus buttons -->
     ${html_num_female}
-	
+    
     <!-- Number of Male Piglets with plus/minus buttons -->
     ${html_num_male}
-			
+            
     <!-- Number of Stillbirth Piglets with plus/minus buttons -->
     ${html_num_dead}
             
@@ -225,15 +231,15 @@ export function ProdEntryBirth(input_settings){
     
     
     this.afterHtmlRender = function(){
-		elemUiDateBirth.afterHtmlRender();
-		
-		componentNumFemale.afterHtmlRender();
-		componentNumMale.afterHtmlRender();
-		componentNumDead.afterHtmlRender();
-		
-		componentStaff.afterHtmlRender();
-		
-		
+        elemUiDateBirth.afterHtmlRender();
+        
+        componentNumFemale.afterHtmlRender();
+        componentNumMale.afterHtmlRender();
+        componentNumDead.afterHtmlRender();
+        
+        componentStaff.afterHtmlRender();
+        
+        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -244,7 +250,7 @@ export function ProdEntryBirth(input_settings){
         elemContentContainer    = elemDivContainer.querySelector('#'+elemIdContentContainer);
         
         elemCannotUpdate        = elemDivContainer.querySelector('#'+elemIdCannotUpdate);
-        elemSow        			= elemDivContainer.querySelector('#'+elemIdSow);
+        elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);
         elemDateExpected        = elemDivContainer.querySelector('#'+elemIdDateExpected);
         
         elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
@@ -259,14 +265,14 @@ export function ProdEntryBirth(input_settings){
     
     this._bindEventListeners = function(){
     
-	}
+    }
     
     
     this.show = function(data_pig_prod, options){
         curDataPigProd = data_pig_prod;
         console.log(`curDataPigProd`);
-		console.log(curDataPigProd);
-		
+        console.log(curDataPigProd);
+        
         const data_sow = curDataPigProd.sow;
         let sow_reference =  getSowBoarReference(data_sow, true);
         

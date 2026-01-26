@@ -20,7 +20,7 @@ import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
 
-ProdEntryPigOps.prototype = new PageViewPigFarmPage();
+
 export function ProdEntryPigOps(input_settings){
     PageViewPigFarmPage.call(this);
     

@@ -65,18 +65,15 @@ export function TableHealthIssue(input_settings){
     
     this.init = function(){
         
-        let settingsTable;
-        settingsTable = {
+        thisObj.setSettingsTable({
             uniqueKey:      `${settings.uniqueKey}-table`,
             tableTitle:     'Health Issues'
-        }
+        });
+        
+        const html = thisObj.getHtml();
+        elemDivContainer.innerHTML = html_;
         
         
-        thisObj.setSettings(settingsTable);
-        
-        const html_table = thisObj.getHtml();
-        
-        elemDivContainer.innerHTML = html_table;
         thisObj.afterHtmlRender();  // This will call the parent method 
         thisObj.afterHtmlRenderThis();
 
