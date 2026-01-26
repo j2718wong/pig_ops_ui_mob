@@ -85,13 +85,7 @@ export function ComponentTabsWithMore(input_settings){
     // This is needed as ths will be first element to be rendered
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
-    // This is needed as ths will be first element to be rendered
-    let elemTabsContainer       = elemDivContainer.querySelector('#'+settings.elemIdTabsContainer);
-    
-    
-    let elemTabContentArea      = elemDivContainer.querySelector('#'+settings.elemIdTabContentArea);
-    
-    
+
     /**
     This will control the number of buttons before the "Nore"
     
@@ -111,8 +105,14 @@ export function ComponentTabsWithMore(input_settings){
     let allTabs                 = null;
     let navItems                = null;
     
+    let elemTabsContainer       = null;
+    let elemTabContentArea      = null;
     
-    let curActiveTabId          = null;
+
+
+
+    
+    this.curActiveTabId          = null;
     
     
     // This must be set
@@ -139,7 +139,7 @@ export function ComponentTabsWithMore(input_settings){
         elemIdShowMore          = `${settings.uniqueKey}-show-more`;
         
         
-        let hmtl = '';
+        let html = '';
         let index = 0;
         
         let s_active;
@@ -147,12 +147,12 @@ export function ComponentTabsWithMore(input_settings){
         for (const cur_entry of settings.tabs){ 
             s_active = '';
             
-            if (curActiveTabId == null){
+            if (this.curActiveTabId == null){
                 if (index == 0){s_active = 'active';}
             }
             
             else{
-                if (curActiveTabId  == cur_entry.data_tab_id){
+                if (this.curActiveTabId  == cur_entry.data_tab_id){
                     {s_active = 'active';}
                 }
             }
@@ -190,6 +190,8 @@ export function ComponentTabsWithMore(input_settings){
         allTabs                 = elemDivContainer.querySelectorAll('.tab-content');
         navItems                = elemDivContainer.querySelectorAll('.tab-button');
         
+        elemTabsContainer       = elemDivContainer.querySelector('#'+settings.elemIdTabsContainer);
+        elemTabContentArea      = elemDivContainer.querySelector('#'+settings.elemIdTabContentArea);
     }
     
     
@@ -202,7 +204,7 @@ export function ComponentTabsWithMore(input_settings){
         
         console.log('switchTab tabId =' + tabId) ;
             
-        curActiveTabId = tabId;
+        this.curActiveTabId = tabId;
         
         
         if (tabId != tabIdShowMore){
@@ -227,6 +229,13 @@ export function ComponentTabsWithMore(input_settings){
             elemShowMore.classList.add('active');
         }
         
+    }
+    
+    
+    this.resetToFirstTab = function(){
+        const tab_0 = settings.tabs[0];
+        
+        thisObj.switchTab(tab_0.data_tab_id);
     }
     
     
@@ -293,12 +302,13 @@ export function ComponentTabsWithMore(input_settings){
         // The previous  ettings.tabs will be overwritten
         settings.tabs = tabs;
         
+
         
         // complete redraw of buttons
-        elemTabsContainer.innerHtml = '';
+        elemTabsContainer.innerHTML = '';
         
         const html = thisObj.getHtml();
-        elemTabsContainer.innerHtml = html;
+        elemTabsContainer.innerHTML = html;
         
         
         // Find elements again

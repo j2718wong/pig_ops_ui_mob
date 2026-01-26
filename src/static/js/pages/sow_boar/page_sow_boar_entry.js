@@ -22,7 +22,7 @@ import {formatDate,
         sortList,
         createPaginationManager} from '../../utils.js';
         
-import {ComponentTabsWithMore}  from '../../common/ui/comp_staff_form_group.js';
+import {ComponentTabsWithMore}  from '../common/ui/comp_tabs_with_more.js';
         
 
 import {TableMedVac}            from './table_medvac.js'
@@ -181,10 +181,6 @@ export function PageSowBoarEntry(input_settings){
     let elemTabMates            = null;
     let elemTabGiltOps          = null;
     let elemTabStatus           = null;
-    
-    
-    let allTabs                 = null;
-    let navItems                = null;
     
     
     let dataSowBoar             = null;
@@ -354,9 +350,7 @@ export function PageSowBoarEntry(input_settings){
             <h2 class="tab-title">Gilt Ops</h2>
         </div>
         
-        <div id="${elemIdTabStatus}" class="tab-content">
-            <h2 class="tab-title">Update Status</h2>
-        </div>
+
     </div>
         `;
         
@@ -369,6 +363,9 @@ export function PageSowBoarEntry(input_settings){
         componentTabsWithMore.afterHtmlRender();
         
         this._findElements();
+		
+		
+		
         this._processAfterHtmlRender();
         this._bindEventListeners();
     }
@@ -392,12 +389,7 @@ export function PageSowBoarEntry(input_settings){
         elemTabOutput           = elemDivContainer.querySelector('#'+elemIdTabOutput);
         elemTabMates            = elemDivContainer.querySelector('#'+elemIdTabMates);
         elemTabGiltOps          = elemDivContainer.querySelector('#'+elemIdTabGiltOps);
-        elemTabStatus           = elemDivContainer.querySelector('#'+elemIdTabStatus);
-        
-        allTabs                 = elemDivContainer.querySelectorAll('.tab-content');
-        navItems                = elemDivContainer.querySelectorAll('.tab-button');
-        
-                
+
     }
     
     
@@ -459,7 +451,10 @@ export function PageSowBoarEntry(input_settings){
         componentTabsWithMore.beforeShowTab = thisObj.beforeShowTab;
     }
     
+	
+	this._bindEventListeners = function(){};
     
+	
     this.beforeShow = function(data_sow_boar, options){
         dataSowBoar = data_sow_boar;
         componentTabsWithMore.curData = data_sow_boar;
@@ -651,11 +646,11 @@ export function PageSowBoarEntry(input_settings){
         // Request SowBoar data_details 
         if ('data_details' in dataSowBoar){
             // TODO ; still thinking what to do
-            thisObj.beforeShowTab();
+            thisObj.beforeShowTab(componentTabsWithMore.curActiveTabId);
         }
         else{
             const callback_success = function(){
-                thisObj.beforeShowTab();
+                thisObj.beforeShowTab(componentTabsWithMore.curActiveTabId);
             }
             thisObj.requestDataSowBoarDetails(dataSowBoar, callback_success);
         }
@@ -702,10 +697,7 @@ export function PageSowBoarEntry(input_settings){
                 thisObj.tableGiltOps.beforeShow(dataSowBoar);
                 break;
             }
-            
-            case elemIdTabStatus:{
-                break;
-            }
+
             
             default:{
                 thisObj.tableMedVac.beforeShow(dataSowBoar);
@@ -717,7 +709,7 @@ export function PageSowBoarEntry(input_settings){
     
 
     this.resetToFirstTab = function(){
-        thisObj.switchTab(elemIdTabMedVac);
+        componentTabsWithMore.resetToFirstTab();
     }
     
 

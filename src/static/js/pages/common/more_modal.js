@@ -24,7 +24,8 @@ export function MoreModal(_navigation){
     let elemIdMoreItem3         = null;
     let elemIdMoreItem4         = null;
     let elemIdMoreItem5         = null;
-    
+    let elemIdMoreItem6         = null;
+    let elemIdMoreItem7         = null;
     
     
     let elemMoreModal           = null;

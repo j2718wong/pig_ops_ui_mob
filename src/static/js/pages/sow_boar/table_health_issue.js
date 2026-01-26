@@ -71,7 +71,7 @@ export function TableHealthIssue(input_settings){
         });
         
         const html = thisObj.getHtml();
-        elemDivContainer.innerHTML = html_;
+        elemDivContainer.innerHTML = html;
         
         
         thisObj.afterHtmlRender();  // This will call the parent method 

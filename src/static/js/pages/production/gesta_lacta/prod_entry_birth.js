@@ -36,13 +36,13 @@ export function ProdEntryBirth(input_settings){
     Typical settings = {
         navigation:             navigation,
         parentObj:              this,
-        uniqueKey:              'pig-prod-birth',
-        elemIdDivContainer:     elemIdContMedVacAddEdit
+        uniqueKey:              'pig-prod-gesta-birth',
+        elemIdDivContainer:     elemTabGestaBirth
     };
     */
     const settings              = input_settings;
     
-    const elemDivContainer      = settings.elemIdDivContainer;
+    const elemDivContainer      = settings.elemDivContainer;
     
     let elemIdContentContainer  = null;
     
@@ -85,12 +85,12 @@ export function ProdEntryBirth(input_settings){
         this.afterHtmlRender();
     }
     
-	
-	this.render = function(){
+    
+    this.render = function(){
         const html = this.getHtml();
-        elemDivContainer.innerHTML = html_table;
+        elemDivContainer.innerHTML = html;
     }
-	
+    
     
     this.getHtml = function(){
         

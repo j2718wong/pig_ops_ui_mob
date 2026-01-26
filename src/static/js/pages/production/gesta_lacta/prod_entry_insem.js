@@ -36,15 +36,15 @@ export function ProdEntryInsem(input_settings){
     Typical settings = {
         navigation:             navigation,
         parentObj:              this,
-        uniqueKey:              'pig-prod-insem',
-        elemDivContainer:       elemIdContMedVacAddEdit
+        uniqueKey:              'pig-prod-gesta-insem',
+        elemDivContainer:       elemTabGestaInsem
         
     };
     */
     const settings              = input_settings;
 
 
-    const elemDivContainer      = settings.elemIdDivContainer;
+    const elemDivContainer      = settings.elemDivContainer;
 
     const MAXCHAR_INSEM_NOTES   = 160;
     
@@ -235,7 +235,7 @@ export function ProdEntryInsem(input_settings){
         
         
         const html = `
-<div class="modal-body" id="${elemContentContainer}">
+<div class="modal-body" id="${elemIdContentContainer}">
     <h2 class="tab-title">
         Insemination Information
     </h2>

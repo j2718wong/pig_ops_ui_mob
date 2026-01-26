@@ -25,9 +25,24 @@ export function ProdEntryPigOps(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
+    const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj;
     
+    /*
+    Typical settings = {
+        navigation:             navigation,
+        parentObj:              this,
+        uniqueKey:              'pig-prod-gesta-pigops',
+        elemDivContainer:       elemTabGestaPigOps
+    };
+    */
+    const settings              = input_settings;
+    
+    const elemDivContainer      = settings.elemDivContainer;
+    
+    
     const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
+    
     
     let elemIdContentContainer  = null;
     let elemIdFilterControls    = null;
@@ -48,6 +63,11 @@ export function ProdEntryPigOps(input_settings){
     this.init = function(){
         this.render();
         this.afterHtmlRender();
+    }
+    
+     this.render = function(){
+        const html = this.getHtml();
+        elemDivContainer.innerHTML = html;
     }
     
     
@@ -641,9 +661,9 @@ ${html_style}
             operationContent.appendChild(operationName);
             operationCell.appendChild(operationContent);
             row.appendChild(operationCell);
-			
-			operationName.onclick = onclickFunc;
-			
+            
+            operationName.onclick = onclickFunc;
+            
             
             // Done By column - NEW IMPLEMENTATION
             const doneByCell = document.createElement('td');

@@ -4,11 +4,13 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
+
+import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
 
 import {ProdEntryNotes}         from './prod_entry_notes.js'
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
@@ -291,7 +293,7 @@ export function PageProdGestatingEntry(input_settings){
         {
             data_tab_id:    elemIdTabPGroupPigDead,
             label:          'Pig Dead'
-        }
+        },
         
         {
             data_tab_id:    elemIdTabPGroupPigDead,
@@ -303,55 +305,55 @@ export function PageProdGestatingEntry(input_settings){
 
     
     
-	let elemTabGestaPigOps        	= null;
-    let elemTabGestaBirth         	= null;
-    let elemTabGestaInsem         	= null;
-    let elemTabGestaNotes         	= null;
-										
-    let elemTabLactaPigOps        	= null;
-    let elemTabLactaBirth         	= null;
-    let elemTabLactaWean          	= null;
-    let elemTabLactaMedVac        	= null;
-										
-    let elemTabLactaHealth        	= null;
-    let elemTabLactaPigDead       	= null;
-    let elemTabLactaFeedSummary   	= null;
-    let elemTabLactaFeedAdd       	= null;
-    let elemTabLactaNotes         	= null;
-    let elemTabLactaInsem         	= null;
-										
-										
-    let elemTabFattenerFeedSummary	= null;
-    let elemTabFattenerFeedAdd    	= null;
-    let elemTabFattenerFeedBalance	= null;
-    let elemTabFattenerHarvest    	= null;
-										
-    let elemTabFattenerMedVac     	= null;
-    let elemTabFattenerHealth     	= null;
-    let elemTabFattenerNotes      	= null;
-    let elemTabFattenerPigCount   	= null;
-    let elemTabFattenerPigDead    	= null;
-    let elemTabFattenerWean       	= null;
-    let elemTabFattenerBirth      	= null;
-    let elemTabFattenerInsem      	= null;
+    let elemTabGestaPigOps          = null;
+    let elemTabGestaBirth           = null;
+    let elemTabGestaInsem           = null;
+    let elemTabGestaNotes           = null;
+                                        
+    let elemTabLactaPigOps          = null;
+    let elemTabLactaBirth           = null;
+    let elemTabLactaWean            = null;
+    let elemTabLactaMedVac          = null;
+                                        
+    let elemTabLactaHealth          = null;
+    let elemTabLactaPigDead         = null;
+    let elemTabLactaFeedSummary     = null;
+    let elemTabLactaFeedAdd         = null;
+    let elemTabLactaNotes           = null;
+    let elemTabLactaInsem           = null;
+                                        
+                                        
+    let elemTabFattenerFeedSummary  = null;
+    let elemTabFattenerFeedAdd      = null;
+    let elemTabFattenerFeedBalance  = null;
+    let elemTabFattenerHarvest      = null;
+                                        
+    let elemTabFattenerMedVac       = null;
+    let elemTabFattenerHealth       = null;
+    let elemTabFattenerNotes        = null;
+    let elemTabFattenerPigCount     = null;
+    let elemTabFattenerPigDead      = null;
+    let elemTabFattenerWean         = null;
+    let elemTabFattenerBirth        = null;
+    let elemTabFattenerInsem        = null;
     
     
     
-    let elemTabPGroupFeedSummary  	= null;
-    let elemTabPGroupFeedAdd      	= null;
-    let elemTabPGroupFeedBalance  	= null;
-    let elemTabPGroupHarvest      	= null;
-										
-    let elemTabPGroupMedVac       	= null;
-    let elemTabPGroupHealth       	= null;
-    let elemTabPGroupNotes        	= null;
-    let elemTabPGroupPigCount     	= null;
-    let elemTabPGroupPigDead      	= null;
+    let elemTabPGroupFeedSummary    = null;
+    let elemTabPGroupFeedAdd        = null;
+    let elemTabPGroupFeedBalance    = null;
+    let elemTabPGroupHarvest        = null;
+                                        
+    let elemTabPGroupMedVac         = null;
+    let elemTabPGroupHealth         = null;
+    let elemTabPGroupNotes          = null;
+    let elemTabPGroupPigCount       = null;
+    let elemTabPGroupPigDead        = null;
     
-	
-	
-	
-	
+    
+    
+    
+    
     
     let elemNavPrevEntry        = null;
     let elemNavNextEntry        = null;
@@ -631,30 +633,30 @@ export function PageProdGestatingEntry(input_settings){
         return html;
     }
     
-	
-	
-	this.getHtmlTabContents = function(tabs){
-		let s_active = '';
-		let html = '';
-		
-		let index = 0;
-		
-		for (const cur_entry of tabs){
-			s_active = '';
-			in (index == 0){s_active = 'active';}
-			
-			html += `
-			<div id="${cur_entry.data_tab_id}" class="tab-content ${s_active}">
-				<h2 class="tab-title">${cur_entry.label}</h2>
-			</div>
+    
+    
+    this.getHtmlTabContents = function(tabs){
+        let s_active = '';
+        let html = '';
         
-			`;
-			
-			index += 1;
-		}
-		return html;
-	}
-	
+        let index = 0;
+        
+        for (const cur_entry of tabs){
+            s_active = '';
+            if (index == 0){s_active = 'active';}
+            
+            html += `
+            <div id="${cur_entry.data_tab_id}" class="tab-content ${s_active}">
+                <h2 class="tab-title">${cur_entry.label}</h2>
+            </div>
+        
+            `;
+            
+            index += 1;
+        }
+        return html;
+    }
+    
     
     this.render = function(){
         
@@ -688,10 +690,10 @@ export function PageProdGestatingEntry(input_settings){
 
         const html_style        = thisObj._writeInlineStyle();
         
-		const html_tab_buttons 	= componentTabsWithMore.getHtml();
-        const html_tab_contents	= thisObj.getHtmlTabContents(tabsProdGesta);
-		
-		
+        const html_tab_buttons  = componentTabsWithMore.getHtml();
+        const html_tab_contents = thisObj.getHtmlTabContents(tabsProdGesta);
+        
+        
         const html =`
 
     ${html_style}
@@ -728,8 +730,8 @@ export function PageProdGestatingEntry(input_settings){
         ${html_tab_contents}
     </div>
         `;
-		
-	    
+        
+        
         
         elemDivContainer.innerHTML = html;
     }
@@ -756,40 +758,40 @@ export function PageProdGestatingEntry(input_settings){
         elemTabsContainer       = elemDivContainer.querySelector('#'+elemIdTabsContainer);
         elemTabContentArea      = elemDivContainer.querySelector('#'+elemIdTabContentArea);
         
-		elemTabGestaPigOps      = elemDivContainer.querySelector('#'+elemIdTabGestaPigOps);
-		elemTabGestaBirth       = elemDivContainer.querySelector('#'+elemIdTabGestaBirth);
-		elemTabGestaInsem       = elemDivContainer.querySelector('#'+elemIdTabGestaInsem);
-		elemTabGestaNotes       = elemDivContainer.querySelector('#'+elemIdTabGestaNotes);
-       
+        elemTabGestaPigOps      = elemDivContainer.querySelector('#'+elemIdTabGestaPigOps);
+        elemTabGestaBirth       = elemDivContainer.querySelector('#'+elemIdTabGestaBirth);
+        elemTabGestaInsem       = elemDivContainer.querySelector('#'+elemIdTabGestaInsem);
+        elemTabGestaNotes       = elemDivContainer.querySelector('#'+elemIdTabGestaNotes);
     }
     
     
     this._processAfterHtmlRender = function(){
-		this.prodEntryPigOps   	= new ProdEntryPigOps({
-			navigation:			navigation,
-			parentObj:          this,
-			uniqueKey:          'pig-prod-gesta-insem',
-			elemDivContainer:   elemTabGestaPigOps
-		});
+        this.prodEntryPigOps    = new ProdEntryPigOps({
+            navigation:         navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-gesta-pigops',
+            elemDivContainer:   elemTabGestaPigOps
+        });
+        this.prodEntryPigOps.init();
+        
     
-    
-		this.prodEntryInsem   	= new ProdEntryInsem({
-			navigation:         navigation,
-			parentObj:          this,
-			uniqueKey:          'pig-prod-gesta-insem',
-			elemDivContainer: 	elemTabGestaInsem
-		});
-		prodEntryInsem.init();
-		
-		
-		const prodEntryBirth    = new ProdEntryBirth({
-			navigation:         navigation,
-			parentObj:          this,
-			uniqueKey:          'pig-prod-gesta-birth',
-			elemDivContainer: 	elemTabGestaBirth
-		});
-		prodEntryBirth.init();
-		
+        this.prodEntryInsem     = new ProdEntryInsem({
+            navigation:         navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-gesta-insem',
+            elemDivContainer:   elemTabGestaInsem
+        });
+        this.prodEntryInsem.init();
+        
+        
+        this.prodEntryBirth    = new ProdEntryBirth({
+            navigation:         navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-gesta-birth',
+            elemDivContainer:   elemTabGestaBirth
+        });
+        this.prodEntryBirth.init();
+        
     }
     
     
