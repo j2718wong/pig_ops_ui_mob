@@ -107,41 +107,13 @@ export function PageViewPigFarmPage(){
     PageViewBasic.call(this);
     
     
-    /*
-    Will calculate the number of days since date insemination up to now.
-    
-    @param insem_date: date str in YYYY-MM-DD format
-    
-    */
-    
-    let elemStaffSelect         = null;
-    let elemStaffCount          = null;
-    
+
     
     
     this.commonSelectOptions    = new CommonSelectOptions();
     
     
-    this.dataStaffList          = null;
     
-    
-    this.setElemStaff = function(elem_staff_select, elem_staff_count){
-        elemStaffSelect = elem_staff_select;
-        elemStaffCount  = elem_staff_count;
-    }
-    
-    
-    this.setDataStaffList = function(data){
-        this.dataStaffList = data;
-        
-        if (elemStaffSelect){
-            this.commonSelectOptions.setDataStaffList(data, elemStaffSelect);
-        }
-        
-        if (elemStaffCount){
-            elemStaffCount.textContent      = ` (${data.length} Entries)`;
-        }
-    }
     
     
     

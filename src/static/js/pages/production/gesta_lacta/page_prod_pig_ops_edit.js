@@ -4,22 +4,31 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}       	from '../../common/page_view_basic.js';
 
-import {PIG_OPERATION_TYPE}     from '../../../constants.js';
+import {PIG_OPERATION_TYPE}     	from '../../../constants.js';
         
 import {formatDate,
-        FORMAT_LONG_MONTH}      from '../../../utils.js';
+        FORMAT_LONG_MONTH}      	from '../../../utils.js';
+
+
+import {UiInputDatePicker}      	from '../../common/ui/input_datepicker.js';
+import {UiInputTextWithCounter}     from '../../common/ui/input_text_with_counter.js';
+import {ComponentStaffFormGroup} 	from '../../common/ui/comp_staff_form_group.js';
+
+import {ComponentMedVacBrand}  		from '../../sow_boar/components/comp_medvac_brand.js'
+import {ComponentMedVacType}   		from '../../sow_boar/components/comp_medvac_type.js'
+import {ComponentAccMedVac}    		from '../../sow_boar/components/comp_acc_medvac.js'
 
         
-import {ModelAccountPigOps}     from '../../../models/model_acc_pig_ops.js'
+import {ModelAccountPigOps}     	from '../../../models/model_acc_pig_ops.js'
 
 import {FIELD_VALIDATION_OK,
-        Field, ModelBasic}      from '../../../models/model_basic.js'
+        Field, ModelBasic}      	from '../../../models/model_basic.js'
 
 
-EditModalProdPigOps.prototype = new PageViewPigFarmPage();
-export function EditModalProdPigOps(input_settings){
+
+export function PageProdPigOpsEdit(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
@@ -29,7 +38,8 @@ export function EditModalProdPigOps(input_settings){
     /*
     Typical input_settings
     {
-        navigation:             this
+        navigation:             this,
+		uniqueKey:              'sow-boar-health',
     }   
     */  
     let settings                = input_settings;
@@ -40,31 +50,30 @@ export function EditModalProdPigOps(input_settings){
     let elemIdModal             = null;
     let elemIdModalTitle        = null;
     let elemIdProdPigOpsTitle   = null;
-    let elemIdDateActual        = null;
-    let elemIdStaff             = null;
-    let elemIdChkDoneByMe       = null;
-    let elemIdNotes             = null;
-    let elemIdBtnSave           = null;
+    
+	
+	let elemUiDateActual		= null;
+	
+	let elemIdMedVacInputs		= null;
+	let componentMedVacBrand	= null;
+	let componentMedVacType		= null;
+	let componentAccMedVac		= null;
+	
+	let elemUiNotes        		= null;
+	let componentStaff			= null;
+    
+	let elemIdBtnSave           = null;
     let elemIdBtnDelete         = null;
     
-    let elemIdNotesCharCounter  = null;
     
     
     let elemModal               = null;
     let elemModalTitle          = null;
     let elemProdPigOpsTitle     = null;
-    let elemDateActual          = null;
-    let elemStaff               = null;
-    let elemChkDoneByMe         = null;
-    let elemNotes               = null;
-    let elemBtnSave             = null;
+    
+	let elemBtnSave             = null;
     let elemBtnDelete           = null;
     
-    
-    let elemNotesCharCounter    = null;
-    
-    let editModal               = null;
-
         
         
     let operationType           = null;
@@ -109,20 +118,102 @@ export function EditModalProdPigOps(input_settings){
     
     this.render = function(){
         
-        elemIdModal             = 'prod-pig-ops-edit-modal';
-        elemIdModalTitle        = 'prod-pig-ops-edit-modal-title';
-        elemIdProdPigOpsTitle   = 'prod-pig-ops-edit-modal-subtitle';
-        elemIdDateActual        = 'prod-pig-ops-edit-date-actual';
-        elemIdStaff             = 'prod-pig-ops-edit-staff';
-        elemIdChkDoneByMe       = 'prod-pig-ops-edit-done-by-me';
-        elemIdNotes             = 'prod-pig-ops-edit-notes';
+        elemIdModal             = `${settings.uniqueKey}-modal`;
+        elemIdModalTitle        = `${settings.uniqueKey}-modal-title`;
+        elemIdProdPigOpsTitle   = `${settings.uniqueKey}-modal-subtitle`;
         
-        elemIdBtnSave           = 'prod-pig-ops-edit-save';
-        elemIdBtnDelete         = 'prod-pig-ops-edit-delete';
+		elemUiDateActual         = new UiInputDatePicker({
+            uniqueKey:          `${settings.uniqueKey}-date-actual`,
         
-        elemIdNotesCharCounter  = 'prod-pig-ops-edit-notes-counter';
+            textLabel:          `Completion Date`,
+            isRequired:         true,
+            invalidFeedBack:    `Please enter a date.`,
+            helpText:           null
+        });
         
+		
+		elemIdMedVacInputs		= `${settings.uniqueKey}-medvac-inputs`;
+		
+		
+		componentMedVacBrand    = new ComponentMedVacBrand({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-medvac-brand-name`,
 
+            titleExpandSection: 'Add New MedVac Brand',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save MedVac Brand',
+            
+            labelSelect:        'Select MedVac Brand',
+            helpText:           'MedVac brand name or manufacturer'
+        });
+        
+        
+        componentMedVacType     = new ComponentMedVacType({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-medvac-type`,
+
+            titleExpandSection: 'Add New MedVac Type',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save MedVac Type',
+        
+            labelSelect:        'Select MedVac Type',
+            helpText:           'MedVac generic description or what it is for'
+        });
+        
+        
+        componentAccMedVac      = new ComponentAccMedVac({
+            navigation:         navigation,
+            parentObj:          thisObj,
+            uniqueKey:          `${settings.uniqueKey}-medvac-name`,
+
+            titleExpandSection: 'Add New MedVac Name',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save MedVac Name',
+        
+            labelSelect:        'Select MedVac Name',
+            helpText:           'MedVac product name'
+        });
+        
+		
+		
+		elemUiNotes             = new UiInputTextWithCounter({
+			uniqueKey:          `${settings.uniqueKey}-notes`,
+			
+			isTextArea:         true,
+			isRequired:         false,
+			className:          'form-group-text-area',
+			textLabel:          'Notes',
+			textMaxChars:       160,
+			rows:               3,
+			helpText:           null  
+		});
+		
+		
+		componentStaff          = new ComponentStaffFormGroup({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-staff`,
+            
+            includeAddNew:      true,
+            includeDoneByMe:    true,
+            
+            titleExpandSection: 'Add New Staff',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save New Staff',
+            
+            labelSelect:        'Staff Member',
+            helpText:           'Who did the operation'
+        });
+		
+		
+        elemIdBtnSave           = `${settings.uniqueKey}-save`;
+        elemIdBtnDelete         = `${settings.uniqueKey}-delete`;
+        
+        
+		const html_date_actual	= elemUiDateActual.getHtml();
+		const html_notes		= elemUiNotes.getHtml();
+		const html_staff		= componentStaff.getHtml();
+		
+		
         const html =`
     <div class="modal fade" id="${elemIdModal}" tabindex="-1" aria-labelledby="edit-entry-prod-pig-ops-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -140,53 +231,22 @@ export function EditModalProdPigOps(input_settings){
                         <span id="${elemIdProdPigOpsTitle}">PID: 00000 - Operation Name</span>
                     </div>
                     
-                    <div class="form-group-date">
-                        <label for="${elemIdDateActual}" class="form-label">
-                            Completion Date
-                        </label>
-                        <input  type="text" 
-                                class="form-control" 
-                                id="${elemIdDateActual}" 
-                                required>
-                        <div class="form-text">Enter a date.</div>
-                    </div>
+                    ${html_date_actual}
+					
+					<div id="${elemIdMedVacInputs}">
+						<!-- 2. MedVac Brand -->
+						${html_medvac_brand}
+						
+						<!-- 3. MedVac Type -->
+						${html_medvac_type}
+						
+						<!-- 4. Name -->
+						${html_acc_medvac}
+					</div>
+\					
+					${html_notes}
                     
-                    <div class="form-group-select">
-                        <label for="${elemIdStaff}" class="form-label">
-                            Staff Member
-                        </label>
-                        
-                        <select id="${elemIdStaff}" class="form-select">
-                            <option value="0" selected disabled>Please Select</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            Need to select if not done by you.
-                        </div>
-                        
-                        <!-- Done by Me Checkbox -->
-                        <div id="doneByMeContainer" class="checkbox-group">
-                            <input type="checkbox" id="${elemIdChkDoneByMe}">
-                            <label for="${elemIdChkDoneByMe}" class="checkbox-label">
-                                <i class="fas fa-user-check checkbox-icon"></i>
-                                Done by Me
-                            </label>
-                        </div>
-                        
-                        <div class="form-text">Who did the operation.</div>
-                    
-                    </div>
-                    
-                    <div class="form-group-text-area">
-                        <label for="${elemIdNotes}" class="form-label">
-                            Notes
-                            <span id="${elemIdNotesCharCounter}" class="char-counter">0/160</span>
-                        </label>
-                        <textarea class="form-control" 
-                                id="${elemIdNotes}" 
-                                maxlength="160" 
-                                rows="3"></textarea>
-                        <div class="form-text">Notes about this operation.</div>
-                    </div>
+                    ${html_staff}
                 </div>
                 
                 <div class="modal-footer">
@@ -210,6 +270,18 @@ export function EditModalProdPigOps(input_settings){
     
     
     this.afterHtmlRender = function(){
+		
+		elemUiDateActual.afterHtmlRender();
+        
+        componentMedVacBrand.afterHtmlRender();
+        componentMedVacType.afterHtmlRender();
+        componentAccMedVac.afterHtmlRender();
+        
+        elemUiNotes.afterHtmlRender();
+        componentStaff.afterHtmlRender();
+        
+		
+		
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -221,71 +293,22 @@ export function EditModalProdPigOps(input_settings){
         elemModal               = document.getElementById(elemIdModal);
         elemModalTitle          = document.getElementById(elemIdModalTitle);
         elemProdPigOpsTitle     = document.getElementById(elemIdProdPigOpsTitle);
-        elemDateActual          = document.getElementById(elemIdDateActual);
-        elemStaff               = document.getElementById(elemIdStaff);
-        elemChkDoneByMe         = document.getElementById(elemIdChkDoneByMe);
-        elemNotes               = document.getElementById(elemIdNotes);
-
+        
+		elemMedVacInputs		= document.getElementById(elemIdMedVacInputs);
+		
         elemBtnSave             = document.getElementById(elemIdBtnSave);
         elemBtnDelete           = document.getElementById(elemIdBtnDelete);
-    
-    
-        elemNotesCharCounter    = document.getElementById(elemIdNotesCharCounter);
     
     }
     
     
     this._processAfterHtmlRender = function(){
-        $('#'+elemIdDateActual).datepicker({
-            format: 'MM d, yyyy',  // This gives "January 31, 2026"
-            autoclose: true,
-            orientation: 'bottom',
-            endDate: new Date() // Max date is today
-        }).on('show', function(e) {
-            $('.datepicker').addClass('datepicker-material');
-        });
-        
-        
-        // Does not work
-        //editModal               = new bootstrap.Modal(elemModal);
-        
-        
-        editModal   = bootstrap.Modal.getOrCreateInstance(elemModal);
+      
 
     }
 
     
     this._bindEventListeners = function(){
-        
-        elemNotes.addEventListener('input', function(){
-            thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 
-                160);
-            
-            elemNotes.classList.remove('is-invalid');
-        });
-      
-      
-        elemChkDoneByMe.addEventListener('change', function(event) {
-            if (event.currentTarget.checked) {
-                elemStaff.style.display = 'none';
-            } else {
-                elemStaff.style.display = 'block';
-            }
-        });
-        
-        
-        elemDateActual.addEventListener('change', function() {
-            thisObj._validateAfterChangeInput(this, 'date_actual');
-        });
-        
-        elemStaff.addEventListener('change', function() {
-            thisObj._validateAfterChangeInput(this, 'staff');
-        });
-        
-        elemNotes.addEventListener('blur', function() {
-            thisObj._validateAfterChangeInput(this, 'notes');
-        });
-        
         
         elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
@@ -294,44 +317,19 @@ export function EditModalProdPigOps(input_settings){
         
     }
     
-    
-    this.setDataStaffList = function(data){
-        dataStaffList = data;
-        
-        let select_data = [];
-        
-        if (dataStaffList.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
-            
-            thisObj.replaceSelectOptions(elemStaff, select_data)
-            return;
-        }
-        
-        
-        select_data.push({value:"0", text:"Please Select"});
-        
-        for (const cur_entry of dataStaffList){
-            select_data.push({value: cur_entry.pig_farm_staff.hid, 
-                text: cur_entry.pig_farm_staff.name});
-        }
-        
-        thisObj.replaceSelectOptions(elemStaff, select_data);
-    }
-    
+      
     
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
-        elemDateActual.value = '';
-        elemDateActual.classList.remove('is-valid', 'is-invalid');
+        elemUiNotes.reset();
+		
+		componentMedVacBrand.reset();
+        componentMedVacType.reset();
+        componentAccMedVac.reset()
         
-        elemStaff.selectedIndex = 0; 
-        elemNotes.classList.remove('is-valid', 'is-invalid');
-        
-        elemChkDoneByMe.checked = false;
-        
-        elemNotes.value = '';
-        elemNotes.classList.remove('is-valid', 'is-invalid');
+		elemUiNotes.reset();
+        componentStaff.reset();
     }
     
 
@@ -401,11 +399,7 @@ export function EditModalProdPigOps(input_settings){
             elemNotes.value = operation.notes.notes;
         }
         
-        
-        // Initialize char counters
-        thisObj.updateCharCounter(elemNotes, elemNotesCharCounter, 
-                160);
-        
+ 
         
         dataModel.hid = operation.pig_prod_pig_ops.hid;
         
