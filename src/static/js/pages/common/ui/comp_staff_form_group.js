@@ -305,8 +305,25 @@ export function ComponentStaffFormGroup(input_settings){
     }
     
     
-    this.beforeShow = function(){
-        this.setDataStaffList(navigation.pigFarm.dataStaffList);
+    this.beforeShow = function(options){
+        const staff_list = navigation.pigFarm.dataStaffList;
+        if (staff_list == null){
+            
+            const callback_success = function(data){
+                thisObj.setDataStaffList(data);
+            };
+            
+            let elem_show_error = null;
+            if (options && options.elem_show_error){
+                elem_show_error = options.elem_show_error;}
+            
+            navigation.pigFarm.requestDataPigFarmStaff(callback_success, 
+                elem_show_error);
+        
+        }
+        else{
+            thisObj.setDataStaffList(staff_list);
+        }
     }
     
     

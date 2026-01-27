@@ -114,7 +114,7 @@ export function PageMobGestaLacta(input_settings){
 
     
     // This should be set before editing ProdPigOps 
-    this.editModalProdPigOps    = null;
+    this.pageProdPigOpsEdit    = null;
     
     
     this.init = function(){
@@ -343,8 +343,8 @@ export function PageMobGestaLacta(input_settings){
     
     
     this.setDataStaffList = function(data){
-        if (this.editModalProdPigOps){
-            this.editModalProdPigOps.setDataStaffList(data);
+        if (this.pageProdPigOpsEdit){
+            this.pageProdPigOpsEdit.setDataStaffList(data);
         }
     }
     
@@ -510,7 +510,7 @@ export function PageMobGestaLacta(input_settings){
         
         
         let sow_name = getSowBoarReference(data_pig_prod.sow);
-		
+        
         const insemination = data_pig_prod.insemination;
         
         let boar_name = '';
@@ -1344,14 +1344,14 @@ export function PageMobGestaLacta(input_settings){
             
             
             
-			// Clicking on SowName should go to SowBoar Page
-			// Clicking on PID or important date should open Gesta or Lacta Page
-			
-			let s_click_sow = `gNavigation.pageSowBoarList.gotoSowBoarEntryPage(null, "${data_sow.hid}")`;
+            // Clicking on SowName should go to SowBoar Page
+            // Clicking on PID or important date should open Gesta or Lacta Page
+            
+            let s_click_sow = `gNavigation.pageSowBoarList.gotoSowBoarEntryPage(null, "${data_sow.hid}")`;
             
             let s_click = '';
             if (is_gesta){
-				s_click = `gNavigation.onClickProdGestatingEntry(${pid});`;
+                s_click = `gNavigation.onClickProdGestatingEntry(${pid});`;
             }
             else{
             }
@@ -1538,16 +1538,27 @@ export function PageMobGestaLacta(input_settings){
         }
         
         
+        let page_id     = PAGE_ID.PROD_LACTA_LIST;
+        if (settings.isGesta){
+            page_id     = PAGE_ID.PROD_GESTA_LIST;
+        }
+        
+        const go_back_page = navigation.getPageContainer(page_id);
+        
         const options = {
             pid:            pid,
             sow:            sow_reference,
             is_gesta:       settings.isGesta,
-            is_mark_done:   true
+            is_mark_done:   true,
+            go_back_page:   go_back_page
         };
         
         // Set this callback
-        thisObj.editModalProdPigOps.cbMobileOnSuccessEdit = thisObj.onSuccessEditPigOps;
-        thisObj.editModalProdPigOps.show(operation, options);
+        navigation.pageProdPigOpsEdit.cbMobileOnSuccessEdit = thisObj.onSuccessEditPigOps;
+        navigation.pageProdPigOpsEdit.beforeShow(operation, options);
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.PROD_PIG_OPS_EDIT);
+        navigation.showThisPage(next_page)
     }
     
     
@@ -1603,7 +1614,7 @@ export function PageMobGestaLacta(input_settings){
             
             thisObj.show(); 
             
-            navigation.editModalProdPigOps.hide();
+            navigation.pageProdPigOpsEdit.hide();
         };
         
         navigation.pigFarm.requestDataPigProd(pig_prod_type, callback_success);

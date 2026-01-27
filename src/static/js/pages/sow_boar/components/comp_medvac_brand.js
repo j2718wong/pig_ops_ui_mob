@@ -101,6 +101,28 @@ export function ComponentMedVacBrand(input_settings){
     }
     
     
+    this.beforeShow = function(options){
+        // Check if there is a public data dataMedVacBrandList and dataMedVacTypeList
+        const medvac_brand_list = navigation.managerPublicData.dataMedVacBrandList;
+        if (medvac_brand_list == null){
+            
+            const callback_success = function(data){
+                thisObj.setDataMedVacBrand(data);
+            };
+            
+            let elem_show_error = null;
+            if (options && options.elem_show_error){
+                elem_show_error = options.elem_show_error;}
+            
+            navigation.managerPublicData.requestDataMedVacBrand(callback_success, 
+                elem_show_error);
+        }
+        else{
+            thisObj.setDataMedVacBrand(medvac_brand_list);
+        }
+    }
+    
+    
     this._getMedVacBrand = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         

@@ -502,7 +502,7 @@ export function ProdEntryBirth(input_settings){
     
     
     this._onSuccessUpdatePigOps = function(){
-        if (thisObj.navigation.curScreenIsMobile > 0){
+        if (navigation.curScreenIsMobile > 0){
             
             if (thisObj.cbMobileOnSuccessEdit){
                 thisObj.cbMobileOnSuccessEdit(pigProdPid);

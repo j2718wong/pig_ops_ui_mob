@@ -6,7 +6,8 @@
 
 import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
 
-import {SOW_STATUS,
+import {PAGE_ID,
+        SOW_STATUS,
         PROD_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
@@ -620,23 +621,33 @@ ${html_style}
                     sow_reference = data_sow.number;
                 }
                 
-                let is_gesta = false;
+                let is_gesta    = false;
+                let page_id     = PAGE_ID.PROD_LACTA_ENTRY;
                 if (dataPigProd.pig_production.prod_status_id == PROD_STATUS.GESTATING){
-                    is_gesta = true;
+                    is_gesta    = true;
+                    page_id     = PAGE_ID.PROD_GESTA_ENTRY;
                 }
                 
+                const go_back_page = navigation.getPageContainer(page_id);
                 
                 const options = {
                     pid:            pid,
                     sow:            sow_reference,
                     is_gesta:       is_gesta,
-                    is_mark_done:   true
+                    is_mark_done:   true,
+                    go_back_page:   go_back_page
                 };
                 if (op.isCompleted){
                     options.is_mark_done = false;
                 }
                 
-                thisObj.navigation.editModalProdPigOps.show(op.operation, options);
+                
+                navigation.pageProdPigOpsEdit.beforeShow(op.operation, options);
+                
+                const next_page = navigation.getPageContainer(PAGE_ID.PROD_PIG_OPS_EDIT);
+                navigation.showThisPage(next_page)
+                
+                
             }; 
             
             dateText.onclick = onclickFunc;

@@ -136,13 +136,7 @@ export function PageMedVacAddEdit(input_settings){
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
     
-    
-    
-    let dataMedVacBrandList     = null;
-    let dataMedVacTypeList      = null;
-    
-    
-    
+
     let showOptions             = null;
     
 
@@ -434,18 +428,6 @@ export function PageMedVacAddEdit(input_settings){
     }
     
     
-    this.setDataMedVacBrand = function(data){
-        dataMedVacBrandList = data;
-        componentMedVacBrand.setDataMedVacBrand(data);
-    }
-    
-    
-    this.setDataMedVacType = function(data){
-        dataMedVacTypeList  = data;
-        componentMedVacType.setDataMedVacType(data);
-    }
-    
-    
     this.setDataAccMedVac = function(data) {
         componentAccMedVac.setDataAccMedVac(data);
     }
@@ -478,7 +460,7 @@ export function PageMedVacAddEdit(input_settings){
         // the browser doesn't properly render the selected state until the 
         // container becomes visible.
         
-        console.log('apge_medvac_add_edit before show');
+
         /*
         Typical options
         options ={
@@ -495,71 +477,18 @@ export function PageMedVacAddEdit(input_settings){
         
         
         // Update BreadCrumbs
-        const sow_boar_reference = thisObj.updateBreadCrumbs();
+        thisObj.updateBreadCrumbs();
         
         
         thisObj._resetForm();
         
         
-        // Check if there is a public data dataMedVacBrandList and dataMedVacTypeList
-        const medvac_brand_list = navigation.managerPublicData.dataMedVacBrandList;
-        if (medvac_brand_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataMedVacBrand(data);
-            };
-            
-            navigation.managerPublicData.requestDataMedVacBrand(callback_success, elemServerErrorMsg)
-        }
-        else{
-            thisObj.setDataMedVacBrand(medvac_brand_list);
-        }
+        componentMedVacBrand.beforeShow();
+        componentMedVacType.beforeShow();
+        componentAccMedVac.beforeShow();
         
+        componentStaff.beforeShow();
         
-        const medvac_type_list = navigation.managerPublicData.dataMedVacTypeList;
-        if (medvac_type_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataMedVacType(data);
-            };
-            
-            navigation.managerPublicData.requestDataMedVacType(callback_success, elemServerErrorMsg)
-        }
-        else{
-            thisObj.setDataMedVacType(medvac_type_list);
-        }
-        
-        
-        // check if there is an account dataAccMedVac
-        const acc_medvac_list = navigation.pigFarm.accountLists.dataAccMedVac;
-        if (acc_medvac_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataAccMedVac(data);
-            };
-            
-            navigation.pigFarm.accountLists.requestDataAccMedVac(callback_success, elemServerErrorMsg)
-        
-        }
-        else{
-            thisObj.setDataAccMedVac(data);
-        }
-        
-        
-        // Get Farm staff list
-        const staff_list = navigation.pigFarm.dataStaffList;
-        if (staff_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataStaffList(data);
-            };
-            
-            navigation.pigFarm.requestDataPigFarmStaff(callback_success, elemServerErrorMsg)
-        
-        }
-        else{
-            thisObj.setDataStaffList(staff_list);
-        }
         
         
         

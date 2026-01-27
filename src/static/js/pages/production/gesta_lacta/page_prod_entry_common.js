@@ -55,7 +55,7 @@ export function PageProdEntryCommon(input_settings){
     let elemIdTabContentArea    = null;
     
     
-    let componentTabsWithMore   = null;
+    this.componentTabsWithMore  = null;
     
     
     
@@ -375,7 +375,7 @@ export function PageProdEntryCommon(input_settings){
         elemIdTabContentArea    = `${settings.uniqueKey}-tab-content`;
 
 
-        componentTabsWithMore   = new ComponentTabsWithMore({
+        this.componentTabsWithMore   = new ComponentTabsWithMore({
             navigation:         navigation,
             uniqueKey:          `${settings.uniqueKey}-tab`,
             elemIdDivContainer:     settings.elemIdDivContainer,
@@ -389,7 +389,7 @@ export function PageProdEntryCommon(input_settings){
 
         const html_style        = thisObj._writeInlineStyle();
         
-        const html_tab_buttons  = componentTabsWithMore.getHtml();
+        const html_tab_buttons  = this.componentTabsWithMore.getHtml();
         const html_tab_contents = thisObj.getHtmlTabContents(dataTabMenus);
         
         
@@ -436,7 +436,7 @@ export function PageProdEntryCommon(input_settings){
     
     
     this.afterHtmlRender = function(){
-        componentTabsWithMore.afterHtmlRender();
+        this.componentTabsWithMore.afterHtmlRender();
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -507,27 +507,27 @@ export function PageProdEntryCommon(input_settings){
         
         */
         
-        let title = '';
+        let title_list = '';
         switch(showOptions.pig_prod_type){
             case PIG_PROD_TYPE.GESTATING:{
-                title = 'Prod Gestating';
+                title_list = 'Prod Gestating';
                 break;
             }
             
             case PIG_PROD_TYPE.LACTATING:{
-                title = 'Prod Lactating';
+                title_list = 'Prod Lactating';
                 break;
             }
             
             case PIG_PROD_TYPE.FATTENING:{
-                title = 'Fattening';
+                title_list = 'Fattening';
                 break;
             }
         }
         
         
         // Set Header Data
-        const title = `${title} ${options.data_index} Of ${options.total_entries}`;
+        const title = `${title_list} ${options.data_index} Of ${options.total_entries}`;
         elemEntryTitle.textContent = title;
         
         const pid = data_pig_prod.pig_production.farm_prod_id;

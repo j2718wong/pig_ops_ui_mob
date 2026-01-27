@@ -359,22 +359,6 @@ export function PageBoarExtMateAddEdit(input_settings){
     }
     
     
-    this.setDataMedVacBrand = function(data){
-        dataMedVacBrandList = data;
-        componentMedVacBrand.setDataMedVacBrand(data);
-    }
-    
-    
-    this.setDataMedVacType = function(data){
-        dataMedVacTypeList  = data;
-        componentMedVacType.setDataMedVacType(data);
-    }
-    
-    
-    this.setDataAccMedVac = function(data) {
-        componentAccMedVac.setDataAccMedVac(data);
-    }
-    
     
     this.setDataStaffList = function(data){
         componentStaff.setDataStaffList(data);
@@ -426,49 +410,6 @@ export function PageBoarExtMateAddEdit(input_settings){
         thisObj._resetForm();
         
         
-        // Check if there is a public data dataMedVacBrandList and dataMedVacTypeList
-        const medvac_brand_list = navigation.managerPublicData.dataMedVacBrandList;
-        if (medvac_brand_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataMedVacBrand(data);
-            };
-            
-            navigation.managerPublicData.requestDataMedVacBrand(callback_success, elemServerErrorMsg)
-        }
-        else{
-            thisObj.setDataMedVacBrand(medvac_brand_list);
-        }
-        
-        
-        const medvac_type_list = navigation.managerPublicData.dataMedVacTypeList;
-        if (medvac_type_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataMedVacType(data);
-            };
-            
-            navigation.managerPublicData.requestDataMedVacType(callback_success, elemServerErrorMsg)
-        }
-        else{
-            thisObj.setDataMedVacType(medvac_type_list);
-        }
-        
-        
-        // check if there is an account dataAccMedVac
-        const acc_medvac_list = navigation.pigFarm.accountLists.dataAccMedVac;
-        if (acc_medvac_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataAccMedVac(data);
-            };
-            
-            navigation.pigFarm.accountLists.requestDataAccMedVac(callback_success, elemServerErrorMsg)
-        
-        }
-        else{
-            thisObj.setDataAccMedVac(data);
-        }
         
         
         // Get Farm staff list

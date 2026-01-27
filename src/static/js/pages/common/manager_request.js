@@ -5,7 +5,7 @@
 
 
 
-function ManagerRequest(_navigation){
+export function ManagerRequest(_navigation){
     const thisObj           = this;
     const navigation        = _navigation;
     

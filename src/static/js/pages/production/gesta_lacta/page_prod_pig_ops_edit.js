@@ -4,27 +4,27 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}       	from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
 
-import {PIG_OPERATION_TYPE}     	from '../../../constants.js';
+import {PIG_OPERATION_TYPE}         from '../../../constants.js';
         
 import {formatDate,
-        FORMAT_LONG_MONTH}      	from '../../../utils.js';
+        FORMAT_LONG_MONTH}          from '../../../utils.js';
 
 
-import {UiInputDatePicker}      	from '../../common/ui/input_datepicker.js';
+import {UiInputDatePicker}          from '../../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter}     from '../../common/ui/input_text_with_counter.js';
-import {ComponentStaffFormGroup} 	from '../../common/ui/comp_staff_form_group.js';
+import {ComponentStaffFormGroup}    from '../../common/ui/comp_staff_form_group.js';
 
-import {ComponentMedVacBrand}  		from '../../sow_boar/components/comp_medvac_brand.js'
-import {ComponentMedVacType}   		from '../../sow_boar/components/comp_medvac_type.js'
-import {ComponentAccMedVac}    		from '../../sow_boar/components/comp_acc_medvac.js'
+import {ComponentMedVacBrand}       from '../../sow_boar/components/comp_medvac_brand.js'
+import {ComponentMedVacType}        from '../../sow_boar/components/comp_medvac_type.js'
+import {ComponentAccMedVac}         from '../../sow_boar/components/comp_acc_medvac.js'
 
         
-import {ModelAccountPigOps}     	from '../../../models/model_acc_pig_ops.js'
+import {ModelAccountPigOps}         from '../../../models/model_acc_pig_ops.js'
 
 import {FIELD_VALIDATION_OK,
-        Field, ModelBasic}      	from '../../../models/model_basic.js'
+        Field, ModelBasic}          from '../../../models/model_basic.js'
 
 
 
@@ -39,46 +39,53 @@ export function PageProdPigOpsEdit(input_settings){
     Typical input_settings
     {
         navigation:             this,
-		uniqueKey:              'sow-boar-health',
+        uniqueKey:              'sow-boar-health',
     }   
     */  
     let settings                = input_settings;
         
     // This is needed as ths will be first element to be rendered
-    let elemDivContainer        = document.getElementById('container-edit-modal-prod-pig-ops');
+    let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
         
-    let elemIdModal             = null;
-    let elemIdModalTitle        = null;
-    let elemIdProdPigOpsTitle   = null;
-    
-	
-	let elemUiDateActual		= null;
-	
-	let elemIdMedVacInputs		= null;
-	let componentMedVacBrand	= null;
-	let componentMedVacType		= null;
-	let componentAccMedVac		= null;
-	
-	let elemUiNotes        		= null;
-	let componentStaff			= null;
-    
-	let elemIdBtnSave           = null;
-    let elemIdBtnDelete         = null;
+    let elemIdBtnClose          = null;
+        
+    let elemIdHeaderTitle       = null;
+    let elemIdHeaderSubTitle    = null;
     
     
+    let elemUiDateActual        = null;
     
-    let elemModal               = null;
-    let elemModalTitle          = null;
-    let elemProdPigOpsTitle     = null;
+    let elemIdMedVacInputs      = null;
+    let componentMedVacBrand    = null;
+    let componentMedVacType     = null;
+    let componentAccMedVac      = null;
     
-	let elemBtnSave             = null;
-    let elemBtnDelete           = null;
+    let elemUiNotes             = null;
+    let componentStaff          = null;
+    
+    let elemIdServerErrorMsg    = null;
+    let elemIdBtnCancel         = null;
+    let elemIdBtnSave           = null;
+    
+    
+    let elemBtnClose            = null;
+    
+    let elemHeaderTitle         = null;
+    let elemHeaderSubTitle      = null;
+    
+    let elemMedVacInputs        = null;
+    
+    
+    let elemServerErrorMsg      = null;
+    let elemBtnCancel           = null;
+    let elemBtnSave             = null;
+    
     
         
         
     let operationType           = null;
     
-    let dataStaffList           = null;
+    let showOptions             = null;
     
     
     // Use these fields for validation
@@ -103,7 +110,7 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     let pigProdPid      = null;
-    let prodPigOpsData  = null;
+    let curDataProdPigOps  = null;
     
     
     this.cbMobileOnSuccessEdit  = null;
@@ -117,12 +124,12 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     this.render = function(){
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
-        elemIdModal             = `${settings.uniqueKey}-modal`;
-        elemIdModalTitle        = `${settings.uniqueKey}-modal-title`;
-        elemIdProdPigOpsTitle   = `${settings.uniqueKey}-modal-subtitle`;
+        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
+        elemIdHeaderSubTitle    = `${settings.uniqueKey}-subtitle`;
         
-		elemUiDateActual         = new UiInputDatePicker({
+        elemUiDateActual         = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date-actual`,
         
             textLabel:          `Completion Date`,
@@ -131,11 +138,11 @@ export function PageProdPigOpsEdit(input_settings){
             helpText:           null
         });
         
-		
-		elemIdMedVacInputs		= `${settings.uniqueKey}-medvac-inputs`;
-		
-		
-		componentMedVacBrand    = new ComponentMedVacBrand({
+        
+        elemIdMedVacInputs      = `${settings.uniqueKey}-medvac-inputs`;
+        
+        
+        componentMedVacBrand    = new ComponentMedVacBrand({
             navigation:         navigation,
             uniqueKey:          `${settings.uniqueKey}-medvac-brand-name`,
 
@@ -174,22 +181,22 @@ export function PageProdPigOpsEdit(input_settings){
             helpText:           'MedVac product name'
         });
         
-		
-		
-		elemUiNotes             = new UiInputTextWithCounter({
-			uniqueKey:          `${settings.uniqueKey}-notes`,
-			
-			isTextArea:         true,
-			isRequired:         false,
-			className:          'form-group-text-area',
-			textLabel:          'Notes',
-			textMaxChars:       160,
-			rows:               3,
-			helpText:           null  
-		});
-		
-		
-		componentStaff          = new ComponentStaffFormGroup({
+        
+        
+        elemUiNotes             = new UiInputTextWithCounter({
+            uniqueKey:          `${settings.uniqueKey}-notes`,
+            
+            isTextArea:         true,
+            isRequired:         false,
+            className:          'form-group-text-area',
+            textLabel:          'Notes',
+            textMaxChars:       160,
+            rows:               3,
+            helpText:           null  
+        });
+        
+        
+        componentStaff          = new ComponentStaffFormGroup({
             navigation:         navigation,
             uniqueKey:          `${settings.uniqueKey}-staff`,
             
@@ -203,64 +210,70 @@ export function PageProdPigOpsEdit(input_settings){
             labelSelect:        'Staff Member',
             helpText:           'Who did the operation'
         });
-		
-		
+        
+        
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
+        elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
-        elemIdBtnDelete         = `${settings.uniqueKey}-delete`;
         
         
-		const html_date_actual	= elemUiDateActual.getHtml();
-		const html_notes		= elemUiNotes.getHtml();
-		const html_staff		= componentStaff.getHtml();
-		
-		
-        const html =`
-    <div class="modal fade" id="${elemIdModal}" tabindex="-1" aria-labelledby="edit-entry-prod-pig-ops-modal-label" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="edit-entry-prod-pig-ops-modal-label">
-                        <span id="${elemIdModalTitle}">Mark PigOps as Done</span>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="form-section-title" style="margin-top:0;">
-                        <i class="fas fa-tag"></i>
-                        <span id="${elemIdProdPigOpsTitle}">PID: 00000 - Operation Name</span>
-                    </div>
-                    
-                    ${html_date_actual}
-					
-					<div id="${elemIdMedVacInputs}">
-						<!-- 2. MedVac Brand -->
-						${html_medvac_brand}
-						
-						<!-- 3. MedVac Type -->
-						${html_medvac_type}
-						
-						<!-- 4. Name -->
-						${html_acc_medvac}
-					</div>
-\					
-					${html_notes}
-                    
-                    ${html_staff}
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>Cancel
-                    </button>
-                    <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-                        <i class="fas fa-save me-2"></i>Save
-                    </button>
-                </div>
-            </div>
+        const html_date_actual  = elemUiDateActual.getHtml();
+        const html_medvac_brand = componentMedVacBrand.getHtml();
+        const html_medvac_type  = componentMedVacType.getHtml();
+        const html_acc_medvac   = componentAccMedVac.getHtml();
+        const html_notes        = elemUiNotes.getHtml();
+        const html_staff        = componentStaff.getHtml();
+        
+        
+        const html = `
+<div class="form-container">
+
+    <div class="modal-header">
+        <h5 class="modal-title" id="edit-entry-prod-pig-ops-modal-label">
+            <span id="${elemIdHeaderTitle}">Mark PigOps as Done</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
+    </div>
+    
+    <div class="modal-body">
+        <div class="form-section-title" style="margin-top:0;">
+            <i class="fas fa-tag"></i>
+            <span id="${elemIdHeaderSubTitle}">PID: 00000 - Operation Name</span>
         </div>
+        
+        ${html_date_actual}
+        
+        <div id="${elemIdMedVacInputs}">
+            <!-- 2. MedVac Brand -->
+            ${html_medvac_brand}
+            
+            <!-- 3. MedVac Type -->
+            ${html_medvac_type}
+            
+            <!-- 4. Name -->
+            ${html_acc_medvac}
+        </div>
+       
+        ${html_notes}
+        
+        ${html_staff}
+    
+    
+        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
     
     </div>
+        
+    <!-- Footer Buttons -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
+            <i class="fas fa-times me-2"></i>Cancel
+        </button>
+        <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
+            <i class="fas fa-save me-2"></i>Save
+        </button>
+    </div>
+    
+</div>
 
         `;
         
@@ -270,8 +283,8 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
-		
-		elemUiDateActual.afterHtmlRender();
+        
+        elemUiDateActual.afterHtmlRender();
         
         componentMedVacBrand.afterHtmlRender();
         componentMedVacType.afterHtmlRender();
@@ -280,8 +293,8 @@ export function PageProdPigOpsEdit(input_settings){
         elemUiNotes.afterHtmlRender();
         componentStaff.afterHtmlRender();
         
-		
-		
+        
+        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -289,16 +302,17 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     this._findElements = function(){
+        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         
-        elemModal               = document.getElementById(elemIdModal);
-        elemModalTitle          = document.getElementById(elemIdModalTitle);
-        elemProdPigOpsTitle     = document.getElementById(elemIdProdPigOpsTitle);
+        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
+        elemHeaderSubTitle      = elemDivContainer.querySelector('#'+elemIdHeaderSubTitle);
         
-		elemMedVacInputs		= document.getElementById(elemIdMedVacInputs);
-		
-        elemBtnSave             = document.getElementById(elemIdBtnSave);
-        elemBtnDelete           = document.getElementById(elemIdBtnDelete);
-    
+        elemMedVacInputs        = elemDivContainer.querySelector('#'+elemIdMedVacInputs);
+        
+        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
+        elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
+        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
+        
     }
     
     
@@ -323,49 +337,73 @@ export function PageProdPigOpsEdit(input_settings){
         // Clear previous Form values and validation classes
         
         elemUiNotes.reset();
-		
-		componentMedVacBrand.reset();
+        
+        componentMedVacBrand.reset();
         componentMedVacType.reset();
         componentAccMedVac.reset()
         
-		elemUiNotes.reset();
+        elemUiNotes.reset();
         componentStaff.reset();
     }
     
 
-    this.show = function(operation, options){
-        let is_mark_done = false;
+    this.beforeShow = function(data_operation, options){
+        curDataProdPigOps   = data_operation;
+        showOptions         = options;
         
-        if ('is_mark_done' in options){
-            if (options.is_mark_done){
-                is_mark_done = true;
-            }
+        /*
+        Typical options
+        options = {
+            pid:            pid,
+            sow:            sow_reference,
+            is_gesta:       is_gesta,
+            is_mark_done:   true
         }
+        
+        */
+        
         thisObj._resetForm();
         
         
+        componentMedVacBrand.beforeShow();
+        componentMedVacType.beforeShow();
+        componentAccMedVac.beforeShow();
+        
+        componentStaff.beforeShow();
+
+        
+        
+        // Set Page Title
+        let is_mark_done = false;
+        
+        if ('is_mark_done' in showOptions){
+            if (showOptions.is_mark_done){
+                is_mark_done = true;
+            }
+        }
+        
         if (is_mark_done == true){
-            elemModalTitle.textContent = 'Mark PigOps as Done';
+            elemHeaderTitle.textContent = 'Mark PigOps as Done';
         }
         else{
-            elemModalTitle.textContent = 'Edit PigOps';
+            elemHeaderTitle.textContent = 'Edit PigOps';
         }
         
-        const pid           = options.pid;
-        const sow           = options.sow;
-        const is_gesta      = options.is_gesta;
+        const pid           = showOptions.pid;
+        const sow           = showOptions.sow;
+        const is_gesta      = showOptions.is_gesta;
         
         pigProdPid          = pid;
-        prodPigOpsData      = operation;
+        
         
         
         let html;
         
-        html = `PID: ${pid}(${sow}) - ${operation.account_pig_ops.name}`;
-        elemProdPigOpsTitle.innerHTML = html;
+        html = `PID: ${pid}(${sow}) - ${data_operation.account_pig_ops.name}`;
+        elemHeaderSubTitle.innerHTML = html;
         
         
-        const modal_header = elemModal.querySelector('.modal-header');
+        const modal_header = elemDivContainer.querySelector('.modal-header');
         
         if (is_gesta){
             if (modal_header.classList.contains('gestating') == false){
@@ -383,36 +421,46 @@ export function PageProdPigOpsEdit(input_settings){
         
         // Set this if is edit
         if (is_mark_done == false){
-            const dt_actual = new Date(operation.pig_prod_pig_ops.date_actual);
-            elemDateActual.value = formatDate(dt_actual, FORMAT_LONG_MONTH);
-        
-            
-            const staff_hid = operation.staff.hid;
-            
-            if (staff_hid != null){
-                const $elemStaff = $(elemStaff);
-                $elemStaff.val(operation.staff.hid).change();
-            }
-            else{
-                console.log('No staff hid');
-            }
-            elemNotes.value = operation.notes.notes;
+            this.populateForm(data_operation)
         }
         
- 
         
-        dataModel.hid = operation.pig_prod_pig_ops.hid;
+        // Check if operation is MedVac
+        if (curDataProdPigOps.account_pig_ops.is_medvac > 0){
+            elemMedVacInputs.style.display = 'block';
+        }
+        else{
+            elemMedVacInputs.style.display = 'none';
+        }
         
+
+        // Update Close and cancel button on click
         
-        editModal.show();
+        elemBtnClose.onclick = function() {
+            navigation.showThisPage(showOptions.go_back_page);
+        };
         
-        return;
-        
+        elemBtnCancel.onclick = function() {
+            navigation.showThisPage(showOptions.go_back_page);
+        };
     }
     
     
-    this.hide = function(){
-        editModal.hide();
+    this.populateForm = function(data){
+        const dt_actual = new Date(data_operation.pig_prod_pig_ops.date_actual);
+        elemDateActual.value = formatDate(dt_actual, FORMAT_LONG_MONTH);
+    
+        
+        const staff_hid = data_operation.staff.hid;
+        
+        if (staff_hid != null){
+            const $elemStaff = $(elemStaff);
+            $elemStaff.val(data_operation.staff.hid).change();
+        }
+        else{
+            console.log('No staff hid');
+        }
+        elemNotes.value = data_operation.notes.notes;
     }
     
     
@@ -584,7 +632,7 @@ export function PageProdPigOpsEdit(input_settings){
         
 
         
-        const user_hid      = thisObj.navigation.userControl.getUserHid();
+        const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
         
         // send post request
@@ -615,9 +663,9 @@ export function PageProdPigOpsEdit(input_settings){
                 if (response.result.num == 0){
                     
                     // Replace these data
-                    prodPigOpsData.pig_prod_pig_ops.date_actual = input_date_actual;
-                    prodPigOpsData.staff.hid    = input_staff_hid;
-                    prodPigOpsData.notes.notes  = input_notes;
+                    curDataProdPigOps.pig_prod_pig_ops.date_actual = input_date_actual;
+                    curDataProdPigOps.staff.hid    = input_staff_hid;
+                    curDataProdPigOps.notes.notes  = input_notes;
                     
                     // callback to refresh the table
                     thisObj._onSuccessUpdatePigOps();
@@ -635,7 +683,7 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     this._onSuccessUpdatePigOps = function(){
-        if (thisObj.navigation.curScreenIsMobile > 0){
+        if (navigation.curScreenIsMobile > 0){
             
             if (thisObj.cbMobileOnSuccessEdit){
                 thisObj.cbMobileOnSuccessEdit(pigProdPid);

@@ -101,6 +101,28 @@ export function ComponentMedVacType(input_settings){
     }
     
     
+    this.beforeShow = function(options){
+        const medvac_type_list = navigation.managerPublicData.dataMedVacTypeList;
+        if (medvac_type_list == null){
+            
+            const callback_success = function(data){
+                thisObj.setDataMedVacType(data);
+            };
+            
+            let elem_show_error = null;
+            if (options && options.elem_show_error){
+                elem_show_error = options.elem_show_error;}
+            
+            navigation.managerPublicData.requestDataMedVacType(callback_success, 
+                elem_show_error);
+        }
+        else{
+            thisObj.setDataMedVacType(medvac_type_list);
+        }
+        
+    }
+    
+    
     this._getMedVacType = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         

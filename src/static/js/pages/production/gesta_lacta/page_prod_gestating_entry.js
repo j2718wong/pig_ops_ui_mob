@@ -11,8 +11,6 @@ import {PAGE_ID,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
 
-import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
-
 import {ProdEntryNotes}         from './prod_entry_notes.js'
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryInsem}         from './prod_entry_insem.js'
@@ -133,7 +131,7 @@ export function PageProdGestatingEntry(input_settings){
         this.prodEntryBirth.init();
         
         
-        componentTabsWithMore.beforeShowTab = thisObj.beforeShowTab;
+        this.componentTabsWithMore.beforeShowTab = this.beforeShowTab;
     }
     
     

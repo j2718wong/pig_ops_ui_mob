@@ -18,7 +18,7 @@ import {MoreModal}                  from '../common/more_modal.js';
 
 import {ManagerAddress}             from '../common/manager_address.js';
 import {ManagerPublicData}          from '../common/manager_public_data.js';
-import {ManagerRequest}          	from '../common/manager_request.js';
+import {ManagerRequest}             from '../common/manager_request.js';
 
 import {PigFarm}                    from '../farm_account/pig_farm.js';
 
@@ -42,7 +42,7 @@ import {PageParentTrace}            from '../sow_boar/page_parent_trace.js';
 
 import {PageMobGestaLacta}          from '../production/gesta_lacta/page_mob_gesta_lacta.js';
 
-import {EditModalProdPigOps}        from '../production/gesta_lacta/edit_modal_prod_pig_ops.js'
+import {PageProdPigOpsEdit}         from '../production/gesta_lacta/page_prod_pig_ops_edit.js'
 import {PageProdGestatingAdd}       from '../production/gesta_lacta/page_prod_gestating_add.js'
 import {PageProdGestatingEntry}     from '../production/gesta_lacta/page_prod_gestating_entry.js'
 
@@ -240,10 +240,21 @@ export function Navigation(){
     
     
     
+     
     const elemIdContProdGestaList       = 'container-prod-gesta-list';
-    const elemIdContProdLactaList       = 'container-prod-lacta-list';
     const elemIdContProdGestaAdd        = 'container-prod-gesta-add';
     const elemIdContProdGestaEntry      = 'container-prod-gesta-entry';
+    
+    const elemIdContProdLactaList       = 'container-prod-lacta-list';
+    const elemIdContProdLactaEntry      = 'container-prod-lacta-entry';
+    
+    const elemIdContFatteningList       = 'container-fattening-list';
+    const elemIdContFatteningAdd        = 'container-fattening-add';
+    const elemIdContFatteningEntry      = 'container-fattening-entry';
+    
+    
+    
+    const elemIdContProdPigOpsEdit      = 'container-prod-pig-ops-edit';
     
     
     const elemIdContAccPigOps           = 'container-acc-pig-ops';
@@ -289,10 +300,18 @@ export function Navigation(){
     let elemHiddenContParentTrace   = null;
     
     let elemHiddenContProdGestaList = null;
-    let elemHiddenContProdLactaList = null;
     let elemHiddenContProdGestaAdd  = null;
     let elemHiddenContProdGestaEntry= null;
-	let elemHiddenContProdLactaEntry= null;
+    
+    let elemHiddenContProdLactaList = null;
+    let elemHiddenContProdLactaEntry= null;
+    
+    
+    let elemHiddenContFatteningList = null;
+    let elemHiddenContFatteningAdd  = null;
+    let elemHiddenContFatteningEntry= null;
+    
+    let elemHiddenContProdPigOpsEdit= null; 
     
     
     let elemHiddenContAccPigOps     = null;
@@ -417,8 +436,10 @@ export function Navigation(){
     });
     
     
-    this.editModalProdPigOps    = new EditModalProdPigOps({
-        navigation:             this
+    this.pageProdPigOpsEdit    = new PageProdPigOpsEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdPigOpsEdit,
+        uniqueKey:              'prod-pigops-edit'
     });
     
     
@@ -473,10 +494,15 @@ export function Navigation(){
         
         
         this.pageMobGestatingList.init();
-        this.pageMobLactatingList.init();
-        this.editModalProdPigOps.init();
         this.pageProdGestatingAdd.init();
         this.pageProdGestatingEntry.init();
+        
+        
+        this.pageMobLactatingList.init();
+        
+        this.pageProdPigOpsEdit.init();
+        
+        
         
         this.pageAccPigOps.init();
         
@@ -533,11 +559,18 @@ export function Navigation(){
         elemHiddenContParentTrace   = document.getElementById(elemIdContParentTrace);
         
         elemHiddenContProdGestaList = document.getElementById(elemIdContProdGestaList);
-        elemHiddenContProdLactaList = document.getElementById(elemIdContProdLactaList);
         elemHiddenContProdGestaAdd  = document.getElementById(elemIdContProdGestaAdd);
         elemHiddenContProdGestaEntry= document.getElementById(elemIdContProdGestaEntry);
-		elemHiddenContProdLactaEntry= document.getElementById(elemIdContProdLactaEntry);
-		
+        
+        elemHiddenContProdLactaList = document.getElementById(elemIdContProdLactaList);
+        elemHiddenContProdLactaEntry= document.getElementById(elemIdContProdLactaEntry);
+        
+        elemHiddenContFatteningList = document.getElementById(elemIdContFatteningList);
+        elemHiddenContFatteningAdd  = document.getElementById(elemIdContFatteningAdd);
+        elemHiddenContFatteningEntry= document.getElementById(elemIdContFatteningEntry);
+        
+        elemHiddenContProdPigOpsEdit= document.getElementById(elemIdContProdPigOpsEdit);
+    
     
         elemHiddenContAccPigOps     = document.getElementById(elemIdContAccPigOps);
         
@@ -546,12 +579,12 @@ export function Navigation(){
     
     
     this._processAfterHtmlRender = function(){
-        this.pageMobGestatingList.editModalProdPigOps = this.editModalProdPigOps;
-        this.pageMobLactatingList.editModalProdPigOps = this.editModalProdPigOps;
+        this.pageMobGestatingList.pageProdPigOpsEdit = this.pageProdPigOpsEdit;
+        this.pageMobLactatingList.pageProdPigOpsEdit = this.pageProdPigOpsEdit;
     
         this.pageMobGestatingList.setNavigation(thisObj);
         this.pageMobLactatingList.setNavigation(thisObj);
-        this.editModalProdPigOps.setNavigation(thisObj);
+        this.pageProdPigOpsEdit.setNavigation(thisObj);
         
     }
     
@@ -752,11 +785,34 @@ export function Navigation(){
             case PAGE_ID.PROD_LACTA_LIST:{
                 return elemHiddenContProdLactaList;
             }
-			
-			case PAGE_ID.PROD_LACTA_ENTRY:{
+            
+            case PAGE_ID.PROD_LACTA_ENTRY:{
                 return elemHiddenContProdLactaEntry;
             }
-			
+            
+            
+            case PAGE_ID.PROD_FATTENING_LIST:{
+                return elemHiddenContProdLactaList;
+            }
+            
+            case PAGE_ID.PROD_FATTENING_ADD:{
+                return elemHiddenContProdLactaEntry;
+            }
+            
+            case PAGE_ID.PROD_FATTENING_ENTRY:{
+                return elemHiddenContProdLactaEntry;
+            }
+
+            
+            
+            case PAGE_ID.PROD_PIG_OPS_EDIT:{
+                return elemHiddenContProdPigOpsEdit;
+            }
+            
+            
+            
+            
+            
         
             case PAGE_ID.ACC_PIG_OPS: {
                 return elemHiddenContAccPigOps;
