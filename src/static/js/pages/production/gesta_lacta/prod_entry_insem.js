@@ -411,12 +411,37 @@ export function ProdEntryInsem(input_settings){
     }
     
     
+    this._resetForm = function(){
+        // Clear previous Form values and validation classes
+        
+        elemDateMating.classList.remove('is-valid', 'is-invalid');
+        
+        componentSelectBoar.reset();
+        componentSelectBoarInt.reset();
+        
+        componentSemenSupplier.reset();
+        componentSemenType.reset();
+        
+        elemSemenCost.value = '0.00';
+        elemSemenCost.classList.remove('is-valid', 'is-invalid');
+        
+        elemOtherCost.value = '0.00';
+        elemSemenCost.classList.remove('is-valid', 'is-invalid');
+        
+        elemUiNotes.reset();
+        componentStaff.reset();
+        
+        
+    }
+    
     
     this.show = function(data_pig_prod, options){
+        thisObj._resetForm();
+        
         curDataPigProd = data_pig_prod;
         
         const data_sow = curDataPigProd.sow;
-        console.log(data_sow);
+
         
         // Set sow_name and create a link to open SowBoarPage
         const sow_boar_name = getSowBoarReference(data_sow, true);

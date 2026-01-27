@@ -10,7 +10,8 @@ import {APPLICATION,
         PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        SOW_STATUS_NAME}        from '../../constants.js';
+        SOW_STATUS_NAME,
+        NOTES_TYPE}             from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -18,6 +19,17 @@ import {formatDate,
         FORMAT_COMPACT,
         sortList,
         createPaginationManager} from '../../utils.js';
+
+
+
+/*
+Table Notes are used in different objects
+
+1.) Sow Boar Notes; key = sow_boar_id
+2.) Pig Prod Notes; key = pig_prod_id
+3.) ProdGroup Notes; key = production_group_id 
+
+*/
 
 
 
@@ -36,10 +48,11 @@ export function TableNotes(input_settings){
         navigation:             this,
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-notes'
-        elemDivContainer:       '<element>'
+        elemDivContainer:       '<element>',
+        notesType:              NOTES_TYPE.SOW_BOAR
     }   
     */  
-    let settings                = input_settings;
+    const settings              = input_settings;
     
     
     let elemDivContainer        = settings.elemDivContainer;
@@ -62,6 +75,7 @@ export function TableNotes(input_settings){
     
     
     let dataSowBoar             = null;
+    let dataPigProd             = null;
     
     
     this.init = function(){
@@ -73,8 +87,8 @@ export function TableNotes(input_settings){
         
         const html_table = thisObj.getHtml();
         elemDivContainer.innerHTML = html_table;
-		
-		
+        
+        
         thisObj.afterHtmlRender();  // This will call the parent method 
         thisObj.afterHtmlRenderThis();
 
@@ -95,32 +109,69 @@ export function TableNotes(input_settings){
     
     
     
-    this.beforeShow = function(data_sow_boar, options){
-        dataSowBoar     = data_sow_boar;
+    this.beforeShow = function(data, options){
         showOptions     = options;
         
-        if ('list_notes' in dataSowBoar.data_details){
-            thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
-            thisObj.renderTable(dataSowBoar.data_details.list_notes);
-        } else{
-            const callback_success = function(){
-                // Set table entry list; This will set also the entry count;
-                thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
-                thisObj.renderTable(dataSowBoar.data_details.list_notes);
-            };
+        switch (settings.notesType){
+            case NOTES_TYPE.SOW_BOAR:{
+                dataSowBoar     = data;
+                
+                if ('list_notes' in dataSowBoar.data_details){
+                    thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
+                    thisObj.renderTable(dataSowBoar.data_details.list_notes);
+                } else{
+                    const callback_success = function(){
+                        // Set table entry list; This will set also the entry count;
+                        thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
+                        thisObj.renderTable(dataSowBoar.data_details.list_notes);
+                    };
+                    
+                    navigation.requestManager.requestDataSowBoarNotes(
+                        dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
+                }
+                
+                
+                // no add entry if alredy disposed
+                const elem = thisObj.getElemSearchAddControl();
+                if ('dispose_status_id' in dataSowBoar.sow_boar){
+                    elem.style.display = 'none';
+                }
+                else{
+                    elem.style.display = 'flex';
+                }
+                
+                break;
+            }
             
-            parentObj.requestDataSowBoarNotes(dataSowBoar, callback_success,
-                thisObj.elemServerErrorMsg);
+            case NOTES_TYPE.PIG_PROD:{
+                dataPigProd     = data;
+                
+                if ('list_notes' in dataPigProd.data_details){
+                    thisObj.setDataEntryList(dataPigProd.data_details.list_notes);
+                    thisObj.renderTable(dataPigProd.data_details.list_notes);
+                } else{
+                    const callback_success = function(){
+                        // Set table entry list; This will set also the entry count;
+                        thisObj.setDataEntryList(dataPigProd.data_details.list_notes);
+                        thisObj.renderTable(dataPigProd.data_details.list_notes);
+                    };
+                    
+                    navigation.requestManager.requestDataPigProdNotes(
+                        dataPigProd, callback_success, thisObj.elemServerErrorMsg);
+                }
+                
+                
+                
+                
+                break;
+            }
+            
+            case NOTES_TYPE.PROD_GROUP:{
+                break;
+            }
         }
         
         
-        const elem = thisObj.getElemSearchAddControl();
-        if ('dispose_status_id' in dataSowBoar.sow_boar){
-            elem.style.display = 'none';
-        }
-        else{
-            elem.style.display = 'flex';
-        }
     }
     
         
@@ -135,11 +186,7 @@ export function TableNotes(input_settings){
         
         showOptions = options;
         
-        
-        
-        
-        
-        
+
         
     }
     
@@ -182,22 +229,50 @@ export function TableNotes(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+        switch (settings.notesType){
+            case NOTES_TYPE.SOW_BOAR:{
+        
+                let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
 
-        if ('dispose_status_id' in dataSowBoar.sow_boar){
-            s_click = '';
+                if ('dispose_status_id' in dataSowBoar.sow_boar){
+                    s_click = '';
+                }
+
+                const dt_notes = new Date(cur_entry.prod_notes.date_notes);
+                
+                const html = `
+                    <tr>
+                        <td><span>${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
+                        <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>
+                    </tr>
+                `;
+                
+                return html;
+                
+                break;
+            }
+        
+            case NOTES_TYPE.PIG_PROD:{
+        
+                let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+
+                
+                const dt_notes = new Date(cur_entry.prod_notes.date_notes);
+                
+                const html = `
+                    <tr>
+                        <td><span>${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
+                        <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>
+                    </tr>
+                `;
+                
+                return html;
+                
+                break;
+            }
+        
+        
         }
-
-        const dt_notes = new Date(cur_entry.prod_notes.date_notes);
-        
-        const html = `
-            <tr>
-                <td><span>${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
-                <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>
-            </tr>
-        `;
-        
-        return html;
     }
     
       
@@ -211,6 +286,7 @@ export function TableNotes(input_settings){
         
        
     }
+    
     
     this.onClickAddEntry = function(){
         

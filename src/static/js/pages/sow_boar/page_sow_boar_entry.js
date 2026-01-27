@@ -13,7 +13,8 @@ import {APPLICATION,
         PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        SOW_STATUS_NAME}        from '../../constants.js';
+        SOW_STATUS_NAME,
+        NOTES_TYPE}             from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -413,7 +414,8 @@ export function PageSowBoarEntry(input_settings){
             navigation:             settings.navigation,
             parentObj:              thisObj,
             uniqueKey:              'sow-boar-notes',
-            elemDivContainer:       elemTabNotes
+            elemDivContainer:       elemTabNotes,
+            notesType:              NOTES_TYPE.SOW_BOAR
         });
         this.tableSowBoarNotes.init();
         
@@ -448,10 +450,21 @@ export function PageSowBoarEntry(input_settings){
         componentTabsWithMore.beforeShowTab = thisObj.beforeShowTab;
     }
     
-	
-	this._bindEventListeners = function(){};
     
-	
+    this._bindEventListeners = function(){
+        
+        elemEntryTitle.addEventListener('click', function() {
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+            navigation.showThisPage(next_page);
+        
+            const options= {
+                sow_boar_type: showOptions.sow_boar_type
+            };
+            navigation.pageSowBoarList.show(options);
+        });
+    };
+    
+    
     this.beforeShow = function(data_sow_boar, options){
         dataSowBoar = data_sow_boar;
         componentTabsWithMore.curData = data_sow_boar;
@@ -649,7 +662,7 @@ export function PageSowBoarEntry(input_settings){
             const callback_success = function(){
                 thisObj.beforeShowTab(componentTabsWithMore.curActiveTabId);
             }
-            thisObj.requestDataSowBoarDetails(dataSowBoar, callback_success);
+            thisObj.navigation.managerRequest.requestDataSowBoarDetails(dataSowBoar, callback_success);
         }
         
         
@@ -767,46 +780,7 @@ export function PageSowBoarEntry(input_settings){
     
     
     
-    // This is a request to get sow_boar details that returns tables.
-    this.requestDataSowBoarDetails = function(data_sow_boar, callback_success, elem_show_error){
-        const sow_boar_hid = data_sow_boar.sow_boar.hid;
-        
-        const base_url = window.location.origin;
-        let url = `${base_url}/sow_boar/entry?sow_boar_hid=${sow_boar_hid}`;
-        
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-            },
-  
-            success: function(response){
-                
-                if (response.result.num == 0){
-                    
-                    // attach data to data_sow_boar
-                    data_sow_boar.data_details = response.data;
-                    
-                    if (callback_success){callback_success(response.data);}
-                }    
-                else{
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
-    }
+    
     
     
     

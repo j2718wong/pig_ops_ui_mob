@@ -18,6 +18,7 @@ import {MoreModal}                  from '../common/more_modal.js';
 
 import {ManagerAddress}             from '../common/manager_address.js';
 import {ManagerPublicData}          from '../common/manager_public_data.js';
+import {ManagerRequest}          	from '../common/manager_request.js';
 
 import {PigFarm}                    from '../farm_account/pig_farm.js';
 
@@ -209,45 +210,6 @@ function UserControl(_navigation) {
 }
 
 
-function ManagerRequest(_navigation){
-    const thisObj           = this;
-    const navigation        = _navigation;
-    
-
-    this.requestDataPigProdPublic = function(country_hid, callback){
-        const base_url = window.location.origin;
-        const url = `${base_url}/pig_prod/public?country_hid=${country_hid}`;
-        
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    if (callback){callback(response.data);}
-                }
-                else {
-                    // TODO
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
-        
-    }
-}
-
 
 export function Navigation(){
     const thisObj               = this;
@@ -330,6 +292,7 @@ export function Navigation(){
     let elemHiddenContProdLactaList = null;
     let elemHiddenContProdGestaAdd  = null;
     let elemHiddenContProdGestaEntry= null;
+	let elemHiddenContProdLactaEntry= null;
     
     
     let elemHiddenContAccPigOps     = null;
@@ -469,7 +432,7 @@ export function Navigation(){
     this.pageProdGestatingEntry = new PageProdGestatingEntry({
         navigation:             this,
         elemIdDivContainer:     elemIdContProdGestaEntry,
-		uniqueKey:              'prod-gesta'
+        uniqueKey:              'prod-gesta'
     });
     
     
@@ -573,6 +536,8 @@ export function Navigation(){
         elemHiddenContProdLactaList = document.getElementById(elemIdContProdLactaList);
         elemHiddenContProdGestaAdd  = document.getElementById(elemIdContProdGestaAdd);
         elemHiddenContProdGestaEntry= document.getElementById(elemIdContProdGestaEntry);
+		elemHiddenContProdLactaEntry= document.getElementById(elemIdContProdLactaEntry);
+		
     
         elemHiddenContAccPigOps     = document.getElementById(elemIdContAccPigOps);
         
@@ -682,7 +647,7 @@ export function Navigation(){
         this.pigFarm.dataSowList = data;
         
         this.pageSowBoarList.setDataSowList(data);
-        this.pageSowBoarAddEdit.setDataSowList(data);
+
         
     }
     
@@ -691,7 +656,6 @@ export function Navigation(){
         this.pigFarm.dataBoarList = data;
         
         this.pageSowBoarList.setDataBoarList(data);
-        this.pageSowBoarAddEdit.setDataBoarList(data);
 
     }
     
@@ -788,6 +752,11 @@ export function Navigation(){
             case PAGE_ID.PROD_LACTA_LIST:{
                 return elemHiddenContProdLactaList;
             }
+			
+			case PAGE_ID.PROD_LACTA_ENTRY:{
+                return elemHiddenContProdLactaEntry;
+            }
+			
         
             case PAGE_ID.ACC_PIG_OPS: {
                 return elemHiddenContAccPigOps;
@@ -1258,6 +1227,7 @@ export function Navigation(){
                 }
                 
                 const options = {
+                    pig_prod_type:  PIG_PROD_TYPE.GESTATING,
                     prev_prod_pid:  prev_prod_pid,
                     next_prod_pid:  next_prod_pid,
                     data_index:     index+1,

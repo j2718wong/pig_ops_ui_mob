@@ -9,6 +9,11 @@ import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
 import {SOW_STATUS,
         PIG_OPERATION_TYPE}         from '../../../constants.js';
 
+import {formatDate,
+        FORMAT_SHORT_MONTH,
+        FORMAT_LONG_MONTH,
+        FORMAT_COMPACT}             from '../../../utils.js';
+
 import {getSowBoarReference}        from '../../common/common_app.js';
 
 import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
@@ -268,22 +273,52 @@ export function ProdEntryBirth(input_settings){
     }
     
     
+    this._resetForm = function(){
+        // Clear previous Form values and validation classes
+        
+          
+        elemUiDateBirth.reset();
+        
+        
+        componentNumFemale.reset()
+        componentNumMale.reset()
+        componentNumDead.reset()
+        
+        
+        componentStaff.reset();
+        
+        
+    }
+    
     this.show = function(data_pig_prod, options){
+        thisObj._resetForm();
+        
         curDataPigProd = data_pig_prod;
-        console.log(`curDataPigProd`);
-        console.log(curDataPigProd);
         
         const data_sow = curDataPigProd.sow;
-        let sow_reference =  getSowBoarReference(data_sow, true);
-        
-        elemSow.textContent = sow_reference;
         
         
-        const insemination  = data_pig_prod.insemination;
+        // Set sow_name and create a link to open SowBoarPage
+        const sow_boar_name = getSowBoarReference(data_sow, true);
+        
+        const html_sow = `
+        <a href="javascript:void(0)" class="breadcrumb-link">${sow_boar_name}</a>
+        `;
+        elemSow.innerHTML = html_sow;
+        
+        elemSow.onclick = function(){
+            navigation.pageSowBoarList.gotoSowBoarEntryPage(null, data_sow.hid);
+        };
+        
+        
+        
+        
+        const insemination  = curDataPigProd.insemination;
         
         const dt_insem      = new Date(insemination.insem_date);
-        $('#'+elemIdDateMating).datepicker('setDate', dt_insem);
+        elemDateExpected.textContent = formatDate(dt_insem);
         
+        componentStaff.beforeShow();
     }
     
     

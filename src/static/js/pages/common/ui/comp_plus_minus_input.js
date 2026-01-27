@@ -172,7 +172,7 @@ export function ComponentPlusMinusInput(input_settings){
     
     
     this.reset = function(){
-        elemText.value = '';
+        elemText.value = '0';
     } 
     
     

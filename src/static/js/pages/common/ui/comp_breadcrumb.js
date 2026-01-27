@@ -40,7 +40,7 @@ export function ComponentBreadcrumb(input_settings){
     const thisObj               = this;
     
     const settings              = input_settings;
-    const navigation            = settings.navigation;
+    const navigation            = input_settings.navigation;
     
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     

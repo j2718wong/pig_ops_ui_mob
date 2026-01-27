@@ -110,8 +110,7 @@ export function PigFarm(_navigation){
 		
 		navigation.pageMobGestatingList.setDataStaffList(data);
         navigation.pageMobLactatingList.setDataStaffList(data);
-        //navigation.pageProdGestatingAdd.setDataStaffList(data);
-        //navigation.pageProdGestatingEntry.setDataStaffList(data);
+
         
         navigation.pageMedVacAddEdit.setDataStaffList(data);
         

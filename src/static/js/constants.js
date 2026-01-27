@@ -31,6 +31,12 @@ const PAGE_ID = {
     PROD_GESTA_ADD:         32,
     PROD_GESTA_ENTRY:       33,
     PROD_LACTA_LIST:        34, 
+    PROD_LACTA_ENTRY:       35, 
+    PROD_FATTENING_LIST:    36,
+    PROD_FATTENING_ENTRY:   37,
+    PROD_FATTENING_ADD:     38,
+    
+    
     
     
     
@@ -110,6 +116,14 @@ const SUPPLIER_TYPE ={
 };
 
 
+const NOTES_TYPE = {
+    SOW_BOAR:           1,
+    PIG_PROD:           2,
+    PROD_GROUP:         3
+    
+};
+
+
 const REQUEST_ERROR_NUM ={
     ERROR_DATABASE_ERROR:                       1,
     ERROR_SERVER_ERROR:                         2,  
@@ -134,6 +148,7 @@ export {
     
     PIG_PROD_TYPE,
     SUPPLIER_TYPE,
+    NOTES_TYPE,
     
     REQUEST_ERROR_NUM
 };

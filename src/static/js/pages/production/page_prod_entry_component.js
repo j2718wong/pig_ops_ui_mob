@@ -12,27 +12,79 @@ import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
 import {getSowBoarReference}    from '../common/common_app.js';
 
 import {PAGE_ID,
-        SOW_STATUS}             from '../../constants.js';
+        SOW_STATUS,
+        PIG_PROD_TYPE}          from '../../constants.js';
 
+/*
+breadCrumb;
+1.) The first entry can be either be Gesta List, Lacta List, Fattening List
+2.) The second entry is 
+
+if ProdGesta: Sow Name (PID <number>)
+if ProdLacta: Sow Name (PID <number>)
+if Fattening: PID <number>
+        
+*/
 
 export function PageProdEntryComponent(input_settings){
-    PageViewPigFarmPage.call(this);
+
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
-	/**
-	Typical settings:
-	{
-		pigProdType:		PIG_PROD_TYPE.GESTATING
-		
-	}
-	
-	*/
+    /**
+    Typical settings:
+    {
+        pigProdType:        PIG_PROD_TYPE.GESTATING
+        
+    }
+    
+    */
     const settings              = input_settings;
 
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
        
+    
+    // There are links items for settings.pigProdType
+    let linkItems = null;
+    
+    switch(settings.pigProdType){
+        case PIG_PROD_TYPE.GESTATING:{
+            linkItems = [
+                {
+                    'label':        'Gesta List',
+                    'gotoPageId':   PAGE_ID.PROD_GESTA_LIST
+                },
+                
+                {
+                    'label':        'Sow',
+                    'gotoPageId':   PAGE_ID.PROD_GESTA_ENTRY
+                }
+            ];
+            break;
+        }
+        
+        case PIG_PROD_TYPE.LACTATING:{
+            linkItems = [
+                {
+                    'label':        'Lacta List',
+                    'gotoPageId':   PAGE_ID.PROD_LACTA_LIST
+                },
+                
+                {
+                    'label':        'Sow',
+                    'gotoPageId':   PAGE_ID.PROD_LACTA_ENTRY
+                }
+            ];
+            break;
+        }
+        
+        case PIG_PROD_TYPE.FATTENING:{
+            break;
+        }
+    }
+    
+    
     
     // The settingsBreadcrumb.items is temporary; need to update dynamically
     const settingsBreadcrumb = {
@@ -40,86 +92,70 @@ export function PageProdEntryComponent(input_settings){
         navigation:             navigation,
         elemRoot:               elemDivContainer,    // Root element where to search for elements
                                             // so that not all document will be searched.
-        
-        items:[
-            {
-                'label':        'SowList',
-                'gotoPageId':   PAGE_ID.SOW_BOAR_LIST
-            },
-            
-            {
-                'label':        'Adela',
-                'gotoPageId':   PAGE_ID.SOW_BOAR_ENTRY
-            }
-        ]
-        
+        items: linkItems
     }
     
     this.componentBreadcrumb    = new ComponentBreadcrumb(settingsBreadcrumb);
     
     
     // needs to set
-    this.curDataSowBoar         = null;
+    this.curDataPigProd         = null;
     
     
-    this.afterHtmlRenderSowBoarEntryComponent = function(){
+    this.afterHtmlRenderProdEntryComponent = function(){
         // Do the afterHtmlRender to UI elements first;
         
-        thisObj.componentBreadcrumb.afterHtmlRender();
+        this.componentBreadcrumb.afterHtmlRender();
     
     }
     
     
     this.updateBreadCrumbs = function(){
         // Need to update breadCrumb;
-        // 1.) The first entry can be either be Prod Gesta List, Prod Lacta List, Fattening List
+        // 1.) The first entry can be either be Gesta List, Lacta List, Fattening List
         // 2.) The second entry is 
-		//
-		// if ProdGesta: Sow Name
-		// if ProdLacta: Sow Name
-		// if Fattening: PID <number>
-		
+        //
+        // if ProdGesta: Sow Name (PID <number>)
+        // if ProdLacta: Sow Name (PID <number>)
+        // if Fattening: PID <number>
+        
 
-        let list_name       = null;
-       
+        let crumb_label_0       = null;
+        let crumb_label_1       = null;
         
-        let cur_sow_boar = thisObj.curDataSowBoar;
-        if ('sow_boar' in thisObj.curDataSowBoar){
-            cur_sow_boar = thisObj.curDataSowBoar.sow_boar;
-        }
+        const pig_production    = thisObj.curDataPigProd.pig_production;
+        const cur_sow           = thisObj.curDataPigProd.sow;
+        const cur_sow_name      = getSowBoarReference(cur_sow);
         
-        if ('dispose_status_id' in cur_sow_boar){
-            list_name = 'Disposed List'; 
-        }
-        else{
-            if ('farm_boar_id' in cur_sow_boar){
-                list_name = 'Boar List';
+        
+        switch(pig_production.prod_status_id){
+            case PROD_STATUS.GESTATING:{
+                crumb_label_0 = 'Gesta List';
+                crumb_label_1 = `${cur_sow_name} (PID ${pig_production.farm_prod_id})`;
+                break
             }
-            else{
-                if (cur_sow_boar.status_id == SOW_STATUS.GROWING){
-                    if (cur_sow_boar.is_production_ready > 0){
-                        list_name = 'Sow List';
-                    }
-                    else{
-                        list_name = 'Gilt List';
-                    }
-                }
-                else{
-                    list_name = 'Sow List';
-                }
+            
+            case PROD_STATUS.LACTATING:{
+                crumb_label_0 = 'Lacta List';
+                crumb_label_1 = `${cur_sow_name} (PID ${pig_production.farm_prod_id})`;
+                break
+            }
+            
+            case PROD_STATUS.WEANING:
+            case PROD_STATUS.GROWING: {
+                crumb_label_0 = 'Fattening List';
+                crumb_label_1 = `PID ${pig_production.farm_prod_id}`;
+                break
             }
         }
         
         
-        // Update breadcrumb 
-        let sow_boar_name   = getSowBoarReference(cur_sow_boar);
         
-        
-        settingsBreadcrumb.items[0].label = list_name;
-        settingsBreadcrumb.items[1].label = sow_boar_name;
+        settingsBreadcrumb.items[0].label = crumb_label_0;
+        settingsBreadcrumb.items[1].label = crumb_label_1;
         thisObj.componentBreadcrumb.refreshLabels();
         
-        return sow_boar_name;
+        return
     }
     
     

@@ -31,6 +31,15 @@ import {formatDate,
 import {debugElementVisibility} from '../common/server_error.js';
 
 
+/*
+This is used to Add/Edit 
+1.) SowBoar Health Issue
+2.) SowBoar Notes 
+3.) PigProd Notes
+4.) ProdGroup Notes
+*/
+
+
 export function PageHealthNotesAddEdit(input_settings){
     PageSowBoarEntryComponent.call(this, input_settings);
     
@@ -44,7 +53,7 @@ export function PageHealthNotesAddEdit(input_settings){
         navigation:             this,
         uniqueKey:              'sow-boar-health',
         isNotes:                true,   // false is for Health Issue
-        elemDivContainer:       elemHiddenContMedVacAddEdit
+		elemDivContainer:       elemHiddenContMedVacAddEdit
     };
     */
     const settings              = input_settings;
@@ -282,6 +291,7 @@ export function PageHealthNotesAddEdit(input_settings){
         Typical options
         options ={
             is_add:                 true,   // false is edit
+			notes_type:				NOTES_TYPE.SOW_BOAR,
             row_entry:              null,   // not null if edit; entry to be edited
             callback_after_add:     thisObj.onSuccessAddEntry
             go_back_page:           go_back_page   // Go back to this page; this is Div element
