@@ -108,8 +108,20 @@ export function PageProdPigOpsEdit(input_settings){
     dataModel.editableFields.push(fieldStaffHid);
     
     
-    let pigProdPid      = null;
-    let curDataProdPigOps  = null;
+    
+    // The ProdPigOpsEdit can either be called from
+    // - PigProdEntry (either Gesta or Lacta Entry) 
+    // - SowBoarEntry (for Gilt only)
+    
+    // This is the DataPigProd 
+    this.dataPigProd            = null;
+    
+    // This is the DataSowBoar
+    this.dataSowBoar            = null;
+    
+    
+    // This is the PigProdPigOps data
+    let curDataProdPigOps       = null;
     
     
     this.cbMobileOnSuccessEdit  = null;
@@ -611,8 +623,14 @@ export function PageProdPigOpsEdit(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     
-                    // Replace these data
+                    // Replace the pig_ops  coming from the database
                     
+                    const data_pig_prod = curDataProdPigOps;
+                    
+                    
+                    navigation.pigFarm.requestDataPigProdPigOps(data_pig_prod, 
+                        operation_type, pig_prod_pig_ops_hid, callback_success, 
+						elem_show_error);
                     
                     
                     

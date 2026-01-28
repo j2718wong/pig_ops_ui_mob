@@ -5,6 +5,8 @@
 'use strict';
 
 import {PIG_PROD_TYPE,
+        PIG_OPERATION_TYPE,
+        SOW_STATUS,
         PROD_STATUS,
         SUPPLIER_TYPE}          from '../../constants.js';
 
@@ -25,6 +27,7 @@ export function PigFarm(_navigation){
     this.dataPigFarmAccount     = null;
     
     this.dataSowList            = null;
+    this.dataGiltList           = null;
     this.dataBoarList           = null;
     this.dataStaffList          = null;
     
@@ -63,9 +66,9 @@ export function PigFarm(_navigation){
     
     
     this.setDataPigProdList = function(data){
-        this.dataPigProdGestating   = [];
-        this.dataPigProdLactating   = [];
-        this.dataPigProdFattening   = [];
+        thisObj.dataPigProdGestating   = [];
+        thisObj.dataPigProdLactating   = [];
+        thisObj.dataPigProdFattening   = [];
         
         
         for(const cur_entry of data){
@@ -94,7 +97,6 @@ export function PigFarm(_navigation){
     }
     
     
-    
     this.setDataPigFarmAccount = function(data){
         thisObj.dataPigFarmAccount = data;
         
@@ -117,22 +119,60 @@ export function PigFarm(_navigation){
             }
         }
         
-        this.dataStaffList = data.staff_list;
+        thisObj.dataStaffList = data.staff_list;
         
-        navigation.setDataSowList(data.sow_list);
-        navigation.setDataBoarList(data.boar_list);
+        thisObj.setDataSowList(data.sow_list);
+        thisObj.setDataBoarList(data.boar_list);
             
             
         if ('pig_production' in data){
-            navigation.setDataPigProdList(data.pig_production);
+            thisObj.setDataPigProdList(data.pig_production);
         }
         else{
             
             const pig_prod_type = PIG_PROD_TYPE.GESTATING + PIG_PROD_TYPE.LACTATING;
             thisObj.requestDataPigProd(pig_prod_type, 
-                navigation.setDataPigProdList);
+                thisObj.setDataPigProdList);
         }
         
+    }
+    
+    
+    this.setDataSowList = function(data){
+        // When this is set, the data includes the gilts (SOW_STATUS.GROWING)
+        // Need to seperate gilts data  
+        
+        
+        thisObj.dataSowList = []
+        thisObj.dataGiltList = []
+        
+        let sow_boar = null;
+        
+        for (const cur_entry of data){
+            if ('sow_boar' in cur_entry){
+                sow_boar = cur_entry.sow_boar;
+            }
+            else{sow_boar = cur_entry;}
+            
+            if (sow_boar.status_id == SOW_STATUS.GROWING){
+                if (sow_boar.is_production_ready > 0){
+                    thisObj.dataSowList.push(cur_entry);
+                }
+                else{
+                    thisObj.dataGiltList.push(cur_entry);
+                }
+            }
+            else{
+                thisObj.dataSowList.push(cur_entry);
+            }
+            
+        }
+        
+    }
+    
+    
+    this.setDataBoarList = function(data){
+        thisObj.dataBoarList = data;
     }
     
     
@@ -144,13 +184,13 @@ export function PigFarm(_navigation){
     
     
     this.setDataStaffList = function(data) {
-        this.dataStaffList = data;
+        thisObj.dataStaffList = data;
     }
     
     
     // Should return country hid of the farm.
     this.getCountryHid = function(){
-        return this.dataPigFarm.location.country.hid;
+        return thisObj.dataPigFarm.location.country.hid;
     }
     
     
@@ -161,9 +201,9 @@ export function PigFarm(_navigation){
     
     
     this.getDataSowBoar = function(sex, sow_boar_hid){
-        let sow_boar_list  = this.dataSowList;
+        let sow_boar_list  = thisObj.dataSowList;
         if (sex == 'M'){
-            sow_boar_list  = this.dataBoarList;
+            sow_boar_list  = thisObj.dataBoarList;
         }
         
         if (sow_boar_list == null){return null;}
@@ -305,6 +345,89 @@ export function PigFarm(_navigation){
         
     }
  
-
+    
+    this.requestDataPigProdPigOps = function(data_pig_prod, operation_type,
+            pig_prod_pig_ops_hid, callback_success, elem_show_error){
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_prod_pig_ops/entry/${pig_prod_pig_ops_hid}`;
+        
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    // Need to replace the pig_ops from the database
+                    
+                    
+                    let prod_pig_ops_list = null;
+                    
+                    switch(operation_type){
+                        case PIG_OPERATION_TYPE.GESTATING:{
+                            prod_pig_ops_list = data_pig_prod.gestating_ops;
+                            break;
+                        }
+                        
+                        case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
+                            prod_pig_ops_list = data_pig_prod.lactating_piglets_ops;
+                            break;
+                        }
+                        
+                        case PIG_OPERATION_TYPE.LACTATING_SOW:{
+                            prod_pig_ops_list = data_pig_prod.lactating_sow_ops;
+                            break;
+                        }
+                        
+                        default:{
+                            prod_pig_ops_list = data_pig_prod.lactating_ops;
+                            break;
+                        }
+                    }
+                    
+                    
+                    if (prod_pig_ops_list){
+                        let index = 0;
+                        let cur_entry;
+                        
+                        for (index = 0; index < prod_pig_ops_list.length; index++){
+                            cur_entry = prod_pig_ops_list[index];
+                            
+                            if (cur_entry.pig_prod_pig_ops.hid == pig_prod_pig_ops_hid){
+                                prod_pig_ops_list.splice(index, 1, response.data);
+                            }
+                        }
+                    }
+                    
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
+                    
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+        
+    }
+ 
+    
      
 }

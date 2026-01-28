@@ -98,6 +98,7 @@ export function TableHealthIssue(input_settings){
         dataSowBoar     = data_sow_boar;
         showOptions     = options;
 
+
         if ('list_health_issues' in dataSowBoar.data_details){
             thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
             thisObj.renderTable(dataSowBoar.data_details.list_health_issues);

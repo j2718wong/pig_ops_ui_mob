@@ -670,28 +670,6 @@ export function Navigation(){
     }
     
     
-    this.setDataPigProdList = function(data){
-        this.pigFarm.setDataPigProdList(data);
-    }
-    
-    
-    this.setDataSowList = function(data){
-        this.pigFarm.dataSowList = data;
-        
-        this.pageSowBoarList.setDataSowList(data);
-
-        
-    }
-    
-    
-    this.setDataBoarList = function(data){
-        this.pigFarm.dataBoarList = data;
-        
-        this.pageSowBoarList.setDataBoarList(data);
-
-    }
-    
-    
 
     // Update pig farm name on resize for responsive centering
     this.updatePigFarmName = function() {
@@ -1243,8 +1221,7 @@ export function Navigation(){
         
         thisObj.showThisPage(elemHiddenContProdGestaEntry);
         
-        // Get the data_pig_prod from pageMobGestatingList
-        const data_pig_prod_list = thisObj.pageMobGestatingList.getDataPigProdList();
+        const data_pig_prod_list = thisObj.pigFarm.dataPigProdGestating;
         
         let prev_prod_pid = null;
         let next_prod_pid = null;

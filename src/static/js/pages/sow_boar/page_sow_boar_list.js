@@ -471,48 +471,6 @@ ${html_style}
         
     }
     
-
-    this.setDataSowList = function(data){
-        // When this is set, the data includes the gilts (SOW_STATUS.GROWING)
-        // Need to seperate gilts data  
-        
-        
-        
-        dataSowList = []
-        dataGiltList = []
-        
-        let sow_boar = null;
-        
-        for (const cur_entry of data){
-            if ('sow_boar' in cur_entry){
-                sow_boar = cur_entry.sow_boar;
-            }
-            else{sow_boar = cur_entry;}
-            
-            if (sow_boar.status_id == SOW_STATUS.GROWING){
-                if (sow_boar.is_production_ready > 0){
-                    dataSowList.push(cur_entry);
-                }
-                else{
-                    dataGiltList.push(cur_entry);
-                }
-            }
-            else{
-                dataSowList.push(cur_entry);
-            }
-            
-        }
-        
-        // Default all
-        curSowFilter = 'all';
-    }
-    
-    
-    this.setDataBoarList = function(data){
-        dataBoarList    = data;
-
-    }
-    
     
     this.getSowBoarEntry = function(entry_hid){
         let cur_sow_boar_list = null;
@@ -548,6 +506,13 @@ ${html_style}
     
     
     this.show = function(options){
+        dataSowList     = navigation.pigFarm.dataSowList;
+        dataBoarList    = navigation.pigFarm.dataBoarList;
+        dataGiltList    = navigation.pigFarm.dataGiltList;
+        
+		// Default all
+        curSowFilter = 'all';
+        
         
         // show the last showOptions if there is no options
         if (options == null){options = showOptions;}

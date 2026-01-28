@@ -473,6 +473,7 @@ export function PageSowBoarEntry(input_settings){
     
     this.beforeShow = function(data_sow_boar, options){
         dataSowBoar = data_sow_boar;
+
         componentTabsWithMore.curData = data_sow_boar;
         
         if (options) { // replace options only if specified
