@@ -5,6 +5,7 @@
 'use strict';
 
 import {PIG_PROD_TYPE,
+        PROD_STATUS,
         SUPPLIER_TYPE}          from '../../constants.js';
 
 
@@ -16,6 +17,7 @@ export function PigFarm(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
     
+
     
     this.accountLists           = new AccountLists(_navigation);
     
@@ -26,6 +28,9 @@ export function PigFarm(_navigation){
     this.dataBoarList           = null;
     this.dataStaffList          = null;
     
+    this.dataPigProdGestating   = null;
+    this.dataPigProdLactating   = null;
+    this.dataPigProdFattening   = null;
     
     
     let accountHasUnpaidBill    = false;
@@ -57,6 +62,39 @@ export function PigFarm(_navigation){
     }
     
     
+    this.setDataPigProdList = function(data){
+        this.dataPigProdGestating   = [];
+        this.dataPigProdLactating   = [];
+        this.dataPigProdFattening   = [];
+        
+        
+        for(const cur_entry of data){
+            
+            
+            switch (cur_entry.pig_production.prod_status_id){
+            
+                case PROD_STATUS.GESTATING: {
+                    thisObj.dataPigProdGestating.push(cur_entry);
+                    break;
+                }
+                
+                case PROD_STATUS.LACTATING: {
+                    thisObj.dataPigProdLactating.push(cur_entry);
+                    break;
+                }
+                
+                case PROD_STATUS.WEANING:
+                case PROD_STATUS.GROWING:{
+                    thisObj.dataPigProdFattening.push(cur_entry);
+                }
+            
+            }
+        } 
+        
+    }
+    
+    
+    
     this.setDataPigFarmAccount = function(data){
         thisObj.dataPigFarmAccount = data;
         
@@ -80,7 +118,7 @@ export function PigFarm(_navigation){
         }
         
         this.dataStaffList = data.staff_list;
-		
+        
         navigation.setDataSowList(data.sow_list);
         navigation.setDataBoarList(data.boar_list);
             
@@ -107,13 +145,6 @@ export function PigFarm(_navigation){
     
     this.setDataStaffList = function(data) {
         this.dataStaffList = data;
-		
-		navigation.pageMobGestatingList.setDataStaffList(data);
-        navigation.pageMobLactatingList.setDataStaffList(data);
-
-        
-        navigation.pageMedVacAddEdit.setDataStaffList(data);
-        
     }
     
     

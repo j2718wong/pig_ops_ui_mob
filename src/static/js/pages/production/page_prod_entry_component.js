@@ -34,10 +34,7 @@ export function PageProdEntryComponent(input_settings){
     
     /**
     Typical settings:
-    {
-        pigProdType:        PIG_PROD_TYPE.GESTATING
-        
-    }
+    
     
     */
     const settings              = input_settings;
@@ -45,9 +42,9 @@ export function PageProdEntryComponent(input_settings){
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
        
     
-    // There are links items for settings.pigProdType
-    let linkItems = null;
-    
+
+
+    let link_items = null;
     switch(settings.pigProdType){
         case PIG_PROD_TYPE.GESTATING:{
             linkItems = [
@@ -92,7 +89,7 @@ export function PageProdEntryComponent(input_settings){
         navigation:             navigation,
         elemRoot:               elemDivContainer,    // Root element where to search for elements
                                             // so that not all document will be searched.
-        items: linkItems
+        items: link_items
     }
     
     this.componentBreadcrumb    = new ComponentBreadcrumb(settingsBreadcrumb);

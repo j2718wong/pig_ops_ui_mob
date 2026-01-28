@@ -62,6 +62,7 @@ export function PageSowBoarEntry(input_settings){
     
     let elemIdEntryId           = null;
     let elemIdEntryName         = null;
+    let elemIdEntryProdLink     = null;
     
     let elemIdTabsContainer     = null;
     let elemIdTabContentArea    = null;
@@ -170,6 +171,7 @@ export function PageSowBoarEntry(input_settings){
     
     let elemEntryId             = null;
     let elemEntryName           = null;
+    let elemEntryProdLink       = null;
     
     
     let elemTabsContainer       = null;
@@ -217,6 +219,7 @@ export function PageSowBoarEntry(input_settings){
         
         elemIdEntryId           = `${settings.uniqueKey}-id`;
         elemIdEntryName         = `${settings.uniqueKey}-name`;
+        elemIdEntryProdLink     = `${settings.uniqueKey}-prod-link`;
         
         elemIdTabsContainer     = `${settings.uniqueKey}-tabs-container`;
         elemIdTabContentArea    = `${settings.uniqueKey}-tab-content`;
@@ -311,8 +314,10 @@ export function PageSowBoarEntry(input_settings){
         <div class="entry-info">
             <div class="pid-and-sow">
                 <div class="sow-name">
-                    <span class="days-badge" id="${elemIdEntryName}">Sow</span>
-                    <!--<span style="margin-right:10px;"><span  id="${elemIdEntryId}">1</span></span>-->
+                    <span class="days-badge" style="display:block;">
+                        <span id="${elemIdEntryName}"></span>
+                        <span id="${elemIdEntryProdLink}"></span>
+                    </span>
                 </div>
             </div>
         </div>
@@ -377,6 +382,7 @@ export function PageSowBoarEntry(input_settings){
         
         elemEntryId             = elemDivContainer.querySelector('#'+elemIdEntryId);
         elemEntryName           = elemDivContainer.querySelector('#'+elemIdEntryName);
+        elemEntryProdLink       = elemDivContainer.querySelector('#'+elemIdEntryProdLink);
         
         elemTabsContainer       = elemDivContainer.querySelector('#'+elemIdTabsContainer);
         elemTabContentArea      = elemDivContainer.querySelector('#'+elemIdTabContentArea);
@@ -540,6 +546,7 @@ export function PageSowBoarEntry(input_settings){
         // Set Entry Name 
         
         let sow_boar_name   = getSowBoarReference(data_sow_boar.sow_boar);
+        let prod_link = '';
         
         // Append SOW Status so that no ambiguity
         
@@ -575,17 +582,23 @@ export function PageSowBoarEntry(input_settings){
             
                 switch(data_sow_boar.sow_boar.status_id){
                     case SOW_STATUS.GESTATING:{
-                        sow_boar_name += ' - Gesta'
+                        prod_link = ' - Gesta'
+                        
+                        // Clicking on the prod_link should open to Gesta entry Page
+                        elemEntryProdLink.onclick = function(){
+                            navigation.onClickProdGestatingEntry(data_sow_boar.sow_boar.last_farm_prod_id);
+                        }
+                        
                         break;
                     }
                     
                     case SOW_STATUS.LACTATING:{
-                        sow_boar_name += ' - Lacta'
+                        prod_link = ' - Lacta'
                         break;
                     }
                     
                     case SOW_STATUS.WEANING:{
-                        sow_boar_name += ' - Wean'
+                        prod_link = ' - Wean'
                         break;
                     }
                     
@@ -601,6 +614,7 @@ export function PageSowBoarEntry(input_settings){
         
         
         elemEntryName.textContent = sow_boar_name;
+        elemEntryProdLink.textContent = prod_link;
         
         // Set Entry hid; 2026115 still in deliberation if to show sow_boar_hid
         /*

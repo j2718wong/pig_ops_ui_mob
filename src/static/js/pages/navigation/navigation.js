@@ -584,7 +584,7 @@ export function Navigation(){
     
         this.pageMobGestatingList.setNavigation(thisObj);
         this.pageMobLactatingList.setNavigation(thisObj);
-        this.pageProdPigOpsEdit.setNavigation(thisObj);
+
         
     }
     
@@ -671,8 +671,7 @@ export function Navigation(){
     
     
     this.setDataPigProdList = function(data){
-        thisObj.pageMobGestatingList.setDataPigProdList(data);
-        thisObj.pageMobLactatingList.setDataPigProdList(data);
+        this.pigFarm.setDataPigProdList(data);
     }
     
     
@@ -693,17 +692,7 @@ export function Navigation(){
     }
     
     
-    this.setDataMedVacBrandList = function(data){
-        this.pageMedVacAddEdit.setDataMedVacBrandList(data);
-    }
-    
-    
-    this.setDataMedVacTypeList = function(data){
-        this.pageMedVacAddEdit.setDataMedVacTypeList(data);
-    }
-    
 
-    
     // Update pig farm name on resize for responsive centering
     this.updatePigFarmName = function() {
         // Set Farm name

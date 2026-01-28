@@ -341,13 +341,6 @@ ${html_style}
     }
     
     
-    
-    this.setDataStaffList = function(data){
-        dataStaffList = data;
-        thisObj.commonSelectOptions.setDataStaffList(dataStaffList, elemStaff);
-    }
-    
-    
     this.show = function(data_pig_prod, options){
         dataPigProd = data_pig_prod;
         

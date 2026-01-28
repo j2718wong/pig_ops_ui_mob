@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
+import {PageProdEntryComponent}     from '../page_prod_entry_component.js';
 
 import {PIG_OPERATION_TYPE}         from '../../../constants.js';
         
@@ -29,7 +29,6 @@ import {FIELD_VALIDATION_OK,
 
 
 export function PageProdPigOpsEdit(input_settings){
-    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -465,193 +464,143 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     this._validateAfterChangeInput = function(ev, input_field){
-        /* Use this to validate new entry form input.*/
-    
-        let input_elem  = null;
-        let input_val   = null;
-        let cur_field   = null;
-        let validation  = null;
-     
-        
-        if (ev.checkValidity()) {
-            switch(input_field){
-            
-                case 'date_actual': {
-                    input_elem  = elemDateActual;
-                    input_val   = input_elem.value;
-                    cur_field   = fieldDateActual;
-                    
-                    console.log('date_actual = ' + input_val);
-                    cur_field.newValue = input_val; 
-                    validation = cur_field.validateChange();
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-                case 'staff':{
-                    ev.classList.remove('is-invalid');
-                    break;
-                }
-                
-                case 'notes': {
-                    input_elem  = elemNotes;
-                    input_val   = input_elem.value;
-                    cur_field   = fieldNotes;
-                    
-                    
-                    cur_field.newValue = input_val; 
-                    validation = cur_field.validateChange();
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-                case 'staff':{
-                    input_elem  = elemStaff;
-                    input_val   = input_elem.val();
-                    
-                    
-                    if (input_val != '0'){
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-               
-            }
-            
-            
-        } else {
-            ev.classList.remove('is-valid');
-            ev.classList.add('is-invalid');
-        }
-
+       
     }
     
     
     this.onClickSaveButton = function(){
         let input_elem      = null;
-        let cur_field       = null;
-        let validation      = -1;
+        let validation      = 0;
         let proceed_to_save = 1;
         
 
-        let input_date_actual   = elemDateActual.value;
-        let input_notes         = elemNotes.value.trim();
-        let input_staff_hid     = elemStaff.value;
+        let input_date_actual   = elemUiDateActual.getValue().trim();
+        
+        let input_medvac_brand  = componentMedVacBrand.getValue();
+        let input_medvac_type   = componentMedVacType.getValue();
+        let input_medvac_name   = componentAccMedVac.getValue();
+        let input_notes         = elemUiNotes.getValue().trim();
+        let input_staff         = componentStaff.getValue();
         
         
-        input_elem          = elemDateActual;
-        cur_field           = fieldDateActual;
-        
-        // Convert date to YYYY-MM-DD format
-        const dt_actual     = new Date(input_date_actual);
-        const dt_actual_s   = dt_actual.toLocaleDateString('en-CA');
-        
-        cur_field.newValue  = dt_actual_s;
-        validation          = cur_field.validateChange();
-
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
-        } else{
-             if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
-        }
-        if (proceed_to_save == 0) {return;}
-        
-        
-        // The staff can be from the drop down
-        // Or Done by User (Done by Me checkbox)
-        let done_by_user = 0
-        
-        if (elemChkDoneByMe.checked){done_by_user = 1;}
-        
-        if (done_by_user == 0){
-            input_elem          = elemStaff;
-            if (input_staff_hid == '0'){
-                if (input_elem.classList.contains('is-invalid') == false){
-                    input_elem.classList.add('is-invalid');
-                }
-                proceed_to_save = 0;
-            }
-            else{
-                if (input_elem.classList.contains('is-valid') == false){
-                    input_elem.classList.add('is-valid');
-                }
-                fieldStaffHid.newValue = input_staff_hid;
-            }
-        }
-        if (proceed_to_save == 0) {return;}
-        
-        
-        input_elem          = elemNotes;
-        cur_field           = fieldNotes;
-        cur_field.newValue  = input_notes;
-        validation          = cur_field.validateChange();
-
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
-        } else{
-             if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
-        }
-        if (proceed_to_save == 0) {return;}
-        
-        
-        if (dataModel.hasChanged() == false){
-            console.log('No data Change');
+        input_elem          = elemUiDateActual.getElemText();
+        if (input_date_actual.length == 0){
+            validation = -1;
+            addValidationClassToElem(input_elem, validation);
             return;
         }
         
-
+        
+        // Convert date to YYYY-MM-DD format
+        const dt_actual     = new Date(input_date_actual);
+        if (isNaN(dt_actual.getTime())){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        const dt_actual_s   = dt_actual.toLocaleDateString('en-CA');
+        validation          = 0
+        addValidationClassToElem(input_elem, validation);
+        if (validation != 0) {return;}
+        
+        
+        if (curDataProdPigOps.account_pig_ops.is_medvac > 0){
+            input_elem = componentMedVacBrand.getElemSelect();
+            if (input_medvac_brand == '0'  || input_medvac_brand == '-1'){
+                validation = -1;
+            }
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+            
+            
+            input_elem = componentMedVacType.getElemSelect();
+            if (input_medvac_type == '0'  || input_medvac_type == '-1'){
+                validation = -1;
+            }
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+            
+            
+            input_elem = componentAccMedVac.getElemSelect();
+            if (input_medvac_name == '0'  || input_medvac_name == '-1'){
+                validation = -1;
+            }
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        
+        
+            // The notes is optional if operation is not Medvac.
+            // But required if operation is MedVac.
+            input_elem = elemUiNotes.getElemText();
+            if (input_notes.length == 0){
+                validation = -1;
+            }
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        let done_by_user = 0;
+        
+        input_elem = componentStaff.getElemCheckBox();
+        if (input_elem.checked){
+            done_by_user = 1;
+        }
+        
+        if (done_by_user == 0){
+            input_elem = componentStaff.getElemSelect();
+            if (input_staff == '0'  || input_staff == '-1'){
+                validation = -1;
+            }
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        // Check if user_account_hid is same with farm_account_hid;
+        const user_account_hid = navigation.userControl.getUserAccountHid();
+        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
+        
+        if (user_account_hid != farm_account_hid){
+            console.log('User account_hid not equal to farm_account_hid');
+            return;
+        } 
+        
+        
+        
         
         const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
         
+        let url = `${base_url}/pig_prod_pig_ops/update`;
+        
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'pig_prod_pig_ops_hid': dataModel.hid,
+            'pig_prod_pig_ops_hid': curDataProdPigOps.pig_prod_pig_ops.hid,
             'staff_hid':        input_staff_hid,
             'done_by_user':     done_by_user,
             'date':             dt_actual_s,
             'notes':            input_notes
         };
         
-        console.log(post_data);
+        if (curDataProdPigOps.account_pig_ops.is_medvac > 0){
+            post_data.medvac_brand_hid  = input_medvac_brand;
+            post_data.medvac_type_hid = input_medvac_type;
+            post_data.acc_medvac_hid = input_medvac_name;
+            
+            url = `${base_url}/pig_prod_pig_ops/update_medvac`;
+        }
+        
+        
         
         $.ajax({
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
-            url: `${base_url}/pig_prod_pig_ops/update`,
+            url: url,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -663,9 +612,9 @@ export function PageProdPigOpsEdit(input_settings){
                 if (response.result.num == 0){
                     
                     // Replace these data
-                    curDataProdPigOps.pig_prod_pig_ops.date_actual = input_date_actual;
-                    curDataProdPigOps.staff.hid    = input_staff_hid;
-                    curDataProdPigOps.notes.notes  = input_notes;
+                    
+                    
+                    
                     
                     // callback to refresh the table
                     thisObj._onSuccessUpdatePigOps();

@@ -114,8 +114,6 @@ export function PageMedVacAddEdit(input_settings){
         
     let elemInfoShow            = null;
     let elemInfo                = null;
-    
-    let elemDateMedVac          = null;
 
     
     let elemMedVacForShow           = null;
@@ -427,16 +425,7 @@ export function PageMedVacAddEdit(input_settings){
         
     }
     
-    
-    this.setDataAccMedVac = function(data) {
-        componentAccMedVac.setDataAccMedVac(data);
-    }
-    
-    
-    this.setDataStaffList = function(data){
-        componentStaff.setDataStaffList(data);
-    }
-    
+
     
     this._resetForm = function(){
         // Clear previous Form values and validation classes
@@ -642,26 +631,7 @@ export function PageMedVacAddEdit(input_settings){
             switch(input_field){
                 
                 case 'date_medvac': {
-                    input_elem      = elemDateMedVac;
-                    input_val       = input_elem.value;
-                    
-                    console.log('Test 1');
-                    
-                    // Already validated by bootstrap
-                    if (input_val.length > 0){
-                        validation = 0;
-                    }
-                    
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
+             
                 }
                 
             
@@ -693,9 +663,8 @@ export function PageMedVacAddEdit(input_settings){
         let input_staff         = componentStaff.getValue();
         
 
-        let dt_medvac_s = null;
         
-        input_elem          = elemDateMedVac;
+		input_elem          = elemUiDateMedVac.getElemText();
         if (input_date_medvac.length == 0){
             validation = -1;
             addValidationClassToElem(input_elem, validation);
@@ -705,8 +674,6 @@ export function PageMedVacAddEdit(input_settings){
         
         
         // Convert date to YYYY-MM-DD format
-        input_elem          = elemUiDateMedVac.getElemText();
-        
         const dt_medvac     = new Date(input_date_medvac);
         if (isNaN(dt_medvac.getTime())){
             validation      = -1;
@@ -715,7 +682,7 @@ export function PageMedVacAddEdit(input_settings){
         }
             
         
-        dt_medvac_s         = dt_medvac.toLocaleDateString('en-CA');
+        const dt_medvac_s   = dt_medvac.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
@@ -745,6 +712,7 @@ export function PageMedVacAddEdit(input_settings){
         if (validation != 0) {return;}
         
         
+		// Notes is required for Medvac
         input_elem = elemUiNotes.getElemText();
         if (input_notes.length == 0){
             validation = -1;

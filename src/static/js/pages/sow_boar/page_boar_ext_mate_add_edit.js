@@ -360,10 +360,6 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     
-    this.setDataStaffList = function(data){
-        componentStaff.setDataStaffList(data);
-    }
-    
     
     this._resetForm = function(){
         // Clear previous Form values and validation classes
@@ -412,21 +408,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         
         
-        // Get Farm staff list
-        const staff_list = navigation.pigFarm.dataStaffList;
-        if (staff_list == null){
-            
-            const callback_success = function(data){
-                thisObj.setDataStaffList(data);
-            };
-            
-            navigation.pigFarm.requestDataPigFarmStaff(callback_success, elemServerErrorMsg)
-        
-        }
-        else{
-            thisObj.setDataStaffList(staff_list);
-        }
-        
+         
         
         
         // Set Page Title

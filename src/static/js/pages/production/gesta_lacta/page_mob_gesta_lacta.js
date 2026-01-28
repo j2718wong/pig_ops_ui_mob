@@ -6,7 +6,8 @@
 
 import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
-import {APPLICATION,
+import {PAGE_ID,
+        APPLICATION,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
         PROD_STATUS}            from '../../../constants.js';
@@ -32,8 +33,7 @@ export function PageMobGestaLacta(input_settings){
     
     const NUM_DAYS_BEFORE_OPERATION_DUE_SHOW_ALARM = 3;
     
-    // This needs to be manually set once fix in backend
-    const PIG_PROD_OPS_DATE_TARGET_ORDER_ASC = 0;
+    
     
     /*
     Typical input_settings
@@ -341,72 +341,7 @@ export function PageMobGestaLacta(input_settings){
              
     }
     
-    
-    this.setDataStaffList = function(data){
-        if (this.pageProdPigOpsEdit){
-            this.pageProdPigOpsEdit.setDataStaffList(data);
-        }
-    }
-    
 
-    this.setDataPigProdList = function(data){
-        let data_filtered = [];
-        
-        for(const cur_entry of data){
-            
-            if (PIG_PROD_OPS_DATE_TARGET_ORDER_ASC > 0){
-                
-                let gestating_ops = cur_entry.gestating_ops;
-                gestating_ops = sortList(gestating_ops, 
-                    'pig_prod_pig_ops.date_target', 'desc');
-                
-                let lactating_piglets_ops = cur_entry.lactating_piglets_ops;
-                if (lactating_piglets_ops.length > 0){
-                    lactating_piglets_ops = sortList(lactating_piglets_ops, 
-                        'pig_prod_pig_ops.date_target', 'desc');
-                }
-                
-                
-                
-                cur_entry.gestating_ops = gestating_ops;
-                cur_entry.lactating_piglets_ops = lactating_piglets_ops;
-                
-                
-                let lactating_sow_ops = [];
-                if ('lactating_sow_ops' in cur_entry){
-                    lactating_sow_ops = cur_entry.lactating_sow_ops;
-                    
-                    if (lactating_sow_ops.length > 0){
-                        lactating_sow_ops = sortList(lactating_sow_ops, 
-                            'pig_prod_pig_ops.date_target', 'desc');
-                    }
-                    
-                }
-                cur_entry.lactating_sow_ops = lactating_sow_ops;
-            }
-            
-            
-            if (settings.isGesta == true){
-                if (cur_entry.pig_production.prod_status_id == PROD_STATUS.GESTATING){
-                    data_filtered.push(cur_entry);
-                }
-            }
-            else{
-                if (cur_entry.pig_production.prod_status_id == PROD_STATUS.LACTATING){
-                    data_filtered.push(cur_entry);
-                }
-            }
-        } 
-        
-        
-        dataPigProdList = data_filtered;
-    }
-    
-    
-    this.getDataPigProdList = function(){
-        return dataPigProdList;
-    }
-    
     
     // Handle window resize for view switching
     this.handleWindowResize = function() {
@@ -424,6 +359,14 @@ export function PageMobGestaLacta(input_settings){
     
     
     this.show = function(){
+        if (settings.isGesta){
+            dataPigProdList = navigation.pigFarm.dataPigProdGestating;
+        }
+        else{
+            dataPigProdList = navigation.pigFarm.dataPigProdLactating;
+        }
+        
+        
         showPageHeaderAlarm = false; // Need to reset this.
         elemPageHeaderAlarm.style.display = 'none';
         
@@ -1329,11 +1272,12 @@ export function PageMobGestaLacta(input_settings){
                 dt_target_s  = formatDate(dt_target, FORMAT_COMPACT);
                 operation_name = pending_operation.account_pig_ops.name;
                 
+                let class_overdue = '';
                 if (dt_current >= dt_target){
-                    
+                    class_overdue = 'text-overdue';
                 }
                 
-                s_operation = `<div>${dt_target_s}</div><div>${operation_name}</div>`;
+                s_operation = `<div class="${class_overdue}">${dt_target_s}</div><div class="${class_overdue}">${operation_name}</div>`;
             } else{
                 s_operation = `<div>All Done
                                     <span class="operation-icon large icon-done">
@@ -1362,7 +1306,7 @@ export function PageMobGestaLacta(input_settings){
                 <td onclick="${s_click}">${pid}</td>
                 <td class="sow-name"  role="button" onclick='${s_click_sow}' style="margin-left:0; padding-left:0;">${sow_reference}</td>
                 <td class="date" role="button" onclick='${s_click}'>${s_date_important}</td>
-                <td class="operation" style="margin-left:0; padding-left:0;">
+                <td class="operation" style="margin-left:0; padding-left:0;" onclick="${s_click}">
                     ${s_operation}
                 </td>
             </tr>
