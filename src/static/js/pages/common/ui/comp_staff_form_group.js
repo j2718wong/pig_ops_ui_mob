@@ -395,6 +395,7 @@ export function ComponentStaffFormGroup(input_settings){
         
         if (settings.includeDoneByMe){
             elemChkDoneByMe.checked = false;
+            elemChkDoneByMe.dispatchEvent(new Event('change'));
         }
         
         elemServerErrorMsg.style.display = 'none';

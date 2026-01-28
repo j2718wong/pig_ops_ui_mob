@@ -57,7 +57,7 @@ export function ProdEntryPigOps(input_settings){
     let elemPigOpsTableBody     = null;
     
     
-    let dataPigProd             = null;
+    let curDataPigProd             = null;
 
     
     
@@ -342,7 +342,7 @@ ${html_style}
     
     
     this.show = function(data_pig_prod, options){
-        dataPigProd = data_pig_prod;
+        curDataPigProd = data_pig_prod;
         
         // Transform pig_ops to this format
         //{ id: 1, date: "Oct 15", isDue: true, operationName: "Vaccination - Sow", isForSow: true, 
@@ -602,9 +602,9 @@ ${html_style}
             let onclickFunc = function(){
                 console.log('clicked on date');
                 
-                const pid = dataPigProd.pig_production.farm_prod_id;
+                const pid = curDataPigProd.pig_production.farm_prod_id;
                 
-                const data_sow = dataPigProd.sow;
+                const data_sow = curDataPigProd.sow;
                 let sow_reference = '';
                 
                 if ((data_sow.name != null) && (data_sow.name.length >0)){
@@ -616,7 +616,7 @@ ${html_style}
                 
                 let is_gesta    = false;
                 let page_id     = PAGE_ID.PROD_LACTA_ENTRY;
-                if (dataPigProd.pig_production.prod_status_id == PROD_STATUS.GESTATING){
+                if (curDataPigProd.pig_production.prod_status_id == PROD_STATUS.GESTATING){
                     is_gesta    = true;
                     page_id     = PAGE_ID.PROD_GESTA_ENTRY;
                 }
@@ -634,7 +634,8 @@ ${html_style}
                     options.is_mark_done = false;
                 }
                 
-                
+				
+                navigation.pageProdPigOpsEdit.curDataPigProd = curDataPigProd;
                 navigation.pageProdPigOpsEdit.beforeShow(op.operation, options);
                 
                 const next_page = navigation.getPageContainer(PAGE_ID.PROD_PIG_OPS_EDIT);

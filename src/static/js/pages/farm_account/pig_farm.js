@@ -215,44 +215,6 @@ export function PigFarm(_navigation){
     } 
     
     
-    this.requestDataPigProd = function(pig_prod_type, callback_success, elem_show_error){
-        const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
-        
-        const is_mob_view = 1; // TODO for desktop view
-        
-        const base_url = window.location.origin;
-        const url = `${base_url}/pig_prod/list?pfhid=${cur_pig_farm_hid}&pig_prod_type=${pig_prod_type}&is_mob_view=${is_mob_view}`;
-        
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    if (callback_success){callback_success(response.data);}
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
-        
-    }
-    
     
     this.requestDataSowBoar = function(is_sow, callback_success, elem_show_error){
 
@@ -279,15 +241,18 @@ export function PigFarm(_navigation){
             async: true,
   
             beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
             },
   
             success: function(response){
                 if (response.result.num == 0){
                     if (is_sow){
-                        navigation.setDataSowList(response.data);
+                        thisObj.setDataSowList(response.data);
                     }
                     else{
-                        navigation.setDataBoarList(response.data);
+                        thisObj.setDataBoarList(response.data);
                     }
                     
                     if (callback_success){callback_success(response.data);}
@@ -302,12 +267,123 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
             }
         });
     }
     
     
+    // This is a request to get sow_boar details that returns tables.
+    this.requestDataSowBoarDetails = function(data_sow_boar, callback_success, 
+            elem_show_error){
+        
+        const sow_boar_hid = data_sow_boar.sow_boar.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/sow_boar/entry?sow_boar_hid=${sow_boar_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                
+                if (response.result.num == 0){
+                    
+                    // attach data to data_sow_boar
+                    data_sow_boar.data_details = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }    
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    // Note sow_boar.notes and sow_boar.health_issue are merged together in
+    // prod_notes table. There is a flag to tell if is  a health issue
+    this.requestDataSowBoarNotes = function(data_sow_boar, callback_success, 
+            elem_show_error){
+        
+        const sow_boar_hid = data_sow_boar.sow_boar.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_prod_notes/list?sow_boar_hid=${sow_boar_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                
+                if (response.result.num == 0){
+                    
+                    // response.data is ORDERED BY date DESC
+                    const health_issues = [];
+                    const notes = [];
+                    
+                    for (const cur_entry of response.data){
+                        if ('is_health_issue' in cur_entry.prod_notes){
+                            health_issues.push(cur_entry);
+                        }
+                        else{
+                            notes.push(cur_entry);
+                        }
+                    }
+                    
+                    data_sow_boar.data_details.list_health_issues = health_issues;
+                    data_sow_boar.data_details.list_notes        = notes;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }    
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+    
+
+
     this.requestDataPigFarmStaff = function(callback_success, elem_show_error){
         const base_url = window.location.origin;
         let url = `${base_url}/pig_farm_staff/list?pfhid=${thisObj.getPigFarmHid()}`;
@@ -321,6 +397,9 @@ export function PigFarm(_navigation){
             async: true,
   
             beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
             },
   
             success: function(response){
@@ -339,14 +418,62 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
             }
         });
         
     }
  
     
-    this.requestDataPigProdPigOps = function(data_pig_prod, operation_type,
+    
+    this.requestDataPigProd = function(pig_prod_type, callback_success, 
+            elem_show_error){
+        
+        const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
+        
+        const is_mob_view = 1; // TODO for desktop view
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/pig_prod/list?pfhid=${cur_pig_farm_hid}&pig_prod_type=${pig_prod_type}&is_mob_view=${is_mob_view}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+    
+    
+    
+    this.requestDataPigProdPigOps = function(data_pig_prod, prod_pig_ops_list,
             pig_prod_pig_ops_hid, callback_success, elem_show_error){
         
         const base_url = window.location.origin;
@@ -361,38 +488,15 @@ export function PigFarm(_navigation){
             async: true,
   
             beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
             },
   
             success: function(response){
                 if (response.result.num == 0){
                     
                     // Need to replace the pig_ops from the database
-                    
-                    
-                    let prod_pig_ops_list = null;
-                    
-                    switch(operation_type){
-                        case PIG_OPERATION_TYPE.GESTATING:{
-                            prod_pig_ops_list = data_pig_prod.gestating_ops;
-                            break;
-                        }
-                        
-                        case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
-                            prod_pig_ops_list = data_pig_prod.lactating_piglets_ops;
-                            break;
-                        }
-                        
-                        case PIG_OPERATION_TYPE.LACTATING_SOW:{
-                            prod_pig_ops_list = data_pig_prod.lactating_sow_ops;
-                            break;
-                        }
-                        
-                        default:{
-                            prod_pig_ops_list = data_pig_prod.lactating_ops;
-                            break;
-                        }
-                    }
-                    
                     
                     if (prod_pig_ops_list){
                         let index = 0;
@@ -422,12 +526,109 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
             }
         });
         
     }
  
     
-     
+    
+    this.requestDataPigProdNotes = function(data_pig_prod, callback_success, 
+            elem_show_error){
+        
+        const pig_prod_hid = data_pig_prod.pig_production.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_prod_notes/list?pig_prod_hid=${pig_prod_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                
+                if (response.result.num == 0){
+                    
+                    data_pig_prod.data_details.list_notes = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }    
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    
+    this.requestDataPigMedVac = function(data_sow_boar, callback_success, 
+            elem_show_error){
+        
+        const sow_boar_hid = data_sow_boar.sow_boar.hid;
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/pig_medvac/list?sow_boar_hid=${sow_boar_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    data_sow_boar.data_details.list_medvac = response.data;
+                    
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, thisObj.elemServerErrorMsg);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+					textStatus, errorThrown);
+            }
+        });
+        
+    }
+    
+    
+    
+    
 }

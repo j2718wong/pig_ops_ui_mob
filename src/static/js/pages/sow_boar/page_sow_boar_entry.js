@@ -36,6 +36,8 @@ import {TableGiltOps}           from './table_gilt_ops.js'
 
 
 
+
+
 export function PageSowBoarEntry(input_settings){
     PageViewPigFarmPage.call(this);
     
@@ -677,7 +679,7 @@ export function PageSowBoarEntry(input_settings){
             const callback_success = function(){
                 thisObj.beforeShowTab(componentTabsWithMore.curActiveTabId);
             }
-            navigation.managerRequest.requestDataSowBoarDetails(dataSowBoar, callback_success);
+            navigation.pigFarm.requestDataSowBoarDetails(dataSowBoar, callback_success);
         }
         
         

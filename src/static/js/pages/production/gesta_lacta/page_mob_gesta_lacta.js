@@ -1498,8 +1498,10 @@ export function PageMobGestaLacta(input_settings){
         };
         
         // Set this callback
-        navigation.pageProdPigOpsEdit.cbMobileOnSuccessEdit = thisObj.onSuccessEditPigOps;
-        navigation.pageProdPigOpsEdit.beforeShow(operation, options);
+        //navigation.pageProdPigOpsEdit.callbackOnSuccessEdit = thisObj.onSuccessEditPigOps;
+        
+		navigation.pageProdPigOpsEdit.curDataPigProd = data_pig_prod;
+		navigation.pageProdPigOpsEdit.beforeShow(operation, options);
         
         const next_page = navigation.getPageContainer(PAGE_ID.PROD_PIG_OPS_EDIT);
         navigation.showThisPage(next_page)

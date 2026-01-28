@@ -214,48 +214,14 @@ export function TableMedVac(input_settings){
     }
     
     
-    this.requestDataPigMedVac = function(callback){
-        const sow_boar_hid = dataSowBoar.sow_boar.hid;
+    this.requestDataPigMedVac = function(){
+        const callback_success = function(data){
+            thisObj.setDataEntryList(data);
+            thisObj.renderTable(data);
+        };
         
-        const base_url = window.location.origin;
-        const url = `${base_url}/pig_medvac/list?sow_boar_hid=${sow_boar_hid}`;
-        
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                thisObj.elemServerErrorMsg.style.display = 'none';
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    dataSowBoar.data_details.list_medvac = response.data;
-                    
-                    // Set table entry list; This will set also the entry count;
-                    thisObj.setDataEntryList(response.data);
-                    thisObj.renderTable(response.data);
-                    
-                    if (callback){
-                        callback(response.data);
-                    }
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, thisObj.elemServerErrorMsg);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
+        navigation.pigFarm.requestDataPigMedVac(dataSowBoar, callback_success,
+            thisObj.elemServerErrorMsg);
         
     }
     
