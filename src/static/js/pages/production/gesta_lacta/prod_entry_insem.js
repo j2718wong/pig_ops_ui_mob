@@ -609,7 +609,6 @@ export function ProdEntryInsem(input_settings){
     this.onClickSaveButton = function(){
         let input_elem      = null;
         let validation      = 0;
-        let proceed_to_save = 1;
         
 
         let input_insem_type        = insemType;
@@ -704,6 +703,14 @@ export function ProdEntryInsem(input_settings){
         }
         
         
+        
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+            return;
+        }
+        
+        
+        
         const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
 
@@ -760,6 +767,11 @@ export function ProdEntryInsem(input_settings){
         }
         
         
+		// TODO: check if there is a change in the data
+		
+		
+		
+		
         $.ajax({
             type: 'POST',
             contentType: "application/json",

@@ -692,14 +692,10 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         
         
-        // Check if user_account_hid is same with farm_account_hid;
-        const user_account_hid = navigation.userControl.getUserAccountHid();
-        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
-        
-        if (user_account_hid != farm_account_hid){
-            console.log('User account_hid not equal to farm_account_hid');
-            return;
-        } 
+        // Final check before sending request
+		if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+			return;
+		} 
         
         
         

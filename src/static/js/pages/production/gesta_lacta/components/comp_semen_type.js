@@ -140,8 +140,7 @@ export function ComponentSemenType(input_settings){
     
     this.onClickSave = function(){
         let input_elem      = null;
-        let validation      = -1;
-        let proceed_to_save = 1;
+        let validation      = 0;
         
         let is_duplicate    = 0;
         

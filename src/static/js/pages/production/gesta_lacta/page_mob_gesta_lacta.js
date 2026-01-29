@@ -1563,7 +1563,7 @@ export function PageMobGestaLacta(input_settings){
             navigation.pageProdPigOpsEdit.hide();
         };
         
-        navigation.pigFarm.requestDataPigProd(pig_prod_type, callback_success);
+        navigation.pigFarm.requestDataPigProdList(pig_prod_type, callback_success);
         
     }
 }

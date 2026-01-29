@@ -37,6 +37,9 @@ export function ProdEntryBirth(input_settings){
     const parentObj             = input_settings.parentObj;
     
     
+    const INVALID_MSG_NUM_INPUT     = 'Please enter a valid number.';
+    const INVALID_MSG_ZERO_INPUT    = 'At least one of these numbers cannot not be zero';
+    
     /*
     Typical settings = {
         navigation:             navigation,
@@ -82,7 +85,7 @@ export function ProdEntryBirth(input_settings){
     
 
     
-	this.callBackOnSuccessUpdate	= null;
+    this.callBackOnSuccessUpdate    = null;
     
     
     this.init = function(){
@@ -290,7 +293,7 @@ export function ProdEntryBirth(input_settings){
         
     }
     
-	
+    
     this.show = function(data_pig_prod, options){
         thisObj._resetForm();
         
@@ -349,11 +352,8 @@ export function ProdEntryBirth(input_settings){
     
     
     this.onClickSaveButton = function(){
-
         let input_elem      = null;
-        let cur_field       = null;
-        let validation      = -1;
-        let proceed_to_save = 1;
+        let validation      = 0;
         
        
         let input_date_birth= elemUiDateBirth.getValue();
@@ -363,60 +363,116 @@ export function ProdEntryBirth(input_settings){
         let input_staff_hid = elemStaff.val();
         
         
-        input_elem          = elemDateBirth;
-        cur_field           = selectedEntry.fieldBirthDate;
-        cur_field.newValue  = input_date_birth;
-        validation          = cur_field.validateChange();
-
-        if (validation != FIELD_VALIDATION_OK){
-            if (el_date_birth.classList.contains('is-invalid') == false){
-                el_date_birth.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
+        input_elem          = elemUiDateBirth.getElemText();
+        
+        // Convert date to YYYY-MM-DD format
+        const dt_birth      = new Date(input_date_birth);
+        if (isNaN(dt_birth.getTime())){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
         }
         
-        if (proceed_to_save == 0) {return;}
+        
+        
+        // Validate number counts
+        let number_dead = 0;
+        let number_male = 0;
+        let number_female = 0;
+        
+        input_elem          = componentNumDead.getElemText();
+        
+        try{
+            number_dead = parseInt(input_num_dead)
+        }catch (error){
+            componentNumDead.setTextInvalid(INVALID_MSG_NUM_INPUT);
+            validation = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        input_elem          = componentNumFemale.getElemText();
+        
+        try{
+            number_female = parseInt(input_num_female)
+        }catch (error){
+            componentNumFemale.setTextInvalid(INVALID_MSG_NUM_INPUT);
+            validation = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        input_elem          = componentNumMale.getElemText();
+        
+        try{
+            number_male = parseInt(input_num_male)
+        }catch (error){
+            componentNumMale.setTextInvalid(INVALID_MSG_NUM_INPUT);
+            validation = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        if (number_dead == 0 && number_male == 0 && number_female == 0){
+            componentNumDead.setTextInvalid(INVALID_MSG_ZERO_INPUT);
+            componentNumFemale.setTextInvalid(INVALID_MSG_ZERO_INPUT);
+            componentNumMale.setTextInvalid(INVALID_MSG_ZERO_INPUT);
+            
+            validation = -1;
+            
+            input_elem = componentNumDead.getElemText();
+            addValidationClassToElem(input_elem, validation);
+            
+            input_elem = componentNumFemale.getElemText();
+            addValidationClassToElem(input_elem, validation);
+            
+            input_elem = componentNumMale.getElemText();
+            addValidationClassToElem(input_elem, validation);
+            
+            if (validation != 0) {return;}
+        }
         
         
         // The staff can be from the drop down
         // Or Done by User (Done by Me checkbox)
         let done_by_user = 0
         
-        if (elemChkDoneByMe.checked){done_by_user = 1;}
+        
+        input_elem = componentStaff.getElemCheckBox();
+        if (input_elem.checked){
+            done_by_user = 1;
+        }
         
         if (done_by_user == 0){
-            input_elem          = elemStaff;
-            if (input_staff_hid == '0'){
-                if (input_elem.classList.contains('is-invalid') == false){
-                    input_elem.classList.add('is-invalid');
-                }
-                proceed_to_save = 0;
+            input_elem = componentStaff.getElemSelect();
+            if (input_staff_hid == '0'  || input_staff_hid == '-1'){
+                validation = -1;
             }
-            else{
-                if (input_elem.classList.contains('is-valid') == false){
-                    input_elem.classList.add('is-valid');
-                }
-                fieldStaffHid.newValue = input_staff_hid;
-            }
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
         }
-        if (proceed_to_save == 0) {return;}
         
         
         
-        if (selectedEntry.hasChanged() == false){
-            console.log('No change');
-            
-            
+        
+        
+        
+        // TODO need to check if data has changed or not;
+        // because changing date of birth is an expensive operation in back end
+        
+        
+        
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
             return;
         }
         
         
-        let user_hid        = gController.getUserUhid();
+        const user_hid      = navigation.userControl.getUserHid();
+        
         
         // send post request
         let post_data = {
@@ -430,7 +486,8 @@ export function ProdEntryBirth(input_settings){
             'num_pigs_female':  input_num_female
         };
         
-               
+        
+		// TODO: check if there is a change in the data
         
         $.ajax({
             type: 'POST',

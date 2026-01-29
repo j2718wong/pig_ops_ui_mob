@@ -331,12 +331,8 @@ export function PageSowBoarUpdateStatus(input_settings){
        
        
     this.onClickUpdateStatus = function(){
-
         let input_elem      = null;
-        let input_val       = null;
-        let cur_field       = null;
-        let validation      = -1;
-        let proceed_to_save = 1;
+        let validation      = 0;
         
         let is_duplicate    = 0;
         

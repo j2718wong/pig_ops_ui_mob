@@ -166,6 +166,15 @@ export function UiInputTextWithCounter(input_settings){
         elemText.classList.remove('is-valid', 'is-invalid');
         
         updateCharCounter(elemText, elemCharCounter, settings.textMaxChars);
+        
+        
+        if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
+            thisObj.setTextInvalid(settings.invalidFeedBack);
+        }
+        
+        if (settings.helpText && settings.helpText.length > 0){
+            thisObj.setTextHelp(settings.helpText);
+        }
     } 
     
     

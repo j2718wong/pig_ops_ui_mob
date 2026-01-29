@@ -53,7 +53,7 @@ export function PageHealthNotesAddEdit(input_settings){
         navigation:             this,
         uniqueKey:              'sow-boar-health',
         isNotes:                true,   // false is for Health Issue
-		elemDivContainer:       elemHiddenContMedVacAddEdit
+        elemDivContainer:       elemHiddenContMedVacAddEdit
     };
     */
     const settings              = input_settings;
@@ -291,7 +291,7 @@ export function PageHealthNotesAddEdit(input_settings){
         Typical options
         options ={
             is_add:                 true,   // false is edit
-			notes_type:				NOTES_TYPE.SOW_BOAR,
+            notes_type:             NOTES_TYPE.SOW_BOAR,
             row_entry:              null,   // not null if edit; entry to be edited
             callback_after_add:     thisObj.onSuccessAddEntry
             go_back_page:           go_back_page   // Go back to this page; this is Div element
@@ -382,33 +382,8 @@ export function PageHealthNotesAddEdit(input_settings){
         
         
         if (ev.checkValidity()) {
-            switch(input_field){
-                
-                case 'date_notes': {
-                    input_elem      = elemDateNotes;
-                    input_val       = input_elem.value;
-                    
-                    console.log('Test 1');
-                    
-                    // Already validated by bootstrap
-                    if (input_val.length > 0){
-                        validation = 0;
-                    }
-                    
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-            
-            }
+
+           
             
             
         } else {
@@ -420,12 +395,8 @@ export function PageHealthNotesAddEdit(input_settings){
     
     
     this.onClickSaveButton = function(){
-
         let input_elem      = null;
-        let input_val       = null;
-        let cur_field       = null;
         let validation      = 0;
-        let proceed_to_save = 1;
         
         let is_duplicate    = 0;
         
@@ -470,12 +441,8 @@ export function PageHealthNotesAddEdit(input_settings){
         
         
         
-        // Check if user_account_hid is same with farm_account_hid;
-        const user_account_hid = navigation.userControl.getUserAccountHid();
-        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
-        
-        if (user_account_hid != farm_account_hid){
-            console.log('User account_hid not equal to farm_account_hid');
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
             return;
         } 
         

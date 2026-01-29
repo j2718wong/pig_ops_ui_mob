@@ -559,7 +559,6 @@ export function PageProdGestatingAdd(input_settings){
     this.onClickSaveButton = function(){
         let input_elem      = null;
         let validation      = 0;
-        let proceed_to_save = 1;
         
 
         let input_sow_hid           = componentSelectSow.getValue();
@@ -661,6 +660,12 @@ export function PageProdGestatingAdd(input_settings){
             }
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
+        }
+        
+        
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+            return;
         }
         
         
@@ -773,9 +778,10 @@ export function PageProdGestatingAdd(input_settings){
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         };
         
-        navigation.pigFarm.requestDataPigProd(pig_prod_type, callback_success);
+        navigation.pigFarm.requestDataPigProdList(pig_prod_type, callback_success);
         
     }
     
     
+	
 }   

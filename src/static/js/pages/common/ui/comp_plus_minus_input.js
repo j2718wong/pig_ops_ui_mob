@@ -179,6 +179,15 @@ export function ComponentPlusMinusInput(input_settings){
     
     this.reset = function(){
         elemText.value = '0';
+		elemText.classList.remove('is-valid', 'is-invalid');
+		
+		if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
+            thisObj.setTextInvalid(settings.invalidFeedBack);
+        }
+        
+        if (settings.helpText && settings.helpText.length > 0){
+            thisObj.setTextHelp(settings.helpText);
+        }
     } 
     
 

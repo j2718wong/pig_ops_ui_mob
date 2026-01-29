@@ -317,7 +317,7 @@ export function ComponentStaffFormGroup(input_settings){
             if (options && options.elem_show_error){
                 elem_show_error = options.elem_show_error;}
             
-            navigation.pigFarm.requestDataPigFarmStaff(callback_success, 
+            navigation.pigFarm.requestDataPigFarmStaffList(callback_success, 
                 elem_show_error);
         
         }
@@ -416,10 +416,7 @@ export function ComponentStaffFormGroup(input_settings){
     
     this.onClickSave = function(){
         let input_elem      = null;
-        let input_val       = null;
-        let cur_field       = null;
         let validation      = -1;
-        let proceed_to_save = 1;
         
         let is_duplicate    = 0;
         
@@ -509,7 +506,7 @@ export function ComponentStaffFormGroup(input_settings){
                     
                     
                     
-                    navigation.pigFarm.requestDataPigFarmStaff(
+                    navigation.pigFarm.requestDataPigFarmStaffList(
                         callback_success, elemServerErrorMsg)
                 }
                 else{

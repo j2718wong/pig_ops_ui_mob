@@ -101,7 +101,7 @@ export function TableMedVac(input_settings){
             thisObj.renderTable(dataSowBoar.data_details.list_medvac);
         } else{
             
-            thisObj.requestDataPigMedVac();
+            thisObj.requestDataPigMedVacList();
         }
         
         
@@ -214,13 +214,13 @@ export function TableMedVac(input_settings){
     }
     
     
-    this.requestDataPigMedVac = function(){
+    this.requestDataPigMedVacList = function(){
         const callback_success = function(data){
             thisObj.setDataEntryList(data);
             thisObj.renderTable(data);
         };
         
-        navigation.pigFarm.requestDataPigMedVac(dataSowBoar, callback_success,
+        navigation.pigFarm.requestDataPigMedVacList(dataSowBoar, callback_success,
             thisObj.elemServerErrorMsg);
         
     }
@@ -270,12 +270,12 @@ export function TableMedVac(input_settings){
     
     
     this.onSuccessAddEntry = function(){
-        thisObj.requestDataPigMedVac();
+        thisObj.requestDataPigMedVacList();
     }
     
     
     this.onSuccessEditEntry = function(){
-        thisObj.requestDataPigMedVac();
+        thisObj.requestDataPigMedVacList();
     }
     
     

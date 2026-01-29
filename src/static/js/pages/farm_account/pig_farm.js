@@ -131,7 +131,7 @@ export function PigFarm(_navigation){
         else{
             
             const pig_prod_type = PIG_PROD_TYPE.GESTATING + PIG_PROD_TYPE.LACTATING;
-            thisObj.requestDataPigProd(pig_prod_type, 
+            thisObj.requestDataPigProdList(pig_prod_type, 
                 thisObj.setDataPigProdList);
         }
         
@@ -216,7 +216,25 @@ export function PigFarm(_navigation){
     
     
     
-    this.requestDataSowBoar = function(is_sow, callback_success, elem_show_error){
+    /**
+    Will return true if user is alowed to add or edit;
+    return false otherwise.
+    */
+    this.checkUserAccountBeforeAddEdit = function(){
+        // Check if user_account_hid is same with farm_account_hid;
+        const user_account_hid = navigation.userControl.getUserAccountHid();
+        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
+        
+        if (user_account_hid != farm_account_hid){
+            console.log('cannot Add or edit User account_hid not equal to farm_account_hid');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    
+    this.requestDataSowBoarList = function(is_sow, callback_success, elem_show_error){
 
         const sex               = is_sow? 'F':'M';
 
@@ -324,7 +342,7 @@ export function PigFarm(_navigation){
     
     // Note sow_boar.notes and sow_boar.health_issue are merged together in
     // prod_notes table. There is a flag to tell if is  a health issue
-    this.requestDataSowBoarNotes = function(data_sow_boar, callback_success, 
+    this.requestDataSowBoarNotesList = function(data_sow_boar, callback_success, 
             elem_show_error){
         
         const sow_boar_hid = data_sow_boar.sow_boar.hid;
@@ -384,7 +402,7 @@ export function PigFarm(_navigation){
     
 
 
-    this.requestDataPigFarmStaff = function(callback_success, elem_show_error){
+    this.requestDataPigFarmStaffList = function(callback_success, elem_show_error){
         const base_url = window.location.origin;
         let url = `${base_url}/pig_farm_staff/list?pfhid=${thisObj.getPigFarmHid()}`;
         
@@ -427,7 +445,7 @@ export function PigFarm(_navigation){
  
     
     
-    this.requestDataPigProd = function(pig_prod_type, callback_success, 
+    this.requestDataPigProdList = function(pig_prod_type, callback_success, 
             elem_show_error){
         
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
@@ -472,8 +490,55 @@ export function PigFarm(_navigation){
     }
     
     
+	
+    this.requestDataPigProdEntry = function(pig_prod_hid, callback_success, 
+            elem_show_error){
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_prod/entry/${pig_prod_hid}`;
+        
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
+                    
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+ 
     
-    this.requestDataPigProdPigOps = function(data_pig_prod, prod_pig_ops_list,
+    
+    this.requestDataPigProdPigOpsEntry = function(data_pig_prod, prod_pig_ops_list,
             pig_prod_pig_ops_hid, callback_success, elem_show_error){
         
         const base_url = window.location.origin;
@@ -535,7 +600,7 @@ export function PigFarm(_navigation){
  
     
     
-    this.requestDataPigProdNotes = function(data_pig_prod, callback_success, 
+    this.requestDataPigProdNotesList = function(data_pig_prod, callback_success, 
             elem_show_error){
         
         const pig_prod_hid = data_pig_prod.pig_production.hid;
@@ -582,7 +647,7 @@ export function PigFarm(_navigation){
     
     
     
-    this.requestDataPigMedVac = function(data_sow_boar, callback_success, 
+    this.requestDataPigMedVacList = function(data_sow_boar, callback_success, 
             elem_show_error){
         
         const sow_boar_hid = data_sow_boar.sow_boar.hid;
@@ -622,7 +687,7 @@ export function PigFarm(_navigation){
   
             error: function(jqXHR, textStatus, errorThrown){
                 navigation.serverError.serverErrorThrown(jqXHR, 
-					textStatus, errorThrown);
+                    textStatus, errorThrown);
             }
         });
         
@@ -630,5 +695,58 @@ export function PigFarm(_navigation){
     
     
     
-    
+    this.onSuccessEditGestatingEntry = function(new_prod_entry){
+        /* These are the sequence of steps that will happen if a 
+        gestating entry is edited;
+        
+        1.) If no change in status (still in PROD_STATUS.GESTATING), 
+        will remove the old gestating entry in thisObj.dataPigProdGestating 
+        and replace with new_prod_entry.
+        
+        2.) If there is a change in status, from PROD_STATUS.GESTATING to
+        PROD_STATUS.LACTATING, 
+        
+        - will remove the old gestating entry in thisObj.dataPigProdGestating
+        
+        - will request for production list with PROD_STATUS.LACTATING;
+        20260129: still thinking if not to request for the whole lactating list 
+        instead insert new_prod_entry in thisObj.dataPigProdLactating; 
+        requesting whole lactating list is an expensive operation.
+        
+        
+        */
+        
+        let index;
+        let cur_entry;
+        
+        for(index = 0 index<thisObj.dataPigProdGestating.length; index++){
+            cur_entry = thisObj.dataPigProdGestating[index];
+            
+            if (cur_entry.pig_production.hid ==  new_prod_entry.pig_production.hid){
+                const old_prod_status = cur_entry.pig_production.prod_status_id;
+                const new_prod_status = new_prod_entry.pig_production.prod_status_id;
+                
+                if (old_prod_status == new_prod_status){
+                    thisObj.dataPigProdGestating.splice(index, 1, new_prod_entry);
+                    return;
+                }
+                
+                if (new_prod_entry.pig_production.hid == PROD_STATUS.LACTATING){
+                    // Remove from old entry from gestating list
+                    thisObj.dataPigProdGestating.splice(index, 1);
+                    
+                    // Request new lactating list
+                    const callback_success = function(data){
+                        thisObj.dataPigProdLactating = data;
+                    };
+                    
+                    const pig_prod_type =  PIG_PROD_TYPE.LACTATING;
+                    thisObj.requestDataPigProdList(pig_prod_type, 
+                        callback_success);
+
+                }
+                
+            }
+        }
+    }
 }

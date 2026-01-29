@@ -649,7 +649,6 @@ export function PageMedVacAddEdit(input_settings){
     this.onClickSaveButton = function(){
         let input_elem      = null;
         let validation      = 0;
-        let proceed_to_save = 1;
         
         let is_duplicate    = 0;
         
@@ -664,7 +663,7 @@ export function PageMedVacAddEdit(input_settings){
         
 
         
-		input_elem          = elemUiDateMedVac.getElemText();
+        input_elem          = elemUiDateMedVac.getElemText();
         if (input_date_medvac.length == 0){
             validation = -1;
             addValidationClassToElem(input_elem, validation);
@@ -712,7 +711,7 @@ export function PageMedVacAddEdit(input_settings){
         if (validation != 0) {return;}
         
         
-		// Notes is required for Medvac
+        // Notes is required for Medvac
         input_elem = elemUiNotes.getElemText();
         if (input_notes.length == 0){
             validation = -1;
@@ -739,12 +738,8 @@ export function PageMedVacAddEdit(input_settings){
         
         
         
-        // Check if user_account_hid is same with farm_account_hid;
-        const user_account_hid = navigation.userControl.getUserAccountHid();
-        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
-        
-        if (user_account_hid != farm_account_hid){
-            console.log('User account_hid not equal to farm_account_hid');
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
             return;
         } 
         
