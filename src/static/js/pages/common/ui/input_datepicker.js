@@ -37,11 +37,13 @@ export function UiInputDatePicker(input_settings){
     
     const elemIdText            = `${settings.uniqueKey}-text`;
     const elemIdTextInv         = `${settings.uniqueKey}-text-inv`;
-  
+	const elemIdTextHelp        = `${settings.uniqueKey}-text-help`;
+	
     
+	let elemUiShow              = null;
     let elemText                = null;
     let elemTextInv             = null;
-    
+	let elemTextHelp            = null;
     
     
     this.getHtml = function(){
@@ -65,12 +67,12 @@ export function UiInputDatePicker(input_settings){
         
         let s_invalid = '';
         if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
-            s_invalid = `<div class="invalid-feedback" id="${elemIdTextInv}">${settings.invalidFeedBack} </div>`;
+            s_invalid = settings.invalidFeedBack;
         }
         
         let s_help = '';
         if (settings.helpText && settings.helpText.length > 0){
-            s_help = `<div class="form-text">${settings.helpText}</div>`;
+            s_help = settings.helpText;
         }
         
         
@@ -86,8 +88,9 @@ export function UiInputDatePicker(input_settings){
                     id="${elemIdText}" 
                     ${s_required}>
             
-            ${s_invalid}
-            ${s_help}
+            <div class="invalid-feedback" id="${elemIdTextInv}">${s_invalid} </div>
+            <div class="form-text" id="${elemIdTextHelp}">${s_help}</div>
+        
         </div>
         `;
         
@@ -95,10 +98,15 @@ export function UiInputDatePicker(input_settings){
     
     
     this._findElements = function(){
-        thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
-        
+        elemUiShow      		= document.getElementById(elemIdUiShow);
         elemText                = document.getElementById(elemIdText);
         elemTextInv             = document.getElementById(elemIdTextInv);
+		elemTextHelp            = document.getElementById(elemIdTextHelp);
+        
+        
+        thisObj.elemUiShow      = elemUiShow;
+        thisObj.elemTextInv     = elemTextInv;
+        thisObj.elemTextHelp    = elemTextHelp;
     }
     
     
@@ -167,9 +175,5 @@ export function UiInputDatePicker(input_settings){
         elemText.classList.remove('is-valid', 'is-invalid');
      } 
     
-    
-    this.setTextInvalid = function(text){
-        elemTextInv.textContent = text;
-    }
     
 }

@@ -19,7 +19,7 @@ export function ComponentPlusMinusInput(input_settings){
         iconLabel:      '<i class="fas fa-venus" style="color: var(--icon-pink);"></i>',
         textLabel:      'Number of Live Female Piglets',
         minValue:       0,
-		value:			0,
+        value:          0,
         step:           1,
         isRequired:     true,
         invalidFeedBack: null,
@@ -38,20 +38,22 @@ export function ComponentPlusMinusInput(input_settings){
     
     if ('step' in settings){}
     else{settings.step = 1;}
-	
-	if ('value' in settings){}
+    
+    if ('value' in settings){}
     else{settings.value = 0;}
     
-	
+    
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     
     const elemIdText            = `${settings.uniqueKey}-num-input`;
     const elemIdTextInv         = `${settings.uniqueKey}-text-inv`;
-  
+    const elemIdTextHelp        = `${settings.uniqueKey}-text-help`;
     
+    
+    let elemUiShow              = null;
     let elemText                = null;
     let elemTextInv             = null;
-    
+    let elemTextHelp            = null;
     
     
     this.getHtml = function(){
@@ -76,12 +78,12 @@ export function ComponentPlusMinusInput(input_settings){
         
         let s_invalid = '';
         if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
-            s_invalid = `<div class="invalid-feedback" id="${elemIdTextInv}">${settings.invalidFeedBack} </div>`;
+            s_invalid = settings.invalidFeedBack;
         }
         
         let s_help = '';
         if (settings.helpText && settings.helpText.length > 0){
-            s_help = `<div class="form-text">${settings.helpText}</div>`;
+            s_help = settings.helpText;
         }
         
         
@@ -99,8 +101,8 @@ export function ComponentPlusMinusInput(input_settings){
                 <button class="number-btn plus" data-target="${elemIdText}">+</button>
             </div>
             
-            ${s_invalid}
-            ${s_help}
+            <div class="invalid-feedback" id="${elemIdTextInv}">${s_invalid} </div>
+            <div class="form-text" id="${elemIdTextHelp}">${settings.helpText}</div>
         </div>
         `;
         
@@ -108,11 +110,15 @@ export function ComponentPlusMinusInput(input_settings){
     
     
     this._findElements = function(){
-        thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
-        
-        elemText            	= document.getElementById(elemIdText);
-
+        elemUiShow              = document.getElementById(elemIdUiShow);
+        elemText                = document.getElementById(elemIdText);
         elemTextInv             = document.getElementById(elemIdTextInv);
+        elemTextHelp            = document.getElementById(elemIdTextHelp);
+        
+        
+        thisObj.elemUiShow      = elemUiShow;
+        thisObj.elemTextInv     = elemTextInv;
+        thisObj.elemTextHelp    = elemTextHelp;
     }
     
     
@@ -175,9 +181,5 @@ export function ComponentPlusMinusInput(input_settings){
         elemText.value = '0';
     } 
     
-    
-    this.setTextInvalid = function(text){
-        elemTextInv.textContent = text;
-    }
-    
+
 }

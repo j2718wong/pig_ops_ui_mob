@@ -13,6 +13,12 @@ export function UiBasic(){
     this.elemUiShow             = null;
     
     
+    this.elemTextInv            = null;
+    
+    
+    this.elemTextHelp           = null;
+    
+    
     // Must be overridden
     this._findElements = function(){}
     
@@ -84,6 +90,21 @@ export function UiBasic(){
             }
         }
     }
+    
+    
+    this.setTextInvalid = function(text){
+        if (thisObj.elemTextInv){
+            thisObj.elemTextInv.textContent = text;
+        }
+    }
+    
+    
+    this.setTextHelp = function(text){
+        if (thisObj.elemTextHelp){
+            thisObj.elemTextHelp.textContent = text;
+        }
+    } 
+    
     
     
 }

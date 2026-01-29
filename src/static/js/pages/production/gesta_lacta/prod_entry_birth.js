@@ -78,11 +78,11 @@ export function ProdEntryBirth(input_settings){
     let elemBtnSave             = null;
     
     
-    let curDataPigProd             = null;
+    let curDataPigProd          = null;
     
 
     
-
+	this.callBackOnSuccessUpdate	= null;
     
     
     this.init = function(){
@@ -120,7 +120,7 @@ export function ProdEntryBirth(input_settings){
         componentNumFemale      = new ComponentPlusMinusInput({
             uniqueKey:          `${settings.uniqueKey}-num-female`,
             
-            className:          'form-group',
+            className:          'form-group-number',
             iconLabel:          '<i class="fas fa-venus" style="color: var(--icon-pink);"></i>',
             textLabel:          'Number of Live Female Piglets',
             minValue:           0,
@@ -134,7 +134,7 @@ export function ProdEntryBirth(input_settings){
         componentNumMale        = new ComponentPlusMinusInput({
             uniqueKey:          `${settings.uniqueKey}-num-male`,
             
-            className:          'form-group',
+            className:          'form-group-number',
             iconLabel:          '<i class="fas fa-mars" style="color: var(--icon-blue);"></i>',
             textLabel:          'Number of Live Male Piglets',
             minValue:           0,
@@ -148,7 +148,7 @@ export function ProdEntryBirth(input_settings){
         componentNumDead        = new ComponentPlusMinusInput({
             uniqueKey:          `${settings.uniqueKey}-num-dead`,
             
-            className:          'form-group',
+            className:          'form-group-number',
             textLabel:          'Number of Stillbirth Piglets',
             minValue:           0,
             step:               1,
@@ -290,6 +290,7 @@ export function ProdEntryBirth(input_settings){
         
     }
     
+	
     this.show = function(data_pig_prod, options){
         thisObj._resetForm();
         
@@ -334,46 +335,8 @@ export function ProdEntryBirth(input_settings){
         if (ev.checkValidity()) {
             switch(input_field){
             
-                
-                case 'date_birth': {
-                    input_elem  = elemIdDateBirth;
-                    input_val   = input_elem.value || null;
-                    cur_field   = newEntry.fieldShortName;
-                    
-                    
-                    cur_field.newValue = input_val;
-                    validation = cur_field.validateChange();
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-                case 'description': {
-                    input_elem  = elemDescription;
-                    input_val   = input_elem.value || null;
-                    cur_field   = newEntry.fieldDescription;
-                    
-                    
-                    cur_field.newValue = input_val;
-                    validation = cur_field.validateChange();
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
+
+             
             }
             
             
@@ -393,10 +356,10 @@ export function ProdEntryBirth(input_settings){
         let proceed_to_save = 1;
         
        
-        let input_date_birth= elemDateBirth.value;
-        let input_num_dead  = parseInt(elemNumDead.value);
-        let input_num_male  = parseInt(elemNumMale.value);
-        let input_num_female= parseInt(elemNumFemale.value);
+        let input_date_birth= elemUiDateBirth.getValue();
+        let input_num_dead  = componentNumDead.getValue();
+        let input_num_male  = componentNumMale.getValue();
+        let input_num_female= componentNumFemale.getValue();
         let input_staff_hid = elemStaff.val();
         
         
@@ -498,22 +461,7 @@ export function ProdEntryBirth(input_settings){
         });
         
     }
-
-    
-    
-    this._onSuccessUpdatePigOps = function(){
-        if (navigation.curScreenIsMobile > 0){
-            
-            if (thisObj.callbackOnSuccessEdit){
-                thisObj.callbackOnSuccessEdit(pigProdPid);
-            }
-        }
-        
-        
-        // TODO for desktop
-       
-    }
-    
+  
     
 
 }

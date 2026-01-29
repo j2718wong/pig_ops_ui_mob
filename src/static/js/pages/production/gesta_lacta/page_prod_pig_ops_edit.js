@@ -356,7 +356,17 @@ export function PageProdPigOpsEdit(input_settings){
         componentAccMedVac.beforeShow();
         
         componentStaff.beforeShow();
-
+        
+        
+        // Update elemUiNotes help text
+        if (curDataProdPigOps.account_pig_ops.is_medvac > 0){
+            // TODO temporary hardcode
+            elemUiNotes.setTextHelp('Describe the dosage given to pig. Sample: 2mL injection.');
+        }
+        
+        else{
+            elemUiNotes.setTextHelp('');
+        }
         
         
         // Set Page Title
@@ -432,20 +442,21 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     this.populateForm = function(data_operation){
-        const dt_actual = new Date(data_operation.pig_prod_pig_ops.date_actual);
-        elemDateActual.value = formatDate(dt_actual, FORMAT_LONG_MONTH);
-    
+        elemUiDateActual.setDate(data_operation.pig_prod_pig_ops.date_actual);
+        componentStaff.setValue(data_operation.staff.hid);
+        elemUiNotes.setValue(data_operation.notes.notes);
         
-        const staff_hid = data_operation.staff.hid;
-        
-        if (staff_hid != null){
-            const $elemStaff = $(elemStaff);
-            $elemStaff.val(data_operation.staff.hid).change();
+        // populate MedVac related data if ther are any
+        if (curDataProdPigOps.account_pig_ops.is_medvac > 0){
+            if ('pig_medvac' in curDataProdPigOps){
+                const pig_medvac = curDataProdPigOps.pig_medvac;
+                
+                componentMedVacBrand.setValue(pig_medvac.brand.hid);
+                componentMedVacType.setValue(pig_medvac.brand.hid);
+                componentAccMedVac.setValue(pig_medvac.brand.hid);
+            }
+            
         }
-        else{
-            console.log('No staff hid');
-        }
-        elemNotes.value = data_operation.notes.notes;
     }
     
     
@@ -598,6 +609,10 @@ export function PageProdPigOpsEdit(input_settings){
                 if (response.result.num == 0){
                     thisObj._onSuccessEditPigOps(response.data);
                 }
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elemServerErrorMsg);
+                }
             },
   
             complete: function(){
@@ -622,13 +637,17 @@ export function PageProdPigOpsEdit(input_settings){
         let operation_type = curDataProdPigOps.pig_prod_pig_ops.operation_type
         switch (operation_type){
             case PIG_OPERATION_TYPE.GESTATING:{
-                let prod_pig_ops_list = data_pig_prod.gestating_ops;
                 
                 // Replace only curDataProdPigOps from the database.
                 const data_pig_prod = thisObj.curDataPigProd;
                 const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
                 const callback_success = thisObj.callbackOnSuccessEdit;
                 const elem_show_error = elemServerErrorMsg;
+                
+                let prod_pig_ops_list = data_pig_prod.gestating_ops;
+                
+                if (callback_success) {console.log('has callback');}
+                else{console.log('has no callback');}               
                 
                 navigation.pigFarm.requestDataPigProdPigOps(data_pig_prod, 
                     prod_pig_ops_list, pig_prod_pig_ops_hid, callback_success, 
@@ -652,6 +671,13 @@ export function PageProdPigOpsEdit(input_settings){
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
+                
+                // Replace only curDataProdPigOps from the database.
+                const data_pig_prod = thisObj.curDataPigProd;
+                const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
+                const callback_success = thisObj.callbackOnSuccessEdit;
+                const elem_show_error = elemServerErrorMsg;
+                
                 let prod_pig_ops_list = null;
                 
                 if ('lactating_piglets_ops' in data_pig_prod){
@@ -661,12 +687,6 @@ export function PageProdPigOpsEdit(input_settings){
                     prod_pig_ops_list = data_pig_prod.lactating_ops;
                 }
                 
-                // Replace only curDataProdPigOps from the database.
-                const data_pig_prod = thisObj.curDataPigProd;
-                const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
-                const callback_success = thisObj.callbackOnSuccessEdit;
-                const elem_show_error = elemServerErrorMsg;
-                
                 navigation.pigFarm.requestDataPigProdPigOps(data_pig_prod, 
                     prod_pig_ops_list, pig_prod_pig_ops_hid, callback_success, 
                     elem_show_error);
@@ -675,6 +695,13 @@ export function PageProdPigOpsEdit(input_settings){
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
+                
+                // Replace only curDataProdPigOps from the database.
+                const data_pig_prod = thisObj.curDataPigProd;
+                const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
+                const callback_success = thisObj.callbackOnSuccessEdit;
+                const elem_show_error = elemServerErrorMsg;
+                
                 let prod_pig_ops_list = null;
                 
                 if ('lactating_sow_ops' in data_pig_prod){
@@ -683,12 +710,6 @@ export function PageProdPigOpsEdit(input_settings){
                 else{
                     prod_pig_ops_list = data_pig_prod.lactating_ops;
                 }
-                
-                // Replace only curDataProdPigOps from the database.
-                const data_pig_prod = thisObj.curDataPigProd;
-                const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
-                const callback_success = thisObj.callbackOnSuccessEdit;
-                const elem_show_error = elemServerErrorMsg;
                 
                 navigation.pigFarm.requestDataPigProdPigOps(data_pig_prod, 
                     prod_pig_ops_list, pig_prod_pig_ops_hid, callback_success, 

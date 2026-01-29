@@ -684,11 +684,11 @@ export function PageSowBoarAddEdit(input_settings){
         */
         thisObj._resetForm();
         
-		
-		thisObj.setDataSowList(navigation.pigFarm.dataSowList);
-		thisObj.setDataBoarList(navigation.pigFarm.dataBoarList);
-		
-		
+        
+        thisObj.setDataSowList(navigation.pigFarm.dataSowList);
+        thisObj.setDataBoarList(navigation.pigFarm.dataBoarList);
+        
+        
         showOptions = options;
         
         let html;

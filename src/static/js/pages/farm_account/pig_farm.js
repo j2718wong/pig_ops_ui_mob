@@ -613,7 +613,7 @@ export function PigFarm(_navigation){
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(
-                        response, thisObj.elemServerErrorMsg);
+                        response, elem_show_error);
                 }
             },
   

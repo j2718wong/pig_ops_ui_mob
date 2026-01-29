@@ -57,8 +57,9 @@ export function ProdEntryPigOps(input_settings){
     let elemPigOpsTableBody     = null;
     
     
-    let curDataPigProd             = null;
+    let curDataPigProd          = null;
 
+    let showOptions             = null;
     
     
     this.init = function(){
@@ -344,6 +345,11 @@ ${html_style}
     this.show = function(data_pig_prod, options){
         curDataPigProd = data_pig_prod;
         
+        
+        if (options){
+            showOptions = options;
+        }
+        
         // Transform pig_ops to this format
         //{ id: 1, date: "Oct 15", isDue: true, operationName: "Vaccination - Sow", isForSow: true, 
         //  doneBy: "J. Smith", dateActual: "Oct 14", isCompleted: true },
@@ -351,19 +357,19 @@ ${html_style}
 
         
         // 
-        // if options.show_gesta is specified,
-        //      if options.show_gesta is true, show Gestating Operations
-        //      if options.show_gesta is false, show Lactating Operations (combined, sow and piglets)
+        // if showOptions.show_gesta is specified,
+        //      if showOptions.show_gesta is true, show Gestating Operations
+        //      if showOptions.show_gesta is false, show Lactating Operations (combined, sow and piglets)
         //
-        // if no options.show_gesta not defined, will read data_pig_prod.pig_production.prod_status_id
+        // if no showOptions.show_gesta not defined, will read data_pig_prod.pig_production.prod_status_id
         // This is the current status of the pig_production.
         // 
         
         let operations = null; 
         let is_gesta_operations = false;
         
-        if ('show_gesta' in options){
-            if (options.show_gesta == true){
+        if ('show_gesta' in showOptions){
+            if (showOptions.show_gesta == true){
                 operations = data_pig_prod.gestating_ops;
                 is_gesta_operations = true;
             }
@@ -634,7 +640,8 @@ ${html_style}
                     options.is_mark_done = false;
                 }
                 
-				
+                navigation.pageProdPigOpsEdit.callbackOnSuccessEdit = thisObj.onSuccessEditPigOps;
+                
                 navigation.pageProdPigOpsEdit.curDataPigProd = curDataPigProd;
                 navigation.pageProdPigOpsEdit.beforeShow(op.operation, options);
                 
@@ -731,5 +738,10 @@ ${html_style}
     }
 
     
+    this.onSuccessEditPigOps = function(){
+        // redraw table
+        thisObj.show(curDataPigProd);
+        
+    }
 
 }
