@@ -85,9 +85,6 @@ export function ProdEntryBirth(input_settings){
     
 
     
-    this.callBackOnSuccessUpdate    = null;
-    
-    
     this.init = function(){
         this.render();
         this.afterHtmlRender();
@@ -311,7 +308,8 @@ export function ProdEntryBirth(input_settings){
         elemSow.innerHTML = html_sow;
         
         elemSow.onclick = function(){
-            navigation.pageSowBoarList.gotoSowBoarEntryPage(null, data_sow.hid);
+            const sow_boar_list = navigation.pigFarm.dataSowList;
+            navigation.pageSowBoarList.gotoSowBoarEntryPage(sow_boar_list, data_sow.hid);
         };
         
         
@@ -372,6 +370,11 @@ export function ProdEntryBirth(input_settings){
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
+        
+        const dt_birth_s   = dt_birth.toLocaleDateString('en-CA');
+        validation          = 0
+        addValidationClassToElem(input_elem, validation);
+        if (validation != 0) {return;}
         
         
         
@@ -477,17 +480,17 @@ export function ProdEntryBirth(input_settings){
         // send post request
         let post_data = {
             'uhid':             user_hid,
-            'pig_prod_hid':     selectedEntry.hid,
+            'pig_prod_hid':     curDataPigProd.pig_production.hid,
             'birth_staff_hid':  input_staff_hid,
             
-            'date_actual_birth': input_date_birth,
-            'num_pigs_dead':    input_num_dead,
-            'num_pigs_male':    input_num_male,
-            'num_pigs_female':  input_num_female
+            'date_actual_birth': dt_birth_s,
+            'num_pigs_dead':    number_dead,
+            'num_pigs_male':    number_male,
+            'num_pigs_female':  number_female
         };
         
         
-		// TODO: check if there is a change in the data
+        // TODO: check if there is a change in the data
         
         $.ajax({
             type: 'POST',
@@ -503,6 +506,8 @@ export function ProdEntryBirth(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    thisObj.onSuccessUpdateBirth();
+                    
                     if (thisObj.callBackOnSuccessUpdate != null){
                         thisObj.callBackOnSuccessUpdate();
                     }
@@ -520,5 +525,63 @@ export function ProdEntryBirth(input_settings){
     }
   
     
+    this.onSuccessUpdateBirth = function(){
+        // There are two cases that are covered for this:
+        //
+        // 1.) Case 1: curDataPigProd has no date_actual_birth (PROD_STATUS.GESTATING)
+        // and date_actual_birth is updated; The sequence of steps that should happen is
+        //  - remove curDataPigProd from gestating List
+        //  - request Lactating List
+        //  - open to Lactating List Page; not to Lactating Entry page; 
+        //      this is to show that a new lactating entry has been added.
+        //
+        // 2.) Case 2: curDataPigProd has date_actual_birth (PROD_STATUS.LACTATING)
+        // The sequence of steps that should happen is
+        //  - request updated prod_entry data and replace curDataPigProd;
+        //  - should go back to Lactating Page showing PigOps List; this is 
+        //      important because any change in actual date_of_birth will 
+        //      recalculate lactating pigops schedule.
+        
+        
+        const cur_prod_status = curDataPigProd.pig_production.prod_status_id;
+        
+        if (cur_prod_status == PROD_STATUS.GESTATING){
+            // Remove from curDataPigProd from gestating List
+            const pig_prod_hid = curDataPigProd.pig_production.hid;
+            const prod_list = navigation.pigFarm.dataPigProdGestating;
+            
+            navigation.pigFarm.removeFromProdList(pig_prod_hid, prod_list);
+        
+            const callback_success = function(data){
+                navigation.pigFarm.dataPigProdLactating = data;
+            };
+            
+            
+            // request Lactating List
+            navigation.pigFarm.requestDataPigProdList(PIG_PROD_TYPE.LACTATING)
+        
+        
+            // Open to Lactating List
+            const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
+            navigation._onClickNavProdGestaLacta(null, operation_type);
+        }
+        else{
+            const pig_prod_hid = curDataPigProd.pig_production.hid;
+            const prod_list = navigation.pigFarm.dataPigProdGestating;
+            
+            const callback_success = function(data){
+                navigation.pigFarm.replaceInProdList(pig_prod_hid, 
+                        prod_list, data);
+            };
+            
+            //request updated prod_entry data and replace curDataPigProd;
+            navigation.pigFarm.requestDataPigProdEntry(pig_prod_hid, 
+                callback_success);
+                
+            //go back to Lactating Page showing PigOps List;
+            
+        }
+        
+    }
 
 }

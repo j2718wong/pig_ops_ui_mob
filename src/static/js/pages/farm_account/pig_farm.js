@@ -209,7 +209,7 @@ export function PigFarm(_navigation){
         if (sow_boar_list == null){return null;}
         
         for (const cur_entry of sow_boar_list){
-            if (cur_entry.hid == sow_boar_hid){return cur_entry}
+            if (cur_entry.sow_boar.hid == sow_boar_hid){return cur_entry}
         }
         return null;
     } 
@@ -448,6 +448,11 @@ export function PigFarm(_navigation){
     this.requestDataPigProdList = function(pig_prod_type, callback_success, 
             elem_show_error){
         
+        // Note: There is a difference between PIG_PROD_TYPE and PROD_STATUS
+        // constants.
+        
+        
+        
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
         
         const is_mob_view = 1; // TODO for desktop view
@@ -490,7 +495,7 @@ export function PigFarm(_navigation){
     }
     
     
-	
+    
     this.requestDataPigProdEntry = function(pig_prod_hid, callback_success, 
             elem_show_error){
         
@@ -513,6 +518,7 @@ export function PigFarm(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
+                    
                     
                     if (callback_success){
                         callback_success(response.data);
@@ -694,6 +700,43 @@ export function PigFarm(_navigation){
     }
     
     
+    /* Will remove pig_prod_entry from given prod_list.
+    * @param prod_list - either 
+        this.dataPigProdGestating
+        this.dataPigProdLactating
+        this.dataPigProdFattening
+    
+    
+    */
+    this.removeFromProdList = function(pig_prod_hid, prod_list){
+        let index;
+        let cur_entry;
+        
+        for(index = 0; index<prod_list.length; index++){
+            cur_entry = thisObj.dataPigProdGestating[index];
+            
+            if (cur_entry.pig_production.hid == pig_prod_hid){
+                prod_list.splice(index, 1);
+                return;
+            }
+        }
+    }
+    
+    
+    this.replaceInProdList = function(pig_prod_hid, prod_list, new_prod_entry){
+        let index;
+        let cur_entry;
+        
+        for(index = 0; index<prod_list.length; index++){
+            cur_entry = thisObj.dataPigProdGestating[index];
+            
+            if (cur_entry.pig_production.hid == pig_prod_hid){
+                prod_list.splice(index, 1, new_prod_entry);
+                return;
+            }
+        }
+    }
+    
     
     this.onSuccessEditGestatingEntry = function(new_prod_entry){
         /* These are the sequence of steps that will happen if a 
@@ -719,7 +762,7 @@ export function PigFarm(_navigation){
         let index;
         let cur_entry;
         
-        for(index = 0 index<thisObj.dataPigProdGestating.length; index++){
+        for(index = 0; index<thisObj.dataPigProdGestating.length; index++){
             cur_entry = thisObj.dataPigProdGestating[index];
             
             if (cur_entry.pig_production.hid ==  new_prod_entry.pig_production.hid){

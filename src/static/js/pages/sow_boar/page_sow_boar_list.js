@@ -1495,7 +1495,7 @@ ${html_style}
         let next_entry  = null;
         
         if (sow_boar_list == null){
-            sow_boar_list = dataSowList;
+            sow_boar_list = navigation.pigFarm.dataSowList;
             sow_boar_type = SOW_BOAR_TYPE.SOW;
             
             

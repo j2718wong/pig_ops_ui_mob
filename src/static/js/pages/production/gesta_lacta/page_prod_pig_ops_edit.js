@@ -322,7 +322,7 @@ export function PageProdPigOpsEdit(input_settings){
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
-        elemUiNotes.reset();
+        elemUiDateActual.reset();
         
         componentMedVacBrand.reset();
         componentMedVacType.reset();
@@ -446,20 +446,35 @@ export function PageProdPigOpsEdit(input_settings){
         componentStaff.setValue(data_operation.staff.hid);
         elemUiNotes.setValue(data_operation.notes.notes);
         
+        console.log('data_operation');
+        console.log(data_operation);
+        
         // populate MedVac related data if ther are any
-        if (curDataProdPigOps.account_pig_ops.is_medvac > 0){
-            if ('pig_medvac' in curDataProdPigOps){
-                const pig_medvac = curDataProdPigOps.pig_medvac;
+        if (data_operation.account_pig_ops.is_medvac > 0){
+            if ('pig_medvac' in data_operation){
+                const pig_medvac = data_operation.pig_medvac;
                 
-                componentMedVacBrand.setValue(pig_medvac.brand.hid);
-                componentMedVacType.setValue(pig_medvac.brand.hid);
-                componentAccMedVac.setValue(pig_medvac.brand.hid);
+                // Necessary to display fully first the container
+                setTimeout(function(){
+                    componentMedVacBrand.setValue(pig_medvac.brand.hid);
+                    componentMedVacType.setValue(pig_medvac.type.hid);
+                    componentAccMedVac.setValue(pig_medvac.acc_medvac.hid);
+                }, 100);
+                
             }
             
         }
     }
     
     
+	this.getMedVacBrandAndTypeHid = function(){
+        return {
+            brand_hid:  componentMedVacBrand.getValue(),
+            type_hid:   componentMedVacType.getValue()
+        }
+    }
+	
+	
     this._validateAfterChangeInput = function(ev, input_field){
        
     }
@@ -637,6 +652,7 @@ export function PageProdPigOpsEdit(input_settings){
         // can be combined to 
         //      data_pig_prod.lactating_ops
         
+        let data_pig_prod;
         
         // Replace the pig_ops  coming from the database
         let operation_type = curDataProdPigOps.pig_prod_pig_ops.operation_type
@@ -644,15 +660,13 @@ export function PageProdPigOpsEdit(input_settings){
             case PIG_OPERATION_TYPE.GESTATING:{
                 
                 // Replace only curDataProdPigOps from the database.
-                const data_pig_prod = thisObj.curDataPigProd;
+                data_pig_prod = thisObj.curDataPigProd;
+                
                 const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
                 const callback_success = thisObj.callbackOnSuccessEdit;
                 const elem_show_error = elemServerErrorMsg;
                 
                 let prod_pig_ops_list = data_pig_prod.gestating_ops;
-                
-                if (callback_success) {console.log('has callback');}
-                else{console.log('has no callback');}               
                 
                 navigation.pigFarm.requestDataPigProdPigOpsEntry(data_pig_prod, 
                     prod_pig_ops_list, pig_prod_pig_ops_hid, callback_success, 
@@ -666,11 +680,18 @@ export function PageProdPigOpsEdit(input_settings){
                     
                     const sow_hid = data_pig_prod.sow.hid;
                     
+                    
                     // Get the data_sow_boar from navigation.pigFarm
                     const data_sow_boar = navigation.pigFarm.getDataSowBoar('F', sow_hid);
-                    navigation.pigFarm.requestDataPigMedVacList(data_sow_boar, null, elem_show_error);
                     
+                    
+                    // Update sow_boar pig_medvac list if already requested;
+                    if ('data_details' in data_sow_boar) {
+                        navigation.pigFarm.requestDataPigMedVacList(data_sow_boar, null, elem_show_error);
+                    }
                 }
+                
+                navigation.showThisPage(showOptions.go_back_page);
                 
                 break;
             }
@@ -678,7 +699,8 @@ export function PageProdPigOpsEdit(input_settings){
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
                 
                 // Replace only curDataProdPigOps from the database.
-                const data_pig_prod = thisObj.curDataPigProd;
+                data_pig_prod = thisObj.curDataPigProd;
+                
                 const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
                 const callback_success = thisObj.callbackOnSuccessEdit;
                 const elem_show_error = elemServerErrorMsg;
@@ -702,7 +724,8 @@ export function PageProdPigOpsEdit(input_settings){
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
                 
                 // Replace only curDataProdPigOps from the database.
-                const data_pig_prod = thisObj.curDataPigProd;
+                data_pig_prod = thisObj.curDataPigProd;
+                
                 const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
                 const callback_success = thisObj.callbackOnSuccessEdit;
                 const elem_show_error = elemServerErrorMsg;

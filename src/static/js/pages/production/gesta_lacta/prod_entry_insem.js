@@ -452,7 +452,8 @@ export function ProdEntryInsem(input_settings){
         elemSow.innerHTML = html_sow;
         
         elemSow.onclick = function(){
-            navigation.pageSowBoarList.gotoSowBoarEntryPage(null, data_sow.hid);
+            const sow_boar_list = navigation.pigFarm.dataSowList;
+            navigation.pageSowBoarList.gotoSowBoarEntryPage(sow_boar_list, data_sow.hid);
         };
         
         
@@ -767,11 +768,11 @@ export function ProdEntryInsem(input_settings){
         }
         
         
-		// TODO: check if there is a change in the data
-		
-		
-		
-		
+        // TODO: check if there is a change in the data
+        
+        
+        
+        
         $.ajax({
             type: 'POST',
             contentType: "application/json",
@@ -800,7 +801,8 @@ export function ProdEntryInsem(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                textStatus, errorThrown);
             }
         });
     }
@@ -809,6 +811,21 @@ export function ProdEntryInsem(input_settings){
     
     this.onSuccessEditGestatingEntry = function(){
         
+        const callback_success = function(data){
+            // This is same thing as success edit as prod_entry data 
+            // is requested from the server.
+            navigation.pigFarm.onSuccessEditGestatingEntry(data);
+            
+            // Visual feedback to user that gestating entry has been edited.
+            // Redraw Gestating PigOps to show the pig ops schedule has changed 
+            // if there is any.
+            parentObj.switchTab(parentObj.TAB_GESTA_PIGOPS);
+            
+        }
+        
+        const pig_prod_hid = curDataPigProd.pig_production.hid;
+        navigation.pigFarm.requestDataPigProdEntry(pig_prod_hid, 
+            callback_success, elemServerErrorMsg);
     }
     
 }

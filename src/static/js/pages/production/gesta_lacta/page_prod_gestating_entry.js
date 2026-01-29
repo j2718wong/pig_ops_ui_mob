@@ -37,7 +37,13 @@ export function PageProdGestatingEntry(input_settings){
     
    
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
-        
+    
+    
+    this.TAB_GESTA_PIGOPS       = 1;
+    this.TAB_GESTA_BIRTH        = 2;
+    this.TAB_GESTA_INSEM        = 3;
+    this.TAB_GESTA_NOTES        = 4;
+    
     
     let elemIdTabGestaPigOps    = `prod-gesta-pigops`;
     let elemIdTabGestaBirth     = `prod-gesta-birth`;
@@ -74,6 +80,10 @@ export function PageProdGestatingEntry(input_settings){
     let elemTabGestaInsem           = null;
     let elemTabGestaNotes           = null;
                                         
+    
+    
+    let dataPigProd                 = null;
+    
     
     this.setDataTabMenus(tabsProdGesta);
     
@@ -142,20 +152,22 @@ export function PageProdGestatingEntry(input_settings){
 
     
     this.show = function(data_pig_prod, options){
-        this.populateHeader(data_pig_prod, options);
+        dataPigProd = data_pig_prod;
+        
+        this.populateHeader(dataPigProd, options);
         
         
         // Set PigProdOps tab
         const options_pig_prod_ops ={
             show_gesta:   true
         }
-        this.prodEntryPigOps.show(data_pig_prod, options_pig_prod_ops);
+        this.prodEntryPigOps.show(dataPigProd, options_pig_prod_ops);
         
         
         // Set Birth tab
         const options_birth ={
         }
-        this.prodEntryBirth.show(data_pig_prod, options_birth);
+        this.prodEntryBirth.show(dataPigProd, options_birth);
         
         
         
@@ -163,13 +175,75 @@ export function PageProdGestatingEntry(input_settings){
         const options_insem ={
             is_read_only:   false
         }
-        this.prodEntryInsem.show(data_pig_prod, options_insem);
+        this.prodEntryInsem.show(dataPigProd, options_insem);
         
     }
     
     
-    this.beforeShowTab = function(tab_id){
+    
+    this.beforeShowTab = function(tabId){
+        switch(tabId) {
+            case elemIdTabGestaPigOps:{
+                // Set PigProdOps tab
+                const options_pig_prod_ops ={
+                    show_gesta:   true
+                }
+                thisObj.prodEntryPigOps.show(dataPigProd, options_pig_prod_ops);
         
+                break;
+            }
+            
+            case elemIdTabGestaBirth:{
+                // Set Birth tab
+                const options_birth ={
+                }
+                thisObj.prodEntryBirth.show(dataPigProd, options_birth);
+                
+                break;
+            }
+            
+            case elemIdTabGestaInsem:{
+                // Set Insemination tab
+                const options_insem ={
+                    is_read_only:   false
+                }
+                thisObj.prodEntryInsem.show(dataPigProd, options_insem);
+                
+                
+                break;
+            }
+            
+            case elemIdTabGestaNotes:{
+                break;
+            }
+        }
+    }
+      
+    
+    this.switchTab = function(tab_gesta){
+        switch(tab_gesta){
+            case thisObj.TAB_GESTA_PIGOPS:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaPigOps)
+                break;
+            }
+            
+            case thisObj.TAB_GESTA_BIRTH:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaBirth);
+                break;
+            }
+            
+            case thisObj.TAB_GESTA_INSEM:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaInsem);
+                break;
+            }
+            
+            case thisObj.TAB_GESTA_NOTES:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaNotes);
+                break;
+            }
+            
+            
+        }
         
     }
     
