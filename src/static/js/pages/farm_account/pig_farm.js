@@ -215,6 +215,38 @@ export function PigFarm(_navigation){
     } 
     
     
+	this.getDataPigProd = function(pig_prod_type, pig_prod_hid){
+		let pig_prod_list = null;
+		
+		switch(pig_prod_type){
+			case PIG_PROD_TYPE.GESTATING: {
+				pig_prod_list = thisObj.dataPigProdGestating;
+				break;
+			}
+			case PIG_PROD_TYPE.LACTATING:{
+				pig_prod_list = thisObj.dataPigProdLactating;
+				break;
+			}
+			case PIG_PROD_TYPE.FATTENING:{
+				pig_prod_list = thisObj.dataPigProdFattening;
+				break;
+			}
+		}
+		
+		
+		for (const cur_entry of pig_prod_list){
+			if (cur_entry.pig_production.his == pig_prod_hid){
+				return cur_entry;
+			}
+		}
+		
+		return null;
+	}
+	 
+	 
+	 
+	
+	
     
     /**
     Will return true if user is alowed to add or edit;

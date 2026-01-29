@@ -816,11 +816,13 @@ export function ProdEntryInsem(input_settings){
             // is requested from the server.
             navigation.pigFarm.onSuccessEditGestatingEntry(data);
             
-            // Visual feedback to user that gestating entry has been edited.
-            // Redraw Gestating PigOps to show the pig ops schedule has changed 
-            // if there is any.
-            parentObj.switchTab(parentObj.TAB_GESTA_PIGOPS);
             
+            // Need to get this data from the list if really inserted
+            const pig_prod_pid = data.pig_production.farm_prod_id;
+            
+            // Need to refresh ProdGestatingEntry.
+            navigation.onClickProdGestatingEntry(pig_prod_pid);
+            parentObj.switchTab(parentObj.TAB_GESTA_PIGOPS);
         }
         
         const pig_prod_hid = curDataPigProd.pig_production.hid;
