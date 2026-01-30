@@ -14,6 +14,7 @@ import {APPLICATION,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         SOW_STATUS_NAME,
+        MEDVAC_TYPE,
         NOTES_TYPE}             from '../../constants.js';
 
 import {formatDate,
@@ -404,7 +405,8 @@ export function PageSowBoarEntry(input_settings){
             navigation:             settings.navigation,
             parentObj:              thisObj,
             uniqueKey:              'sow-boar-medvac',
-            elemDivContainer:       elemTabMedVac
+            elemDivContainer:       elemTabMedVac,
+            medvacType:             MEDVAC_TYPE.SOW_BOAR
         });
         this.tableMedVac.init();
         
@@ -679,7 +681,8 @@ export function PageSowBoarEntry(input_settings){
             const callback_success = function(){
                 thisObj.beforeShowTab(componentTabsWithMore.curActiveTabId);
             }
-            navigation.pigFarm.requestDataSowBoarDetails(dataSowBoar, callback_success);
+            navigation.pigFarm.managerSowBoar.requestDataSowBoarDetails(
+                dataSowBoar, callback_success);
         }
         
         

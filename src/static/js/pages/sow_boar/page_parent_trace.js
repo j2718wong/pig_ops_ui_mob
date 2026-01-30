@@ -324,8 +324,8 @@ export function PageParentTrace(input_settings){
         console.log('navigation.pigFarm.dataPigFarm');
         console.log(navigation.pigFarm.dataPigFarm);
         
-        dataSowList     = navigation.pigFarm.dataSowList;
-        dataBoarList    = navigation.pigFarm.dataBoarList;
+        dataSowList     = navigation.pigFarm.managerSowBoar.dataSowList;
+        dataBoarList    = navigation.pigFarm.managerSowBoar.dataBoarList;
         
         
         elemUiSow.setEntryCount(dataSowList);

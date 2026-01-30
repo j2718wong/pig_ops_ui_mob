@@ -15,7 +15,7 @@ import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
 
 import {ProdEntryNotes}         from './prod_entry_notes.js'
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
-import {ProdEntryInsem}         from './prod_entry_insem.js'
+import {ProdEntryMating}         from './prod_entry_insem.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
 
 
@@ -39,7 +39,22 @@ export function PageProdLactatingEntry(input_settings){
     
    
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
-        
+    
+    
+    this.TAB_LACTA_PIGOPS       = 1;
+    this.TAB_LACTA_BIRTH        = 2;
+    this.TAB_LACTA_WEAN         = 3;
+    this.TAB_LACTA_MEDVAC       = 4;
+    
+    this.TAB_LACTA_HEALTH       = 5;
+    this.TAB_LACTA_PIG_DEAD     = 6;
+    this.TAB_LACTA_FEED_SUMMARY = 7;
+    this.TAB_LACTA_FEED_ADD     = 8;
+    this.TAB_LACTA_NOTES        = 9;
+    this.TAB_LACTA_MATING       = 10;
+    
+    
+    
     
     let elemIdTabLactaPigOps        = `prod-lacta-pigops`;
     let elemIdTabLactaBirth         = `prod-lacta-birth`;
@@ -51,7 +66,7 @@ export function PageProdLactatingEntry(input_settings){
     let elemIdTabLactaFeedSummary   = `prod-lacta-feed-summary`;
     let elemIdTabLactaFeedAdd       = `prod-lacta-feed-add`;
     let elemIdTabLactaNotes         = `prod-lacta-notes`;
-    let elemIdTabLactaInsem         = `prod-lacta-insem`;
+    let elemIdTabLactaMating        = `prod-lacta-mating`;
     
     
     let tabsProdLacta = [
@@ -103,28 +118,35 @@ export function PageProdLactatingEntry(input_settings){
         },
         
         {
-            data_tab_id:    elemIdTabLactaInsem,
-            label:          'Insem'
+            data_tab_id:    elemIdTabLactaMating,
+            label:          'Mating'
         }
     ];
-	
-	
     
-    let elemTabLactaPigOps        	= null;
-    let elemTabLactaBirth         	= null;
-    let elemTabLactaWean          	= null;
-    let elemTabLactaMedVac        	= null;
-										
-    let elemTabLactaHealth        	= null;
-    let elemTabLactaPigDead       	= null;
-    let elemTabLactaFeedSummary   	= null;
-    let elemTabLactaFeedAdd       	= null;
-    let elemTabLactaNotes         	= null;
-    let elemTabLactaInsem         	= null;
-	
+    
+    
+    let elemTabLactaPigOps          = null;
+    let elemTabLactaBirth           = null;
+    let elemTabLactaWean            = null;
+    let elemTabLactaMedVac          = null;
+                                        
+    let elemTabLactaHealth          = null;
+    let elemTabLactaPigDead         = null;
+    let elemTabLactaFeedSummary     = null;
+    let elemTabLactaFeedAdd         = null;
+    let elemTabLactaNotes           = null;
+    let elemTabLactaMating          = null;
+    
                                         
     
+    
+    let dataPigProd                 = null;
+    
+    
+    let curTab                      = null;
+    
     this.setDataTabMenus(tabsProdLacta);
+    
     
     
     
@@ -145,18 +167,18 @@ export function PageProdLactatingEntry(input_settings){
     
     
     this._findElementsThis = function(){
-        elemTabLactaPigOps        	= elemDivContainer.querySelector('#'+elemIdTabLactaPigOps);
-		elemTabLactaBirth         	= elemDivContainer.querySelector('#'+elemIdTabLactaBirth);
-		elemTabLactaWean          	= elemDivContainer.querySelector('#'+elemIdTabLactaWean);
-		elemTabLactaMedVac        	= elemDivContainer.querySelector('#'+elemIdTabLactaMedVac);
-									                                              					
-		elemTabLactaHealth        	= elemDivContainer.querySelector('#'+elemIdTabLactaHealth);
-		elemTabLactaPigDead       	= elemDivContainer.querySelector('#'+elemIdTabLactaPigDead);
-		elemTabLactaFeedSummary   	= elemDivContainer.querySelector('#'+elemIdTabLactaFeedSummary);
-		elemTabLactaFeedAdd       	= elemDivContainer.querySelector('#'+elemIdTabLactaFeedAdd);
-		elemTabLactaNotes         	= elemDivContainer.querySelector('#'+elemIdTabLactaNotes);
-		elemTabLactaInsem         	= elemDivContainer.querySelector('#'+elemIdTabLactaInsem);
-		
+        elemTabLactaPigOps          = elemDivContainer.querySelector('#'+elemIdTabLactaPigOps);
+        elemTabLactaBirth           = elemDivContainer.querySelector('#'+elemIdTabLactaBirth);
+        elemTabLactaWean            = elemDivContainer.querySelector('#'+elemIdTabLactaWean);
+        elemTabLactaMedVac          = elemDivContainer.querySelector('#'+elemIdTabLactaMedVac);
+                                                                                                    
+        elemTabLactaHealth          = elemDivContainer.querySelector('#'+elemIdTabLactaHealth);
+        elemTabLactaPigDead         = elemDivContainer.querySelector('#'+elemIdTabLactaPigDead);
+        elemTabLactaFeedSummary     = elemDivContainer.querySelector('#'+elemIdTabLactaFeedSummary);
+        elemTabLactaFeedAdd         = elemDivContainer.querySelector('#'+elemIdTabLactaFeedAdd);
+        elemTabLactaNotes           = elemDivContainer.querySelector('#'+elemIdTabLactaNotes);
+        elemTabLactaMating          = elemDivContainer.querySelector('#'+elemIdTabLactaMating);
+        
     }
     
     
@@ -169,8 +191,8 @@ export function PageProdLactatingEntry(input_settings){
         });
         this.prodEntryPigOps.init();
         
-		
-		this.prodEntryBirth    = new ProdEntryBirth({
+        
+        this.prodEntryBirth    = new ProdEntryBirth({
             navigation:         navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-lacta-birth',
@@ -179,13 +201,13 @@ export function PageProdLactatingEntry(input_settings){
         this.prodEntryBirth.init();
         
     
-        this.prodEntryInsem     = new ProdEntryInsem({
+        this.ProdEntryMating     = new ProdEntryMating({
             navigation:         navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-lacta-insem',
             elemDivContainer:   elemTabGestaInsem
         });
-        this.prodEntryInsem.init();
+        this.ProdEntryMating.init();
         
         
 
@@ -199,34 +221,148 @@ export function PageProdLactatingEntry(input_settings){
 
     
     this.show = function(data_pig_prod, options){
+        dataPigProd = data_pig_prod;
+        
         this.populateHeader(data_pig_prod, options);
         
-        
-        // Set PigProdOps tab
-        const options_pig_prod_ops ={
-            show_gesta:   true
+        if (curTab == null){
+            curTab = thisObj.TAB_LACTA_PIGOPS;
         }
-        this.prodEntryPigOps.show(data_pig_prod, options_pig_prod_ops);
+        
+        thisObj.switchTab(curTab);
+        
+    }
+    
+
+    
+    this.switchTab = function(tab_lacta){
+        curTab = tab_lacta;
         
         
-        // Set Birth tab
-        const options_birth ={
+        switch(tab_lacta){
+            case thisObj.TAB_LACTA_PIGOPS:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaPigOps)
+                break;
+            }
+            
+            case thisObj.TAB_LACTA_BIRTH:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaBirth);
+                break;
+            }
+            
+            case thisObj.TAB_LACTA_WEAN:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaWean);
+                break;
+            }
+            
+            case thisObj.TAB_LACTA_MEDVAC:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaMedVac);
+                break;
+            }
+            
+            case thisObj.TAB_LACTA_HEALTH:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaHealth);
+                break;
+            }
+            
+            
+            case thisObj.TAB_LACTA_PIG_DEAD:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaPigDead);
+                break;
+            }
+            
+            case thisObj.TAB_LACTA_FEED_SUMMARY:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaFeedSummary);
+                break;
+            }
+            
+            
+            case thisObj.TAB_LACTA_FEED_ADD:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaFeedAdd);
+                break;
+            }
+            
+            
+            case thisObj.TAB_LACTA_NOTES:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaNotes);
+                break;
+            }
+            
+            case thisObj.TAB_GESTA_MATING:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaMating);
+                break;
+            }
+
         }
-        this.prodEntryBirth.show(data_pig_prod, options_birth);
-        
-        
-        
-        // Set Insemination tab
-        const options_insem ={
-            is_read_only:   false
-        }
-        this.prodEntryInsem.show(data_pig_prod, options_insem);
         
     }
     
     
     this.beforeShowTab = function(tab_id){
+        switch(tabId) {
+            case elemIdTabLactaPigOps:{
+                // Set PigProdOps tab
+                const options_pig_prod_ops ={
+                    show_gesta:   false
+                }
+                thisObj.prodEntryPigOps.show(dataPigProd, options_pig_prod_ops);
         
+                break;
+            }
+            
+            case elemIdTabLactaBirth:{
+                // Set Birth tab
+                const options_birth ={
+                }
+                thisObj.prodEntryBirth.show(dataPigProd, options_birth);
+                
+                break;
+            }
+            
+            
+            case elemIdTabLactaWean:{
+                break;
+            }
+            
+            
+            case elemIdTabLactaMedVac:{
+                break;
+            }
+            
+            case elemIdTabLactaHealth:{
+                break;
+            }
+            
+            case elemIdTabLactaPigDead:{
+                break;
+            }
+            
+            case elemIdTabLactaFeedSummary:{
+                break;
+            }
+            
+            
+            case elemIdTabLactaFeedAdd:{
+                break;
+            }
+            
+            case elemIdTabLactaNotes:{
+                break;
+            }
+            
+            
+            case elemIdTabGestaMating:{
+                // Set Insemination tab
+                const options_insem ={
+                    is_read_only:   true
+                }
+                thisObj.prodEntryMating.show(dataPigProd, options_insem);
+                
+                
+                break;
+            }
+            
+        }
         
     }
     

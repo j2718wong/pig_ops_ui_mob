@@ -452,7 +452,7 @@ export function ProdEntryMating(input_settings){
         elemSow.innerHTML = html_sow;
         
         elemSow.onclick = function(){
-            const sow_boar_list = navigation.pigFarm.dataSowList;
+            const sow_boar_list = navigation.pigFarm.managerSowBoar.dataSowList;
             navigation.pageSowBoarList.gotoSowBoarEntryPage(sow_boar_list, data_sow.hid);
         };
         
@@ -826,7 +826,7 @@ export function ProdEntryMating(input_settings){
         }
         
         const pig_prod_hid = curDataPigProd.pig_production.hid;
-        navigation.pigFarm.requestDataPigProdEntry(pig_prod_hid, 
+        navigation.pigFarm.managerPigProd.requestPigProdEntry(pig_prod_hid, 
             callback_success, elemServerErrorMsg);
     }
     

@@ -202,7 +202,7 @@ export function SelectSowGesta(input_settings){
     
     
     this.refreshList = function(){
-        this.setDataSowList(navigation.pigFarm.dataSowList);
+        this.setDataSowList(navigation.pigFarm.managerSowBoar.dataSowList);
     }
     
     
@@ -237,7 +237,7 @@ export function SelectSowGesta(input_settings){
     
     
 	this.beforeShow = function(){
-        this.setDataSowList(navigation.pigFarm.dataSowList);
+        this.setDataSowList(navigation.pigFarm.managerSowBoar.dataSowList);
     }
     
 	

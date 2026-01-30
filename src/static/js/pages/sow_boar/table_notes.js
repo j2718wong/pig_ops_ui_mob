@@ -126,7 +126,7 @@ export function TableNotes(input_settings){
                         thisObj.renderTable(dataSowBoar.data_details.list_notes);
                     };
                     
-                    navigation.pigFarm.requestDataSowBoarNotesList(
+                    navigation.pigFarm.managerSowBoar.requestDataSowBoarNotesList(
                         dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
                 }
                 
@@ -156,7 +156,7 @@ export function TableNotes(input_settings){
                         thisObj.renderTable(dataPigProd.data_details.list_notes);
                     };
                     
-                    navigation.pigFarm.requestDataPigProdNotesList(
+                    navigation.pigFarm.managerPigProd.requestNotesList(
                         dataPigProd, callback_success, thisObj.elemServerErrorMsg);
                 }
                 
@@ -326,8 +326,8 @@ export function TableNotes(input_settings){
             thisObj.renderTable(dataSowBoar.data_details.list_notes);
         };
 
-        navigation.pigFarm.requestDataSowBoarNotesList(dataSowBoar, 
-            callback_success, thisObj.elemServerErrorMsg)
+        navigation.pigFarm.managerSowBoar.requestDataSowBoarNotesList(
+			dataSowBoar, callback_success, thisObj.elemServerErrorMsg)
     }
     
     

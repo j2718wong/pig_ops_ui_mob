@@ -41,12 +41,12 @@ export function PageProdGestatingEntry(input_settings){
     
     this.TAB_GESTA_PIGOPS       = 1;
     this.TAB_GESTA_BIRTH        = 2;
-    this.TAB_GESTA_INSEM        = 3;
+    this.TAB_GESTA_MATING       = 3;
     
     
     let elemIdTabGestaPigOps    = `prod-gesta-pigops`;
     let elemIdTabGestaBirth     = `prod-gesta-birth`;
-    let elemIdTabGestaInsem     = `prod-gesta-insem`;
+    let elemIdTabGestaMating    = `prod-gesta-mating`;
         
     
     let tabsProdGesta = [
@@ -61,7 +61,7 @@ export function PageProdGestatingEntry(input_settings){
         },
         
         {
-            data_tab_id:    elemIdTabGestaInsem,
+            data_tab_id:    elemIdTabGestaMating,
             label:          'Mating'
         }
     ];
@@ -70,11 +70,14 @@ export function PageProdGestatingEntry(input_settings){
     
     let elemTabGestaPigOps          = null;
     let elemTabGestaBirth           = null;
-    let elemTabGestaInsem           = null;
+    let elemTabGestaMating          = null;
                                         
     
     
     let dataPigProd                 = null;
+    
+    
+    let curTab                      = null;
     
     
     this.setDataTabMenus(tabsProdGesta);
@@ -100,7 +103,7 @@ export function PageProdGestatingEntry(input_settings){
     this._findElementsThis = function(){
         elemTabGestaPigOps      = elemDivContainer.querySelector('#'+elemIdTabGestaPigOps);
         elemTabGestaBirth       = elemDivContainer.querySelector('#'+elemIdTabGestaBirth);
-        elemTabGestaInsem       = elemDivContainer.querySelector('#'+elemIdTabGestaInsem);
+        elemTabGestaMating      = elemDivContainer.querySelector('#'+elemIdTabGestaMating);
     }
     
     
@@ -117,8 +120,8 @@ export function PageProdGestatingEntry(input_settings){
         this.prodEntryMating     = new ProdEntryMating({
             navigation:         navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-gesta-insem',
-            elemDivContainer:   elemTabGestaInsem
+            uniqueKey:          'pig-prod-gesta-mating',
+            elemDivContainer:   elemTabGestaMating
         });
         this.prodEntryMating.init();
         
@@ -149,67 +152,17 @@ export function PageProdGestatingEntry(input_settings){
         this.populateHeader(dataPigProd, options);
         
         
-        // Set PigProdOps tab
-        const options_pig_prod_ops ={
-            show_gesta:   true
+        if (curTab == null){
+            curTab = thisObj.TAB_GESTA_PIGOPS;
         }
-        this.prodEntryPigOps.show(dataPigProd, options_pig_prod_ops);
         
-        
-        // Set Birth tab
-        const options_birth ={
-        }
-        this.prodEntryBirth.show(dataPigProd, options_birth);
-        
-        
-        
-        // Set Insemination tab
-        const options_insem ={
-            is_read_only:   false
-        }
-        this.prodEntryMating.show(dataPigProd, options_insem);
+        thisObj.switchTab(curTab);
         
     }
     
     
-    
-    this.beforeShowTab = function(tabId){
-        switch(tabId) {
-            case elemIdTabGestaPigOps:{
-                // Set PigProdOps tab
-                const options_pig_prod_ops ={
-                    show_gesta:   true
-                }
-                thisObj.prodEntryPigOps.show(dataPigProd, options_pig_prod_ops);
+	this.switchTab = function(tab_gesta){
         
-                break;
-            }
-            
-            case elemIdTabGestaBirth:{
-                // Set Birth tab
-                const options_birth ={
-                }
-                thisObj.prodEntryBirth.show(dataPigProd, options_birth);
-                
-                break;
-            }
-            
-            case elemIdTabGestaInsem:{
-                // Set Insemination tab
-                const options_insem ={
-                    is_read_only:   false
-                }
-                thisObj.prodEntryMating.show(dataPigProd, options_insem);
-                
-                
-                break;
-            }
-            
-        }
-    }
-      
-    
-    this.switchTab = function(tab_gesta){
         switch(tab_gesta){
             case thisObj.TAB_GESTA_PIGOPS:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabGestaPigOps)
@@ -221,13 +174,54 @@ export function PageProdGestatingEntry(input_settings){
                 break;
             }
             
-            case thisObj.TAB_GESTA_INSEM:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaInsem);
+            case thisObj.TAB_GESTA_MATING:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaMating);
                 break;
             }
 
         }
         
     }
+    
+    
+    this.beforeShowTab = function(tabId){
+        switch(tabId) {
+            case elemIdTabGestaPigOps:{
+                // Set PigProdOps tab
+                const options_pig_prod_ops ={
+                    show_gesta:   true
+                }
+                thisObj.prodEntryPigOps.show(dataPigProd, options_pig_prod_ops);
+            
+                curTab = thisObj.TAB_GESTA_PIGOPS;
+                break;
+            }
+            
+            case elemIdTabGestaBirth:{
+                // Set Birth tab
+                const options_birth ={
+                }
+                thisObj.prodEntryBirth.show(dataPigProd, options_birth);
+                
+                curTab = thisObj.TAB_GESTA_BIRTH;
+                break;
+            }
+            
+            case elemIdTabGestaMating:{
+                // Set Insemination tab
+                const options_insem ={
+                    is_read_only:   false
+                }
+                thisObj.prodEntryMating.show(dataPigProd, options_insem);
+                
+                curTab = thisObj.TAB_GESTA_MATING;
+                break;
+            }
+            
+        }
+    }
+      
+    
+    
     
 }   

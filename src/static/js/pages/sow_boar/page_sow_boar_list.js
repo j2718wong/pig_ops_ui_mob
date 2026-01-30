@@ -506,9 +506,9 @@ ${html_style}
     
     
     this.show = function(options){
-        dataSowList     = navigation.pigFarm.dataSowList;
-        dataBoarList    = navigation.pigFarm.dataBoarList;
-        dataGiltList    = navigation.pigFarm.dataGiltList;
+        dataSowList     = navigation.pigFarm.managerSowBoar.dataSowList;
+        dataBoarList    = navigation.pigFarm.managerSowBoar.dataBoarList;
+        dataGiltList    = navigation.pigFarm.managerSowBoar.dataGiltList;
         
 		// Default all
         curSowFilter = 'all';
@@ -1495,7 +1495,7 @@ ${html_style}
         let next_entry  = null;
         
         if (sow_boar_list == null){
-            sow_boar_list = navigation.pigFarm.dataSowList;
+            sow_boar_list = navigation.pigFarm.managerSowBoar.dataSowList;
             sow_boar_type = SOW_BOAR_TYPE.SOW;
             
             

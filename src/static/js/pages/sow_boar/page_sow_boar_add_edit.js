@@ -685,8 +685,8 @@ export function PageSowBoarAddEdit(input_settings){
         thisObj._resetForm();
         
         
-        thisObj.setDataSowList(navigation.pigFarm.dataSowList);
-        thisObj.setDataBoarList(navigation.pigFarm.dataBoarList);
+        thisObj.setDataSowList(navigation.pigFarm.managerSowBoar.dataSowList);
+        thisObj.setDataBoarList(navigation.pigFarm.managerSowBoar.dataBoarList);
         
         
         showOptions = options;
@@ -1036,7 +1036,7 @@ export function PageSowBoarAddEdit(input_settings){
         let input_elem      = null;
         let validation      = 0;
         
-		
+        
         let is_duplicate    = 0;
         
        
@@ -1316,8 +1316,8 @@ export function PageSowBoarAddEdit(input_settings){
                                     navigation.showThisPage(showOptions.go_back_page);
                                 };
                                 
-                                navigation.pigFarm.requestDataSowBoarList(is_sow, 
-                                    callback_success, elemServerErrorMsg);
+                                navigation.pigFarm.managerSowBoar.requestDataSowBoarList(
+                                    is_sow, callback_success, elemServerErrorMsg);
 
                                 return;
                             }
@@ -1333,8 +1333,8 @@ export function PageSowBoarAddEdit(input_settings){
                             navigation.showThisPage(showOptions.go_back_page);
                         };
                         
-                        navigation.pigFarm.requestDataSowBoarList(is_sow, 
-                            callback_success, elemServerErrorMsg);
+                        navigation.pigFarm.managerSowBoar.requestDataSowBoarList(
+                            is_sow, callback_success, elemServerErrorMsg);
                         
                     }
                     
@@ -1347,8 +1347,8 @@ export function PageSowBoarAddEdit(input_settings){
                                 navigation.showThisPage(showOptions.go_back_page);
                             };
                             
-                            navigation.pigFarm.requestDataSowBoarList(is_sow, 
-                                callback_success, elemServerErrorMsg);
+                            navigation.pigFarm.managerSowBoar.requestDataSowBoarList(
+                                is_sow, callback_success, elemServerErrorMsg);
                             return;
                         }
                         

@@ -467,14 +467,14 @@ export function PageProdPigOpsEdit(input_settings){
     }
     
     
-	this.getMedVacBrandAndTypeHid = function(){
+    this.getMedVacBrandAndTypeHid = function(){
         return {
             brand_hid:  componentMedVacBrand.getValue(),
             type_hid:   componentMedVacType.getValue()
         }
     }
-	
-	
+    
+    
     this._validateAfterChangeInput = function(ev, input_field){
        
     }
@@ -668,7 +668,7 @@ export function PageProdPigOpsEdit(input_settings){
                 
                 let prod_pig_ops_list = data_pig_prod.gestating_ops;
                 
-                navigation.pigFarm.requestDataPigProdPigOpsEntry(data_pig_prod, 
+                navigation.pigFarm.managerPigProd.requestPigOpsEntry(data_pig_prod, 
                     prod_pig_ops_list, pig_prod_pig_ops_hid, callback_success, 
                     elem_show_error);
                         
@@ -682,12 +682,14 @@ export function PageProdPigOpsEdit(input_settings){
                     
                     
                     // Get the data_sow_boar from navigation.pigFarm
-                    const data_sow_boar = navigation.pigFarm.getDataSowBoar('F', sow_hid);
+                    const data_sow_boar = navigation.pigFarm.managerSowBoar.
+                                            getDataSowBoar('F', sow_hid);
                     
                     
                     // Update sow_boar pig_medvac list if already requested;
                     if ('data_details' in data_sow_boar) {
-                        navigation.pigFarm.requestDataPigMedVacList(data_sow_boar, null, elem_show_error);
+                        navigation.pigFarm.requestDataPigMedVacList(
+                            data_sow_boar, null, elem_show_error);
                     }
                 }
                 
@@ -714,7 +716,7 @@ export function PageProdPigOpsEdit(input_settings){
                     prod_pig_ops_list = data_pig_prod.lactating_ops;
                 }
                 
-                navigation.pigFarm.requestDataPigProdPigOpsEntry(data_pig_prod, 
+                navigation.pigFarm.managerPigProd.requestPigOpsEntry(data_pig_prod, 
                     prod_pig_ops_list, pig_prod_pig_ops_hid, callback_success, 
                     elem_show_error);
                 
@@ -739,7 +741,7 @@ export function PageProdPigOpsEdit(input_settings){
                     prod_pig_ops_list = data_pig_prod.lactating_ops;
                 }
                 
-                navigation.pigFarm.requestDataPigProdPigOpsEntry(data_pig_prod, 
+                navigation.pigFarm.managerPigProd.requestPigOpsEntry(data_pig_prod, 
                     prod_pig_ops_list, pig_prod_pig_ops_hid, callback_success, 
                     elem_show_error);
                 

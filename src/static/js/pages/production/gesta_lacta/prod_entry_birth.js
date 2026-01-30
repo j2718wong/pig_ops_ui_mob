@@ -308,7 +308,7 @@ export function ProdEntryBirth(input_settings){
         elemSow.innerHTML = html_sow;
         
         elemSow.onclick = function(){
-            const sow_boar_list = navigation.pigFarm.dataSowList;
+            const sow_boar_list = navigation.pigFarm.managerSowBoar.dataSowList;
             navigation.pageSowBoarList.gotoSowBoarEntryPage(sow_boar_list, data_sow.hid);
         };
         
@@ -550,7 +550,8 @@ export function ProdEntryBirth(input_settings){
             const pig_prod_hid = curDataPigProd.pig_production.hid;
             const prod_list = navigation.pigFarm.dataPigProdGestating;
             
-            navigation.pigFarm.removeFromProdList(pig_prod_hid, prod_list);
+            navigation.pigFarm.managerPigProd.removeFromProdList(
+                    pig_prod_hid, prod_list);
         
             const callback_success = function(data){
                 navigation.pigFarm.dataPigProdLactating = data;
@@ -558,7 +559,7 @@ export function ProdEntryBirth(input_settings){
             
             
             // request Lactating List
-            navigation.pigFarm.requestDataPigProdList(PIG_PROD_TYPE.LACTATING)
+            navigation.pigFarm.managerPigProd.requestPigProdList(PIG_PROD_TYPE.LACTATING)
         
         
             // Open to Lactating List
@@ -570,12 +571,12 @@ export function ProdEntryBirth(input_settings){
             const prod_list = navigation.pigFarm.dataPigProdGestating;
             
             const callback_success = function(data){
-                navigation.pigFarm.replaceInProdList(pig_prod_hid, 
-                        prod_list, data);
+                navigation.pigFarm.managerPigProd.replaceInProdList(
+                        pig_prod_hid, prod_list, data);
             };
             
             //request updated prod_entry data and replace curDataPigProd;
-            navigation.pigFarm.requestDataPigProdEntry(pig_prod_hid, 
+            navigation.pigFarm.managerPigProd.requestPigProdEntry(pig_prod_hid, 
                 callback_success);
                 
             //go back to Lactating Page showing PigOps List;

@@ -1,0 +1,241 @@
+// January 30, 2026
+// Jack Wong
+// j2718wong@gmail.com
+
+'use strict';
+
+
+
+function ManagerSowBoar(input_settings){
+    const thisObj               = this;
+    const navigation            = input_settings.navigation;
+    const parentObj             = input_settings.parentObj
+    
+    
+    this.dataSowList            = null;
+    this.dataGiltList           = null;
+    this.dataBoarList           = null;
+    
+    
+    this.setDataSowList = function(data){
+        // When this is set, the data includes the gilts (SOW_STATUS.GROWING)
+        // Need to seperate gilts data  
+        
+        
+        thisObj.dataSowList = []
+        thisObj.dataGiltList = []
+        
+        let sow_boar = null;
+        
+        for (const cur_entry of data){
+            if ('sow_boar' in cur_entry){
+                sow_boar = cur_entry.sow_boar;
+            }
+            else{sow_boar = cur_entry;}
+            
+            if (sow_boar.status_id == SOW_STATUS.GROWING){
+                if (sow_boar.is_production_ready > 0){
+                    thisObj.dataSowList.push(cur_entry);
+                }
+                else{
+                    thisObj.dataGiltList.push(cur_entry);
+                }
+            }
+            else{
+                thisObj.dataSowList.push(cur_entry);
+            }
+            
+        }
+        
+    }
+    
+    
+    this.setDataBoarList = function(data){
+        thisObj.dataBoarList = data;
+    }
+    
+    this.getDataSowBoar = function(sex, sow_boar_hid){
+        let sow_boar_list  = thisObj.dataSowList;
+        if (sex == 'M'){
+            sow_boar_list  = thisObj.dataBoarList;
+        }
+        
+        if (sow_boar_list == null){return null;}
+        
+        for (const cur_entry of sow_boar_list){
+            if (cur_entry.sow_boar.hid == sow_boar_hid){return cur_entry}
+        }
+        return null;
+    }
+    
+    
+    
+    this.requestDataSowBoarList = function(is_sow, callback_success, elem_show_error){
+
+        const sex               = is_sow? 'F':'M';
+
+
+        // Need to request sow_boar list
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/sow_boar/list?pfhid=${parentObj.getPigFarmHid()}`;
+        url += `&sex=${sex}`;
+        
+        if (is_sow == false){
+            url += '&inc_external=1';
+        }
+        
+        url += '&inc_user_audit=0';
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (is_sow){
+                        thisObj.setDataSowList(response.data);
+                    }
+                    else{
+                        thisObj.setDataBoarList(response.data);
+                    }
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    // This is a request to get sow_boar details that returns tables.
+    this.requestDataSowBoarDetails = function(data_sow_boar, callback_success, 
+            elem_show_error){
+        
+        const sow_boar_hid = data_sow_boar.sow_boar.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/sow_boar/data_details?sow_boar_hid=${sow_boar_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                
+                if (response.result.num == 0){
+                    
+                    // attach data to data_sow_boar
+                    data_sow_boar.data_details = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }    
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    // Note sow_boar.notes and sow_boar.health_issue are merged together in
+    // prod_notes table. There is a flag to tell if is  a health issue
+    this.requestDataSowBoarNotesList = function(data_sow_boar, callback_success, 
+            elem_show_error){
+        
+        const sow_boar_hid = data_sow_boar.sow_boar.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_prod_notes/list?sow_boar_hid=${sow_boar_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                
+                if (response.result.num == 0){
+                    
+                    // response.data is ORDERED BY date DESC
+                    const health_issues = [];
+                    const notes = [];
+                    
+                    for (const cur_entry of response.data){
+                        if ('is_health_issue' in cur_entry.prod_notes){
+                            health_issues.push(cur_entry);
+                        }
+                        else{
+                            notes.push(cur_entry);
+                        }
+                    }
+                    
+                    data_sow_boar.data_details.list_health_issues = health_issues;
+                    data_sow_boar.data_details.list_notes        = notes;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }    
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+    
+
+
+}

@@ -164,7 +164,7 @@ export function SelectBoarGesta(input_settings){
     
     
     this.refreshList = function(){
-        this.setDataBoarList(navigation.pigFarm.dataBoarList);
+        this.setDataBoarList(navigation.pigFarm.managerSowBoar.dataBoarList);
     }
     
     
@@ -185,7 +185,7 @@ export function SelectBoarGesta(input_settings){
     
     
     this.beforeShow = function(){
-        this.setDataBoarList(navigation.pigFarm.dataBoarList);
+        this.setDataBoarList(navigation.pigFarm.managerSowBoar.dataBoarList);
     }
     
     

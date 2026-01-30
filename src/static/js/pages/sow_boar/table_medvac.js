@@ -20,7 +20,16 @@ import {formatDate,
         createPaginationManager} from '../../utils.js';
 
 
+/*
+TableMedVac is used in these objects
 
+1.) SowBoar entry
+2.) PigProd entry
+3.) ProdGroup Entry
+
+This is set in settings.medvacType;
+
+*/
 
 export function TableMedVac(input_settings){
     PageTableBasic.call(this);
@@ -32,8 +41,11 @@ export function TableMedVac(input_settings){
     /*
     Typical input_settings
     {
-        navigation:             this,
+        navigation:             navigation,
+		parentObj:              thisObj,
+        uniqueKey:              'sow-boar-medvac',
         elemDivContainer:       '<element>'
+		medvacType:				MEDVAC_TYPE.SOW_BOAR
     }   
     */  
     let settings                = input_settings;
@@ -57,14 +69,14 @@ export function TableMedVac(input_settings){
     
     let dtCurrentDate           = null;
     
-    
-    let dataSowBoar             = null;
+    // This can be a data_sow_boar, data_pig_prod or data_prod_group
+    let curDataEntry            = null;
     
     
     this.init = function(){
         
         thisObj.setSettingsTable({
-            uniqueKey:      'sow-boar-medvac',
+            uniqueKey:      settings.uniqueKey,
             tableTitle:     'Medicines & Vaccines'
         });
         
@@ -91,14 +103,14 @@ export function TableMedVac(input_settings){
     }
     
     
-    this.beforeShow = function(data_sow_boar){
-        dataSowBoar = data_sow_boar;
+    this.beforeShow = function(data_entry){
+        curDataEntry = data_entry;
         
-        if ('data_details' in dataSowBoar){
+        if ('data_details' in curDataEntry){
             
             // Set table entry list; This will set also the entry count;
-            thisObj.setDataEntryList(dataSowBoar.data_details.list_medvac);
-            thisObj.renderTable(dataSowBoar.data_details.list_medvac);
+            thisObj.setDataEntryList(curDataEntry.data_details.list_medvac);
+            thisObj.renderTable(curDataEntry.data_details.list_medvac);
         } else{
             
             thisObj.requestDataPigMedVacList();
@@ -106,7 +118,7 @@ export function TableMedVac(input_settings){
         
         
         const elem = thisObj.getElemSearchAddControl();
-        if ('dispose_status_id' in dataSowBoar.sow_boar){
+        if ('dispose_status_id' in curDataEntry.sow_boar){
             elem.style.display = 'none';
         }
         else{
@@ -181,7 +193,7 @@ export function TableMedVac(input_settings){
         
         let  s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
         
-        if ('dispose_status_id' in dataSowBoar.sow_boar){
+        if ('dispose_status_id' in curDataEntry.sow_boar){
             s_click = '';
         }
         
@@ -220,7 +232,7 @@ export function TableMedVac(input_settings){
             thisObj.renderTable(data);
         };
         
-        navigation.pigFarm.requestDataPigMedVacList(dataSowBoar, callback_success,
+        navigation.pigFarm.requestDataPigMedVacList(curDataEntry, callback_success,
             thisObj.elemServerErrorMsg);
         
     }
@@ -239,8 +251,8 @@ export function TableMedVac(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        if ('list_medvac' in dataSowBoar.data_details){
-            for (const cur_entry of dataSowBoar.data_details.list_medvac){
+        if ('list_medvac' in curDataEntry.data_details){
+            for (const cur_entry of curDataEntry.data_details.list_medvac){
                 if (cur_entry.medvac.hid == entry_hid){
                     return cur_entry;
                 }
@@ -261,7 +273,7 @@ export function TableMedVac(input_settings){
             go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
         
-        navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
+        navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
         const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
         navigation.showThisPage(page_container);
         
@@ -294,7 +306,7 @@ export function TableMedVac(input_settings){
                 go_back_page:           go_back_page   // Go back to this page; this is Div element
             }
             
-            navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
+            navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
             const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
             navigation.showThisPage(page_container);
             

@@ -771,14 +771,14 @@ export function PageProdGestatingAdd(input_settings){
         const pig_prod_type = PIG_PROD_TYPE.GESTATING;
         
         const callback_success = function(data){
-            navigation.setDataPigProdList(data);
+            navigation.pigFarm.managerPigProd.setDataPigProdList(data);
             
             thisObj.show(); 
             
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         };
         
-        navigation.pigFarm.requestDataPigProdList(pig_prod_type, callback_success);
+        navigation.pigFarm.managerPigProd.requestPigProdList(pig_prod_type, callback_success);
         
     }
     

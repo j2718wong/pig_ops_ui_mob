@@ -127,6 +127,15 @@ const NOTES_TYPE = {
     
 };
 
+const MEDVAC_TYPE = {
+    SOW_BOAR:           1,
+    PIG_PROD:           2,
+    PROD_GROUP:         3
+    
+};
+
+
+
 
 const REQUEST_ERROR_NUM ={
     ERROR_DATABASE_ERROR:                       1,
