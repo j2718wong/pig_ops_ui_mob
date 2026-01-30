@@ -540,7 +540,9 @@ export function PageMedVacAddEdit(input_settings){
     this.show = function(){
         if (showOptions.is_add == false){
             // Necessary to display fully first the container
-            setTimeout(function(){thisObj.populateForm(thisObj.curDataSowBoar, showOptions.medvac_hid);}, 100);
+            setTimeout(function(){
+                thisObj.populateForm(thisObj.curDataSowBoar, showOptions.medvac_hid);
+            }, 100);
         }
     }
     

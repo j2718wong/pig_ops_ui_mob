@@ -170,7 +170,7 @@ export function ProdEntryMating(input_settings){
             htmlExpandSection:  null,
             labelBtnExpandSave: 'Save Semen Type',
             
-            labelSelect:        'Select Semen Type',
+            labelSelect:        'Semen Type',
             helpText:           'Supplier Semen Type'
         });
         
@@ -463,6 +463,7 @@ export function ProdEntryMating(input_settings){
         
         
         
+        // Set Insemination date
         const insemination  = curDataPigProd.insemination;
         
         const dt_insem      = new Date(insemination.insem_date);
@@ -476,8 +477,11 @@ export function ProdEntryMating(input_settings){
                 insemType  = 'boar-mating';
                 thisObj.onChangeInsemType(insemType);
                 elemInsemType.textContent = 'Boar Mating';
-                componentSelectBoar.setValue(insemination.boar.hid);
                 
+                // Necessary to display fully first the container
+                setTimeout(function(){
+                    componentSelectBoar.setValue(insemination.boar.hid);
+                }, 200);
                 break;
             }
             
@@ -488,7 +492,17 @@ export function ProdEntryMating(input_settings){
                 
                 
                 componentSemenSupplier.beforeShow();
-                componentSemenSupplier.setValue(insemination.ai.semen_supplier.hid);
+                
+                const semen_supplier_hid = insemination.ai.semen_supplier.hid;
+                const semen_type_hid = insemination.ai.semen_supplier.semen.hid;
+                
+
+                // Necessary to display fully first the container
+                setTimeout(function(){
+                    componentSemenSupplier.setValue(semen_supplier_hid, 
+                            semen_type_hid);
+                }, 200);
+                
                 
                 
                 const semen_cost = thisObj.moneyFormatter.format(insemination.ai.semen_cost);
@@ -502,7 +516,10 @@ export function ProdEntryMating(input_settings){
                 thisObj.onChangeInsemType(insemType);
                 elemInsemType.textContent = 'Artificial Insemination Internal';
                 
-                componentSelectBoarInt.setValue(insemination.ai.internal_boar.hid);
+                // Necessary to display fully first the container
+                setTimeout(function(){
+                    componentSelectBoarInt.setValue(insemination.ai.internal_boar.hid);
+                }, 200);
                 break;
             }
         }

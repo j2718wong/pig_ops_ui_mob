@@ -384,7 +384,12 @@ export function ComponentStaffFormGroup(input_settings){
     
     
     this.setEntryCount = function(data){
-        elemEntryCount.textContent = ` (${data.length} Entries)`;
+        if (data.length == 1){
+            elemEntryCount.textContent = ` (${data.length} Entry)`;
+        }
+        else{
+            elemEntryCount.textContent = ` (${data.length} Entries)`;
+        }
     }
     
     

@@ -160,8 +160,9 @@ export function ComponentSemenSupplier(input_settings){
     }
     
     
-    this.setValue = function(value){
-        elemSelect.value = value;
+    this.setValue = function(semen_supplier_hid, semen_type_hid){
+        elemSelect.value = semen_supplier_hid;
+        thisObj.onChangeSemenSupplier(semen_type_hid);
     }
     
     
@@ -190,6 +191,9 @@ export function ComponentSemenSupplier(input_settings){
 
         commonSelectOptions.setDataSupplierList(data, elemSelect);
         thisObj.setEntryCount(data)
+        
+        // Show this already
+        componentSemenType.show();
     }
     
    
@@ -221,7 +225,7 @@ export function ComponentSemenSupplier(input_settings){
     }
     
     
-    this.onChangeSemenSupplier = function(){
+    this.onChangeSemenSupplier = function(semen_type_hid){
         elemSelect.classList.remove('is-valid', 'is-invalid');
         
         const supplier_hid = elemSelect.value;
@@ -230,7 +234,12 @@ export function ComponentSemenSupplier(input_settings){
         
         const callback_success = function(data) {
             componentSemenType.setSupplierHid(supplier_hid);
-            componentSemenType.setDataSemenTypeList(data);
+            if (semen_type_hid){
+                componentSemenType.setDataSemenTypeList(data, semen_type_hid);
+            }
+            else{
+                componentSemenType.setDataSemenTypeList(data);
+            }
             componentSemenType.show();
         };
         
