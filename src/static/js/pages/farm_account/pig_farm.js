@@ -100,7 +100,7 @@ export function PigFarm(_navigation){
         
         thisObj.dataStaffList = data.staff_list;
         
-		
+        
         thisObj.managerSowBoar.setDataSowList(data.sow_list);
         thisObj.managerSowBoar.setDataBoarList(data.boar_list);
             
@@ -144,11 +144,6 @@ export function PigFarm(_navigation){
     
     
      
-    
-    
-     
-     
-
     
     /**
     Will return true if user is alowed to add or edit;
@@ -216,11 +211,18 @@ export function PigFarm(_navigation){
     this.requestDataPigMedVacList = function(medvac_type, data_entry, 
             callback_success, elem_show_error){
         
-        const sow_boar_hid = data_sow_boar.sow_boar.hid;
         
         const base_url = window.location.origin;
-        const url = `${base_url}/pig_medvac/list?sow_boar_hid=${sow_boar_hid}`;
+        let url = null;
         
+        if (medvac_type == MEDVAC_TYPE.SOW_BOAR){
+            const sow_boar_hid = data_entry.sow_boar.hid;
+            url = `${base_url}/pig_medvac/list?sow_boar_hid=${sow_boar_hid}`;
+        }
+        else{
+            const pig_prod_hid = data_entry.pig_production.hid;
+            url = `${base_url}/pig_medvac/list?pig_prod_hid=${pig_prod_hid}`;
+        }
         
         $.ajax({
             type: 'GET',
@@ -236,7 +238,8 @@ export function PigFarm(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
-                    data_sow_boar.data_details.list_medvac = response.data;
+                    
+                    data_entry.data_details.list_medvac = response.data;
                     
                     if (callback_success){
                         callback_success(response.data);
@@ -261,58 +264,5 @@ export function PigFarm(_navigation){
     
     
     
-    this.onSuccessEditGestatingEntry = function(new_prod_entry){
-        /* These are the sequence of steps that will happen if a 
-        gestating entry is edited;
-        
-        1.) If no change in status (still in PROD_STATUS.GESTATING), 
-        will remove the old gestating entry in thisObj.dataPigProdGestating 
-        and replace with new_prod_entry.
-        
-        2.) If there is a change in status, from PROD_STATUS.GESTATING to
-        PROD_STATUS.LACTATING, 
-        
-        - will remove the old gestating entry in thisObj.dataPigProdGestating
-        
-        - will request for production list with PROD_STATUS.LACTATING;
-        20260129: still thinking if not to request for the whole lactating list 
-        instead insert new_prod_entry in thisObj.dataPigProdLactating; 
-        requesting whole lactating list is an expensive operation.
-        
-        
-        */
-        
-        let index;
-        let cur_entry;
-        
-        for(index = 0; index<thisObj.dataPigProdGestating.length; index++){
-            cur_entry = thisObj.dataPigProdGestating[index];
-            
-            if (cur_entry.pig_production.hid ==  new_prod_entry.pig_production.hid){
-                const old_prod_status = cur_entry.pig_production.prod_status_id;
-                const new_prod_status = new_prod_entry.pig_production.prod_status_id;
-                
-                if (old_prod_status == new_prod_status){
-                    thisObj.dataPigProdGestating.splice(index, 1, new_prod_entry);
-                    return;
-                }
-                
-                if (new_prod_entry.pig_production.hid == PROD_STATUS.LACTATING){
-                    // Remove from old entry from gestating list
-                    thisObj.dataPigProdGestating.splice(index, 1);
-                    
-                    // Request new lactating list
-                    const callback_success = function(data){
-                        thisObj.dataPigProdLactating = data;
-                    };
-                    
-                    const pig_prod_type =  PIG_PROD_TYPE.LACTATING;
-                    thisObj.requestPigProdList(pig_prod_type, 
-                        callback_success);
-
-                }
-                
-            }
-        }
-    }
+    
 }

@@ -548,13 +548,13 @@ export function ProdEntryBirth(input_settings){
         if (cur_prod_status == PROD_STATUS.GESTATING){
             // Remove from curDataPigProd from gestating List
             const pig_prod_hid = curDataPigProd.pig_production.hid;
-            const prod_list = navigation.pigFarm.dataPigProdGestating;
+            const prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
             
             navigation.pigFarm.managerPigProd.removeFromProdList(
                     pig_prod_hid, prod_list);
         
             const callback_success = function(data){
-                navigation.pigFarm.dataPigProdLactating = data;
+                navigation.pigFarm.managerPigProd.dataLactatingList = data;
             };
             
             
@@ -568,7 +568,7 @@ export function ProdEntryBirth(input_settings){
         }
         else{
             const pig_prod_hid = curDataPigProd.pig_production.hid;
-            const prod_list = navigation.pigFarm.dataPigProdGestating;
+            const prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
             
             const callback_success = function(data){
                 navigation.pigFarm.managerPigProd.replaceInProdList(

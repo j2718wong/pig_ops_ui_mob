@@ -10,7 +10,9 @@ import {APPLICATION,
         PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        SOW_STATUS_NAME}        from '../../constants.js';
+        SOW_STATUS_NAME,
+        MEDVAC_TYPE,
+        PROD_STATUS}            from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -42,10 +44,10 @@ export function TableMedVac(input_settings){
     Typical input_settings
     {
         navigation:             navigation,
-		parentObj:              thisObj,
+        parentObj:              thisObj,
         uniqueKey:              'sow-boar-medvac',
         elemDivContainer:       '<element>'
-		medvacType:				MEDVAC_TYPE.SOW_BOAR
+        medvacType:             MEDVAC_TYPE.SOW_BOAR
     }   
     */  
     let settings                = input_settings;
@@ -106,6 +108,7 @@ export function TableMedVac(input_settings){
     this.beforeShow = function(data_entry){
         curDataEntry = data_entry;
         
+        // Request data if not yet requested
         if ('data_details' in curDataEntry){
             
             // Set table entry list; This will set also the entry count;
@@ -117,15 +120,64 @@ export function TableMedVac(input_settings){
         }
         
         
+        // Hide elements if not needed
         const elem = thisObj.getElemSearchAddControl();
-        if ('dispose_status_id' in curDataEntry.sow_boar){
-            elem.style.display = 'none';
-        }
-        else{
-            elem.style.display = 'flex';
-        }
         
         
+        switch(settings.medvacType){
+        
+            case MEDVAC_TYPE.SOW_BOAR: {
+                
+                if ('dispose_status_id' in curDataEntry.sow_boar){
+                    elem.style.display = 'none';
+                }
+                else{
+                    elem.style.display = 'flex';
+                }
+                break;
+            }
+        
+            case MEDVAC_TYPE.PIG_PROD: {
+                const pig_prod_status = curDataEntry.pig_production.prod_status_id;
+                
+                switch (pig_prod_status){
+                    case PROD_STATUS.LACTATING:
+                    case PROD_STATUS.WEANING:
+                    case PROD_STATUS.GROWING: {
+                        elem.style.display = 'flex';
+                        break;
+                    }
+                    
+                    default: {
+                        elem.style.display = 'none';
+                        break;
+                    }
+                }
+                
+                break;
+            }
+            
+            case MEDVAC_TYPE.FATTENING: {
+                const pig_prod_status = curDataEntry.pig_production.prod_status_id;
+                
+                switch (pig_prod_status){
+                    case PROD_STATUS.WEANING:
+                    case PROD_STATUS.GROWING: {
+                        elem.style.display = 'flex';
+                        break;
+                    }
+                    
+                    default: {
+                        elem.style.display = 'none';
+                        break;
+                    }
+                }
+                
+                break;
+            }
+        }
+        
+		
         
     }
     
@@ -190,11 +242,28 @@ export function TableMedVac(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
+        let  s_click = '';
         
-        let  s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
         
-        if ('dispose_status_id' in curDataEntry.sow_boar){
-            s_click = '';
+        switch(settings.medvacType){
+        
+            case MEDVAC_TYPE.SOW_BOAR: {
+                s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
+                
+                if ('dispose_status_id' in curDataEntry.sow_boar){
+                    s_click = '';
+                }
+                break;
+            }
+        
+            case MEDVAC_TYPE.PIG_PROD: {
+                // how to chekc if pig prod is still active
+                break;
+            }
+            
+            case MEDVAC_TYPE.FATTENING: {
+                break;
+            }
         }
         
         let s_medvac = `
@@ -232,8 +301,9 @@ export function TableMedVac(input_settings){
             thisObj.renderTable(data);
         };
         
-        navigation.pigFarm.requestDataPigMedVacList(curDataEntry, callback_success,
-            thisObj.elemServerErrorMsg);
+
+        navigation.pigFarm.requestDataPigMedVacList(settings.medvacType, 
+            curDataEntry, callback_success, thisObj.elemServerErrorMsg);
         
     }
     
@@ -264,8 +334,29 @@ export function TableMedVac(input_settings){
     
     
     this.onClickAddEntry = function(){
+        let go_back_page_id = null;
         
-        const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        
+        switch(settings.medvacType){
+        
+            case MEDVAC_TYPE.SOW_BOAR: {
+                go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
+                break;
+            }
+        
+            case MEDVAC_TYPE.PIG_PROD: {
+                go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                break;
+            }
+            
+            case MEDVAC_TYPE.FATTENING: {
+                go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
+                break;
+            }
+        }
+        
+        const go_back_page = navigation.getPageContainer(page_id);
+        
         
         const options ={
             is_add:                 true,   // false is edit
@@ -297,7 +388,27 @@ export function TableMedVac(input_settings){
         
 
         if (row_entry){
-            const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+            let go_back_page_id;
+            
+            switch(settings.medvacType){
+        
+                case MEDVAC_TYPE.SOW_BOAR: {
+                    go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
+                    break;
+                }
+            
+                case MEDVAC_TYPE.PIG_PROD: {
+                    go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                    break;
+                }
+                
+                case MEDVAC_TYPE.FATTENING: {
+                    go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
+                    break;
+                }
+            }
+            
+            const go_back_page = navigation.getPageContainer(go_back_page_id);
         
             const options ={
                 is_add:                 false,   // false is edit

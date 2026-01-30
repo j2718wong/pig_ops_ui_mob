@@ -1316,7 +1316,7 @@ export function PageSowBoarAddEdit(input_settings){
                                     navigation.showThisPage(showOptions.go_back_page);
                                 };
                                 
-                                navigation.pigFarm.managerSowBoar.requestDataSowBoarList(
+                                navigation.pigFarm.managerSowBoar.requestSowBoarList(
                                     is_sow, callback_success, elemServerErrorMsg);
 
                                 return;
@@ -1333,7 +1333,7 @@ export function PageSowBoarAddEdit(input_settings){
                             navigation.showThisPage(showOptions.go_back_page);
                         };
                         
-                        navigation.pigFarm.managerSowBoar.requestDataSowBoarList(
+                        navigation.pigFarm.managerSowBoar.requestSowBoarList(
                             is_sow, callback_success, elemServerErrorMsg);
                         
                     }
@@ -1347,7 +1347,7 @@ export function PageSowBoarAddEdit(input_settings){
                                 navigation.showThisPage(showOptions.go_back_page);
                             };
                             
-                            navigation.pigFarm.managerSowBoar.requestDataSowBoarList(
+                            navigation.pigFarm.managerSowBoar.requestSowBoarList(
                                 is_sow, callback_success, elemServerErrorMsg);
                             return;
                         }

@@ -814,7 +814,7 @@ export function ProdEntryMating(input_settings){
         const callback_success = function(data){
             // This is same thing as success edit as prod_entry data 
             // is requested from the server.
-            navigation.pigFarm.onSuccessEditGestatingEntry(data);
+            navigation.pigFarm.managerPigProd.onSuccessEditGestatingEntry(data);
             
             
             // Need to get this data from the list if really inserted

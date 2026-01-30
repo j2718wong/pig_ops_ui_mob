@@ -45,6 +45,7 @@ import {PageMobGestaLacta}          from '../production/gesta_lacta/page_mob_ges
 import {PageProdPigOpsEdit}         from '../production/gesta_lacta/page_prod_pig_ops_edit.js'
 import {PageProdGestatingAdd}       from '../production/gesta_lacta/page_prod_gestating_add.js'
 import {PageProdGestatingEntry}     from '../production/gesta_lacta/page_prod_gestating_entry.js'
+import {PageProdLactatingEntry}     from '../production/gesta_lacta/page_prod_lactating_entry.js'
 
 
 
@@ -457,6 +458,13 @@ export function Navigation(){
     });
     
     
+    this.pageProdLactatingEntry = new PageProdLactatingEntry({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdLactaEntry,
+        uniqueKey:              'prod-lacta'
+    });
+    
+    
     this.pageAccPigOps          = new PageAccPigOps({
         navigation:             this,
         elemIdDivContainer:     elemIdContAccPigOps
@@ -499,6 +507,7 @@ export function Navigation(){
         
         
         this.pageMobLactatingList.init();
+        this.pageProdLactatingEntry.init();
         
         this.pageProdPigOpsEdit.init();
         
@@ -1221,7 +1230,7 @@ export function Navigation(){
         
         thisObj.showThisPage(elemHiddenContProdGestaEntry);
         
-        const data_pig_prod_list = thisObj.pigFarm.dataPigProdGestating;
+        const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataGestatingList;
         
         let prev_prod_pid = null;
         let next_prod_pid = null;
@@ -1264,4 +1273,56 @@ export function Navigation(){
     }
     
     
+	this.onClickProdLactatingEntry = function(pig_prod_pid){
+        if (pig_prod_pid == null){
+            thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING);
+            return;
+        }
+        
+        
+        thisObj.showThisPage(elemHiddenContProdLactaEntry);
+        
+        const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataLactatingList;
+        
+        let prev_prod_pid = null;
+        let next_prod_pid = null;
+        
+        let index;
+        let prev_entry  = null;
+        let cur_entry   = null;
+        let next_entry  = null;
+        
+        for (index = 0; index< data_pig_prod_list.length; index++){
+            cur_entry = data_pig_prod_list[index];
+            
+            
+            
+            if (cur_entry.pig_production.farm_prod_id == pig_prod_pid){
+                
+                if ((index-1) >=0){
+                    prev_entry = data_pig_prod_list[index-1];
+                    prev_prod_pid = prev_entry.pig_production.farm_prod_id;
+                }
+                
+                if ((index+1) < data_pig_prod_list.length){
+                    next_entry = data_pig_prod_list[index+1];
+                    next_prod_pid = next_entry.pig_production.farm_prod_id;
+                }
+                
+                const options = {
+                    pig_prod_type:  PIG_PROD_TYPE.LACTATING,
+                    prev_prod_pid:  prev_prod_pid,
+                    next_prod_pid:  next_prod_pid,
+                    data_index:     index+1,
+                    total_entries:  data_pig_prod_list.length
+                };
+                
+                thisObj.pageProdLactatingEntry.show(cur_entry, options);
+                return;
+            }
+        }
+        
+    }
+	
+	
 }

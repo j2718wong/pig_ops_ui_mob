@@ -100,7 +100,8 @@ const PROD_STATUS = {
     WEANING:            5,
     GROWING:            6,
     COMBINED:           7,
-    HARVESTED:          8
+    HARVESTED:          8,
+	CLOSED:          	9
 };
 
 
@@ -162,6 +163,8 @@ export {
     PIG_PROD_TYPE,
     SUPPLIER_TYPE,
     NOTES_TYPE,
+	
+	MEDVAC_TYPE,
     
     REQUEST_ERROR_NUM
 };

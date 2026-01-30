@@ -681,7 +681,7 @@ export function PageSowBoarEntry(input_settings){
             const callback_success = function(){
                 thisObj.beforeShowTab(componentTabsWithMore.curActiveTabId);
             }
-            navigation.pigFarm.managerSowBoar.requestDataSowBoarDetails(
+            navigation.pigFarm.managerSowBoar.requestSowBoarDetails(
                 dataSowBoar, callback_success);
         }
         

@@ -126,7 +126,7 @@ export function TableNotes(input_settings){
                         thisObj.renderTable(dataSowBoar.data_details.list_notes);
                     };
                     
-                    navigation.pigFarm.managerSowBoar.requestDataSowBoarNotesList(
+                    navigation.pigFarm.managerSowBoar.requestNotesList(
                         dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
                 }
                 
@@ -326,7 +326,7 @@ export function TableNotes(input_settings){
             thisObj.renderTable(dataSowBoar.data_details.list_notes);
         };
 
-        navigation.pigFarm.managerSowBoar.requestDataSowBoarNotesList(
+        navigation.pigFarm.managerSowBoar.requestNotesList(
 			dataSowBoar, callback_success, thisObj.elemServerErrorMsg)
     }
     

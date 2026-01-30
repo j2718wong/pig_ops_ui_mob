@@ -360,10 +360,10 @@ export function PageMobGestaLacta(input_settings){
     
     this.show = function(){
         if (settings.isGesta){
-            dataPigProdList = navigation.pigFarm.dataPigProdGestating;
+            dataPigProdList = navigation.pigFarm.managerPigProd.dataGestatingList;
         }
         else{
-            dataPigProdList = navigation.pigFarm.dataPigProdLactating;
+            dataPigProdList = navigation.pigFarm.managerPigProd.dataLactatingList;
         }
         
         
@@ -1298,6 +1298,7 @@ export function PageMobGestaLacta(input_settings){
                 s_click = `gNavigation.onClickProdGestatingEntry(${pid});`;
             }
             else{
+				s_click = `gNavigation.onClickProdLactatingEntry(${pid});`;
             }
             
             

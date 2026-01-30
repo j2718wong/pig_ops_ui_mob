@@ -13,22 +13,22 @@ import {PIG_PROD_TYPE,
 
 
 
-function ManagerPigProd(input_settings){
+export function ManagerPigProd(input_settings){
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj
     
-	
-	
-	this.dataPigProdGestating   = null;
-    this.dataPigProdLactating   = null;
-    this.dataPigProdFattening   = null;
     
-	
-	this.setDataPigProdList = function(data){
-        thisObj.dataPigProdGestating   = [];
-        thisObj.dataPigProdLactating   = [];
-        thisObj.dataPigProdFattening   = [];
+    
+    this.dataGestatingList      = null;
+    this.dataLactatingList      = null;
+    this.dataFatteningList      = null;
+    
+    
+    this.setDataPigProdList = function(data){
+        thisObj.dataGestatingList   = [];
+        thisObj.dataLactatingList   = [];
+        thisObj.dataFatteningList   = [];
         
         
         for(const cur_entry of data){
@@ -37,18 +37,18 @@ function ManagerPigProd(input_settings){
             switch (cur_entry.pig_production.prod_status_id){
             
                 case PROD_STATUS.GESTATING: {
-                    thisObj.dataPigProdGestating.push(cur_entry);
+                    thisObj.dataGestatingList.push(cur_entry);
                     break;
                 }
                 
                 case PROD_STATUS.LACTATING: {
-                    thisObj.dataPigProdLactating.push(cur_entry);
+                    thisObj.dataLactatingList.push(cur_entry);
                     break;
                 }
                 
                 case PROD_STATUS.WEANING:
                 case PROD_STATUS.GROWING:{
-                    thisObj.dataPigProdFattening.push(cur_entry);
+                    thisObj.dataFatteningList.push(cur_entry);
                 }
             
             }
@@ -57,20 +57,20 @@ function ManagerPigProd(input_settings){
     }
     
     
-	this.getDataPigProd = function(pig_prod_type, pig_prod_hid){
+    this.getDataPigProd = function(pig_prod_type, pig_prod_hid){
         let pig_prod_list = null;
         
         switch(pig_prod_type){
             case PIG_PROD_TYPE.GESTATING: {
-                pig_prod_list = thisObj.dataPigProdGestating;
+                pig_prod_list = thisObj.dataGestatingList;
                 break;
             }
             case PIG_PROD_TYPE.LACTATING:{
-                pig_prod_list = thisObj.dataPigProdLactating;
+                pig_prod_list = thisObj.dataLactatingList;
                 break;
             }
             case PIG_PROD_TYPE.FATTENING:{
-                pig_prod_list = thisObj.dataPigProdFattening;
+                pig_prod_list = thisObj.dataFatteningList;
                 break;
             }
         }
@@ -85,8 +85,8 @@ function ManagerPigProd(input_settings){
         return null;
     }
     
-	
-	
+    
+    
     this.requestPigProdList = function(pig_prod_type, callback_success, 
             elem_show_error){
         
@@ -247,6 +247,54 @@ function ManagerPigProd(input_settings){
     }
  
     
+    // This is a request to get sow_boar details that returns tables.
+    this.requestPigProdDetails = function(data_pig_prod, callback_success, 
+            elem_show_error){
+        
+        const pig_prod_hid = data_pig_prod.pig_production.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_prod/data_details?pig_prod_hid=${pig_prod_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                
+                if (response.result.num == 0){
+                    
+                    // attach data to data_pig_prod
+                    data_pig_prod.data_details = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }    
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
     
     this.requestNotesList = function(data_pig_prod, callback_success, 
             elem_show_error){
@@ -273,7 +321,22 @@ function ManagerPigProd(input_settings){
                 
                 if (response.result.num == 0){
                     
-                    data_pig_prod.data_details.list_notes = response.data;
+                    // response.data is ORDERED BY date DESC
+                    const health_issues = [];
+                    const notes = [];
+                    
+                    for (const cur_entry of response.data){
+                        if ('is_health_issue' in cur_entry.prod_notes){
+                            health_issues.push(cur_entry);
+                        }
+                        else{
+                            notes.push(cur_entry);
+                        }
+                    }
+                    
+                    data_pig_prod.data_details.list_health_issues = health_issues;
+                    data_pig_prod.data_details.list_notes        = notes;
+                    
                     
                     if (callback_success){callback_success(response.data);}
                 }    
@@ -293,12 +356,12 @@ function ManagerPigProd(input_settings){
         });
     }
     
-	
-	/* Will remove pig_prod_entry from given prod_list.
+    
+    /* Will remove pig_prod_entry from given prod_list.
     * @param prod_list - either 
-        this.dataPigProdGestating
-        this.dataPigProdLactating
-        this.dataPigProdFattening
+        this.dataGestatingList
+        this.dataLactatingList
+        this.dataFatteningList
     
     
     */
@@ -307,7 +370,7 @@ function ManagerPigProd(input_settings){
         let cur_entry;
         
         for(index = 0; index<prod_list.length; index++){
-            cur_entry = thisObj.dataPigProdGestating[index];
+            cur_entry = thisObj.dataGestatingList[index];
             
             if (cur_entry.pig_production.hid == pig_prod_hid){
                 prod_list.splice(index, 1);
@@ -322,7 +385,7 @@ function ManagerPigProd(input_settings){
         let cur_entry;
         
         for(index = 0; index<prod_list.length; index++){
-            cur_entry = thisObj.dataPigProdGestating[index];
+            cur_entry = thisObj.dataGestatingList[index];
             
             if (cur_entry.pig_production.hid == pig_prod_hid){
                 prod_list.splice(index, 1, new_prod_entry);
@@ -332,5 +395,58 @@ function ManagerPigProd(input_settings){
     }
     
     
-    
+    this.onSuccessEditGestatingEntry = function(new_prod_entry){
+        /* These are the sequence of steps that will happen if a 
+        gestating entry is edited;
+        
+        1.) If no change in status (still in PROD_STATUS.GESTATING), 
+        will remove the old gestating entry in thisObj.dataGestatingList 
+        and replace with new_prod_entry.
+        
+        2.) If there is a change in status, from PROD_STATUS.GESTATING to
+        PROD_STATUS.LACTATING, 
+        
+        - will remove the old gestating entry in thisObj.dataGestatingList
+        
+        - will request for production list with PROD_STATUS.LACTATING;
+        20260129: still thinking if not to request for the whole lactating list 
+        instead insert new_prod_entry in thisObj.dataLactatingList; 
+        requesting whole lactating list is an expensive operation.
+        
+        
+        */
+        
+        let index;
+        let cur_entry;
+        
+        for(index = 0; index<thisObj.dataGestatingList.length; index++){
+            cur_entry = thisObj.dataGestatingList[index];
+            
+            if (cur_entry.pig_production.hid ==  new_prod_entry.pig_production.hid){
+                const old_prod_status = cur_entry.pig_production.prod_status_id;
+                const new_prod_status = new_prod_entry.pig_production.prod_status_id;
+                
+                if (old_prod_status == new_prod_status){
+                    thisObj.dataGestatingList.splice(index, 1, new_prod_entry);
+                    return;
+                }
+                
+                if (new_prod_entry.pig_production.hid == PROD_STATUS.LACTATING){
+                    // Remove from old entry from gestating list
+                    thisObj.dataGestatingList.splice(index, 1);
+                    
+                    // Request new lactating list
+                    const callback_success = function(data){
+                        thisObj.dataLactatingList = data;
+                    };
+                    
+                    const pig_prod_type =  PIG_PROD_TYPE.LACTATING;
+                    thisObj.requestPigProdList(pig_prod_type, 
+                        callback_success);
+
+                }
+                
+            }
+        }
+    }
 }

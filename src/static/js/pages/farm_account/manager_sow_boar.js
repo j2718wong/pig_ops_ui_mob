@@ -4,9 +4,15 @@
 
 'use strict';
 
+import {PIG_PROD_TYPE,
+        PIG_OPERATION_TYPE,
+        SOW_STATUS,
+        PROD_STATUS,
+        SUPPLIER_TYPE,
+        MEDVAC_TYPE}            from '../../constants.js';
+		
 
-
-function ManagerSowBoar(input_settings){
+export function ManagerSowBoar(input_settings){
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj
@@ -70,7 +76,7 @@ function ManagerSowBoar(input_settings){
     
     
     
-    this.requestDataSowBoarList = function(is_sow, callback_success, elem_show_error){
+    this.requestSowBoarList = function(is_sow, callback_success, elem_show_error){
 
         const sex               = is_sow? 'F':'M';
 
@@ -129,7 +135,7 @@ function ManagerSowBoar(input_settings){
     
     
     // This is a request to get sow_boar details that returns tables.
-    this.requestDataSowBoarDetails = function(data_sow_boar, callback_success, 
+    this.requestSowBoarDetails = function(data_sow_boar, callback_success, 
             elem_show_error){
         
         const sow_boar_hid = data_sow_boar.sow_boar.hid;
@@ -178,7 +184,7 @@ function ManagerSowBoar(input_settings){
     
     // Note sow_boar.notes and sow_boar.health_issue are merged together in
     // prod_notes table. There is a flag to tell if is  a health issue
-    this.requestDataSowBoarNotesList = function(data_sow_boar, callback_success, 
+    this.requestNotesList = function(data_sow_boar, callback_success, 
             elem_show_error){
         
         const sow_boar_hid = data_sow_boar.sow_boar.hid;

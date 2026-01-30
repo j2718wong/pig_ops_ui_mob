@@ -108,7 +108,7 @@ export function TableHealthIssue(input_settings){
                 thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
             }
             
-            navigation.pigFarm.managerSowBoar.requestDataSowBoarNotesList(
+            navigation.pigFarm.managerSowBoar.requestNotesList(
 				dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
         }
         
@@ -275,7 +275,7 @@ export function TableHealthIssue(input_settings){
             parentObj.tableMedVac.requestDataPigMedVacList();
         };
 
-        navigation.pigFarm.managerSowBoar.requestDataSowBoarNotesList(
+        navigation.pigFarm.managerSowBoar.requestNotesList(
 			dataSowBoar, callback_success, thisObj.elemServerErrorMsg)
     }
     

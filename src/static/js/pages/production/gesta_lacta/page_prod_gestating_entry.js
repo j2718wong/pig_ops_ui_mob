@@ -14,7 +14,7 @@ import {PAGE_ID,
 
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
-import {prodEntryMating}        from './prod_entry_mating.js'
+import {ProdEntryMating}        from './prod_entry_mating.js'
 
 
 
@@ -161,7 +161,7 @@ export function PageProdGestatingEntry(input_settings){
     }
     
     
-	this.switchTab = function(tab_gesta){
+    this.switchTab = function(tab_gesta){
         
         switch(tab_gesta){
             case thisObj.TAB_GESTA_PIGOPS:{
@@ -176,6 +176,12 @@ export function PageProdGestatingEntry(input_settings){
             
             case thisObj.TAB_GESTA_MATING:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabGestaMating);
+                break;
+            }
+            
+            
+            default:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaPigOps)
                 break;
             }
 

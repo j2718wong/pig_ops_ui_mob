@@ -15,7 +15,7 @@ import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
 
 import {ProdEntryNotes}         from './prod_entry_notes.js'
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
-import {ProdEntryMating}         from './prod_entry_insem.js'
+import {ProdEntryMating}         from './prod_entry_mating.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
 
 
@@ -187,7 +187,7 @@ export function PageProdLactatingEntry(input_settings){
             navigation:         navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-lacta-pigops',
-            elemDivContainer:   elemTabGestaPigOps
+            elemDivContainer:   elemTabLactaPigOps
         });
         this.prodEntryPigOps.init();
         
@@ -196,7 +196,7 @@ export function PageProdLactatingEntry(input_settings){
             navigation:         navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-lacta-birth',
-            elemDivContainer:   elemTabGestaBirth
+            elemDivContainer:   elemTabLactaBirth
         });
         this.prodEntryBirth.init();
         
@@ -205,12 +205,12 @@ export function PageProdLactatingEntry(input_settings){
             navigation:         navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-lacta-insem',
-            elemDivContainer:   elemTabGestaInsem
+            elemDivContainer:   elemTabLactaMating
         });
         this.ProdEntryMating.init();
         
         
-
+        this.componentTabsWithMore.beforeShowTab = this.beforeShowTab;
     }
     
     
@@ -225,28 +225,35 @@ export function PageProdLactatingEntry(input_settings){
         
         this.populateHeader(data_pig_prod, options);
         
-        if (curTab == null){
-            curTab = thisObj.TAB_LACTA_PIGOPS;
+        // Request pig_prod data deails if there is none yet
+        if ('data_details' in data_pig_prod){
+            thisObj.switchTab(curTab);
+        }
+        else{
+            const callback_success = function(){
+                thisObj.switchTab(curTab);
+            }
+            navigation.pigFarm.managerPigProd.requestPigProdDetails(
+                dataPigProd, callback_success);
         }
         
-        thisObj.switchTab(curTab);
+        
+    
         
     }
     
 
     
     this.switchTab = function(tab_lacta){
-        curTab = tab_lacta;
-        
         
         switch(tab_lacta){
             case thisObj.TAB_LACTA_PIGOPS:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaPigOps)
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaPigOps)
                 break;
             }
             
             case thisObj.TAB_LACTA_BIRTH:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaBirth);
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaBirth);
                 break;
             }
             
@@ -289,7 +296,12 @@ export function PageProdLactatingEntry(input_settings){
             }
             
             case thisObj.TAB_GESTA_MATING:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaMating);
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaMating);
+                break;
+            }
+            
+            default: {
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaPigOps)
                 break;
             }
 
@@ -298,7 +310,11 @@ export function PageProdLactatingEntry(input_settings){
     }
     
     
-    this.beforeShowTab = function(tab_id){
+    this.beforeShowTab = function(tabId){
+        console.log('beforeShowTab');
+        console.log('beforeShowTab tabId = ' + tabId);
+        console.log(dataPigProd);
+        
         switch(tabId) {
             case elemIdTabLactaPigOps:{
                 // Set PigProdOps tab
@@ -307,6 +323,7 @@ export function PageProdLactatingEntry(input_settings){
                 }
                 thisObj.prodEntryPigOps.show(dataPigProd, options_pig_prod_ops);
         
+                curTab = thisObj.TAB_LACTA_PIGOPS;
                 break;
             }
             
@@ -316,49 +333,57 @@ export function PageProdLactatingEntry(input_settings){
                 }
                 thisObj.prodEntryBirth.show(dataPigProd, options_birth);
                 
+                curTab = thisObj.TAB_LACTA_PIGOPS;
                 break;
             }
             
             
             case elemIdTabLactaWean:{
+                curTab = thisObj.TAB_LACTA_PIGOPS;
                 break;
             }
             
             
             case elemIdTabLactaMedVac:{
+                curTab = thisObj.TAB_LACTA_MEDVAC;
                 break;
             }
             
             case elemIdTabLactaHealth:{
+                curTab = thisObj.TAB_LACTA_HEALTH;
                 break;
             }
             
             case elemIdTabLactaPigDead:{
+                curTab = thisObj.TAB_LACTA_PIG_DEAD;
                 break;
             }
             
             case elemIdTabLactaFeedSummary:{
+                curTab = thisObj.TAB_LACTA_FEED_SUMMARY;
                 break;
             }
             
             
             case elemIdTabLactaFeedAdd:{
+                curTab = thisObj.TAB_LACTA_FEED_ADD;
                 break;
             }
             
             case elemIdTabLactaNotes:{
+                curTab = thisObj.TAB_LACTA_NOTES;
                 break;
             }
             
             
-            case elemIdTabGestaMating:{
+            case elemIdTabLactaMating:{
                 // Set Insemination tab
                 const options_insem ={
                     is_read_only:   true
                 }
                 thisObj.prodEntryMating.show(dataPigProd, options_insem);
                 
-                
+                curTab = thisObj.TAB_GESTA_MATING;
                 break;
             }
             
