@@ -39,11 +39,14 @@ export function UiInputDatePickerGesta(input_settings){
     
     const elemIdText            = `${settings.uniqueKey}-text`;
     const elemIdTextInv         = `${settings.uniqueKey}-text-inv`;
+    const elemIdGestationPeriod = `${settings.uniqueKey}-gestation-period`;
+    const elemIdGestationDays   = `${settings.uniqueKey}-gestation-days`;
     
-    const elemIdGestationDays   = `${settings.uniqueKey}-gestation`;
-    
+	
+	let elemUiShow				= null;
     let elemText                = null;
     let elemTextInv             = null;
+    let elemGestationPeriod     = null;
     let elemGestationDays       = null;
     
     
@@ -89,7 +92,7 @@ export function UiInputDatePickerGesta(input_settings){
                     id="${elemIdText}" 
                     ${s_required}>
             
-            <div id="${elemIdGestationDays}" style="font-size: 14px; margin-top: 5px;" >Gestation period: -- days</div>
+            <div id="${elemIdGestationPeriod}" style="font-size: 14px; margin-top: 5px;" >Gestation Period: <span id="${elemIdGestationDays}">115</span> Days</div>
             
             ${s_invalid}
             ${s_help}
@@ -100,18 +103,21 @@ export function UiInputDatePickerGesta(input_settings){
     
     
     this._findElements = function(){
-        thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
-        
+        elemUiShow				= document.getElementById(elemIdUiShow);
+		
         elemText                = document.getElementById(elemIdText);
         elemTextInv             = document.getElementById(elemIdTextInv);
-        
+        elemGestationPeriod     = document.getElementById(elemIdGestationPeriod);
         elemGestationDays       = document.getElementById(elemIdGestationDays);
-    }
+    
+		thisObj.elemUiShow      = elemUiShow;
+        
+	}
     
     
     this._bindEventListeners = function(){
         elemText.addEventListener('change', function(){
-            
+            console.log('date change');
             const input_date    = elemText.value;
             
             // Convert date to YYYY-MM-DD format
@@ -126,7 +132,7 @@ export function UiInputDatePickerGesta(input_settings){
             
             let   diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
         
-            elemGestationDays.textContent = `Gestation period: ${diff_days} days`;
+            thisObj.setGestationDays(diff_days);
         });
     }
     
@@ -181,6 +187,13 @@ export function UiInputDatePickerGesta(input_settings){
     }
     
     
+    this.setGestationDays = function(num_days){
+		console.log('setGestationDays');
+        elemGestationDays.textContent = `${num_days}`;
+        elemGestationPeriod.style.display = 'block';
+    }
+    
+    
     this.getValue = function(){
         return elemText.value;
     }
@@ -189,6 +202,9 @@ export function UiInputDatePickerGesta(input_settings){
     this.reset = function(){
         elemText.value = '';
         elemText.classList.remove('is-valid', 'is-invalid');
+        
+        elemGestationPeriod.style.display = 'none';
+        
      } 
     
     

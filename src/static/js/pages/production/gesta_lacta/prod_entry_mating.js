@@ -25,7 +25,7 @@ import {getSowBoarReference}    from '../../common/common_app.js';
 
 
 
-export function ProdEntryInsem(input_settings){
+export function ProdEntryMating(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
@@ -237,7 +237,7 @@ export function ProdEntryInsem(input_settings){
         const html = `
 <div class="modal-body" id="${elemIdContentContainer}">
     <h2 class="tab-title">
-        Insemination Information
+        Mating Information
     </h2>
     
     <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:8px;">

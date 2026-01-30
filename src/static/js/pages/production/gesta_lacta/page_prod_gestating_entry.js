@@ -11,10 +11,10 @@ import {PAGE_ID,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
 
-import {ProdEntryNotes}         from './prod_entry_notes.js'
+
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
-import {ProdEntryInsem}         from './prod_entry_insem.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
+import {prodEntryMating}        from './prod_entry_mating.js'
 
 
 
@@ -42,13 +42,11 @@ export function PageProdGestatingEntry(input_settings){
     this.TAB_GESTA_PIGOPS       = 1;
     this.TAB_GESTA_BIRTH        = 2;
     this.TAB_GESTA_INSEM        = 3;
-    this.TAB_GESTA_NOTES        = 4;
     
     
     let elemIdTabGestaPigOps    = `prod-gesta-pigops`;
     let elemIdTabGestaBirth     = `prod-gesta-birth`;
     let elemIdTabGestaInsem     = `prod-gesta-insem`;
-    let elemIdTabGestaNotes     = `prod-gesta-notes`;
         
     
     let tabsProdGesta = [
@@ -64,12 +62,7 @@ export function PageProdGestatingEntry(input_settings){
         
         {
             data_tab_id:    elemIdTabGestaInsem,
-            label:          'Insem'
-        },
-        
-        {
-            data_tab_id:    elemIdTabGestaNotes,
-            label:          'Notes'
+            label:          'Mating'
         }
     ];
     
@@ -78,7 +71,6 @@ export function PageProdGestatingEntry(input_settings){
     let elemTabGestaPigOps          = null;
     let elemTabGestaBirth           = null;
     let elemTabGestaInsem           = null;
-    let elemTabGestaNotes           = null;
                                         
     
     
@@ -109,7 +101,6 @@ export function PageProdGestatingEntry(input_settings){
         elemTabGestaPigOps      = elemDivContainer.querySelector('#'+elemIdTabGestaPigOps);
         elemTabGestaBirth       = elemDivContainer.querySelector('#'+elemIdTabGestaBirth);
         elemTabGestaInsem       = elemDivContainer.querySelector('#'+elemIdTabGestaInsem);
-        elemTabGestaNotes       = elemDivContainer.querySelector('#'+elemIdTabGestaNotes);
     }
     
     
@@ -123,13 +114,13 @@ export function PageProdGestatingEntry(input_settings){
         this.prodEntryPigOps.init();
         
     
-        this.prodEntryInsem     = new ProdEntryInsem({
+        this.prodEntryMating     = new ProdEntryMating({
             navigation:         navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-gesta-insem',
             elemDivContainer:   elemTabGestaInsem
         });
-        this.prodEntryInsem.init();
+        this.prodEntryMating.init();
         
         
         this.prodEntryBirth    = new ProdEntryBirth({
@@ -139,6 +130,7 @@ export function PageProdGestatingEntry(input_settings){
             elemDivContainer:   elemTabGestaBirth
         });
         this.prodEntryBirth.init();
+        
         
         
         this.componentTabsWithMore.beforeShowTab = this.beforeShowTab;
@@ -175,7 +167,7 @@ export function PageProdGestatingEntry(input_settings){
         const options_insem ={
             is_read_only:   false
         }
-        this.prodEntryInsem.show(dataPigProd, options_insem);
+        this.prodEntryMating.show(dataPigProd, options_insem);
         
     }
     
@@ -207,15 +199,12 @@ export function PageProdGestatingEntry(input_settings){
                 const options_insem ={
                     is_read_only:   false
                 }
-                thisObj.prodEntryInsem.show(dataPigProd, options_insem);
+                thisObj.prodEntryMating.show(dataPigProd, options_insem);
                 
                 
                 break;
             }
             
-            case elemIdTabGestaNotes:{
-                break;
-            }
         }
     }
       
@@ -236,13 +225,7 @@ export function PageProdGestatingEntry(input_settings){
                 thisObj.componentTabsWithMore.switchTab(elemIdTabGestaInsem);
                 break;
             }
-            
-            case thisObj.TAB_GESTA_NOTES:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaNotes);
-                break;
-            }
-            
-            
+
         }
         
     }

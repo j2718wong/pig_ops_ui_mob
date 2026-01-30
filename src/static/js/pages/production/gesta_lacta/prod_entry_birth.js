@@ -315,10 +315,10 @@ export function ProdEntryBirth(input_settings){
         
         
         
-        const insemination  = curDataPigProd.insemination;
+        const pig_prod_birth  = curDataPigProd.birth;
         
-        const dt_insem      = new Date(insemination.insem_date);
-        elemDateExpected.textContent = formatDate(dt_insem);
+        const dt_expected      = new Date(pig_prod_birth.date_expected);
+        elemDateExpected.textContent = formatDate(dt_expected);
         
         componentStaff.beforeShow();
     }

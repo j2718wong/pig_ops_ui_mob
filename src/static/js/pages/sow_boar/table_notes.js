@@ -45,7 +45,7 @@ export function TableNotes(input_settings){
     /*
     Typical input_settings
     {
-        navigation:             this,
+        navigation:             navigation,
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-notes'
         elemDivContainer:       '<element>',
