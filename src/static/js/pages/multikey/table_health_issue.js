@@ -10,7 +10,8 @@ import {APPLICATION,
         PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        SOW_STATUS_NAME}        from '../../constants.js';
+        SOW_STATUS_NAME,
+		MULTIKEY_OBJ_TYPE}        from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -20,6 +21,15 @@ import {formatDate,
         createPaginationManager} from '../../utils.js';
 
 
+
+/*
+TableHealthIssue are used in different objects
+
+1.) Sow Boar Health; key = sow_boar_id
+2.) Pig Prod Health; key = pig_prod_id
+3.) ProdGroup Health; key = production_group_id 
+
+*/
 
 
 export function TableHealthIssue(input_settings){
@@ -32,10 +42,11 @@ export function TableHealthIssue(input_settings){
     /*
     Typical input_settings
     {
-        navigation:             this,
+        navigation:             navigation,
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-health',
-        elemDivContainer:       elemTabHealth
+        elemDivContainer:       elemTabHealth,
+		healthType:             MULTIKEY_OBJ_TYPE.SOW_BOAR
     }   
     */  
     let settings                = input_settings;
@@ -61,6 +72,7 @@ export function TableHealthIssue(input_settings){
     
     
     let dataSowBoar             = null;
+	let dataPigProd             = null;
     
     
     this.init = function(){
@@ -94,32 +106,40 @@ export function TableHealthIssue(input_settings){
     
     
     
-    this.beforeShow = function(data_sow_boar, options){
-        dataSowBoar     = data_sow_boar;
+    this.beforeShow = function(data, options){
         showOptions     = options;
-
-
-        if ('list_health_issues' in dataSowBoar.data_details){
-            thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
-            thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
-        } else{
-            const callback_success = function(){
-                thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
-                thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
-            }
-            
-            navigation.pigFarm.managerSowBoar.requestNotesList(
-				dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
-        }
+		
+		switch (settings.healthType){
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+				dataSowBoar     = data;
         
-        
-        const elem = thisObj.getElemSearchAddControl();
-        if ('dispose_status_id' in dataSowBoar.sow_boar){
-            elem.style.display = 'none';
-        }
-        else{
-            elem.style.display = 'flex';
-        }
+
+				if ('list_health_issues' in dataSowBoar.data_details){
+					thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
+					thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
+				} else{
+					const callback_success = function(){
+						thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
+						thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
+					}
+					
+					navigation.pigFarm.managerSowBoar.requestNotesList(
+						dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
+				}
+				
+				
+				const elem = thisObj.getElemSearchAddControl();
+				if ('dispose_status_id' in dataSowBoar.sow_boar){
+					elem.style.display = 'none';
+				}
+				else{
+					elem.style.display = 'flex';
+				}
+			}
+			
+			
+			
+		}
     }
     
         
@@ -332,6 +352,7 @@ export function TableHealthIssue(input_settings){
         const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
         
         const options ={
+			medvac_type:			MULTIKEY_OBJ_TYPE.SOW_BOAR,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
             health_issue_entry:     row_entry,

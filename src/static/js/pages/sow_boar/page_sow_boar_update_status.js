@@ -432,7 +432,7 @@ export function PageSowBoarUpdateStatus(input_settings){
         
         
         // send post request
-        let post_data = {
+        const post_data = {
             'uhid':             user_hid,
             'sow_boar_hid':     curDataSowBoar.sow_boar.hid,
             

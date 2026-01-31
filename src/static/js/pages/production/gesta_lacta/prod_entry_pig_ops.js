@@ -412,8 +412,6 @@ ${html_style}
         // Sort in decreasing date; laready done in backend; but not yet in sample data
         //const sorted_operations = sortList(operations, 'pig_prod_pig_ops.date_target', 'desc');
     
-        console.log('operations');
-        console.log(operations);
     
         let diff_msecs;
         let diff_days;
@@ -492,8 +490,6 @@ ${html_style}
             });
         }
 		
-		console.log('to_display_ops');
-		console.log(to_display_ops);
 		
         
         let hide_filter_control = false;

@@ -11,7 +11,7 @@ import {APPLICATION,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         SOW_STATUS_NAME,
-        NOTES_TYPE}             from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}      from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -49,7 +49,7 @@ export function TableNotes(input_settings){
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-notes'
         elemDivContainer:       '<element>',
-        notesType:              NOTES_TYPE.SOW_BOAR
+        notesType:              MULTIKEY_OBJ_TYPE.SOW_BOAR
     }   
     */  
     const settings              = input_settings;
@@ -113,7 +113,7 @@ export function TableNotes(input_settings){
         showOptions     = options;
         
         switch (settings.notesType){
-            case NOTES_TYPE.SOW_BOAR:{
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
                 dataSowBoar     = data;
                 
                 if ('list_notes' in dataSowBoar.data_details){
@@ -131,19 +131,20 @@ export function TableNotes(input_settings){
                 }
                 
                 
-                // no add entry if alredy disposed
-                const elem = thisObj.getElemSearchAddControl();
+                // no add entry if already disposed
+				// Still thinking if search control will be removed
+                const elem_search_add = thisObj.getElemSearchAddControl();
                 if ('dispose_status_id' in dataSowBoar.sow_boar){
-                    elem.style.display = 'none';
+                    elem_search_add.style.display = 'none';
                 }
                 else{
-                    elem.style.display = 'flex';
+                    elem_search_add.style.display = 'flex';
                 }
                 
                 break;
             }
             
-            case NOTES_TYPE.PIG_PROD:{
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
                 dataPigProd     = data;
                 
                 if ('list_notes' in dataPigProd.data_details){
@@ -166,7 +167,7 @@ export function TableNotes(input_settings){
                 break;
             }
             
-            case NOTES_TYPE.PROD_GROUP:{
+            case MULTIKEY_OBJ_TYPE.PROD_GROUP:{
                 break;
             }
         }
@@ -229,8 +230,9 @@ export function TableNotes(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
+        
         switch (settings.notesType){
-            case NOTES_TYPE.SOW_BOAR:{
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
         
                 let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
 
@@ -252,9 +254,9 @@ export function TableNotes(input_settings){
                 break;
             }
         
-            case NOTES_TYPE.PIG_PROD:{
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
         
-                let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+                let s_click = `gNavigation.pageProdLactatingEntry.tablePigProdNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
 
                 
                 const dt_notes = new Date(cur_entry.prod_notes.date_notes);
@@ -289,31 +291,74 @@ export function TableNotes(input_settings){
     
     
     this.onClickAddEntry = function(){
-        
-        const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
-        
-        const options ={
-            is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+        switch (settings.notesType) {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                
+                const options ={
+                    notes_type:             settings.notesType,
+                    is_add:                 true,   // false is edit
+                    callback_after_add:     thisObj.onSuccessAddEntry,
+                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                }
+                
+                navigation.pageNotesAddEdit.beforeShow(dataSowBoar, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
+                navigation.showThisPage(page_container);
+                
+                break;
+            }
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                const go_back_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_ENTRY);
+                
+                const options ={
+                    notes_type:             settings.notesType,
+                    is_add:                 true,   // false is edit
+                    callback_after_add:     thisObj.onSuccessAddEntry,
+                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                }
+                
+                navigation.pageNotesAddEdit.beforeShow(dataPigProd, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
+                navigation.showThisPage(page_container);
+                
+                break;
+            }
         }
-        
-        navigation.pageNotesAddEdit.beforeShow(dataSowBoar, options);
-        const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
-        navigation.showThisPage(page_container);
-        
-        
     }
     
     
     this.getEntry = function(entry_hid){
-        if ('list_notes' in dataSowBoar.data_details){
-            for (const cur_entry of dataSowBoar.data_details.list_notes){
-                if (cur_entry.prod_notes.hid == entry_hid){
-                    return cur_entry;
+        
+        switch (settings.notesType) {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                if ('list_notes' in dataSowBoar.data_details){
+
+                    for (const cur_entry of dataSowBoar.data_details.list_notes){
+                        if (cur_entry.prod_notes.hid == entry_hid){
+                            return cur_entry;
+                        }
+                    }
                 }
+                break;
+            }
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                if ('list_notes' in dataPigProd.data_details){
+
+                    for (const cur_entry of dataPigProd.data_details.list_notes){
+                        if (cur_entry.prod_notes.hid == entry_hid){
+                            return cur_entry;
+                        }
+                    }
+                }
+                break;
             }
         }
+        
+        console.log('entry not found');
+        
         
         return null;
     }
@@ -321,40 +366,84 @@ export function TableNotes(input_settings){
     
     this.onSuccessAddEntry = function(){
         
-        const callback_success = function(data){
-            thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
-            thisObj.renderTable(dataSowBoar.data_details.list_notes);
-        };
+        switch (settings.notesType) {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                const callback_success = function(data){
+                    thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
+                    thisObj.renderTable(dataSowBoar.data_details.list_notes);
+                };
 
-        navigation.pigFarm.managerSowBoar.requestNotesList(
-			dataSowBoar, callback_success, thisObj.elemServerErrorMsg)
+                navigation.pigFarm.managerSowBoar.requestNotesList(
+                    dataSowBoar, callback_success, thisObj.elemServerErrorMsg)
+                break;
+                
+            }
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                const callback_success = function(data){
+                    thisObj.setDataEntryList(dataPigProd.data_details.list_notes);
+                    thisObj.renderTable(dataPigProd.data_details.list_notes);
+                };
+
+                navigation.pigFarm.managerPigProd.requestNotesList(
+                    dataPigProd, callback_success, thisObj.elemServerErrorMsg)
+                break;
+                
+            }
+        }
     }
     
     
     this.onClickRowEntry = function(entry_hid){
         const row_entry = thisObj.getEntry(entry_hid);
+        
+       
         thisObj.onClickEditEntry(row_entry);
+        
     }
     
     
     this.onClickEditEntry = function(row_entry){
-
-        if (row_entry){
-            const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        if (row_entry == null){return;}
         
-            const options ={
-                is_add:                 false,   // false is edit
-                row_entry:              row_entry,
-                callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
-                go_back_page:           go_back_page   // Go back to this page; this is Div element
+        switch (settings.notesType) {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+            
+                const options ={
+                    notes_type:             settings.notesType,
+                    is_add:                 false,   // false is edit
+                    row_entry:              row_entry,
+                    callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
+                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                }
+                
+                navigation.pageNotesAddEdit.beforeShow(dataSowBoar, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
+                navigation.showThisPage(page_container);
+
+                
+                break;
             }
             
-            navigation.pageNotesAddEdit.beforeShow(dataSowBoar, options);
-            const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
-            navigation.showThisPage(page_container);
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                const go_back_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_ENTRY);
             
-
-        }
+                const options ={
+                    notes_type:             settings.notesType,
+                    is_add:                 false,   // false is edit
+                    row_entry:              row_entry,
+                    callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
+                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                }
+                
+                navigation.pageNotesAddEdit.beforeShow(dataPigProd, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
+                navigation.showThisPage(page_container);
+                    
+                break;
+            }
+         }
     }
     
     

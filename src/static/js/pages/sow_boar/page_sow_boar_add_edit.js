@@ -1228,7 +1228,7 @@ export function PageSowBoarAddEdit(input_settings){
         }
         
         // send post request
-        let post_data = {
+        const post_data = {
             'uhid':             user_hid,
             'pfhid':            pig_farm_hid,
             

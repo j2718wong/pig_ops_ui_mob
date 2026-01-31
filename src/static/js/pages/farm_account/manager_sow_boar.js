@@ -9,7 +9,7 @@ import {PIG_PROD_TYPE,
         SOW_STATUS,
         PROD_STATUS,
         SUPPLIER_TYPE,
-        MEDVAC_TYPE}            from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}            from '../../constants.js';
 		
 
 export function ManagerSowBoar(input_settings){
@@ -77,15 +77,14 @@ export function ManagerSowBoar(input_settings){
     
     
     this.requestSowBoarList = function(is_sow, callback_success, elem_show_error){
-
-        const sex               = is_sow? 'F':'M';
+		const pig_farm_hid 	= parentObj.getPigFarmHid();
+        const sex       	= is_sow? 'F':'M';
 
 
         // Need to request sow_boar list
         
         const base_url = window.location.origin;
-        let url = `${base_url}/sow_boar/list?pfhid=${parentObj.getPigFarmHid()}`;
-        url += `&sex=${sex}`;
+        let url = `${base_url}/sow_boar/list?pfhid=${pig_farm_hid}&sex=${sex}`;
         
         if (is_sow == false){
             url += '&inc_external=1';
@@ -141,7 +140,7 @@ export function ManagerSowBoar(input_settings){
         const sow_boar_hid = data_sow_boar.sow_boar.hid;
         
         const base_url = window.location.origin;
-        let url = `${base_url}/sow_boar/data_details?sow_boar_hid=${sow_boar_hid}`;
+        const url = `${base_url}/sow_boar/data_details?sow_boar_hid=${sow_boar_hid}`;
         
         
         $.ajax({
@@ -190,7 +189,7 @@ export function ManagerSowBoar(input_settings){
         const sow_boar_hid = data_sow_boar.sow_boar.hid;
         
         const base_url = window.location.origin;
-        let url = `${base_url}/pig_prod_notes/list?sow_boar_hid=${sow_boar_hid}`;
+        const url = `${base_url}/pig_prod_notes/list?sow_boar_hid=${sow_boar_hid}`;
         
         
         $.ajax({

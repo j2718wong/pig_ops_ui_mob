@@ -9,7 +9,7 @@ import {PIG_PROD_TYPE,
         SOW_STATUS,
         PROD_STATUS,
         SUPPLIER_TYPE,
-        MEDVAC_TYPE}            from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}            from '../../constants.js';
 
 
 
@@ -142,7 +142,7 @@ export function ManagerPigProd(input_settings){
             elem_show_error){
         
         const base_url = window.location.origin;
-        let url = `${base_url}/pig_prod/entry/${pig_prod_hid}`;
+        const url = `${base_url}/pig_prod/entry/${pig_prod_hid}`;
         
         
         
@@ -190,7 +190,7 @@ export function ManagerPigProd(input_settings){
             pig_prod_pig_ops_hid, callback_success, elem_show_error){
         
         const base_url = window.location.origin;
-        let url = `${base_url}/pig_prod_pig_ops/entry/${pig_prod_pig_ops_hid}`;
+        const url = `${base_url}/pig_prod_pig_ops/entry/${pig_prod_pig_ops_hid}`;
         
         
         
@@ -254,7 +254,7 @@ export function ManagerPigProd(input_settings){
         const pig_prod_hid = data_pig_prod.pig_production.hid;
         
         const base_url = window.location.origin;
-        let url = `${base_url}/pig_prod/data_details?pig_prod_hid=${pig_prod_hid}`;
+        const url = `${base_url}/pig_prod/data_details?pig_prod_hid=${pig_prod_hid}`;
         
         
         $.ajax({
@@ -302,7 +302,7 @@ export function ManagerPigProd(input_settings){
         const pig_prod_hid = data_pig_prod.pig_production.hid;
         
         const base_url = window.location.origin;
-        let url = `${base_url}/pig_prod_notes/list?pig_prod_hid=${pig_prod_hid}`;
+        const url = `${base_url}/pig_prod_notes/list?pig_prod_hid=${pig_prod_hid}`;
         
         
         $.ajax({

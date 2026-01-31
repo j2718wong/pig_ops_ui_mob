@@ -9,17 +9,18 @@ import {PageProdEntryCommon}    from './page_prod_entry_common.js';
 import {PAGE_ID,
         SOW_STATUS,
         PIG_OPERATION_TYPE,
-        MEDVAC_TYPE}            from '../../../constants.js';
+        MULTIKEY_OBJ_TYPE}             from '../../../constants.js';
 
 
 import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
 
-import {ProdEntryNotes}         from './prod_entry_notes.js'
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryMating}        from './prod_entry_mating.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
 
 import {TableMedVac}            from '../../multikey/table_medvac.js'
+import {TableNotes}             from '../../multikey/table_notes.js'
+
 
 
 export function PageProdLactatingEntry(input_settings){
@@ -205,13 +206,23 @@ export function PageProdLactatingEntry(input_settings){
     
     
         this.tableMedVac        = new TableMedVac({
-            navigation:             settings.navigation,
-            parentObj:              thisObj,
-            uniqueKey:              'pig-prod-lacta-medvac',
-            elemDivContainer:       elemTabLactaMedVac,
-            medvacType:             MEDVAC_TYPE.PIG_PROD
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-lacta-medvac',
+            elemDivContainer:   elemTabLactaMedVac,
+            medvacType:         MULTIKEY_OBJ_TYPE.PIG_PROD
         });
         this.tableMedVac.init();
+        
+        
+        this.tablePigProdNotes 	= new TableNotes({
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-notes',
+            elemDivContainer:   elemTabLactaNotes,
+            notesType:          MULTIKEY_OBJ_TYPE.PIG_PROD
+        });
+        this.tablePigProdNotes.init();
         
     
         this.prodEntryMating     = new ProdEntryMating({
@@ -391,6 +402,8 @@ export function PageProdLactatingEntry(input_settings){
             }
             
             case elemIdTabLactaNotes:{
+                thisObj.tablePigProdNotes.beforeShow(dataPigProd);
+                
                 curTab = thisObj.TAB_LACTA_NOTES;
                 break;
             }

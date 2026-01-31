@@ -9,7 +9,7 @@ import {PIG_PROD_TYPE,
         SOW_STATUS,
         PROD_STATUS,
         SUPPLIER_TYPE,
-        MEDVAC_TYPE}            from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}            from '../../constants.js';
 
 
 import {ManagerSowBoar}         from './manager_sow_boar.js';
@@ -215,7 +215,7 @@ export function PigFarm(_navigation){
         const base_url = window.location.origin;
         let url = null;
         
-        if (medvac_type == MEDVAC_TYPE.SOW_BOAR){
+        if (medvac_type == MULTIKEY_OBJ_TYPE.SOW_BOAR){
             const sow_boar_hid = data_entry.sow_boar.hid;
             url = `${base_url}/pig_medvac/list?sow_boar_hid=${sow_boar_hid}`;
         }

@@ -121,14 +121,8 @@ const SUPPLIER_TYPE ={
 };
 
 
-const NOTES_TYPE = {
-    SOW_BOAR:           1,
-    PIG_PROD:           2,
-    PROD_GROUP:         3
-    
-};
 
-const MEDVAC_TYPE = {
+const MULTIKEY_OBJ_TYPE = {
     SOW_BOAR:           1,
     PIG_PROD:           2,
     PROD_GROUP:         3
@@ -162,9 +156,8 @@ export {
     
     PIG_PROD_TYPE,
     SUPPLIER_TYPE,
-    NOTES_TYPE,
-	
-	MEDVAC_TYPE,
+
+	MULTIKEY_OBJ_TYPE,
     
     REQUEST_ERROR_NUM
 };

@@ -550,7 +550,7 @@ export function AddModalAccPigOps(input_settings){
         var user_hid        = gController.getUserUhid();
         
         // send post request
-        var post_data = {
+        const post_data = {
             'uhid':             user_hid,
             'operation_type':   operationType,
             'num_days_since':   parseInt(newEntry.fieldNumDaysSince.newValue),

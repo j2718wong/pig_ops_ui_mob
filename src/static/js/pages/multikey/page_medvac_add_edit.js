@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageWithMultiBreadCrumbs}  	from './page_with_multi_breadcrumbs.js';
+import {PageWithMultiBreadCrumbs}   from './page_with_multi_breadcrumbs.js';
 
 import {CommonSelectOptions}        from '../common/common_select_options.js';
 
@@ -28,7 +28,7 @@ import {TextTranslation}        from '../common/translation.js';
 import {PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        REQUEST_ERROR_NUM}      from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}            from '../../constants.js';
 
 
 import {formatDate,
@@ -135,6 +135,7 @@ export function PageMedVacAddEdit(input_settings){
     let elemBtnSave             = null;
     
 
+    let curDataEntry            = null;
     let showOptions             = null;
     
 
@@ -259,7 +260,7 @@ export function PageMedVacAddEdit(input_settings){
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
            
-        const html_breadcrumb   = thisObj.componentBreadcrumb.getHtml();
+        const html_breadcrumb   = thisObj.getHtmlBreadCrumbs();
         
         const html_date_medvac  = elemUiDateMedVac.getHtml();
         const html_medvac_brand = componentMedVacBrand.getHtml();
@@ -358,7 +359,7 @@ export function PageMedVacAddEdit(input_settings){
     this.afterHtmlRender = function(){
         // Do the afterHtmlRender to UI elements first;
         
-        thisObj.afterHtmlRenderSowBoarEntryComponent();
+        thisObj.afterHtmlRenderBreadCrumbComponent();
 
         elemUiDateMedVac.afterHtmlRender();
         
@@ -440,10 +441,15 @@ export function PageMedVacAddEdit(input_settings){
         elemUiNotes.reset(); 
         componentStaff.reset();
         
+        
+        elemServerErrorMsg.style.display = 'none';
     }
     
     
-    this.beforeShow = function(data_sow_boar, options){
+    this.beforeShow = function(data_entry, options){
+        // The dat_entry can be a data_sow_boar, data_pig_prod 
+        
+        
         // IMPORTANT;  When you set a select value while its parent container 
         // is hidden (via display: none, visibility: hidden, or opacity: 0), 
         // the browser doesn't properly render the selected state until the 
@@ -453,6 +459,7 @@ export function PageMedVacAddEdit(input_settings){
         /*
         Typical options
         options ={
+            medvac_type:             MULTIKEY_OBJ_TYPE.SOW_BOAR,
             is_add:                 true,   // false is edit
             medvac_hid:             null,   // not null if edit
             health_issue_entry:     null,   // not null if this is added from health issue
@@ -461,12 +468,22 @@ export function PageMedVacAddEdit(input_settings){
         }
         */
         
-        thisObj.curDataSowBoar  = data_sow_boar;
+        curDataEntry    = data_entry;
         showOptions     = options;
         
         
         // Update BreadCrumbs
-        thisObj.updateBreadCrumbs();
+        switch (showOptions.medvac_type){ 
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                thisObj.updateBreadCrumbs(curDataEntry, null);
+                break;
+            }
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                thisObj.updateBreadCrumbs(null, curDataEntry);
+                break;
+            }
+        }
         
         
         thisObj._resetForm();
@@ -541,16 +558,16 @@ export function PageMedVacAddEdit(input_settings){
         if (showOptions.is_add == false){
             // Necessary to display fully first the container
             setTimeout(function(){
-                thisObj.populateForm(thisObj.curDataSowBoar, showOptions.medvac_hid);
+                thisObj.populateForm(curDataEntry, showOptions.medvac_hid);
             }, 100);
         }
     }
     
     
-    this.populateForm = function(data_sow_boar, medvac_hid){
+    this.populateForm = function(data_entry, medvac_hid){
         
-        // Get medvac entry from data_sow_boar
-        const list_medvac = data_sow_boar.data_details.list_medvac;
+        // Get medvac entry from data_entry
+        const list_medvac = data_entry.data_details.list_medvac;
         
         let cur_medvac = null;
         for (const cur_entry of list_medvac){
@@ -753,9 +770,8 @@ export function PageMedVacAddEdit(input_settings){
         
         
         // send post request
-        let post_data = {
+        const post_data = {
             'uhid':             user_hid,
-            'sow_boar_hid':     thisObj.curDataSowBoar.sow_boar.hid,
             
             'date_medvac':      dt_medvac_s,
             'medvac_brand_hid': input_medvac_brand,
@@ -767,6 +783,19 @@ export function PageMedVacAddEdit(input_settings){
         };
         
         if (showOptions.is_add == true){
+            // Add Key
+            switch (showOptions.medvac_type){ 
+                case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                    post_data.sow_boar_hid = curDataEntry.sow_boar.hid;
+                    break;
+                }
+                
+                case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                    post_data.pig_prod_hid = curDataEntry.pig_production.hid;
+                    break;
+                }
+            }
+            
             if (done_by_user > 0){
                 post_data.done_by_user = 1;
                 delete post_data.staff_hid;

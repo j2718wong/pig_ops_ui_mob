@@ -10,6 +10,7 @@ import {PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
+        PROD_STATUS,
         SUPPLIER_TYPE}          from '../../../constants.js';
 
 
@@ -689,6 +690,10 @@ export function PageProdGestatingAdd(input_settings){
             'insem_date':       dt_mating_s
         };
         
+        if (done_by_user > 0){
+            delete post_data.insem_staff_hid;
+        }
+        
         if (input_semen_cost != null && input_semen_cost > 0){
             post_data.semen_cost = parseFloat(input_semen_cost);
         }
@@ -782,5 +787,5 @@ export function PageProdGestatingAdd(input_settings){
     }
     
     
-	
+    
 }   

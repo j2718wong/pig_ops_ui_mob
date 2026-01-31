@@ -7,7 +7,9 @@
 import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
 
 import {SOW_STATUS,
-        PIG_OPERATION_TYPE}         from '../../../constants.js';
+        PIG_OPERATION_TYPE,
+        PROD_STATUS,
+        PIG_PROD_TYPE}              from '../../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -67,6 +69,7 @@ export function ProdEntryBirth(input_settings){
     
     let componentStaff          = null;
     
+    let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
     
     
@@ -78,6 +81,7 @@ export function ProdEntryBirth(input_settings){
     let elemDateExpected        = null;
     
     
+    let elemServerErrorMsg      = null;
     let elemBtnSave             = null;
     
     
@@ -175,6 +179,8 @@ export function ProdEntryBirth(input_settings){
         });
     
         
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
+        
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         
@@ -226,8 +232,14 @@ export function ProdEntryBirth(input_settings){
     <!-- 7. Staff -->
     ${html_staff}
 
-    <button class="btn btn-primary" id="${elemIdBtnSave}">Save Changes</button>
-
+    <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+    
+    <!-- Footer Buttons -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
+            <i class="fas fa-save me-2">Save Changes
+        </button>
+    </div>
 </div>
         `;
         
@@ -258,6 +270,7 @@ export function ProdEntryBirth(input_settings){
         elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);
         elemDateExpected        = elemDivContainer.querySelector('#'+elemIdDateExpected);
         
+        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
     
     }
@@ -269,7 +282,11 @@ export function ProdEntryBirth(input_settings){
     
     
     this._bindEventListeners = function(){
-    
+         elemBtnSave.addEventListener('click', function() {
+            thisObj.onClickSaveButton();
+        });
+        
+        
     }
     
     
@@ -287,7 +304,7 @@ export function ProdEntryBirth(input_settings){
         
         componentStaff.reset();
         
-        
+        elemServerErrorMsg.stylde.display = 'none';
     }
     
     
@@ -358,7 +375,7 @@ export function ProdEntryBirth(input_settings){
         let input_num_dead  = componentNumDead.getValue();
         let input_num_male  = componentNumMale.getValue();
         let input_num_female= componentNumFemale.getValue();
-        let input_staff_hid = elemStaff.val();
+        let input_staff     = componentStaff.getValue();
         
         
         input_elem          = elemUiDateBirth.getElemText();
@@ -451,7 +468,7 @@ export function ProdEntryBirth(input_settings){
         
         if (done_by_user == 0){
             input_elem = componentStaff.getElemSelect();
-            if (input_staff_hid == '0'  || input_staff_hid == '-1'){
+            if (input_staff == '0'  || input_staff == '-1'){
                 validation = -1;
             }
             addValidationClassToElem(input_elem, validation);
@@ -475,13 +492,16 @@ export function ProdEntryBirth(input_settings){
         
         
         const user_hid      = navigation.userControl.getUserHid();
+        const base_url      = window.location.origin;
+        
+        let url = `${base_url}/pig_prod/update_birth`;
         
         
         // send post request
-        let post_data = {
+        const post_data = {
             'uhid':             user_hid,
             'pig_prod_hid':     curDataPigProd.pig_production.hid,
-            'birth_staff_hid':  input_staff_hid,
+            'birth_staff_hid':  input_staff,
             
             'date_actual_birth': dt_birth_s,
             'num_pigs_dead':    number_dead,
@@ -489,6 +509,10 @@ export function ProdEntryBirth(input_settings){
             'num_pigs_female':  number_female
         };
         
+        if (done_by_user > 0){
+            post_data.done_by_user = 1;
+            delete post_data.birth_staff_hid;
+        }
         
         // TODO: check if there is a change in the data
         
@@ -496,21 +520,26 @@ export function ProdEntryBirth(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
-            url: gController.getBaseUrl() + '/pig_prod/update_birth',
+            url: url,
             async: true,
   
             data: JSON.stringify(post_data),
   
             beforeSend: function(){
+                elemServerErrorMsg.stylde.display = 'none';
             },
   
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.onSuccessUpdateBirth();
                     
-                    if (thisObj.callBackOnSuccessUpdate != null){
+                    if (thisObj.callBackOnSuccessUpdate){
                         thisObj.callBackOnSuccessUpdate();
                     }
+                } 
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elemServerErrorMsg);
                 }
             },
   
@@ -555,16 +584,19 @@ export function ProdEntryBirth(input_settings){
         
             const callback_success = function(data){
                 navigation.pigFarm.managerPigProd.dataLactatingList = data;
+                
+                // Open to Lactating List
+                const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
+                navigation._onClickNavProdGestaLacta(null, operation_type);
             };
             
             
             // request Lactating List
-            navigation.pigFarm.managerPigProd.requestPigProdList(PIG_PROD_TYPE.LACTATING)
+            navigation.pigFarm.managerPigProd.requestPigProdList(
+                PIG_PROD_TYPE.LACTATING, callback_success, elemServerErrorMsg);
         
         
-            // Open to Lactating List
-            const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
-            navigation._onClickNavProdGestaLacta(null, operation_type);
+            
         }
         else{
             const pig_prod_hid = curDataPigProd.pig_production.hid;
@@ -577,7 +609,7 @@ export function ProdEntryBirth(input_settings){
             
             //request updated prod_entry data and replace curDataPigProd;
             navigation.pigFarm.managerPigProd.requestPigProdEntry(pig_prod_hid, 
-                callback_success);
+                callback_success, elemServerErrorMsg);
                 
             //go back to Lactating Page showing PigOps List;
             

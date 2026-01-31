@@ -102,7 +102,7 @@ export function ComponentPlusMinusInput(input_settings){
             </div>
             
             <div class="invalid-feedback" id="${elemIdTextInv}">${s_invalid} </div>
-            <div class="form-text" id="${elemIdTextHelp}">${settings.helpText}</div>
+            <div class="form-text" id="${elemIdTextHelp}">${s_help}</div>
         </div>
         `;
         

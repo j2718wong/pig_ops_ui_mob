@@ -11,7 +11,7 @@ import {APPLICATION,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         SOW_STATUS_NAME,
-        MEDVAC_TYPE,
+        MULTIKEY_OBJ_TYPE,
         PROD_STATUS}            from '../../constants.js';
 
 import {formatDate,
@@ -47,7 +47,7 @@ export function TableMedVac(input_settings){
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-medvac',
         elemDivContainer:       '<element>'
-        medvacType:             MEDVAC_TYPE.SOW_BOAR
+        medvacType:             MULTIKEY_OBJ_TYPE.SOW_BOAR
     }   
     */  
     let settings                = input_settings;
@@ -100,9 +100,9 @@ export function TableMedVac(input_settings){
     }
     
     
-	this._writeInlineStyle = function(){
+    this._writeInlineStyle = function(){
         const html = `
-	<style>
+    <style>
         
         /* Updated Table Styles */
         .table-medvac td {padding-right:0}
@@ -110,8 +110,8 @@ export function TableMedVac(input_settings){
     `;
         return html;
     }
-	
-	
+    
+    
     this.getElemTableBody = function(){
         return elemTableBody;
     }
@@ -138,7 +138,7 @@ export function TableMedVac(input_settings){
         
         switch(settings.medvacType){
         
-            case MEDVAC_TYPE.SOW_BOAR: {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
                 
                 if ('dispose_status_id' in curDataEntry.sow_boar){
                     elem.style.display = 'none';
@@ -149,7 +149,7 @@ export function TableMedVac(input_settings){
                 break;
             }
         
-            case MEDVAC_TYPE.PIG_PROD: {
+            case MULTIKEY_OBJ_TYPE.PIG_PROD: {
                 const pig_prod_status = curDataEntry.pig_production.prod_status_id;
                 
                 switch (pig_prod_status){
@@ -169,7 +169,7 @@ export function TableMedVac(input_settings){
                 break;
             }
             
-            case MEDVAC_TYPE.FATTENING: {
+            case MULTIKEY_OBJ_TYPE.FATTENING: {
                 const pig_prod_status = curDataEntry.pig_production.prod_status_id;
                 
                 switch (pig_prod_status){
@@ -189,7 +189,7 @@ export function TableMedVac(input_settings){
             }
         }
         
-		
+        
         
     }
     
@@ -217,12 +217,12 @@ export function TableMedVac(input_settings){
     this.getHtmlTableHeader = function(){
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
         
-		const html_style = this._writeInlineStyle();
-		
-		
+        const html_style = this._writeInlineStyle();
+        
+        
         const html = `
-		${html_style}
-		
+        ${html_style}
+        
         <table class="data-table table-medvac" id="">
             <thead>
                 <colgroup>
@@ -264,7 +264,7 @@ export function TableMedVac(input_settings){
         
         switch(settings.medvacType){
         
-            case MEDVAC_TYPE.SOW_BOAR: {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
                 s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
                 
                 if ('dispose_status_id' in curDataEntry.sow_boar){
@@ -273,12 +273,12 @@ export function TableMedVac(input_settings){
                 break;
             }
         
-            case MEDVAC_TYPE.PIG_PROD: {
+            case MULTIKEY_OBJ_TYPE.PIG_PROD: {
                 // how to chekc if pig prod is still active
                 break;
             }
             
-            case MEDVAC_TYPE.FATTENING: {
+            case MULTIKEY_OBJ_TYPE.FATTENING: {
                 break;
             }
         }
@@ -356,17 +356,17 @@ export function TableMedVac(input_settings){
         
         switch(settings.medvacType){
         
-            case MEDVAC_TYPE.SOW_BOAR: {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
                 go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
                 break;
             }
         
-            case MEDVAC_TYPE.PIG_PROD: {
+            case MULTIKEY_OBJ_TYPE.PIG_PROD: {
                 go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
                 break;
             }
             
-            case MEDVAC_TYPE.FATTENING: {
+            case MULTIKEY_OBJ_TYPE.FATTENING: {
                 go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
                 break;
             }
@@ -376,6 +376,7 @@ export function TableMedVac(input_settings){
         
         
         const options ={
+            medvac_type:             settings.medvacType,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   // Go back to this page; this is Div element
@@ -409,17 +410,17 @@ export function TableMedVac(input_settings){
             
             switch(settings.medvacType){
         
-                case MEDVAC_TYPE.SOW_BOAR: {
+                case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
                     go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
                     break;
                 }
             
-                case MEDVAC_TYPE.PIG_PROD: {
+                case MULTIKEY_OBJ_TYPE.PIG_PROD: {
                     go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
                     break;
                 }
                 
-                case MEDVAC_TYPE.FATTENING: {
+                case MULTIKEY_OBJ_TYPE.FATTENING: {
                     go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
                     break;
                 }
@@ -428,6 +429,7 @@ export function TableMedVac(input_settings){
             const go_back_page = navigation.getPageContainer(go_back_page_id);
         
             const options ={
+                medvac_type:            settings.medvacType,
                 is_add:                 false,   // false is edit
                 medvac_hid:             entry_hid,
                 callback_after_edit:    thisObj.onSuccessEditEntry,

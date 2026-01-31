@@ -14,8 +14,7 @@ import {APPLICATION,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         SOW_STATUS_NAME,
-        MEDVAC_TYPE,
-        NOTES_TYPE}             from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}             from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -408,7 +407,7 @@ export function PageSowBoarEntry(input_settings){
             parentObj:              thisObj,
             uniqueKey:              'sow-boar-medvac',
             elemDivContainer:       elemTabMedVac,
-            medvacType:             MEDVAC_TYPE.SOW_BOAR
+            medvacType:             MULTIKEY_OBJ_TYPE.SOW_BOAR
         });
         this.tableMedVac.init();
         
@@ -427,7 +426,7 @@ export function PageSowBoarEntry(input_settings){
             parentObj:              thisObj,
             uniqueKey:              'sow-boar-notes',
             elemDivContainer:       elemTabNotes,
-            notesType:              NOTES_TYPE.SOW_BOAR
+            notesType:              MULTIKEY_OBJ_TYPE.SOW_BOAR
         });
         this.tableSowBoarNotes.init();
         

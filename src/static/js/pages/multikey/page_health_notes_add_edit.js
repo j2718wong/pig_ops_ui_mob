@@ -19,7 +19,7 @@ import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
 import {PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        REQUEST_ERROR_NUM}      from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}      from '../../constants.js';
 
 
 import {formatDate,
@@ -93,7 +93,7 @@ export function PageHealthNotesAddEdit(input_settings){
     let elemBtnSave             = null;
     
     
-    
+    let curDataEntry            = null;
     let showOptions             = null;
     
     
@@ -171,7 +171,7 @@ export function PageHealthNotesAddEdit(input_settings){
         
     
         
-        const html_breadcrumb   = thisObj.componentBreadcrumb.getHtml();
+        const html_breadcrumb   = thisObj.getHtmlBreadCrumbs();
         
         const html_date_notes   = elemUiDateNotes.getHtml();
         const html_notes        = elemUiNotes.getHtml();
@@ -230,7 +230,7 @@ export function PageHealthNotesAddEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
-        thisObj.afterHtmlRenderSowBoarEntryComponent();
+        thisObj.afterHtmlRenderBreadCrumbComponent();
 
         elemUiDateNotes.afterHtmlRender();
         elemUiNotes.afterHtmlRender();
@@ -270,9 +270,6 @@ export function PageHealthNotesAddEdit(input_settings){
         elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
         });
-        
-        
-        
     }
     
     
@@ -283,27 +280,40 @@ export function PageHealthNotesAddEdit(input_settings){
         elemUiDateNotes.reset();
         elemUiNotes.reset(); 
         
+        elemServerErrorMsg.style.display = 'none';
     }
     
     
-    this.beforeShow = function(data_sow_boar, options){
+    this.beforeShow = function(data_entry, options){
         /*
         Typical options
         options ={
             is_add:                 true,   // false is edit
-            notes_type:             NOTES_TYPE.SOW_BOAR,
+            notes_type:             MULTIKEY_OBJ_TYPE.SOW_BOAR,
             row_entry:              null,   // not null if edit; entry to be edited
             callback_after_add:     thisObj.onSuccessAddEntry
             go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
         */
         
-        thisObj.curDataSowBoar  = data_sow_boar;
+        curDataEntry    = data_entry;
         showOptions     = options;
         
-        
+        console.log('heaslth notes add_edit');
+        console.log(options);
+
         // Update BreadCrumbs
-        const sow_boar_reference = thisObj.updateBreadCrumbs();
+        switch (showOptions.notes_type){ 
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                thisObj.updateBreadCrumbs(curDataEntry, null);
+                break;
+            }
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                thisObj.updateBreadCrumbs(null, curDataEntry);
+                break;
+            }
+        }
         
         
         thisObj._resetForm();
@@ -318,7 +328,7 @@ export function PageHealthNotesAddEdit(input_settings){
             else{
                 html = `<i class="fas fa-edit me-2"></i>Edit Notes`;
                 
-                thisObj.populateForm(thisObj.curDataSowBoar, options.row_entry);
+                thisObj.populateForm(curDataEntry, options.row_entry);
             }
         }
         else{
@@ -328,7 +338,7 @@ export function PageHealthNotesAddEdit(input_settings){
             else{
                 html = `<i class="fas fa-edit me-2"></i>Edit Health Issue`;
                 
-                thisObj.populateForm(thisObj.curDataSowBoar, options.row_entry);
+                thisObj.populateForm(curDataEntry, options.row_entry);
             }
         }
         elemHeaderTitle.innerHTML = html;
@@ -453,9 +463,8 @@ export function PageHealthNotesAddEdit(input_settings){
         
         
         // send post request
-        let post_data = {
+        const post_data = {
             'uhid':             user_hid,
-            'sow_boar_hid':     thisObj.curDataSowBoar.hid,
             
             'date_notes':       dt_notes_s,
             'notes':            input_notes
@@ -463,14 +472,26 @@ export function PageHealthNotesAddEdit(input_settings){
         };
         
         if (showOptions.is_add == true){
-            post_data.sow_boar_hid = thisObj.curDataSowBoar.sow_boar.hid;
+            
+            switch (showOptions.notes_type){
+                case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                    post_data.sow_boar_hid = curDataEntry.sow_boar.hid;
+                    break;
+                }
+                
+                case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                    post_data.pig_prod_hid = curDataEntry.pig_production.hid;
+                    break;
+                }
+            }
+            
+            
             
             if (settings.isNotes == false){
                 post_data.is_health_issue = 1;
             }
         }
         else{
-            delete post_data.sow_boar_hid;
             post_data.pig_prod_notes_hid = showOptions.row_entry.prod_notes.hid;
         }
         
