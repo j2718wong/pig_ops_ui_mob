@@ -554,8 +554,8 @@ export function ProdEntryMating(input_settings){
             
             componentSelectBoar.disabled();
             
-            elemSemenSupplier.disabled = true;
-            elemSemenType.disabled = true;
+            componentSemenSupplier.disabled();
+            componentSemenType.disabled();
             elemSemenCost.disabled = true;
             
             componentSelectBoarInt.disabled();

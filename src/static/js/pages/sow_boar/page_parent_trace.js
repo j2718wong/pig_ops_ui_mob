@@ -320,9 +320,7 @@ export function PageParentTrace(input_settings){
         this._resetForm();
         
         // Check farm account if hasRequestedParentTrace
-        
-        console.log('navigation.pigFarm.dataPigFarm');
-        console.log(navigation.pigFarm.dataPigFarm);
+
         
         dataSowList     = navigation.pigFarm.managerSowBoar.dataSowList;
         dataBoarList    = navigation.pigFarm.managerSowBoar.dataBoarList;

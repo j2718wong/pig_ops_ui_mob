@@ -45,22 +45,17 @@ export function ComponentBreadcrumb(input_settings){
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     
     
+    let elemUiShow              = null;
+    
+    
+    // This can dynamically change
+    let breadcrumbItems         = settings.items;
+    
     
     this.getHtml = function(){
         
-        let html_items = '';
-        
-        let index = 0;
-        for (const cur_entry of settings.items){
-            if (index > 0){
-                html_items += '<div class="breadcrumb-separator">|</div>';
-            }
-            
-            html_items += thisObj._getHtmlItem(cur_entry, index);
-            index += 1;
-        }
-        
-        
+        let html_items = thisObj._getHtmlBreadcrumbItems();
+
         const html = `
             <div class="breadcrumb" id="${elemIdUiShow}">
                 ${html_items}
@@ -69,7 +64,23 @@ export function ComponentBreadcrumb(input_settings){
         `;
         
         return html;
+    }
+    
+    
+    this._getHtmlBreadcrumbItems = function(){
+        let html_items = '';
         
+        let index = 0;
+        for (const cur_entry of breadcrumbItems){
+            if (index > 0){
+                html_items += '<div class="breadcrumb-separator">|</div>';
+            }
+            
+            html_items += thisObj._getHtmlItem(cur_entry, index);
+            index += 1;
+        }
+        
+        return html_items;
     }
     
     
@@ -83,7 +94,9 @@ export function ComponentBreadcrumb(input_settings){
     
     
     this._findElements = function(){
-        thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
+        elemUiShow              = document.getElementById(elemIdUiShow);
+        
+        thisObj.elemUiShow      = elemUiShow;
     }
     
     
@@ -93,10 +106,10 @@ export function ComponentBreadcrumb(input_settings){
         breadcrumbs.forEach(breadcrumb_elem => {
             breadcrumb_elem.addEventListener('click', () => {
                 const item_index    = parseInt(breadcrumb_elem.getAttribute('data-index'));
-                const breadcrumb_item = settings.items[item_index];
+                const breadcrumb_item = breadcrumbItems[item_index];
 
                 const next_page = navigation.getPageContainer(breadcrumb_item.gotoPageId);
-                navigation.showThisPage(next_page)
+                navigation.showThisPage(next_page);
                 
             });
         });
@@ -108,7 +121,7 @@ export function ComponentBreadcrumb(input_settings){
         
         breadcrumbs.forEach(breadcrumb_elem => {
             const item_index        = breadcrumb_elem.getAttribute('data-index');
-            const breadcrumb_item   = settings.items[item_index];
+            const breadcrumb_item   = breadcrumbItems[item_index];
             breadcrumb_elem.textContent = breadcrumb_item.label;
             
         });
@@ -116,20 +129,37 @@ export function ComponentBreadcrumb(input_settings){
     
     
     /*
-    Note: The size of crumbs items must be same from the settings.items 
+    Updating breadcrumb will redraw the links. 
     
     */
     this.updateCrumbsItems = function(new_crumbs_items){
-        settings.items.length = 0;
+        elemUiShow.innerHTML = '';
         
-        for (const cur_entry of new_crumbs_items){
-            settings.items.push(cur_entry);
+        breadcrumbItems = new_crumbs_items;
+        
+        // Create new HTML
+        elemUiShow.innerHTML =  thisObj._getHtmlBreadcrumbItems();
+        
+        // Attach onclick function to breadcrumb elements;
+        // This is not addEventListener click method, because
+        // the breadcrumb elements can change.
+        const breadcrumbs = settings.elemRoot.querySelectorAll('.breadcrumb-link');
+        
+        for(const cur_entry of breadcrumbs){
+            cur_entry.onclick = function(){
+                const item_index    = parseInt(cur_entry.getAttribute('data-index'));
+                const breadcrumb_item = breadcrumbItems[item_index];
+
+                const next_page = navigation.getPageContainer(breadcrumb_item.gotoPageId);
+                navigation.showThisPage(next_page);
+            };
         }
+        
     }
-	
-	
-	// Override parent
-	this.show = function(){
+    
+    
+    // Override parent
+    this.show = function(){
         if (thisObj.elemUiShow){
             thisObj.elemUiShow.style.display = 'flex';
         }

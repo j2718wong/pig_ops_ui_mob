@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageSowBoarEntryComponent}  from './page_sow_boar_entry_component.js';
+import {PageSowBoarWithBreadCrumbs} from './page_sow_boar_with_breadcrumbs.js';
 
 import {CommonSelectOptions}        from '../common/common_select_options.js';
 
@@ -41,7 +41,7 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 export function PageBoarExtMateAddEdit(input_settings){
     input_settings['uniqueKey'] = 'boar-ext-mate-add-edit';
     
-    PageSowBoarEntryComponent.call(this, input_settings);
+    PageSowBoarWithBreadCrumbs.call(this, input_settings);
     
     
     const thisObj               = this;

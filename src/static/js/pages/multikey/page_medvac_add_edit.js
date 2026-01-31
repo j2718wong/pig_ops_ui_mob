@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageSowBoarEntryComponent}  from './page_sow_boar_entry_component.js';
+import {PageWithMultiBreadCrumbs}  	from './page_with_multi_breadcrumbs.js';
 
 import {CommonSelectOptions}        from '../common/common_select_options.js';
 
@@ -46,7 +46,7 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 export function PageMedVacAddEdit(input_settings){
-    PageSowBoarEntryComponent.call(this, input_settings);
+    PageWithMultiBreadCrumbs.call(this, input_settings);
     
     
     const thisObj               = this;

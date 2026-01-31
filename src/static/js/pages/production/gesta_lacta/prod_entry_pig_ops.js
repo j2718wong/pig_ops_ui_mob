@@ -47,12 +47,14 @@ export function ProdEntryPigOps(input_settings){
     
     let elemIdContentContainer  = null;
     let elemIdFilterControls    = null;
+	let elemIdHideCompleted		= null;
     
     let elemIdPigOpsTableBody   = null;
     
     
     let elemContentContainer    = null;
     let elemFilterControls      = null;
+	let elemHideCompleted		= null;
     
     let elemPigOpsTableBody     = null;
     
@@ -141,11 +143,11 @@ export function ProdEntryPigOps(input_settings){
         .sow-indicator {
             position: absolute;
             left: 0;
-            top: 50%;
+            top: 11px;
             transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            background-color: var(--corporate-dark-blue);
+            width: 10px;
+            height: 10px;
+            background-color: var(--lactating-sow-color);
             border-radius: 50%;
         }
         
@@ -201,7 +203,7 @@ export function ProdEntryPigOps(input_settings){
         
         .staff-name-completed {
             font-weight: 500;
-            color: var(--corporate-dark-blue);
+            color: var(--corporate-blue);
             font-size: 14px;
             white-space: nowrap;
             overflow: hidden;
@@ -228,13 +230,13 @@ export function ProdEntryPigOps(input_settings){
     
     this.getHtml = function(){
         
-        elemIdContentContainer  = `pig-prod-pig-ops-content`;
+        elemIdContentContainer  = `${settings.uniqueKey}-content`;
                 
-        elemIdFilterControls    = `pig-prod-pig-ops-filter-controls`;
-        
+        elemIdFilterControls    = `${settings.uniqueKey}-filter-controls`;
+        elemIdHideCompleted 	= `${settings.uniqueKey}-hide-completed`;
        
         
-        elemIdPigOpsTableBody   = `pig-prod-pig-ops-operations-table`;
+        elemIdPigOpsTableBody   = `${settings.uniqueKey}-tbody`;
         
         
         const html_style        = thisObj._writeInlineStyle();
@@ -262,8 +264,8 @@ ${html_style}
         </div>
         
         <!-- Hide Completed Toggle - Centered -->
-        <div class="hide-completed-control">
-            <div class="toggle-control" id="hide-completed-toggle">
+        <div class="hide-completed-control" style="margin-top:4px;">
+            <div class="toggle-control" id="${elemIdHideCompleted}">
                 <div class="toggle-switch">
                     <div class="toggle-knob"></div>
                 </div>
@@ -303,7 +305,10 @@ ${html_style}
         elemContentContainer    = document.getElementById(elemIdContentContainer);
         
         elemFilterControls      = document.getElementById(elemIdFilterControls);
-        elemPigOpsTableBody     = document.getElementById(elemIdPigOpsTableBody);
+        
+		elemHideCompleted		= document.getElementById(elemIdHideCompleted);
+		
+		elemPigOpsTableBody     = document.getElementById(elemIdPigOpsTableBody);
     }
     
     
@@ -374,9 +379,14 @@ ${html_style}
                 is_gesta_operations = true;
             }
             else{
-                operations = data_pig_prod.lactating_piglets_ops;
-                if ('lactating_sow_ops' in data_pig_prod){
-                    operations = operations.concat(data_pig_prod.lactating_sow_ops);
+                if ('lactating_ops' in data_pig_prod){
+                    operations = data_pig_prod.lactating_ops;
+                }
+                else{
+                    operations = data_pig_prod.lactating_piglets_ops;
+                    if ('lactating_sow_ops' in data_pig_prod){
+                        operations = operations.concat(data_pig_prod.lactating_sow_ops);
+                    }
                 } 
             }
         }
@@ -400,10 +410,10 @@ ${html_style}
         
         
         // Sort in decreasing date; laready done in backend; but not yet in sample data
-        const sorted_operations = sortList(operations, 'pig_prod_pig_ops.date_target', 'desc');
+        //const sorted_operations = sortList(operations, 'pig_prod_pig_ops.date_target', 'desc');
     
-        //console.log('sorted_operations');
-        //console.log(sorted_operations);
+        console.log('operations');
+        console.log(operations);
     
         let diff_msecs;
         let diff_days;
@@ -418,7 +428,7 @@ ${html_style}
         // Note null data blocks maybe removed in the backend to minimize
         // bytes to send.
         
-        for (const cur_entry of sorted_operations){
+        for (const cur_entry of operations){
             let pig_prod_pig_ops = cur_entry.pig_prod_pig_ops;
             
             
@@ -481,6 +491,10 @@ ${html_style}
                 'operation':    cur_entry
             });
         }
+		
+		console.log('to_display_ops');
+		console.log(to_display_ops);
+		
         
         let hide_filter_control = false;
         if (is_gesta_operations){hide_filter_control = true;}
@@ -494,7 +508,7 @@ ${html_style}
     // Function to initialize filter controls
     this.initializeFilters = function(operations, hide_filter_control) {
         const filterButtons = document.querySelectorAll('.filter-button');
-        const hideCompletedToggle = document.getElementById('hide-completed-toggle');
+        const hideCompletedToggle = elemHideCompleted;
         const toggleSwitch = hideCompletedToggle.querySelector('.toggle-switch');
         let currentFilter = 'all';
         let hideCompleted = false;

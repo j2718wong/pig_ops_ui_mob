@@ -32,8 +32,8 @@ export function ComponentReadOnly(input_settings){
     const elemIdValue           = `${settings.uniqueKey}-value`;
   
     
-    let elemLabel               = null;
-    let elemValue               = null;
+    let elemLabel               = '';
+    let elemValue               = '';
     
     
     
@@ -49,7 +49,7 @@ export function ComponentReadOnly(input_settings){
             <div>
                 <b>
                     <label id="${elemIdValue}">
-                        ${settings.textLabel}
+                        ${settings.elemValue}
                     </label>
                 </b>
             </div>

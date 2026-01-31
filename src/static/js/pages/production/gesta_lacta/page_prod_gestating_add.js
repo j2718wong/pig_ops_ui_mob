@@ -405,7 +405,7 @@ export function PageProdGestatingAdd(input_settings){
        
         elemInsemType.addEventListener('change', function() {
             const selected_value = elemInsemType.value;
-            console.log('elemInsemType.chnage');
+
             switch (selected_value) {
                 case 'boar-mating': {
                     componentSelectBoar.show();
@@ -514,7 +514,6 @@ export function PageProdGestatingAdd(input_settings){
         let cur_field   = null;
         let validation  = null;
         
-        console.log('TEs1 ');
         
         if (ev.checkValidity()) {
             switch(input_field){

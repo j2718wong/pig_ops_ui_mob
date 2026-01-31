@@ -35,8 +35,8 @@ import {PageSowBoarAddEdit}         from '../sow_boar/page_sow_boar_add_edit.js'
 import {PageSowBoarEntry}           from '../sow_boar/page_sow_boar_entry.js';
 import {PageSowBoarDisposed}        from '../sow_boar/page_sow_boar_disposed.js';
 
-import {PageMedVacAddEdit}          from '../sow_boar/page_medvac_add_edit.js';
-import {PageHealthNotesAddEdit}     from '../sow_boar/page_health_notes_add_edit.js';
+import {PageMedVacAddEdit}          from '../multikey/page_medvac_add_edit.js';
+import {PageHealthNotesAddEdit}     from '../multikey/page_health_notes_add_edit.js';
 import {PageParentTrace}            from '../sow_boar/page_parent_trace.js';
 
 
@@ -823,9 +823,7 @@ export function Navigation(){
                 cur_entry.style.display = 'none';
             }
             
-            
-            console.log(thisObj.pigFarm);
-            
+
             const pig_farm_account = thisObj.pigFarm.dataPigFarmAccount.account.account;
             const options = {
                 account_code:   pig_farm_account.hid,   
@@ -861,10 +859,8 @@ export function Navigation(){
         
         // Check if current user is company support, marketing related users
         if (thisObj.userControl.isUserCompanyUser() == false){
-            console.log('test Naviation 1');
             
             if (farm_acc_has_unpaid_bill == true){
-                console.log('test Navigation 2');
             
                 // Hide all containers
                 for (const cur_entry of hidden_containers){

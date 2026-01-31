@@ -4,25 +4,25 @@
 
 'use strict';
 
-import {PageSowBoarEntryComponent} from './page_sow_boar_entry_component.js';
+import {PageSowBoarWithBreadCrumbs} from './page_sow_boar_with_breadcrumbs.js';
 
 
 import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
 
-import {TextTranslation}        from '../common/translation.js';
+import {TextTranslation}            from '../common/translation.js';
 
-import {addValidationClassToElem} from '../common/ui/ui_utils.js';
+import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
 
-import {UiInputDatePicker}      from '../common/ui/input_datepicker.js';
-import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
-import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';
-import {UiInputCheckBox}        from '../common/ui/input_checkbox.js';
-
-
-import {getSowBoarReference}    from '../common/common_app.js';
+import {UiInputDatePicker}          from '../common/ui/input_datepicker.js';
+import {UiInputTextWithCounter}     from '../common/ui/input_text_with_counter.js';
+import {UiSelectWithEntryCount}     from '../common/ui/select_with_entry_count.js';
+import {UiInputCheckBox}            from '../common/ui/input_checkbox.js';
 
 
-import {PageSowBoarUpdateStatus} from './page_sow_boar_update_status.js';
+import {getSowBoarReference}        from '../common/common_app.js';
+
+
+import {PageSowBoarUpdateStatus}    from './page_sow_boar_update_status.js';
 
 import {PAGE_ID,
         SOW_BOAR_TYPE,
@@ -44,7 +44,7 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 export function PageSowBoarAddEdit(input_settings){
-    PageSowBoarEntryComponent.call(this, input_settings);
+    PageSowBoarWithBreadCrumbs.call(this, input_settings);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;

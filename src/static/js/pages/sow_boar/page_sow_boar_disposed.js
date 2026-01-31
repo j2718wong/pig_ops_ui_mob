@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageSowBoarEntryComponent} from './page_sow_boar_entry_component.js';
+import {PageSowBoarWithBreadCrumbs} from './page_sow_boar_with_breadcrumbs.js';
 
 
 import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
@@ -26,9 +26,7 @@ import {PAGE_ID,
 
 
 export function PageSowBoarDisposed(input_settings){
-    input_settings['uniqueKey'] = 'sow-boar-disposed';
-    
-    PageSowBoarEntryComponent.call(this, input_settings);
+    PageSowBoarWithBreadCrumbs.call(this, input_settings);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -471,6 +469,13 @@ export function PageSowBoarDisposed(input_settings){
         
         if (cur_sow_boar.date_of_birth){
             elemReadOnlyDateBirth.setValue(cur_sow_boar.date_of_birth);
+        }
+        
+        if (cur_sow_boar.birth_pig_prod_id){
+            elemReadOnlyBirthProdId.setValue(cur_sow_boar.birth_pig_prod_id);
+        }
+        else{
+            elemReadOnlyBirthProdId.setValue('');
         }
         
         

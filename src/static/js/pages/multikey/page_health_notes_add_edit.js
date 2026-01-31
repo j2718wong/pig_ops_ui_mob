@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageSowBoarEntryComponent} from './page_sow_boar_entry_component.js';
+import {PageWithMultiBreadCrumbs} from './page_with_multi_breadcrumbs.js';
 
 import {CommonSelectOptions}    from '../common/common_select_options.js';
 
@@ -41,7 +41,7 @@ This is used to Add/Edit
 
 
 export function PageHealthNotesAddEdit(input_settings){
-    PageSowBoarEntryComponent.call(this, input_settings);
+    PageWithMultiBreadCrumbs.call(this, input_settings);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;

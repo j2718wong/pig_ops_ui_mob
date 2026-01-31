@@ -100,6 +100,18 @@ export function TableMedVac(input_settings){
     }
     
     
+	this._writeInlineStyle = function(){
+        const html = `
+	<style>
+        
+        /* Updated Table Styles */
+        .table-medvac td {padding-right:0}
+    </style>
+    `;
+        return html;
+    }
+	
+	
     this.getElemTableBody = function(){
         return elemTableBody;
     }
@@ -205,12 +217,17 @@ export function TableMedVac(input_settings){
     this.getHtmlTableHeader = function(){
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
         
+		const html_style = this._writeInlineStyle();
+		
+		
         const html = `
-        <table class="data-table" id="">
+		${html_style}
+		
+        <table class="data-table table-medvac" id="">
             <thead>
                 <colgroup>
-                    <col style="width: 28%; padding-right:0;">
-                    <col style="width: 32%;">
+                    <col style="width: 26%; padding-right:0;">
+                    <col style="width: 34%;">
                     <col style="width: 40%;">
                 </colgroup>
                 
@@ -355,7 +372,7 @@ export function TableMedVac(input_settings){
             }
         }
         
-        const go_back_page = navigation.getPageContainer(page_id);
+        const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         
         const options ={

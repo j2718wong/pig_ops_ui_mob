@@ -27,9 +27,11 @@ import {formatDate,
 import {ComponentTabsWithMore}  from '../common/ui/comp_tabs_with_more.js';
         
 
-import {TableMedVac}            from './table_medvac.js'
-import {TableHealthIssue}       from './table_health_issue.js'
-import {TableNotes}             from './table_notes.js'
+import {TableMedVac}            from '../multikey/table_medvac.js'
+import {TableHealthIssue}       from '../multikey/table_health_issue.js'
+import {TableNotes}             from '../multikey/table_notes.js'
+
+
 import {TablePigletsOutput}     from './table_piglets_output.js'
 
 import {TableMates}             from './table_mates.js'

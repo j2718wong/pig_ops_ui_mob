@@ -16,9 +16,9 @@ import {UiInputDatePicker}          from '../../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter}     from '../../common/ui/input_text_with_counter.js';
 import {ComponentStaffFormGroup}    from '../../common/ui/comp_staff_form_group.js';
 
-import {ComponentMedVacBrand}       from '../../sow_boar/components/comp_medvac_brand.js'
-import {ComponentMedVacType}        from '../../sow_boar/components/comp_medvac_type.js'
-import {ComponentAccMedVac}         from '../../sow_boar/components/comp_acc_medvac.js'
+import {ComponentMedVacBrand}       from '../../multikey/components/comp_medvac_brand.js'
+import {ComponentMedVacType}        from '../../multikey/components/comp_medvac_type.js'
+import {ComponentAccMedVac}         from '../../multikey/components/comp_acc_medvac.js'
 
 
 import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
@@ -446,8 +446,6 @@ export function PageProdPigOpsEdit(input_settings){
         componentStaff.setValue(data_operation.staff.hid);
         elemUiNotes.setValue(data_operation.notes.notes);
         
-        console.log('data_operation');
-        console.log(data_operation);
         
         // populate MedVac related data if ther are any
         if (data_operation.account_pig_ops.is_medvac > 0){

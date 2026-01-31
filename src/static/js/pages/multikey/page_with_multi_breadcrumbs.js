@@ -4,8 +4,6 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
-
 
 import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
 
@@ -15,8 +13,7 @@ import {PAGE_ID,
         SOW_STATUS}             from '../../constants.js';
 
 
-export function PageSowBoarEntryComponent(input_settings){
-    PageViewPigFarmPage.call(this);
+export function PageWithMultiBreadCrumbs(input_settings){
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;

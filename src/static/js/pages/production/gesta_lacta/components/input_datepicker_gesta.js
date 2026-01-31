@@ -42,8 +42,8 @@ export function UiInputDatePickerGesta(input_settings){
     const elemIdGestationPeriod = `${settings.uniqueKey}-gestation-period`;
     const elemIdGestationDays   = `${settings.uniqueKey}-gestation-days`;
     
-	
-	let elemUiShow				= null;
+    
+    let elemUiShow              = null;
     let elemText                = null;
     let elemTextInv             = null;
     let elemGestationPeriod     = null;
@@ -103,21 +103,20 @@ export function UiInputDatePickerGesta(input_settings){
     
     
     this._findElements = function(){
-        elemUiShow				= document.getElementById(elemIdUiShow);
-		
+        elemUiShow              = document.getElementById(elemIdUiShow);
+        
         elemText                = document.getElementById(elemIdText);
         elemTextInv             = document.getElementById(elemIdTextInv);
         elemGestationPeriod     = document.getElementById(elemIdGestationPeriod);
         elemGestationDays       = document.getElementById(elemIdGestationDays);
     
-		thisObj.elemUiShow      = elemUiShow;
+        thisObj.elemUiShow      = elemUiShow;
         
-	}
+    }
     
     
     this._bindEventListeners = function(){
         elemText.addEventListener('change', function(){
-            console.log('date change');
             const input_date    = elemText.value;
             
             // Convert date to YYYY-MM-DD format
@@ -188,7 +187,6 @@ export function UiInputDatePickerGesta(input_settings){
     
     
     this.setGestationDays = function(num_days){
-		console.log('setGestationDays');
         elemGestationDays.textContent = `${num_days}`;
         elemGestationPeriod.style.display = 'block';
     }

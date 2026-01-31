@@ -8,16 +8,18 @@ import {PageProdEntryCommon}    from './page_prod_entry_common.js';
 
 import {PAGE_ID,
         SOW_STATUS,
-        PIG_OPERATION_TYPE}     from '../../../constants.js';
+        PIG_OPERATION_TYPE,
+        MEDVAC_TYPE}            from '../../../constants.js';
 
 
 import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
 
 import {ProdEntryNotes}         from './prod_entry_notes.js'
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
-import {ProdEntryMating}         from './prod_entry_mating.js'
+import {ProdEntryMating}        from './prod_entry_mating.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
 
+import {TableMedVac}            from '../../multikey/table_medvac.js'
 
 
 export function PageProdLactatingEntry(input_settings){
@@ -201,13 +203,24 @@ export function PageProdLactatingEntry(input_settings){
         this.prodEntryBirth.init();
         
     
-        this.ProdEntryMating     = new ProdEntryMating({
+    
+        this.tableMedVac        = new TableMedVac({
+            navigation:             settings.navigation,
+            parentObj:              thisObj,
+            uniqueKey:              'pig-prod-lacta-medvac',
+            elemDivContainer:       elemTabLactaMedVac,
+            medvacType:             MEDVAC_TYPE.PIG_PROD
+        });
+        this.tableMedVac.init();
+        
+    
+        this.prodEntryMating     = new ProdEntryMating({
             navigation:         navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-lacta-insem',
             elemDivContainer:   elemTabLactaMating
         });
-        this.ProdEntryMating.init();
+        this.prodEntryMating.init();
         
         
         this.componentTabsWithMore.beforeShowTab = this.beforeShowTab;
@@ -224,6 +237,11 @@ export function PageProdLactatingEntry(input_settings){
         dataPigProd = data_pig_prod;
         
         this.populateHeader(data_pig_prod, options);
+        
+        if (curTab == null){
+            curTab = thisObj.TAB_LACTA_PIGOPS;
+        }
+        
         
         // Request pig_prod data deails if there is none yet
         if ('data_details' in data_pig_prod){
@@ -345,6 +363,8 @@ export function PageProdLactatingEntry(input_settings){
             
             
             case elemIdTabLactaMedVac:{
+                thisObj.tableMedVac.beforeShow(dataPigProd);
+                
                 curTab = thisObj.TAB_LACTA_MEDVAC;
                 break;
             }
