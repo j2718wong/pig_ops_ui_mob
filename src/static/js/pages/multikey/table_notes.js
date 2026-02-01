@@ -356,10 +356,7 @@ export function TableNotes(input_settings){
                 break;
             }
         }
-        
-        console.log('entry not found');
-        
-        
+
         return null;
     }
     

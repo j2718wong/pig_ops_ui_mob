@@ -231,40 +231,7 @@ export function PageProdEntryCommon(input_settings){
         
         
 
-        /* Table */
-        .notes-table {
-            width: 100%;
-            margin-top: 25px;
-            border-collapse: collapse;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: white;
-        }
-
-        .notes-table th {
-            background-color: var(--corporate-blue);
-            color: white;
-            text-align: left;
-            padding: 12px 15px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .notes-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--corporate-border);
-            font-size: 14px;
-        }
-
-        .notes-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .notes-table tr:hover {
-            background-color: #f9fafb;
-        }
-
+        
         /* Responsive Adjustments */
         @media (max-width: 480px) {
            
@@ -478,6 +445,9 @@ export function PageProdEntryCommon(input_settings){
                 }
                 
                 case PIG_PROD_TYPE.LACTATING:{
+					const next_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_LIST);
+                    navigation.showThisPage(next_page);
+                    navigation.pageMobLactatingList.show();
                     break;
                 }
                 
@@ -585,11 +555,11 @@ export function PageProdEntryCommon(input_settings){
             
             case PIG_PROD_TYPE.LACTATING:{
                 elemNavPrevEntry.onclick = function(){
-                    //navigation.onClickProdGestatingEntry(options.prev_prod_pid);
+                    navigation.onClickProdLactatingEntry(options.prev_prod_pid);
                 }
                 
                 elemNavNextEntry.onclick = function(){
-                    //navigation.onClickProdGestatingEntry(options.next_prod_pid);
+                    navigation.onClickProdLactatingEntry(options.next_prod_pid);
                 }
                 
                 break;

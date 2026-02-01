@@ -185,19 +185,6 @@ export function PageMedVacAddEdit(input_settings){
         elemIdMedVacForPigHealthLabel   = `${settings.uniqueKey}-medvac-for-pig-ops-label`;
 
         
-        componentMedVacBrand    = new ComponentMedVacBrand({
-            navigation:         navigation,
-            uniqueKey:          `${settings.uniqueKey}-brand-name`,
-
-            titleExpandSection: 'Add New MedVac Brand',
-            htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save MedVac Brand',
-            
-            labelSelect:        'Select MedVac Brand',
-            helpText:           'MedVac brand name or manufacturer'
-        });
-        
-        
         componentMedVacType     = new ComponentMedVacType({
             navigation:         navigation,
             uniqueKey:          `${settings.uniqueKey}-type`,
@@ -223,6 +210,20 @@ export function PageMedVacAddEdit(input_settings){
             labelSelect:        'Select MedVac Name',
             helpText:           'MedVac product name'
         });
+        
+        
+        componentMedVacBrand    = new ComponentMedVacBrand({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-brand-name`,
+
+            titleExpandSection: 'Add New MedVac Brand',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save MedVac Brand',
+            
+            labelSelect:        'Select MedVac Brand',
+            helpText:           'MedVac brand name or manufacturer'
+        });
+        
         
         
         elemUiNotes             = new UiInputTextWithCounter({
@@ -314,15 +315,14 @@ export function PageMedVacAddEdit(input_settings){
         <!-- 1. Date MedVac -->
         ${html_date_medvac}
         
-        
-        <!-- 2. MedVac Brand -->
-        ${html_medvac_brand}
-        
-        <!-- 3. MedVac Type -->
+        <!-- 2. MedVac Type -->
         ${html_medvac_type}
         
-        <!-- 4. Name -->
+        <!-- 3. Name -->
         ${html_acc_medvac}
+        
+        <!-- 4. MedVac Brand -->
+        ${html_medvac_brand}
         
         <!-- 5. Notes -->
         ${html_notes}

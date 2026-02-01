@@ -616,7 +616,6 @@ ${html_style}
             row.appendChild(dateCell);
             
             let onclickFunc = function(){
-                console.log('clicked on date');
                 
                 const pid = curDataPigProd.pig_production.farm_prod_id;
                 

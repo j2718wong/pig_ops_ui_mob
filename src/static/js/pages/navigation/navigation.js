@@ -1269,7 +1269,7 @@ export function Navigation(){
     }
     
     
-	this.onClickProdLactatingEntry = function(pig_prod_pid){
+    this.onClickProdLactatingEntry = function(pig_prod_pid){
         if (pig_prod_pid == null){
             thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING);
             return;
@@ -1319,6 +1319,6 @@ export function Navigation(){
         }
         
     }
-	
-	
+    
+    
 }

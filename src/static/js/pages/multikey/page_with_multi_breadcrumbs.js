@@ -5,7 +5,7 @@
 'use strict';
 
 
-import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
+import {ComponentBreadCrumbs}    from '../common/ui/comp_breadcrumb.js';
 
 import {getSowBoarReference}    from '../common/common_app.js';
 
@@ -42,16 +42,15 @@ export function PageWithMultiBreadCrumbs(input_settings){
     
     const settings              = input_settings;
 
-    const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
-       
+    
+    let elemIdContBreadCrumbs   = null;
+    
     
     // The settingsBreadcrumb.items is temporary; need to update dynamically
     const settingsSowBoar = {
-        uniqueKey:              `${settings.uniqueKey}-sow-boar`,
+        uniqueKey:              `${settings.uniqueKey}-sow-boar-breadcrumbs`,
         navigation:             navigation,
-        elemRoot:               elemDivContainer,    // Root element where to search for elements
-                                            // so that not all document will be searched.
-        
+
         items:[
             {
                 'label':        'SowList',
@@ -64,14 +63,12 @@ export function PageWithMultiBreadCrumbs(input_settings){
             }
         ]
     }
-    this.breadCrumbsSowBoar    = new ComponentBreadcrumb(settingsSowBoar);
+    this.breadCrumbsSowBoar    = null;
     
     
     const settingsPigProd = {
-        uniqueKey:              `${settings.uniqueKey}-pig-prod`,
+        uniqueKey:              `${settings.uniqueKey}-pig-prod-breadcrumbs`,
         navigation:             navigation,
-        elemRoot:               elemDivContainer,    // Root element where to search for elements
-                                            // so that not all document will be searched.
         
         items:[
             {
@@ -85,17 +82,31 @@ export function PageWithMultiBreadCrumbs(input_settings){
             }
         ]
     }
-    this.breadCrumbsPigProd    = new ComponentBreadcrumb(settingsPigProd);
+    this.breadCrumbsPigProd    = null;
     
     
     
     
     
     this.getHtmlBreadCrumbs = function(){
-        let html = '';
         
-        html += thisObj.breadCrumbsSowBoar.getHtml();
-        html += thisObj.breadCrumbsPigProd.getHtml();
+        elemIdContBreadCrumbs   = `${settings.uniqueKey}-cont-breadcrumbs`;
+
+        thisObj.breadCrumbsSowBoar  = new ComponentBreadCrumbs(settingsSowBoar);
+        thisObj.breadCrumbsPigProd  = new ComponentBreadCrumbs(settingsPigProd);
+        
+        
+        const html_sow_boar = thisObj.breadCrumbsSowBoar.getHtml();
+        const html_pig_prod = thisObj.breadCrumbsPigProd.getHtml();
+        
+        let html = `
+        <div id="${elemIdContBreadCrumbs}">
+            ${html_sow_boar}
+            
+            ${html_pig_prod}
+        </div>
+        `;
+        
         
         return html;
     }
@@ -110,11 +121,9 @@ export function PageWithMultiBreadCrumbs(input_settings){
     
     
     this.updateBreadCrumbs = function(data_sow_boar, data_pig_prod){
-        // Only one o fthe inputs can be not none at a time
-        console.log('Test 1');
-		
+        // Only one of the inputs cannot be none at a time
+        
         if (data_sow_boar){
-			console.log('updateBreadCrumbs data_sow_boar not null');
             // Need to update breadCrumb;
             // 1.) The first entry can be either be Sow List, Boar List, Gilt List, or Diposed List
             // 2.) The second entry is the Sow Boar name 
@@ -156,14 +165,13 @@ export function PageWithMultiBreadCrumbs(input_settings){
             settingsSowBoar.items[1].label = sow_boar_name;
             thisObj.breadCrumbsSowBoar.refreshLabels();
             
-            // Only one set of breadcrumsb can be shown at a time
+            // Only one set of breadcrumbs can be shown at a time
             thisObj.breadCrumbsSowBoar.show();
             thisObj.breadCrumbsPigProd.hide();
         }
         
         
         if (data_pig_prod){
-			console.log('updateBreadCrumbs data_pig_prod not null');
             let list_name       = 'Lacta List';
             let sow_boar_name   = getSowBoarReference(data_pig_prod.sow);
             let pid             = data_pig_prod.pig_production.farm_prod_id;
@@ -174,12 +182,11 @@ export function PageWithMultiBreadCrumbs(input_settings){
             settingsPigProd.items[1].label = prod_name;
             thisObj.breadCrumbsPigProd.refreshLabels();
             
-            // Only one set of breadcrumsb can be shown at a time
+            // Only one set of breadcrumbs can be shown at a time
             thisObj.breadCrumbsSowBoar.hide();
             thisObj.breadCrumbsPigProd.show();
             
         }
-        console.log('Test 2');
     }
     
     

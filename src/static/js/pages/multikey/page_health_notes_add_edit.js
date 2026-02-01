@@ -10,7 +10,7 @@ import {CommonSelectOptions}    from '../common/common_select_options.js';
 
 import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
-import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
+import {ComponentBreadCrumbs}    from '../common/ui/comp_breadcrumb.js';
 import {UiInputDatePicker}      from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
 

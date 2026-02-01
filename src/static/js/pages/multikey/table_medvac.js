@@ -284,8 +284,9 @@ export function TableMedVac(input_settings){
         }
         
         let s_medvac = `
-            <span class="medvac-brand"><b>${cur_entry.medvac.brand.name}</b></span><br>
-            <span class="medvac-type">${cur_entry.medvac.type.name}</span>
+            <span class="medvac-type"><b>${cur_entry.medvac.type.name}</b></span>
+            <span class="medvac-brand">${cur_entry.medvac.brand.name}</span><br>
+            
         `;
         
         let s_desc = `

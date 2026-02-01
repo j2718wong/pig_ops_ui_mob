@@ -8,15 +8,13 @@
 import {UiBasic}                    from './ui_basic.js';
 
 
-export function ComponentBreadcrumb(input_settings){
+export function ComponentBreadCrumbs(input_settings){
     UiBasic.call(this);
     
     /* Typical settings
     settings = {
         uniqueKey:              ''
         navigation:             navigation,
-        elemRoot:               element,    // Root element where to search for elements
-                                            // so that not all document will be searched.
         
         items:[
             {
@@ -46,6 +44,7 @@ export function ComponentBreadcrumb(input_settings){
     
     
     let elemUiShow              = null;
+    let elemContainer           = null;
     
     
     // This can dynamically change
@@ -76,7 +75,8 @@ export function ComponentBreadcrumb(input_settings){
                 html_items += '<div class="breadcrumb-separator">|</div>';
             }
             
-            html_items += thisObj._getHtmlItem(cur_entry, index);
+            const data_index = `${settings.uniqueKey}-${index}`;
+            html_items += thisObj._getHtmlItem(cur_entry, data_index);
             index += 1;
         }
         
@@ -94,18 +94,23 @@ export function ComponentBreadcrumb(input_settings){
     
     
     this._findElements = function(){
+
         elemUiShow              = document.getElementById(elemIdUiShow);
+        
         
         thisObj.elemUiShow      = elemUiShow;
     }
     
     
     this._bindEventListeners = function(){
-        const breadcrumbs = settings.elemRoot.querySelectorAll('.breadcrumb-link');
+        const breadcrumbs = elemUiShow.querySelectorAll('.breadcrumb-link');
         
         breadcrumbs.forEach(breadcrumb_elem => {
             breadcrumb_elem.addEventListener('click', () => {
-                const item_index    = parseInt(breadcrumb_elem.getAttribute('data-index'));
+                const data_index    = breadcrumb_elem.getAttribute('data-index');
+                const to_replace    = `${settings.uniqueKey}-`; 
+                const str_index     = data_index.replace(to_replace, '');
+                const item_index    = parseInt(str_index);
                 const breadcrumb_item = breadcrumbItems[item_index];
 
                 const next_page = navigation.getPageContainer(breadcrumb_item.gotoPageId);
@@ -117,13 +122,16 @@ export function ComponentBreadcrumb(input_settings){
     
     
     this.refreshLabels = function(){
-        const breadcrumbs = settings.elemRoot.querySelectorAll('.breadcrumb-link');
+        const breadcrumbs = elemUiShow.querySelectorAll('.breadcrumb-link');
         
         breadcrumbs.forEach(breadcrumb_elem => {
-            const item_index        = breadcrumb_elem.getAttribute('data-index');
-            const breadcrumb_item   = breadcrumbItems[item_index];
+            const data_index    = breadcrumb_elem.getAttribute('data-index');
+            const to_replace    = `${settings.uniqueKey}-`;
+            const str_index     = data_index.replace(to_replace, '');
+            const item_index    = parseInt(str_index);
+            const breadcrumb_item = breadcrumbItems[item_index];
+
             breadcrumb_elem.textContent = breadcrumb_item.label;
-            
         });
     }
     
@@ -143,11 +151,13 @@ export function ComponentBreadcrumb(input_settings){
         // Attach onclick function to breadcrumb elements;
         // This is not addEventListener click method, because
         // the breadcrumb elements can change.
-        const breadcrumbs = settings.elemRoot.querySelectorAll('.breadcrumb-link');
+        const breadcrumbs = elemUiShow.querySelectorAll('.breadcrumb-link');
         
         for(const cur_entry of breadcrumbs){
             cur_entry.onclick = function(){
-                const item_index    = parseInt(cur_entry.getAttribute('data-index'));
+                const data_index    = cur_entry.getAttribute('data-index');
+                const str_index     = data_index.replace(`${settings.uniqueKey}-`, '');
+                const item_index    = parseInt(str_index);
                 const breadcrumb_item = breadcrumbItems[item_index];
 
                 const next_page = navigation.getPageContainer(breadcrumb_item.gotoPageId);

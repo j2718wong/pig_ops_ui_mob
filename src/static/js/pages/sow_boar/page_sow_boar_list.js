@@ -510,7 +510,7 @@ ${html_style}
         dataBoarList    = navigation.pigFarm.managerSowBoar.dataBoarList;
         dataGiltList    = navigation.pigFarm.managerSowBoar.dataGiltList;
         
-		// Default all
+        // Default all
         curSowFilter = 'all';
         
         
@@ -852,31 +852,31 @@ ${html_style}
         let dt_expected_birth = null;
         let html_due_warning = null;
         
-        
-        if ('date_expected_birth' in sow_boar){
-            const date_expected_birth =  sow_boar.date_expected_birth;
-            dt_expected_birth = new Date(date_expected_birth);
-            
-            diff_msecs          = dt_expected_birth - dtCurrentDate;
-            diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
-            
-            if ((diff_days >= 3) && (diff_days <= 7)) {
-                html_due_warning = `<span class="due-soon">Due ${diff_days} Days</span>`;
-            } 
-            
-            if ((diff_days == 1) || (diff_days == 2)) {
-                html_due_warning = `<span class="due-soon">Due Soon</span>`;
-            } 
-            
-            if (diff_days == 0) {
-                html_due_warning = `<span class="due-soon">Due Today</span>`;
-            }
-            
-            if (diff_days < 0) {
-                html_due_warning = `<span class="due-soon">Overdue</span>`;
+        if (sow_boar.status_id == SOW_STATUS.GESTATING){
+            if ('date_expected_birth' in sow_boar){
+                const date_expected_birth =  sow_boar.date_expected_birth;
+                dt_expected_birth = new Date(date_expected_birth);
+                
+                diff_msecs          = dt_expected_birth - dtCurrentDate;
+                diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+                
+                if ((diff_days >= 3) && (diff_days <= 7)) {
+                    html_due_warning = `<span class="due-soon">Due ${diff_days} Days</span>`;
+                } 
+                
+                if ((diff_days == 1) || (diff_days == 2)) {
+                    html_due_warning = `<span class="due-soon">Due Soon</span>`;
+                } 
+                
+                if (diff_days == 0) {
+                    html_due_warning = `<span class="due-soon">Due Today</span>`;
+                }
+                
+                if (diff_days < 0) {
+                    html_due_warning = `<span class="due-soon">Overdue</span>`;
+                }
             }
         }
-        
         
         
         let s_num_piglets = ''
@@ -899,6 +899,8 @@ ${html_style}
         let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
         s_click += `"${sow_boar.hid}");`;
         
+        
+        // render status
         let s_status = SOW_STATUS_NAME[sow_boar.status_id];
         
         let s_click_gesta = '';
@@ -1566,8 +1568,6 @@ ${html_style}
   
             success: function(response){
                 if (response.result.num == 0){
-                    console.log('response.data');
-                    console.log(response.data);
                     
                     if (callback){
                         callback(response.data)

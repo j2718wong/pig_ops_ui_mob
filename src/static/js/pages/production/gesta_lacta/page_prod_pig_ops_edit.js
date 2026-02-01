@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageProdEntryComponent}     from '../page_prod_entry_component.js';
+import {PagePigProdWithBreadCrumbs} from '../page_pig_prod_with_breadcrumbs.js';
 
 import {PIG_OPERATION_TYPE}         from '../../../constants.js';
         
@@ -25,7 +25,8 @@ import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 
 export function PageProdPigOpsEdit(input_settings){
-    
+    PagePigProdWithBreadCrumbs.call(this, input_settings);
+	
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
@@ -202,6 +203,9 @@ export function PageProdPigOpsEdit(input_settings){
         elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
+		
+		const html_breadcrumb   = thisObj.getHtmlBreadCrumbs();
+		
         
         const html_date_actual  = elemUiDateActual.getHtml();
         const html_medvac_brand = componentMedVacBrand.getHtml();
@@ -213,6 +217,7 @@ export function PageProdPigOpsEdit(input_settings){
         
         const html = `
 <div class="form-container">
+	${html_breadcrumb}
 
     <div class="modal-header">
         <h5 class="modal-title" id="edit-entry-prod-pig-ops-modal-label">
@@ -230,14 +235,16 @@ export function PageProdPigOpsEdit(input_settings){
         ${html_date_actual}
         
         <div id="${elemIdMedVacInputs}">
-            <!-- 2. MedVac Brand -->
-            ${html_medvac_brand}
             
-            <!-- 3. MedVac Type -->
+            <!-- MedVac Type -->
             ${html_medvac_type}
             
-            <!-- 4. Name -->
+            <!-- Name -->
             ${html_acc_medvac}
+            
+            <!-- MedVac Brand -->
+            ${html_medvac_brand}
+            
         </div>
        
         ${html_notes}
@@ -269,6 +276,7 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
+		thisObj.afterHtmlRenderBreadCrumbComponent();
         
         elemUiDateActual.afterHtmlRender();
         
@@ -337,6 +345,9 @@ export function PageProdPigOpsEdit(input_settings){
         curDataProdPigOps   = data_operation;
         showOptions         = options;
         
+		
+		thisObj.updateBreadCrumbs(thisObj.curDataPigProd);
+		
         /*
         Typical options
         options = {

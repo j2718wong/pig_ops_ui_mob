@@ -43,6 +43,8 @@ export function PageSowBoarDisposed(input_settings){
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
         
+    let elemIdContBreadCrumbs   = null;
+        
     let elemIdBtnClose          = null;
     
     let elemIdHeaderTitle       = null;
@@ -140,6 +142,10 @@ export function PageSowBoarDisposed(input_settings){
     
     
     this.render = function(){
+        
+        elemIdContBreadCrumbs   = `${settings.uniqueKey}-cont-breadcrumbs`;
+        thisObj.setBreadCrumbs(elemIdContBreadCrumbs);
+        
         
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
@@ -276,7 +282,10 @@ export function PageSowBoarDisposed(input_settings){
 
         
 <div class="form-container">
-    ${html_breadcrumb}
+    
+    <div id="${elemIdContBreadCrumbs}">
+        ${html_breadcrumb}
+    </div>
     
     <div class="modal-header" style="padding-right:8px;">
         <h5 class="modal-title">
@@ -339,7 +348,7 @@ export function PageSowBoarDisposed(input_settings){
     
     
     this.afterHtmlRender = function(){
-        thisObj.afterHtmlRenderSowBoarEntryComponent();
+        thisObj.afterHtmlRenderBreadCrumbComponent();
         
         elemReadOnlyName.afterHtmlRender();
         elemReadOnlyNumber.afterHtmlRender();

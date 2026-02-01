@@ -600,6 +600,12 @@ export function PageSowBoarEntry(input_settings){
                     
                     case SOW_STATUS.LACTATING:{
                         prod_link = ' - Lacta'
+                        
+                        // Clicking on the prod_link should open to Gesta entry Page
+                        elemEntryProdLink.onclick = function(){
+                            navigation.onClickProdLactatingEntry(data_sow_boar.sow_boar.last_farm_prod_id);
+                        }
+
                         break;
                     }
                     

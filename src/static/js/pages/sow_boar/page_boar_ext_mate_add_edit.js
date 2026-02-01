@@ -291,7 +291,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     this.afterHtmlRender = function(){
         // Do the afterHtmlRender to UI elements first;
         
-        thisObj.afterHtmlRenderSowBoarEntryComponent();
+        thisObj.afterHtmlRenderBreadCrumbComponent();
 
         elemUiDateMate.afterHtmlRender();
         

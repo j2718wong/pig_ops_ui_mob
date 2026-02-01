@@ -6,7 +6,7 @@
 
 import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
-import {ComponentBreadcrumb}    from '../common/ui/comp_breadcrumb.js';
+import {ComponentBreadCrumbs}    from '../common/ui/comp_breadcrumb.js';
 
 import {getSowBoarReference}    from '../common/common_app.js';
 
@@ -22,15 +22,11 @@ export function PageSowBoarWithBreadCrumbs(input_settings){
     
     const settings              = input_settings;
 
-    const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
-       
-    
+
     // The settingsBreadcrumb.items is temporary; need to update dynamically
     const settingsBreadcrumb = {
-        uniqueKey:              settings.uniqueKey,
+        uniqueKey:              `${settings.uniqueKey}-breadcrumbs`,
         navigation:             navigation,
-        elemRoot:               elemDivContainer,    // Root element where to search for elements
-                                            // so that not all document will be searched.
         
         items:[
             {
@@ -44,20 +40,22 @@ export function PageSowBoarWithBreadCrumbs(input_settings){
             }
         ]
         
-    }
-    
-    this.componentBreadcrumb    = new ComponentBreadcrumb(settingsBreadcrumb);
-    
+    };
+    this.componentBreadcrumb    = null;
     
     // needs to set
     this.curDataSowBoar         = null;
     
     
-    this.afterHtmlRenderSowBoarEntryComponent = function(){
+    this.setBreadCrumbs = function(elem_id_cont_breadcrumbs){
+        thisObj.componentBreadcrumb    = new ComponentBreadCrumbs(settingsBreadcrumb);
+    }
+    
+    
+    this.afterHtmlRenderBreadCrumbComponent = function(){
         // Do the afterHtmlRender to UI elements first;
         
         thisObj.componentBreadcrumb.afterHtmlRender();
-    
     }
     
     
