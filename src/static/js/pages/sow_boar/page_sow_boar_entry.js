@@ -416,7 +416,8 @@ export function PageSowBoarEntry(input_settings){
             navigation:             settings.navigation,
             parentObj:              thisObj,
             uniqueKey:              'sow-boar-health',
-            elemDivContainer:       elemTabHealth
+            elemDivContainer:       elemTabHealth,
+            healthType:             MULTIKEY_OBJ_TYPE.SOW_BOAR
         });
         this.tablePigHealth.init();
         

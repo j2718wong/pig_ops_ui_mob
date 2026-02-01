@@ -17,6 +17,7 @@ import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryMating}        from './prod_entry_mating.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
+import {ProdEntryWean}          from './prod_entry_wean.js'
 
 import {TableMedVac}            from '../../multikey/table_medvac.js'
 import {TableNotes}             from '../../multikey/table_notes.js'
@@ -203,7 +204,15 @@ export function PageProdLactatingEntry(input_settings){
         });
         this.prodEntryBirth.init();
         
-    
+        
+        this.prodEntryWean      = new ProdEntryWean({
+            navigation:         navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-lacta-wean',
+            elemDivContainer:   elemTabLactaWean
+        });
+        this.prodEntryWean.init();
+        
     
         this.tableMedVac        = new TableMedVac({
             navigation:         settings.navigation,
@@ -215,7 +224,7 @@ export function PageProdLactatingEntry(input_settings){
         this.tableMedVac.init();
         
         
-        this.tablePigProdNotes 	= new TableNotes({
+        this.tablePigProdNotes  = new TableNotes({
             navigation:         settings.navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-notes',
@@ -362,13 +371,19 @@ export function PageProdLactatingEntry(input_settings){
                 }
                 thisObj.prodEntryBirth.show(dataPigProd, options_birth);
                 
-                curTab = thisObj.TAB_LACTA_PIGOPS;
+                curTab = thisObj.TAB_LACTA_BIRTH;
                 break;
             }
             
             
             case elemIdTabLactaWean:{
-                curTab = thisObj.TAB_LACTA_PIGOPS;
+                // Set Birth tab
+                const options_wean ={
+                }
+                thisObj.prodEntryWean.show(dataPigProd, options_wean);
+                
+                
+                curTab = thisObj.TAB_LACTA_WEAN;
                 break;
             }
             

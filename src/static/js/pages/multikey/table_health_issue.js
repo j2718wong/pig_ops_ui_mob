@@ -11,7 +11,7 @@ import {APPLICATION,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         SOW_STATUS_NAME,
-		MULTIKEY_OBJ_TYPE}        from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}        from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -46,7 +46,7 @@ export function TableHealthIssue(input_settings){
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-health',
         elemDivContainer:       elemTabHealth,
-		healthType:             MULTIKEY_OBJ_TYPE.SOW_BOAR
+        healthType:             MULTIKEY_OBJ_TYPE.SOW_BOAR
     }   
     */  
     let settings                = input_settings;
@@ -72,7 +72,7 @@ export function TableHealthIssue(input_settings){
     
     
     let dataSowBoar             = null;
-	let dataPigProd             = null;
+    let dataPigProd             = null;
     
     
     this.init = function(){
@@ -108,38 +108,40 @@ export function TableHealthIssue(input_settings){
     
     this.beforeShow = function(data, options){
         showOptions     = options;
-		
-		switch (settings.healthType){
+        
+        switch (settings.healthType){
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-				dataSowBoar     = data;
+                dataSowBoar     = data;
         
 
-				if ('list_health_issues' in dataSowBoar.data_details){
-					thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
-					thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
-				} else{
-					const callback_success = function(){
-						thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
-						thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
-					}
-					
-					navigation.pigFarm.managerSowBoar.requestNotesList(
-						dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
-				}
-				
-				
-				const elem = thisObj.getElemSearchAddControl();
-				if ('dispose_status_id' in dataSowBoar.sow_boar){
-					elem.style.display = 'none';
-				}
-				else{
-					elem.style.display = 'flex';
-				}
-			}
-			
-			
-			
-		}
+                if ('list_health_issues' in dataSowBoar.data_details){
+                    thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
+                    thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
+                } else{
+                    const callback_success = function(){
+                        thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
+                        thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
+                    }
+                    
+                    navigation.pigFarm.managerSowBoar.requestNotesList(
+                        dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
+                }
+                
+                
+                const elem = thisObj.getElemSearchAddControl();
+                if ('dispose_status_id' in dataSowBoar.sow_boar){
+                    elem.style.display = 'none';
+                }
+                else{
+                    elem.style.display = 'flex';
+                }
+                
+                break;
+            }
+            
+            
+            
+        }
     }
     
         
@@ -255,12 +257,34 @@ export function TableHealthIssue(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        if ('list_health_issues' in dataSowBoar.data_details){
-            for (const cur_entry of dataSowBoar.data_details.list_health_issues){
-                if (cur_entry.prod_notes.hid == entry_hid){
-                    return cur_entry;
+        
+        switch (settings.healthType) {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                if ('list_health_issues' in dataSowBoar.data_details){
+                    
+                    for (const cur_entry of dataSowBoar.data_details.list_health_issues){
+                        if (cur_entry.prod_notes.hid == entry_hid){
+                            return cur_entry;
+                        }
+                    }
                 }
+                
+                break;
             }
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                if ('list_health_issues' in dataPigProd.data_details){
+                    
+                    for (const cur_entry of dataPigProd.data_details.list_health_issues){
+                        if (cur_entry.prod_notes.hid == entry_hid){
+                            return cur_entry;
+                        }
+                    }
+                }
+                
+                break;
+            }
+            
         }
         
         return null;
@@ -268,18 +292,40 @@ export function TableHealthIssue(input_settings){
     
     
     this.onClickAddEntry = function(){
+        let go_back_page_id = null;
+        let data_entry      = null;
         
-        const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        switch (settings.healthType) {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
+                data_entry      = dataSowBoar;
+                
+                break;
+            }
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                data_entry      = dataPigProd;
+                
+                break;
+            }
+            
+        }
+        
+		
+		const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         const options ={
+            health_type:            settings.healthType,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   // Go back to this page; this is Div element
-        }
+        };
         
-        navigation.pageHealthAddEdit.beforeShow(dataSowBoar, options);
+        navigation.pageHealthAddEdit.beforeShow(data_entry, options);
         const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
         navigation.showThisPage(page_container);
+                
         
         
     }
@@ -287,16 +333,37 @@ export function TableHealthIssue(input_settings){
     
     this.onSuccessAddEntry = function(){
         
-        const callback_success = function(data){
-            thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
-            thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
-            
-            // need also to request pig_medvac data
-            parentObj.tableMedVac.requestDataPigMedVacList();
-        };
+        switch (settings.healthType) {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                const callback_success = function(data){
+                    thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
+                    thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
+                    
+                    // need also to request pig_medvac data
+                    parentObj.tableMedVac.requestDataPigMedVacList();
+                };
 
-        navigation.pigFarm.managerSowBoar.requestNotesList(
-			dataSowBoar, callback_success, thisObj.elemServerErrorMsg)
+                navigation.pigFarm.managerSowBoar.requestNotesList(
+                    dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
+                    
+                break;
+            }
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                const callback_success = function(data){
+                    thisObj.setDataEntryList(dataPigProd.data_details.list_health_issues);
+                    thisObj.renderTable(dataPigProd.data_details.list_health_issues);
+                    
+                    // need also to request pig_medvac data
+                    parentObj.tableMedVac.requestDataPigMedVacList();
+                };
+
+                navigation.pigFarm.managerPigProd.requestNotesList(
+                    dataPigProd, callback_success, thisObj.elemServerErrorMsg);
+                
+                break;
+            }
+        }
     }
     
 
@@ -327,23 +394,28 @@ export function TableHealthIssue(input_settings){
     
     
     this.onClickEditEntry = function(row_entry){
+        if (row_entry == null){return;}
 
-        if (row_entry){
-            const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+
+        switch (settings.healthType) {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
         
-            const options ={
-                is_add:                 false,   // false is edit
-                row_entry:              row_entry,
-                callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
-                go_back_page:           go_back_page   // Go back to this page; this is Div element
+                const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+            
+                const options ={
+                    is_add:                 false,   // false is edit
+                    row_entry:              row_entry,
+                    callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
+                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                }
+                
+                navigation.pageHealthAddEdit.beforeShow(dataSowBoar, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
+                navigation.showThisPage(page_container);
+                
+                break;
             }
-            
-            navigation.pageHealthAddEdit.beforeShow(dataSowBoar, options);
-            const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
-            navigation.showThisPage(page_container);
-            
-
-        }
+		}
     }
     
     
@@ -352,7 +424,7 @@ export function TableHealthIssue(input_settings){
         const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
         
         const options ={
-			medvac_type:			MULTIKEY_OBJ_TYPE.SOW_BOAR,
+            medvac_type:            MULTIKEY_OBJ_TYPE.SOW_BOAR,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
             health_issue_entry:     row_entry,

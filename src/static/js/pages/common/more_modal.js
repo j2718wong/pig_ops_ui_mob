@@ -76,7 +76,7 @@ export function MoreModal(_navigation){
             <div class="modal-dialog">
                 <div class="modal-content">
                     <!-- Centered Modal Header with no border -->
-                    <div class="modal-header" style="border-top-left-radius:0; border-top-right-radius:0;" >
+                    <div class="modal-header" >
                         <h5 class="modal-title" id="${elemIdMoreModalTitle}">More</h5>
                     </div>
                     

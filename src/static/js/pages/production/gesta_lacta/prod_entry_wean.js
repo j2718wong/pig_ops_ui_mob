@@ -1,4 +1,4 @@
-// January 2, 2026
+// February 1, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -31,7 +31,7 @@ import {CommonSelectOptions}        from '../../common/common_select_options.js'
 
 
 
-export function ProdEntryBirth(input_settings){
+export function ProdEntryWean(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
@@ -41,19 +41,6 @@ export function ProdEntryBirth(input_settings){
     
     const INVALID_MSG_NUM_INPUT     = 'Please enter a valid number.';
     const INVALID_MSG_ZERO_INPUT    = 'At least one of these numbers cannot not be zero';
-    
-    
-    const WARNING_1 = `
-        Setting the Date Actual Birth will update this production entry from 
-        Gestating Status to Lactating Status and will be removed from Production 
-        Gestating List. Will be put in Production Lactating List. 
-        <b>This cannot be undone.</b>
-    `;
-    
-    const WARNING_2 = `
-        Changing the Date Actual Birth of this lactating entry will recalculate
-        all scheduled operations for lactating piglets and sow.
-    `;
     
     /*
     Typical settings = {
@@ -69,18 +56,18 @@ export function ProdEntryBirth(input_settings){
     
     let elemIdContentContainer  = null;
     
-    let elemIdWarningBox      = null;
+    let elemIdCannotUpdate      = null;
     let elemIdSow               = null;
-    let elemIdDateExpected      = null;
+    let elemIdDaysSinceBirth      = null;
     
-    let elemUiDateBirth         = null;
+    let elemUiDateWean          = null;
     
+    let componentNumTotal       = null;
     
     let componentNumFemale      = null;
     let componentNumMale        = null;
-    let componentNumDead        = null;
     
-    let componentStaff          = null;
+    let elemIdWeanWeight        = null;
     
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
@@ -89,9 +76,11 @@ export function ProdEntryBirth(input_settings){
     
     let elemContentContainer    = null;
     
-    let elemWarningBox          = null;
+    let elemCannotUpdate        = null;
     let elemSow                 = null;
-    let elemDateExpected        = null;
+    let elemDaysSinceBirth        = null;
+    
+    let elemWeanWeight          = null;
     
     
     let elemServerErrorMsg      = null;
@@ -118,16 +107,16 @@ export function ProdEntryBirth(input_settings){
         
         elemIdContentContainer  = `${settings.uniqueKey}-content`;
                 
-        elemIdWarningBox      = `${settings.uniqueKey}-cannot-update`;
+        elemIdCannotUpdate      = `${settings.uniqueKey}-cannot-update`;
         
         elemIdSow               = `${settings.uniqueKey}-sow`;
-        elemIdDateExpected      = `${settings.uniqueKey}-date-expected`;
+        elemIdDaysSinceBirth      = `${settings.uniqueKey}-date-expected`;
         
-        elemUiDateBirth         = new UiInputDatePickerGesta({
+        elemUiDateWean         = new UiInputDatePickerGesta({
             uniqueKey:          `${settings.uniqueKey}-date-birth`,
         
             className:          'form-group-date',
-            textLabel:          'Date Actual Birth',
+            textLabel:          'Date Wean',
             isRequired:         true,
             invalidFeedBack:    'Please enter a valid date.',
             helpText:           null
@@ -139,7 +128,7 @@ export function ProdEntryBirth(input_settings){
             
             className:          'form-group-number',
             iconLabel:          '<i class="fas fa-venus" style="color: var(--icon-pink);"></i>',
-            textLabel:          'Number of Live Female Piglets',
+            textLabel:          'Number of Weaned Female Piglets',
             minValue:           0,
             step:               1,
             isRequired:         true,
@@ -153,7 +142,7 @@ export function ProdEntryBirth(input_settings){
             
             className:          'form-group-number',
             iconLabel:          '<i class="fas fa-mars" style="color: var(--icon-blue);"></i>',
-            textLabel:          'Number of Live Male Piglets',
+            textLabel:          'Number of Weaned Male Piglets',
             minValue:           0,
             step:               1,
             isRequired:         true,
@@ -162,11 +151,11 @@ export function ProdEntryBirth(input_settings){
         });
         
         
-        componentNumDead        = new ComponentPlusMinusInput({
-            uniqueKey:          `${settings.uniqueKey}-num-dead`,
+        componentNumTotal       = new ComponentPlusMinusInput({
+            uniqueKey:          `${settings.uniqueKey}-num-total`,
             
             className:          'form-group-number',
-            textLabel:          'Number of Stillbirth Piglets',
+            textLabel:          'Number of Weaned Piglets',
             minValue:           0,
             step:               1,
             isRequired:         false,
@@ -175,47 +164,32 @@ export function ProdEntryBirth(input_settings){
         });
         
         
+        elemIdWeanWeight        = `${settings.uniqueKey}-total-weight`;
         
-        componentStaff          = new ComponentStaffFormGroup({
-            navigation:         navigation,
-            uniqueKey:          `${settings.uniqueKey}-staff`,
-            
-            includeAddNew:      true,
-            includeDoneByMe:    true,
-            
-            titleExpandSection: 'Add New Staff',
-            htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save New Staff',
-            
-            labelSelect:        'Staff Member',
-            helpText:           'Who did the operation'
-        });
-    
         
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         
-        const html_date_birth   = elemUiDateBirth.getHtml();
+        const html_date_birth   = elemUiDateWean.getHtml();
         
         const html_num_female   = componentNumFemale.getHtml();
         const html_num_male     = componentNumMale.getHtml();
-        const html_num_dead     = componentNumDead.getHtml();
+        const html_num_total     = componentNumTotal.getHtml();
 
 
-        const html_staff        = componentStaff.getHtml();
         
         const html = `
 <div class="modal-body" id="${elemIdContentContainer}">
     <h2 class="tab-title">
-        Birth Information
+        Weaning Information
     </h2>
     
-    <div class="warning-box" id="${elemIdWarningBox}">
-        Setting the Date Actual Birth will update this production entry from 
-        Gestating Status to Lactating Status and will be removed from Production 
-        Gestating List. Will be put in Production Lactating List. 
+    <div class="warning-box" id="${elemIdCannotUpdate}">
+        Setting the Date Weaning will update this production entry from 
+        Lactating Status to Fattening Status and will be removed from Production 
+        Lactating List. Will be put in Production Fattening List. 
         <b>This cannot be undone.</b>
     </div>
     
@@ -227,11 +201,17 @@ export function ProdEntryBirth(input_settings){
     
     
     <div class="form-group-text">
-        <label for="${elemIdDateExpected}" class="form-label">Date Expected Birth</label>
-        <span class="" id="${elemIdDateExpected}"></span>
+        <label for="${elemIdDaysSinceBirth}" class="form-label">Days since Birth</label>
+        <span class="" id="${elemIdDaysSinceBirth}"></span>
+		<span class="" id="">Day of Birth is Day 1</span>
     </div>
     
     ${html_date_birth}
+    
+    <-- option to swith to total count or per sex count-->
+    
+    <!-- Number of Total Piglets with plus/minus buttons -->
+    ${html_num_total}
     
     <!-- Number of Female Piglets with plus/minus buttons -->
     ${html_num_female}
@@ -239,11 +219,18 @@ export function ProdEntryBirth(input_settings){
     <!-- Number of Male Piglets with plus/minus buttons -->
     ${html_num_male}
             
-    <!-- Number of Stillbirth Piglets with plus/minus buttons -->
-    ${html_num_dead}
-            
-    <!-- 7. Staff -->
-    ${html_staff}
+    
+    <div class="form-group-number">
+        <label for="${elemIdWeanWeight}" class="form-label">
+            Total Wean Weight (Optional)
+        </label>
+        
+        <input type="number" class="form-control" id="${elemIdWeanWeight}" step="0.1" min="0" >
+        <div class="invalid-feedback">
+            Please enter numeric value.
+        </div>
+    </div>
+    
 
     <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
     
@@ -261,14 +248,13 @@ export function ProdEntryBirth(input_settings){
     
     
     this.afterHtmlRender = function(){
-        elemUiDateBirth.afterHtmlRender();
+        elemUiDateWean.afterHtmlRender();
         
         componentNumFemale.afterHtmlRender();
         componentNumMale.afterHtmlRender();
-        componentNumDead.afterHtmlRender();
+        componentNumTotal.afterHtmlRender();
         
-        componentStaff.afterHtmlRender();
-        
+       
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -279,9 +265,11 @@ export function ProdEntryBirth(input_settings){
     this._findElements = function(){
         elemContentContainer    = elemDivContainer.querySelector('#'+elemIdContentContainer);
         
-        elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
+        elemCannotUpdate        = elemDivContainer.querySelector('#'+elemIdCannotUpdate);
         elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);
-        elemDateExpected        = elemDivContainer.querySelector('#'+elemIdDateExpected);
+        elemDaysSinceBirth        = elemDivContainer.querySelector('#'+elemIdDaysSinceBirth);
+        
+        elemWeanWeight          = elemDivContainer.querySelector('#'+elemIdWeanWeight);
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
@@ -307,15 +295,14 @@ export function ProdEntryBirth(input_settings){
         // Clear previous Form values and validation classes
         
           
-        elemUiDateBirth.reset();
+        elemUiDateWean.reset();
         
-        
+        componentNumTotal.reset()
         componentNumFemale.reset()
         componentNumMale.reset()
-        componentNumDead.reset()
         
         
-        componentStaff.reset();
+
         
         elemServerErrorMsg.style.display = 'none';
     }
@@ -347,45 +334,12 @@ export function ProdEntryBirth(input_settings){
         
         const pig_prod_birth  = curDataPigProd.birth;
         
-        const dt_expected      = new Date(pig_prod_birth.date_expected);
-        elemDateExpected.textContent = formatDate(dt_expected);
-        
-        console.log(`curDataPigProd`);
-        console.log(curDataPigProd);
-        
+        const dt_actual       = new Date(pig_prod_birth.date_actual);
 		
-		componentStaff.beforeShow();
 		
-        
-        // Populate birth details if already given birth
-        if (pig_prod_birth.date_actual) {
-            elemWarningBox.innerHTML = WARNING_2;
-            
-            // Set date of actual birth
-            elemUiDateBirth.setDate(pig_prod_birth.date_actual);
-            
-            // Set Gestation days
-            elemUiDateBirth.setGestationDays(pig_prod_birth.num_days_actual);
-            
-            // Set number of piglets
-            componentNumFemale.setValue(pig_prod_birth.pigs_live_f);
-            componentNumMale.setValue(pig_prod_birth.pigs_live_m);
-            componentNumDead.setValue(pig_prod_birth.num_dead_at_birth);
-            
-            // Set Staff
-			componentStaff.setValue(pig_prod_birth.birth_staff_hid);
-        }
-        else{
-            elemWarningBox.innerHTML = WARNING_1;
-        }
-        
-        
-        
-        
+        elemDaysSinceBirth.textContent = 23;
         
     }
-    
-    
     
     
     this._validateAfterChangeInput = function(ev, input_field){
@@ -418,14 +372,14 @@ export function ProdEntryBirth(input_settings){
         let validation      = 0;
         
        
-        let input_date_birth= elemUiDateBirth.getValue();
-        let input_num_dead  = componentNumDead.getValue();
+        let input_date_birth= elemUiDateWean.getValue();
+        let input_num_dead  = componentNumTotal.getValue();
         let input_num_male  = componentNumMale.getValue();
         let input_num_female= componentNumFemale.getValue();
         let input_staff     = componentStaff.getValue();
         
         
-        input_elem          = elemUiDateBirth.getElemText();
+        input_elem          = elemUiDateWean.getElemText();
         
         // Convert date to YYYY-MM-DD format
         const dt_birth      = new Date(input_date_birth);
@@ -447,12 +401,12 @@ export function ProdEntryBirth(input_settings){
         let number_male = 0;
         let number_female = 0;
         
-        input_elem          = componentNumDead.getElemText();
+        input_elem          = componentNumTotal.getElemText();
         
         try{
             number_dead = parseInt(input_num_dead)
         }catch (error){
-            componentNumDead.setTextInvalid(INVALID_MSG_NUM_INPUT);
+            componentNumTotal.setTextInvalid(INVALID_MSG_NUM_INPUT);
             validation = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
@@ -484,13 +438,13 @@ export function ProdEntryBirth(input_settings){
         
         
         if (number_dead == 0 && number_male == 0 && number_female == 0){
-            componentNumDead.setTextInvalid(INVALID_MSG_ZERO_INPUT);
+            componentNumTotal.setTextInvalid(INVALID_MSG_ZERO_INPUT);
             componentNumFemale.setTextInvalid(INVALID_MSG_ZERO_INPUT);
             componentNumMale.setTextInvalid(INVALID_MSG_ZERO_INPUT);
             
             validation = -1;
             
-            input_elem = componentNumDead.getElemText();
+            input_elem = componentNumTotal.getElemText();
             addValidationClassToElem(input_elem, validation);
             
             input_elem = componentNumFemale.getElemText();
