@@ -325,7 +325,9 @@ export function ProdEntryMating(input_settings){
     
     <!-- Footer Buttons -->
     <div class="modal-footer">
-        <button class="btn btn-primary" id="${elemIdBtnSave}">Save Changes</button>
+        <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
+            <i class="fas fa-save me-2"></i>Save Changes
+        </button>
     </div>
 </div>
         `;

@@ -237,7 +237,7 @@ export function ProdEntryBirth(input_settings){
     <!-- Footer Buttons -->
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-            <i class="fas fa-save me-2">Save Changes
+            <i class="fas fa-save me-2"></i>Save Changes
         </button>
     </div>
 </div>
@@ -304,7 +304,7 @@ export function ProdEntryBirth(input_settings){
         
         componentStaff.reset();
         
-        elemServerErrorMsg.stylde.display = 'none';
+        elemServerErrorMsg.style.display = 'none';
     }
     
     
@@ -526,7 +526,7 @@ export function ProdEntryBirth(input_settings){
             data: JSON.stringify(post_data),
   
             beforeSend: function(){
-                elemServerErrorMsg.stylde.display = 'none';
+                elemServerErrorMsg.style.display = 'none';
             },
   
             success: function(response){
