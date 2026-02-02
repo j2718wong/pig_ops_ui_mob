@@ -108,8 +108,13 @@ export function ComponentFeedsInput(input_settings){
         
         const html = `
             <div class="table-responsive data-table" id="${elemIdUiShow}">
-                <table class="data-table">
-                    <thead>
+                <table class="data-table" style="vertical-align:center;">
+					<colgroup>
+						<col style="width: 20%;">
+						<col style="width: 25%;">
+					</colgroup>
+                    
+					<thead>
                         <tr>
                             <th>${settings.header.col1Name}</th>
                             <th class="fi-col2">${settings.header.col2Name}</th>

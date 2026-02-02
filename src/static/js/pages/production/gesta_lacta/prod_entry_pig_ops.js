@@ -302,13 +302,13 @@ ${html_style}
     
     
     this._findElements = function(){
-        elemContentContainer    = document.getElementById(elemIdContentContainer);
+        elemContentContainer    = elemDivContainer.querySelector('#'+elemIdContentContainer);
         
-        elemFilterControls      = document.getElementById(elemIdFilterControls);
+        elemFilterControls      = elemDivContainer.querySelector('#'+elemIdFilterControls);
         
-		elemHideCompleted		= document.getElementById(elemIdHideCompleted);
+		elemHideCompleted		= elemDivContainer.querySelector('#'+elemIdHideCompleted);
 		
-		elemPigOpsTableBody     = document.getElementById(elemIdPigOpsTableBody);
+		elemPigOpsTableBody     = elemDivContainer.querySelector('#'+elemIdPigOpsTableBody);
     }
     
     

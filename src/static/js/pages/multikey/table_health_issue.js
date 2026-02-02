@@ -403,6 +403,7 @@ export function TableHealthIssue(input_settings){
                 const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
             
                 const options ={
+					health_type:             settings.healthType,
                     is_add:                 false,   // false is edit
                     row_entry:              row_entry,
                     callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry

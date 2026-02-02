@@ -303,7 +303,18 @@ export function PageHealthNotesAddEdit(input_settings){
         console.log(options);
 
         // Update BreadCrumbs
-        switch (showOptions.notes_type){ 
+        let multikey_obj_type = null;
+        if ('notes_type' in showOptions){
+            multikey_obj_type = showOptions.notes_type;
+        }
+        else{
+            if ('health_type' in showOptions){
+                multikey_obj_type = showOptions.health_type;
+            }
+        }
+        
+        
+        switch (multikey_obj_type){ 
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
                 thisObj.updateBreadCrumbs(curDataEntry, null);
                 break;

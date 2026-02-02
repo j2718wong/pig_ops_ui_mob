@@ -21,6 +21,10 @@ import {ProdEntryWean}          from './prod_entry_wean.js'
 
 import {TableMedVac}            from '../../multikey/table_medvac.js'
 import {TableNotes}             from '../../multikey/table_notes.js'
+import {TableHealthIssue}       from '../../multikey/table_health_issue.js'
+
+import {ProdFeedSummary}        from '../feeds/prod_feed_summary.js'
+
 
 
 
@@ -233,6 +237,29 @@ export function PageProdLactatingEntry(input_settings){
         });
         this.tablePigProdNotes.init();
         
+        
+        this.tablePigProdHealth = new TableHealthIssue({
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-health',
+            elemDivContainer:   elemTabLactaHealth,
+            healthType:         MULTIKEY_OBJ_TYPE.PIG_PROD
+        });
+        this.tablePigProdHealth.init();
+        
+        
+        
+    
+    
+    
+        this.prodFeedSummary    = new ProdFeedSummary({
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          'prod-feed-summary',
+            elemDivContainer:   elemTabLactaFeedSummary
+        });
+        this.prodFeedSummary.init();
+        
     
         this.prodEntryMating     = new ProdEntryMating({
             navigation:         navigation,
@@ -396,6 +423,8 @@ export function PageProdLactatingEntry(input_settings){
             }
             
             case elemIdTabLactaHealth:{
+                thisObj.tablePigProdHealth.beforeShow(dataPigProd);
+                
                 curTab = thisObj.TAB_LACTA_HEALTH;
                 break;
             }
@@ -406,6 +435,8 @@ export function PageProdLactatingEntry(input_settings){
             }
             
             case elemIdTabLactaFeedSummary:{
+                thisObj.prodFeedSummary.beforeShow(dataPigProd);
+                
                 curTab = thisObj.TAB_LACTA_FEED_SUMMARY;
                 break;
             }

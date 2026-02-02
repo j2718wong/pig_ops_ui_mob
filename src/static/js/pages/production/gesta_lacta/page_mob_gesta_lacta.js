@@ -33,6 +33,11 @@ export function PageMobGestaLacta(input_settings){
     
     const NUM_DAYS_BEFORE_OPERATION_DUE_SHOW_ALARM = 3;
     
+	
+	const LACTA_TABLE_PIGOPS	= 1;
+	const LACTA_TABLE_PIG_COUNT	= 2;
+	const LACTA_TABLE_FEEDS		= 3;
+	
     
     
     /*
@@ -69,8 +74,15 @@ export function PageMobGestaLacta(input_settings){
     
     let elemIdPigProdList       = null;
     let elemIdCardContainer     = null;
+    
+    let elemIdTableColControls  = null;
+	let elemIdLactaPigOps		= null;
+	let elemIdLactaPigCount		= null;
+	let elemIdLactaFeeds		= null;
+	
     let elemIdPigProdTable      = null;
     let elemIdPigProdTableBody  = null;
+	let elemIdPigCountTableBody	= null;
     
     let elemIdPigOpsAlarmTable  = null;
 
@@ -88,8 +100,17 @@ export function PageMobGestaLacta(input_settings){
     
     let elemPigProdList         = null;
     let elemCardContainer       = null;
+    
+    let elemTableColControls    = null;
+	let elemLactaPigOps			= null;
+	let elemLactaPigCount		= null;
+	let elemLactaFeeds			= null;
+	
     let elemPigProdTable        = null;
     let elemPigProdTableBody    = null;
+	let elemPigCountTableBody	= null;
+	
+	
     let elemPigOpsAlarmTable    = null;
 
     // if false current view is PigOpsAlarmTable
@@ -110,6 +131,7 @@ export function PageMobGestaLacta(input_settings){
     let showPageHeaderAlarm     = false;
     let pigOpsAlarmList         = null;
     
+	let curLactaTable			= null;
     
 
     
@@ -128,6 +150,19 @@ export function PageMobGestaLacta(input_settings){
         
     }
     
+	
+	this._writeInlineStyle = function(){
+        const html = `
+    <style>
+        
+        /* Updated Table Styles */
+        .table-gesta-lacta td {padding-right:0}
+    </style>
+    `;
+        return html;
+    }
+	
+	
     
     this.render = function(){
         elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
@@ -140,9 +175,17 @@ export function PageMobGestaLacta(input_settings){
         
         elemIdPigProdList       = `${settings.uniqueKey}-card-list`;
         elemIdCardContainer     = `${settings.uniqueKey}-mobile-list-container`;
+        
+        
+        elemIdTableColControls  = `${settings.uniqueKey}-mobile-pig-prod-table-cols`;
+		elemIdLactaPigOps		= `${settings.uniqueKey}-lacta-pigops`;
+		elemIdLactaPigCount		= `${settings.uniqueKey}-lacta-piglets`;
+		elemIdLactaFeeds		= `${settings.uniqueKey}-lacta-feeds`;
+		
         elemIdPigProdTable      = `${settings.uniqueKey}-mobile-pig-prod-table`;
         elemIdPigProdTableBody  = `${settings.uniqueKey}-mobile-pig-prod-tbody`;
-        
+        elemIdPigCountTableBody	= `${settings.uniqueKey}-mobile-pig-count-tbody`;
+		
         elemIdPigOpsAlarmTable  = `${settings.uniqueKey}-alarm-table`;
         
         
@@ -157,8 +200,23 @@ export function PageMobGestaLacta(input_settings){
             style_hide_add_button = 'display:none;';
             
             html_pig_prod_table = `
+            <!-- Centered Filter Controls -->
+            <div class="filter-controls" id="${elemIdTableColControls}">
+                <!-- Animal Filter Buttons - Centered, no gaps -->
+                <div class="animal-filter">
+                    <div class="filter-buttons sow">
+                        <button class="filter-button active" id="${elemIdLactaPigOps}">PigOps</button>
+                        <button class="filter-button" id="${elemIdLactaPigCount}">Pig Count</button>
+                        <button class="filter-button" id="${elemIdLactaFeeds}">Feeds</button>
+                    </div>
+                </div>
+                
+            </div>
+            
+            
+            
             <!-- PogProd Lacta Table -->
-            <table class="data-table table-gesta-lacta">
+            <table class="data-table table-gesta-lacta" id="${elemIdTablePigOps}">
                 <colgroup>
                     <col style="width: 15%;">
                     <col style="width: 20%;">
@@ -169,12 +227,34 @@ export function PageMobGestaLacta(input_settings){
                 <thead>
                     <tr>
                         <th>PID</th>
-                        <th style="padding-left:0;">Sow</th>
-                        <th style="">Wean</th>
-                        <th style="padding-left:0;">Operation</th>
+                        <th>Sow</th>
+                        <th>Wean</th>
+                        <th>Operation</th>
                     </tr>
                 </thead>
                 <tbody id="${elemIdPigProdTableBody}">
+                </tbody>
+            </table>
+			
+			
+			<table class="data-table table-gesta-lacta" id="${elemIdTablePigCount}">
+                <colgroup>
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 21%;">
+                    <col style="width: 21%;">
+                </colgroup>
+  
+                <thead>
+                    <tr>
+                        <th>PID</th>
+                        <th>Sow</th>
+                        <th>Num<br>Piglets</th>
+                        <th>Dead at<br>Birth</th>
+						<th>Dead after<br>Birth</th>
+                    </tr>
+                </thead>
+                <tbody id="${elemIdPigCountTableBody}">
                 </tbody>
             </table>
             `;
@@ -272,21 +352,29 @@ export function PageMobGestaLacta(input_settings){
     
     
     this._findElements = function(){
-        elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
-        elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
+        elemNavPrevEntry        = elemDivContainer.querySelector('#'+elemIdNavPrevEntry);
+        elemNavNextEntry        = elemDivContainer.querySelector('#'+elemIdNavNextEntry);
         
-        elemPageTitle           = document.getElementById(elemIdPageTitle);
-        elemPageHeaderAlarm     = document.getElementById(elemIdPageHeaderAlarm);
-        elemEntryCount          = document.getElementById(elemIdEntryCount);
-        elemPageInfo            = document.getElementById(elemIdPageInfo);
+        elemPageTitle           = elemDivContainer.querySelector('#'+elemIdPageTitle);
+        elemPageHeaderAlarm     = elemDivContainer.querySelector('#'+elemIdPageHeaderAlarm);
+        elemEntryCount          = elemDivContainer.querySelector('#'+elemIdEntryCount);
+        elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
 
-        elemSearchInput         = document.getElementById(elemIdSearchInput);
-        elemAddEntryBtn         = document.getElementById(elemIdAddEntryBtn);
-        elemPigProdList         = document.getElementById(elemIdPigProdList);
-        elemCardContainer       = document.getElementById(elemIdCardContainer);
-        elemPigProdTable        = document.getElementById(elemIdPigProdTable);
-        elemPigProdTableBody    = document.getElementById(elemIdPigProdTableBody);
-        elemPigOpsAlarmTable    = document.getElementById(elemIdPigOpsAlarmTable);
+        elemSearchInput         = elemDivContainer.querySelector('#'+elemIdSearchInput);
+        elemAddEntryBtn         = elemDivContainer.querySelector('#'+elemIdAddEntryBtn);
+        elemPigProdList         = elemDivContainer.querySelector('#'+elemIdPigProdList);
+        elemCardContainer       = elemDivContainer.querySelector('#'+elemIdCardContainer);
+        
+        elemTableColControls    = elemDivContainer.querySelector('#'+elemIdTableColControls);
+        elemLactaPigOps			= elemDivContainer.querySelector('#'+elemIdLactaPigOps);
+		elemLactaPigCount		= elemDivContainer.querySelector('#'+elemIdLactaPigCount);
+		elemLactaFeeds			= elemDivContainer.querySelector('#'+elemIdLactaFeeds);
+		
+		elemPigProdTable        = elemDivContainer.querySelector('#'+elemIdPigProdTable);
+        elemPigProdTableBody    = elemDivContainer.querySelector('#'+elemIdPigProdTableBody);
+		elemPigCountTableBody	= elemDivContainer.querySelector('#'+elemIdPigCountTableBody);
+		
+        elemPigOpsAlarmTable    = elemDivContainer.querySelector('#'+elemIdPigOpsAlarmTable);
         
     }
     
@@ -329,6 +417,22 @@ export function PageMobGestaLacta(input_settings){
         }
         
         else{
+			// Setup listeners for column controls
+					
+				
+			//elemLactaFeeds		
+			
+			
+			elemLactaPigOps.addEventListener('click', function() {
+			});
+			
+			elemLactaPigCount.addEventListener('click', function() {
+			});
+			
+			
+			
+			
+			
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
                 navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
@@ -341,6 +445,46 @@ export function PageMobGestaLacta(input_settings){
              
     }
     
+	
+	this.changeLactaTable = function(lacta_table){
+		
+		if (lacta_table == curLactaTable){return;}
+		
+		switch(lacta_table){
+			
+			case LACTA_TABLE_PIGOPS:{
+				elemTablePigOps.style.display = 'table';
+				elemIdTablePigCount.style.display = 'none';
+				
+				elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(false);
+				curLactaTable = LACTA_TABLE_PIGOPS';
+				break;
+			}
+			
+			case LACTA_TABLE_PIG_COUNT:{
+				elemTablePigOps.style.display = 'none';
+				elemIdTablePigCount.style.display = 'table';
+				
+				curLactaTable = LACTA_TABLE_PIG_COUNT';
+				break;
+			}
+			
+			case LACTA_TABLE_FEEDS:{
+				elemTablePigOps.style.display = 'none';
+				break;
+			}
+			
+			default:{
+				elemTablePigOps.style.display = 'table';
+				elemIdTablePigCount.style.display = 'none';
+				
+				elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(false);
+				break;
+			}
+			
+		}
+	}
+	
 
     
     // Handle window resize for view switching
@@ -414,8 +558,15 @@ export function PageMobGestaLacta(input_settings){
         
         // Render HTML in elemPigProdTableBody
         const is_gesta = settings.isGesta;
-        elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(is_gesta);
         
+		if (is_gesta){
+			elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(is_gesta);
+        }
+		else{
+			
+			
+			elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(is_gesta);
+		}
         
         // Show PageHeaderAlarm
         if (showPageHeaderAlarm){
@@ -441,6 +592,12 @@ export function PageMobGestaLacta(input_settings){
             
             elemEntryCount.innerHTML = `${prod_count}`;
         }
+		
+		
+		
+		
+		
+		
     }
     
     
@@ -1298,7 +1455,7 @@ export function PageMobGestaLacta(input_settings){
                 s_click = `gNavigation.onClickProdGestatingEntry(${pid});`;
             }
             else{
-				s_click = `gNavigation.onClickProdLactatingEntry(${pid});`;
+                s_click = `gNavigation.onClickProdLactatingEntry(${pid});`;
             }
             
             
@@ -1320,6 +1477,71 @@ export function PageMobGestaLacta(input_settings){
     }
     
     
+	this._getHtmlPigCountTableBody = function(){
+        
+        let html_tbody = '';
+        
+		let pid;
+        let data_sow;
+        let sow_reference;
+		let s_num_dead_at_birth = '';
+		
+		let s_num_dead_after_birth = '';
+		
+		
+
+        
+        let index = 0;
+        for (const cur_entry of dataPigProdList){
+            pid = cur_entry.pig_production.farm_prod_id;
+            
+            data_sow = cur_entry.sow;
+            sow_reference = getSowBoarReference(data_sow);
+        
+		
+			s_num_dead_at_birth = '';
+            
+            s_num_dead_after_birth = '';
+            
+			
+            if (cur_entry.birth.num_dead_at_birth > 0){
+				s_num_dead_at_birth = `${cur_entry.birth.num_dead_at_birth}`;
+			}
+            
+			
+			
+			
+			
+			// Clicking on SowName should go to SowBoar Page
+            // Clicking on PID or important date should open Gesta or Lacta Page
+            
+            let s_click_sow = `gNavigation.pageSowBoarList.gotoSowBoarEntryPage(null, "${data_sow.hid}")`;
+            
+            let s_click = `gNavigation.onClickProdLactatingEntry(${pid});`;
+            
+            
+            html_tbody += `
+            <tr>
+                <td onclick="${s_click}">${pid}</td>
+                <td class="sow-name"  role="button" onclick='${s_click_sow}' style="margin-left:0; padding-left:0;">${sow_reference}</td>
+                <td>${cur_entry.pig_production.cur_pig_count}</td>
+                <td>
+                    ${}
+                </td>
+				<td></td>
+            </tr>
+            `;
+            
+        }
+        
+        return html_tbody;
+        
+    }
+    
+	
+	
+	
+	
     this.setUserLanguage = function(language_key){
         curUserLanguageKey = language_key;
         thisObj.onUserChangeLanguage();
