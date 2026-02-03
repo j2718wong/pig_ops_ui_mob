@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageSowBoarWithBreadCrumbs} from './page_sow_boar_with_breadcrumbs.js';
+import {PageWithMultiBreadCrumbs}   from './page_with_multi_breadcrumbs.js';
 
 import {CommonSelectOptions}        from '../common/common_select_options.js';
 
@@ -12,16 +12,23 @@ import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
 
 import {UiInputDatePicker}          from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter}     from '../common/ui/input_text_with_counter.js';
+import {ComponentStaffFormGroup}    from '../common/ui/comp_staff_form_group.js';
 
 
-import {ComponentAccBoarCustomer}   from './components/comp_acc_boar_customer.js'
+import {ComponentMedVacBrand}       from './components/comp_medvac_brand.js'
+import {ComponentMedVacType}        from './components/comp_medvac_type.js'
+import {ComponentAccMedVac}         from './components/comp_acc_medvac.js'
 
+
+import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
+
+import {TextTranslation}        from '../common/translation.js';
 
 
 import {PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        REQUEST_ERROR_NUM}      from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}            from '../../constants.js';
 
 
 import {formatDate,
@@ -38,10 +45,8 @@ import {ModelSowBoar}           from '../../models/model_sow_boar.js'
 
 
 
-export function PageBoarExtMateAddEdit(input_settings){
-    input_settings['uniqueKey'] = 'boar-ext-mate-add-edit';
-    
-    PageSowBoarWithBreadCrumbs.call(this, input_settings);
+export function PagePfBuItemAddEdit(input_settings){
+    PageWithMultiBreadCrumbs.call(this, input_settings);
     
     
     const thisObj               = this;
@@ -56,7 +61,8 @@ export function PageBoarExtMateAddEdit(input_settings){
     /*
     Typical settings = {
         navigation:             this,
-        elemDivContainer:       elemPageContMedVacAddEdit
+        elemIdDivContainer:     elemIdContMedVacAddEdit,
+        uniqueKey:              'medvac-add-edit'
     };
     */
     const settings              = input_settings;
@@ -73,11 +79,24 @@ export function PageBoarExtMateAddEdit(input_settings){
     let elemIdInfoShow          = null;
     let elemIdInfo              = null;
     
-    let elemUiDateMate        = null;
+    let elemUiDateMedVac        = null;
+
+    let elemIdMedVacForShow         = null;
+    let elemIdMedVacForLabel        = null;
+    
+    let elemIdMedVacForPigOps       = null;
+    let elemIdMedVacForPigOpsChk    = null;
+    let elemIdMedVacForPigOpsLabel  = null;
+    
+    
+    let elemIdMedVacForPigHealth    = null;
+    let elemIdMedVacForPigHealthDate = null;
+    let elemIdMedVacForPigHealthLabel = null;
 
     
-    
     let componentMedVacBrand    = null;
+    let componentMedVacType     = null;
+    let componentAccMedVac      = null;
     
     let elemUiNotes             = null;
     let componentStaff          = null;
@@ -95,8 +114,6 @@ export function PageBoarExtMateAddEdit(input_settings){
         
     let elemInfoShow            = null;
     let elemInfo                = null;
-    
-    let elemDateMate          = null;
 
     
     let elemMedVacForShow           = null;
@@ -108,7 +125,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     let elemMedVacForPigHealth      = null;
-    let elemMedVacForPigHealthDate   = null;
+    let elemMedVacForPigHealthDate  = null;
     let elemMedVacForPigHealthLabel = null;
     
     
@@ -117,13 +134,8 @@ export function PageBoarExtMateAddEdit(input_settings){
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
     
-    
-    
-    let dataMedVacBrandList     = null;
-    let dataMedVacTypeList      = null;
-    
-    
-    
+
+    let curDataEntry            = null;
     let showOptions             = null;
     
 
@@ -149,20 +161,60 @@ export function PageBoarExtMateAddEdit(input_settings){
         elemIdInfo              = `${settings.uniqueKey}-info`;
         
         
-        elemUiDateMate        = new UiInputDatePicker({
+        elemUiDateMedVac        = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date`,
         
-            textLabel:          'Date Mate',
+            textLabel:          'Date',
             isRequired:         true,
             invalidFeedBack:    'Please input date.',
-            helpText:           'Date when boar was mated to External Sow.'
+            helpText:           'Date when MedVac was given to pig.'
         });
         
         
         
+        elemIdMedVacForShow     = `${settings.uniqueKey}-medvac-for`;
+        elemIdMedVacForLabel    = `${settings.uniqueKey}-medvac-for-label`;
+        
+        elemIdMedVacForPigOps           = `${settings.uniqueKey}-medvac-for-pig-ops`;
+        elemIdMedVacForPigOpsChk        = `${settings.uniqueKey}-medvac-for-pig-ops-chk`;
+        elemIdMedVacForPigOpsLabel      = `${settings.uniqueKey}-medvac-for-pig-ops-label`;
+
+
+        elemIdMedVacForPigHealth        = `${settings.uniqueKey}-medvac-for-pig-ops`;
+        elemIdMedVacForPigHealthDate    = `${settings.uniqueKey}-medvac-for-pig-ops-date`;
+        elemIdMedVacForPigHealthLabel   = `${settings.uniqueKey}-medvac-for-pig-ops-label`;
+
+        
+        componentMedVacType     = new ComponentMedVacType({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-type`,
+
+            titleExpandSection: 'Add New MedVac Type',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save MedVac Type',
+        
+            labelSelect:        'Select MedVac Type',
+            helpText:           'MedVac generic description or what it is for'
+        });
+        
+        
+        componentAccMedVac      = new ComponentAccMedVac({
+            navigation:         navigation,
+            parentObj:          thisObj,
+            uniqueKey:          `${settings.uniqueKey}-name`,
+
+            titleExpandSection: 'Add New MedVac Name',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save MedVac Name',
+        
+            labelSelect:        'Select MedVac Name',
+            helpText:           'MedVac product name'
+        });
+        
+        
         componentMedVacBrand    = new ComponentMedVacBrand({
             navigation:         navigation,
-            uniqueKey:          '${settings.uniqueKey}-brand-name',
+            uniqueKey:          `${settings.uniqueKey}-brand-name`,
 
             titleExpandSection: 'Add New MedVac Brand',
             htmlExpandSection:  null,
@@ -173,9 +225,9 @@ export function PageBoarExtMateAddEdit(input_settings){
         });
         
         
-       
+        
         elemUiNotes             = new UiInputTextWithCounter({
-            uniqueKey:          '${settings.uniqueKey}-notes',
+            uniqueKey:          `${settings.uniqueKey}-notes`,
             
             isTextArea:         true,
             className:          'form-group-text-area',
@@ -189,7 +241,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         componentStaff          = new ComponentStaffFormGroup({
             navigation:         navigation,
-            uniqueKey:          '${settings.uniqueKey}-staff',
+            uniqueKey:          `${settings.uniqueKey}-staff`,
             
             includeAddNew:      true,
             includeDoneByMe:    true,
@@ -200,7 +252,6 @@ export function PageBoarExtMateAddEdit(input_settings){
             
             labelSelect:        'Staff Member',
             helpText:           'Who did the operation'
-            
         });
     
         
@@ -210,9 +261,9 @@ export function PageBoarExtMateAddEdit(input_settings){
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
            
-        const html_breadcrumb   = thisObj.componentBreadcrumb.getHtml();
+        const html_breadcrumb   = thisObj.getHtmlBreadCrumbs();
         
-        const html_date_medvac  = elemUiDateMate.getHtml();
+        const html_date_medvac  = elemUiDateMedVac.getHtml();
         const html_medvac_brand = componentMedVacBrand.getHtml();
         const html_medvac_type  = componentMedVacType.getHtml();
         const html_acc_medvac   = componentAccMedVac.getHtml();
@@ -229,7 +280,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     <div class="modal-header" style="padding-right:8px;">
         <h5 class="modal-title">
-            <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Add External Mate</span>
+            <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Add Sow</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
@@ -241,20 +292,37 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         
         
-        
+        <!-- Optional relation keys -->
+        <div class="form-group-check" id="${elemIdMedVacForShow}">
+            <label id="${elemIdMedVacForLabel}" class="form-label">MedVac For Health Issue</label>
+            
+            <div id="${elemIdMedVacForPigHealth}">
+                <label id="${elemIdMedVacForPigHealthDate}">
+                    Decemer 6, 2025
+                </label>
+                
+                <b>
+                    <label id="${elemIdMedVacForPigHealthLabel}">
+                        Nakaigit sa iyang purol
+                    </label>
+                </b>
+                
+            </div>
+            
+            
+        </div>
         
         <!-- 1. Date MedVac -->
         ${html_date_medvac}
         
-        
-        <!-- 2. MedVac Brand -->
-        ${html_medvac_brand}
-        
-        <!-- 3. MedVac Type -->
+        <!-- 2. MedVac Type -->
         ${html_medvac_type}
         
-        <!-- 4. Name -->
+        <!-- 3. Name -->
         ${html_acc_medvac}
+        
+        <!-- 4. MedVac Brand -->
+        ${html_medvac_brand}
         
         <!-- 5. Notes -->
         ${html_notes}
@@ -293,7 +361,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         thisObj.afterHtmlRenderBreadCrumbComponent();
 
-        elemUiDateMate.afterHtmlRender();
+        elemUiDateMedVac.afterHtmlRender();
         
         componentMedVacBrand.afterHtmlRender();
         componentMedVacType.afterHtmlRender();
@@ -311,31 +379,31 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     this._findElements = function(){
                                                           
-        elemBtnClose            = document.getElementById(elemIdBtnClose);
+        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
                                                           
-        elemHeaderTitle         = document.getElementById(elemIdHeaderTitle);
+        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
                                                           
                                                           
-        elemInfoShow            = document.getElementById(elemIdInfoShow);
-        elemInfo                = document.getElementById(elemIdInfo);
+        elemInfoShow            = elemDivContainer.querySelector('#'+elemIdInfoShow);
+        elemInfo                = elemDivContainer.querySelector('#'+elemIdInfo);
                                                           
         
-        elemMedVacForShow           = document.getElementById(elemIdMedVacForShow);
-        elemMedVacForLabel          = document.getElementById(elemIdMedVacForLabel);
+        elemMedVacForShow           = elemDivContainer.querySelector('#'+elemIdMedVacForShow);
+        elemMedVacForLabel          = elemDivContainer.querySelector('#'+elemIdMedVacForLabel);
                                                                     
-        elemMedVacForPigOps         = document.getElementById(elemIdMedVacForPigOps);
-        elemMedVacForPigOpsChk      = document.getElementById(elemIdMedVacForPigOpsChk);
-        elemMedVacForPigOpsLabel    = document.getElementById(elemIdMedVacForPigOpsLabel);
+        elemMedVacForPigOps         = elemDivContainer.querySelector('#'+elemIdMedVacForPigOps);
+        elemMedVacForPigOpsChk      = elemDivContainer.querySelector('#'+elemIdMedVacForPigOpsChk);
+        elemMedVacForPigOpsLabel    = elemDivContainer.querySelector('#'+elemIdMedVacForPigOpsLabel);
                                                                     
                                                                     
-        elemMedVacForPigHealth      = document.getElementById(elemIdMedVacForPigHealth);
-        elemMedVacForPigHealthDate  = document.getElementById(elemIdMedVacForPigHealthDate); 
-        elemMedVacForPigHealthLabel = document.getElementById(elemIdMedVacForPigHealthLabel);
+        elemMedVacForPigHealth      = elemDivContainer.querySelector('#'+elemIdMedVacForPigHealth);
+        elemMedVacForPigHealthDate  = elemDivContainer.querySelector('#'+elemIdMedVacForPigHealthDate); 
+        elemMedVacForPigHealthLabel = elemDivContainer.querySelector('#'+elemIdMedVacForPigHealthLabel);
         
                                                           
-        elemServerErrorMsg      = document.getElementById(elemIdServerErrorMsg);
-        elemBtnCancel           = document.getElementById(elemIdBtnCancel);
-        elemBtnSave             = document.getElementById(elemIdBtnSave);
+        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
+        elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
+        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
         
         
     }
@@ -358,13 +426,12 @@ export function PageBoarExtMateAddEdit(input_settings){
         
     }
     
-    
-    
+
     
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
-        elemUiDateMate.reset();
+        elemUiDateMedVac.reset();
         
         componentMedVacBrand.reset();
         componentMedVacType.reset();
@@ -374,19 +441,25 @@ export function PageBoarExtMateAddEdit(input_settings){
         elemUiNotes.reset(); 
         componentStaff.reset();
         
+        
+        elemServerErrorMsg.style.display = 'none';
     }
     
     
-    this.beforeShow = function(data_sow_boar, options){
+    this.beforeShow = function(data_entry, options){
+        // The dat_entry can be a data_sow_boar, data_pig_prod 
+        
+        
         // IMPORTANT;  When you set a select value while its parent container 
         // is hidden (via display: none, visibility: hidden, or opacity: 0), 
         // the browser doesn't properly render the selected state until the 
         // container becomes visible.
         
-        
+
         /*
         Typical options
         options ={
+            medvac_type:             MULTIKEY_OBJ_TYPE.SOW_BOAR,
             is_add:                 true,   // false is edit
             medvac_hid:             null,   // not null if edit
             health_issue_entry:     null,   // not null if this is added from health issue
@@ -395,20 +468,34 @@ export function PageBoarExtMateAddEdit(input_settings){
         }
         */
         
-        thisObj.curDataSowBoar  = data_sow_boar;
+        curDataEntry    = data_entry;
         showOptions     = options;
         
         
         // Update BreadCrumbs
-        const sow_boar_reference = thisObj.updateBreadCrumbs();
+        switch (showOptions.medvac_type){ 
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                thisObj.updateBreadCrumbs(curDataEntry, null);
+                break;
+            }
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                thisObj.updateBreadCrumbs(null, curDataEntry);
+                break;
+            }
+        }
         
         
         thisObj._resetForm();
         
         
+        componentMedVacBrand.beforeShow();
+        componentMedVacType.beforeShow();
+        componentAccMedVac.beforeShow();
+        
+        componentStaff.beforeShow();
         
         
-         
         
         
         // Set Page Title
@@ -470,15 +557,17 @@ export function PageBoarExtMateAddEdit(input_settings){
     this.show = function(){
         if (showOptions.is_add == false){
             // Necessary to display fully first the container
-            setTimeout(function(){thisObj.populateForm(thisObj.curDataSowBoar, showOptions.medvac_hid);}, 100);
+            setTimeout(function(){
+                thisObj.populateForm(curDataEntry, showOptions.medvac_hid);
+            }, 100);
         }
     }
     
     
-    this.populateForm = function(data_sow_boar, medvac_hid){
+    this.populateForm = function(data_entry, medvac_hid){
         
-        // Get medvac entry from data_sow_boar
-        const list_medvac = data_sow_boar.list_medvac;
+        // Get medvac entry from data_entry
+        const list_medvac = data_entry.data_details.list_medvac;
         
         let cur_medvac = null;
         for (const cur_entry of list_medvac){
@@ -492,7 +581,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
 
         // Set the datepicker to this date
-        elemUiDateMate.setDate(cur_medvac.medvac.date_medvac);
+        elemUiDateMedVac.setDate(cur_medvac.medvac.date_medvac);
         
         
         // Set MedVac brand
@@ -517,7 +606,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     this.disableAllInputs = function(){
-        elemUiDateMate.disableInputs();
+        elemUiDateMedVac.disableInputs();
         
         componentMedVacBrand.disableInputs();
         componentMedVacType.disableInputs();
@@ -528,7 +617,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     this.enableAllInputs = function(){
-        elemUiDateMate.enableInputs();
+        elemUiDateMedVac.enableInputs();
         
         componentMedVacBrand.enableInputs();
         componentMedVacType.enableInputs();
@@ -561,26 +650,7 @@ export function PageBoarExtMateAddEdit(input_settings){
             switch(input_field){
                 
                 case 'date_medvac': {
-                    input_elem      = elemDateMate;
-                    input_val       = input_elem.value;
-                    
-                    console.log('Test 1');
-                    
-                    // Already validated by bootstrap
-                    if (input_val.length > 0){
-                        validation = 0;
-                    }
-                    
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
+             
                 }
                 
             
@@ -596,17 +666,13 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     this.onClickSaveButton = function(){
-
         let input_elem      = null;
-        let input_val       = null;
-        let cur_field       = null;
         let validation      = 0;
-        let proceed_to_save = 1;
         
         let is_duplicate    = 0;
         
         
-        let input_date_medvac   = elemUiDateMate.getValue().trim();
+        let input_date_medvac   = elemUiDateMedVac.getValue().trim();
         
         let input_medvac_brand  = componentMedVacBrand.getValue();
         let input_medvac_type   = componentMedVacType.getValue();
@@ -615,9 +681,8 @@ export function PageBoarExtMateAddEdit(input_settings){
         let input_staff         = componentStaff.getValue();
         
 
-        let dt_medvac_s = null;
         
-        input_elem          = elemDateMate;
+        input_elem          = elemUiDateMedVac.getElemText();
         if (input_date_medvac.length == 0){
             validation = -1;
             addValidationClassToElem(input_elem, validation);
@@ -627,17 +692,16 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         
         // Convert date to YYYY-MM-DD format
-        input_elem          = elemUiDateMate.getElemText();
-        
         const dt_medvac     = new Date(input_date_medvac);
-		if (isNaN(dt_medvac.getTime())){
+        if (isNaN(dt_medvac.getTime())){
             validation      = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
-		
-		dt_medvac_s         = dt_medvac.toLocaleDateString('en-CA');
-		validation          = 0
+            
+        
+        const dt_medvac_s   = dt_medvac.toLocaleDateString('en-CA');
+        validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         
@@ -666,6 +730,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         if (validation != 0) {return;}
         
         
+        // Notes is required for Medvac
         input_elem = elemUiNotes.getElemText();
         if (input_notes.length == 0){
             validation = -1;
@@ -693,9 +758,9 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         
         // Final check before sending request
-		if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
-			return;
-		} 
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+            return;
+        } 
         
         
         
@@ -707,7 +772,6 @@ export function PageBoarExtMateAddEdit(input_settings){
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'sow_boar_hid':     thisObj.curDataSowBoar.sow_boar.hid,
             
             'date_medvac':      dt_medvac_s,
             'medvac_brand_hid': input_medvac_brand,
@@ -719,6 +783,19 @@ export function PageBoarExtMateAddEdit(input_settings){
         };
         
         if (showOptions.is_add == true){
+            // Add Key
+            switch (showOptions.medvac_type){ 
+                case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                    post_data.sow_boar_hid = curDataEntry.sow_boar.hid;
+                    break;
+                }
+                
+                case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                    post_data.pig_prod_hid = curDataEntry.pig_production.hid;
+                    break;
+                }
+            }
+            
             if (done_by_user > 0){
                 post_data.done_by_user = 1;
                 delete post_data.staff_hid;

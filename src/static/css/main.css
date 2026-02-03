@@ -1233,6 +1233,18 @@ p {
 }
 
 
+.text-link {
+    text-decoration: none;
+    color: #0066cc;
+    font-size: 18px;
+    padding: 2px 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
 
 /* Simple Breadcrumb - Just text links */
 .breadcrumb {

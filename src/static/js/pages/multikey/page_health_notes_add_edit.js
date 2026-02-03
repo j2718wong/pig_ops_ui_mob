@@ -53,7 +53,7 @@ export function PageHealthNotesAddEdit(input_settings){
         navigation:             this,
         uniqueKey:              'sow-boar-health',
         isNotes:                true,   // false is for Health Issue
-        elemDivContainer:       elemHiddenContMedVacAddEdit
+        elemDivContainer:       elemPageContMedVacAddEdit
     };
     */
     const settings              = input_settings;

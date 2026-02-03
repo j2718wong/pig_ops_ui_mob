@@ -31,7 +31,8 @@ export function PigFarm(_navigation){
     
     this.dataStaffList          = null;
     
-    
+    this.dataFarmFeedBuyList	= null;
+	
     
     this.managerSowBoar         = new ManagerSowBoar({
         navigation:             navigation,
@@ -185,6 +186,48 @@ export function PigFarm(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataStaffList = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+ 
+    
+	this.requestDataPigFarmFeedBuyList = function(callback_success, elem_show_error){
+        const base_url = window.location.origin;
+        let url = `${base_url}/pf_feed_buy/list?pfhid=${thisObj.getPigFarmHid()}`;
+        
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataFarmFeedBuyList = response.data;
                     
                     if (callback_success){callback_success(response.data);}
                 }

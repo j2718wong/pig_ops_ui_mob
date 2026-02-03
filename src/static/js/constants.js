@@ -42,12 +42,15 @@ const PAGE_ID = {
     
     
     
+    FARM_FEED_BUY_LIST:     50,
+	FARM_FEED_BUY_ADD_EDIT:	51,
+	FARM_FEED_BUY_ITEM_ADD_EDIT: 52,
     
     
-    ACC_PIG_OPS:            50,
+    ACC_PIG_OPS:            60,
     
     
-    SUPPLIER_ADD_EDIT:      60
+    SUPPLIER_ADD_EDIT:      70
     
 };
 
@@ -101,7 +104,7 @@ const PROD_STATUS = {
     GROWING:            6,
     COMBINED:           7,
     HARVESTED:          8,
-	CLOSED:          	9
+    CLOSED:             9
 };
 
 
@@ -157,7 +160,7 @@ export {
     PIG_PROD_TYPE,
     SUPPLIER_TYPE,
 
-	MULTIKEY_OBJ_TYPE,
+    MULTIKEY_OBJ_TYPE,
     
     REQUEST_ERROR_NUM
 };

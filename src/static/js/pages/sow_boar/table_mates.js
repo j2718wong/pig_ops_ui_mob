@@ -153,7 +153,7 @@ export function TableMates(input_settings){
                 
                 <tr>
                     <th>Date</th>
-                    <th>P_ID</th>
+                    <th>PID</th>
                     <th>Mate</th>
                 </tr>
                 

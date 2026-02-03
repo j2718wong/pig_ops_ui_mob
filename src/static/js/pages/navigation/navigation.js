@@ -48,6 +48,9 @@ import {PageProdGestatingEntry}     from '../production/gesta_lacta/page_prod_ge
 import {PageProdLactatingEntry}     from '../production/gesta_lacta/page_prod_lactating_entry.js'
 
 
+import {TablePigFarmFeedBuy}        from '../feeds/table_pig_farm_feed_buy.js';
+import {PagePfFeedBuyAddEdit}       from '../feeds/page_pf_feed_buy_add_edit.js';
+
 
 import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
 
@@ -258,6 +261,10 @@ export function Navigation(){
     const elemIdContProdPigOpsEdit      = 'container-prod-pig-ops-edit';
     
     
+    const elemIdContFarmFeedBuyList     = 'container-farm-feed-buy-list';
+    const elemIdContFarmFeedBuyAddEdit  = 'container-farm-feed-buy-add-edit';
+    const elemIdContFarmFeedBuyItemAddEdit = 'container-farm-feed-buy-item-add-edit';
+    
     const elemIdContAccPigOps           = 'container-acc-pig-ops';
     
     const elemIdContSupplierAddEdit     = 'container-supplier-add-edit';
@@ -285,40 +292,43 @@ export function Navigation(){
     let elemMobileNavAdmin          = null;
 
     
-    let elemHiddenContAccDisabled   = null;
-    let elemHiddenContUserDisabled  = null;
-    let elemHiddenContBillUnpaid    = null;
+    let elemPageContAccDisabled     = null;
+    let elemPageContUserDisabled    = null;
+    let elemPageContBillUnpaid      = null;
     
-    let elemHiddenContSowBoarList   = null;
-    let elemHiddenContSowBoarAddEdit= null;
-    let elemHiddenContSowBoarEntry  = null;
-    let elemHiddenContSowBoarDisposed = null;
-    
-    
-    let elemHiddenContMedVacAddEdit = null;
-    let elemHiddenContHealthAddEdit = null;
-    let elemHiddenContNotesAddEdit  = null;
-    let elemHiddenContParentTrace   = null;
-    
-    let elemHiddenContProdGestaList = null;
-    let elemHiddenContProdGestaAdd  = null;
-    let elemHiddenContProdGestaEntry= null;
-    
-    let elemHiddenContProdLactaList = null;
-    let elemHiddenContProdLactaEntry= null;
+    let elemPageContSowBoarList     = null;
+    let elemPageContSowBoarAddEdit  = null;
+    let elemPageContSowBoarEntry    = null;
+    let elemPageContSowBoarDisposed = null;
     
     
-    let elemHiddenContFatteningList = null;
-    let elemHiddenContFatteningAdd  = null;
-    let elemHiddenContFatteningEntry= null;
+    let elemPageContMedVacAddEdit   = null;
+    let elemPageContHealthAddEdit   = null;
+    let elemPageContNotesAddEdit    = null;
+    let elemPageContParentTrace     = null;
+        
+    let elemPageContProdGestaList   = null;
+    let elemPageContProdGestaAdd    = null;
+    let elemPageContProdGestaEntry  = null;
+        
+    let elemPageContProdLactaList   = null;
+    let elemPageContProdLactaEntry  = null;
     
-    let elemHiddenContProdPigOpsEdit= null; 
+    
+    let elemPageContFatteningList   = null;
+    let elemPageContFatteningAdd    = null;
+    let elemPageContFatteningEntry  = null;
+        
+    let elemPageContProdPigOpsEdit  = null; 
     
     
-    let elemHiddenContAccPigOps     = null;
+    let elemPageContFarmFeedBuyList = null;
+    let elemPageContFarmFeedBuyAddEdit = null;
+    
+    let elemPageContAccPigOps       = null;
     
     
-    let elemHiddenContSupplierAddEdit = null;
+    let elemPageContSupplierAddEdit = null;
     
     
     this.pageData                   = null;
@@ -430,7 +440,7 @@ export function Navigation(){
     
     this.pageMobLactatingList   = new PageMobGestaLacta({
         navigation:             this,
-        elemIdDivContainer:     elemHiddenContProdLactaList,
+        elemIdDivContainer:     elemPageContProdLactaList,
         isGesta:                false,
         uniqueKey:              'prod-lacta', // Use for uniqueness in elements
         pageTitle:              'Prod Lactating'
@@ -464,6 +474,27 @@ export function Navigation(){
         uniqueKey:              'prod-lacta'
     });
     
+    
+    this.pagePigFarmFeedBuyList = new TablePigFarmFeedBuy({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContFarmFeedBuyList,
+        uniqueKey:              'farm-feed-buy-list'
+    });
+    
+    
+    this.pagePfFeedBuyAddEdit   = new PagePfFeedBuyAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContFarmFeedBuyAddEdit,
+        uniqueKey:              'farm-feed-buy-add-edit'
+    });
+    
+    /*
+    this.pagePfFeedBuyItemAddEdit = new PagePfFeedBuyAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContFarmFeedBuyAddEdit,
+        uniqueKey:              'farm-feed-buy-add-edit'
+    });
+    */
     
     this.pageAccPigOps          = new PageAccPigOps({
         navigation:             this,
@@ -512,6 +543,9 @@ export function Navigation(){
         this.pageProdPigOpsEdit.init();
         
         
+        this.pagePigFarmFeedBuyList.init();
+        this.pagePfFeedBuyAddEdit.init();
+        
         
         this.pageAccPigOps.init();
         
@@ -534,56 +568,58 @@ export function Navigation(){
     
     this._findElements = function(){
        
-        elemDesktopNavSettings      = document.getElementById('desktop-nav-settings');
-        elemDesktopNavSowBoarGilt   = document.getElementById('desktop-nav-sow-boar-gilt');
-        elemDesktopNavProduction    = document.getElementById('desktop-nav-production');
-        elemDesktopNavOperations    = document.getElementById('desktop-nav-operations');
-        elemDesktopNavFinancials    = document.getElementById('desktop-nav-financials');
-        elemDesktopNavAccountLists  = document.getElementById('desktop-nav-account-lists');
-        elemDesktopNavAdmin         = document.getElementById('desktop-nav-admin');
-        
-        elemMobileNavSettings       = document.getElementById('mobile-nav-settings');
-        elemMobileNavSowBoarGilt    = document.getElementById('mobile-nav-sow-boar-gilt');
-        elemMobileNavProduction     = document.getElementById('mobile-nav-production');
-        elemMobileNavOperations     = document.getElementById('mobile-nav-operations');
-        elemMobileNavFinancials     = document.getElementById('mobile-nav-financials');
-        elemMobileNavAccountLists   = document.getElementById('mobile-nav-account-lists');
-        elemMobileNavAdmin          = document.getElementById('mobile-nav-admin');
+        elemDesktopNavSettings          = document.getElementById('desktop-nav-settings');
+        elemDesktopNavSowBoarGilt       = document.getElementById('desktop-nav-sow-boar-gilt');
+        elemDesktopNavProduction        = document.getElementById('desktop-nav-production');
+        elemDesktopNavOperations        = document.getElementById('desktop-nav-operations');
+        elemDesktopNavFinancials        = document.getElementById('desktop-nav-financials');
+        elemDesktopNavAccountLists      = document.getElementById('desktop-nav-account-lists');
+        elemDesktopNavAdmin             = document.getElementById('desktop-nav-admin');
+            
+        elemMobileNavSettings           = document.getElementById('mobile-nav-settings');
+        elemMobileNavSowBoarGilt        = document.getElementById('mobile-nav-sow-boar-gilt');
+        elemMobileNavProduction         = document.getElementById('mobile-nav-production');
+        elemMobileNavOperations         = document.getElementById('mobile-nav-operations');
+        elemMobileNavFinancials         = document.getElementById('mobile-nav-financials');
+        elemMobileNavAccountLists       = document.getElementById('mobile-nav-account-lists');
+        elemMobileNavAdmin              = document.getElementById('mobile-nav-admin');
 
 
-        elemHiddenContAccDisabled   = document.getElementById(elemIdContAccountDisabled);
-        elemHiddenContUserDisabled  = document.getElementById(elemIdContUserDisabled);
-        elemHiddenContBillUnpaid    = document.getElementById(elemIdContAccountBillUnpaid);
-
+        elemPageContAccDisabled         = document.getElementById(elemIdContAccountDisabled);
+        elemPageContUserDisabled        = document.getElementById(elemIdContUserDisabled);
+        elemPageContBillUnpaid          = document.getElementById(elemIdContAccountBillUnpaid);
         
-        elemHiddenContSowBoarList   = document.getElementById(elemIdContSowBoarList);
-        elemHiddenContSowBoarAddEdit= document.getElementById(elemIdContSowBoarAddEdit);
-        elemHiddenContSowBoarEntry  = document.getElementById(elemIdContSowBoarEntry);
-        elemHiddenContSowBoarDisposed = document.getElementById(elemIdContSowBoarDisposed);
+                
+        elemPageContSowBoarList         = document.getElementById(elemIdContSowBoarList);
+        elemPageContSowBoarAddEdit      = document.getElementById(elemIdContSowBoarAddEdit);
+        elemPageContSowBoarEntry        = document.getElementById(elemIdContSowBoarEntry);
+        elemPageContSowBoarDisposed     = document.getElementById(elemIdContSowBoarDisposed);
         
         
-        elemHiddenContMedVacAddEdit = document.getElementById(elemIdContMedVacAddEdit);
-        elemHiddenContHealthAddEdit = document.getElementById(elemIdContHealthAddEdit);
-        elemHiddenContNotesAddEdit  = document.getElementById(elemIdContNotesAddEdit);
-        elemHiddenContParentTrace   = document.getElementById(elemIdContParentTrace);
-        
-        elemHiddenContProdGestaList = document.getElementById(elemIdContProdGestaList);
-        elemHiddenContProdGestaAdd  = document.getElementById(elemIdContProdGestaAdd);
-        elemHiddenContProdGestaEntry= document.getElementById(elemIdContProdGestaEntry);
-        
-        elemHiddenContProdLactaList = document.getElementById(elemIdContProdLactaList);
-        elemHiddenContProdLactaEntry= document.getElementById(elemIdContProdLactaEntry);
-        
-        elemHiddenContFatteningList = document.getElementById(elemIdContFatteningList);
-        elemHiddenContFatteningAdd  = document.getElementById(elemIdContFatteningAdd);
-        elemHiddenContFatteningEntry= document.getElementById(elemIdContFatteningEntry);
-        
-        elemHiddenContProdPigOpsEdit= document.getElementById(elemIdContProdPigOpsEdit);
+        elemPageContMedVacAddEdit       = document.getElementById(elemIdContMedVacAddEdit);
+        elemPageContHealthAddEdit       = document.getElementById(elemIdContHealthAddEdit);
+        elemPageContNotesAddEdit        = document.getElementById(elemIdContNotesAddEdit);
+        elemPageContParentTrace         = document.getElementById(elemIdContParentTrace);
+                
+        elemPageContProdGestaList       = document.getElementById(elemIdContProdGestaList);
+        elemPageContProdGestaAdd        = document.getElementById(elemIdContProdGestaAdd);
+        elemPageContProdGestaEntry      = document.getElementById(elemIdContProdGestaEntry);
+                
+        elemPageContProdLactaList       = document.getElementById(elemIdContProdLactaList);
+        elemPageContProdLactaEntry      = document.getElementById(elemIdContProdLactaEntry);
+                
+        elemPageContFatteningList       = document.getElementById(elemIdContFatteningList);
+        elemPageContFatteningAdd        = document.getElementById(elemIdContFatteningAdd);
+        elemPageContFatteningEntry      = document.getElementById(elemIdContFatteningEntry);
+                
+        elemPageContProdPigOpsEdit      = document.getElementById(elemIdContProdPigOpsEdit);
     
+        elemPageContFarmFeedBuyList     = document.getElementById(elemIdContFarmFeedBuyList);
+        elemPageContFarmFeedBuyAddEdit  = document.getElementById(elemIdContFarmFeedBuyAddEdit);
     
-        elemHiddenContAccPigOps     = document.getElementById(elemIdContAccPigOps);
+        elemPageContAccPigOps           = document.getElementById(elemIdContAccPigOps);
         
-        elemHiddenContSupplierAddEdit = document.getElementById(elemIdContSupplierAddEdit);
+        elemPageContSupplierAddEdit     = document.getElementById(elemIdContSupplierAddEdit);
     }
     
     
@@ -710,93 +746,101 @@ export function Navigation(){
     
             
             case PAGE_ID.SOW_BOAR_LIST:{
-                return elemHiddenContSowBoarList;
+                return elemPageContSowBoarList;
             }
     
             case PAGE_ID.SOW_BOAR_ADD_EDIT:{
-                return elemHiddenContSowBoarAddEdit;
+                return elemPageContSowBoarAddEdit;
             }
     
             case PAGE_ID.SOW_BOAR_ENTRY:{
-                return elemHiddenContSowBoarEntry;
+                return elemPageContSowBoarEntry;
             }
     
             case PAGE_ID.SOW_BOAR_DISPOSED:{
-                return elemHiddenContSowBoarDisposed;
+                return elemPageContSowBoarDisposed;
             }
     
     
             case PAGE_ID.MEDVAC_ADD_EDIT:{
-                return elemHiddenContMedVacAddEdit;
+                return elemPageContMedVacAddEdit;
             }
             
             case PAGE_ID.HEALTH_ADD_EDIT:{
-                return elemHiddenContHealthAddEdit;
+                return elemPageContHealthAddEdit;
             }
             
             case PAGE_ID.NOTES_ADD_EDIT:{
-                return elemHiddenContNotesAddEdit;
+                return elemPageContNotesAddEdit;
             }
             
             case PAGE_ID.TRACE_PARENTS:{
-                return elemHiddenContParentTrace;
+                return elemPageContParentTrace;
             }
             
 
             
     
             case PAGE_ID.PROD_GESTA_LIST:{
-                return elemHiddenContProdGestaList;
+                return elemPageContProdGestaList;
             }
             
             case PAGE_ID.PROD_GESTA_ADD:{
-                return elemHiddenContProdGestaAdd;
+                return elemPageContProdGestaAdd;
             }
             
             case PAGE_ID.PROD_GESTA_ENTRY:{
-                return elemHiddenContProdGestaEntry;
+                return elemPageContProdGestaEntry;
             }
             
             
             case PAGE_ID.PROD_LACTA_LIST:{
-                return elemHiddenContProdLactaList;
+                return elemPageContProdLactaList;
             }
             
             case PAGE_ID.PROD_LACTA_ENTRY:{
-                return elemHiddenContProdLactaEntry;
+                return elemPageContProdLactaEntry;
             }
             
             
             case PAGE_ID.PROD_FATTENING_LIST:{
-                return elemHiddenContProdLactaList;
+                return elemPageContProdLactaList;
             }
             
             case PAGE_ID.PROD_FATTENING_ADD:{
-                return elemHiddenContProdLactaEntry;
+                return elemPageContProdLactaEntry;
             }
             
             case PAGE_ID.PROD_FATTENING_ENTRY:{
-                return elemHiddenContProdLactaEntry;
+                return elemPageContProdLactaEntry;
             }
 
             
             
             case PAGE_ID.PROD_PIG_OPS_EDIT:{
-                return elemHiddenContProdPigOpsEdit;
+                return elemPageContProdPigOpsEdit;
             }
             
             
             
+            
+            case PAGE_ID.FARM_FEED_BUY_LIST: {
+                return elemPageContFarmFeedBuyList;
+            }
+            
+            case PAGE_ID.FARM_FEED_BUY_ADD_EDIT: {
+                return elemPageContFarmFeedBuyAddEdit;
+            }
             
             
         
             case PAGE_ID.ACC_PIG_OPS: {
-                return elemHiddenContAccPigOps;
+                return elemPageContAccPigOps;
             }
             
             
             case PAGE_ID.SUPPLIER_ADD_EDIT:{
-                return elemHiddenContSupplierAddEdit;
+                return elemPageContSupplierAddEdit;
             }
             
         }
@@ -832,7 +876,7 @@ export function Navigation(){
             thisObj.pageAccountDisabled.beforeShow(options);
             
             // Except
-            elemHiddenContAccDisabled.style.display = 'block';
+            elemPageContAccDisabled.style.display = 'block';
             
             return;
         }
@@ -846,7 +890,7 @@ export function Navigation(){
             }
             
             // Except
-            elemHiddenContUserDisabled.style.display = 'block';
+            elemPageContUserDisabled.style.display = 'block';
             
             return;
         }
@@ -880,7 +924,7 @@ export function Navigation(){
                     thisObj.pageAccountUnpaidBill.beforeShow(options);
                     
                     // Except
-                    elemHiddenContBillUnpaid.style.display = 'block';
+                    elemPageContBillUnpaid.style.display = 'block';
                 
                     return;
                 
@@ -1076,13 +1120,13 @@ export function Navigation(){
         
     
     this._onClickNavAccPigOps = function(is_mobile, operation_type){
-        thisObj.showThisPage(elemHiddenContAccPigOps);
+        thisObj.showThisPage(elemPageContAccPigOps);
         thisObj.pageAccPigOps.show(operation_type);
     }
         
         
     this._onClickNavSowBoar = function(is_mobile, sow_boar_type){
-        thisObj.showThisPage(elemHiddenContSowBoarList);
+        thisObj.showThisPage(elemPageContSowBoarList);
         
         const options= {
             sow_boar_type: sow_boar_type
@@ -1092,7 +1136,7 @@ export function Navigation(){
     
     
     this._onClickNavParentTrace = function(is_mobile){
-        thisObj.showThisPage(elemHiddenContParentTrace);
+        thisObj.showThisPage(elemPageContParentTrace);
         thisObj.pageParentTrace.show();
     }
     
@@ -1107,14 +1151,14 @@ export function Navigation(){
         
         if (is_mobile){
             if (operation_type == PIG_OPERATION_TYPE.GESTATING){
-                thisObj.showThisPage(elemHiddenContProdGestaList);
+                thisObj.showThisPage(elemPageContProdGestaList);
                 thisObj.pageMobGestatingList.show();
                 return;
             }
             
             if ((operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS) || 
                 (operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
-                thisObj.showThisPage(elemHiddenContProdLactaList);
+                thisObj.showThisPage(elemPageContProdLactaList);
                 thisObj.pageMobLactatingList.show();
                 return;
             }
@@ -1148,7 +1192,8 @@ export function Navigation(){
         
         
     this._onClickNavFeedsExpenses = function(is_mobile){
-        console.log('_onClickNavFeedsExpenses not yet implemented; is_mobile=' + is_mobile);
+        thisObj.showThisPage(elemPageContFarmFeedBuyList);
+        thisObj.pagePigFarmFeedBuyList.beforeShow();
     }
         
         
@@ -1207,7 +1252,7 @@ export function Navigation(){
         
         
     this.onClickProdGestatingAdd = function(){
-        thisObj.showThisPage(elemHiddenContProdGestaAdd);
+        thisObj.showThisPage(elemPageContProdGestaAdd);
         
         
         thisObj.pageProdGestatingAdd.show();
@@ -1224,7 +1269,7 @@ export function Navigation(){
         }
         
         
-        thisObj.showThisPage(elemHiddenContProdGestaEntry);
+        thisObj.showThisPage(elemPageContProdGestaEntry);
         
         const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataGestatingList;
         
@@ -1276,7 +1321,7 @@ export function Navigation(){
         }
         
         
-        thisObj.showThisPage(elemHiddenContProdLactaEntry);
+        thisObj.showThisPage(elemPageContProdLactaEntry);
         
         const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataLactatingList;
         

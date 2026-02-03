@@ -49,6 +49,8 @@ export function PageTableBasic(){
     let elemIdTableTotalPages   = null;
     let elemIdTableNextPage     = null;
     
+    let elemIdAddTextLink       = null;
+    
     let elemIdTableContent      = null;
     
 
@@ -71,6 +73,8 @@ export function PageTableBasic(){
     let elemTableCurPage        = null;
     let elemTableTotalPages     = null;
     let elemTableNextPage       = null;
+    
+    let elemAddTextLink         = null;
     
     this.elemTableContent       = null;
    
@@ -99,6 +103,21 @@ export function PageTableBasic(){
     }
     
     
+    /*
+    settings = {
+        uniqueKey:      `parent-trace-sow-boar-table`,
+        noHeader:       false,
+        noSearchAdd:    true,
+        noControlsBar:  false,
+        itemsPerPage:   20,
+        tableTitle:     'Sow List',
+        
+        addEntryLink: {
+            label:      'Add Item',
+            onclickAddEntry:    function
+        }
+    }
+    */
     this.setSettingsTable = function(input_settings){
         settings = input_settings;
     }
@@ -126,8 +145,23 @@ export function PageTableBasic(){
         elemIdTableTotalPages   = `${settings.uniqueKey}-total-pages`;
         elemIdTableNextPage     = `${settings.uniqueKey}-next-page`;
         
+        
+        elemIdAddTextLink       = `${settings.uniqueKey}-add-entry-link`;
+        
         elemIdTableContent      = `${settings.uniqueKey}-table-content`;
-           
+
+        let htm_header = `
+        <h2>
+            <span class="nav-title blue" id="${elemIdTableEntryCount}">8</span>
+            <span class="nav-title blue" id="${elemIdTableTitle}">${settings.tableTitle}</span>
+        </h2>
+        `;
+        
+        if (settings.noHeader){
+            htm_header = '';
+        }
+        
+        
         
         let html_search_add     = `
         <div class="mobile-controls" id="${elemIdSeachAddControl}">
@@ -147,37 +181,7 @@ export function PageTableBasic(){
         }
         
         
-        let html_table = '';
-        
-        if (thisObj.getHtmlTableHeader){
-            html_table = thisObj.getHtmlTableHeader();
-        }
-           
-        const html = `
-
-        
-<div class="mobile-container" id="${elemIdTableContainer}">
-
-    <h2>
-        <span class="nav-title blue" id="${elemIdTableEntryCount}">8</span>
-        <span class="nav-title blue" id="${elemIdTableTitle}">${settings.tableTitle}</span>
-    </h2>
-
-    <div class="mobile-info-box hidden" >
-        <div class="info-text" id="${elemIdTableInfo}">
-        </div>
-    </div>
-    
-    
-    <div>
-        <!-- Search and Add Entry Controls -->
-        ${html_search_add}
-    
-    
-        <div id="${elemIdServerErrorMsg}"></div>
-    
-        
-        <!-- Controls Bar -->
+        let html_controls_bar = `
         <div class="controls-bar">
             <div class="entry-count" id="${elemIdTableRowCount}">
                 12 Entries
@@ -195,6 +199,59 @@ export function PageTableBasic(){
                 </button>
             </div>
         </div>
+        `;
+        
+        if (settings.noControlsBar){
+            html_controls_bar = '';
+        }
+        
+        let html_add_entry_link = '';
+        if (settings.addEntryLink){
+            html_add_entry_link =`
+            <div>
+                <a href="javascript:void(0)" class="text-link" id ="${elemIdAddTextLink}">
+                    ${settings.addEntryLink.label}</a>
+            </div>
+            `;
+            
+        }
+        
+        
+        
+        let html_table = '';
+        
+        if (thisObj.getHtmlTableHeader){
+            html_table = thisObj.getHtmlTableHeader();
+        }
+           
+        const html = `
+
+        
+<div class="mobile-container" id="${elemIdTableContainer}">
+
+    ${htm_header}
+    
+    
+    <div class="mobile-info-box hidden" >
+        <div class="info-text" id="${elemIdTableInfo}">
+        </div>
+    </div>
+    
+    
+    <div>
+        <!-- Search and Add Entry Controls -->
+        ${html_search_add}
+    
+    
+        <div id="${elemIdServerErrorMsg}"></div>
+    
+        
+        <!-- Controls Bar -->
+        ${html_controls_bar}
+    
+        <!-- Add entry Link instead of button -->
+        ${html_add_entry_link}
+        
 
         <div id="${elemIdTableContent}">
             ${html_table}
@@ -239,6 +296,9 @@ export function PageTableBasic(){
         elemTableTotalPages     = document.getElementById(elemIdTableTotalPages);
         elemTableNextPage       = document.getElementById(elemIdTableNextPage);
         
+        
+        elemAddTextLink         = document.getElementById(elemIdAddTextLink);
+        
         thisObj.elemIdTableContent  = document.getElementById(elemIdTableContent);
              
     }
@@ -257,6 +317,12 @@ export function PageTableBasic(){
                 const search_term = this.value.toUpperCase().trim();
                 thisObj.searchEntry(search_term);
                 
+            });
+        }
+        
+        if ('addEntryLink' in settings){
+            elemAddTextLink.addEventListener('click', function() {
+                settings.addEntryLink.onclickAddEntry();
             });
         }
         
@@ -290,7 +356,10 @@ export function PageTableBasic(){
     
     this.setDataEntryList = function(data_entry_list){
         dataEntryList = data_entry_list;    
-        elemTableEntryCount.textContent = dataEntryList.length;
+        
+        if (elemTableEntryCount){
+            elemTableEntryCount.textContent = dataEntryList.length;
+        }
     }
     
         

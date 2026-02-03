@@ -295,91 +295,98 @@ ${html_style}
 
 
         <!-- Sow Boar -->
-        <table class="data-table table-sow" id="${elemIdTableSow}">
-            <colgroup>
-                <col style="width: 30%;">
-                <col style="width: 25%;">
-                <col style="width: 25%;">
-                <col style="width: 20%;">
-            </colgroup>
-  
-            <thead>
-                <tr>
-                    <th>Sow</th>
-                    <th>Status</th>
-                    <th>Age</th>
-                    <th>Output</th>
-                </tr>
-            </thead>
-            <tbody id="${elemIdTableSowBody}">
-                <!-- Operations populated by JavaScript -->
-            </tbody>
-        </table>
-        
-        
-        <table class="data-table table-boar" id="${elemIdTableBoar}">
-            <colgroup>
-                <col style="width: 30%;">
-                <col style="width: 25%;">
-                <col style="width: 20%;">
-                <col style="width: 25%;">
-            </colgroup>
+        <div id="${elemIdTableSow}">
+            <table class="data-table table-sow">
+                <colgroup>
+                    <col style="width: 30%;">
+                    <col style="width: 25%;">
+                    <col style="width: 25%;">
+                    <col style="width: 20%;">
+                </colgroup>
+      
+                <thead>
+                    <tr>
+                        <th>Sow</th>
+                        <th>Status</th>
+                        <th>Age</th>
+                        <th>Output</th>
+                    </tr>
+                </thead>
+                <tbody id="${elemIdTableSowBody}">
+                    <!-- Operations populated by JavaScript -->
+                </tbody>
+            </table>
             
-            <thead>
-                <tr>
-                    <th>Boar</th>
-                    <th>Age</th>
-                    <th>Mates</th>
-                    <th>Last Mate</th>
-                </tr>
-            </thead>
-            <tbody id="${elemIdTableBoarBody}">
-                <!-- Operations populated by JavaScript -->
-            </tbody>
-        </table>
+			<div>Output at Wean (Number Birth)</div>
+        </div>
+        
+        <div id="${elemIdTableBoar}">
+            <table class="data-table table-boar" >
+                <colgroup>
+                    <col style="width: 30%;">
+                    <col style="width: 25%;">
+                    <col style="width: 20%;">
+                    <col style="width: 25%;">
+                </colgroup>
+                
+                <thead>
+                    <tr>
+                        <th>Boar</th>
+                        <th>Age</th>
+                        <th>Mates</th>
+                        <th>Last Mate</th>
+                    </tr>
+                </thead>
+                <tbody id="${elemIdTableBoarBody}">
+                    <!-- Operations populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="${elemIdTableGilt}">
+            <table class="data-table table-gilt" >
+                <colgroup>
+                    <col style="width: 25%;">
+                    <col style="width: 25%;">
+                    <col style="width: 50%;">
+                </colgroup>
+                
+                <thead>
+                    <tr>
+                        <th>Gilt</th>
+                        <th>Age</th>
+                        <th>Next PigOp</th>
+                    </tr>
+                </thead>
+                <tbody id="${elemIdTableGiltBody}">
+                    <!-- Operations populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
         
         
-        <table class="data-table table-gilt" id="${elemIdTableGilt}">
-            <colgroup>
-                <col style="width: 25%;">
-                <col style="width: 25%;">
-                <col style="width: 50%;">
-            </colgroup>
-            
-            <thead>
-                <tr>
-                    <th>Gilt</th>
-                    <th>Age</th>
-                    <th>Next PigOp</th>
-                </tr>
-            </thead>
-            <tbody id="${elemIdTableGiltBody}">
-                <!-- Operations populated by JavaScript -->
-            </tbody>
-        </table>
-        
-        
-        <table class="data-table table-disposed" id="${elemIdTableDisposed}">
-            <colgroup>
-                <col style="width: 30%;">
-                <col style="width: 20%;">
-                <col style="width: 30%;">
-                <col style="width: 20%;">
-            </colgroup>
-            
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Pig Type</th>
-                    <th>Name</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="${elemIdTableDisposedBody}">
-                <!-- Operations populated by JavaScript -->
-            </tbody>
-        </table>
-        
+        <div id="${elemIdTableDisposed}">
+            <table class="data-table table-disposed" >
+                <colgroup>
+                    <col style="width: 30%;">
+                    <col style="width: 20%;">
+                    <col style="width: 30%;">
+                    <col style="width: 20%;">
+                </colgroup>
+                
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Pig Type</th>
+                        <th>Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="${elemIdTableDisposedBody}">
+                    <!-- Operations populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
         
         
     </div>
