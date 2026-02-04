@@ -315,7 +315,7 @@ export function PageTableBasic(){
         else{
             elemSearchInput.addEventListener('input', function() {
                 const search_term = this.value.toUpperCase().trim();
-                thisObj.searchEntry(search_term);
+                thisObj.searchEntries(search_term);
                 
             });
         }
@@ -450,7 +450,7 @@ export function PageTableBasic(){
     }
     
     
-    this.searchEntry = function(key){
+    this.searchEntries = function(key){
         
     }
     
