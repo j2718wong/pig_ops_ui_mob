@@ -42,6 +42,8 @@ export function PageMobGestaLacta(input_settings){
     
     
     
+    
+    
     /*
     Typical input_settings
     {
@@ -139,6 +141,11 @@ export function PageMobGestaLacta(input_settings){
 
 
     this.showPageHeaderAlarm     = false;
+    
+    
+    // When this is true, entry search will include boar_name,
+    // semen_supplier_name, semen_name 
+    let searchIncludeInsem      = false;
     
     
     let curLactaTable           = null;
@@ -241,7 +248,8 @@ export function PageMobGestaLacta(input_settings){
                 <colgroup>
                     <col style="width: 15%;">
                     <col style="width: 22%;">
-                    <col style="width: 32%;">
+                    <col style="width: 33%;">
+                    <col style="width: 30%;">
                 </colgroup>
   
                 <thead>
@@ -261,15 +269,15 @@ export function PageMobGestaLacta(input_settings){
                 <colgroup>
                     <col style="width: 15%;">
                     <col style="width: 20%;">
-                    <col style="width: 20%;">
-                    <col style="width: 20%;">
+                    <col style="width: 15%;">
+                    <col style="width: 22%;">
                 </colgroup>
   
                 <thead>
                     <tr>
                         <th>PID</th>
                         <th>Sow</th>
-                        <th>Num<br>Piglets</th>
+                        <th>Num<br>Pigs</th>
                         <th>Dead at<br>Birth</th>
                         <th>Dead after<br>Birth</th>
                     </tr>
@@ -286,17 +294,17 @@ export function PageMobGestaLacta(input_settings){
             <table class="data-table table-gesta-lacta">
                 <colgroup>
                     <col style="width: 15%;">
-                    <col style="width: 20%;">
+                    <col style="width: 22%;">
+                    <col style="width: 33%;">
                     <col style="width: 30%;">
-                    <col style="width: 35%;">
                 </colgroup>
   
                 <thead>
                     <tr>
                         <th>PID</th>
-                        <th style="padding-left:0;">Sow</th>
-                        <th style="">Expected</th>
-                        <th style="padding-left:0;">Operation</th>
+                        <th>Sow</th>
+                        <th>Expected</th>
+                        <th>Operation</th>
                     </tr>
                 </thead>
                 <tbody id="${elemIdPigProdTableBody}">
@@ -486,7 +494,7 @@ ${html_style}
     }
     
     
-    this.changeLactaTable = function(lacta_table){
+    this.changeLactaTable = function(lacta_table, pig_prod_list){
         if (lacta_table){
             if (lacta_table == curLactaTable){return;}
         }
@@ -497,7 +505,7 @@ ${html_style}
                 elemTablePigOps.style.display = 'table';
                 elemTablePigCount.style.display = 'none';
                 
-                elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(false);
+                elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(pig_prod_list);
                 curLactaTable = LACTA_TABLE_PIGOPS;
                 break;
             }
@@ -520,7 +528,7 @@ ${html_style}
                 elemTablePigOps.style.display = 'table';
                 elemTablePigCount.style.display = 'none';
                 
-                elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(false);
+                elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
                 curLactaTable = LACTA_TABLE_PIGOPS;
                 break;
             }
@@ -566,7 +574,7 @@ ${html_style}
             elemSearchInput.setAttribute("placeholder", "No entries found"); 
         }
         else{
-            elemSearchInput.setAttribute("placeholder", "Search Sow Name or PID");
+            elemSearchInput.setAttribute("placeholder", "Sow Name or PID");
         }
         
         let html = '';
@@ -596,17 +604,32 @@ ${html_style}
                     card.style.display = 'none';
                 }
             });
+            
+            
+            // Search for table
+            const filtered_entries = thisObj.searchEntries(searchTerm);
+            if (settings.isGesta){
+
+                const html = thisObj._getHtmlPigProdTableBody(filtered_entries);
+                
+                elemPigProdTableBody.innerHTML = html;
+            }
+            else{
+                //elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
+                thisObj.changeLactaTable(null, filtered_entries);
+            }
+            
         });
         
         
         // Render HTML in elemPigProdTableBody
         const is_gesta = settings.isGesta;
         
-        if (is_gesta){
-            elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(is_gesta);
+        if (settings.isGesta){
+            elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
         }
         else{
-            //elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(is_gesta);
+            //elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
             thisObj.changeLactaTable();
         }
         
@@ -646,7 +669,7 @@ ${html_style}
     
     
     
-    this._getHtmlPigProdTableBody = function(is_gesta){
+    this._getHtmlPigProdTableBody = function(pig_prod_list){
         
         let html_tbody = '';
         let s_date_expected = ''
@@ -684,8 +707,11 @@ ${html_style}
         
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         
+        if (pig_prod_list){}
+        else{pig_prod_list = dataPigProdList;}
+        
         let index = 0;
-        for (const cur_entry of dataPigProdList){
+        for (const cur_entry of pig_prod_list){
             pid = cur_entry.pig_production.farm_prod_id;
             
             data_sow = cur_entry.sow;
@@ -696,7 +722,7 @@ ${html_style}
             // gesta: expected date of birth 
             // lacta: date of weaning
             s_date_important = ''
-            if (is_gesta){
+            if (settings.isGesta){
                 dt_important = new Date(cur_entry.birth.date_expected);
                 dt_important_s = formatDate(dt_important, FORMAT_COMPACT);
                 
@@ -742,7 +768,7 @@ ${html_style}
             // 3.) If all Done, should display ALL DONE 
             s_operation = '';
             
-            if (is_gesta){
+            if (settings.isGesta){
                 operations = cur_entry.gestating_ops;
             }
             else{
@@ -801,7 +827,7 @@ ${html_style}
             let s_click_sow = `gNavigation.pageSowBoarList.gotoSowBoarEntryPage(null, "${data_sow.hid}")`;
             
             let s_click = '';
-            if (is_gesta){
+            if (settings.isGesta){
                 s_click = `gNavigation.onClickProdGestatingEntry(${pid});`;
             }
             else{
@@ -902,6 +928,138 @@ ${html_style}
     }
     
     
+    this.searchEntries = function(key){
+        let data_pig_prod_list = null;
+        
+        if (settings.isGesta){
+            data_pig_prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
+        }
+        else{
+            data_pig_prod_list = navigation.pigFarm.managerPigProd.dataLactatingList;
+        }
+        
+        
+        if (key == ''){return data_pig_prod_list;}
+        
+        
+        const filtered = [];
+        for (const cur_entry of data_pig_prod_list){
+            
+            let u_sow_name          = null;
+            let u_sow_number        = null;
+            
+            let u_boar_name         = null;
+            let u_boar_number       = null;
+            
+            let u_semen_supplier    = null;
+            let u_semen_name        = null;
+            
+            
+            let s_pid   = `${cur_entry.pig_production.farm_prod_id}`;
+            
+            if (cur_entry.sow.name){
+                u_sow_name = cur_entry.sow.name.toUpperCase();
+            }
+            
+            if (cur_entry.sow.number){
+                u_sow_number = cur_entry.sow.number.toUpperCase();
+            }
+            
+            
+            let insemination = cur_entry.insemination;
+            
+            switch (insemination.insem_type){
+                case 'B': {
+                    if (insemination.boar.name){
+                        u_boar_name = insemination.boar.name.toUpperCase();
+                    }
+                    
+                    if (insemination.boar.number){
+                        u_boar_number = insemination.boar.number.toUpperCase();
+                    }
+                    
+                    break;
+                }
+                
+                case 'AI_X': {
+                    u_semen_supplier = insemination.ai.semen_supplier.name.toUpperCase();
+                    u_semen_name    = insemination.ai.semen_supplier.semen.name.toUpperCase();
+                    
+                    break;
+                }
+                
+                case 'AI_N': {
+                    if (insemination.ai.internal_boar.name){
+                        u_boar_name = insemination.ai.internal_boar.name.toUpperCase();
+                    }
+                    
+                    if (insemination.ai.internal_boar.number){
+                        u_boar_number = insemination.ai.internal_boar.number.toUpperCase();
+                    }
+                    
+                    break;
+                }
+            }
+            
+            
+            if (s_pid.startsWith(key)){
+                filtered.push(cur_entry);
+                continue;
+            }
+            
+            
+            if (u_sow_name){
+                if (u_sow_name.startsWith(key)){
+                    filtered.push(cur_entry);
+                    continue;
+                }
+            }
+            
+            if (u_sow_number){
+                if (u_sow_name.startsWith(key)){
+                    filtered.push(cur_entry);
+                    continue;
+                }
+            }
+            
+            
+            if (searchIncludeInsem){
+                if (u_boar_name){
+                    if (u_boar_name.startsWith(key)){
+                        filtered.push(cur_entry);
+                        continue;
+                    }
+                }
+                
+                if (u_boar_number){
+                    if (u_boar_number.startsWith(key)){
+                        filtered.push(cur_entry);
+                        continue;
+                    }
+                }
+                
+                if (u_semen_supplier){
+                    if (u_semen_supplier.startsWith(key)){
+                        filtered.push(cur_entry);
+                        continue;
+                    }
+                }
+            
+                if (u_semen_name){
+                    if (u_semen_name.startsWith(key)){
+                        filtered.push(cur_entry);
+                        continue;
+                    }
+                }
+            }
+            
+        } 
+        
+        
+        return filtered;
+    }
+    
+    
     this.getDataPigProd = function(pid){
         // Most functions with getData*** always use entry_hid as 
         // input parameter. The DataPigProd will use pid instead
@@ -958,124 +1116,6 @@ ${html_style}
             
             curViewIsPigProdList = true;
         }
-    }
-    
-    
-    this.onClickShowMore = function(clicked_elem){
-        const operations_list   = clicked_elem.closest('.operations-list');
-        const operations_above  = operations_list.querySelectorAll('.operation-above');
-        const span_show_more    = operations_list.querySelector('.span-show-more');
-        
-
-        
-        let isDisplayed = 0;
-        
-        operations_above.forEach(operation => {
-            const computedStyle = window.getComputedStyle(operation);
-            const displayValue = computedStyle.getPropertyValue('display');
-            
-            if (displayValue == 'none'){
-                isDisplayed = 1;
-                operation.style.display = 'block';
-            }
-            else{
-                isDisplayed = 0;
-                operation.style.display = 'none';
-            }
-        });
-        
-        let s_text;
-        if (isDisplayed == 0){
-            s_text = `Show ${operations_above.length} Upcoming Operation`;
-            if (operations_above.length > 1){show_upcoming_operation += 's';}
-        }
-        else{
-            s_text = `Hide ${operations_above.length} Upcoming Operation`;
-            if (operations_above.length > 1){show_upcoming_operation += 's';}
-        }
-        
-        span_show_more.innerHTML = s_text;
-        
-    }
-    
-    
-    this.onClickShowCompleted = function(clicked_elem){
-        const operations_list   = clicked_elem.closest('.operations-list');
-        const operations_below  = operations_list.querySelectorAll('.operation-below');
-        const span_show_comp    = operations_list.querySelector('.span-show-completed');
-        
-
-        
-        let isDisplayed = 0;
-        
-        operations_below.forEach(operation => {
-            const computedStyle = window.getComputedStyle(operation);
-            const displayValue = computedStyle.getPropertyValue('display');
-            
-            if (displayValue == 'none'){
-                isDisplayed = 1;
-                operation.style.display = 'block';
-            }
-            else{
-                isDisplayed = 0;
-                operation.style.display = 'none';
-            }
-        });
-        
-        let s_text;
-        if (isDisplayed == 0){
-            s_text = `Show Completed Operations (${operations_below.length})`;
-        }
-        else{
-            s_text = `Hide Completed Operations (${operations_below.length}`;
-        }
-        
-        span_show_comp.innerHTML = s_text;
-    }
-    
-    
-    this.onClickMarkAsDone = function(pid, entry_hid){
-    
-        const data_pig_prod = thisObj.getDataPigProd(pid);
-    
-        
-        const operation = thisObj.getDataProdPigOps(data_pig_prod, entry_hid);
-        if (operation == null) {return;}
-        
-        const data_sow = data_pig_prod.sow;
-        let sow_reference = '';
-        
-        if ((data_sow.name != null) && (data_sow.name.length >0)){
-            sow_reference = data_sow.name;
-        }
-        else{
-            sow_reference = data_sow.number;
-        }
-        
-        
-        let page_id     = PAGE_ID.PROD_LACTA_LIST;
-        if (settings.isGesta){
-            page_id     = PAGE_ID.PROD_GESTA_LIST;
-        }
-        
-        const go_back_page = navigation.getPageContainer(page_id);
-        
-        const options = {
-            pid:            pid,
-            sow:            sow_reference,
-            is_gesta:       settings.isGesta,
-            is_mark_done:   true,
-            go_back_page:   go_back_page
-        };
-        
-        // Set this callback
-        navigation.pageProdPigOpsEdit.callbackOnSuccessEdit = thisObj.onSuccessEditPigOps;
-        
-        navigation.pageProdPigOpsEdit.curDataPigProd = data_pig_prod;
-        navigation.pageProdPigOpsEdit.beforeShow(operation, options);
-        
-        const next_page = navigation.getPageContainer(PAGE_ID.PROD_PIG_OPS_EDIT);
-        navigation.showThisPage(next_page)
     }
     
     

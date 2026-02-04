@@ -478,12 +478,12 @@ export function GestaLactaCards(input_settings){
         let s_click_more;
         let s_click_comp;
         if (settings.isGesta){
-            s_click_more = `gNavigation.pageMobGestatingList.onClickShowMore(this);`;
-            s_click_comp = `gNavigation.pageMobGestatingList.onClickShowCompleted(this);`;
+            s_click_more = `gNavigation.pageMobGestatingList.gestaLactaCards.onClickShowMore(this);`;
+            s_click_comp = `gNavigation.pageMobGestatingList.gestaLactaCards.onClickShowCompleted(this);`;
         }
         else{
-            s_click_more = `gNavigation.pageMobLactatingList.onClickShowMore(this);`;
-            s_click_comp = `gNavigation.pageMobLactatingList.onClickShowCompleted(this);`;
+            s_click_more = `gNavigation.pageMobLactatingList.gestaLactaCards.onClickShowMore(this);`;
+            s_click_comp = `gNavigation.pageMobLactatingList.gestaLactaCards.onClickShowCompleted(this);`;
         }
         
         let html = `
@@ -636,10 +636,10 @@ export function GestaLactaCards(input_settings){
         
         if (has_action > 0){
             if (settings.isGesta){
-                s_click = `gNavigation.pageMobGestatingList.onClickMarkAsDone(${pid},'${operation_hid}');`;
+                s_click = `gNavigation.pageMobGestatingList.gestaLactaCards.onClickMarkAsDone(${pid},'${operation_hid}');`;
             }
             else{
-                s_click = `gNavigation.pageMobLactatingList.onClickShowMore(${pid},'${operation_hid}');`;
+                s_click = `gNavigation.pageMobLactatingList.gestaLactaCards.onClickShowMore(${pid},'${operation_hid}');`;
             }
         }
         
@@ -733,6 +733,124 @@ export function GestaLactaCards(input_settings){
         `;
         
         return html;
+    }
+    
+    
+    this.onClickShowMore = function(clicked_elem){
+        const operations_list   = clicked_elem.closest('.operations-list');
+        const operations_above  = operations_list.querySelectorAll('.operation-above');
+        const span_show_more    = operations_list.querySelector('.span-show-more');
+        
+
+        
+        let isDisplayed = 0;
+        
+        operations_above.forEach(operation => {
+            const computedStyle = window.getComputedStyle(operation);
+            const displayValue = computedStyle.getPropertyValue('display');
+            
+            if (displayValue == 'none'){
+                isDisplayed = 1;
+                operation.style.display = 'block';
+            }
+            else{
+                isDisplayed = 0;
+                operation.style.display = 'none';
+            }
+        });
+        
+        let s_text;
+        if (isDisplayed == 0){
+            s_text = `Show ${operations_above.length} Upcoming Operation`;
+            if (operations_above.length > 1){show_upcoming_operation += 's';}
+        }
+        else{
+            s_text = `Hide ${operations_above.length} Upcoming Operation`;
+            if (operations_above.length > 1){show_upcoming_operation += 's';}
+        }
+        
+        span_show_more.innerHTML = s_text;
+        
+    }
+    
+    
+    this.onClickShowCompleted = function(clicked_elem){
+        const operations_list   = clicked_elem.closest('.operations-list');
+        const operations_below  = operations_list.querySelectorAll('.operation-below');
+        const span_show_comp    = operations_list.querySelector('.span-show-completed');
+        
+
+        
+        let isDisplayed = 0;
+        
+        operations_below.forEach(operation => {
+            const computedStyle = window.getComputedStyle(operation);
+            const displayValue = computedStyle.getPropertyValue('display');
+            
+            if (displayValue == 'none'){
+                isDisplayed = 1;
+                operation.style.display = 'block';
+            }
+            else{
+                isDisplayed = 0;
+                operation.style.display = 'none';
+            }
+        });
+        
+        let s_text;
+        if (isDisplayed == 0){
+            s_text = `Show Completed Operations (${operations_below.length})`;
+        }
+        else{
+            s_text = `Hide Completed Operations (${operations_below.length}`;
+        }
+        
+        span_show_comp.innerHTML = s_text;
+    }
+    
+    
+    this.onClickMarkAsDone = function(pid, entry_hid){
+    
+        const data_pig_prod = parentObj.getDataPigProd(pid);
+    
+        
+        const operation = parentObj.getDataProdPigOps(data_pig_prod, entry_hid);
+        if (operation == null) {return;}
+        
+        const data_sow = data_pig_prod.sow;
+        let sow_reference = '';
+        
+        if ((data_sow.name != null) && (data_sow.name.length >0)){
+            sow_reference = data_sow.name;
+        }
+        else{
+            sow_reference = data_sow.number;
+        }
+        
+        
+        let page_id     = PAGE_ID.PROD_LACTA_LIST;
+        if (settings.isGesta){
+            page_id     = PAGE_ID.PROD_GESTA_LIST;
+        }
+        
+        const go_back_page = navigation.getPageContainer(page_id);
+        
+        const options = {
+            pid:            pid,
+            sow:            sow_reference,
+            is_gesta:       settings.isGesta,
+            is_mark_done:   true,
+            go_back_page:   go_back_page
+        };
+        
+        // Set this callback
+        navigation.pageProdPigOpsEdit.callbackOnSuccessEdit = thisObj.onSuccessEditPigOps;
+        
+        navigation.pageProdPigOpsEdit.curDataPigProd = data_pig_prod;
+        navigation.pageProdPigOpsEdit.beforeShow(operation, options);
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.PROD_PIG_OPS_EDIT);
+        navigation.showThisPage(next_page)
     }
     
     
