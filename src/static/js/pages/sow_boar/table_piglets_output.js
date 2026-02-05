@@ -69,7 +69,7 @@ export function TablePigletsOutput(input_settings){
         thisObj.setSettingsTable({
             uniqueKey:      `${settings.uniqueKey}-table`,
             noSearchAdd:    true,
-            tableTitle:     'Piglets Output'
+            tableTitle:     'Birth Output'
         });
         
         const html_table = thisObj.getHtml();
@@ -126,37 +126,56 @@ export function TablePigletsOutput(input_settings){
         
         showOptions = options;
         
+
         
+    }
+    
+    
+    this._writeInlineStyle = function(){
+        const html = `
+    <style>
         
+        /* Updated Table Styles */
         
+        .table-output th  {
+            padding-right:0;
+            overflow-wrap: anywhere; /* Breaks anywhere if needed */
+            word-break: break-word;
+            white-space: normal;
+        }
         
-        
-        
+      </style>
+    `;
+        return html;
     }
     
      
     this.getHtmlTableHeader = function(){
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
         
+        const html_style = thisObj._writeInlineStyle();
+        
         const html = `
-        <table class="data-table" id="">
+        ${html_style}
+        
+        <table class="data-table table-output" id="">
             <thead>
                 <colgroup>
-                    <col style="width: 25%;">
-                    <col style="width: 25%;">
-                    <col style="width: 25%;">
-                    <col style="width: 25%;">
+                    <col style="width: 14%;">
+                    <col style="width: 18%;">
+                    <col style="width: 16%;">
+                    <col style="width: 16%;">
+                    <col style="width: 19%;">
                 </colgroup>
                 
+                
                 <tr>
-                    <th colspan="2">Date</th>
-                    <th colspan="2">Number Piglets</th>
-                </tr>
-                <tr>
+                    <th>PID</th>
                     <th>Birth</th>
-                    <th>Wean</th>
-                    <th>Birth</th>
-                    <th>Wean</th>
+                    <th>Live Pigs Birth</th>
+                    <th>Dead at Birth</th>
+                    <th>Dead before Wean</th>
+                    <th>Live Pigs Wean</th>
                 </tr>
                 
             </thead>
@@ -182,14 +201,42 @@ export function TablePigletsOutput(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+        let s_click = ``;
 
-        const dt_notes = new Date(cur_entry.prod_notes.date_notes);
+        console.log(`cur_entry`);
+        console.log(cur_entry);
+
+        let s_pid = cur_entry.pig_prod.farm_prod_id;
+
+
+        const dt_birth = new Date(cur_entry.birth.date_actual);
+        
+        let live_pigs_birth = 0;
+        if (cur_entry.birth.pigs_f){live_pigs_birth += cur_entry.birth.pigs_f;}
+        if (cur_entry.birth.pigs_m){live_pigs_birth += cur_entry.birth.pigs_m;}
+        
+        let dead_at_birth = 0;
+        if (cur_entry.birth.dead){dead_at_birth = cur_entry.birth.dead;}
+        
+        let live_pigs_wean = 0;
+        if (cur_entry.wean.date_wean){
+            if (cur_entry.wean.pigs_f){live_pigs_wean += cur_entry.wean.pigs_f;}
+            if (cur_entry.wean.pigs_m){live_pigs_wean += cur_entry.wean.pigs_m;}
+        }
+        else{
+            live_pigs_wean = live_pigs_birth;
+        }
+            
+        let dead_before_wean = live_pigs_birth - live_pigs_wean;
         
         const html = `
             <tr>
-                <td><span>${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
-                <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>
+                <td class = "data-table-cell-no-padding">${s_pid}</td>
+                <td style="padding-left:0;" onclick='${s_click}'><span>${formatDate(dt_birth, FORMAT_COMPACT)}</span></td>
+                <td class = "data-table-cell-no-padding">${live_pigs_birth}</td>
+                <td class = "data-table-cell-no-padding">${dead_at_birth}</td>
+                <td class = "data-table-cell-no-padding">${dead_before_wean}</td>
+                <td class = "data-table-cell-no-padding">${live_pigs_wean}</td>
             </tr>
         `;
         

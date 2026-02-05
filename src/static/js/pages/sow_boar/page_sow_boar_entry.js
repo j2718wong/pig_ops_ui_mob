@@ -193,6 +193,15 @@ export function PageSowBoarEntry(input_settings){
     let dataSowBoar             = null;
     
     
+    this.elemIdTabMedVac        = elemIdTabMedVac;
+    this.elemIdTabHealth        = elemIdTabHealth;  
+    this.elemIdTabNotes         = elemIdTabNotes; 
+    this.elemIdTabOutput        = elemIdTabOutput;  
+    this.elemIdTabMates         = elemIdTabMates; 
+    this.elemIdTabMatesExt      = elemIdTabMatesExt;
+    this.elemIdTabGiltOps       = elemIdTabGiltOps; 
+    
+    
     this.tableMedVac            = null;
     this.tablePigHealth         = null;
     this.tableSowBoarNotes      = null;
@@ -679,15 +688,28 @@ export function PageSowBoarEntry(input_settings){
         }
         
         
+        let show_tab_id = componentTabsWithMore.curActiveTabId;
+        if (showOptions.tab_id){
+            show_tab_id = showOptions.tab_id;
+        }
+        
+        console.log('show_tab_id =' + show_tab_id);
                 
         // Request SowBoar data_details 
         if ('data_details' in dataSowBoar){
             // TODO ; still thinking what to do
-            thisObj.beforeShowTab(componentTabsWithMore.curActiveTabId);
+            if (show_tab_id){
+                componentTabsWithMore.switchTab(show_tab_id);
+            }
+            thisObj.beforeShowTab(show_tab_id);
+            
         }
         else{
             const callback_success = function(){
-                thisObj.beforeShowTab(componentTabsWithMore.curActiveTabId);
+                if (show_tab_id){
+                    componentTabsWithMore.switchTab(show_tab_id);
+                }
+                thisObj.beforeShowTab(show_tab_id);
             }
             navigation.pigFarm.managerSowBoar.requestSowBoarDetails(
                 dataSowBoar, callback_success);

@@ -202,7 +202,7 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdContBreadCrumbs   = `${settings.uniqueKey}-cont-breadcrumbs`;
         thisObj.setBreadCrumbs(elemIdContBreadCrumbs);
         
-		
+        
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
@@ -849,6 +849,16 @@ export function PageSowBoarAddEdit(input_settings){
         
         if (cur_sow_boar.date_of_birth){
             elemUiDateOfBirth.setDate(cur_sow_boar.date_of_birth);
+        }
+        
+        
+        if (cur_sow_boar.parent_sow_hid){
+            elemUiParentSow.setValue(cur_sow_boar.parent_sow_hid);
+        }
+        
+        
+        if (cur_sow_boar.parent_boar_hid){
+            elemUiParentBoar.setValue(cur_sow_boar.parent_boar_hid);
         }
         
         

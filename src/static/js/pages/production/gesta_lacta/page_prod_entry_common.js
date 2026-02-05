@@ -235,9 +235,7 @@ export function PageProdEntryCommon(input_settings){
         /* Responsive Adjustments */
         @media (max-width: 480px) {
            
-            .top-section {
-                top: 60px;
-            }
+           
             
             .nav-button {
                 font-size: 28px;
@@ -252,7 +250,7 @@ export function PageProdEntryCommon(input_settings){
             }
             
             .tab-button {
-                font-size: 16px;
+                font-size: 15px;
                 padding: 10px 5px;
                 min-width: 60px;
             }

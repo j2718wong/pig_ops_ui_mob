@@ -246,8 +246,8 @@ export function PageMobGestaLacta(input_settings){
             <!-- PogProd Lacta Table -->
             <table class="data-table table-gesta-lacta" id="${elemIdTablePigOps}">
                 <colgroup>
-                    <col style="width: 15%;">
-                    <col style="width: 22%;">
+                    <col style="width: 13%;">
+                    <col style="width: 24%;">
                     <col style="width: 33%;">
                     <col style="width: 30%;">
                 </colgroup>
@@ -293,8 +293,8 @@ export function PageMobGestaLacta(input_settings){
             <!-- PogProd Gesta Table -->
             <table class="data-table table-gesta-lacta">
                 <colgroup>
-                    <col style="width: 15%;">
-                    <col style="width: 22%;">
+                    <col style="width: 13%;">
+                    <col style="width: 24%;">
                     <col style="width: 33%;">
                     <col style="width: 30%;">
                 </colgroup>
