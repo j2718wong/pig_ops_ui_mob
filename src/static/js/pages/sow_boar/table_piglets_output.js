@@ -203,10 +203,8 @@ export function TablePigletsOutput(input_settings){
     this.getHtmlTableRow = function(cur_entry){
         let s_click = ``;
 
-        console.log(`cur_entry`);
-        console.log(cur_entry);
 
-        let s_pid = cur_entry.pig_prod.farm_prod_id;
+        let s_pid = cur_entry.pig_production.farm_prod_id;
 
 
         const dt_birth = new Date(cur_entry.birth.date_actual);
@@ -218,16 +216,19 @@ export function TablePigletsOutput(input_settings){
         let dead_before_wean = 0;
         
         
-        if (cur_entry.birth.pigs_f){live_pigs_birth += cur_entry.birth.pigs_f;}
-        if (cur_entry.birth.pigs_m){live_pigs_birth += cur_entry.birth.pigs_m;}
+        if (cur_entry.birth.pigs_live_f){live_pigs_birth += cur_entry.birth.pigs_live_f;}
+        if (cur_entry.birth.pigs_live_m){live_pigs_birth += cur_entry.birth.pigs_live_m;}
         
         
         if (cur_entry.birth.dead){dead_at_birth = cur_entry.birth.dead;}
         
         
-        if (cur_entry.wean.date_wean){
-            if (cur_entry.wean.pigs_f){live_pigs_wean += cur_entry.wean.pigs_f;}
-            if (cur_entry.wean.pigs_m){live_pigs_wean += cur_entry.wean.pigs_m;}
+        if (cur_entry.weaning.date_weaning){
+            if (cur_entry.weaning.num_pigs_f){live_pigs_wean += cur_entry.weaning.num_pigs_f;}
+            if (cur_entry.weaning.num_pigs_m){live_pigs_wean += cur_entry.weaning.num_pigs_m;}
+            
+            // This is the case when weaning pigs count not separated by sex
+            if (cur_entry.weaning.num_pigs){live_pigs_wean += cur_entry.weaning.num_pigs;}
         }
         else{
             live_pigs_wean = live_pigs_birth;

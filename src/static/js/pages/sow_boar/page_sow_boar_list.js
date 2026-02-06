@@ -60,6 +60,11 @@ export function PageSowBoarList(input_settings){
     let elemIdAddEntryBtn       = null;
     let elemIdFilterControls    = null;
     
+    let elemIdSowControls       = null;     
+    let elemIdIncludeDisposed   = null;
+    let elemIdSowOutputToggle   = null;
+    
+    
     let elemIdTableRowCount     = null;
     let elemIdTablePagination   = null;
     let elemIdTablePrevPage     = null;
@@ -96,6 +101,10 @@ export function PageSowBoarList(input_settings){
     let elemSearchInput         = null;
     let elemAddEntryBtn         = null;
     let elemFilterControls      = null;
+    
+    let elemSowControls         = null;     
+    let elemIncludeDisposed     = null;
+    let elemSowOutputToggle     = null;
     
     let elemTableRowCount       = null;
     let elemTablePagination     = null;
@@ -167,6 +176,11 @@ export function PageSowBoarList(input_settings){
         const html = `
     <style>
         
+        .sow-boar-controls{
+            display: flex;
+            justify-content:center;
+        }
+        
         /* Updated Table Styles */
         .table-sow td {padding-right:0}
         .table-sow th {padding-right:0}
@@ -199,6 +213,11 @@ export function PageSowBoarList(input_settings){
         elemIdSearchInput       = `mobile-search-input-sow-boar`;
         elemIdAddEntryBtn       = `mobile-add-entry-btn-sow-boar`;
         elemIdFilterControls    = `mobile-filter-control-sow-boar`;
+        
+        
+        elemIdSowControls       = `sow-boar-sow-controls`;
+        elemIdIncludeDisposed   = `sow-boar-inc-disposed`;
+        elemIdSowOutputToggle   = `sow-boar-output-toggle`;
         
         
         elemIdTableRowCount     = `sow-boar-table-row-count`;
@@ -269,15 +288,33 @@ ${html_style}
         </div>
         
         <!-- Centered Filter Controls -->
-        <div class="filter-controls" id="${elemIdFilterControls}">
-            <!-- Animal Filter Buttons - Centered, no gaps -->
-            <div class="animal-filter">
-                <div class="filter-buttons sow">
-                    <button class="filter-button active" data-filter="all">All</button>
-                    <button class="filter-button" data-filter="gestating">Gesta</button>
-                    <button class="filter-button" data-filter="lactating">Lacta</button>
-                    <button class="filter-button" data-filter="weaning">Wean</button>
-                    <button class="filter-button" data-filter="output">Output</button>
+        <div id="${elemIdFilterControls}">
+        
+            <div class="filter-controls">
+                <!-- Animal Filter Buttons - Centered, no gaps -->
+                <div class="animal-filter">
+                    <div class="filter-buttons sow">
+                        <button class="filter-button active" data-filter="all">All</button>
+                        <button class="filter-button" data-filter="gestating">Gesta</button>
+                        <button class="filter-button" data-filter="lactating">Lacta</button>
+                        <button class="filter-button" data-filter="weaning">Wean</button>
+                        <button class="filter-button" data-filter="output">Output</button>
+                    </div>
+                    
+                    
+                    
+                </div>
+                
+            </div>
+            
+            <div class="sow-boar-controls" id="${elemIdSowControls}">
+                <div class="checkbox-group" style="padding:6px; margin-top:0; margin-bottom:4px;">
+                    <input type="checkbox" id="${elemIdIncludeDisposed}">
+                    <label for="${elemIdIncludeDisposed}" class="checkbox-label">
+                        Include Disposed
+                    </label>
+                
+                    <a id="${elemIdSowOutputToggle}" href="javascript:void(0)" class="text-link">Show Per Mate</a>
                 </div>
             </div>
             
@@ -460,6 +497,11 @@ ${html_style}
         elemSearchInput         = elemDivContainer.querySelector('#'+elemIdSearchInput);
         elemAddEntryBtn         = elemDivContainer.querySelector('#'+elemIdAddEntryBtn);
         elemFilterControls      = elemDivContainer.querySelector('#'+elemIdFilterControls);
+        
+        elemSowControls         = elemDivContainer.querySelector('#'+elemIdSowControls);    
+        elemIncludeDisposed     = elemDivContainer.querySelector('#'+elemIdIncludeDisposed);
+        elemSowOutputToggle     = elemDivContainer.querySelector('#'+elemIdSowOutputToggle);
+        
         
         elemTableRowCount       = elemDivContainer.querySelector('#'+elemIdTableRowCount);
         elemTablePagination     = elemDivContainer.querySelector('#'+elemIdTablePagination);
@@ -802,6 +844,9 @@ ${html_style}
         
         // 
         navigation.pageSowBoarEntry.resetToFirstTab();
+        
+        elemSowControls.style.display = 'none';
+
     }
     
     
@@ -1041,6 +1086,9 @@ ${html_style}
         
         if (curSowFilter == filter_type){return;}
         
+        elemSowControls.style.display = 'none';
+        
+        
         let sow_status_id = null;
         let filtered_sow_list = null;
         
@@ -1121,7 +1169,9 @@ ${html_style}
         
         elemTableRowCount.textContent = `${dataSowList.length} Entries`;
         
-        curSowFilter = output;
+        curSowFilter = 'output';
+        
+        elemSowControls.style.display = 'block';
     }
     
     
@@ -1155,6 +1205,7 @@ ${html_style}
             paginationManager.goToNextPage();
         }
         
+
     }
     
     
@@ -1170,13 +1221,9 @@ ${html_style}
     
     
     this.getHtmlTableRowSowOutput = function(cur_entry){
-        console.log('getHtmlTableRowSowOutput');
-        console.log(cur_entry);
         
         const list_output = navigation.pigFarm.managerSowBoar.dataFarmPigletsOutput;
         
-        console.log(`list_output`);
-        console.log(list_output);
         
         let live_pigs_birth   = 0;
         let dead_at_birth     = 0;
@@ -1186,7 +1233,6 @@ ${html_style}
         const sow_boar = cur_entry.sow_boar;
         const sow_boar_hid = sow_boar.hid;
         
-        console.log('sow_boar_hid ='+sow_boar_hid);
         
         
         if (list_output){
