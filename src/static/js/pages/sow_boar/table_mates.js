@@ -146,9 +146,9 @@ export function TableMates(input_settings){
         <table class="data-table" id="">
             <thead>
                 <colgroup>
-                    <col style="width: 30%;">
+                    <col style="width: 35%;">
                     <col style="width: 15%;">
-                    <col style="width: 55%;">
+                    <col style="width: 50%;">
                 </colgroup>
                 
                 <tr>

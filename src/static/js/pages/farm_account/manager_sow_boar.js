@@ -270,9 +270,7 @@ export function ManagerSowBoar(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataFarmPigletsOutput = response.data;
-                    
-                    console.log('\n\n\nSet data thisObj.dataFarmPigletsOutput');
-                    console.log(thisObj.dataFarmPigletsOutput);
+
                     
                     if (callback_success){callback_success(response.data);}
                 }

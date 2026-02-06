@@ -299,8 +299,6 @@ export function PageHealthNotesAddEdit(input_settings){
         curDataEntry    = data_entry;
         showOptions     = options;
         
-        console.log('heaslth notes add_edit');
-        console.log(options);
 
         // Update BreadCrumbs
         let multikey_obj_type = null;

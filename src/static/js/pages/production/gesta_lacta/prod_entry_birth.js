@@ -350,12 +350,9 @@ export function ProdEntryBirth(input_settings){
         const dt_expected      = new Date(pig_prod_birth.date_expected);
         elemDateExpected.textContent = formatDate(dt_expected);
         
-        console.log(`curDataPigProd`);
-        console.log(curDataPigProd);
-        
-		
-		componentStaff.beforeShow();
-		
+
+        componentStaff.beforeShow();
+
         
         // Populate birth details if already given birth
         if (pig_prod_birth.date_actual) {

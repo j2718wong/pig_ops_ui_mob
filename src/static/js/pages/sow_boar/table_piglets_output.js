@@ -19,6 +19,7 @@ import {formatDate,
         sortList,
         createPaginationManager} from '../../utils.js';
 
+import {getSowBoarReference}    from '../common/common_app.js';
 
 
 
@@ -149,8 +150,13 @@ export function TablePigletsOutput(input_settings){
         return html;
     }
     
-     
+    
     this.getHtmlTableHeader = function(){
+        return thisObj.getHtmlTableHeader2(); 
+    }
+     
+     
+    this.getHtmlTableHeader1 = function(){
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
         
         const html_style = thisObj._writeInlineStyle();
@@ -188,6 +194,47 @@ export function TablePigletsOutput(input_settings){
         return html;
         
     }
+    
+    
+    this.getHtmlTableHeader2 = function(){
+        elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
+        
+        const html_style = thisObj._writeInlineStyle();
+        
+        const html = `
+        ${html_style}
+        
+        <table class="data-table table-output" id="">
+            <thead>
+                <colgroup>
+                    <col style="width: 32%;">
+                    <col style="width: 16%;">
+                    <col style="width: 16%;">
+                    <col style="width: 19%;">
+                </colgroup>
+                
+                
+                <tr>
+                    <th>Birth</th>
+                    <th>Live Pigs Birth</th>
+                    <th>Dead at Birth</th>
+                    <th>Dead before Wean</th>
+                    <th>Live Pigs Wean</th>
+                </tr>
+                
+            </thead>
+            <tbody id="${elemIdTableBody}">
+            </tbody>
+        </table>
+        
+        `;
+        
+        return html;
+        
+    }
+    
+    
+    
        
 
     this.getHtmlTableRowEmpty = function(){
@@ -236,7 +283,8 @@ export function TablePigletsOutput(input_settings){
             
         dead_before_wean = live_pigs_birth - live_pigs_wean;
         
-        const html = `
+        
+        const html_1 = `
             <tr>
                 <td class = "data-table-cell-no-padding">${s_pid}</td>
                 <td style="padding-left:0;" onclick='${s_click}'><span>${formatDate(dt_birth, FORMAT_COMPACT)}</span></td>
@@ -247,7 +295,40 @@ export function TablePigletsOutput(input_settings){
             </tr>
         `;
         
-        return html;
+        
+        let boar_name = '';
+        
+        if (cur_entry.insemination.boar){
+            boar_name = getSowBoarReference(cur_entry.insemination.boar);
+        }
+        else{
+            boar_name = cur_entry.insemination.ai.semen_supplier.semen.name;
+            boar_name += ` (${cur_entry.insemination.ai.semen_supplier.name})`
+        }
+        
+        
+        const html_2 = `
+            <tr>
+                <td onclick='${s_click}'>
+                    <div>
+                        <div>
+                            <span>${formatDate(dt_birth, FORMAT_COMPACT)}</span>
+                        </div>
+                        <div>
+                            <span class="love-icon">❤️</span> ${boar_name}
+                        </div>
+                    
+                    </div>
+                </td>
+                <td class = "data-table-cell-no-padding">${live_pigs_birth}</td>
+                <td class = "data-table-cell-no-padding">${dead_at_birth}</td>
+                <td class = "data-table-cell-no-padding">${dead_before_wean}</td>
+                <td class = "data-table-cell-no-padding">${live_pigs_wean}</td>
+            </tr>
+        `;
+        
+        
+        return html_2;
     }
     
       

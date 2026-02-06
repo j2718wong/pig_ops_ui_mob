@@ -149,6 +149,8 @@ export function PageSowBoarList(input_settings){
     let pigOpsAlarmList         = null;
     
     
+    let curDataListView         = null;
+    
     let curSowFilter            = null;
     
     
@@ -569,6 +571,19 @@ ${html_style}
     }
     
     
+    this.resetSowFilterButton = function(){
+        const filterButtons  = elemDivContainer.querySelectorAll('.filter-button');
+        
+        
+        for (const cur_entry of filterButtons){
+            cur_entry.classList.remove('active');
+        } 
+        
+        filterButtons[0].classList.add('active');
+        
+    }
+    
+    
     this.getSowBoarEntry = function(entry_hid){
         let cur_sow_boar_list = null;
         
@@ -677,9 +692,11 @@ ${html_style}
                 
                 elemTableSowOutput.style.display = 'none';
                 
-                thisObj.renderSowTable(dataSowList);
                 
+                thisObj.resetSowFilterButton();
                 
+                curDataListView = dataSowList;
+                thisObj.renderSowTable(curDataListView);
                 
                 break;
             }
@@ -712,7 +729,8 @@ ${html_style}
                 
                 elemTableSowOutput.style.display = 'none';
                 
-                thisObj.renderBoarTable(dataBoarList);
+                curDataListView = dataBoarList;
+                thisObj.renderBoarTable(curDataListView);
                 break;
             }
             
@@ -745,7 +763,8 @@ ${html_style}
                 
                 elemTableSowOutput.style.display = 'none';
                 
-                thisObj.renderGiltTable(dataGiltList);
+                curDataListView = dataGiltList;
+                thisObj.renderGiltTable(curDataListView);
                 break;
             }
             
@@ -771,13 +790,15 @@ ${html_style}
                 if (dataDisposedList == null){
                     const callback = function(data){
                         dataDisposedList = data;
-                        thisObj.renderDisposedTable(dataDisposedList);
+                        curDataListView = dataDisposedList;
+                        thisObj.renderDisposedTable(curDataListView);
                     };
                     
                     thisObj.requestDisposedSowBoar(callback);
                 }
                 else {
-                    thisObj.renderDisposedTable(dataDisposedList);
+                    curDataListView = dataDisposedList;
+                    thisObj.renderDisposedTable(curDataListView);
                 }
                 
                 
@@ -1098,37 +1119,37 @@ ${html_style}
         
         switch(filter_type){
             case 'all':{
-                filtered_sow_list = dataSowList;
-                thisObj.renderSowTable(filtered_sow_list);
+                curDataListView = dataSowList;
+                thisObj.renderSowTable(curDataListView);
                 
-                elemTableRowCount.textContent = `${filtered_sow_list.length} Entries`;
+                elemTableRowCount.textContent = `${curDataListView.length} Entries`;
                 break;
             }
             
             case 'gestating':{
                 sow_status_id = SOW_STATUS.GESTATING;
-                filtered_sow_list = thisObj.filterDataSowList(sow_status_id);
-                thisObj.renderSowTable(filtered_sow_list);
+                curDataListView = thisObj.filterDataSowList(sow_status_id);
+                thisObj.renderSowTable(curDataListView);
                 
-                elemTableRowCount.textContent = `${filtered_sow_list.length} Entries`;
+                elemTableRowCount.textContent = `${curDataListView.length} Entries`;
                 break;
             }
             
             case 'lactating':{
                 sow_status_id = SOW_STATUS.LACTATING;
-                filtered_sow_list = thisObj.filterDataSowList(sow_status_id);
-                thisObj.renderSowTable(filtered_sow_list);
+                curDataListView = thisObj.filterDataSowList(sow_status_id);
+                thisObj.renderSowTable(curDataListView);
                 
-                elemTableRowCount.textContent = `${filtered_sow_list.length} Entries`;
+                elemTableRowCount.textContent = `${curDataListView.length} Entries`;
                 break;
             }
             
             case 'weaning':{
                 sow_status_id = SOW_STATUS.WEANING;
-                filtered_sow_list = thisObj.filterDataSowList(sow_status_id);
-                thisObj.renderSowTable(filtered_sow_list);
+                curDataListView = thisObj.filterDataSowList(sow_status_id);
+                thisObj.renderSowTable(curDataListView);
                 
-                elemTableRowCount.textContent = `${filtered_sow_list.length} Entries`;
+                elemTableRowCount.textContent = `${curDataListView.length} Entries`;
                 break;
             }
             
@@ -1162,10 +1183,11 @@ ${html_style}
     
     
     this.onClickSowListOutput = function(){
-        console.log('onClickSowListOutput');
-        
+
         elemTableSowOutput.style.display = 'block';
         elemTableSow.style.display = 'none';
+        
+        curDataListView         = dataSowList;
         
         elemTableRowCount.textContent = `${dataSowList.length} Entries`;
         
@@ -1261,13 +1283,26 @@ ${html_style}
             sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
         }
         
+        
+        // Clicking on sow_name should goto SowBoarEntry
+        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
+        s_click += `"${sow_boar.hid}");`;
+        
+        
+        // Clicking on sow_output should go to SowBoar entry page, Piglet Output Tab
+        const tab_id_output = navigation.pageSowBoarEntry.elemIdTabOutput;
+        
+        let s_click_output = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
+        s_click_output += `"${sow_boar.hid}", null, "${tab_id_output}");`;
+        
+        
         const html = `
             <tr>
-                <td class = "">${sow_reference}</td>
-                <td class = "data-table-cell-no-padding">${live_pigs_birth}</td>
-                <td class = "data-table-cell-no-padding">${dead_at_birth}</td>
-                <td class = "data-table-cell-no-padding">${dead_before_wean}</td>
-                <td class = "data-table-cell-no-padding">${live_pigs_wean}</td>
+                <td class = "" onclick='${s_click}'>${sow_reference}</td>
+                <td class = "data-table-cell-no-padding" onclick='${s_click_output}'>${live_pigs_birth}</td>
+                <td class = "data-table-cell-no-padding" onclick='${s_click_output}'>${dead_at_birth}</td>
+                <td class = "data-table-cell-no-padding" onclick='${s_click_output}'>${dead_before_wean}</td>
+                <td class = "data-table-cell-no-padding" onclick='${s_click_output}'>${live_pigs_wean}</td>
             </tr>
         `;
         
@@ -1639,15 +1674,23 @@ ${html_style}
         
         switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW:{
-                cur_list = dataSowList;
+                cur_list = curDataListView;
                 
                 if (key.length == 0){
-                    thisObj.renderSowTable(cur_list);
+                    if (curSowFilter != 'output') {
+                        thisObj.renderSowTable(cur_list);
+                    }
+                    else{
+
+                        cur_list = dataSowList;
+                        thisObj.renderSowOutputTable(cur_list);
+                    }
                     return;
                 }
                 
                 break;
             }
+            
             case SOW_BOAR_TYPE.BOAR:{
                 cur_list = dataBoarList;
                 
@@ -1658,6 +1701,7 @@ ${html_style}
                 
                 break;
             }
+            
             case SOW_BOAR_TYPE.GILT:{
                 cur_list = dataGiltList;
                 
@@ -1691,11 +1735,15 @@ ${html_style}
         let filtered = [];
         
         for (const cur_entry of cur_list){
-            if (cur_entry.sow_boar.name && cur_entry.sow_boar.name.toUpperCase().includes(upper_key)){
+            const sow_boar_name = cur_entry.sow_boar.name; 
+            
+            if (sow_boar_name && sow_boar_name.toUpperCase().startsWith(upper_key)){
                 filtered.push(cur_entry)
             }
             else{
-                if (cur_entry.sow_boar.number && cur_entry.sow_boar.number.toUpperCase().includes(upper_key)){
+                const sow_boar_number = cur_entry.sow_boar.number; 
+                
+                if (sow_boar_number && sow_boar_number.toUpperCase().startsWith(upper_key)){
                     filtered.push(cur_entry)
                 }
             }
@@ -1704,7 +1752,12 @@ ${html_style}
         
         switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW:{
-                thisObj.renderSowTable(filtered);
+                if (curSowFilter != 'output') {
+                    thisObj.renderSowTable(filtered);
+                }
+                else{
+                    thisObj.renderSowOutputTable(filtered);
+                }
                 return;
             }
             case SOW_BOAR_TYPE.BOAR:{
