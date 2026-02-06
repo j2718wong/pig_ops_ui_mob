@@ -23,6 +23,12 @@ export function ManagerSowBoar(input_settings){
     this.dataBoarList           = null;
     
     
+    // This is a number of piglets at weaning + currently lactating.
+    // This includes both active sows and disposed sows.
+    // This is requested at pig_farm level not at sow_level.
+    this.dataFarmPigletsOutput  = null;
+    
+    
     this.setDataSowList = function(data){
         // When this is set, the data includes the gilts (SOW_STATUS.GROWING)
         // Need to seperate gilts data  
@@ -77,8 +83,8 @@ export function ManagerSowBoar(input_settings){
     
     
     this.requestSowBoarList = function(is_sow, callback_success, elem_show_error){
-		const pig_farm_hid 	= parentObj.getPigFarmHid();
-        const sex       	= is_sow? 'F':'M';
+        const pig_farm_hid  = parentObj.getPigFarmHid();
+        const sex           = is_sow? 'F':'M';
 
 
         // Need to request sow_boar list
@@ -242,5 +248,47 @@ export function ManagerSowBoar(input_settings){
     }
     
 
-
+    this.requestFarmPigletsOutput = function(callback_success, elem_show_error){
+        const pig_farm_hid  = parentObj.getPigFarmHid();
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_farm/piglets_output?pfhid=${pig_farm_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataFarmPigletsOutput = response.data;
+                    
+                    console.log('\n\n\nSet data thisObj.dataFarmPigletsOutput');
+                    console.log(thisObj.dataFarmPigletsOutput);
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    } 
 }

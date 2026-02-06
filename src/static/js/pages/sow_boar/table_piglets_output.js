@@ -211,14 +211,20 @@ export function TablePigletsOutput(input_settings){
 
         const dt_birth = new Date(cur_entry.birth.date_actual);
         
+        
         let live_pigs_birth = 0;
+        let dead_at_birth = 0;
+        let live_pigs_wean = 0;
+        let dead_before_wean = 0;
+        
+        
         if (cur_entry.birth.pigs_f){live_pigs_birth += cur_entry.birth.pigs_f;}
         if (cur_entry.birth.pigs_m){live_pigs_birth += cur_entry.birth.pigs_m;}
         
-        let dead_at_birth = 0;
+        
         if (cur_entry.birth.dead){dead_at_birth = cur_entry.birth.dead;}
         
-        let live_pigs_wean = 0;
+        
         if (cur_entry.wean.date_wean){
             if (cur_entry.wean.pigs_f){live_pigs_wean += cur_entry.wean.pigs_f;}
             if (cur_entry.wean.pigs_m){live_pigs_wean += cur_entry.wean.pigs_m;}
@@ -227,7 +233,7 @@ export function TablePigletsOutput(input_settings){
             live_pigs_wean = live_pigs_birth;
         }
             
-        let dead_before_wean = live_pigs_birth - live_pigs_wean;
+        dead_before_wean = live_pigs_birth - live_pigs_wean;
         
         const html = `
             <tr>

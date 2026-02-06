@@ -693,11 +693,10 @@ export function PageSowBoarEntry(input_settings){
             show_tab_id = showOptions.tab_id;
         }
         
-        console.log('show_tab_id =' + show_tab_id);
-                
+        
+        
         // Request SowBoar data_details 
         if ('data_details' in dataSowBoar){
-            // TODO ; still thinking what to do
             if (show_tab_id){
                 componentTabsWithMore.switchTab(show_tab_id);
             }

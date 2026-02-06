@@ -9,7 +9,7 @@ import {PIG_PROD_TYPE,
         SOW_STATUS,
         PROD_STATUS,
         SUPPLIER_TYPE,
-        MULTIKEY_OBJ_TYPE}            from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}      from '../../constants.js';
 
 
 import {ManagerSowBoar}         from './manager_sow_boar.js';
@@ -31,8 +31,8 @@ export function PigFarm(_navigation){
     
     this.dataStaffList          = null;
     
-    this.dataFarmFeedBuyList	= null;
-	
+    this.dataFarmFeedBuyList    = null;
+    
     
     this.managerSowBoar         = new ManagerSowBoar({
         navigation:             navigation,
@@ -207,7 +207,7 @@ export function PigFarm(_navigation){
     }
  
     
-	this.requestDataPigFarmFeedBuyList = function(callback_success, elem_show_error){
+    this.requestDataPigFarmFeedBuyList = function(callback_success, elem_show_error){
         const base_url = window.location.origin;
         let url = `${base_url}/pf_feed_buy/list?pfhid=${thisObj.getPigFarmHid()}`;
         
