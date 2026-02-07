@@ -194,7 +194,7 @@ export function PageMobGestaLacta(input_settings){
         
         elemIdPageTitle         = `${settings.uniqueKey}-page-title-list`;
         elemIdPageHeaderAlarm   = `${settings.uniqueKey}-page-title-alarm`;
-        elemIdEntryCount        = `${settings.uniqueKey}-page-title-prod-count`;
+        elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
         elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
         
         elemIdPigProdList       = `${settings.uniqueKey}-card-list`;
@@ -260,6 +260,7 @@ export function PageMobGestaLacta(input_settings){
                         <th>Operation</th>
                     </tr>
                 </thead>
+                
                 <tbody id="${elemIdPigProdTableBody}">
                 </tbody>
             </table>
@@ -282,6 +283,7 @@ export function PageMobGestaLacta(input_settings){
                         <th>Dead after<br>Birth</th>
                     </tr>
                 </thead>
+                
                 <tbody id="${elemIdPigCountTableBody}">
                 </tbody>
             </table>
@@ -307,6 +309,7 @@ export function PageMobGestaLacta(input_settings){
                         <th>Operation</th>
                     </tr>
                 </thead>
+                
                 <tbody id="${elemIdPigProdTableBody}">
                 </tbody>
             </table>

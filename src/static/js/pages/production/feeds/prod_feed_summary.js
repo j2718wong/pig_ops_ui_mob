@@ -43,7 +43,7 @@ export function ProdFeedSummary(input_settings){
         medvacType:             MULTIKEY_OBJ_TYPE.SOW_BOAR
     }   
     */  
-    let settings                = input_settings;
+    const settings              = input_settings;
     
     const FEED_TYPE_LABEL = {
         'GESTA':    'Gesta',
@@ -230,24 +230,24 @@ export function ProdFeedSummary(input_settings){
         
         
         const html = `
-	<div class="modal-body" id="">
-		<h2 class="tab-title">
-			Feed Summary
-		</h2>
+    <div class="modal-body" id="">
+        <h2 class="tab-title">
+            Feed Summary
+        </h2>
     
         ${html_style}
         
-		<div>Last Feed Balance: 02 Feb 2026  </div>
-		
+        <div>Last Feed Balance: 02 Feb 2026  </div>
+        
         <table class="data-table table-feed-summary" id="">
+            <colgroup>
+                <col style="width: 25%;">
+                <col style="width: 25%;">
+                <col style="width: 25%;">
+                <col style="width: 25%;">
+            </colgroup>
+            
             <thead>
-                <colgroup>
-                    <col style="width: 25%;">
-                    <col style="width: 25%;">
-                    <col style="width: 25%;">
-                    <col style="width: 25%;">
-                </colgroup>
-                
                 <tr>
                     <th>Feed<br>Type</th>
                     <th>Buy<br>(sacks)</th>
@@ -255,11 +255,12 @@ export function ProdFeedSummary(input_settings){
                     <th>Bal<br>(sacks)</th>
                 </tr>
             </thead>
+            
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>
     
-	</div>
+    </div>
         `;
        
         return html;

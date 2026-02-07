@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}          from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {PIG_OPERATION_TYPE}     from '../../constants.js';
         
@@ -13,7 +13,6 @@ import {ModelAccountPigOps}     from '../../models/model_acc_pig_ops.js'
 import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
 
 
-EditModalAccPigOps.prototype = new PageViewPigFarmPage();
 export function EditModalAccPigOps(input_settings){
     PageViewPigFarmPage.call(this);
     
@@ -27,46 +26,46 @@ export function EditModalAccPigOps(input_settings){
         parentObj:              this
     }   
     */  
-    var settings                = input_settings;
+    let settings                = input_settings;
         
-    var elemIdModal             = null;
-    var elemIdModalTitle        = null;
-    var elemIdName              = null;
-    var elemIdShortName         = null;
-    var elemIdDescription       = null;
-    var elemIdDayNumber         = null;
-    var elemIdDayNumberDesc     = null;
-    var elemIdBtnSave           = null;
-    var elemIdBtnDelete         = null;
+    let elemIdModal             = null;
+    let elemIdModalTitle        = null;
+    let elemIdName              = null;
+    let elemIdShortName         = null;
+    let elemIdDescription       = null;
+    let elemIdDayNumber         = null;
+    let elemIdDayNumberDesc     = null;
+    let elemIdBtnSave           = null;
+    let elemIdBtnDelete         = null;
     
-    var elemIdNameCounter       = null;
-    var elemIdShortNameCounter  = null;
-    var elemIdDescriptionCounter= null;
-    
-    
-    var elemModal               = null;
-    var elemModalTitle          = null;
-    var elemName                = null;
-    var elemShortName           = null;
-    var elemDescription         = null;
-    var elemDayNumber           = null;
-    var elemDayNumberDesc       = null;
-    var elemBtnSave             = null;
-    var elemBtnDelete           = null;
+    let elemIdNameCounter       = null;
+    let elemIdShortNameCounter  = null;
+    let elemIdDescriptionCounter= null;
     
     
-    var elemNameCounter         = null;
-    var elemShortNameCounter    = null;
-    var elemDescriptionCounter  = null;
+    let elemModal               = null;
+    let elemModalTitle          = null;
+    let elemName                = null;
+    let elemShortName           = null;
+    let elemDescription         = null;
+    let elemDayNumber           = null;
+    let elemDayNumberDesc       = null;
+    let elemBtnSave             = null;
+    let elemBtnDelete           = null;
     
     
-    var editModal               = null;
+    let elemNameCounter         = null;
+    let elemShortNameCounter    = null;
+    let elemDescriptionCounter  = null;
     
     
-    var newEntry                = new ModelAccountPigOps();
+    let editModal               = null;
+    
+    
+    let newEntry                = new ModelAccountPigOps();
         
         
-    var operationType           = null;
+    let operationType           = null;
     
     
     this.callbackOnSuccessEdit  = null;
@@ -298,10 +297,10 @@ export function EditModalAccPigOps(input_settings){
     
     
     this.beforeShow = function(operation){
-        var header_title;
-        var min_days;
-        var max_days;
-        var num_days_title;
+        let header_title;
+        let min_days;
+        let max_days;
+        let num_days_title;
         
         const operation_type = operation.acc_pig_ops.operation_type;
         
@@ -397,10 +396,10 @@ export function EditModalAccPigOps(input_settings){
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
     
-        var input_elem  = null;
-        var input_val   = null;
-        var cur_field   = null;
-        var validation  = null;
+        let input_elem  = null;
+        let input_val   = null;
+        let cur_field   = null;
+        let validation  = null;
      
         
         if (ev.checkValidity()) {

@@ -224,19 +224,20 @@ export function TableMedVac(input_settings){
         ${html_style}
         
         <table class="data-table table-medvac" id="">
+            <colgroup>
+                <col style="width: 26%; padding-right:0;">
+                <col style="width: 34%;">
+                <col style="width: 40%;">
+            </colgroup>
+                            
             <thead>
-                <colgroup>
-                    <col style="width: 26%; padding-right:0;">
-                    <col style="width: 34%;">
-                    <col style="width: 40%;">
-                </colgroup>
-                
                 <tr>
                     <th>Date</th>
                     <th>MedVac</th>
                     <th>Description</th>
                 </tr>
             </thead>
+            
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>

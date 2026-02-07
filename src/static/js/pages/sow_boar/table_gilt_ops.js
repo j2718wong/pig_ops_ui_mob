@@ -42,7 +42,7 @@ export function TableGiltOps(input_settings){
         elemDivContainer:       '<element>'
     }   
     */  
-    let settings                = input_settings;
+    const settings              = input_settings;
     
     
     let elemDivContainer        = settings.elemDivContainer;

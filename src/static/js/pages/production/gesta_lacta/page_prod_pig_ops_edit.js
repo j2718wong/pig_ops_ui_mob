@@ -26,7 +26,7 @@ import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 export function PageProdPigOpsEdit(input_settings){
     PagePigProdWithBreadCrumbs.call(this, input_settings);
-	
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
@@ -203,9 +203,9 @@ export function PageProdPigOpsEdit(input_settings){
         elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
-		
-		const html_breadcrumb   = thisObj.getHtmlBreadCrumbs();
-		
+        
+        const html_breadcrumb   = thisObj.getHtmlBreadCrumbs();
+        
         
         const html_date_actual  = elemUiDateActual.getHtml();
         const html_medvac_brand = componentMedVacBrand.getHtml();
@@ -217,7 +217,7 @@ export function PageProdPigOpsEdit(input_settings){
         
         const html = `
 <div class="form-container">
-	${html_breadcrumb}
+    ${html_breadcrumb}
 
     <div class="modal-header">
         <h5 class="modal-title" id="edit-entry-prod-pig-ops-modal-label">
@@ -276,7 +276,7 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
-		thisObj.afterHtmlRenderBreadCrumbComponent();
+        thisObj.afterHtmlRenderBreadCrumbComponent();
         
         elemUiDateActual.afterHtmlRender();
         
@@ -345,9 +345,9 @@ export function PageProdPigOpsEdit(input_settings){
         curDataProdPigOps   = data_operation;
         showOptions         = options;
         
-		
-		thisObj.updateBreadCrumbs(thisObj.curDataPigProd);
-		
+        
+        thisObj.updateBreadCrumbs(thisObj.curDataPigProd);
+        
         /*
         Typical options
         options = {
@@ -672,7 +672,12 @@ export function PageProdPigOpsEdit(input_settings){
                 data_pig_prod = thisObj.curDataPigProd;
                 
                 const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
-                const callback_success = thisObj.callbackOnSuccessEdit;
+                const callback_success = function(){
+                    // This should go back to GestatingEntry Page.
+                    navigation.showThisPage(showOptions.go_back_page);
+                    navigation.pageProdGestatingEntry.show(data_pig_prod);
+                };
+                
                 const elem_show_error = elemServerErrorMsg;
                 
                 let prod_pig_ops_list = data_pig_prod.gestating_ops;
@@ -680,6 +685,7 @@ export function PageProdPigOpsEdit(input_settings){
                 navigation.pigFarm.managerPigProd.requestPigOpsEntry(data_pig_prod, 
                     prod_pig_ops_list, pig_prod_pig_ops_hid, callback_success, 
                     elem_show_error);
+                        
                         
                 
                 if (curDataProdPigOps.account_pig_ops.is_medvac > 0){
@@ -713,7 +719,12 @@ export function PageProdPigOpsEdit(input_settings){
                 data_pig_prod = thisObj.curDataPigProd;
                 
                 const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
-                const callback_success = thisObj.callbackOnSuccessEdit;
+                const callback_success = function(){
+                    // This should go back to LactatingEntry Page.
+                    navigation.showThisPage(showOptions.go_back_page);
+                    navigation.pageProdLactatingEntry.show(data_pig_prod);
+                };
+                
                 const elem_show_error = elemServerErrorMsg;
                 
                 let prod_pig_ops_list = null;
@@ -738,7 +749,12 @@ export function PageProdPigOpsEdit(input_settings){
                 data_pig_prod = thisObj.curDataPigProd;
                 
                 const pig_prod_pig_ops_hid = curDataProdPigOps.pig_prod_pig_ops.hid;
-                const callback_success = thisObj.callbackOnSuccessEdit;
+                const callback_success = function(){
+                    // This should go back to LactatingEntry Page.
+                    navigation.showThisPage(showOptions.go_back_page);
+                    navigation.pageProdLactatingEntry.show(data_pig_prod);
+                };
+                
                 const elem_show_error = elemServerErrorMsg;
                 
                 let prod_pig_ops_list = null;

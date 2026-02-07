@@ -41,7 +41,7 @@ export function TablePigFarmFeedBuy(input_settings){
         uniqueKey:              'farm-feed-buy-list'
     }   
     */  
-    let settings                = input_settings;
+    const settings              = input_settings;
     
     
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
@@ -168,13 +168,13 @@ export function TablePigFarmFeedBuy(input_settings){
         ${html_style}
         
         <table class="data-table table-medvac" id="">
+            <colgroup>
+                <col style="width: 20%;">
+                <col style="width: 25%;">
+                <col style="width: 35%;">
+            </colgroup>
+            
             <thead>
-                <colgroup>
-                    <col style="width: 20%;">
-                    <col style="width: 25%;">
-                    <col style="width: 35%;">
-                </colgroup>
-                
                 <tr>
                     <th>Date</th>
                     <th>Supplier</th>
@@ -182,6 +182,7 @@ export function TablePigFarmFeedBuy(input_settings){
                     <th>Cost</th>
                 </tr>
             </thead>
+            
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>

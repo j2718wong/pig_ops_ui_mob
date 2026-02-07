@@ -4,8 +4,7 @@
 
 'use strict';
 
-import {PageTableBasic}         from '../common/page_table_basic.js';
-
+import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
         PIG_OPERATION_TYPE}     from '../../constants.js';
@@ -16,29 +15,27 @@ import {TRANSLATION_PAGE_ACC_PIG_OPS}   from '../../translations/page_acc_pig_op
 
 import {textSubstituteToControl}        from '../navigation/text_substitute_control.js';
 
+import {AddModalAccPigOps}      from './add_modal_acc_pig_ops.js'
+import {EditModalAccPigOps}     from './edit_modal_acc_pig_ops.js'
 
 
+PageAccPigOps.prototype = new PageViewPigFarmPage();
 export function PageAccPigOps(input_settings){
-    PageTableBasic.call(this);
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
     /*
-    Typical input_settings
-    {
-        navigation:             navigation,
-        elemIdDivContainer:     '<element>',
-        uniqueKey:              acc-pig-ops
-    }   
-    */ 
+    Typical settings = {
+        navigation:             this
+    };
+    */
     const settings              = input_settings;
     
     
     // This is needed as this will be first element to be rendered
-    const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
-
-
+    let elemDivContainer        = document.getElementById('container-acc-pig-ops');
 
     let elemIdNavPrevEntry      = null;
     let elemIdNavNextEntry      = null;
@@ -78,6 +75,16 @@ export function PageAccPigOps(input_settings){
     let curAccPigOpsData        = null;
 
 
+    const settingsAddModal      = {
+        parentObj:              this
+    }
+    this.addModalAccPigOps      = new AddModalAccPigOps(settingsAddModal);
+
+
+    const settingsEditModal     = {
+        parentObj:              this
+    }
+    this.editModalAccPigOps     = new EditModalAccPigOps(settingsEditModal);
     
     
     
@@ -85,30 +92,37 @@ export function PageAccPigOps(input_settings){
     
     this.init = function(){
         textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
-
+        
+        this.addModalAccPigOps.init();
+        this.editModalAccPigOps.init();
+        
+        
         this.render();
         this.afterHtmlRender();
+        
+        
+        this.addModalAccPigOps.afterHtmlRender();
+        this.editModalAccPigOps.afterHtmlRender();
         
     }
     
     
-    
-    
-    
     this.render = function(){
-        elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
-        elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
+        elemIdNavPrevEntry      = `page-title-acc-pig-ops-list-prev`;
+        elemIdNavNextEntry      = `page-title-acc-pig-ops-list-next`;
         
-        elemIdPageTitle         = `${settings.uniqueKey}-page-title`;
-        elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
-        elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
+        elemIdPageTitle         = `page-title-acc-pig-ops`;
+        elemIdEntryCount        = `page-header-acc-pig-ops-entry-count`;
+        elemIdPageInfo          = `page-info-acc-pig-ops`;
         
         
         elemIdBtnAddEntryShow   = `add-entry-acc-pig-ops-show`;
         elemIdMobileContainer   = `mobile-container-acc-pig-ops`;
         elemIdTableContainer    = `table-container-acc-pig-ops`;
         
-
+        
+        const html_add_modal    = thisObj.addModalAccPigOps.getHtml();
+        const html_edit_modal   = thisObj.editModalAccPigOps.getHtml();
         
         const html = `
         
@@ -134,24 +148,43 @@ export function PageAccPigOps(input_settings){
             </div>
         </div>
         
-        
+        <button class="add-btn" id="${elemIdBtnAddEntryShow}" data-bs-toggle="modal" data-bs-target="#add-entry-acc-pig-ops-modal">
+            <i class="fas fa-plus"></i> Add New Pig Operation
+        </button>
         
         <!-- Card View (for mobile) -->
         <div class="card-container" id="${elemIdMobileContainer}">
             <!-- Cards will be inserted here by JavaScript -->
         </div>
         
-        
-        <!-- Table View (for mobile) -->
-        
-        
-        
-        
-        
+        <!-- Table View (for desktop) -->
+        <div class="table-container" id="${elemIdTableContainer}">
+            <table class="operations-table">
+                <thead>
+                    <tr>
+                        <th>Day Number</th>
+                        <th>Name</th>
+                        <th>Short Name</th>
+                        <th>Description</th>
+                        <th>Last Update By</th>
+                        <th>Last Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Table rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
 
+    <!-- Bootstrap Modal for Adding New Operation -->
+    ${html_add_modal}
+    
 
+    <!-- Bootstrap Modal for Editing Cards -->
+    ${html_edit_modal}
 
         
         `;
@@ -387,99 +420,7 @@ export function PageAccPigOps(input_settings){
     }
     
     
-    this.getHtmlTableHeader = function(){
-        elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
-        
-        const html_style = this._writeInlineStyle();
-        
-        
-        const html = `
-        ${html_style}
-        
-        <table class="data-table table-acc-pig-ops" id="">
-            <colgroup>
-                <col style="width: 15%;">
-                <col style="width: 25%;">
-                <col style="width: 60%;">
-            </colgroup>
-            
-            <thead>
-                <tr>
-                    <th>Day</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            
-            <tbody id="${elemIdTableBody}">
-            </tbody>
-        </table>
-        
-        `;
-        
-        return html;
-        
-    }
-       
-
-    this.getHtmlTableRowEmpty = function(){
-        const html = `
-            <tr>
-                <td colspan="3"><div>No Entries</div></td>
-            </tr>
-        `;
-        return html;
-    }
     
-
-    this.getHtmlTableRow = function(cur_entry){
-        let  s_click = '';
-        
-        
-        switch(settings.medvacType){
-        
-            case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
-                s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
-                
-                if ('dispose_status_id' in curDataEntry.sow_boar){
-                    s_click = '';
-                }
-                break;
-            }
-        
-            case MULTIKEY_OBJ_TYPE.PIG_PROD: {
-                // how to chekc if pig prod is still active
-                break;
-            }
-            
-            case MULTIKEY_OBJ_TYPE.FATTENING: {
-                break;
-            }
-        }
-        
-        let s_medvac = `
-            <span class="medvac-type"><b>${cur_entry.medvac.type.name}</b></span>
-            <span class="medvac-brand">${cur_entry.medvac.brand.name}</span><br>
-            
-        `;
-        
-        let s_desc = `
-            <span class="medvac-name"><b>${cur_entry.medvac.acc_medvac.name}</b></span>
-            <span class="medvac-notes">${cur_entry.medvac.notes}</span>
-        `;
-        
-        const dt_medvac = new Date(cur_entry.medvac.date_medvac);
-        
-        const html = `
-            <tr>
-                <td><span>${formatDate(dt_medvac, FORMAT_COMPACT)}</span></td>
-                <td onclick='${s_click}'>${s_medvac}</td>
-                <td onclick='${s_click}'>${s_desc}</td>
-            </tr>
-        `;
-        
-        return html;
-    }
     
     
     this.onUserChangeLanguage = function(){

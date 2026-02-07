@@ -149,7 +149,7 @@ export function PageProdLactatingEntry(input_settings){
     
     
     let dataPigProd                 = null;
-    
+    let showOptions                 = null;
     
     let curTab                      = null;
     
@@ -283,7 +283,12 @@ export function PageProdLactatingEntry(input_settings){
     this.show = function(data_pig_prod, options){
         dataPigProd = data_pig_prod;
         
-        this.populateHeader(data_pig_prod, options);
+        // Change options only if there is a given option
+        if (options){
+            showOptions = options;
+        }
+        
+        this.populateHeader(data_pig_prod, showOptions);
         
         if (curTab == null){
             curTab = thisObj.TAB_LACTA_PIGOPS;

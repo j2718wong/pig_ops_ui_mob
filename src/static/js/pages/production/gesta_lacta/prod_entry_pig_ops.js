@@ -47,14 +47,14 @@ export function ProdEntryPigOps(input_settings){
     
     let elemIdContentContainer  = null;
     let elemIdFilterControls    = null;
-	let elemIdHideCompleted		= null;
+    let elemIdHideCompleted     = null;
     
     let elemIdPigOpsTableBody   = null;
     
     
     let elemContentContainer    = null;
     let elemFilterControls      = null;
-	let elemHideCompleted		= null;
+    let elemHideCompleted       = null;
     
     let elemPigOpsTableBody     = null;
     
@@ -233,7 +233,7 @@ export function ProdEntryPigOps(input_settings){
         elemIdContentContainer  = `${settings.uniqueKey}-content`;
                 
         elemIdFilterControls    = `${settings.uniqueKey}-filter-controls`;
-        elemIdHideCompleted 	= `${settings.uniqueKey}-hide-completed`;
+        elemIdHideCompleted     = `${settings.uniqueKey}-hide-completed`;
        
         
         elemIdPigOpsTableBody   = `${settings.uniqueKey}-tbody`;
@@ -306,9 +306,9 @@ ${html_style}
         
         elemFilterControls      = elemDivContainer.querySelector('#'+elemIdFilterControls);
         
-		elemHideCompleted		= elemDivContainer.querySelector('#'+elemIdHideCompleted);
-		
-		elemPigOpsTableBody     = elemDivContainer.querySelector('#'+elemIdPigOpsTableBody);
+        elemHideCompleted       = elemDivContainer.querySelector('#'+elemIdHideCompleted);
+        
+        elemPigOpsTableBody     = elemDivContainer.querySelector('#'+elemIdPigOpsTableBody);
     }
     
     
@@ -351,6 +351,7 @@ ${html_style}
         curDataPigProd = data_pig_prod;
         
         
+        // Change options only if there is a given option
         if (options){
             showOptions = options;
         }
@@ -489,8 +490,8 @@ ${html_style}
                 'operation':    cur_entry
             });
         }
-		
-		
+        
+        
         
         let hide_filter_control = false;
         if (is_gesta_operations){hide_filter_control = true;}
@@ -749,6 +750,12 @@ ${html_style}
     
     this.onSuccessEditPigOps = function(){
         // redraw table
+        console.log('prod_entry.onSuccessEditPigOps');
+        
+        // Go back to 
+        // page_prod_gestating_entry if gestating
+        // page_prod_lactating_entry if lactating
+        
         thisObj.show(curDataPigProd);
         
     }

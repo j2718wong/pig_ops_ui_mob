@@ -40,7 +40,7 @@ export function TablePigletsOutput(input_settings){
         elemDivContainer:       '<element>'
     }   
     */  
-    let settings                = input_settings;
+    const settings              = input_settings;
     
     
     let elemDivContainer        = settings.elemDivContainer;
@@ -165,16 +165,15 @@ export function TablePigletsOutput(input_settings){
         ${html_style}
         
         <table class="data-table table-output" id="">
+            <colgroup>
+                <col style="width: 14%;">
+                <col style="width: 18%;">
+                <col style="width: 16%;">
+                <col style="width: 16%;">
+                <col style="width: 19%;">
+            </colgroup>
+                
             <thead>
-                <colgroup>
-                    <col style="width: 14%;">
-                    <col style="width: 18%;">
-                    <col style="width: 16%;">
-                    <col style="width: 16%;">
-                    <col style="width: 19%;">
-                </colgroup>
-                
-                
                 <tr>
                     <th>PID</th>
                     <th>Birth</th>
@@ -183,8 +182,8 @@ export function TablePigletsOutput(input_settings){
                     <th>Dead before Wean</th>
                     <th>Live Pigs Wean</th>
                 </tr>
-                
             </thead>
+            
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>
@@ -205,24 +204,23 @@ export function TablePigletsOutput(input_settings){
         ${html_style}
         
         <table class="data-table table-output" id="">
+            <colgroup>
+                <col style="width: 32%;">
+                <col style="width: 16%;">
+                <col style="width: 16%;">
+                <col style="width: 19%;">
+            </colgroup>
+            
             <thead>
-                <colgroup>
-                    <col style="width: 32%;">
-                    <col style="width: 16%;">
-                    <col style="width: 16%;">
-                    <col style="width: 19%;">
-                </colgroup>
-                
-                
                 <tr>
                     <th>Birth</th>
                     <th>Live Pigs Birth</th>
                     <th>Dead at Birth</th>
                     <th>Dead before Wean</th>
                     <th>Live Pigs Wean</th>
-                </tr>
-                
+                </tr>                
             </thead>
+
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>

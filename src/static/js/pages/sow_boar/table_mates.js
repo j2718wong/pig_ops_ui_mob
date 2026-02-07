@@ -144,20 +144,20 @@ export function TableMates(input_settings){
         
         const html = `
         <table class="data-table" id="">
-            <thead>
-                <colgroup>
-                    <col style="width: 35%;">
-                    <col style="width: 15%;">
-                    <col style="width: 50%;">
-                </colgroup>
+            <colgroup>
+                <col style="width: 30%;">
+                <col style="width: 15%;">
+                <col style="width: 55%;">
+            </colgroup>
                 
+            <thead>
                 <tr>
                     <th>Date</th>
                     <th>PID</th>
                     <th>Mate</th>
                 </tr>
-                
             </thead>
+            
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>

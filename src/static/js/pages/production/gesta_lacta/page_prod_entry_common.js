@@ -443,7 +443,7 @@ export function PageProdEntryCommon(input_settings){
                 }
                 
                 case PIG_PROD_TYPE.LACTATING:{
-					const next_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_LIST);
+                    const next_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_LIST);
                     navigation.showThisPage(next_page);
                     navigation.pageMobLactatingList.show();
                     break;

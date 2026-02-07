@@ -170,21 +170,20 @@ export function TableHealthIssue(input_settings){
         
         const html = `
         <table class="data-table" id="">
+            <colgroup>
+                <col style="width: 28%; padding-right:0;">
+                <col style="width: 32%;">
+                <col style="width: 40%;">
+            </colgroup>
+            
             <thead>
-                <colgroup>
-                    <col style="width: 28%; padding-right:0;">
-                    <col style="width: 32%;">
-                    <col style="width: 40%;">
-                    
-                    
-                </colgroup>
-                
                 <tr>
                     <th>Date</th>
                     <th>Last Med</th>
                     <th>Description</th>
                 </tr>
             </thead>
+            
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>

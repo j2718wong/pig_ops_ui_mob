@@ -374,7 +374,8 @@ export function Navigation(){
     
     this.pageSowBoarList        = new PageSowBoarList({
         navigation:             this,
-        elemIdDivContainer:     elemIdContSowBoarList
+        elemIdDivContainer:     elemIdContSowBoarList,
+        uniqueKey:              'sow-boar'
     });
     
     
@@ -498,7 +499,9 @@ export function Navigation(){
     
     this.pageAccPigOps          = new PageAccPigOps({
         navigation:             this,
-        elemIdDivContainer:     elemIdContAccPigOps
+        elemIdDivContainer:     elemIdContAccPigOps,
+        uniqueKey:              'acc-pig-ops'
+
     });
     
     

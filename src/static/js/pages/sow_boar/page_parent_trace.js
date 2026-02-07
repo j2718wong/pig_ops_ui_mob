@@ -191,6 +191,7 @@ export function PageParentTrace(input_settings){
                     <th>Parent Boar</th>
                 </tr>
             </thead>
+            
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>

@@ -197,17 +197,18 @@ export function TableNotes(input_settings){
         
         const html = `
         <table class="data-table" id="">
+            <colgroup>
+                <col style="width: 28%;">
+                <col style="width: 72%;">
+            </colgroup>
+            
             <thead>
-                <colgroup>
-                    <col style="width: 28%;">
-                    <col style="width: 72%;">
-                </colgroup>
-                
                 <tr>
                     <th>Date</th>
                     <th>Notes</th>
                 </tr>
             </thead>
+            
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>

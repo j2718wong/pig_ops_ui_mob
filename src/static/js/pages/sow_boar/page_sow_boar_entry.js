@@ -491,7 +491,9 @@ export function PageSowBoarEntry(input_settings){
 
         componentTabsWithMore.curData = data_sow_boar;
         
-        if (options) { // replace options only if specified
+        
+        // Change options only if there is a given option
+        if (options) {
             showOptions = options;
         }
         

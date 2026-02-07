@@ -38,10 +38,11 @@ export function PageSowBoarList(input_settings){
     Typical input_settings
     {
         navigation:             this,
-        elemIdDivContainer:     elemIdContSowBoarList
+        elemIdDivContainer:     elemIdContSowBoarList,
+        uniqueKey:              'sow-boar'
     }   
     */  
-    let settings                = input_settings;
+    const settings               = input_settings;
     
     
     // This is needed as ths will be first element to be rendered
@@ -53,7 +54,7 @@ export function PageSowBoarList(input_settings){
     
     let elemIdPageTitle         = null;
     let elemIdPageHeaderAlarm   = null;
-    let elemIdPageHeaderEntryCount = null;
+    let elemIdEntryCount        = null;
     let elemIdPageInfo          = null;
     
     let elemIdSearchInput       = null;
@@ -95,7 +96,7 @@ export function PageSowBoarList(input_settings){
 
     let elemPageTitle           = null;
     let elemPageHeaderAlarm     = null;
-    let elemPageHeaderEntryCount = null;
+    let elemEntryCount          = null;
     let elemPageInfo            = null;
 
     let elemSearchInput         = null;
@@ -204,45 +205,45 @@ export function PageSowBoarList(input_settings){
     
     this.render = function(){
         
-        elemIdNavPrevEntry      = `page-title-sow-boar-list-prev`;
-        elemIdNavNextEntry      = `page-title-sow-boar-list-next`;
+        elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
+        elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
         
-        elemIdPageTitle         = `page-title-sow-boar-list`;
-        elemIdPageHeaderAlarm   = `page-title-sow-boar-alarm`;
-        elemIdPageHeaderEntryCount = `page-title-sow-boar-count`;
-        elemIdPageInfo          = `page-info-sow-boar-list`;
+        elemIdPageTitle         = `${settings.uniqueKey}-page-title-list`;
+        elemIdPageHeaderAlarm   = `${settings.uniqueKey}-page-title-alarm`;
+        elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
         
-        elemIdSearchInput       = `mobile-search-input-sow-boar`;
-        elemIdAddEntryBtn       = `mobile-add-entry-btn-sow-boar`;
-        elemIdFilterControls    = `mobile-filter-control-sow-boar`;
-        
-        
-        elemIdSowControls       = `sow-boar-sow-controls`;
-        elemIdIncludeDisposed   = `sow-boar-inc-disposed`;
-        elemIdSowOutputToggle   = `sow-boar-output-toggle`;
+        elemIdSearchInput       = `${settings.uniqueKey}-search-input`;
+        elemIdAddEntryBtn       = `${settings.uniqueKey}-add-entry-btn`;
+        elemIdFilterControls    = `${settings.uniqueKey}-filter-control`;
         
         
-        elemIdTableRowCount     = `sow-boar-table-row-count`;
-        elemIdTablePagination   = `sow-boar-table-pagination`;
-        elemIdTablePrevPage     = `sow-boar-table-prev-page`;
-        elemIdTableCurPage      = `sow-boar-table-cur-page`;
-        elemIdTableTotalPages   = `sow-boar-table-total-pages`;
-        elemIdTableNextPage     = `sow-boar-table-next-page`;
+        elemIdSowControls       = `${settings.uniqueKey}-sow-controls`;
+        elemIdIncludeDisposed   = `${settings.uniqueKey}-inc-disposed`;
+        elemIdSowOutputToggle   = `${settings.uniqueKey}-output-toggle`;
         
-        elemIdTableSow          = `sow-boar-sow-table`;
-        elemIdTableSowBody      = `sow-boar-sow-tbody`;
         
-        elemIdTableBoar         = `sow-boar-boar-table`;
-        elemIdTableBoarBody     = `sow-boar-boar-tbody`;
+        elemIdTableRowCount     = `${settings.uniqueKey}-table-row-count`;
+        elemIdTablePagination   = `${settings.uniqueKey}-table-pagination`;
+        elemIdTablePrevPage     = `${settings.uniqueKey}-table-prev-page`;
+        elemIdTableCurPage      = `${settings.uniqueKey}-table-cur-page`;
+        elemIdTableTotalPages   = `${settings.uniqueKey}-table-total-pages`;
+        elemIdTableNextPage     = `${settings.uniqueKey}-table-next-page`;
         
-        elemIdTableGilt         = `sow-boar-gilt-table`;
-        elemIdTableGiltBody     = `sow-boar-gilt-tbody`;
+        elemIdTableSow          = `${settings.uniqueKey}-sow-table`;
+        elemIdTableSowBody      = `${settings.uniqueKey}-sow-tbody`;
         
-        elemIdTableDisposed     = `sow-boar-disposed-table`;
-        elemIdTableDisposedBody = `sow-boar-disposed-tbody`;
+        elemIdTableBoar         = `${settings.uniqueKey}-boar-table`;
+        elemIdTableBoarBody     = `${settings.uniqueKey}-boar-tbody`;
         
-        elemIdTableSowOutput    = `sow-boar-sow-output-table`;
-        elemIdTableSowOutputBody= `sow-boar-sow-output-tbody`;
+        elemIdTableGilt         = `${settings.uniqueKey}-gilt-table`;
+        elemIdTableGiltBody     = `${settings.uniqueKey}-gilt-tbody`;
+        
+        elemIdTableDisposed     = `${settings.uniqueKey}-disposed-table`;
+        elemIdTableDisposedBody = `${settings.uniqueKey}-disposed-tbody`;
+        
+        elemIdTableSowOutput    = `${settings.uniqueKey}-sow-output-table`;
+        elemIdTableSowOutputBody= `${settings.uniqueKey}-sow-output-tbody`;
         
         
         const html_style = thisObj._writeInlineStyle();
@@ -256,7 +257,7 @@ ${html_style}
         <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
                 
         <span>
-            <span class="nav-title blue" id="${elemIdPageHeaderEntryCount}"></span>
+            <span class="nav-title blue" id="${elemIdEntryCount}"></span>
             <span class="nav-title blue" id="${elemIdPageTitle}"></span>
             <span class="inline-bell larger" id="${elemIdPageHeaderAlarm}" title="Due operations!" style="display:none;">
                 <i class="fas fa-bell"></i>
@@ -361,8 +362,8 @@ ${html_style}
                         <th>Output</th>
                     </tr>
                 </thead>
+                
                 <tbody id="${elemIdTableSowBody}">
-                    <!-- Operations populated by JavaScript -->
                 </tbody>
             </table>
             
@@ -388,8 +389,8 @@ ${html_style}
                         <th style="padding-left:0;">Last Mate</th>
                     </tr>
                 </thead>
+                
                 <tbody id="${elemIdTableBoarBody}">
-                    <!-- Operations populated by JavaScript -->
                 </tbody>
             </table>
         </div>
@@ -411,8 +412,8 @@ ${html_style}
                         <th>Next PigOp</th>
                     </tr>
                 </thead>
+                
                 <tbody id="${elemIdTableGiltBody}">
-                    <!-- Operations populated by JavaScript -->
                 </tbody>
             </table>
         </div>
@@ -436,8 +437,8 @@ ${html_style}
                         <th>Status</th>
                     </tr>
                 </thead>
+                
                 <tbody id="${elemIdTableDisposedBody}">
-                    <!-- Operations populated by JavaScript -->
                 </tbody>
             </table>
         </div>
@@ -464,6 +465,7 @@ ${html_style}
                     </tr>
                     
                 </thead>
+                
                 <tbody id="${elemIdTableSowOutputBody}">
                 </tbody>
             </table>
@@ -493,7 +495,7 @@ ${html_style}
         
         elemPageTitle           = elemDivContainer.querySelector('#'+elemIdPageTitle);
         elemPageHeaderAlarm     = elemDivContainer.querySelector('#'+elemIdPageHeaderAlarm);
-        elemPageHeaderEntryCount = elemDivContainer.querySelector('#'+elemIdPageHeaderEntryCount);
+        elemEntryCount          = elemDivContainer.querySelector('#'+elemIdEntryCount);
         elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
 
         elemSearchInput         = elemDivContainer.querySelector('#'+elemIdSearchInput);
@@ -818,7 +820,7 @@ ${html_style}
         }
         
         // Set Entry count
-        elemPageHeaderEntryCount.textContent = entry_count;
+        elemEntryCount.textContent = entry_count;
         
         
         // Need to set click listener
@@ -1587,7 +1589,7 @@ ${html_style}
         
         // Set Entry count; This needs to be set since this is requested late
         const entry_count = disposed_list.length;
-        elemPageHeaderEntryCount.textContent = entry_count;
+        elemEntryCount.textContent = entry_count;
         
     }
     

@@ -39,7 +39,7 @@ export function TableFeedBuyItems(input_settings){
         elemDivContainer:       '<element>'
     }   
     */  
-    let settings                = input_settings;
+    const settings              = input_settings;
     
     
     let elemDivContainer        = settings.elemDivContainer;
@@ -154,13 +154,14 @@ export function TableFeedBuyItems(input_settings){
         ${html_style}
         
         <table class="data-table table-feed-buy-items" id="">
+            <colgroup>
+                <col style="width: 14%;">
+                <col style="width: 22%;">
+                <col style="width: 22%;">
+                <col style="width: 21%;">
+            </colgroup>
+            
             <thead>
-                <colgroup>
-                    <col style="width: 14%;">
-                    <col style="width: 22%;">
-                    <col style="width: 22%;">
-                    <col style="width: 21%;">
-                </colgroup>
                 
                 <tr>
                     <th>Qty</th>
@@ -170,6 +171,7 @@ export function TableFeedBuyItems(input_settings){
                     <th>Cost</th>
                 </tr>
             </thead>
+            
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>
