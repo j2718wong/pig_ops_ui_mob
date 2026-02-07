@@ -82,7 +82,12 @@ export function CommonSelectOptions(){
             // minimum and not minimum info.
             const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
             
-            const sow_boar_name = getSowBoarReference(cur_entry, true);
+            let sow_boar_name = getSowBoarReference(cur_entry, true);
+            
+            if (cur_entry.is_external && cur_entry.is_external > 0){
+                sow_boar_name += ' (External)';
+            }
+            
             
             select_data.push({value: cur_entry.hid, text: sow_boar_name});
         }

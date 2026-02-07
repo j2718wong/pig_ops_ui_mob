@@ -315,8 +315,8 @@ export function PageTableBasic(){
         else{
             elemSearchInput.addEventListener('input', function() {
                 const search_term = this.value.toUpperCase().trim();
-                thisObj.searchEntries(search_term);
-                
+                const filtered_entries = thisObj.searchEntries(search_term);
+                thisObj.renderTable(filtered_entries);
             });
         }
         
@@ -450,8 +450,10 @@ export function PageTableBasic(){
     }
     
     
+    
+    // This should be overrridden
     this.searchEntries = function(key){
-        
+        return [];
     }
     
     

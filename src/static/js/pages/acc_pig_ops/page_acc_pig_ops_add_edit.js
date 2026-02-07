@@ -130,10 +130,10 @@ export function PageAccPigOpsAddEdit(input_settings){
             
             isTextArea:         true,
             className:          'form-group-text-area',
-            textLabel:          'Notes',
+            textLabel:          'Description',
             textMaxChars:       160,
             rows:               3,
-            helpText:           null  
+            helpText:           'Describe what to do in the operation.' 
         });
         
         
@@ -265,8 +265,7 @@ export function PageAccPigOpsAddEdit(input_settings){
     
     
     // Reset add form
-    this.beforeShow = function(options){
-        let header_title;
+    this.beforeShow = function(options, data_acc_pig_ops){
         let min_days;
         let max_days;
         let num_days_title;
@@ -286,11 +285,21 @@ export function PageAccPigOpsAddEdit(input_settings){
         
         showOptions = options;
         
+        
+        let html;
+        if (showOptions.is_add){
+            html    = `<i class="fas fa-plus me-2"></i>Add Pig Operation`;
+        }
+        else{
+            html    = `<i class="fas fa-edit me-2"></i>Edit Pig Operation`;
+        }
+        elemHeaderTitle.innerHTML = html;
+        
+        
         operationType = options.operation_type;
         
         switch (showOptions.operation_type) {
             case PIG_OPERATION_TYPE.GESTATING:{
-                header_title    = 'New <b>Gestating</b> Operation';
                 min_days        = 0;
                 max_days        = 114;
                 num_days_title  = "Number of days since boar mating or insemination. ";
@@ -302,7 +311,6 @@ export function PageAccPigOpsAddEdit(input_settings){
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS: {
-                header_title    = 'New <b>Lactating Piglets</b> Operation';
                 min_days        = 1;
                 max_days        = 45;
                 num_days_title  = "Number of days since piglets birth. ";
@@ -314,7 +322,6 @@ export function PageAccPigOpsAddEdit(input_settings){
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
-                header_title    = 'New <b>Lactating Sow</b> Operation';
                 min_days        = 1;
                 max_days        = 45;
                 num_days_title  = "Number of days since piglets birth. ";
@@ -326,7 +333,6 @@ export function PageAccPigOpsAddEdit(input_settings){
             }
             
             case PIG_OPERATION_TYPE.GILT:{
-                header_title    = 'New <b>Gilt</b> Operation';
                 min_days        = 1;
                 max_days        = 300;
                 num_days_title  = "Number of days since gilt birth.";
@@ -344,6 +350,11 @@ export function PageAccPigOpsAddEdit(input_settings){
         elemDayNumberDesc.innerHTML = num_days_title + ' Max ' + max_days;
         
         
+        // Populate form if edit
+        if (showOptions.is_add == 0){
+            thisObj.populateForm(data_acc_pig_ops);
+        }
+        
         
         // Update Close and cancel button on click
         
@@ -354,6 +365,21 @@ export function PageAccPigOpsAddEdit(input_settings){
         elemBtnCancel.onclick = function() {
             navigation.showThisPage(showOptions.go_back_page);
         };
+    }
+    
+    
+    this.populateForm = function(data_acc_pig_ops){
+        elemUiName.setValue(data_acc_pig_ops.acc_pig_ops.name);
+        elemUiDescription.setValue(data_acc_pig_ops.acc_pig_ops.desc);
+        
+        elemDayNumber.value = data_acc_pig_ops.acc_pig_ops.num_days_since;
+        
+        if (data_acc_pig_ops.acc_pig_ops.is_medvac && data_acc_pig_ops.acc_pig_ops.is_medvac > 0) {
+            elemUiIsMedVac.getElemCheckBox().checked = true;
+        }
+        else{
+            elemUiIsMedVac.getElemCheckBox().checked = false;
+        }
     }
     
     

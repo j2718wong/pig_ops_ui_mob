@@ -71,10 +71,10 @@ export function PageAccPigOpsList(input_settings){
     let dataAccGiltOps          = null;
 
     let curAccPigOpsType        = null;
-    let curAccPigOpsData        = null;
+    let curDataAccPigOpsList    = null;
 
 
-    
+    let curDataEntry            = null;
     
     
     
@@ -208,7 +208,7 @@ export function PageAccPigOpsList(input_settings){
         
         switch(pig_ops_type){
             case PIG_OPERATION_TYPE.GESTATING:{
-                curAccPigOpsData = dataAccGestatingOps;
+                curDataAccPigOpsList = dataAccGestatingOps;
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
@@ -222,7 +222,7 @@ export function PageAccPigOpsList(input_settings){
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
-                curAccPigOpsData = dataAccLactatingPigletOps;
+                curDataAccPigOpsList = dataAccLactatingPigletOps;
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
@@ -236,7 +236,7 @@ export function PageAccPigOpsList(input_settings){
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
-                curAccPigOpsData = dataAccLactatingSowOps;
+                curDataAccPigOpsList = dataAccLactatingSowOps;
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
@@ -250,7 +250,7 @@ export function PageAccPigOpsList(input_settings){
             }
             
             case PIG_OPERATION_TYPE.GILT:{
-                curAccPigOpsData = dataAccGiltOps;
+                curDataAccPigOpsList = dataAccGiltOps;
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
@@ -265,13 +265,8 @@ export function PageAccPigOpsList(input_settings){
         }
         
         
-        console.log(`curAccPigOpsData`);
-        console.log(curAccPigOpsData);
-        
-        
-        thisObj.renderTable(curAccPigOpsData);
+        thisObj.renderTable(curDataAccPigOpsList);
 
-                
         thisObj.onUserChangeLanguage();
     }
     
@@ -342,6 +337,8 @@ export function PageAccPigOpsList(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         let s_click = '';
+        
+        s_click = `gNavigation.pageAccPigOpsList.onClickRowEntry("${cur_entry.acc_pig_ops.hid}");`;
         
         let description = '';
         if (cur_entry.acc_pig_ops.desc){
@@ -466,16 +463,43 @@ export function PageAccPigOpsList(input_settings){
         // Update entry_count
         if (navigation.curScreenIsMobile == true){
             elemEntryCount     = document.getElementById(elemIdEntryCount);
-            elemEntryCount.textContent = curAccPigOpsData.length;
+            elemEntryCount.textContent = curDataAccPigOpsList.length;
         }
     }
     
     
     this.getDataAccPigOps = function(entry_hid){
-        for (const cur_entry of curAccPigOpsData){
+        for (const cur_entry of curDataAccPigOpsList){
             if(cur_entry.acc_pig_ops.hid == entry_hid){return cur_entry;}
         }
         return null;
+    }
+    
+    
+    this.searchEntries = function(key){
+        if (key == '') {return curDataAccPigOpsList;}
+        
+        const filtered_entries  = [];
+        
+        for (const cur_entry of curDataAccPigOpsList){
+            const u_name = cur_entry.acc_pig_ops.name.toUpperCase();
+            
+            if (u_name.includes(key)){
+                filtered_entries.push(cur_entry);
+                continue;
+            }
+            
+            if (cur_entry.acc_pig_ops.desc){
+                const u_desc = cur_entry.acc_pig_ops.desc.toUpperCase();
+                if (u_desc.includes(key)){
+                    filtered_entries.push(cur_entry);
+                    continue;
+                }
+            }
+            
+        }
+        
+        return filtered_entries;
     }
     
     
@@ -510,50 +534,25 @@ export function PageAccPigOpsList(input_settings){
     }
     
     
-    
     this.onClickRowEntry = function(entry_hid){
-        const row_entry = thisObj.getEntry(entry_hid);
+        const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
         
-
-        if (row_entry){
-            let go_back_page_id;
-            
-            switch(settings.medvacType){
         
-                case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
-                    go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
-                    break;
-                }
-            
-                case MULTIKEY_OBJ_TYPE.PIG_PROD: {
-                    go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
-                    break;
-                }
-                
-                case MULTIKEY_OBJ_TYPE.FATTENING: {
-                    go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
-                    break;
-                }
-            }
-            
-            const go_back_page = navigation.getPageContainer(go_back_page_id);
-        
-            const options ={
-                medvac_type:            settings.medvacType,
-                is_add:                 false,   // false is edit
-                medvac_hid:             entry_hid,
-                callback_after_edit:    thisObj.onSuccessEditEntry,
-                go_back_page:           go_back_page   // Go back to this page; this is Div element
-            }
-            
-            navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
-            const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
-            navigation.showThisPage(page_container);
-            
-            // Important; otherwise select dropdown not rendered
-            navigation.pageMedVacAddEdit.show();
-        
+        const go_back_page = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_LIST);
+    
+        const options ={
+            operation_type:         curAccPigOpsType,
+            is_add:                 false,   // false is edit
+            callback_after_edit:    thisObj.onSuccessEditEntry,
+            go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
+        
+        navigation.pageAccPigOpsAddEdit.beforeShow(options, data_acc_pig_ops);
+        const page_container = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_ADD_EDIT);
+        navigation.showThisPage(page_container);
+
+    
+    
     }
     
 }

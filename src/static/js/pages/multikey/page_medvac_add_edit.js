@@ -501,10 +501,10 @@ export function PageMedVacAddEdit(input_settings){
         // Set Page Title
         let html;
         if (options.is_add){
-            html = `<i class="fas fa-plus me-2"></i>Add MedVac</span>`;
+            html = `<i class="fas fa-plus me-2"></i>Add MedVac`;
         }
         else{
-            html = `<i class="fas fa-edit me-2"></i>Edit MedVac</span>`;
+            html = `<i class="fas fa-edit me-2"></i>Edit MedVac`;
         }
         elemHeaderTitle.innerHTML = html;
                 

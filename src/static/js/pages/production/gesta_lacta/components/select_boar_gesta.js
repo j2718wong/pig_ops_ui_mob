@@ -198,7 +198,7 @@ export function SelectBoarGesta(input_settings){
     }
        
     
-	this.enabled = function(){
+    this.enabled = function(){
         elemSelect.disabled = false;
         
         if (elemEntryAdd){
@@ -214,8 +214,8 @@ export function SelectBoarGesta(input_settings){
             elemEntryAdd.disabled = true;
         }
     }
-	
-	
+    
+    
     /*
     // Override parent
     this.show = function(){
