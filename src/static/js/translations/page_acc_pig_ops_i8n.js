@@ -17,7 +17,7 @@ when each task's due date, calculated from the start of gestation, is reached.`
         },
         
         'lactating_piglets_ops': {
-            'title': 'Piglets Operations',
+            'title': 'Lacta Piglets Ops',
             
             'info_text':`This list defines the standard care activities for a 
 lactating piglets in each production cycle. When a {PAGE_PROD_GESTATING} entry is updated  
@@ -27,7 +27,7 @@ when each task's due date, calculated from the start of piglets Date of Birth, i
         },
         
         'lactating_sow_ops': {
-            'title': 'Lacta Sow Operations',
+            'title': 'Lacta Sow Ops',
             
             'info_text':`This list defines the standard care activities for a 
 lactating sows in each production cycle. When a {PAGE_PROD_GESTATING} entry is updated  

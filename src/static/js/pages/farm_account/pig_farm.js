@@ -83,19 +83,19 @@ export function PigFarm(_navigation){
         
             
         if ('acc_pig_ops' in data){
-            navigation.pageAccPigOps.setDataAccPigOps(data.acc_pig_ops);
+            navigation.pageAccPigOpsList.setDataAccPigOps(data.acc_pig_ops);
         }
         else{
             if ('acc_gestating_ops' in data){
-                navigation.pageAccPigOps.setDataAccPigOps(data.acc_gestating_ops);
+                navigation.pageAccPigOpsList.setDataAccPigOps(data.acc_gestating_ops);
             }
             
             if ('acc_lactating_piglets_ops' in data){
-                navigation.pageAccPigOps.setDataAccPigOps(data.acc_lactating_piglets_ops);
+                navigation.pageAccPigOpsList.setDataAccPigOps(data.acc_lactating_piglets_ops);
             }
             
             if ('acc_lactating_sow_ops' in data){
-                navigation.pageAccPigOps.setDataAccPigOps(data.acc_lactating_sow_ops);
+                navigation.pageAccPigOpsList.setDataAccPigOps(data.acc_lactating_sow_ops);
             }
         }
         

@@ -7,7 +7,8 @@
 import {PageTableBasic}         from '../common/page_table_basic.js';
 
 
-import {APPLICATION,
+import {PAGE_ID,
+        APPLICATION,
         PIG_OPERATION_TYPE}     from '../../constants.js';
 
 import {TextTranslation}        from '../common/translation.js';
@@ -18,7 +19,7 @@ import {textSubstituteToControl}        from '../navigation/text_substitute_cont
 
 
 
-export function PageAccPigOps(input_settings){
+export function PageAccPigOpsList(input_settings){
     PageTableBasic.call(this);
     
     const thisObj               = this;
@@ -47,9 +48,7 @@ export function PageAccPigOps(input_settings){
     let elemIdEntryCount        = null;
     let elemIdPageInfo          = null;
 
-    let elemIdBtnAddEntryShow   = null;
-    let elemIdMobileContainer   = null;
-    let elemIdTableContainer    = null;
+    let elemIdTableBody         = null;
 
 
     let elemNavPrevEntry        = null;
@@ -59,11 +58,8 @@ export function PageAccPigOps(input_settings){
     let elemEntryCount          = null;
     let elemPageInfo            = null;
 
-    let elemBtnAddEntryShow     = null;
-    let elemMobileContainer     = null;
-    let elemTableContainer      = null;
-
-
+    let elemTableBody           = null;
+    
 
     let textTranslation         = new TextTranslation();
     let curUserLanguageKey      = 'en';
@@ -86,9 +82,18 @@ export function PageAccPigOps(input_settings){
     this.init = function(){
         textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
 
-        this.render();
-        this.afterHtmlRender();
+        thisObj.setSettingsTable({
+            uniqueKey:      settings.uniqueKey,
+            noHeader:       true,
+            itemsPerPage:   20
+        });
         
+        
+
+        this.render();
+        this.afterHtmlRender(); // Will call parent.afterHtmlRender 
+        
+        this.afterHtmlRenderThis();
     }
     
     
@@ -104,15 +109,12 @@ export function PageAccPigOps(input_settings){
         elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
         
         
-        elemIdBtnAddEntryShow   = `add-entry-acc-pig-ops-show`;
-        elemIdMobileContainer   = `mobile-container-acc-pig-ops`;
-        elemIdTableContainer    = `table-container-acc-pig-ops`;
+        const html_table        = thisObj.getHtml();
         
-
         
         const html = `
         
-    <div class="container">
+    <div class="mobile-container">
         
         <div class="nav-left-right">
             <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
@@ -128,78 +130,36 @@ export function PageAccPigOps(input_settings){
         
         
         <!-- Mobile Info Box -->
-        <div class="mobile-info-box">
+        <div class="mobile-info-box" style="margin-bottom:10px;">
             <div class="info-text" id="${elemIdPageInfo}">
                 Track and manage all pig farming operations. Each card shows operation details including day count, description, and last update information. Tap the edit icon to modify or delete operations.
             </div>
         </div>
         
-        
-        
-        <!-- Card View (for mobile) -->
-        <div class="card-container" id="${elemIdMobileContainer}">
-            <!-- Cards will be inserted here by JavaScript -->
-        </div>
-        
-        
-        <!-- Table View (for mobile) -->
-        
-        
-        
-        
+        ${html_table}
         
     </div>
-
-
-
-
-        
         `;
         
         elemDivContainer.innerHTML = html;
     }
     
     
-    this.afterHtmlRender = function(){
-        this._findElements();
-        this._processAfterHtmlRender();
-        this._bindEventListeners();
-    }
-    
-    
-    this._findElements = function(){
+    this.afterHtmlRenderThis = function(){
         elemNavPrevEntry        = document.getElementById(elemIdNavPrevEntry);
         elemNavNextEntry        = document.getElementById(elemIdNavNextEntry);
         
         elemPageTitle           = document.getElementById(elemIdPageTitle);
         elemPageInfo            = document.getElementById(elemIdPageInfo);
-
-        elemBtnAddEntryShow     = document.getElementById(elemIdBtnAddEntryShow);
-        elemMobileContainer     = document.getElementById(elemIdMobileContainer);
-        elemTableContainer      = document.getElementById(elemIdTableContainer);
-    }
-    
-    
-    this._processAfterHtmlRender = function(){
         
-        this.handleWindowResize();
-    }
-    
-    
-    this._bindEventListeners = function(){
+        elemTableBody           = document.getElementById(elemIdTableBody);
         
         
-        // Listen for window resize
-        window.addEventListener('resize', thisObj.handleResize);
-    
-    
-        elemBtnAddEntryShow.addEventListener('click', function(){
-            thisObj.addModalAccPigOps.beforeShow(curAccPigOpsType);
-        });
-    
+        // Set onclick listener to parent object
+        thisObj.setOnClickAddEntry(thisObj.onClickAddEntry); 
     }
     
-    
+        
     this.setDataAccPigOps = function(data){
         
         dataAccGestatingOps = [];
@@ -238,26 +198,17 @@ export function PageAccPigOps(input_settings){
     // Handle window resize for view switching
     this.handleWindowResize = function() {
         const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }
+    
     }
     
     
     this.show = function(pig_ops_type){
         curAccPigOpsType = pig_ops_type;
         
-        let card_class = '';
         
         switch(pig_ops_type){
             case PIG_OPERATION_TYPE.GESTATING:{
                 curAccPigOpsData = dataAccGestatingOps;
-                card_class      = 'gestating';
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
@@ -272,7 +223,6 @@ export function PageAccPigOps(input_settings){
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
                 curAccPigOpsData = dataAccLactatingPigletOps;
-                card_class      = 'lactating-piglets';
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
@@ -287,7 +237,6 @@ export function PageAccPigOps(input_settings){
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
                 curAccPigOpsData = dataAccLactatingSowOps;
-                card_class      = 'lactating-sow';
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
@@ -316,76 +265,35 @@ export function PageAccPigOps(input_settings){
         }
         
         
+        console.log(`curAccPigOpsData`);
+        console.log(curAccPigOpsData);
         
-        elemMobileContainer.innerHTML = '';
         
-        // Create and append card elements
-        curAccPigOpsData.forEach((operation, displayIndex) => {
-            
-            
-            const cardElement = document.createElement('div');
-            cardElement.className = 'card';
-            
-            let html_desc = '';
-            let html_updated_by = '';
-            let html_dt_update = '';
-            
-            if (operation.acc_pig_ops.desc != null){
-                html_desc = `<div class="operation-desc">${operation.acc_pig_ops.desc}</div>`;
-            }
-            
-            const last_update   = operation.last_update;
-            const added_by      = operation.added_by;
-            if (operation.last_update.name_last != null){
-                html_updated_by = last_update.name_first + ' ' + last_update.name_last;
-                html_dt_update  = last_update.dt_update.substring(0,10);
-            }
-            else{
-                html_updated_by = 'System Generated';
-                html_dt_update  = added_by.dt_entry.substring(0,10);
-            }
-            
-            
-            
-            cardElement.innerHTML = `
-                <button class="edit-icon-btn" onclick="gNavigation.pageAccPigOps.editModalOpen('${operation.acc_pig_ops.hid}')" title="Edit Operation">
-                    <i class="fas fa-edit"></i>
-                </button>
+        thisObj.renderTable(curAccPigOpsData);
+
                 
-                <div class="card-content">
-                    <div class="days-badge ${card_class}">Day ${operation.acc_pig_ops.num_days_since}</div>
-                    
-                    <div class="card-header">
-                        <div class="name-section">
-                            <div class="operation-name">${operation.acc_pig_ops.name}</div>
-                            <div class="short-name">${operation.acc_pig_ops.short_name}</div>
-                        </div>
-                    </div>
-                    
-                    ${html_desc}
-                    
-                    <div class="card-footer">
-                        <div class="update-info">
-                            <div class="update-user">
-                                <i class="fas fa-user"></i>
-                                <span>${html_updated_by}</span>
-                            </div>
-                            <div class="update-time">
-                                <i class="far fa-calendar-alt"></i>
-                                <span>${html_dt_update}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            elemMobileContainer.appendChild(cardElement);
-        });
-        
-        
         thisObj.onUserChangeLanguage();
     }
     
+    
+    this._writeInlineStyle = function(){
+        const html = `
+        <style>
+            
+            /* Updated Table Styles */
+            .table-acc-pig-ops td {padding-right:0}
+            .table-acc-pig-ops th {padding-right:0}
+        </style>
+        `;
+        return html;
+
+    }
+    
+    
+    this.getElemTableBody = function(){
+        return elemTableBody;
+    }
+
     
     this.getHtmlTableHeader = function(){
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
@@ -399,8 +307,8 @@ export function PageAccPigOps(input_settings){
         <table class="data-table table-acc-pig-ops" id="">
             <colgroup>
                 <col style="width: 15%;">
-                <col style="width: 25%;">
-                <col style="width: 60%;">
+                <col style="width: 35%;">
+                <col style="width: 50%;">
             </colgroup>
             
             <thead>
@@ -433,48 +341,19 @@ export function PageAccPigOps(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let  s_click = '';
+        let s_click = '';
         
-        
-        switch(settings.medvacType){
-        
-            case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
-                s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
-                
-                if ('dispose_status_id' in curDataEntry.sow_boar){
-                    s_click = '';
-                }
-                break;
-            }
-        
-            case MULTIKEY_OBJ_TYPE.PIG_PROD: {
-                // how to chekc if pig prod is still active
-                break;
-            }
-            
-            case MULTIKEY_OBJ_TYPE.FATTENING: {
-                break;
-            }
+        let description = '';
+        if (cur_entry.acc_pig_ops.desc){
+            description = cur_entry.acc_pig_ops.desc;
         }
         
-        let s_medvac = `
-            <span class="medvac-type"><b>${cur_entry.medvac.type.name}</b></span>
-            <span class="medvac-brand">${cur_entry.medvac.brand.name}</span><br>
-            
-        `;
-        
-        let s_desc = `
-            <span class="medvac-name"><b>${cur_entry.medvac.acc_medvac.name}</b></span>
-            <span class="medvac-notes">${cur_entry.medvac.notes}</span>
-        `;
-        
-        const dt_medvac = new Date(cur_entry.medvac.date_medvac);
         
         const html = `
             <tr>
-                <td><span>${formatDate(dt_medvac, FORMAT_COMPACT)}</span></td>
-                <td onclick='${s_click}'>${s_medvac}</td>
-                <td onclick='${s_click}'>${s_desc}</td>
+                <td><span>${cur_entry.acc_pig_ops.num_days_since}</span></td>
+                <td onclick='${s_click}'>${cur_entry.acc_pig_ops.name}</td>
+                <td onclick='${s_click}'>${description}</td>
             </tr>
         `;
         
@@ -486,7 +365,6 @@ export function PageAccPigOps(input_settings){
         
         let cur_text = null;
         
-        const html_entry_count =  `<span id="${elemIdEntryCount}" style="margin-right:8px;"></span>`;
         
         switch(curAccPigOpsType){
             case PIG_OPERATION_TYPE.GESTATING:{
@@ -601,14 +479,81 @@ export function PageAccPigOps(input_settings){
     }
     
     
-    // Open edit modal with operation data
-    this.editModalOpen = function(entry_hid) {
-        const operation = thisObj.getDataAccPigOps(entry_hid);
-        if (operation == null) {return;}
+    this.onClickAddEntry = function(){
+        let go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
         
-        thisObj.editModalAccPigOps.beforeShow(operation);
+        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        
+        
+        const options ={
+            operation_type:         curAccPigOpsType,
+            is_add:                 true,   // false is edit
+            callback_after_add:     thisObj.onSuccessAddEntry,
+            go_back_page:           go_back_page   // Go back to this page; this is Div element
+        }
+        
+        navigation.pageAccPigOpsAddEdit.beforeShow(options);
+        const page_container = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_ADD_EDIT);
+        navigation.showThisPage(page_container);
+        
         
     }
     
+    
+    this.onSuccessAddEntry = function(){
+        
+    }
+    
+    
+    this.onSuccessEditEntry = function(){
+        
+    }
+    
+    
+    
+    this.onClickRowEntry = function(entry_hid){
+        const row_entry = thisObj.getEntry(entry_hid);
+        
+
+        if (row_entry){
+            let go_back_page_id;
+            
+            switch(settings.medvacType){
+        
+                case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
+                    go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
+                    break;
+                }
+            
+                case MULTIKEY_OBJ_TYPE.PIG_PROD: {
+                    go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                    break;
+                }
+                
+                case MULTIKEY_OBJ_TYPE.FATTENING: {
+                    go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
+                    break;
+                }
+            }
+            
+            const go_back_page = navigation.getPageContainer(go_back_page_id);
+        
+            const options ={
+                medvac_type:            settings.medvacType,
+                is_add:                 false,   // false is edit
+                medvac_hid:             entry_hid,
+                callback_after_edit:    thisObj.onSuccessEditEntry,
+                go_back_page:           go_back_page   // Go back to this page; this is Div element
+            }
+            
+            navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
+            const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+            navigation.showThisPage(page_container);
+            
+            // Important; otherwise select dropdown not rendered
+            navigation.pageMedVacAddEdit.show();
+        
+        }
+    }
     
 }

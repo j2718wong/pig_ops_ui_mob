@@ -102,12 +102,13 @@ export function TableMedVac(input_settings){
     
     this._writeInlineStyle = function(){
         const html = `
-    <style>
-        
-        /* Updated Table Styles */
-        .table-medvac td {padding-right:0}
-    </style>
-    `;
+        <style>
+            
+            /* Updated Table Styles */
+            .table-medvac td {padding-right:0}
+            .table-medvac th {padding-right:0}
+        </style>
+        `;
         return html;
     }
     

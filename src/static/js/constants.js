@@ -43,11 +43,13 @@ const PAGE_ID = {
     
     
     FARM_FEED_BUY_LIST:     50,
-	FARM_FEED_BUY_ADD_EDIT:	51,
-	FARM_FEED_BUY_ITEM_ADD_EDIT: 52,
+    FARM_FEED_BUY_ADD_EDIT: 51,
+    FARM_FEED_BUY_ITEM_ADD_EDIT: 52,
     
     
-    ACC_PIG_OPS:            60,
+    ACC_PIG_OPS_LIST:       60,
+    ACC_PIG_OPS_ADD_EDIT:   61,
+    
     
     
     SUPPLIER_ADD_EDIT:      70

@@ -52,7 +52,9 @@ import {TablePigFarmFeedBuy}        from '../feeds/table_pig_farm_feed_buy.js';
 import {PagePfFeedBuyAddEdit}       from '../feeds/page_pf_feed_buy_add_edit.js';
 
 
-import {PageAccPigOps}              from '../acc_pig_ops/page_acc_pig_ops.js';
+import {PageAccPigOpsList}          from '../acc_pig_ops/page_acc_pig_ops_list.js';
+import {PageAccPigOpsAddEdit}       from '../acc_pig_ops/page_acc_pig_ops_add_edit.js';
+
 
 import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_edit.js';
 
@@ -265,7 +267,9 @@ export function Navigation(){
     const elemIdContFarmFeedBuyAddEdit  = 'container-farm-feed-buy-add-edit';
     const elemIdContFarmFeedBuyItemAddEdit = 'container-farm-feed-buy-item-add-edit';
     
-    const elemIdContAccPigOps           = 'container-acc-pig-ops';
+    const elemIdContAccPigOpsList       = 'container-acc-pig-ops-list';
+    const elemIdContAccPigOpsAddEdit    = 'container-acc-pig-ops-add-edit';
+    
     
     const elemIdContSupplierAddEdit     = 'container-supplier-add-edit';
     
@@ -325,7 +329,8 @@ export function Navigation(){
     let elemPageContFarmFeedBuyList = null;
     let elemPageContFarmFeedBuyAddEdit = null;
     
-    let elemPageContAccPigOps       = null;
+    let elemPageContAccPigOpsList   = null;
+    let elemPageContAccPigOpsAddEdit = null;
     
     
     let elemPageContSupplierAddEdit = null;
@@ -497,11 +502,17 @@ export function Navigation(){
     });
     */
     
-    this.pageAccPigOps          = new PageAccPigOps({
+    this.pageAccPigOpsList      = new PageAccPigOpsList({
         navigation:             this,
-        elemIdDivContainer:     elemIdContAccPigOps,
-        uniqueKey:              'acc-pig-ops'
-
+        elemIdDivContainer:     elemIdContAccPigOpsList,
+        uniqueKey:              'acc-pig-ops-list'
+    });
+    
+    
+    this.pageAccPigOpsAddEdit   = new PageAccPigOpsAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAccPigOpsAddEdit,
+        uniqueKey:              'acc-pig-ops-add-edit'
     });
     
     
@@ -550,7 +561,9 @@ export function Navigation(){
         this.pagePfFeedBuyAddEdit.init();
         
         
-        this.pageAccPigOps.init();
+        this.pageAccPigOpsList.init();
+        this.pageAccPigOpsAddEdit.init();
+        
         
         this.pageSupplierAddEdit.init();
         
@@ -620,7 +633,8 @@ export function Navigation(){
         elemPageContFarmFeedBuyList     = document.getElementById(elemIdContFarmFeedBuyList);
         elemPageContFarmFeedBuyAddEdit  = document.getElementById(elemIdContFarmFeedBuyAddEdit);
     
-        elemPageContAccPigOps           = document.getElementById(elemIdContAccPigOps);
+        elemPageContAccPigOpsList       = document.getElementById(elemIdContAccPigOpsList);
+        elemPageContAccPigOpsAddEdit    = document.getElementById(elemIdContAccPigOpsAddEdit);
         
         elemPageContSupplierAddEdit     = document.getElementById(elemIdContSupplierAddEdit);
     }
@@ -837,10 +851,15 @@ export function Navigation(){
             
             
         
-            case PAGE_ID.ACC_PIG_OPS: {
-                return elemPageContAccPigOps;
+            case PAGE_ID.ACC_PIG_OPS_LIST: {
+                return elemPageContAccPigOpsList;
             }
             
+
+            case PAGE_ID.ACC_PIG_OPS_ADD_EDIT: {
+                return elemPageContAccPigOpsAddEdit;
+            }
+
             
             case PAGE_ID.SUPPLIER_ADD_EDIT:{
                 return elemPageContSupplierAddEdit;
@@ -1123,8 +1142,8 @@ export function Navigation(){
         
     
     this._onClickNavAccPigOps = function(is_mobile, operation_type){
-        thisObj.showThisPage(elemPageContAccPigOps);
-        thisObj.pageAccPigOps.show(operation_type);
+        thisObj.showThisPage(elemPageContAccPigOpsList);
+        thisObj.pageAccPigOpsList.show(operation_type);
     }
         
         
