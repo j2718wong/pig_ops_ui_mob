@@ -41,6 +41,7 @@ export function PageTableBasic(){
     
     let elemIdServerErrorMsg    = null;
     
+    let elemIdControlsBar       = null;
     
     let elemIdTableRowCount     = null;
     let elemIdTablePagination   = null;
@@ -66,6 +67,7 @@ export function PageTableBasic(){
     
     this.elemServerErrorMsg     = null;
     
+    let elemControlsBar         = null;
     
     let elemTableRowCount       = null;
     let elemTablePagination     = null;
@@ -138,6 +140,8 @@ export function PageTableBasic(){
         
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
+        elemIdControlsBar       = `${settings.uniqueKey}-controls-bar`;
+        
         elemIdTableRowCount     = `${settings.uniqueKey}-row-count`;
         elemIdTablePagination   = `${settings.uniqueKey}-pagination`;
         elemIdTablePrevPage     = `${settings.uniqueKey}-prev-page`;
@@ -182,7 +186,7 @@ export function PageTableBasic(){
         
         
         let html_controls_bar = `
-        <div class="controls-bar">
+        <div class="controls-bar" id="${elemIdControlsBar}">
             <div class="entry-count" id="${elemIdTableRowCount}">
                 12 Entries
             </div>
@@ -288,6 +292,7 @@ export function PageTableBasic(){
         
         thisObj.elemServerErrorMsg  = document.getElementById(elemIdServerErrorMsg);
         
+        elemControlsBar         = document.getElementById(elemIdControlsBar);
         
         elemTableRowCount       = document.getElementById(elemIdTableRowCount);
         elemTablePagination     = document.getElementById(elemIdTablePagination);
@@ -412,6 +417,11 @@ export function PageTableBasic(){
     } 
     
     
+    this.getElemControlsBar = function(){
+        return elemControlsBar;
+    }
+    
+    
     this.getElemTableEntryCount = function(){
         return elemTableEntryCount;
     } 
@@ -448,7 +458,6 @@ export function PageTableBasic(){
             new bootstrap.Tooltip(cur_entry);
         }
     }
-    
     
     
     // This should be overrridden

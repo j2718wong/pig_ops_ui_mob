@@ -246,38 +246,22 @@ export function PageParentTrace(input_settings){
         
         elemLinkParentTrace.addEventListener('click', function() {
             elemSowBoarTrace.style.display = 'block';
+            elemTable.style.display = 'none';
+            
+            thisObj.onClickTraceButton();
+            
         });
         
         elemLinkSowList.addEventListener('click', function() {
             elemSowBoarTrace.style.display = 'none';
-            
-            /*
-            const data_list = [];
-            
-            for(const cur_entry of dataSowList){
-                data_list.push(cur_entry.parent_trace);
-            }
-            */
             thisObj.renderTableBody(dataSowList);
             
         });
         
         elemLinkBoarList.addEventListener('click', function() {
             elemSowBoarTrace.style.display = 'none';
-            
-            /*
-            const data_list = [];
-            
-            for(const cur_entry of dataBoarList){
-                data_list.push(cur_entry.parent_trace);
-            }
-            
-            thisObj.renderTableBody(data_list);
-            */
-            
             thisObj.renderTableBody(dataBoarList);
         });
-        
         
         
 
@@ -321,10 +305,32 @@ export function PageParentTrace(input_settings){
         this._resetForm();
         
         // Check farm account if hasRequestedParentTrace
-
+        elemTable.style.display = 'none';
         
-        dataSowList     = navigation.pigFarm.managerSowBoar.dataSowList;
-        dataBoarList    = navigation.pigFarm.managerSowBoar.dataBoarList;
+        // Combine Gilt List and SowList
+        let data_gilt_list = navigation.pigFarm.managerSowBoar.dataGiltList;
+        let data_sow_list  = navigation.pigFarm.managerSowBoar.dataSowList;
+        
+        // Gilt List first then sow list
+        if (data_gilt_list){
+            dataSowList     = data_gilt_list.concat(data_sow_list);
+        }
+        else{
+            dataSowList     = data_sow_list;
+        }
+        
+        let data_boar_list  = navigation.pigFarm.managerSowBoar.dataBoarList;
+        
+        // Exclude external boars
+        const filtered_boars = [];
+        for(const cur_entry of data_boar_list){
+            if (cur_entry.sow_boar.is_external && cur_entry.sow_boar.is_external > 0){
+                continue;
+            }
+            filtered_boars.push(cur_entry);
+        }  
+        
+        dataBoarList = filtered_boars;
         
         
         elemUiSow.setEntryCount(dataSowList);
@@ -480,13 +486,29 @@ export function PageParentTrace(input_settings){
             
             const cur_parent_trace = cur_entry.parent_trace;
             const cur_parent_sow = getSowBoarReference(cur_parent_trace.parent_sow);
-            const cur_parent_boar = getSowBoarReference(cur_parent_trace.parent_boar);
+            let cur_parent_boar = '';
+            
+            if (cur_parent_trace.parent_boar && cur_parent_trace.parent_boar.hid){
+                cur_parent_boar = getSowBoarReference(cur_parent_trace.parent_boar);
+            }   
+            
+            else{
+                const insemination = cur_parent_trace.insemination;
+                if (insemination){
+                    if (insemination.semen_supplier){
+                        cur_parent_boar = insemination.semen_supplier.semen.name;
+                        cur_parent_boar += ` (${insemination.semen_supplier.name})`;
+                    }
+                }
+            }
+            
+            
             
             table_data.push({
                 'sow_boar_hid':     cur_entry.sow_boar.hid,
                 'sow_boar_name':    sow_boar_name,
                 'parent_sow_name':  (cur_parent_sow) ? cur_parent_sow : '',
-                'parent_boar_name': (cur_parent_boar)? cur_parent_boar: ''
+                'parent_boar_name': cur_parent_boar
             });
             
         }

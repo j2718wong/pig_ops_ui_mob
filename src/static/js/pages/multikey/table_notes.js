@@ -198,13 +198,15 @@ export function TableNotes(input_settings){
         const html = `
         <table class="data-table" id="">
             <colgroup>
-                <col style="width: 28%;">
-                <col style="width: 72%;">
+                <col style="width: 18%;">
+                <col style="width: 15%;">
+                <col style="width: 67%;">
             </colgroup>
             
             <thead>
                 <tr>
                     <th>Date</th>
+                    <th>PID</th>
                     <th>Notes</th>
                 </tr>
             </thead>
@@ -254,10 +256,17 @@ export function TableNotes(input_settings){
         
         
         const dt_notes = new Date(cur_entry.prod_notes.date_notes);
-                
+        
+        let pid = '';
+        const farm_prod_id = cur_entry.prod_notes.farm_prod_id;
+        if (farm_prod_id && farm_prod_id > 0){
+            pid = `${farm_prod_id}`;
+        }
+        
         const html = `
             <tr>
-                <td><span>${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
+                <td style="padding-right:0;"><span >${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
+                <td onclick='' style="padding-left:0; padding-right:0; text-align:center;">${pid}</td>
                 <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>
             </tr>
         `;
