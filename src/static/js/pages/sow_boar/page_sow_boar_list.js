@@ -1793,7 +1793,7 @@ ${html_style}
     }
          
          
-    this.onClickSowBoarEntry = function(sow_boar_hid, pig_prod_id, tab_id){
+    this.onClickSowBoarEntry = function(sow_boar_hid, pig_prod_id, tab_id, sow_boar_type){
         if (sow_boar_hid == null){
             // Go back to this page
             const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
@@ -1808,7 +1808,13 @@ ${html_style}
     
         let cur_sow_boar_list = null;
         
-        switch (showOptions.sow_boar_type){
+        if (sow_boar_type){}
+        else{
+            // use showOptions.sow_boar_type if sow_boar_type is not specified
+            sow_boar_type = showOptions.sow_boar_type;
+        }
+        
+        switch (sow_boar_type){
             case SOW_BOAR_TYPE.SOW:  {cur_sow_boar_list = dataSowList; break;}
             case SOW_BOAR_TYPE.BOAR: {cur_sow_boar_list = dataBoarList; break;}
             case SOW_BOAR_TYPE.GILT: {cur_sow_boar_list = dataGiltList; break;}
@@ -1817,7 +1823,7 @@ ${html_style}
         }
         
         this.gotoSowBoarEntryPage(cur_sow_boar_list, sow_boar_hid, 
-            showOptions.sow_boar_type, tab_id); 
+            sow_boar_type, tab_id); 
     }
         
         

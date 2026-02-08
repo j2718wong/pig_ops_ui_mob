@@ -714,6 +714,8 @@ export function PageProdPigOpsEdit(input_settings){
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
+                // The pig_prod notes needs to update as well after 
+                // nSuccessEditPigOps
                 
                 // Replace only curDataProdPigOps from the database.
                 data_pig_prod = thisObj.curDataPigProd;

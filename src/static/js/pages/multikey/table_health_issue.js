@@ -140,6 +140,24 @@ export function TableHealthIssue(input_settings){
             }
             
             
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                dataPigProd     = data;
+
+                if ('list_health_issues' in dataPigProd.data_details){
+                    thisObj.setDataEntryList(dataPigProd.data_details.list_health_issues);
+                    thisObj.renderTable(dataPigProd.data_details.list_health_issues);
+                } else{
+                    const callback_success = function(){
+                        thisObj.setDataEntryList(dataPigProd.data_details.list_health_issues);
+                        thisObj.renderTable(dataPigProd.data_details.list_health_issues);
+                    }
+                    
+                }
+                
+                
+               
+                break;
+            }
             
         }
     }
@@ -206,12 +224,35 @@ export function TableHealthIssue(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let s_click = `gNavigation.pageSowBoarEntry.tablePigHealth.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+        let s_click = '';
         
-        if ('dispose_status_id' in dataSowBoar.sow_boar){
-            s_click = '';
+        
+        switch (settings.healthType){
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                s_click = `gNavigation.pageSowBoarEntry.tablePigHealth.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+                
+                if ('dispose_status_id' in dataSowBoar.sow_boar){
+                    s_click = '';
+                }
+                
+                break;
+            }
+            
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                s_click = `gNavigation.pageProdLactatingEntry.tablePigProdHealth.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
+                
+                break;
+            }
+            
         }
         
+        
+        
+        if (settings.healthType == MULTIKEY_OBJ_TYPE.SOW_BOAR){
+            
+        }
+    
         let s_last_med = ''
         let s_last_update = '';
         
@@ -311,8 +352,8 @@ export function TableHealthIssue(input_settings){
             
         }
         
-		
-		const go_back_page = navigation.getPageContainer(go_back_page_id);
+        
+        const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         const options ={
             health_type:            settings.healthType,
@@ -402,7 +443,7 @@ export function TableHealthIssue(input_settings){
                 const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
             
                 const options ={
-					health_type:             settings.healthType,
+                    health_type:             settings.healthType,
                     is_add:                 false,   // false is edit
                     row_entry:              row_entry,
                     callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
@@ -415,25 +456,68 @@ export function TableHealthIssue(input_settings){
                 
                 break;
             }
-		}
+            
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+        
+                const go_back_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_ENTRY);
+            
+                const options ={
+                    health_type:             settings.healthType,
+                    is_add:                 false,   // false is edit
+                    row_entry:              row_entry,
+                    callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
+                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                }
+                
+                navigation.pageHealthAddEdit.beforeShow(dataPigProd, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
+                navigation.showThisPage(page_container);
+                
+                break;
+            }
+        }
     }
     
     
     this.onClickAddMedVacEntry = function(row_entry){
         console.log('onClickAddMedVacEntry');
-        const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
         
-        const options ={
-            medvac_type:            MULTIKEY_OBJ_TYPE.SOW_BOAR,
-            is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
-            health_issue_entry:     row_entry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+
+        switch (settings.healthType) {
+            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+        
+                const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                
+                const options ={
+                    medvac_type:            MULTIKEY_OBJ_TYPE.SOW_BOAR,
+                    is_add:                 true,   // false is edit
+                    callback_after_add:     thisObj.onSuccessAddEntry,
+                    health_issue_entry:     row_entry,
+                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                }
+                
+                navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+                navigation.showThisPage(page_container);
+            }
+         
+            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+        
+                const go_back_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_ENTRY);
+                
+                const options ={
+                    medvac_type:            MULTIKEY_OBJ_TYPE.PIG_PROD,
+                    is_add:                 true,   // false is edit
+                    callback_after_add:     thisObj.onSuccessAddEntry,
+                    health_issue_entry:     row_entry,
+                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                }
+                
+                navigation.pageMedVacAddEdit.beforeShow(dataPigProd, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+                navigation.showThisPage(page_container);
+            }
         }
-        
-        navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
-        const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
-        navigation.showThisPage(page_container);
        
     }
     

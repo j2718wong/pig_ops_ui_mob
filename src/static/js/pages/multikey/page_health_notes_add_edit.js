@@ -328,6 +328,8 @@ export function PageHealthNotesAddEdit(input_settings){
         thisObj._resetForm();
         
         
+        elemInfoShow.style.display = 'none';
+        
         let html;
         
         if (settings.isNotes){
@@ -343,6 +345,27 @@ export function PageHealthNotesAddEdit(input_settings){
         else{
             if (options.is_add){
                 html = `<i class="fas fa-plus me-2"></i>Add Health Issue`;
+                
+                
+                if (multikey_obj_type == MULTIKEY_OBJ_TYPE.PIG_PROD){
+                    
+                    // Update infoBox
+                    const sow_boar_hid = curDataEntry.sow.hid;
+                    const tab_id = navigation.pageSowBoarEntry.elemIdTabHealth;
+                    
+                    let s_click = `gNavigation.pageSowBoarList.onClickSowBoarEntry(`;
+                    s_click += `"${sow_boar_hid}", null, "${tab_id}", ${SOW_BOAR_TYPE.SOW});`;
+                
+                    
+                    let html_info = `
+                    Use this to record health problem of the piglets of this 
+                    production entry. If the sow has the health problem, 
+                    <a href="javascript:void(0)" class="text-link" onclick='${s_click}'>click this</a>.
+                    `;
+                    
+                    elemInfoShow.style.display = 'block';
+                    elemInfoShow.innerHTML = html_info;
+                }
             }
             else{
                 html = `<i class="fas fa-edit me-2"></i>Edit Health Issue`;
@@ -480,17 +503,37 @@ export function PageHealthNotesAddEdit(input_settings){
             
         };
         
+        
+        // Add key
         if (showOptions.is_add == true){
             
-            switch (showOptions.notes_type){
-                case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-                    post_data.sow_boar_hid = curDataEntry.sow_boar.hid;
-                    break;
+            if (showOptions.notes_type) {
+                switch (showOptions.notes_type){
+                    case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                        post_data.sow_boar_hid = curDataEntry.sow_boar.hid;
+                        break;
+                    }
+                    
+                    case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                        post_data.pig_prod_hid = curDataEntry.pig_production.hid;
+                        break;
+                    }
                 }
-                
-                case MULTIKEY_OBJ_TYPE.PIG_PROD:{
-                    post_data.pig_prod_hid = curDataEntry.pig_production.hid;
-                    break;
+            }
+            
+            
+            
+            if (showOptions.health_type) {
+                switch (showOptions.health_type){
+                    case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                        post_data.sow_boar_hid = curDataEntry.sow_boar.hid;
+                        break;
+                    }
+                    
+                    case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                        post_data.pig_prod_hid = curDataEntry.pig_production.hid;
+                        break;
+                    }
                 }
             }
             

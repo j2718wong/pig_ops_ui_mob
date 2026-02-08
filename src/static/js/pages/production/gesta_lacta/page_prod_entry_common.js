@@ -478,12 +478,12 @@ export function PageProdEntryCommon(input_settings){
         let title_list = '';
         switch(showOptions.pig_prod_type){
             case PIG_PROD_TYPE.GESTATING:{
-                title_list = 'Prod Gestating';
+                title_list = 'Prod Gesta';
                 break;
             }
             
             case PIG_PROD_TYPE.LACTATING:{
-                title_list = 'Prod Lactating';
+                title_list = 'Prod Lacta';
                 break;
             }
             

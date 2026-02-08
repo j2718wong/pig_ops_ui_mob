@@ -447,7 +447,7 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.beforeShow = function(data_entry, options){
-        // The dat_entry can be a data_sow_boar, data_pig_prod 
+        // The data_entry can be a data_sow_boar, data_pig_prod 
         
         
         // IMPORTANT;  When you set a select value while its parent container 
@@ -471,6 +471,12 @@ export function PageMedVacAddEdit(input_settings){
         curDataEntry    = data_entry;
         showOptions     = options;
         
+        console.log(`\n\nshowOptions`);
+        console.log(showOptions);
+        
+        
+        console.log(`\n\ncurDataEntry`);
+        console.log(curDataEntry);
         
         // Update BreadCrumbs
         switch (showOptions.medvac_type){ 

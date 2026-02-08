@@ -237,17 +237,17 @@ export function PageCommonSupplierAddEdit(input_settings){
         
         switch(showOptions.supplier_type){
             case SUPPLIER_TYPE.FEED: {
-                title = 'Add New Feed Supplier';
+                title = 'Add Feed Supplier';
                 break;
             }
             
             case SUPPLIER_TYPE.SEMEN: {
-                title = 'Add New Semen Supplier';
+                title = 'Add Semen Supplier';
                 break;
             }
             
             case SUPPLIER_TYPE.GILT: {
-                title = 'Add New Gilt Supplier';
+                title = 'Add Gilt Supplier';
                 break;
             }
         }
