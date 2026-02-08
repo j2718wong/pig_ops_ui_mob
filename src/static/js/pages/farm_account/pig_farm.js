@@ -26,8 +26,11 @@ export function PigFarm(_navigation){
     
     this.accountLists           = new AccountLists(_navigation);
     
+    
     this.dataPigFarm            = null;
     this.dataPigFarmAccount     = null;
+    
+    this.dataAccPigOpsList      = null;
     
     this.dataStaffList          = null;
     
@@ -83,19 +86,31 @@ export function PigFarm(_navigation){
         
             
         if ('acc_pig_ops' in data){
-            navigation.pageAccPigOpsList.setDataAccPigOps(data.acc_pig_ops);
+            this.dataAccPigOpsList = data.acc_pig_ops;
+            
+            navigation.pageAccPigOpsList.setDataAccPigOpsList(data.acc_pig_ops);
         }
         else{
             if ('acc_gestating_ops' in data){
-                navigation.pageAccPigOpsList.setDataAccPigOps(data.acc_gestating_ops);
+                navigation.pageAccPigOpsList.setDataAccPigOpsList(
+                    data.acc_gestating_ops, PIG_OPERATION_TYPE.GESTATING);
             }
             
             if ('acc_lactating_piglets_ops' in data){
-                navigation.pageAccPigOpsList.setDataAccPigOps(data.acc_lactating_piglets_ops);
+                navigation.pageAccPigOpsList.setDataAccPigOpsList(
+                    data.acc_lactating_piglets_ops, 
+                    PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             }
             
             if ('acc_lactating_sow_ops' in data){
-                navigation.pageAccPigOpsList.setDataAccPigOps(data.acc_lactating_sow_ops);
+                navigation.pageAccPigOpsList.setDataAccPigOpsList(
+                    data.acc_lactating_sow_ops,
+                    PIG_OPERATION_TYPE.LACTATING_SOW);
+            }
+            
+            if ('gilt_ops' in data){
+                navigation.pageAccPigOpsList.setDataAccPigOpsList(
+                    data.acc_gilt_ops, PIG_OPERATION_TYPE.GILT);
             }
         }
         
@@ -144,6 +159,10 @@ export function PigFarm(_navigation){
     }
     
     
+    this.getAccountHid = function(){
+        if (thisObj.dataPigFarmAccount == null){return null;}
+        return thisObj.dataPigFarmAccount.account.account.hid;
+    }
      
     
     /**
@@ -163,6 +182,50 @@ export function PigFarm(_navigation){
         return true;
     }
  
+ 
+ 
+    this.requestDataAccPigOpsList = function(callback_success, elem_show_error){
+        const base_url = window.location.origin;
+        let url = `${base_url}/account_pig_ops/list?ahid=${thisObj.getAccountHid()}`;
+        
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataAccPigOpsList = response.data;
+            
+                    navigation.pageAccPigOpsList.setDataAccPigOpsList(
+                        thisObj.dataAccPigOpsList);
+                    
+                    if (callback_success){callback_success(thisObj.dataAccPigOpsList);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
  
  
     this.requestDataPigFarmStaffList = function(callback_success, elem_show_error){

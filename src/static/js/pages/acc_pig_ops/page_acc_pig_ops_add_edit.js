@@ -14,10 +14,7 @@ import {ComponentBreadCrumbs}   from '../common/ui/comp_breadcrumb.js';
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
 import {UiInputCheckBox}        from '../common/ui/input_checkbox.js';
 
-
-import {ModelAccountPigOps}     from '../../models/model_acc_pig_ops.js'
-
-import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
+import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
 
 
 
@@ -68,6 +65,8 @@ export function PageAccPigOpsAddEdit(input_settings){
 
     let elemIdDayNumber         = null;
     let elemIdDayNumberDesc     = null;
+    
+    let elemIdServerErrorMsg    = null;
     let elemIdBtnCancel         = null;
     let elemIdBtnSave           = null;
     
@@ -77,19 +76,19 @@ export function PageAccPigOpsAddEdit(input_settings){
     
     let elemDayNumber           = null;
     let elemDayNumberDesc       = null;
+    
+    let elemServerErrorMsg      = null;
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
     
-    let elemNameCounter         = null;
-    let elemShortNameCounter    = null;
-    let elemDescriptionCounter  = null;
     
+    let curDataAccPigOps        = null;
     
-    let newEntry                = new ModelAccountPigOps();
         
         
     let showOptions             = null;
         
+    
     let operationType           = null;
     
     
@@ -108,6 +107,8 @@ export function PageAccPigOpsAddEdit(input_settings){
         
         elemIdDayNumber         = `${settings.uniqueKey}-day-number`;
         elemIdDayNumberDesc     = `${settings.uniqueKey}-number-desc`;
+        
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
         elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
@@ -189,6 +190,8 @@ export function PageAccPigOpsAddEdit(input_settings){
             
         </div>
         
+        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+        
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
                 <i class="fas fa-times me-2"></i>Cancel
@@ -228,6 +231,8 @@ export function PageAccPigOpsAddEdit(input_settings){
         
         elemDayNumber           = elemDivContainer.querySelector('#'+elemIdDayNumber);
         elemDayNumberDesc       = elemDivContainer.querySelector('#'+elemIdDayNumberDesc);
+        
+        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         
         elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
         elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
@@ -288,9 +293,13 @@ export function PageAccPigOpsAddEdit(input_settings){
         
         let html;
         if (showOptions.is_add){
+            curDataAccPigOps = null;
+            
             html    = `<i class="fas fa-plus me-2"></i>Add Pig Operation`;
         }
-        else{
+        else {
+            curDataAccPigOps = data_acc_pig_ops;
+            
             html    = `<i class="fas fa-edit me-2"></i>Edit Pig Operation`;
         }
         elemHeaderTitle.innerHTML = html;
@@ -393,29 +402,6 @@ export function PageAccPigOpsAddEdit(input_settings){
      
         
         if (ev.checkValidity()) {
-            switch(input_field){
-            
-                case 'day_num': {
-                    input_elem  = elemDayNumber;
-                    input_val   = input_elem.value;
-                    cur_field   = newEntry.fieldNumDaysSince;
-                    
-                    
-                    cur_field.newValue = input_val; 
-                    validation = cur_field.validateChange();
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-              }
             
             
         } else {
@@ -429,9 +415,7 @@ export function PageAccPigOpsAddEdit(input_settings){
     
     this.onClickSaveButton = function(){
         let input_elem      = null;
-        let cur_field       = null;
         let validation      = 0;
-        let proceed_to_save = 1;
         
 		
         let input_name      = elemUiName.getValue().trim();
@@ -440,105 +424,82 @@ export function PageAccPigOpsAddEdit(input_settings){
         
 
         input_elem          = elemUiName.getElemText();
-        if (input_name.length == 0){input_name = null;}
-        cur_field.newValue  = input_name;
-        validation          = cur_field.validateChange();
-
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
+        if (input_name.length == 0){
+            validation = -1;
         }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
+        addValidationClassToElem(input_elem, validation);
+        if (validation != 0) {return;}
+        
+        
+        input_elem          = elemUiDescription.getElemText();
+        if (input_description.length == 0){
+            validation = -1;
         }
+        addValidationClassToElem(input_elem, validation);
+        if (validation != 0) {return;}
         
-        if (proceed_to_save == 0) {return;}
-        
-        
-        input_elem          = elemShortName;
-        cur_field           = newEntry.fieldShortName;
-        cur_field.newValue  = input_short_name;
-        validation          = cur_field.validateChange();
-
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
-        }
-        
-        if (proceed_to_save == 0) {return;}
-        
-        
-        input_elem          = elemDescription;
-        cur_field           = newEntry.fieldDescription;
-        cur_field.newValue  = input_description;
-        validation          = cur_field.validateChange();
-
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
-        }
-        
-        if (proceed_to_save == 0) {return;}
         
 		
         
         input_elem          = elemDayNumber;
-        cur_field           = newEntry.fieldNumDaysSince;
-        cur_field.newValue  = input_num_days;
-        validation          = cur_field.validateChange();
         
-        if (validation != FIELD_VALIDATION_OK){
-            if (input_elem.classList.contains('is-invalid') == false){
-                input_elem.classList.add('is-invalid');
-            }
-            proceed_to_save = 0;
-        }
-        else{
-            if (input_elem.classList.contains('is-valid') == false){
-                input_elem.classList.add('is-valid');
-            }
+        let num_days = null;
+        try{
+            num_days = parseInt(input_num_days);
+        }catch(error){
+            validation = -1
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
         }
         
-        if (proceed_to_save == 0) {return;}
         
         
-        let user_hid        = gController.getUserUhid();
+        
+        const is_medvac   = elemUiIsMedVac.getElemCheckBox().checked;
+        
+        
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+            return;
+        } 
+        
+        
+        
+        const user_hid      = navigation.userControl.getUserHid();
+        const base_url      = window.location.origin;
+        
+        
         
         // send post request
         const post_data = {
             'uhid':             user_hid,
             'operation_type':   operationType,
-            'num_days_since':   parseInt(newEntry.fieldNumDaysSince.newValue),
-            'name':             newEntry.fieldName.newValue,
-            'short_name':       newEntry.fieldShortName.newValue,
-            'description':      newEntry.fieldDescription.newValue
+            'num_days_since':   num_days,
+            'name':             input_name,
+            'description':      input_description
         };
         
+        if (showOptions.is_add == true){}
+        else {
+            post_data.account_pig_ops_hid = curDataAccPigOps.acc_pig_ops.hid;
+        }
 
+        
+        let url;
+        
+        if (showOptions.is_add == true){
+            url = `${base_url}/account_pig_ops/add`;
+        }
+        else{
+            url = `${base_url}/account_pig_ops/update`;
+        }
+        
         
         $.ajax({
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
-            url: gController.getBaseUrl() + '/account_pig_ops/add',
+            url: url,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -548,7 +509,33 @@ export function PageAccPigOpsAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    thisObj._onSuccessAddEntry(response.data);
+                    if (showOptions.is_add == true){
+                        const callback_success = function(){
+                            navigation.showThisPage(showOptions.go_back_page);
+                            navigation.pageAccPigOpsList.show();
+                        };
+                        
+                        navigation.pigFarm.requestDataAccPigOpsList(
+                            callback_success, elemServerErrorMsg);
+
+                        return;
+                    }
+                    
+                    else{
+                        const callback_success = function(){
+                            navigation.showThisPage(showOptions.go_back_page);
+                            navigation.pageAccPigOpsList.show();
+                        };
+                        
+                        navigation.pigFarm.requestDataAccPigOpsList(
+                            callback_success, elemServerErrorMsg);
+
+                        return;
+                    }
+                }
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elemServerErrorMsg);
                 }
             },
   

@@ -65,10 +65,10 @@ export function PageAccPigOpsList(input_settings){
     let curUserLanguageKey      = 'en';
 
 
-    let dataAccGestatingOps     = null;
-    let dataAccLactatingPigletOps= null;
-    let dataAccLactatingSowOps  = null;
-    let dataAccGiltOps          = null;
+    let dataAccGestatingOps     = [];
+    let dataAccLactatingPigletOps= [];
+    let dataAccLactatingSowOps  = [];
+    let dataAccGiltOps          = [];
 
     let curAccPigOpsType        = null;
     let curDataAccPigOpsList    = null;
@@ -160,38 +160,63 @@ export function PageAccPigOpsList(input_settings){
     }
     
         
-    this.setDataAccPigOps = function(data){
-        
-        dataAccGestatingOps = [];
-        dataAccLactatingPigletOps = [];
-        dataAccLactatingSowOps = [];
-        dataAccGiltOps = [];
-        
-        
-        for (const cur_entry of data){
-            switch(cur_entry.acc_pig_ops.operation_type){
+    this.setDataAccPigOpsList = function(data, operation_type){
+        if (operation_type){
+            switch(operation_type){
                 case PIG_OPERATION_TYPE.GESTATING:{
-                    dataAccGestatingOps.push(cur_entry);
+                    dataAccGestatingOps         = data;
                     break;
                 }
                 
                 case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
-                    dataAccLactatingPigletOps.push(cur_entry);
+                    dataAccLactatingPigletOps   = data;
                     break;
                 }
                 
                 case PIG_OPERATION_TYPE.LACTATING_SOW:{
-                    dataAccLactatingSowOps.push(cur_entry);
+                    dataAccLactatingSowOps      = data;
                     break;
                 }
                 
                 case PIG_OPERATION_TYPE.GILT:{
-                    dataAccGiltOps.push(cur_entry);
+                    dataAccGiltOps              = data;
                     break;
                 }
             }
         }
-
+        
+        else{
+            // Separate by operation type
+            dataAccGestatingOps         = [];
+            dataAccLactatingPigletOps   = [];
+            dataAccLactatingSowOps      = [];
+            dataAccGiltOps              = [];
+        
+        
+            for (const cur_entry of data){
+                switch(cur_entry.acc_pig_ops.operation_type){
+                    case PIG_OPERATION_TYPE.GESTATING:{
+                        dataAccGestatingOps.push(cur_entry);
+                        break;
+                    }
+                    
+                    case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
+                        dataAccLactatingPigletOps.push(cur_entry);
+                        break;
+                    }
+                    
+                    case PIG_OPERATION_TYPE.LACTATING_SOW:{
+                        dataAccLactatingSowOps.push(cur_entry);
+                        break;
+                    }
+                    
+                    case PIG_OPERATION_TYPE.GILT:{
+                        dataAccGiltOps.push(cur_entry);
+                        break;
+                    }
+                }
+            }
+        }
     }
     
     
@@ -203,10 +228,12 @@ export function PageAccPigOpsList(input_settings){
     
     
     this.show = function(pig_ops_type){
-        curAccPigOpsType = pig_ops_type;
+        // Change only if needed
+        if (pig_ops_type){
+            curAccPigOpsType = pig_ops_type;
+        }
         
-        
-        switch(pig_ops_type){
+        switch(curAccPigOpsType){
             case PIG_OPERATION_TYPE.GESTATING:{
                 curDataAccPigOpsList = dataAccGestatingOps;
                 
