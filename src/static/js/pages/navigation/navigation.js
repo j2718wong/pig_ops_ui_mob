@@ -981,30 +981,31 @@ export function Navigation(){
         
         
         switch(nav_name){
-            case 'op-settings':{
-                thisObj._onClickNavOpsSettings(is_mobile);
+            case 'prod-gesta':{
+                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.GESTATING);
                 break;
             }
             
-            case 'gesta-sow-ops':{
-                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.GESTATING);
+            case 'prod-lacta-piglets':{
+                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
                 break;
             }
             
-            case 'lacta-piglets-ops':{
-                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
-                break;
-            }
-                
-            case 'lacta-sow-ops':{
-                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.LACTATING_SOW);
+            case 'prod-lacta-sows':{
+                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.LACTATING_SOW);
                 break;
             }
             
-            case 'gilt-ops':{
-                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.GILT);
+            case 'prod-fattening':{
+                thisObj._onClickNavProdFattening(is_mobile);
                 break;
             }
+            
+            case 'prod-feeds':{
+                thisObj._onClickNavProdFeeds(is_mobile);
+                break;
+            }
+            
             
             
             case 'sows':{
@@ -1034,30 +1035,7 @@ export function Navigation(){
             
             
             
-            case 'prod-gesta':{
-                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.GESTATING);
-                break;
-            }
             
-            case 'prod-lacta-piglets':{
-                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
-                break;
-            }
-            
-            case 'prod-lacta-sows':{
-                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.LACTATING_SOW);
-                break;
-            }
-            
-            case 'prod-fattening':{
-                thisObj._onClickNavProdFattening(is_mobile);
-                break;
-            }
-            
-            case 'prod-feeds':{
-                thisObj._onClickNavProdFeeds(is_mobile);
-                break;
-            }
             
             
             case 'pig-harvest':{
@@ -1114,6 +1092,37 @@ export function Navigation(){
             
             case 'gilt-suppliers':{
                 thisObj._onClickGiltSuppliers(is_mobile);
+                break;
+            }
+            
+            
+            case 'op-settings':{
+                thisObj._onClickNavOpsSettings(is_mobile);
+                break;
+            }
+            
+            case 'gesta-sow-ops':{
+                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.GESTATING);
+                break;
+            }
+            
+            case 'lacta-piglets-ops':{
+                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                break;
+            }
+                
+            case 'lacta-sow-ops':{
+                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.LACTATING_SOW);
+                break;
+            }
+            
+            case 'wean-sow-ops':{
+                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.WEANING_SOW);
+                break;
+            }
+            
+            case 'gilt-ops':{
+                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.GILT);
                 break;
             }
             
@@ -1336,13 +1345,13 @@ export function Navigation(){
     }
     
     
-    this.onClickProdLactatingEntry = function(pig_prod_pid){
+    this.onClickProdLactatingEntry = function(pig_prod_pid, show_options){
         if (pig_prod_pid == null){
             thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING);
             return;
         }
         
-        
+
         thisObj.showThisPage(elemPageContProdLactaEntry);
         
         const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataLactatingList;
@@ -1379,6 +1388,12 @@ export function Navigation(){
                     data_index:     index+1,
                     total_entries:  data_pig_prod_list.length
                 };
+                
+                if (show_options){
+                    if (show_options.tab_lacta){
+                        options.tab_lacta = show_options.tab_lacta;
+                    }
+                }
                 
                 thisObj.pageProdLactatingEntry.show(cur_entry, options);
                 return;

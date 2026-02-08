@@ -36,6 +36,14 @@ when each task's due date, calculated from the start of piglets Date of Birth, i
             
         },
         
+        'weaning_sow_ops': {
+            'title': 'Weaning Sow Ops',
+            
+            'info_text':`This list defines the standard care activities for 
+prepeparation of a weaned sow before next production cycle.`
+            
+        },
+        
         'gilt_ops': {
             'title': 'Gilt Operations',
             

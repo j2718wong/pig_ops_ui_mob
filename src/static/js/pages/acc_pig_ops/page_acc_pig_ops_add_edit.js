@@ -341,6 +341,17 @@ export function PageAccPigOpsAddEdit(input_settings){
                 break;
             }
             
+            case PIG_OPERATION_TYPE.WEANING_SOW:{
+                min_days        = 1;
+                max_days        = 45;
+                num_days_title  = "Number of days since sow wean. ";
+                
+                settingsBreadcrumb.items[0].label = 'Weaning Sow Ops';
+                componentBreadcrumb.refreshLabels();
+
+                break;
+            }
+            
             case PIG_OPERATION_TYPE.GILT:{
                 min_days        = 1;
                 max_days        = 300;
@@ -475,6 +486,7 @@ export function PageAccPigOpsAddEdit(input_settings){
             'uhid':             user_hid,
             'operation_type':   operationType,
             'num_days_since':   num_days,
+            'is_medvac':        is_medvac? 1 : 0,
             'name':             input_name,
             'description':      input_description
         };

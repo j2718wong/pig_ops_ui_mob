@@ -68,6 +68,7 @@ export function PageAccPigOpsList(input_settings){
     let dataAccGestatingOps     = [];
     let dataAccLactatingPigletOps= [];
     let dataAccLactatingSowOps  = [];
+    let dataAccWeaningSowOps    = [];
     let dataAccGiltOps          = [];
 
     let curAccPigOpsType        = null;
@@ -178,6 +179,11 @@ export function PageAccPigOpsList(input_settings){
                     break;
                 }
                 
+                case PIG_OPERATION_TYPE.WEANING_SOW:{
+                    dataAccWeaningSowOps        = data;
+                    break;
+                }
+                
                 case PIG_OPERATION_TYPE.GILT:{
                     dataAccGiltOps              = data;
                     break;
@@ -190,6 +196,7 @@ export function PageAccPigOpsList(input_settings){
             dataAccGestatingOps         = [];
             dataAccLactatingPigletOps   = [];
             dataAccLactatingSowOps      = [];
+            dataAccWeaningSowOps        = [];
             dataAccGiltOps              = [];
         
         
@@ -207,6 +214,11 @@ export function PageAccPigOpsList(input_settings){
                     
                     case PIG_OPERATION_TYPE.LACTATING_SOW:{
                         dataAccLactatingSowOps.push(cur_entry);
+                        break;
+                    }
+                    
+                    case PIG_OPERATION_TYPE.WEANING_SOW:{
+                        dataAccWeaningSowOps.push(cur_entry);
                         break;
                     }
                     
@@ -271,6 +283,20 @@ export function PageAccPigOpsList(input_settings){
                 }
         
                 elemNavNextEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.WEANING_SOW);
+                }
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.WEANING_SOW:{
+                curDataAccPigOpsList = dataAccWeaningSowOps;
+                
+                // Set up listeners for navigation arrows
+                elemNavPrevEntry.onclick = function(){
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
+                }
+        
+                elemNavNextEntry.onclick = function(){
                     navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
                 }
                 break;
@@ -281,7 +307,7 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
+                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.WEANING_SOW);
                 }
         
                 elemNavNextEntry.onclick = function(){
@@ -448,6 +474,29 @@ export function PageAccPigOpsList(input_settings){
                 
                 cur_text = textTranslation.getTranslatedText(
                     curUserLanguageKey, 'lactating_sow_ops.info_text');
+                if (cur_text != null){
+                    const substitute_list = textSubstituteToControl(cur_text);
+                    
+                    for (const cur_entry of substitute_list){
+                        cur_text = cur_text.replaceAll(cur_entry.key, cur_entry.substitute);
+                    }
+                    
+                    elemPageInfo.innerHTML = cur_text;
+                }
+                
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.WEANING_SOW:{
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'weaning_sow_ops.title');
+                if (cur_text != null){
+                    elemPageTitle.innerHTML = cur_text;
+                }
+                
+                
+                cur_text = textTranslation.getTranslatedText(
+                    curUserLanguageKey, 'weaning_sow_ops.info_text');
                 if (cur_text != null){
                     const substitute_list = textSubstituteToControl(cur_text);
                     

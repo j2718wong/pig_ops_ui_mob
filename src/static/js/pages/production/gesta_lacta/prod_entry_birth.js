@@ -575,11 +575,21 @@ export function ProdEntryBirth(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    thisObj.onSuccessUpdateBirth();
+                    // If user is added as staff, pigFarm stafflist should be
+                    // updated; otherwise it will not show up in staff  dropdown.
+                    // Request pigFarm stafflist first
                     
-                    if (thisObj.callBackOnSuccessUpdate){
-                        thisObj.callBackOnSuccessUpdate();
-                    }
+                    const callback_success = function(){ 
+                        thisObj.onSuccessUpdateBirth();
+                        
+                        if (thisObj.callBackOnSuccessUpdate){
+                            thisObj.callBackOnSuccessUpdate();
+                        }
+                    };
+                    
+                    navigation.pigFarm.requestDataPigFarmStaffList(
+                        callback_success, elemServerErrorMsg);
+                    
                 } 
                 else{
                     navigation.serverError.receivedErrorMessage(
@@ -611,8 +621,8 @@ export function ProdEntryBirth(input_settings){
         // 2.) Case 2: curDataPigProd has date_actual_birth (PROD_STATUS.LACTATING)
         // The sequence of steps that should happen is
         //  - request updated prod_entry data and replace curDataPigProd;
-        //  - should go back to Lactating Page showing PigOps List; this is 
-        //      important because any change in actual date_of_birth will 
+        //  - should go back to Lactating Entry Page showing PigOps List; this  
+        //      is important because any change in actual date_of_birth will 
         //      recalculate lactating pigops schedule.
         
         
@@ -629,7 +639,7 @@ export function ProdEntryBirth(input_settings){
             const callback_success = function(data){
                 navigation.pigFarm.managerPigProd.dataLactatingList = data;
                 
-                // Open to Lactating List
+                // Go Back to Lactating List Page
                 const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
                 navigation._onClickNavProdGestaLacta(null, operation_type);
             };
@@ -642,21 +652,26 @@ export function ProdEntryBirth(input_settings){
         
             
         }
-        else{
+        
+        if (cur_prod_status == PROD_STATUS.LACTATING){
             const pig_prod_hid = curDataPigProd.pig_production.hid;
-            const prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
+            const pig_prod_pid = curDataPigProd.pig_production.farm_prod_id;
+            const prod_list = navigation.pigFarm.managerPigProd.dataLactatingList;
             
             const callback_success = function(data){
                 navigation.pigFarm.managerPigProd.replaceInProdList(
                         pig_prod_hid, prod_list, data);
+                
+                const show_options = {
+                    tab_lacta: parentObj.TAB_LACTA_PIGOPS
+                };
+                navigation.onClickProdLactatingEntry(pig_prod_pid, show_options);
             };
             
             //request updated prod_entry data and replace curDataPigProd;
             navigation.pigFarm.managerPigProd.requestPigProdEntry(pig_prod_hid, 
                 callback_success, elemServerErrorMsg);
                 
-            //go back to Lactating Page showing PigOps List;
-            
         }
         
     }

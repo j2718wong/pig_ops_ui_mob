@@ -151,7 +151,7 @@ export function PageProdLactatingEntry(input_settings){
     let dataPigProd                 = null;
     let showOptions                 = null;
     
-    let curTab                      = null;
+    let curTabLacta                 = null;
     
     this.setDataTabMenus(tabsProdLacta);
     
@@ -290,18 +290,23 @@ export function PageProdLactatingEntry(input_settings){
         
         this.populateHeader(data_pig_prod, showOptions);
         
-        if (curTab == null){
-            curTab = thisObj.TAB_LACTA_PIGOPS;
+        if (curTabLacta == null){
+            curTabLacta = thisObj.TAB_LACTA_PIGOPS;
         }
         
         
-        // Request pig_prod data deails if there is none yet
+        // Override if specified
+        if (showOptions.tab_lacta){
+            curTabLacta = showOptions.tab_lacta;
+        }
+        
+        // Request pig_prod data details if there is none yet
         if ('data_details' in data_pig_prod){
-            thisObj.switchTab(curTab);
+            thisObj.switchTab(curTabLacta);
         }
         else{
             const callback_success = function(){
-                thisObj.switchTab(curTab);
+                thisObj.switchTab(curTabLacta);
             }
             navigation.pigFarm.managerPigProd.requestPigProdDetails(
                 dataPigProd, callback_success);
@@ -393,7 +398,7 @@ export function PageProdLactatingEntry(input_settings){
                 }
                 thisObj.prodEntryPigOps.show(dataPigProd, options_pig_prod_ops);
         
-                curTab = thisObj.TAB_LACTA_PIGOPS;
+                curTabLacta = thisObj.TAB_LACTA_PIGOPS;
                 break;
             }
             
@@ -403,7 +408,7 @@ export function PageProdLactatingEntry(input_settings){
                 }
                 thisObj.prodEntryBirth.show(dataPigProd, options_birth);
                 
-                curTab = thisObj.TAB_LACTA_BIRTH;
+                curTabLacta = thisObj.TAB_LACTA_BIRTH;
                 break;
             }
             
@@ -415,7 +420,7 @@ export function PageProdLactatingEntry(input_settings){
                 thisObj.prodEntryWean.show(dataPigProd, options_wean);
                 
                 
-                curTab = thisObj.TAB_LACTA_WEAN;
+                curTabLacta = thisObj.TAB_LACTA_WEAN;
                 break;
             }
             
@@ -423,39 +428,39 @@ export function PageProdLactatingEntry(input_settings){
             case elemIdTabLactaMedVac:{
                 thisObj.tableMedVac.beforeShow(dataPigProd);
                 
-                curTab = thisObj.TAB_LACTA_MEDVAC;
+                curTabLacta = thisObj.TAB_LACTA_MEDVAC;
                 break;
             }
             
             case elemIdTabLactaHealth:{
                 thisObj.tablePigProdHealth.beforeShow(dataPigProd);
                 
-                curTab = thisObj.TAB_LACTA_HEALTH;
+                curTabLacta = thisObj.TAB_LACTA_HEALTH;
                 break;
             }
             
             case elemIdTabLactaPigDead:{
-                curTab = thisObj.TAB_LACTA_PIG_DEAD;
+                curTabLacta = thisObj.TAB_LACTA_PIG_DEAD;
                 break;
             }
             
             case elemIdTabLactaFeedSummary:{
                 thisObj.prodFeedSummary.beforeShow(dataPigProd);
                 
-                curTab = thisObj.TAB_LACTA_FEED_SUMMARY;
+                curTabLacta = thisObj.TAB_LACTA_FEED_SUMMARY;
                 break;
             }
             
             
             case elemIdTabLactaFeedAdd:{
-                curTab = thisObj.TAB_LACTA_FEED_ADD;
+                curTabLacta = thisObj.TAB_LACTA_FEED_ADD;
                 break;
             }
             
             case elemIdTabLactaNotes:{
                 thisObj.tablePigProdNotes.beforeShow(dataPigProd);
                 
-                curTab = thisObj.TAB_LACTA_NOTES;
+                curTabLacta = thisObj.TAB_LACTA_NOTES;
                 break;
             }
             
@@ -467,7 +472,7 @@ export function PageProdLactatingEntry(input_settings){
                 }
                 thisObj.prodEntryMating.show(dataPigProd, options_insem);
                 
-                curTab = thisObj.TAB_GESTA_MATING;
+                curTabLacta = thisObj.TAB_GESTA_MATING;
                 break;
             }
             

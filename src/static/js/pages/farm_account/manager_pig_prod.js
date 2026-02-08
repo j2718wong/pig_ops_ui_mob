@@ -77,7 +77,7 @@ export function ManagerPigProd(input_settings){
         
         
         for (const cur_entry of pig_prod_list){
-            if (cur_entry.pig_production.his == pig_prod_hid){
+            if (cur_entry.pig_production.hid == pig_prod_hid){
                 return cur_entry;
             }
         }
@@ -385,7 +385,7 @@ export function ManagerPigProd(input_settings){
         let cur_entry;
         
         for(index = 0; index<prod_list.length; index++){
-            cur_entry = thisObj.dataGestatingList[index];
+            cur_entry = prod_list[index];
             
             if (cur_entry.pig_production.hid == pig_prod_hid){
                 prod_list.splice(index, 1, new_prod_entry);

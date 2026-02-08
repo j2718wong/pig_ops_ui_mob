@@ -61,7 +61,8 @@ const PIG_OPERATION_TYPE = {
     GESTATING:          1,
     LACTATING_PIGLETS:  2,
     LACTATING_SOW:      3,
-    GILT:               4
+    GILT:               4,
+    WEANING_SOW:        5
 };
 
 
