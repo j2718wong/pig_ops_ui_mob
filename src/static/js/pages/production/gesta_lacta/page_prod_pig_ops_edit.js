@@ -47,6 +47,7 @@ export function PageProdPigOpsEdit(input_settings){
         
     let elemIdHeaderTitle       = null;
     let elemIdHeaderSubTitle    = null;
+    let elemIdHeaderSubTitle2   = null;
     
     
     let elemUiDateActual        = null;
@@ -68,6 +69,7 @@ export function PageProdPigOpsEdit(input_settings){
     
     let elemHeaderTitle         = null;
     let elemHeaderSubTitle      = null;
+    let elemHeaderSubTitle2     = null;
     
     let elemMedVacInputs        = null;
     
@@ -115,6 +117,8 @@ export function PageProdPigOpsEdit(input_settings){
         
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         elemIdHeaderSubTitle    = `${settings.uniqueKey}-subtitle`;
+        elemIdHeaderSubTitle2   = `${settings.uniqueKey}-subtitle2`;
+        
         
         elemUiDateActual         = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date-actual`,
@@ -230,7 +234,10 @@ export function PageProdPigOpsEdit(input_settings){
         <div class="form-section-title" style="margin-top:0;">
             <i class="fas fa-tag"></i>
             <span id="${elemIdHeaderSubTitle}">PID: 00000 - Operation Name</span>
+            <div id="${elemIdHeaderSubTitle2}" style="display:none"></div>
         </div>
+        
+        
         
         ${html_date_actual}
         
@@ -300,6 +307,7 @@ export function PageProdPigOpsEdit(input_settings){
         
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemHeaderSubTitle      = elemDivContainer.querySelector('#'+elemIdHeaderSubTitle);
+        elemHeaderSubTitle2     = elemDivContainer.querySelector('#'+elemIdHeaderSubTitle2);
         
         elemMedVacInputs        = elemDivContainer.querySelector('#'+elemIdMedVacInputs);
         
@@ -367,6 +375,29 @@ export function PageProdPigOpsEdit(input_settings){
         componentAccMedVac.beforeShow();
         
         componentStaff.beforeShow();
+        
+        
+        // Add additional subtitle2 
+        const operation_type = curDataProdPigOps.pig_prod_pig_ops.operation_type;
+        switch (operation_type){ 
+            case PIG_OPERATION_TYPE.LACTATING_PIGLETS: {
+                elemHeaderSubTitle2.innerHTML = 'Piglets Operation';
+                elemHeaderSubTitle2.style.display = 'block';
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.LACTATING_SOW: {
+                elemHeaderSubTitle2.innerHTML = 'Sow Operation';
+                elemHeaderSubTitle2.style.display = 'block';
+                break;
+            }
+            
+            default:{
+                elemHeaderSubTitle2.style.display = 'none';
+                break;
+            }
+        
+        }
         
         
         // Update elemUiNotes help text

@@ -1486,7 +1486,7 @@ p {
 }
 
 .data-table td {
-    padding: 6px 6px;
+    padding: 5px 4px;
     font-size: 15px;
     vertical-align: top;
     overflow: hidden;
@@ -2791,7 +2791,7 @@ textarea.form-control {
     margin-top: 20px;
     margin-bottom: 8px;
     border-bottom: 2px solid #f0f0f0;
-    display: flex;
+    display: block;
     align-items: center;
     gap: 8px;
 }

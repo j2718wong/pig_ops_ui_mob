@@ -584,8 +584,6 @@ export function ProdEntryWean(input_settings){
                     pig_prod_hid, prod_list);
         
             const callback_success = function(data){
-                navigation.pigFarm.managerPigProd.dataLactatingList = data;
-                
                 // Open to Lactating List
                 const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
                 navigation._onClickNavProdGestaLacta(null, operation_type);

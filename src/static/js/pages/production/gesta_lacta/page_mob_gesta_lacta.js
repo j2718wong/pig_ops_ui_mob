@@ -243,13 +243,13 @@ export function PageMobGestaLacta(input_settings){
             
             
             
-            <!-- PogProd Lacta Table -->
+            <!-- PigProd Lacta Table -->
             <table class="data-table table-gesta-lacta" id="${elemIdTablePigOps}">
                 <colgroup>
                     <col style="width: 13%;">
                     <col style="width: 24%;">
-                    <col style="width: 33%;">
                     <col style="width: 30%;">
+                    <col style="width: 33%;">
                 </colgroup>
   
                 <thead>
@@ -1170,10 +1170,7 @@ ${html_style}
         if (settings.isGesta == false){pig_prod_type = PIG_PROD_TYPE.LACTATING;}
 
         const callback_success = function(data){
-            navigation.setDataPigProdList(data);
-            
             thisObj.show(); 
-            
             navigation.pageProdPigOpsEdit.hide();
         };
         

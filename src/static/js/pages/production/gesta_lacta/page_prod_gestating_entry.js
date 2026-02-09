@@ -75,7 +75,7 @@ export function PageProdGestatingEntry(input_settings){
     
     
     let dataPigProd                 = null;
-    
+    let showOptions                 = null;
     
     let curTab                      = null;
     
@@ -149,7 +149,12 @@ export function PageProdGestatingEntry(input_settings){
     this.show = function(data_pig_prod, options){
         dataPigProd = data_pig_prod;
         
-        this.populateHeader(dataPigProd, options);
+        // Change options only if there is a given options
+        if (options){
+            showOptions = options;
+        }
+        
+        this.populateHeader(dataPigProd, showOptions);
         
         
         if (curTab == null){

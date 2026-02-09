@@ -117,6 +117,23 @@ export function ManagerPigProd(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    switch(pig_prod_type){
+                        case PIG_PROD_TYPE.GESTATING:{
+                            thisObj.dataGestatingList = response.data;
+                            break;
+                        }
+                        
+                        case PIG_PROD_TYPE.LACTATING:{
+                            thisObj.dataLactatingList = response.data;
+                            break;
+                        }
+                        case PIG_PROD_TYPE.FATTENING:{
+                            thisObj.dataFatteningList = response.data;
+                            break;
+                        }
+                    }
+                    
+                    
                     if (callback_success){callback_success(response.data);}
                 }
                 else {
@@ -435,14 +452,9 @@ export function ManagerPigProd(input_settings){
                     // Remove from old entry from gestating list
                     thisObj.dataGestatingList.splice(index, 1);
                     
-                    // Request new lactating list
-                    const callback_success = function(data){
-                        thisObj.dataLactatingList = data;
-                    };
                     
                     const pig_prod_type =  PIG_PROD_TYPE.LACTATING;
-                    thisObj.requestPigProdList(pig_prod_type, 
-                        callback_success);
+                    thisObj.requestPigProdList(pig_prod_type);
 
                 }
                 

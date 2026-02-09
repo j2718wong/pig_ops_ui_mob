@@ -600,7 +600,8 @@ export function GestaLactaCards(input_settings){
         
         // Compute the number of days from  dt_target to dt_current
         diff_msecs          = dt_target - dt_current;
-        diff_days           = Math.round(diff_msecs / thisObj.NUM_MSECS_1DAY);
+        diff_days           = Math.round(diff_msecs / parentObj.NUM_MSECS_1DAY);
+        
         
         let operation_class = '';
         let has_action      = 0;

@@ -143,7 +143,7 @@ export function PageAccPigOpsAddEdit(input_settings){
         
             textLabel:          'Is MedVac?',
             checkBoxLabel:      'Operation is MedVac',
-            helpText:           "Check this if operation requires medicine or pig injection."  
+            helpText:           "Check this if operation requires medicine, vitamins, supplements or pig injection."  
         });
         
         const html_breadcrumb   = componentBreadcrumb.getHtml();
@@ -428,7 +428,7 @@ export function PageAccPigOpsAddEdit(input_settings){
         let input_elem      = null;
         let validation      = 0;
         
-		
+        
         let input_name      = elemUiName.getValue().trim();
         let input_description= elemUiDescription.getValue().trim();
         let input_num_days  = elemDayNumber.value;
@@ -450,7 +450,7 @@ export function PageAccPigOpsAddEdit(input_settings){
         if (validation != 0) {return;}
         
         
-		
+        
         
         input_elem          = elemDayNumber;
         
@@ -525,6 +525,9 @@ export function PageAccPigOpsAddEdit(input_settings){
                         const callback_success = function(){
                             navigation.showThisPage(showOptions.go_back_page);
                             navigation.pageAccPigOpsList.show();
+                            
+                            // This should request pig production since acc_pig_ops is added
+                            
                         };
                         
                         navigation.pigFarm.requestDataAccPigOpsList(

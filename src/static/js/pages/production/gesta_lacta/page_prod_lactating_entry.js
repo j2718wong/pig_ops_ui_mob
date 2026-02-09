@@ -283,7 +283,7 @@ export function PageProdLactatingEntry(input_settings){
     this.show = function(data_pig_prod, options){
         dataPigProd = data_pig_prod;
         
-        // Change options only if there is a given option
+        // Change options only if there is a given options
         if (options){
             showOptions = options;
         }

@@ -637,8 +637,6 @@ export function ProdEntryBirth(input_settings){
                     pig_prod_hid, prod_list);
         
             const callback_success = function(data){
-                navigation.pigFarm.managerPigProd.dataLactatingList = data;
-                
                 // Go Back to Lactating List Page
                 const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
                 navigation._onClickNavProdGestaLacta(null, operation_type);
@@ -648,10 +646,8 @@ export function ProdEntryBirth(input_settings){
             // request Lactating List
             navigation.pigFarm.managerPigProd.requestPigProdList(
                 PIG_PROD_TYPE.LACTATING, callback_success, elemServerErrorMsg);
-        
-        
-            
         }
+        
         
         if (cur_prod_status == PROD_STATUS.LACTATING){
             const pig_prod_hid = curDataPigProd.pig_production.hid;
