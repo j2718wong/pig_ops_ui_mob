@@ -57,13 +57,8 @@ export function PageMobGestaLacta(input_settings){
     
     
     // This is needed as ths will be first element to be rendered
-    let elemDivContainer        = null;
-    if (settings.isGesta == true){
-        elemDivContainer        = document.getElementById('container-prod-gesta-list');
-    }
-    else{
-        elemDivContainer        = document.getElementById('container-prod-lacta-list');
-    }
+    let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
+    
     
     let elemIdNavPrevEntry      = null;
     let elemIdNavNextEntry      = null;
@@ -445,7 +440,7 @@ ${html_style}
         if (settings.isGesta == true){
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
-                navigation._onClickNavProdFeeds(null);
+                navigation._onClickNavProdFattening(null);
             }
 
             elemNavNextEntry.onclick = function(){

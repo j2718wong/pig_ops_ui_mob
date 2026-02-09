@@ -419,6 +419,34 @@ export function ComponentStaffFormGroup(input_settings){
     }
     
     
+    this.enabled = function(){
+        elemSelect.disabled = false;
+        
+        if (settings.includeAddNew){
+            elemEntryAdd.disabled = false;
+        }
+        
+        if (settings.includeDoneByMe){
+            elemDoneByMeShow.style.display ='flex';
+        }
+    }
+    
+    
+    this.disabled = function(){
+        elemSelect.disabled = true;
+        
+        if (settings.includeAddNew){
+            elemEntryAdd.disabled = true;
+        }
+        
+        if (settings.includeDoneByMe){
+            elemDoneByMeShow.style.display ='none';
+        }
+
+
+    }
+    
+    
     this.onClickSave = function(){
         let input_elem      = null;
         let validation      = -1;

@@ -69,7 +69,9 @@ export function ProdEntryBirth(input_settings){
     
     let elemIdContentContainer  = null;
     
-    let elemIdWarningBox      = null;
+    let elemIdWarningBox        = null;
+    let elemIdCannotUpdate      = null;
+    
     let elemIdSow               = null;
     let elemIdDateExpected      = null;
     
@@ -90,6 +92,8 @@ export function ProdEntryBirth(input_settings){
     let elemContentContainer    = null;
     
     let elemWarningBox          = null;
+    let elemCannotUpdate        = null;
+    
     let elemSow                 = null;
     let elemDateExpected        = null;
     
@@ -118,7 +122,8 @@ export function ProdEntryBirth(input_settings){
         
         elemIdContentContainer  = `${settings.uniqueKey}-content`;
                 
-        elemIdWarningBox      = `${settings.uniqueKey}-cannot-update`;
+        elemIdWarningBox        = `${settings.uniqueKey}-warning-box`;
+        elemIdCannotUpdate      = `${settings.uniqueKey}-cannot-update`;
         
         elemIdSow               = `${settings.uniqueKey}-sow`;
         elemIdDateExpected      = `${settings.uniqueKey}-date-expected`;
@@ -219,6 +224,12 @@ export function ProdEntryBirth(input_settings){
         <b>This cannot be undone.</b>
     </div>
     
+    <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:8px;">
+        Birth info of a production entry that is already in 
+        <b>Weaning Stage</b> or later cannot be updated.
+    </div>
+    
+    
     <!-- 1. Sow Field cannot be edited. -->
     <div class="form-group-text">
         <label class="form-label">Sow Name</label>
@@ -280,6 +291,8 @@ export function ProdEntryBirth(input_settings){
         elemContentContainer    = elemDivContainer.querySelector('#'+elemIdContentContainer);
         
         elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
+        elemCannotUpdate        = elemDivContainer.querySelector('#'+elemIdCannotUpdate);
+        
         elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);
         elemDateExpected        = elemDivContainer.querySelector('#'+elemIdDateExpected);
         
@@ -370,12 +383,47 @@ export function ProdEntryBirth(input_settings){
             componentNumDead.setValue(pig_prod_birth.num_dead_at_birth);
             
             // Set Staff
-			componentStaff.setValue(pig_prod_birth.birth_staff_hid);
+            componentStaff.setValue(pig_prod_birth.birth_staff_hid);
         }
         else{
             elemWarningBox.innerHTML = WARNING_1;
         }
         
+        
+        if (options.is_read_only){
+            elemCannotUpdate.style.display = 'block';
+            
+            elemWarningBox.style.display = 'none'; 
+            
+            
+            elemUiDateBirth.disabled();
+            
+            componentNumFemale.disabled();
+            componentNumMale.disabled();
+            componentNumDead.disabled();
+            
+            componentStaff.disabled();
+            
+            elemBtnSave.style.display = 'none';
+            
+        }
+        
+        else{
+            elemCannotUpdate.style.display = 'none';
+            
+            elemWarningBox.style.display = 'block'; 
+            
+            
+            elemUiDateBirth.enabled();
+            
+            componentNumFemale.enabled();
+            componentNumMale.enabled();
+            componentNumDead.enabled();
+            
+            componentStaff.enabled();
+             
+            elemBtnSave.style.display = 'block';
+        }
         
         
         

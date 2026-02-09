@@ -127,8 +127,14 @@ export function ManagerPigProd(input_settings){
                             thisObj.dataLactatingList = response.data;
                             break;
                         }
+                        
                         case PIG_PROD_TYPE.FATTENING:{
                             thisObj.dataFatteningList = response.data;
+                            break;
+                        }
+                        
+                        case PIG_PROD_TYPE.ALL: {
+                            thisObj.setDataPigProdList(response.data);
                             break;
                         }
                     }

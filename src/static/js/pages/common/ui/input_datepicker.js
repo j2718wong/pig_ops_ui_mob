@@ -173,7 +173,16 @@ export function UiInputDatePicker(input_settings){
     this.reset = function(){
         elemText.value = '';
         elemText.classList.remove('is-valid', 'is-invalid');
-     } 
+    } 
     
+    
+    this.enabled = function(){
+        elemText.disabled = false;
+    }
+    
+    
+    this.disabled = function(){
+        elemText.disabled = true;
+    }
     
 }

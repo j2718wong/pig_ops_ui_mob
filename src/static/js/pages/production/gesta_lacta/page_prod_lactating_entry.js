@@ -75,6 +75,7 @@ export function PageProdLactatingEntry(input_settings){
     let elemIdTabLactaFeedAdd       = `prod-lacta-feed-add`;
     let elemIdTabLactaNotes         = `prod-lacta-notes`;
     let elemIdTabLactaMating        = `prod-lacta-mating`;
+    let elemIdTabLactaExtra         = `prod-lacta-extra`;
     
     
     let tabsProdLacta = [
@@ -231,7 +232,7 @@ export function PageProdLactatingEntry(input_settings){
         this.tablePigProdNotes  = new TableNotes({
             navigation:         settings.navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-notes',
+            uniqueKey:          'pig-prod-lacta-notes',
             elemDivContainer:   elemTabLactaNotes,
             notesType:          MULTIKEY_OBJ_TYPE.PIG_PROD
         });
@@ -241,7 +242,7 @@ export function PageProdLactatingEntry(input_settings){
         this.tablePigProdHealth = new TableHealthIssue({
             navigation:         settings.navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-health',
+            uniqueKey:          'pig-prod-lacta-health',
             elemDivContainer:   elemTabLactaHealth,
             healthType:         MULTIKEY_OBJ_TYPE.PIG_PROD
         });
@@ -255,7 +256,7 @@ export function PageProdLactatingEntry(input_settings){
         this.prodFeedSummary    = new ProdFeedSummary({
             navigation:         settings.navigation,
             parentObj:          this,
-            uniqueKey:          'prod-feed-summary',
+            uniqueKey:          'pig-prod-lacta-feed-summary',
             elemDivContainer:   elemTabLactaFeedSummary
         });
         this.prodFeedSummary.init();

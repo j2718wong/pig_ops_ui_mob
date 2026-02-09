@@ -210,4 +210,14 @@ export function UiInputDatePickerGesta(input_settings){
         elemTextInv.textContent = text;
     }
     
+    
+    this.enabled = function(){
+        elemText.disabled = false;
+    }
+    
+    
+    this.disabled = function(){
+        elemText.disabled = true;
+    }
+    
 }

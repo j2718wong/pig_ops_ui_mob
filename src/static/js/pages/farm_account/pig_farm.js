@@ -126,7 +126,7 @@ export function PigFarm(_navigation){
         }
         else{
             
-            const pig_prod_type = PIG_PROD_TYPE.GESTATING + PIG_PROD_TYPE.LACTATING;
+            const pig_prod_type = PIG_PROD_TYPE.ALL;
             thisObj.managerPigProd.requestPigProdList(pig_prod_type, 
                 thisObj.managerPigProd.setDataPigProdList);
         }

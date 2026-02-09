@@ -16,7 +16,7 @@ export function PageTableBasic(){
     
     const thisObj               = this;
     
-    const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
+    this.NUM_MSECS_1DAY         = 1000 * 60 * 60 * 24;
     
     let TABLE_ROW_PER_PAGE      = APPLICATION.MOBILE_TABLE_ROW_PER_PAGE;
     
@@ -409,6 +409,11 @@ export function PageTableBasic(){
     
     this.getElemSearchAddControl = function(){
         return elemSeachAddControl;
+    }
+    
+    
+    this.getElemSearchInput = function(){
+        return elemSearchInput;
     }
     
     

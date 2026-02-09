@@ -46,11 +46,14 @@ export function PageProdEntryCommon(input_settings){
     
     let elemIdEntryTitle        = null;
     
+    let elemIdPidSowBoar        = null;
     let elemIdPigProdPid        = null;
     let elemIdHeaderSowName     = null;
     let elemIdHeaderBoarName    = null;
     
-    
+    let elemIdPidOnly           = null;
+    let elemIdPigProdPid2       = null;
+        
     let elemIdTabsContainer     = null;
     let elemIdTabContentArea    = null;
     
@@ -65,10 +68,13 @@ export function PageProdEntryCommon(input_settings){
     
     let elemEntryTitle          = null;
     
+    let elemPidSowBoar          = null;
     let elemPigProdPid          = null;
     let elemHeaderSowName       = null;
     let elemHeaderBoarName      = null;
     
+    let elemPidOnly             = null;
+    let elemPigProdPid2         = null;
     
     let elemTabsContainer       = null;
     
@@ -330,11 +336,13 @@ export function PageProdEntryCommon(input_settings){
         
         elemIdEntryTitle        = `${settings.uniqueKey}-title`;
         
+        elemIdPidSowBoar        = `${settings.uniqueKey}-pid-sow-boar`;
         elemIdPigProdPid        = `${settings.uniqueKey}-pig-prod-pid`;
         elemIdHeaderSowName     = `${settings.uniqueKey}-header-sow-name`;
         elemIdHeaderBoarName    = `${settings.uniqueKey}-header-boar-name`;
         
-
+        elemIdPidOnly           = `${settings.uniqueKey}-pid-only`;
+        elemIdPigProdPid2       = `${settings.uniqueKey}-pig-prod-pid2`;
         
         elemIdTabsContainer     = `${settings.uniqueKey}-tabs-container`;
         elemIdTabContentArea    = `${settings.uniqueKey}-tab-content`;
@@ -357,7 +365,7 @@ export function PageProdEntryCommon(input_settings){
         const html_tab_buttons  = this.componentTabsWithMore.getHtml();
         const html_tab_contents = thisObj.getHtmlTabContents(dataTabMenus);
         
-        
+                
         const html =`
 
     ${html_style}
@@ -370,17 +378,21 @@ export function PageProdEntryCommon(input_settings){
             <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
         </div>
         
+        
         <div class="entry-info">
             <div class="pid-and-sow">
-                <div class="sow-name">
+                <div class="sow-name" id="${elemIdPidSowBoar}">
                     <span style="margin-right:10px;">(PID <span id="${elemIdPigProdPid}">1</span>)</span>
                     <span id="${elemIdHeaderSowName}">Sow</span>
                     <span class="love-icon">❤️</span>
                     <span id="${elemIdHeaderBoarName}">Boar</span>
                 </div>
+                
+                <div class="sow-name" id="${elemIdPidOnly}" style="display:none">
+                    <span>PID <span id="${elemIdPigProdPid2}">1</span></span>
+                </div>
             </div>
         </div>
-            
             
         
         <!-- Tabs Navigation -->
@@ -388,6 +400,7 @@ export function PageProdEntryCommon(input_settings){
             ${html_tab_buttons}
         </div>
     </div>
+    
     
     <!-- Tab Content Area Gesta-->
     <div class="tab-content-area" id="${elemIdTabContentArea}" style="margin-top:0;">
@@ -415,10 +428,13 @@ export function PageProdEntryCommon(input_settings){
         
         elemEntryTitle          = elemDivContainer.querySelector('#'+elemIdEntryTitle);
         
+        elemPidSowBoar          = elemDivContainer.querySelector('#'+elemIdPidSowBoar);
         elemPigProdPid          = elemDivContainer.querySelector('#'+elemIdPigProdPid);
         elemHeaderSowName       = elemDivContainer.querySelector('#'+elemIdHeaderSowName);
         elemHeaderBoarName      = elemDivContainer.querySelector('#'+elemIdHeaderBoarName);
         
+        elemPidOnly             = elemDivContainer.querySelector('#'+elemIdPidOnly);
+        elemPigProdPid2         = elemDivContainer.querySelector('#'+elemIdPigProdPid2);
         
         elemTabsContainer       = elemDivContainer.querySelector('#'+elemIdTabsContainer);
         this.elemTabContentArea = elemDivContainer.querySelector('#'+elemIdTabContentArea);
@@ -500,42 +516,65 @@ export function PageProdEntryCommon(input_settings){
         
         const pid = data_pig_prod.pig_production.farm_prod_id;
         elemPigProdPid.textContent = pid;
+        elemPigProdPid2.textContent = pid;
+        
+        
+        // Production Entries that the piglets are brought from outside
+        // have no  data_pig_prod.sow, birth and minimum wean information.
+        // If no  data_pig_prod.sow, only show the PID 
+        
+        
         
         const data_sow = data_pig_prod.sow;
-        let sow_name = getSowBoarReference(data_sow);
+        let sow_name = null;
         
-        
-        const insemination = data_pig_prod.insemination;
-        
-        let boar_name = '';
-        switch (insemination.insem_type){
-            case 'B':{
-                boar_name = getSowBoarReference(insemination.boar);
-                break;
-            }
+        if (data_sow && data_sow.hid) {
+            elemPidSowBoar.style.display = 'flex';
             
-            case 'AI_X':{
-                boar_name = insemination.ai.semen_supplier.semen.name;
-                //boar_name += ' from ' + insemination.ai.semen_supplier.name;
-                break;
-            }
+        
+            sow_name = getSowBoarReference(data_sow);
             
-            case 'AI_N':{
-                const internal_boar = insemination.ai.internal_boar;
+            
+            const insemination = data_pig_prod.insemination;
+            
+            let boar_name = '';
+            switch (insemination.insem_type){
+                case 'B':{
+                    boar_name = getSowBoarReference(insemination.boar);
+                    break;
+                }
                 
-                boar_name = getSowBoarReference(internal_boar);
-                boar_name += '(via AI)';
+                case 'AI_X':{
+                    boar_name = insemination.ai.semen_supplier.semen.name;
+                    //boar_name += ' from ' + insemination.ai.semen_supplier.name;
+                    break;
+                }
                 
-                break;
+                case 'AI_N':{
+                    const internal_boar = insemination.ai.internal_boar;
+                    
+                    boar_name = getSowBoarReference(internal_boar);
+                    boar_name += '(via AI)';
+                    
+                    break;
+                }
+                
             }
             
+            
+            elemHeaderSowName.textContent   = sow_name;
+            elemHeaderBoarName.textContent  = boar_name;
+            
+            
+            elemPidOnly.style.display = 'none';
+        }
+        else{
+            elemPidSowBoar.style.display = 'none';
+            elemPidOnly.style.display = 'block';
         }
         
-        
-        
-        elemHeaderSowName.textContent   = sow_name;
-        elemHeaderBoarName.textContent  = boar_name;
-        
+    
+
         
         // Set arrow navigation
         switch(options.pig_prod_type){

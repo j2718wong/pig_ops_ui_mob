@@ -179,9 +179,9 @@ export function ComponentPlusMinusInput(input_settings){
     
     this.reset = function(){
         elemText.value = '0';
-		elemText.classList.remove('is-valid', 'is-invalid');
-		
-		if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
+        elemText.classList.remove('is-valid', 'is-invalid');
+        
+        if (settings.invalidFeedBack && settings.invalidFeedBack.length > 0){
             thisObj.setTextInvalid(settings.invalidFeedBack);
         }
         
@@ -189,6 +189,44 @@ export function ComponentPlusMinusInput(input_settings){
             thisObj.setTextHelp(settings.helpText);
         }
     } 
+    
+    
+    this.enabled = function(){
+        elemText.disabled = false;
+        
+        const container     =  thisObj.elemUiShow;
+        
+        const plusButtons   = container.querySelectorAll('.number-btn.plus');
+        const minusButtons  = container.querySelectorAll('.number-btn.minus');
+        
+        plusButtons.forEach(button => {
+            button.disabled = false;
+        });
+        
+        minusButtons.forEach(button => {
+            button.disabled = false;
+        });
+        
+    }
+    
+    
+    this.disabled = function(){
+        elemText.disabled = true;
+        
+        const container     =  thisObj.elemUiShow;
+        
+        const plusButtons   = container.querySelectorAll('.number-btn.plus');
+        const minusButtons  = container.querySelectorAll('.number-btn.minus');
+        
+        plusButtons.forEach(button => {
+            button.disabled = true;
+        });
+        
+        minusButtons.forEach(button => {
+            button.disabled = true;
+        });
+
+    }
     
 
 }

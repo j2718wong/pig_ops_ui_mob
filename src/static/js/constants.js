@@ -112,10 +112,11 @@ const PROD_STATUS = {
 
 
 const PIG_PROD_TYPE = {
-    GESTATING:          1,
+    GESTATING:          1,  
     LACTATING:          2,
-    FATTENING:          4
-    
+    GESTA_LACTA:        3,
+    FATTENING:          4,
+    ALL:                5
 };
 
 

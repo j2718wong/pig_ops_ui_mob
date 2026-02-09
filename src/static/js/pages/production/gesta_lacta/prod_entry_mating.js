@@ -242,7 +242,7 @@ export function ProdEntryMating(input_settings){
     
     <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:8px;">
         Gestating info of a production entry that is already in 
-        <b>Lactating Stage</b> cannot be updated.
+        <b>Lactating Stage</b> or later cannot be updated.
     </div>
     
     <!-- 1. Sow Field cannot be edited. -->

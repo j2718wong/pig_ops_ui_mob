@@ -47,6 +47,8 @@ import {PageProdGestatingAdd}       from '../production/gesta_lacta/page_prod_ge
 import {PageProdGestatingEntry}     from '../production/gesta_lacta/page_prod_gestating_entry.js'
 import {PageProdLactatingEntry}     from '../production/gesta_lacta/page_prod_lactating_entry.js'
 
+import {PageProdFatteningList}      from '../production/fattening/page_prod_fattening_list.js'
+import {PageProdFatteningEntry}     from '../production/fattening/page_prod_fattening_entry.js'
 
 import {TablePigFarmFeedBuy}        from '../feeds/table_pig_farm_feed_buy.js';
 import {PagePfFeedBuyAddEdit}       from '../feeds/page_pf_feed_buy_add_edit.js';
@@ -439,16 +441,16 @@ export function Navigation(){
         navigation:             this,
         elemIdDivContainer:     elemIdContProdGestaList,
         isGesta:                true,
-        uniqueKey:              'prod-gesta', // Use for uniqueness in elements
+        uniqueKey:              'prod-gesta-list', // Use for uniqueness in elements
         pageTitle:              'Prod Gestating'
     });
     
     
     this.pageMobLactatingList   = new PageMobGestaLacta({
         navigation:             this,
-        elemIdDivContainer:     elemPageContProdLactaList,
+        elemIdDivContainer:     elemIdContProdLactaList,
         isGesta:                false,
-        uniqueKey:              'prod-lacta', // Use for uniqueness in elements
+        uniqueKey:              'prod-lacta-list', // Use for uniqueness in elements
         pageTitle:              'Prod Lactating'
     });
     
@@ -479,6 +481,23 @@ export function Navigation(){
         elemIdDivContainer:     elemIdContProdLactaEntry,
         uniqueKey:              'prod-lacta'
     });
+    
+    
+    this.pageProdFatteningList  = new PageProdFatteningList({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContFatteningList,
+        uniqueKey:              'prod-fattening-list',
+        pageTitle:              'Fattening'
+    });
+    
+    
+    this.pageProdFatteningEntry = new PageProdFatteningEntry({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContFatteningEntry,
+        uniqueKey:              'prod-fattening'
+    });
+    
+    
     
     
     this.pagePigFarmFeedBuyList = new TablePigFarmFeedBuy({
@@ -555,6 +574,9 @@ export function Navigation(){
         this.pageProdLactatingEntry.init();
         
         this.pageProdPigOpsEdit.init();
+        
+        this.pageProdFatteningList.init();
+        this.pageProdFatteningEntry.init();
         
         
         this.pagePigFarmFeedBuyList.init();
@@ -821,15 +843,15 @@ export function Navigation(){
             
             
             case PAGE_ID.PROD_FATTENING_LIST:{
-                return elemPageContProdLactaList;
+                return elemPageContFatteningList;
             }
             
             case PAGE_ID.PROD_FATTENING_ADD:{
-                return elemPageContProdLactaEntry;
+                return elemPageContFatteningAdd;
             }
             
             case PAGE_ID.PROD_FATTENING_ENTRY:{
-                return elemPageContProdLactaEntry;
+                return elemPageContFatteningEntry;
             }
 
             
@@ -1198,7 +1220,8 @@ export function Navigation(){
     
     
     this._onClickNavProdFattening = function(is_mobile){
-        console.log('_onClickNavProdFattening not yet implemented; is_mobile=' + is_mobile);
+        thisObj.showThisPage(elemPageContFatteningList);
+        thisObj.pageProdFatteningList.show();
     }
         
         
@@ -1289,10 +1312,7 @@ export function Navigation(){
         thisObj.pageProdGestatingAdd.show();
     }
     
-    
-    
-    
-    
+
     this.onClickProdGestatingEntry = function(pig_prod_pid){
         if (pig_prod_pid == null){
             thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
@@ -1347,7 +1367,7 @@ export function Navigation(){
     
     this.onClickProdLactatingEntry = function(pig_prod_pid, show_options){
         if (pig_prod_pid == null){
-            thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING);
+            thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             return;
         }
         
@@ -1402,5 +1422,60 @@ export function Navigation(){
         
     }
     
+    
+    this.onClickProdFatteningEntry = function(pig_prod_pid, show_options){
+        if (pig_prod_pid == null){
+            thisObj._onClickNavProdFattening(null);
+            return;
+        }
+        
+
+        thisObj.showThisPage(elemPageContFatteningEntry);
+        
+        const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataFatteningList;
+        
+        let prev_prod_pid = null;
+        let next_prod_pid = null;
+        
+        let index;
+        let prev_entry  = null;
+        let cur_entry   = null;
+        let next_entry  = null;
+        
+        for (index = 0; index< data_pig_prod_list.length; index++){
+            cur_entry = data_pig_prod_list[index];
+            
+            
+            
+            if (cur_entry.pig_production.farm_prod_id == pig_prod_pid){
+                
+                if ((index-1) >=0){
+                    prev_entry = data_pig_prod_list[index-1];
+                    prev_prod_pid = prev_entry.pig_production.farm_prod_id;
+                }
+                
+                if ((index+1) < data_pig_prod_list.length){
+                    next_entry = data_pig_prod_list[index+1];
+                    next_prod_pid = next_entry.pig_production.farm_prod_id;
+                }
+                
+                const options = {
+                    pig_prod_type:  PIG_PROD_TYPE.FATTENING,
+                    prev_prod_pid:  prev_prod_pid,
+                    next_prod_pid:  next_prod_pid,
+                    data_index:     index+1,
+                    total_entries:  data_pig_prod_list.length
+                };
+                
+                if (show_options){
+                    
+                }
+                
+                thisObj.pageProdFatteningEntry.show(cur_entry, options);
+                return;
+            }
+        }
+        
+    }
     
 }

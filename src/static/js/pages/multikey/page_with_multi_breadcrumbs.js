@@ -5,12 +5,13 @@
 'use strict';
 
 
-import {ComponentBreadCrumbs}    from '../common/ui/comp_breadcrumb.js';
+import {ComponentBreadCrumbs}   from '../common/ui/comp_breadcrumb.js';
 
 import {getSowBoarReference}    from '../common/common_app.js';
 
 import {PAGE_ID,
-        SOW_STATUS}             from '../../constants.js';
+        SOW_STATUS,
+        PROD_STATUS}            from '../../constants.js';
 
 
 /*
@@ -85,6 +86,25 @@ export function PageWithMultiBreadCrumbs(input_settings){
     this.breadCrumbsPigProd    = null;
     
     
+    const settingsFattening = {
+        uniqueKey:              `${settings.uniqueKey}-fattening-breadcrumbs`,
+        navigation:             navigation,
+        
+        items:[
+            {
+                'label':        'Fattening',
+                'gotoPageId':   PAGE_ID.PROD_FATTENING_LIST
+            },
+            
+            {
+                'label':        'PID 20',
+                'gotoPageId':   PAGE_ID.PROD_FATTENING_ENTRY
+            }
+        ]
+    }
+    this.breadCrumbsFattening   = null;
+    
+    
     
     
     
@@ -94,16 +114,19 @@ export function PageWithMultiBreadCrumbs(input_settings){
 
         thisObj.breadCrumbsSowBoar  = new ComponentBreadCrumbs(settingsSowBoar);
         thisObj.breadCrumbsPigProd  = new ComponentBreadCrumbs(settingsPigProd);
+        thisObj.breadCrumbsFattening= new ComponentBreadCrumbs(settingsFattening);
         
-        
-        const html_sow_boar = thisObj.breadCrumbsSowBoar.getHtml();
-        const html_pig_prod = thisObj.breadCrumbsPigProd.getHtml();
+        const html_sow_boar     = thisObj.breadCrumbsSowBoar.getHtml();
+        const html_pig_prod     = thisObj.breadCrumbsPigProd.getHtml();
+        const html_fattening    = thisObj.breadCrumbsFattening.getHtml();
         
         let html = `
         <div id="${elemIdContBreadCrumbs}">
             ${html_sow_boar}
             
             ${html_pig_prod}
+            
+            ${html_fattening}
         </div>
         `;
         
@@ -117,11 +140,15 @@ export function PageWithMultiBreadCrumbs(input_settings){
         
         thisObj.breadCrumbsSowBoar.afterHtmlRender();
         thisObj.breadCrumbsPigProd.afterHtmlRender();
+        thisObj.breadCrumbsFattening.afterHtmlRender();
     }
     
     
     this.updateBreadCrumbs = function(data_sow_boar, data_pig_prod){
         // Only one of the inputs cannot be none at a time
+        
+       
+        
         
         if (data_sow_boar){
             // Need to update breadCrumb;
@@ -168,23 +195,64 @@ export function PageWithMultiBreadCrumbs(input_settings){
             // Only one set of breadcrumbs can be shown at a time
             thisObj.breadCrumbsSowBoar.show();
             thisObj.breadCrumbsPigProd.hide();
+            thisObj.breadCrumbsFattening.hide();
         }
         
         
         if (data_pig_prod){
-            let list_name       = 'Lacta List';
-            let sow_boar_name   = getSowBoarReference(data_pig_prod.sow);
-            let pid             = data_pig_prod.pig_production.farm_prod_id;
             
-            let prod_name = `${sow_boar_name} (PID ${pid})`;
+            console.log('updateBreadCrumbs, data_pig_prod');
+            console.log(data_pig_prod);
             
-            settingsPigProd.items[0].label = list_name;
-            settingsPigProd.items[1].label = prod_name;
-            thisObj.breadCrumbsPigProd.refreshLabels();
+            const prod_status_id = data_pig_prod.pig_production.prod_status_id;
             
-            // Only one set of breadcrumbs can be shown at a time
-            thisObj.breadCrumbsSowBoar.hide();
-            thisObj.breadCrumbsPigProd.show();
+            switch(prod_status_id) {
+                case PROD_STATUS.LACTATING: {
+                    let list_name       = 'Lacta List';
+                    let sow_boar_name   = getSowBoarReference(data_pig_prod.sow);
+                    let pid             = data_pig_prod.pig_production.farm_prod_id;
+                    
+                    let prod_name = `${sow_boar_name} (PID ${pid})`;
+                    
+                    settingsPigProd.items[0].label = list_name;
+                    settingsPigProd.items[1].label = prod_name;
+                    thisObj.breadCrumbsPigProd.refreshLabels();
+                    
+                    // Only one set of breadcrumbs can be shown at a time
+                    thisObj.breadCrumbsSowBoar.hide();
+                    thisObj.breadCrumbsPigProd.show();
+                    thisObj.breadCrumbsFattening.hide();
+                    
+                    break;
+                }
+                
+                case PROD_STATUS.WEANING:
+                case PROD_STATUS.GROWING: {
+                    let pid             = data_pig_prod.pig_production.farm_prod_id;
+                    
+                    let prod_name = `PID ${pid}`;
+                    
+                    settingsFattening.items[1].label = prod_name;
+                    thisObj.breadCrumbsFattening.refreshLabels();
+                    
+                    // Only one set of breadcrumbs can be shown at a time
+                    thisObj.breadCrumbsSowBoar.hide();
+                    thisObj.breadCrumbsPigProd.hide();
+                    thisObj.breadCrumbsFattening.show();
+                    
+                    break;
+                }
+            
+                
+                default:{
+                    thisObj.breadCrumbsSowBoar.hide();
+                    thisObj.breadCrumbsPigProd.hide();
+                    thisObj.breadCrumbsFattening.hide();
+                    
+                    break;
+                }
+            
+            }
             
         }
     }
