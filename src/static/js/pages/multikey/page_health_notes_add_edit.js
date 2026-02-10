@@ -19,7 +19,8 @@ import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
 import {PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        MULTIKEY_OBJ_TYPE}      from '../../constants.js';
+        MULTIKEY_OBJ_TYPE,
+        PROD_STATUS}            from '../../constants.js';
 
 
 import {formatDate,
@@ -48,12 +49,14 @@ export function PageHealthNotesAddEdit(input_settings){
     
     const MAXCHAR_NOTES         = 160;
     
+    
     /*
     Typical settings = {
         navigation:             this,
-        uniqueKey:              'sow-boar-health',
-        isNotes:                true,   // false is for Health Issue
-        elemDivContainer:       elemPageContMedVacAddEdit
+        elemIdDivContainer:     elemIdContHealthAddEdit,
+        uniqueKey:              'health-add-edit',
+        isNotes:                true   // false is for Health Issue
+        
     };
     */
     const settings              = input_settings;
@@ -349,22 +352,26 @@ export function PageHealthNotesAddEdit(input_settings){
                 
                 if (multikey_obj_type == MULTIKEY_OBJ_TYPE.PIG_PROD){
                     
-                    // Update infoBox
-                    const sow_boar_hid = curDataEntry.sow.hid;
-                    const tab_id = navigation.pageSowBoarEntry.elemIdTabHealth;
+                    const prod_status_id = curDataEntry.pig_production.prod_status_id;
                     
-                    let s_click = `gNavigation.pageSowBoarList.onClickSowBoarEntry(`;
-                    s_click += `"${sow_boar_hid}", null, "${tab_id}", ${SOW_BOAR_TYPE.SOW});`;
-                
+                    if (prod_status_id == PROD_STATUS.LACTATING){
+                        // Update infoBox
+                        const sow_boar_hid = curDataEntry.sow.hid;
+                        const tab_id = navigation.pageSowBoarEntry.elemIdTabHealth;
+                        
+                        let s_click = `gNavigation.pageSowBoarList.onClickSowBoarEntry(`;
+                        s_click += `"${sow_boar_hid}", null, "${tab_id}", ${SOW_BOAR_TYPE.SOW});`;
                     
-                    let html_info = `
-                    Use this to record health problem of the piglets of this 
-                    production entry. If the sow has the health problem, 
-                    <a href="javascript:void(0)" class="text-link" onclick='${s_click}'>click this</a>.
-                    `;
-                    
-                    elemInfoShow.style.display = 'block';
-                    elemInfoShow.innerHTML = html_info;
+                        
+                        let html_info = `
+                        Use this to record health problem of the piglets of this 
+                        production entry. If the sow has the health problem, 
+                        <a href="javascript:void(0)" class="text-link" onclick='${s_click}'>click this</a>.
+                        `;
+                        
+                        elemInfoShow.style.display = 'block';
+                        elemInfoShow.innerHTML = html_info;
+                    }
                 }
             }
             else{

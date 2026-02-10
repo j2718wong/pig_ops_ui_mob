@@ -11,7 +11,8 @@ import {APPLICATION,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         SOW_STATUS_NAME,
-        MULTIKEY_OBJ_TYPE}        from '../../constants.js';
+        MULTIKEY_OBJ_TYPE,
+        PROD_STATUS}            from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -115,12 +116,16 @@ export function TableHealthIssue(input_settings){
         
 
                 if ('list_health_issues' in dataSowBoar.data_details){
-                    thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
-                    thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
+                    let data_list = dataSowBoar.data_details.list_health_issues;
+                    
+                    thisObj.setDataEntryList(data_list);
+                    thisObj.renderTable(data_list);
                 } else{
                     const callback_success = function(){
-                        thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
-                        thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
+                        let data_list = dataSowBoar.data_details.list_health_issues;
+                        
+                        thisObj.setDataEntryList(data_list);
+                        thisObj.renderTable(data_list);
                     }
                     
                     navigation.pigFarm.managerSowBoar.requestNotesList(
@@ -144,42 +149,28 @@ export function TableHealthIssue(input_settings){
                 dataPigProd     = data;
 
                 if ('list_health_issues' in dataPigProd.data_details){
-                    thisObj.setDataEntryList(dataPigProd.data_details.list_health_issues);
-                    thisObj.renderTable(dataPigProd.data_details.list_health_issues);
+                    let data_list = dataPigProd.data_details.list_health_issues;
+                    
+                    thisObj.setDataEntryList(data_list);
+                    thisObj.renderTable(data_list);
                 } else{
                     const callback_success = function(){
-                        thisObj.setDataEntryList(dataPigProd.data_details.list_health_issues);
-                        thisObj.renderTable(dataPigProd.data_details.list_health_issues);
+                        let data_list = dataPigProd.data_details.list_health_issues;
+                        
+                        thisObj.setDataEntryList(data_list);
+                        thisObj.renderTable(data_list);
                     }
                     
                 }
                 
-                
-               
                 break;
             }
-            
         }
     }
     
         
     this.show = function(options){
-        
-        // show the last showOptions if there is no options
-        if (options == null){options = showOptions;}
-        
-        // So that not to instantiate in every table redraw
-        dtCurrentDate = new Date();
-        dtCurrentDate.setHours(0, 0, 0, 0);
-        
-        showOptions = options;
-        
-        
-        
-        
-        
-        
-        
+
     }
     
      
@@ -248,10 +239,6 @@ export function TableHealthIssue(input_settings){
         }
         
         
-        
-        if (settings.healthType == MULTIKEY_OBJ_TYPE.SOW_BOAR){
-            
-        }
     
         let s_last_med = ''
         let s_last_update = '';
@@ -302,7 +289,9 @@ export function TableHealthIssue(input_settings){
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
                 if ('list_health_issues' in dataSowBoar.data_details){
                     
-                    for (const cur_entry of dataSowBoar.data_details.list_health_issues){
+                    let data_list = dataSowBoar.data_details.list_health_issues;
+                    
+                    for (const cur_entry of data_list){
                         if (cur_entry.prod_notes.hid == entry_hid){
                             return cur_entry;
                         }
@@ -315,7 +304,9 @@ export function TableHealthIssue(input_settings){
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
                 if ('list_health_issues' in dataPigProd.data_details){
                     
-                    for (const cur_entry of dataPigProd.data_details.list_health_issues){
+                    let data_list = dataPigProd.data_details.list_health_issues;
+                    
+                    for (const cur_entry of data_list){
                         if (cur_entry.prod_notes.hid == entry_hid){
                             return cur_entry;
                         }
@@ -332,20 +323,29 @@ export function TableHealthIssue(input_settings){
     
     
     this.onClickAddEntry = function(){
-        let go_back_page_id = null;
-        let data_entry      = null;
+        let page_id     = null;
+        let data_entry  = null;
         
         switch (settings.healthType) {
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-                go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
                 data_entry      = dataSowBoar;
+                
+                page_id = PAGE_ID.SOW_BOAR_ENTRY;
                 
                 break;
             }
             
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
-                go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
                 data_entry      = dataPigProd;
+                
+                
+                const prod_status_id = dataPigProd.pig_production.prod_status_id;
+                
+                if (prod_status_id == PROD_STATUS.LACTATING){
+                    page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                } else {
+                    page_id = PAGE_ID.PROD_FATTENING_ENTRY;
+                }
                 
                 break;
             }
@@ -353,7 +353,7 @@ export function TableHealthIssue(input_settings){
         }
         
         
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        const go_back_page = navigation.getPageContainer(page_id);
         
         const options ={
             health_type:            settings.healthType,
@@ -376,8 +376,10 @@ export function TableHealthIssue(input_settings){
         switch (settings.healthType) {
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
                 const callback_success = function(data){
-                    thisObj.setDataEntryList(dataSowBoar.data_details.list_health_issues);
-                    thisObj.renderTable(dataSowBoar.data_details.list_health_issues);
+                    let data_list = dataSowBoar.data_details.list_health_issues;
+                    
+                    thisObj.setDataEntryList(data_list);
+                    thisObj.renderTable(data_list);
                     
                     // need also to request pig_medvac data
                     parentObj.tableMedVac.requestDataPigMedVacList();
@@ -391,11 +393,13 @@ export function TableHealthIssue(input_settings){
             
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
                 const callback_success = function(data){
-                    thisObj.setDataEntryList(dataPigProd.data_details.list_health_issues);
-                    thisObj.renderTable(dataPigProd.data_details.list_health_issues);
+                    let data_list = dataPigProd.data_details.list_health_issues;
+                    
+                    thisObj.setDataEntryList(data_list);
+                    thisObj.renderTable(data_list);
                     
                     // need also to request pig_medvac data
-                    parentObj.tableMedVac.requestDataPigMedVacList();
+                    //parentObj.tableMedVac.requestDataPigMedVacList();
                 };
 
                 navigation.pigFarm.managerPigProd.requestNotesList(
@@ -459,7 +463,17 @@ export function TableHealthIssue(input_settings){
             
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
         
-                const go_back_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_ENTRY);
+                const pig_prod_status_id = dataPigProd.pig_production.prod_status_id;
+                
+                let page_id = null;
+                if (pig_prod_status_id == PROD_STATUS.LACTATING){
+                    page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                } else {
+                    page_id = PAGE_ID.PROD_FATTENING_ENTRY;
+                }
+        
+                const go_back_page = navigation.getPageContainer(page_id);
+            
             
                 const options ={
                     health_type:             settings.healthType,
@@ -499,11 +513,23 @@ export function TableHealthIssue(input_settings){
                 navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
                 const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
                 navigation.showThisPage(page_container);
+                
+                break;
             }
          
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
         
-                const go_back_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_ENTRY);
+                const pig_prod_status_id = dataPigProd.pig_production.prod_status_id;
+                
+                let page_id = null;
+                if (pig_prod_status_id == PROD_STATUS.LACTATING){
+                    page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                } else {
+                    page_id = PAGE_ID.PROD_FATTENING_ENTRY;
+                }
+        
+                const go_back_page = navigation.getPageContainer(page_id);
+            
                 
                 const options ={
                     medvac_type:            MULTIKEY_OBJ_TYPE.PIG_PROD,
@@ -516,6 +542,8 @@ export function TableHealthIssue(input_settings){
                 navigation.pageMedVacAddEdit.beforeShow(dataPigProd, options);
                 const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
                 navigation.showThisPage(page_container);
+                
+                break;
             }
         }
        

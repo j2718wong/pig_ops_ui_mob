@@ -845,17 +845,23 @@ export function PageMedVacAddEdit(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     if (showOptions.is_add == true){
+                        navigation.showThisPage(showOptions.go_back_page);
+                        
                         if (showOptions.callback_after_add){
+                            console.log('\n\npage_medvac_Add has callback_after_add');
                             showOptions.callback_after_add();
                         }
-                        navigation.showThisPage(showOptions.go_back_page);
+                        else{
+                            console.log('\n\npage_medvac_Add has no callback_after_add');
+                        }
                     }
                     
                     else{
+                        navigation.showThisPage(showOptions.go_back_page);
+                        
                         if (showOptions.callback_after_edit){
                             showOptions.callback_after_edit();
                         }
-                        navigation.showThisPage(showOptions.go_back_page);
                     }
                 }
                 else{

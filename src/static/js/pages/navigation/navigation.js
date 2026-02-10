@@ -417,7 +417,7 @@ export function Navigation(){
     this.pageHealthAddEdit      = new PageHealthNotesAddEdit({
         navigation:             this,
         elemIdDivContainer:     elemIdContHealthAddEdit,
-        uniqueKey:              'sow-boar-health-add-edit',
+        uniqueKey:              'health-add-edit',
         isNotes:                false
     });
     
@@ -425,7 +425,7 @@ export function Navigation(){
     this.pageNotesAddEdit       = new PageHealthNotesAddEdit({
         navigation:             this,
         elemIdDivContainer:     elemIdContNotesAddEdit,
-        uniqueKey:              'sow-boar-notes-add-edit',
+        uniqueKey:              'notes-add-edit',
         isNotes:                true
     });
     
