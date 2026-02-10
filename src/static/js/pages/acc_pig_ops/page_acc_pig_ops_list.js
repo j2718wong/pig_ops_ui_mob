@@ -389,9 +389,6 @@ export function PageAccPigOpsList(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let s_click = '';
-        
-        s_click = `gNavigation.pageAccPigOpsList.onClickRowEntry("${cur_entry.acc_pig_ops.hid}");`;
         
         let description = '';
         if (cur_entry.acc_pig_ops.desc){
@@ -402,13 +399,47 @@ export function PageAccPigOpsList(input_settings){
         const html = `
             <tr>
                 <td><span>${cur_entry.acc_pig_ops.num_days_since}</span></td>
-                <td onclick='${s_click}'>${cur_entry.acc_pig_ops.name}</td>
-                <td onclick='${s_click}'>${description}</td>
+                <td>${cur_entry.acc_pig_ops.name}</td>
+                <td>${description}</td>
             </tr>
         `;
         
         return html;
     }
+    
+    
+    this.getElemTableRow = function(cur_entry){
+        const elem_row = document.createElement('tr');
+        
+        const html = thisObj.getHtmlTableRow(cur_entry);
+        elem_row.innerHTML = html;
+         
+
+        
+        // TODO still evaluating if onclick is for row, td or span in td;
+        // To avoid un necessary clicks while scrolling. 
+        
+        
+        // Attach onclick listeners to td
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        let index = 0
+        for (const cur_td of elem_tds){
+
+            if (index == 1 || index == 2){
+                cur_td.onclick = function(){
+                    thisObj.onClickRowEntry(cur_entry.acc_pig_ops.hid);
+                }
+            }
+            
+            index += 1;
+        
+        }
+        
+        return elem_row;
+    }
+  
     
     
     this.onUserChangeLanguage = function(){
@@ -436,6 +467,21 @@ export function PageAccPigOpsList(input_settings){
                     }
                     
                     elemPageInfo.innerHTML = cur_text;
+                    
+                    const buttons_gesta = elemPageInfo.querySelectorAll('.gestating'); 
+                    for(const cur_entry of buttons_gesta){
+                        cur_entry.onclick = function(){
+                            navigation._onClickNavProdGestaLacta(null, 1);
+                        };
+                    } 
+                    
+                    const buttons_lacta = elemPageInfo.querySelectorAll('.lactating'); 
+                    for(const cur_entry of buttons_lacta){
+                        cur_entry.onclick = function(){
+                            navigation._onClickNavProdGestaLacta(null, 2);
+                        };
+                    } 
+                    
                 }
                 
                 break;

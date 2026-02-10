@@ -157,6 +157,9 @@ export function PageMobGestaLacta(input_settings){
     this.pageProdPigOpsEdit    = null;
     
     
+    let dtCurrentDate           = null;
+    
+    
     this.init = function(){
         //textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
         
@@ -503,7 +506,7 @@ ${html_style}
                 elemTablePigOps.style.display = 'table';
                 elemTablePigCount.style.display = 'none';
                 
-                elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody(pig_prod_list);
+                thisObj.renderGestaLactaTable(pig_prod_list);
                 curLactaTable = LACTA_TABLE_PIGOPS;
                 break;
             }
@@ -512,7 +515,7 @@ ${html_style}
                 elemTablePigOps.style.display = 'none';
                 elemTablePigCount.style.display = 'table';
                 
-                elemPigCountTableBody.innerHTML = thisObj._getHtmlPigCountTableBody();
+                thisObj.renderLactaPigCountTable();
                 curLactaTable = LACTA_TABLE_PIG_COUNT;
                 break;
             }
@@ -526,7 +529,7 @@ ${html_style}
                 elemTablePigOps.style.display = 'table';
                 elemTablePigCount.style.display = 'none';
                 
-                elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
+                thisObj.renderGestaLactaTable(pig_prod_list);
                 curLactaTable = LACTA_TABLE_PIGOPS;
                 break;
             }
@@ -552,6 +555,10 @@ ${html_style}
     
     
     this.show = function(){
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
+        
         if (settings.isGesta){
             dataPigProdList = navigation.pigFarm.managerPigProd.dataGestatingList;
         }
@@ -607,13 +614,9 @@ ${html_style}
             // Search for table
             const filtered_entries = thisObj.searchEntries(searchTerm);
             if (settings.isGesta){
-
-                const html = thisObj._getHtmlPigProdTableBody(filtered_entries);
-                
-                elemPigProdTableBody.innerHTML = html;
+                thisObj.renderGestaLactaTable(filtered_entries);
             }
             else{
-                //elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
                 thisObj.changeLactaTable(null, filtered_entries);
             }
             
@@ -624,10 +627,9 @@ ${html_style}
         const is_gesta = settings.isGesta;
         
         if (settings.isGesta){
-            elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
+            thisObj.renderGestaLactaTable(dataPigProdList);
         }
         else{
-            //elemPigProdTableBody.innerHTML = thisObj._getHtmlPigProdTableBody();
             thisObj.changeLactaTable();
         }
         
@@ -664,12 +666,25 @@ ${html_style}
     }
     
     
-    
-    
-    
-    this._getHtmlPigProdTableBody = function(pig_prod_list){
+    this.renderGestaLactaTable = function(pig_prod_list){
+        elemPigProdTableBody.innerHTML = '';
         
-        let html_tbody = '';
+        if (pig_prod_list){}
+        else{
+            pig_prod_list = dataPigProdList;
+        }
+        
+
+        for (const cur_entry of pig_prod_list){
+            const elem_row = thisObj.getElemTableRowGestaLacta(cur_entry)
+            elemPigProdTableBody.appendChild(elem_row);
+        }
+    }
+    
+    
+    // The Gesta and Lacta tables have very similar structures.
+    // It only differs at the 3rd column. 
+    this.getElemTableRowGestaLacta = function(cur_entry){
         let s_date_expected = ''
         let s_operation = '';
         
@@ -700,161 +715,207 @@ ${html_style}
         let operation_name;
         
         
-        const dt_current = new Date();
-        dt_current.setHours(0, 0, 0, 0);
+        
         
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         
-        if (pig_prod_list){}
-        else{pig_prod_list = dataPigProdList;}
         
-        let index = 0;
-        for (const cur_entry of pig_prod_list){
-            pid = cur_entry.pig_production.farm_prod_id;
-            
-            data_sow = cur_entry.sow;
-            sow_reference = getSowBoarReference(data_sow);
+        pid = cur_entry.pig_production.farm_prod_id;
         
+        data_sow = cur_entry.sow;
+        sow_reference = getSowBoarReference(data_sow);
+    
+        
+        // Set important date; 
+        // gesta: expected date of birth 
+        // lacta: date of weaning
+        s_date_important = ''
+        if (settings.isGesta){
+            dt_important = new Date(cur_entry.birth.date_expected);
+            dt_important_s = formatDate(dt_important, FORMAT_COMPACT);
             
-            // Set important date; 
-            // gesta: expected date of birth 
-            // lacta: date of weaning
-            s_date_important = ''
-            if (settings.isGesta){
-                dt_important = new Date(cur_entry.birth.date_expected);
-                dt_important_s = formatDate(dt_important, FORMAT_COMPACT);
-                
-                diff_days = thisObj.calculateNumDaysSinceInsem(
-                            cur_entry.insemination.insem_date, dt_current,
-                            acc_settings_ops);
-                            
-                s_date_important = `${dt_important_s} (Day ${diff_days})`;
-            }
-            else{
-                dt_actual = new Date(cur_entry.birth.date_actual);
-                
-                num_days_wean = DEFAULT_NUM_DAYS_WEAN;
-                
-                // check if the account has set num_days_wean
-                if (acc_settings_ops){
-                    num_days_wean = acc_settings_ops.num_days_wean;
-                    
-                    // Adjust Day 1 on date of birth if needed
-                    if (acc_settings_ops.day_1_on_date_of_birth > 0){
-                        num_days_wean -= 1;
-                    }
-                }
-                
-                msecs_wean = dt_actual.getTime() + num_days_wean * thisObj.NUM_MSECS_1DAY;
-                dt_wean = new Date(msecs_wean);
-                
-                dt_important    = dt_wean;
-                dt_important_s  = formatDate(dt_important, FORMAT_COMPACT);
-                
-                diff_days = thisObj.calculateNumDaysSinceBirth(
-                            cur_entry.birth.date_actual, dt_current,
-                            acc_settings_ops);
-                
-                s_date_important = `${dt_important_s} (Day ${diff_days})`;
-            }
+            diff_days = thisObj.calculateNumDaysSinceInsem(
+                        cur_entry.insemination.insem_date, dtCurrentDate,
+                        acc_settings_ops);
+                        
+            s_date_important = `${dt_important_s} (Day ${diff_days})`;
+        }
+        else{
+            dt_actual = new Date(cur_entry.birth.date_actual);
             
+            num_days_wean = DEFAULT_NUM_DAYS_WEAN;
             
-            // The Operation column should display either one of the following
-            // 1.) Over due not yet done operation; display Date, operation name 
-            // + overdue indicator
-            // 2.) If no overdue, show the upcoming operation
-            // 3.) If all Done, should display ALL DONE 
-            s_operation = '';
-            
-            if (settings.isGesta){
-                operations = cur_entry.gestating_ops;
-            }
-            else{
-                operations = cur_entry.lactating_ops;
-            }
-            
-            len_items = operations.length;
-            
-            has_operations = 1;
-            if (len_items == 0){has_operations = 0;}
-            
-            pending_operation = null;
-            are_all_done = 1;
-            if (len_items > 0){
-                index = len_items -1;
-                while (index >= 0){
-                    cur_operation = operations[index];
-                    
-                    if (cur_operation.pig_prod_pig_ops.date_actual == null){
-                        are_all_done = 0;
-                        pending_operation = cur_operation;
-                        break; // break the while loop
-                    }
-                    
-                    index -= 1;
+            // check if the account has set num_days_wean
+            if (acc_settings_ops){
+                num_days_wean = acc_settings_ops.num_days_wean;
+                
+                // Adjust Day 1 on date of birth if needed
+                if (acc_settings_ops.day_1_on_date_of_birth > 0){
+                    num_days_wean -= 1;
                 }
             }
             
+            msecs_wean = dt_actual.getTime() + num_days_wean * thisObj.NUM_MSECS_1DAY;
+            dt_wean = new Date(msecs_wean);
             
-            if (pending_operation){
-
-                
-                dt_target   = new Date(pending_operation.pig_prod_pig_ops.date_target);
-                dt_target_s  = formatDate(dt_target, FORMAT_COMPACT);
-                operation_name = pending_operation.account_pig_ops.name;
-                
-                let class_overdue = '';
-                if (dt_current >= dt_target){
-                    class_overdue = 'text-overdue';
-                }
-                
-                s_operation = `<div class="${class_overdue}">${dt_target_s}</div><div class="${class_overdue}">${operation_name}</div>`;
-            } else{
-                s_operation = `<div>All Done
-                                    <span class="operation-icon large icon-done">
-                                        <i class="fas fa-check-circle"></i>
-                                    </span>
-                                </div>`;
-            }
+            dt_important    = dt_wean;
+            dt_important_s  = formatDate(dt_important, FORMAT_COMPACT);
             
+            diff_days = thisObj.calculateNumDaysSinceBirth(
+                        cur_entry.birth.date_actual, dtCurrentDate,
+                        acc_settings_ops);
             
-            
-            // Clicking on SowName should go to SowBoar Page
-            // Clicking on PID or important date should open Gesta or Lacta Page
-            
-            let s_click_sow = `gNavigation.pageSowBoarList.gotoSowBoarEntryPage(null, "${data_sow.hid}")`;
-            
-            let s_click = '';
-            if (settings.isGesta){
-                s_click = `gNavigation.onClickProdGestatingEntry(${pid});`;
-            }
-            else{
-                s_click = `gNavigation.onClickProdLactatingEntry(${pid});`;
-            }
-            
-            
-            html_tbody += `
-            <tr>
-                <td onclick="${s_click}">${pid}</td>
-                <td class="sow-name"  role="button" onclick='${s_click_sow}' style="margin-left:0; padding-left:0;">${sow_reference}</td>
-                <td class="date" role="button" onclick='${s_click}'>${s_date_important}</td>
-                <td class="operation" style="margin-left:0; padding-left:0;" onclick="${s_click}">
-                    ${s_operation}
-                </td>
-            </tr>
-            `;
-            
+            s_date_important = `${dt_important_s} (Day ${diff_days})`;
         }
         
-        return html_tbody;
         
+        // The Operation column should display either one of the following
+        // 1.) Over due not yet done operation; display Date, operation name 
+        // + overdue indicator
+        // 2.) If no overdue, show the upcoming operation
+        // 3.) If all Done, should display ALL DONE 
+        s_operation = '';
+        
+        if (settings.isGesta){
+            operations = cur_entry.gestating_ops;
+        }
+        else{
+            operations = cur_entry.lactating_ops;
+        }
+        
+        len_items = operations.length;
+        
+        has_operations = 1;
+        if (len_items == 0){has_operations = 0;}
+        
+        
+        let index;
+        pending_operation = null;
+        are_all_done = 1;
+        
+        
+        if (len_items > 0){
+            index = len_items -1;
+            while (index >= 0){
+                cur_operation = operations[index];
+                
+                if (cur_operation.pig_prod_pig_ops.date_actual == null){
+                    are_all_done = 0;
+                    pending_operation = cur_operation;
+                    break; // break the while loop
+                }
+                
+                index -= 1;
+            }
+        }
+        
+        
+        if (pending_operation){
+
+            
+            dt_target   = new Date(pending_operation.pig_prod_pig_ops.date_target);
+            dt_target_s  = formatDate(dt_target, FORMAT_COMPACT);
+            operation_name = pending_operation.account_pig_ops.name;
+            
+            let class_overdue = '';
+            if (dtCurrentDate >= dt_target){
+                class_overdue = 'text-overdue';
+            }
+            
+            s_operation = `
+                <div class="${class_overdue}">${dt_target_s}</div>
+                <div class="${class_overdue}">${operation_name}</div>`;
+        } 
+        else {
+            s_operation = `
+                <div>All Done
+                    <span class="operation-icon large icon-done">
+                        <i class="fas fa-check-circle"></i>
+                    </span>
+                </div>`;
+        }
+        
+        
+        
+        const html = `
+        <tr>
+            <td>${pid}</td>
+            <td class="sow-name" style="margin-left:0; padding-left:0;">${sow_reference}</td>
+            <td class="date">${s_date_important}</td>
+            <td class="operation" style="margin-left:0; padding-left:0;">
+                ${s_operation}
+            </td>
+        </tr>
+        `;
+        
+        const elem_row = document.createElement('tr');
+        elem_row.innerHTML = html;
+        
+        
+        
+        // Attach onclick listeners to td
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        index = 0
+        for (const cur_td of elem_tds){
+            
+            switch(index){
+                
+                
+                case 1: {
+                    cur_td.onclick = function (){
+                        navigation.pageSowBoarList.gotoSowBoarEntryPage(null, 
+                            data_sow.hid);
+                    };
+                    break;
+                }
+                
+                case 0:
+                case 2:
+                case 3: {
+                    cur_td.onclick = function (){
+                        if (settings.isGesta){
+                            navigation.onClickProdGestatingEntry(pid);
+                        }
+                        else{
+                            navigation.onClickProdLactatingEntry(pid);
+                        }
+                    };
+                    
+                    break;
+                }
+                
+                
+                
+                default: {break;}
+                
+            }
+                        
+            index += 1;
+        
+        }
+        
+        
+        return elem_row;
     }
     
     
-    this._getHtmlPigCountTableBody = function(){
+    this.renderLactaPigCountTable = function(){
+        elemPigCountTableBody.innerHTML = '';
         
-        let html_tbody = '';
+        let pig_prod_list = dataPigProdList;
         
+
+        for (const cur_entry of pig_prod_list){
+            const elem_row = thisObj.getElemTableRowPigCount(cur_entry)
+            elemPigCountTableBody.appendChild(elem_row);
+        }
+    }
+    
+    
+    this.getElemTableRowPigCount = function(cur_entry){
+
         let pid;
         let data_sow;
         let sow_reference;
@@ -866,47 +927,74 @@ ${html_style}
 
         
         let index = 0;
-        for (const cur_entry of dataPigProdList){
-            pid = cur_entry.pig_production.farm_prod_id;
             
-            data_sow = cur_entry.sow;
-            sow_reference = getSowBoarReference(data_sow);
+        pid = cur_entry.pig_production.farm_prod_id;
+        
+        data_sow = cur_entry.sow;
+        sow_reference = getSowBoarReference(data_sow);
+    
+    
+        s_num_dead_at_birth = '';
+        
+        s_num_dead_after_birth = '';
         
         
-            s_num_dead_at_birth = '';
-            
-            s_num_dead_after_birth = '';
-            
-            
-            if (cur_entry.birth.num_dead_at_birth > 0){
-                s_num_dead_at_birth = `${cur_entry.birth.num_dead_at_birth}`;
-            }
-            
-            
-            
-            
-            
-            // Clicking on SowName should go to SowBoar Page
-            // Clicking on PID or important date should open Gesta or Lacta Page
-            
-            let s_click_sow = `gNavigation.pageSowBoarList.gotoSowBoarEntryPage(null, "${data_sow.hid}")`;
-            
-            let s_click = `gNavigation.onClickProdLactatingEntry(${pid});`;
-            
-            
-            html_tbody += `
-            <tr>
-                <td onclick="${s_click}">${pid}</td>
-                <td class="sow-name"  role="button" onclick='${s_click_sow}' style="margin-left:0; padding-left:0;">${sow_reference}</td>
-                <td>${cur_entry.pig_production.cur_pig_count}</td>
-                <td>${s_num_dead_at_birth}</td>
-                <td></td>
-            </tr>
-            `;
-            
+        if (cur_entry.birth.num_dead_at_birth > 0){
+            s_num_dead_at_birth = `${cur_entry.birth.num_dead_at_birth}`;
         }
         
-        return html_tbody;
+        
+        
+       const html = `
+        <tr>
+            <td>${pid}</td>
+            <td class="sow-name" style="margin-left:0; padding-left:0;">${sow_reference}</td>
+            <td>${cur_entry.pig_production.cur_pig_count}</td>
+            <td>${s_num_dead_at_birth}</td>
+            <td></td>
+        </tr>
+        `;
+            
+        
+        const elem_row = document.createElement('tr');
+        elem_row.innerHTML = html;
+        
+        
+        
+        // Attach onclick listeners to td
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        index = 0
+        for (const cur_td of elem_tds){
+            
+            switch(index){
+                case 0:{
+                    cur_td.onclick = function (){
+                        navigation.onClickProdLactatingEntry(pid);
+                    };
+                    
+                    break;
+                }
+                
+                case 1: {
+                    cur_td.onclick = function (){
+                        navigation.pageSowBoarList.gotoSowBoarEntryPage(null, 
+                            data_sow.hid);
+                    };
+                    break;
+                }
+                
+                default: {break;}
+                
+            }
+                        
+            index += 1;
+        
+        }
+        
+        
+        return elem_row;
         
     }
     

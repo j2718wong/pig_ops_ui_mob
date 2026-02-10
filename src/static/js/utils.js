@@ -316,13 +316,19 @@ export function createPaginationManager(config) {
             pageData.forEach(dataRow => {
                 let elemRow = null;
                 
+                
                 if (getRowElement){
                     elemRow = getRowElement(dataRow);
-                    elemTableBody.appendChild(elemRow);
                     
-                } else {
+                    if (elemRow) {
+                        elemTableBody.appendChild(elemRow);
+                    }
+                } 
                 
-                    const elemRow = document.createElement('tr');
+                
+                if (elemRow == null) {
+                
+                    elemRow = document.createElement('tr');
                     elemRow.innerHTML = renderRow(dataRow);
                     
                     if (getRowDataHid){
