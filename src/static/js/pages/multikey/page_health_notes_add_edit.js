@@ -356,21 +356,29 @@ export function PageHealthNotesAddEdit(input_settings){
                     
                     if (prod_status_id == PROD_STATUS.LACTATING){
                         // Update infoBox
-                        const sow_boar_hid = curDataEntry.sow.hid;
-                        const tab_id = navigation.pageSowBoarEntry.elemIdTabHealth;
-                        
-                        let s_click = `gNavigation.pageSowBoarList.onClickSowBoarEntry(`;
-                        s_click += `"${sow_boar_hid}", null, "${tab_id}", ${SOW_BOAR_TYPE.SOW});`;
-                    
                         
                         let html_info = `
                         Use this to record health problem of the piglets of this 
                         production entry. If the sow has the health problem, 
-                        <a href="javascript:void(0)" class="text-link" onclick='${s_click}'>click this</a>.
+                        <a href="javascript:void(0)" class="text-link">click this</a>.
                         `;
                         
                         elemInfoShow.style.display = 'block';
                         elemInfoShow.innerHTML = html_info;
+                        
+                        
+                        // Find text-link and attach onclick function;
+                        const sow_boar_hid = curDataEntry.sow.hid;
+                        const tab_id = navigation.pageSowBoarEntry.elemIdTabHealth;
+                        
+                        
+                        const elem_link = elemInfoShow.querySelector('.text-link');
+                        if (elem_link){
+                            elem_link.onclick = function(){
+                                navigation.pageSowBoarList.onClickSowBoarEntry(
+                                    sow_boar_hid, null, tab_id, SOW_BOAR_TYPE.SOW);
+                            };
+                        }
                     }
                 }
             }

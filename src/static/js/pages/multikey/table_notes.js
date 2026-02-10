@@ -225,7 +225,7 @@ export function TableNotes(input_settings){
     this.getHtmlTableRowEmpty = function(){
         const html = `
             <tr>
-                <td colspan="2"><div>No Entries</div></td>
+                <td colspan="3"><div>No Entries</div></td>
             </tr>
         `;
         return html;
@@ -233,27 +233,6 @@ export function TableNotes(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let s_click = '';
-        
-        switch (settings.notesType){
-            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-        
-                s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
-
-                if ('dispose_status_id' in dataSowBoar.sow_boar){s_click = '';}
-
-                break;
-            }
-        
-            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
-        
-                let s_click = `gNavigation.pageProdLactatingEntry.tablePigProdNotes.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
-
-                
-                break;
-            }
-        }
-        
         
         const dt_notes = new Date(cur_entry.prod_notes.date_notes);
         
@@ -266,15 +245,77 @@ export function TableNotes(input_settings){
         const html = `
             <tr>
                 <td style="padding-right:0;"><span >${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
-                <td onclick='' style="padding-left:0; padding-right:0; text-align:center;">${pid}</td>
-                <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>
+                <td style="padding-left:0; padding-right:0; text-align:center;">${pid}</td>
+                <td>${cur_entry.prod_notes.notes}</td>
             </tr>
         `;
         
         return html;
-        
-        
     }
+    
+    
+    this.getElemTableRow = function(cur_entry){
+        const elem_row = document.createElement('tr');
+        
+        const html = thisObj.getHtmlTableRow(cur_entry);
+        elem_row.innerHTML = html;
+         
+
+        
+        // TODO still evaluating if onclick is for row, td or span in td;
+        // To avoid un necessary clicks while scrolling. 
+        
+        
+        // Attach onclick listeners to td
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        let index = 0
+        for (const cur_td of elem_tds){
+        
+            if (index == 1){
+                // TODO: in the future need to link redirect to production page
+                // if PID is clicked.
+                
+            }
+        
+            if (index == 0 || index == 2){
+                // Edit notes
+                
+                let s_click = '';
+                
+                switch (settings.notesType){
+                    case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                
+                        if ('dispose_status_id' in dataSowBoar.sow_boar){}
+                        else{
+                            cur_td.onclick = function(){
+                                thisObj.onClickRowEntry(cur_entry.prod_notes.hid);
+                            }
+                        }
+
+                        break;
+                    }
+                
+                    case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                        // Todo how to check if still active
+                        
+                        cur_td.onclick = function(){
+                            thisObj.onClickRowEntry(cur_entry.prod_notes.hid);
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+            
+            index += 1;
+        
+        }
+        
+        return elem_row;
+    }
+    
     
       
     this.setUserLanguage = function(language_key){

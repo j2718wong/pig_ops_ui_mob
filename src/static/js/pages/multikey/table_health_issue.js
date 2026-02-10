@@ -215,31 +215,7 @@ export function TableHealthIssue(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let s_click = '';
         
-        
-        switch (settings.healthType){
-            case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-                s_click = `gNavigation.pageSowBoarEntry.tablePigHealth.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
-                
-                if ('dispose_status_id' in dataSowBoar.sow_boar){
-                    s_click = '';
-                }
-                
-                break;
-            }
-            
-            
-            case MULTIKEY_OBJ_TYPE.PIG_PROD:{
-                s_click = `gNavigation.pageProdLactatingEntry.tablePigProdHealth.onClickRowEntry("${cur_entry.prod_notes.hid}");`;
-                
-                break;
-            }
-            
-        }
-        
-        
-    
         let s_last_med = ''
         let s_last_update = '';
         
@@ -260,16 +236,78 @@ export function TableHealthIssue(input_settings){
         const dt_notes = new Date(cur_entry.prod_notes.date_notes);
         
         const html = `
-            <tr>
+            <tr data-hid="${cur_entry.prod_notes.hid}">
                 <td><span>${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
                 <td>${s_last_med}</td>
-                <td onclick='${s_click}'>${cur_entry.prod_notes.notes}</td>
+                <td>${cur_entry.prod_notes.notes}</td>
             </tr>
         `;
         
         return html;
     }
     
+ 
+    this.getElemTableRow = function(cur_entry){
+        const elem_row = document.createElement('tr');
+        
+        const html = thisObj.getHtmlTableRow(cur_entry);
+        elem_row.innerHTML = html;
+         
+
+        
+        // TODO still evaluating if onclick is for row, td or span in td;
+        // To avoid un necessary clicks while scrolling. 
+        
+        
+        // Attach onclick listeners to td
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        let index = 0
+        for (const cur_td of elem_tds){
+        
+            if (index == 1){
+                // TODO: Should edit Medvac?
+                
+            }
+        
+            if (index == 0 || index == 2){
+                // Edit notes
+                
+                let s_click = '';
+                
+                switch (settings.healthType){
+                    case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
+                
+                        if ('dispose_status_id' in dataSowBoar.sow_boar){}
+                        else{
+                            cur_td.onclick = function(){
+                                thisObj.onClickRowEntry(cur_entry.prod_notes.hid);
+                            }
+                        }
+
+                        break;
+                    }
+                
+                    case MULTIKEY_OBJ_TYPE.PIG_PROD:{
+                        // Todo how to check if still active
+                        
+                        cur_td.onclick = function(){
+                            thisObj.onClickRowEntry(cur_entry.prod_notes.hid);
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+            
+            index += 1;
+        
+        }
+        
+        return elem_row;
+    }
+ 
  
     this.setUserLanguage = function(language_key){
         curUserLanguageKey = language_key;

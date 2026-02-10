@@ -237,7 +237,9 @@ export function createPaginationManager(config) {
         data,
         itemsPerPage,
         renderRow,
-        renderRowEmpty
+        renderRowEmpty,
+        getRowDataHid,
+        getRowElement
     } = config;
     
     let currentPage = 1;
@@ -308,11 +310,31 @@ export function createPaginationManager(config) {
             // Get data for current page
             const pageData = data.slice(startIndex, endIndex);
             
-            // Render each row using the provided renderRow function
-            pageData.forEach(sow => {
-                const row = document.createElement('tr');
-                row.innerHTML = renderRow(sow);
-                elemTableBody.appendChild(row);
+            // There are two ways to render a row.
+            // 1.) Render each row using the provided renderRow function.
+            // 2.) Append child of teh already created row element.
+            pageData.forEach(dataRow => {
+                let elemRow = null;
+                
+                if (getRowElement){
+                    elemRow = getRowElement(dataRow);
+                    elemTableBody.appendChild(elemRow);
+                    
+                } else {
+                
+                    const elemRow = document.createElement('tr');
+                    elemRow.innerHTML = renderRow(dataRow);
+                    
+                    if (getRowDataHid){
+                        const dataHid = getRowDataHid(dataRow);
+                        
+                        if (dataHid){
+                            elemRow.dataset.hid = dataHid;
+                        }
+                    }
+                    
+                    elemTableBody.appendChild(elemRow);
+                }
             });
         },
         

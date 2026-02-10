@@ -388,8 +388,10 @@ export function PageTableBasic(){
             data:               curDataView,
             itemsPerPage:       items_per_page,
             renderRow:          thisObj.getHtmlTableRow,
-            renderRowEmpty:     thisObj.getHtmlTableRowEmpty
-        } 
+            renderRowEmpty:     thisObj.getHtmlTableRowEmpty,
+            getRowDataHid:      thisObj.getRowDataHid,
+            getRowElement:      thisObj.getElemTableRow
+        }; 
         
         const paginationManager = new createPaginationManager(config); 
         paginationManager.init();
@@ -449,13 +451,42 @@ export function PageTableBasic(){
     }
     
     
-    // Need to overwrite
+    // Need to overwrite; This will be checked first if exists.
+    this.getElemTableRow = function(cur_entry){
+        return null;
+    }
+    
+    
+    // Need to overwrite; if this.getElemTableRow is null, then this will executed.
     this.getHtmlTableRow = function(cur_entry){
         const html = ``;
         return html;
     }
     
-
+    
+    // Need to overwrite
+    this.getRowDataHid = function(cur_entry){
+        return null;
+    }
+    
+    
+    
+    this.attachClickListenerToEachRow = function(){
+        const elem_tbody = thisObj.getElemTableBody();
+        
+        if (elem_tbody){
+            const table_rows = elem_tbody.querySelectorAll('tr');
+            
+            for (const cur_row of table_rows){
+                
+            
+            } 
+            
+        }
+        
+    }
+    
+    
     this.addToolTips = function(){
         const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
 

@@ -514,24 +514,40 @@ export function PageParentTrace(input_settings){
         }
         
         
+        // Clear the current table body
+        elemTableBody.innerHTML = '';
         
-        let html = '';
         
         for (const cur_entry of table_data) {
-            const s_click = `gNavigation.pageParentTrace.onClickSowBoarName('${cur_entry.sow_boar_hid}');`;
             const html_row = `
             <tr>
-                <td onclick="${s_click}"><span>${cur_entry.sow_boar_name}</span></td>
-                <td >${cur_entry.parent_sow_name}</td>
-                <td >${cur_entry.parent_boar_name}</td>
+                <td><span>${cur_entry.sow_boar_name}</span></td>
+                <td>${cur_entry.parent_sow_name}</td>
+                <td>${cur_entry.parent_boar_name}</td>
             </tr>
             `;
             
-            html += html_row;
+            const elem_row = document.createElement('tr');
+            elem_row.innerHTML = html_row;
+            
+            const elem_tds = elem_row.querySelectorAll('td'); 
+        
+            let index = 0
+            for (const cur_td of elem_tds){
+                if (index == 0){
+                    cur_td.onclick = function(){
+                        thisObj.onClickSowBoarName(cur_entry.sow_boar_hid);
+                    }
+                }
+                
+                index += 1;
+            }    
+            
+            
+            elemTableBody.appendChild(elem_row);
+
         }
-        
-        elemTableBody.innerHTML = html; 
-        
+   
     }
     
     

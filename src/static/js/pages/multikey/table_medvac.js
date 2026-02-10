@@ -259,54 +259,97 @@ export function TableMedVac(input_settings){
         return html;
     }
     
+    
+    
+    
 
     this.getHtmlTableRow = function(cur_entry){
-        let  s_click = '';
-        
-        
-        switch(settings.medvacType){
-        
-            case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
-                s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
-                
-                if ('dispose_status_id' in curDataEntry.sow_boar){
-                    s_click = '';
-                }
-                break;
-            }
-        
-            case MULTIKEY_OBJ_TYPE.PIG_PROD: {
-                // how to chekc if pig prod is still active
-                break;
-            }
-            
-            case MULTIKEY_OBJ_TYPE.FATTENING: {
-                break;
-            }
-        }
-        
-        let s_medvac = `
+
+        const s_medvac = `
             <span class="medvac-type"><b>${cur_entry.medvac.type.name}</b></span>
             <span class="medvac-brand">${cur_entry.medvac.brand.name}</span><br>
-            
         `;
         
-        let s_desc = `
+        const s_desc = `
             <span class="medvac-name"><b>${cur_entry.medvac.acc_medvac.name}</b></span>
             <span class="medvac-notes">${cur_entry.medvac.notes}</span>
         `;
         
         const dt_medvac = new Date(cur_entry.medvac.date_medvac);
         
+        
         const html = `
             <tr>
                 <td><span>${formatDate(dt_medvac, FORMAT_COMPACT)}</span></td>
-                <td onclick='${s_click}'>${s_medvac}</td>
-                <td onclick='${s_click}'>${s_desc}</td>
+                <td>${s_medvac}</td>
+                <td>${s_desc}</td>
             </tr>
         `;
         
         return html;
+    }
+    
+    
+    this.getElemTableRow = function(cur_entry){
+        const elem_row = document.createElement('tr');
+        
+        const html = thisObj.getHtmlTableRow(cur_entry);
+        elem_row.innerHTML = html;
+         
+
+        
+        // TODO still evaluating if onclick is for row, td or span in td;
+        // To avoid un necessary clicks while scrolling. 
+        
+        
+        // Attach onclick listeners to td
+        
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        let index = 0
+        for (const cur_td of elem_tds){
+            
+            if (index > 0){
+                switch(settings.medvacType){
+        
+                    case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
+                        
+                        if ('dispose_status_id' in curDataEntry.sow_boar){
+                            // Cannot edit if already disposed
+                        } else {
+                            cur_td.onclick = function(){
+                                thisObj.onClickRowEntry(cur_entry.medvac.hid);
+                            };
+                        }
+                        break;
+                    }
+                
+                    case MULTIKEY_OBJ_TYPE.PIG_PROD: {
+                        // how to chekck if pig prod is still active
+                        
+                        cur_td.onclick = function(){
+                            thisObj.onClickRowEntry(cur_entry.medvac.hid);
+                        };
+
+                        break;
+                    }
+                    
+                    case MULTIKEY_OBJ_TYPE.FATTENING: {
+                        break;
+                    }
+                }
+            }
+            
+            index += 1;
+        } 
+        
+        return elem_row;
+    }
+    
+    
+    this.getRowDataHid = function(cur_entry){
+        return cur_entry.medvac.hid;
     }
     
     

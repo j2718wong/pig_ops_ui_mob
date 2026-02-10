@@ -28,7 +28,8 @@ import {TextTranslation}        from '../common/translation.js';
 import {PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        MULTIKEY_OBJ_TYPE}            from '../../constants.js';
+        MULTIKEY_OBJ_TYPE,
+        PROD_STATUS}            from '../../constants.js';
 
 
 import {formatDate,
@@ -518,6 +519,41 @@ export function PageMedVacAddEdit(input_settings){
         // Make sure the input elements are enabled, in case 
         // the previous entry was view a disposed sow_boar
         thisObj.enableAllInputs();
+        
+        
+        // Show info 
+        elemInfoShow.style.display = 'none';
+        
+        
+        if (showOptions.medvac_type == MULTIKEY_OBJ_TYPE.PIG_PROD) {
+            const prod_status_id = curDataEntry.pig_production.prod_status_id;
+                        
+            if (prod_status_id == PROD_STATUS.LACTATING){
+                // Update infoBox
+                
+                let html_info = `
+                Use this to record MedVac given to piglets of this 
+                production entry. If given to sow, 
+                <a href="javascript:void(0)" class="text-link">click this</a>.
+                `;
+                
+                elemInfoShow.style.display = 'block';
+                elemInfoShow.innerHTML = html_info;
+                
+                
+                // Find text-link and attach onclick function;
+                const sow_boar_hid = curDataEntry.sow.hid;
+                const tab_id = navigation.pageSowBoarEntry.elemIdTabMedVac;
+                
+                const elem_link = elemInfoShow.querySelector('.text-link');
+                if (elem_link){
+                    elem_link.onclick = function(){
+                        navigation.pageSowBoarList.onClickSowBoarEntry(
+                            sow_boar_hid, null, tab_id, SOW_BOAR_TYPE.SOW);
+                    };
+                }
+            }
+        }
         
         
         // Show/Hide add only or edit only elements
