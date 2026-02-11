@@ -419,18 +419,17 @@ export function TableMedVac(input_settings){
         }
         
         const go_back_page = navigation.getPageContainer(go_back_page_id);
-        
-        
         const options ={
             medvac_type:             settings.medvacType,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
-        }
-        
+            go_back_page:           go_back_page   
+        };
         navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
         
-        const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+        
+        const goto_page_id   = PAGE_ID.MEDVAC_ADD_EDIT;
+        const page_container = navigation.getPageContainer(goto_page_id);
         navigation.showThisPage(page_container);
     }
     
@@ -471,22 +470,24 @@ export function TableMedVac(input_settings){
                 }
             }
             
+            
             const go_back_page = navigation.getPageContainer(go_back_page_id);
-        
             const options ={
                 medvac_type:            settings.medvacType,
                 is_add:                 false,   // false is edit
                 medvac_hid:             entry_hid,
                 callback_after_edit:    thisObj.onSuccessEditEntry,
-                go_back_page:           go_back_page   // Go back to this page; this is Div element
+                go_back_page:           go_back_page  
             }
-            
             navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
             
-            const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+            
+            const goto_page_id   = PAGE_ID.MEDVAC_ADD_EDIT;
+            const page_container = navigation.getPageContainer(goto_page_id);
             navigation.showThisPage(page_container);
             
             // Important; otherwise select dropdown not rendered
+            // There are other ways to do this
             navigation.pageMedVacAddEdit.show();
         
         }

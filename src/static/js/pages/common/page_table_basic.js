@@ -97,12 +97,13 @@ export function PageTableBasic(){
     
     let dtCurrentDate           = null;
     
+    
+    
     this.init = function(){
         //textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
         
         this.render();
         this.afterHtmlRender();
-        
         
     }
     
@@ -125,6 +126,12 @@ export function PageTableBasic(){
     this.setSettingsTable = function(input_settings){
         settings = input_settings;
     }
+    
+    
+    this.moneyFormatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    });
     
     
     this.getHtml = function(){

@@ -635,7 +635,7 @@ export function PageAccPigOpsList(input_settings){
             operation_type:         curAccPigOpsType,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            go_back_page:           go_back_page   
         }
         
         navigation.pageAccPigOpsAddEdit.beforeShow(options);
@@ -659,21 +659,21 @@ export function PageAccPigOpsList(input_settings){
     this.onClickRowEntry = function(entry_hid){
         const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
         
-        
-        const go_back_page = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_LIST);
+        const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
+        const go_back_page = navigation.getPageContainer(go_back_page_id);
     
         const options ={
             operation_type:         curAccPigOpsType,
             is_add:                 false,   // false is edit
             callback_after_edit:    thisObj.onSuccessEditEntry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            go_back_page:           go_back_page 
         }
-        
-        const page_container = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_ADD_EDIT);
-        navigation.showThisPage(page_container);
-
         navigation.pageAccPigOpsAddEdit.beforeShow(options, data_acc_pig_ops);
-    
+        
+        
+        const goto_page_id   = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
+        const page_container = navigation.getPageContainer(goto_page_id);
+        navigation.showThisPage(page_container);
     }
     
 }

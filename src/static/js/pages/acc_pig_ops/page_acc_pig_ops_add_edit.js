@@ -281,7 +281,7 @@ export function PageAccPigOpsAddEdit(input_settings){
             operation_type:         curAccPigOpsType,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            go_back_page:           go_back_page
         }
          
          * */

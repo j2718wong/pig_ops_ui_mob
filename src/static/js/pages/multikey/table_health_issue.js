@@ -361,14 +361,14 @@ export function TableHealthIssue(input_settings){
     
     
     this.onClickAddEntry = function(){
-        let page_id     = null;
-        let data_entry  = null;
+        let go_back_page_id = null;
+        let data_entry      = null;
         
         switch (settings.healthType) {
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
                 data_entry      = dataSowBoar;
                 
-                page_id = PAGE_ID.SOW_BOAR_ENTRY;
+                go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
                 
                 break;
             }
@@ -377,12 +377,12 @@ export function TableHealthIssue(input_settings){
                 data_entry      = dataPigProd;
                 
                 
-                const prod_status_id = dataPigProd.pig_production.prod_status_id;
+                let prod_status_id = dataPigProd.pig_production.prod_status_id;
                 
                 if (prod_status_id == PROD_STATUS.LACTATING){
-                    page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                    go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
                 } else {
-                    page_id = PAGE_ID.PROD_FATTENING_ENTRY;
+                    go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
                 }
                 
                 break;
@@ -391,18 +391,18 @@ export function TableHealthIssue(input_settings){
         }
         
         
-        const go_back_page = navigation.getPageContainer(page_id);
-        
+        const go_back_page = navigation.getPageContainer(go_back_page_id);
         const options ={
             health_type:            settings.healthType,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            go_back_page:           go_back_page
         };
-        
         navigation.pageHealthAddEdit.beforeShow(data_entry, options);
         
-        const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
+        
+        const goto_page_id   = PAGE_ID.HEALTH_ADD_EDIT;
+        const page_container = navigation.getPageContainer(goto_page_id);
         navigation.showThisPage(page_container);
     }
     
@@ -479,20 +479,21 @@ export function TableHealthIssue(input_settings){
 
         switch (settings.healthType) {
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-        
-                const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                const go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
+                const go_back_page = navigation.getPageContainer(go_back_page_id);
             
                 const options ={
-                    health_type:             settings.healthType,
+                    health_type:            settings.healthType,
                     is_add:                 false,   // false is edit
                     row_entry:              row_entry,
-                    callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
-                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                    callback_after_edit:    thisObj.onSuccessAddEntry,   
+                    go_back_page:           go_back_page 
                 }
-                
                 navigation.pageHealthAddEdit.beforeShow(dataSowBoar, options);
                 
-                const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
+                
+                const goto_page_id = PAGE_ID.HEALTH_ADD_EDIT;
+                const page_container = navigation.getPageContainer(goto_page_id);
                 navigation.showThisPage(page_container);
                 
                 break;
@@ -500,29 +501,29 @@ export function TableHealthIssue(input_settings){
             
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
         
-                const pig_prod_status_id = dataPigProd.pig_production.prod_status_id;
+                const prod_status_id = dataPigProd.pig_production.prod_status_id;
                 
-                let page_id = null;
-                if (pig_prod_status_id == PROD_STATUS.LACTATING){
-                    page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                let go_back_page_id = null;
+                if (prod_status_id == PROD_STATUS.LACTATING){
+                    go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
                 } else {
-                    page_id = PAGE_ID.PROD_FATTENING_ENTRY;
+                    go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
                 }
         
-                const go_back_page = navigation.getPageContainer(page_id);
-            
+                const go_back_page = navigation.getPageContainer(go_back_page_id);
             
                 const options ={
                     health_type:             settings.healthType,
                     is_add:                 false,   // false is edit
                     row_entry:              row_entry,
-                    callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
-                    go_back_page:           go_back_page   // Go back to this page; this is Div element
-                }
-                
+                    callback_after_edit:    thisObj.onSuccessAddEntry,
+                    go_back_page:           go_back_page
+                };
                 navigation.pageHealthAddEdit.beforeShow(dataPigProd, options);
                 
-                const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
+                
+                const goto_page_id   = PAGE_ID.HEALTH_ADD_EDIT;
+                const page_container = navigation.getPageContainer(goto_page_id);
                 navigation.showThisPage(page_container);
                 
                 break;
@@ -532,25 +533,24 @@ export function TableHealthIssue(input_settings){
     
     
     this.onClickAddMedVacEntry = function(row_entry){
-        console.log('onClickAddMedVacEntry');
         
-
         switch (settings.healthType) {
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-        
-                const go_back_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                const go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
+                const go_back_page = navigation.getPageContainer(go_back_page_id);
                 
                 const options ={
                     medvac_type:            MULTIKEY_OBJ_TYPE.SOW_BOAR,
                     is_add:                 true,   // false is edit
                     callback_after_add:     thisObj.onSuccessAddEntry,
                     health_issue_entry:     row_entry,
-                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                    go_back_page:           go_back_page
                 }
-                
                 navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
                 
-                const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+                
+                const goto_page_id   = PAGE_ID.MEDVAC_ADD_EDIT;
+                const page_container = navigation.getPageContainer(goto_page_id);
                 navigation.showThisPage(page_container);
                 
                 break;
@@ -558,29 +558,29 @@ export function TableHealthIssue(input_settings){
          
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
         
-                const pig_prod_status_id = dataPigProd.pig_production.prod_status_id;
+                const prod_status_id = dataPigProd.pig_production.prod_status_id;
                 
-                let page_id = null;
-                if (pig_prod_status_id == PROD_STATUS.LACTATING){
-                    page_id = PAGE_ID.PROD_LACTA_ENTRY;
+                let go_back_page_id = null;
+                if (prod_status_id == PROD_STATUS.LACTATING){
+                    go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
                 } else {
-                    page_id = PAGE_ID.PROD_FATTENING_ENTRY;
+                    go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
                 }
         
-                const go_back_page = navigation.getPageContainer(page_id);
+                const go_back_page = navigation.getPageContainer(go_back_page_id);
             
-                
                 const options ={
                     medvac_type:            MULTIKEY_OBJ_TYPE.PIG_PROD,
                     is_add:                 true,   // false is edit
                     callback_after_add:     thisObj.onSuccessAddEntry,
                     health_issue_entry:     row_entry,
-                    go_back_page:           go_back_page   // Go back to this page; this is Div element
+                    go_back_page:           go_back_page
                 }
-                
                 navigation.pageMedVacAddEdit.beforeShow(dataPigProd, options);
                 
-                const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+                
+                const goto_page_id   = PAGE_ID.MEDVAC_ADD_EDIT;
+                const page_container = navigation.getPageContainer(goto_page_id);
                 navigation.showThisPage(page_container);
                 
                 break;

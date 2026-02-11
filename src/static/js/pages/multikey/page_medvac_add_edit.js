@@ -459,7 +459,7 @@ export function PageMedVacAddEdit(input_settings){
             medvac_hid:             null,   // not null if edit
             health_issue_entry:     null,   // not null if this is added from health issue
             callback_after_add:     thisObj.onSuccessAddEntry
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            go_back_page:           go_back_page   // this is Div element
         }
         */
         

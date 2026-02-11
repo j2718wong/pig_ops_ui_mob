@@ -24,6 +24,12 @@ import {PAGE_ID,
         MULTIKEY_OBJ_TYPE}            from '../../constants.js';
 
 
+import {formatDate,
+        FORMAT_SHORT_MONTH,
+        FORMAT_LONG_MONTH,
+        FORMAT_COMPACT,
+        FORMAT_COMPACT_NO_SPACE} from '../../utils.js';
+
 
 export function PagePfBuyItemAddEdit(input_settings){
     PageViewBasic.call(this);
@@ -67,12 +73,15 @@ export function PagePfBuyItemAddEdit(input_settings){
 
     let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
-        
+    
+    let elemIdHeaderSubTitle    = null;
+    let elemIdHeaderSubTitle2   = null;
+    
     let elemIdInfoShow          = null;
     let elemIdInfo              = null;
     
     
-    let componentFeedType          = null;
+    let componentFeedType       = null;
     let componentFeedBrand      = null;
     let componentQuantity       = null;
     
@@ -88,7 +97,11 @@ export function PagePfBuyItemAddEdit(input_settings){
     
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;
-        
+
+    let elemHeaderSubTitle      = null;
+    let elemHeaderSubTitle2     = null;
+    
+
     let elemInfoShow            = null;
     let elemInfo                = null;
 
@@ -122,6 +135,9 @@ export function PagePfBuyItemAddEdit(input_settings){
     this.render = function(){
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
+        
+        elemIdHeaderSubTitle    = `${settings.uniqueKey}-subtitle`;
+        elemIdHeaderSubTitle2   = `${settings.uniqueKey}-subtitle2`;
             
         elemIdInfoShow          = `${settings.uniqueKey}-info-show`;
         elemIdInfo              = `${settings.uniqueKey}-info`;
@@ -195,6 +211,13 @@ export function PagePfBuyItemAddEdit(input_settings){
     
     
     <div class="modal-body">
+    
+        <div class="form-section-title" style="margin-top:0;">
+            <span id="${elemIdHeaderSubTitle}">Feed Buy on 02 Feb 2026</span>
+            <div id="${elemIdHeaderSubTitle2}">Supplier:</div>
+        </div>
+    
+    
         <!-- Mobile Info Box -->
         <div class="warning-box" id="${elemIdInfoShow}" style="display:none;"></div>
         
@@ -291,6 +314,9 @@ export function PagePfBuyItemAddEdit(input_settings){
     this._findElements = function(){
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
+        
+        elemHeaderSubTitle      = elemDivContainer.querySelector('#'+elemIdHeaderSubTitle);
+        elemHeaderSubTitle2     = elemDivContainer.querySelector('#'+elemIdHeaderSubTitle2);
                                                           
         elemInfoShow            = elemDivContainer.querySelector('#'+elemIdInfoShow);
         elemInfo                = elemDivContainer.querySelector('#'+elemIdInfo);
@@ -348,8 +374,8 @@ export function PagePfBuyItemAddEdit(input_settings){
         options ={
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry
-            pig_farm_feed_buy_hid:  null,   // Only set if add
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            pig_farm_feed_buy:      null,   
+            go_back_page:           go_back_page  
         }
         */
         
@@ -380,8 +406,17 @@ export function PagePfBuyItemAddEdit(input_settings){
         elemHeaderTitle.innerHTML = html;
                 
         
-      
-       
+        // Set Subtitle
+        const date_buy  = showOptions.pig_farm_feed_buy.pf_feed_buy.date_buy;
+        const dt_buy    = new Date(date_buy);
+        const s_date_buy= formatDate(dt_buy, FORMAT_COMPACT);
+        const s_title_1 = `Feed Buy on ${s_date_buy}`;
+        
+        const feed_supplier= showOptions.pig_farm_feed_buy.feed_supplier.name;
+        const s_title_2 = `Supplier: ${feed_supplier}`;
+        
+        elemHeaderSubTitle.textContent  = s_title_1; 
+        elemHeaderSubTitle2.innerHTML   = s_title_2;
         
         
         
@@ -425,7 +460,7 @@ export function PagePfBuyItemAddEdit(input_settings){
       
         
         
-        // Set MedVac brand
+        // Set Feed brand
         componentFeedBrand.setValue(cur_medvac.medvac.brand.hid);
         
        
@@ -480,7 +515,6 @@ export function PagePfBuyItemAddEdit(input_settings){
         let input_quantity      = componentQuantity.getValue();
         let input_unit_weight   = elemWeightPerUnit.value;
         let input_unit_cost     = elemUnitCost.value;
-        let input_staff         = componentStaff.getValue();
         
         
         input_elem              = componentFeedType.getElemSelect();
@@ -579,7 +613,9 @@ export function PagePfBuyItemAddEdit(input_settings){
         };
         
         if (showOptions.is_add == true){
-            post_data.pig_farm_feed_buy_hid = showOptions.pig_farm_feed_buy_hid;
+            
+            const feed_buy_hid = showOptions.pig_farm_feed_buy.pf_feed_buy.hid;
+            post_data.pig_farm_feed_buy_hid = feed_buy_hid;
         }
         
         else {

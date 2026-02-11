@@ -156,8 +156,8 @@ export function TableFeedBuyItems(input_settings){
         <table class="data-table table-feed-buy-items" id="">
             <colgroup>
                 <col style="width: 14%;">
-                <col style="width: 22%;">
-                <col style="width: 22%;">
+                <col style="width: 16%;">
+                <col style="width: 25%;">
                 <col style="width: 21%;">
             </colgroup>
             
@@ -194,18 +194,58 @@ export function TableFeedBuyItems(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let  s_click = '';
+        
+        const s_unit_cost = thisObj.moneyFormatter.format(cur_entry.feed_item.unit_cost);
+        const s_total_cost = thisObj.moneyFormatter.format(cur_entry.feed_item.total_cost);
         
         const html = `
             <tr>
-                <td><span>${formatDate(dt_medvac, FORMAT_COMPACT)}</span></td>
-                <td onclick='${s_click}'>${s_medvac}</td>
-                <td onclick='${s_click}'>${s_desc}</td>
+                <td>${cur_entry.feed_item.quantity}</td>
+                <td>${cur_entry.feed_type.name}</td>
+                <td>${cur_entry.feed_brand.name}</td>
+                <td>${s_unit_cost}</td>
+                <td>${s_total_cost}</td>
             </tr>
         `;
         
         return html;
     }
+    
+    
+    this.getElemTableRow = function(cur_entry){
+        const elem_row = document.createElement('tr');
+        
+        const html = thisObj.getHtmlTableRow(cur_entry);
+        elem_row.innerHTML = html;
+         
+
+        
+        // TODO still evaluating if onclick is for row, td or span in td;
+        // To avoid un necessary clicks while scrolling. 
+        
+        
+        // Attach onclick listeners to td
+        
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        let index = 0
+        for (const cur_td of elem_tds){
+            
+            if (index == 0 || index == 1 || index == 2){
+                cur_td.onclick = function(){
+                    thisObj.onClickRowEntry(cur_entry.feed_item.hid);
+                };
+                        
+            }
+            
+            index += 1;
+        } 
+        
+        return elem_row;
+    
+    }
+    
     
     
     this.search = function(key){
@@ -233,28 +273,22 @@ export function TableFeedBuyItems(input_settings){
     
     
     this.onClickAddEntry = function(){
-        let go_back_page_id = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
-        
-        
+        const go_back_page_id = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
         const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         const cur_data_entry = parentObj.getDataPigFarmFeedBuy();
-        
-        let pig_farm_feed_buy_hid = null;
-        if (cur_data_entry){
-            pig_farm_feed_buy_hid = cur_data_entry.pf_feed_buy.hid;
-        }
-        
-        
         const options ={
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
-            pig_farm_feed_buy_hid:  pig_farm_feed_buy_hid,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            pig_farm_feed_buy:      cur_data_entry,
+            go_back_page:           go_back_page 
         };
-        
         navigation.pagePfFeedBuyItemAddEdit.beforeShow(null, options);
-        const page_container = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT);
+        
+        
+        
+        const goto_page_id  = PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT;
+        const page_container = navigation.getPageContainer(goto_page_id);
         navigation.showThisPage(page_container);
         
         
@@ -272,7 +306,7 @@ export function TableFeedBuyItems(input_settings){
     
     
     this.onSuccessEditEntry = function(){
-        thisObj.requestDataPigMedVacList();
+        
     }
     
     
@@ -282,38 +316,22 @@ export function TableFeedBuyItems(input_settings){
         
 
         if (row_entry){
-            let go_back_page_id;
-            
-            switch(settings.medvacType){
-        
-                case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
-                    go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
-                    break;
-                }
-            
-                case MULTIKEY_OBJ_TYPE.PIG_PROD: {
-                    go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
-                    break;
-                }
-                
-                case MULTIKEY_OBJ_TYPE.FATTENING: {
-                    go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
-                    break;
-                }
-            }
-            
+            const go_back_page_id = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
             const go_back_page = navigation.getPageContainer(go_back_page_id);
-        
-            const options ={
-                medvac_type:            settings.medvacType,
-                is_add:                 false,   // false is edit
-                medvac_hid:             entry_hid,
-                callback_after_edit:    thisObj.onSuccessEditEntry,
-                go_back_page:           go_back_page   // Go back to this page; this is Div element
-            }
             
-            navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
-            const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+            const cur_data_entry = parentObj.getDataPigFarmFeedBuy();
+            
+            const options ={
+                is_add:                 false,   // false is edit
+                callback_after_add:     thisObj.onSuccessEditEntry,
+                pig_farm_feed_buy:      cur_data_entry,
+                go_back_page:           go_back_page
+            };
+            navigation.pagePfFeedBuyItemAddEdit.beforeShow(row_entry, options);
+            
+            
+            const goto_page_id   = PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT;
+            const page_container = navigation.getPageContainer(goto_page_id);
             navigation.showThisPage(page_container);
             
             // Important; otherwise select dropdown not rendered

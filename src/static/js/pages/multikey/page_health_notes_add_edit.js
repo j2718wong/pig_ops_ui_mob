@@ -292,7 +292,7 @@ export function PageHealthNotesAddEdit(input_settings){
             notes_type:             MULTIKEY_OBJ_TYPE.SOW_BOAR,
             row_entry:              null,   // not null if edit; entry to be edited
             callback_after_add:     thisObj.onSuccessAddEntry
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            go_back_page:           go_back_page   // this is Div element
         }
         */
         

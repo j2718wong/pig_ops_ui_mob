@@ -18,8 +18,7 @@ import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
-        FORMAT_COMPACT_NO_SPACE,
-        createPaginationManager} from '../../utils.js';
+        FORMAT_COMPACT_NO_SPACE} from '../../utils.js';
 
 
 /*
@@ -292,21 +291,20 @@ export function TablePigFarmFeedBuy(input_settings){
     
     this.onClickAddEntry = function(){
         
-        
-        const go_back_page = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_LIST);
-        
+        const go_back_page_id = PAGE_ID.FARM_FEED_BUY_LIST;
+        const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         const options ={
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
-        }
-        
-        const page_container = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_ADD_EDIT);
-        navigation.showThisPage(page_container);
-        
+            go_back_page:           go_back_page   
+        };
         navigation.pagePfFeedBuyAddEdit.beforeShow(options);
         
+
+        const goto_page_id   = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
+        const page_container = navigation.getPageContainer(goto_page_id);
+        navigation.showThisPage(page_container);
     }
     
     
@@ -326,21 +324,20 @@ export function TablePigFarmFeedBuy(input_settings){
         const row_entry = thisObj.getEntry(entry_hid);
 
         if (row_entry){
-            let go_back_page_id = PAGE_ID.FARM_FEED_BUY_LIST;
-            
+            const go_back_page_id = PAGE_ID.FARM_FEED_BUY_LIST;
             const go_back_page = navigation.getPageContainer(go_back_page_id);
         
             const options ={
                 is_add:                 false,   // false is edit
                 callback_after_edit:    thisObj.onSuccessEditEntry,
-                go_back_page:           go_back_page   // Go back to this page; this is Div element
+                go_back_page:           go_back_page
             }
-        
-            
-            const page_container = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_ADD_EDIT);
-            navigation.showThisPage(page_container);
-            
             navigation.pagePfFeedBuyAddEdit.beforeShow(options, row_entry);
+            
+            
+            const goto_page_id   = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
+            const page_container = navigation.getPageContainer(goto_page_id);
+            navigation.showThisPage(page_container);
         }
     }
 }

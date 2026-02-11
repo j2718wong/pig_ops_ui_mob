@@ -357,12 +357,13 @@ export function TableNotes(input_settings){
             notes_type:             settings.notesType,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            go_back_page:           go_back_page  
         };
-        
         navigation.pageNotesAddEdit.beforeShow(data_entry, options);
         
-        const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
+        
+        const goto_page_id   = PAGE_ID.NOTES_ADD_EDIT;
+        const page_container = navigation.getPageContainer(goto_page_id);
         navigation.showThisPage(page_container);
 
     }
@@ -466,15 +467,14 @@ export function TableNotes(input_settings){
             notes_type:             settings.notesType,
             is_add:                 false,   // false is edit
             row_entry:              row_entry,
-            callback_after_edit:    thisObj.onSuccessAddEntry,   // same action as onSuccessAddEntry
-            go_back_page:           go_back_page   // Go back to this page; this is Div element
+            callback_after_edit:    thisObj.onSuccessAddEntry,  
+            go_back_page:           go_back_page
         }
-        
         navigation.pageNotesAddEdit.beforeShow(data_entry, options);
         
-        const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
+        
+        const goto_page_id   = PAGE_ID.NOTES_ADD_EDIT;
+        const page_container = navigation.getPageContainer(goto_page_id);
         navigation.showThisPage(page_container);
-
     }
-
 }

@@ -74,8 +74,8 @@ export function PageViewBasic(){
     }
     
     this.moneyFormatter = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
     });
     
     

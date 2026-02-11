@@ -677,7 +677,7 @@ export function PageSowBoarAddEdit(input_settings){
             is_add:         true,   // false is edit
             sow_boar_type:  1,   
             farm_sow_boar_id: 1,    // only needed for edit
-            go_back_page:   elemDivContainer,   // Go back to this page; this is Div element
+            go_back_page:   elemDivContainer,   // this is Div element
             go_back_page_id: PAGE_ID.SOW_BOAR_LIST, optional
             from_prod_pid:  null    // can be null or undefined
         }

@@ -411,6 +411,14 @@ export function PagePfFeedBuyAddEdit(input_settings){
         const data_list = curDataPigFarmFeedBuy.feed_items;
         thisObj.tableFeedItems.setDataEntryList(data_list);
         thisObj.tableFeedItems.renderTable(data_list);
+        
+        
+        const total_cost = curDataPigFarmFeedBuy.pf_feed_buy.total_feed_cost;
+        const s_total_cost = thisObj.moneyFormatter.format(total_cost);
+        
+        
+        elemFeedCost.textContent = s_total_cost;
+        
     }
     
     
