@@ -348,6 +348,7 @@ export function PagePfBuyItemAddEdit(input_settings){
         options ={
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry
+            pig_farm_feed_buy_hid:  null,   // Only set if add
             go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
         */
@@ -467,124 +468,88 @@ export function PagePfBuyItemAddEdit(input_settings){
     }
 
     
-    this._validateAfterChangeInput = function(ev, input_field){
-        /* Use this to validate new entry form input.*/
-    
-        let input_elem  = null;
-        let input_val   = null;
-        let cur_field   = null;
-        let validation  = null;
-        
-        let is_duplicate = 0;
-        
-        
-        if (ev.checkValidity()) {
-            switch(input_field){
-                
-                case 'date_medvac': {
-             
-                }
-                
-            
-            }
-            
-            
-        } else {
-            ev.classList.remove('is-valid');
-            ev.classList.add('is-invalid');
-        }
-
-    }
-    
-    
     this.onClickSaveButton = function(){
         let input_elem      = null;
         let validation      = 0;
         
         
         
-        let input_date_medvac   = elemUiDateMedVac.getValue().trim();
+        let input_feed_type     = componentFeedType.getValue().trim();
+        let input_feed_brand    = componentFeedBrand.getValue();
         
-        let input_medvac_brand  = componentFeedBrand.getValue();
-        let input_medvac_type   = componentMedVacType.getValue();
-        let input_medvac_name   = componentAccMedVac.getValue();
-        let input_notes         = elemUiNotes.getValue().trim();
+        let input_quantity      = componentQuantity.getValue();
+        let input_unit_weight   = elemWeightPerUnit.value;
+        let input_unit_cost     = elemUnitCost.value;
         let input_staff         = componentStaff.getValue();
         
-
         
-        input_elem          = elemUiDateMedVac.getElemText();
-        if (input_date_medvac.length == 0){
-            validation = -1;
-            addValidationClassToElem(input_elem, validation);
-            return;
-        } 
-        
-        
-        
-        // Convert date to YYYY-MM-DD format
-        const dt_medvac     = new Date(input_date_medvac);
-        if (isNaN(dt_medvac.getTime())){
-            validation      = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
-            
-        
-        const dt_medvac_s   = dt_medvac.toLocaleDateString('en-CA');
-        validation          = 0
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        input_elem = componentFeedBrand.getElemSelect();
-        if (input_medvac_brand == '0'  || input_medvac_brand == '-1'){
+        input_elem              = componentFeedType.getElemSelect();
+        if (input_feed_type == '0'  || input_feed_type == '-1'){
             validation = -1;
         }
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         
         
-        input_elem = componentMedVacType.getElemSelect();
-        if (input_medvac_type == '0'  || input_medvac_type == '-1'){
+        input_elem              = componentFeedBrand.getElemSelect();
+        if (input_feed_brand == '0'  || input_feed_brand == '-1'){
             validation = -1;
         }
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         
         
-        input_elem = componentAccMedVac.getElemSelect();
-        if (input_medvac_name == '0'  || input_medvac_name == '-1'){
+        let quantity    = null;
+        let unit_cost   = null;
+        let unit_weight = null;
+        
+        
+        try{
+            quantity = parseInt(input_quantity);
+        } catch(error) {}
+        
+        
+        try{
+            unit_cost = parseFloat(input_unit_cost);
+        } catch(error) {}
+        
+        try{
+            unit_weight = parseFloat(input_unit_weight);
+        } catch(error) {}
+        
+        
+        
+        input_elem              = componentQuantity.getElemText();
+        if ((quantity == null) || (quantity < 1)){
             validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
         
-        
-        // Notes is required for Medvac
-        input_elem = elemUiNotes.getElemText();
-        if (input_notes.length == 0){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        let done_by_user = 0;
-        
-        input_elem = componentStaff.getElemCheckBox();
-        if (input_elem.checked){
-            done_by_user = 1;
-        }
-        
-        if (done_by_user == 0){
-            input_elem = componentStaff.getElemSelect();
-            if (input_staff == '0'  || input_staff == '-1'){
-                validation = -1;
-            }
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
+        
+        
+        input_elem              = elemUnitCost;
+        if ((unit_cost == null) || (unit_cost < 1)){
+            validation = -1;
+        
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        const total_cost = quantity * unit_cost;
+        
+        
+        input_elem              = elemWeightPerUnit;
+        if ((unit_weight == null) || (unit_weight < 1)){
+            validation = -1;
+        
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        
         
         
         
@@ -596,7 +561,7 @@ export function PagePfBuyItemAddEdit(input_settings){
         
         
         const user_hid      = navigation.userControl.getUserHid();
-        const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
+        
         const base_url      = window.location.origin;
         
         
@@ -604,39 +569,17 @@ export function PagePfBuyItemAddEdit(input_settings){
         const post_data = {
             'uhid':             user_hid,
             
-            'date_medvac':      dt_medvac_s,
-            'medvac_brand_hid': input_medvac_brand,
-            'medvac_type_hid':  input_medvac_type,
-            'acc_medvac_hid':   input_medvac_name,
-            'notes':            input_notes,
-            'staff_hid':        input_staff
+            'feed_type_hid':    input_feed_type,
+            'feed_brand_hid':   input_feed_brand,
+            'quantity':         quantity,
+            'unit_weight':      unit_weight,
+            'unit_cost':        unit_cost,
+            'total_cost':       total_cost
             
         };
         
         if (showOptions.is_add == true){
-            // Add Key
-            switch (showOptions.medvac_type){ 
-                case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-                    post_data.sow_boar_hid = curDataEntry.sow_boar.hid;
-                    break;
-                }
-                
-                case MULTIKEY_OBJ_TYPE.PIG_PROD:{
-                    post_data.pig_prod_hid = curDataEntry.pig_production.hid;
-                    break;
-                }
-            }
-            
-            if (done_by_user > 0){
-                post_data.done_by_user = 1;
-                delete post_data.staff_hid;
-            }
-            
-            if ('health_issue_entry' in showOptions){
-                const health_issue_hid = showOptions.health_issue_entry.prod_notes.hid;
-                post_data.health_issue_hid = health_issue_hid;
-                
-            }
+            post_data.pig_farm_feed_buy_hid = showOptions.pig_farm_feed_buy_hid;
         }
         
         else {
@@ -648,10 +591,10 @@ export function PagePfBuyItemAddEdit(input_settings){
         let url;
         
         if (showOptions.is_add == true){
-            url = `${base_url}/pig_medvac/add`;
+            url = `${base_url}/pf_feed_buy_item/add`;
         }
         else{
-            url = `${base_url}/pig_medvac/update`;
+            url = `${base_url}/pf_feed_buy_item/update`;
         }
         
         $.ajax({

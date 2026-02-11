@@ -429,7 +429,11 @@ export function PagePfFeedBuyAddEdit(input_settings){
         return null;
     }
         
-        
+    
+    
+    this.getDataPigFarmFeedBuy = function(){
+        return curDataPigFarmFeedBuy;
+    }    
   
         
     this.onClickSaveButton = function(){

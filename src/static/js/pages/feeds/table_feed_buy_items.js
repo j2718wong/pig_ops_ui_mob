@@ -28,7 +28,7 @@ export function TableFeedBuyItems(input_settings){
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
-    
+    const parentObj             = input_settings.parentObj;
     
     /*
     Typical input_settings
@@ -227,13 +227,6 @@ export function TableFeedBuyItems(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        if ('list_medvac' in curDataEntry.data_details){
-            for (const cur_entry of curDataEntry.data_details.list_medvac){
-                if (cur_entry.medvac.hid == entry_hid){
-                    return cur_entry;
-                }
-            }
-        }
         
         return null;
     }
@@ -245,12 +238,20 @@ export function TableFeedBuyItems(input_settings){
         
         const go_back_page = navigation.getPageContainer(go_back_page_id);
         
+        const cur_data_entry = parentObj.getDataPigFarmFeedBuy();
+        
+        let pig_farm_feed_buy_hid = null;
+        if (cur_data_entry){
+            pig_farm_feed_buy_hid = cur_data_entry.pf_feed_buy.hid;
+        }
+        
         
         const options ={
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
+            pig_farm_feed_buy_hid:  pig_farm_feed_buy_hid,
             go_back_page:           go_back_page   // Go back to this page; this is Div element
-        }
+        };
         
         navigation.pagePfFeedBuyItemAddEdit.beforeShow(null, options);
         const page_container = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT);
@@ -260,8 +261,13 @@ export function TableFeedBuyItems(input_settings){
     }
     
     
+    this.requestDataPfFeedBuyItems = function(){
+        
+    }
+    
+    
     this.onSuccessAddEntry = function(){
-        thisObj.requestDataPigMedVacList();
+        
     }
     
     
