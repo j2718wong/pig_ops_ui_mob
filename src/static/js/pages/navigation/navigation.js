@@ -52,6 +52,7 @@ import {PageProdFatteningEntry}     from '../production/fattening/page_prod_fatt
 
 import {TablePigFarmFeedBuy}        from '../feeds/table_pig_farm_feed_buy.js';
 import {PagePfFeedBuyAddEdit}       from '../feeds/page_pf_feed_buy_add_edit.js';
+import {PagePfBuyItemAddEdit}       from '../feeds/page_pf_feed_buy_item_add_edit.js';
 
 
 import {PageAccPigOpsList}          from '../acc_pig_ops/page_acc_pig_ops_list.js';
@@ -267,7 +268,7 @@ export function Navigation(){
     
     const elemIdContFarmFeedBuyList     = 'container-farm-feed-buy-list';
     const elemIdContFarmFeedBuyAddEdit  = 'container-farm-feed-buy-add-edit';
-    const elemIdContFarmFeedBuyItemAddEdit = 'container-farm-feed-buy-item-add-edit';
+    const elemIdContFeedBuyItemAddEdit  = 'container-farm-feed-buy-item-add-edit';
     
     const elemIdContAccPigOpsList       = 'container-acc-pig-ops-list';
     const elemIdContAccPigOpsAddEdit    = 'container-acc-pig-ops-add-edit';
@@ -330,6 +331,8 @@ export function Navigation(){
     
     let elemPageContFarmFeedBuyList = null;
     let elemPageContFarmFeedBuyAddEdit = null;
+    let elemPageContFeedBuyItemAddEdit = null;
+    
     
     let elemPageContAccPigOpsList   = null;
     let elemPageContAccPigOpsAddEdit = null;
@@ -513,13 +516,13 @@ export function Navigation(){
         uniqueKey:              'farm-feed-buy-add-edit'
     });
     
-    /*
-    this.pagePfFeedBuyItemAddEdit = new PagePfFeedBuyAddEdit({
+    
+    this.pagePfFeedBuyItemAddEdit = new PagePfBuyItemAddEdit({
         navigation:             this,
-        elemIdDivContainer:     elemIdContFarmFeedBuyAddEdit,
-        uniqueKey:              'farm-feed-buy-add-edit'
+        elemIdDivContainer:     elemIdContFeedBuyItemAddEdit,
+        uniqueKey:              'feed-buy-item-add-edit'
     });
-    */
+    
     
     this.pageAccPigOpsList      = new PageAccPigOpsList({
         navigation:             this,
@@ -581,6 +584,7 @@ export function Navigation(){
         
         this.pagePigFarmFeedBuyList.init();
         this.pagePfFeedBuyAddEdit.init();
+        this.pagePfFeedBuyItemAddEdit.init();
         
         
         this.pageAccPigOpsList.init();
@@ -654,6 +658,8 @@ export function Navigation(){
     
         elemPageContFarmFeedBuyList     = document.getElementById(elemIdContFarmFeedBuyList);
         elemPageContFarmFeedBuyAddEdit  = document.getElementById(elemIdContFarmFeedBuyAddEdit);
+        elemPageContFeedBuyItemAddEdit  = document.getElementById(elemIdContFeedBuyItemAddEdit);
+        
     
         elemPageContAccPigOpsList       = document.getElementById(elemIdContAccPigOpsList);
         elemPageContAccPigOpsAddEdit    = document.getElementById(elemIdContAccPigOpsAddEdit);
@@ -869,6 +875,10 @@ export function Navigation(){
             
             case PAGE_ID.FARM_FEED_BUY_ADD_EDIT: {
                 return elemPageContFarmFeedBuyAddEdit;
+            }
+            
+            case PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT: {
+                return elemPageContFeedBuyItemAddEdit;
             }
             
             

@@ -67,9 +67,9 @@ export function PageSowBoarAddEdit(input_settings){
     
     let elemIdContBreadCrumbs   = null;
     
+    let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
     
-    let elemIdHeaderTitle       = null;
         
     let elemIdInfoShow          = null;
     let elemIdInfo              = null;
@@ -96,12 +96,8 @@ export function PageSowBoarAddEdit(input_settings){
     let elemIdBtnSave           = null;
     
     
-    let elemBtnClose            = null;
-    
-    
-    
-    
     let elemHeaderTitle         = null;
+    let elemBtnClose            = null;
             
     let elemInfoShow            = null;
     let elemInfo                = null;
@@ -202,10 +198,8 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdContBreadCrumbs   = `${settings.uniqueKey}-cont-breadcrumbs`;
         thisObj.setBreadCrumbs(elemIdContBreadCrumbs);
         
-        
-        elemIdBtnClose          = `${settings.uniqueKey}-close`;
-        
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
             
         elemIdInfoShow          = `${settings.uniqueKey}-info-show`;
@@ -702,7 +696,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         let html;
 
-        if (options.is_add){
+        if (showOptions.is_add){
             thisObj.curDataSowBoar = null;
             thisObj.componentBreadcrumb.hide();
             
@@ -721,7 +715,7 @@ export function PageSowBoarAddEdit(input_settings){
         const elems_sow_only = elemDivContainer.querySelectorAll('.sow-only');
         
         for (const cur_entry of elems_sow_only){
-            if (options.sow_boar_type == SOW_BOAR_TYPE.SOW){
+            if (showOptions.sow_boar_type == SOW_BOAR_TYPE.SOW){
                 if (cur_entry.classList.contains('hidden')){
                     cur_entry.classList.remove('hidden');
                 }
@@ -737,9 +731,9 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         // Change Header title
-        switch(options.sow_boar_type){
+        switch(showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW: {
-                if (options.is_add){
+                if (showOptions.is_add){
                     html = `<i class="fas fa-plus me-2"></i>Add Sow`;
                 }
                 else{
@@ -761,7 +755,7 @@ export function PageSowBoarAddEdit(input_settings){
             }
     
             case SOW_BOAR_TYPE.BOAR: {
-                if (options.is_add){
+                if (showOptions.is_add){
                     html = `<i class="fas fa-plus me-2"></i>Add Boar`;
                 }
                 else{
@@ -782,7 +776,7 @@ export function PageSowBoarAddEdit(input_settings){
             }
     
             case SOW_BOAR_TYPE.GILT:{
-                if (options.is_add){
+                if (showOptions.is_add){
                     html = `<i class="fas fa-plus me-2"></i>Add Gilt`;
                     elemInfoShow.style.display = 'block';
                 }
@@ -812,7 +806,7 @@ export function PageSowBoarAddEdit(input_settings){
         // Hide elemBirthProdIdShow
         // BirthProdId will only show up if a production piglet is eartag or
         //  a pig is taken from existing production entry  
-        if ('from_prod_pid' in options){
+        if ('from_prod_pid' in showOptions){
             elemBirthProdIdShow.style.display = 'block';
         }
         else{
@@ -1373,6 +1367,7 @@ export function PageSowBoarAddEdit(input_settings){
                         // Edit action will
                         // 1.) replace this data only.
                         thisObj.curDataSowBoar.sow_boar = response.sow_boar;
+                        
                         navigation.pageSowBoarEntry.beforeShow(thisObj.curDataSowBoar);
                         navigation.showThisPage(showOptions.go_back_page);
                     }

@@ -675,7 +675,8 @@ h1 {
 
 h2 {
     color: var(--corporate-blue);
-    margin-bottom: 20px;
+    margin-top: 6px;
+    margin-bottom: 6px;
 }
 
 p {
@@ -2781,6 +2782,9 @@ textarea.form-control {
 }
 
 
+.read-only-field { 
+    font-size: 1.4rem;
+}
 
 
 /* Color-coded form sections */

@@ -56,6 +56,9 @@ export function ComponentPlusMinusInput(input_settings){
     let elemTextHelp            = null;
     
     
+    this.callbackOnChangeInput   = null;
+    
+    
     this.getHtml = function(){
         let html_icon = '';
         if ('iconLabel' in settings){
@@ -136,6 +139,10 @@ export function ComponentPlusMinusInput(input_settings){
                 let value = parseInt(input.value) || 0;
                 input.value = value + settings.step;
                 input.dispatchEvent(new Event('change'));
+                
+                if (thisObj.callbackOnChangeInput){
+                    thisObj.callbackOnChangeInput();
+                }
             });
         });
         
@@ -148,11 +155,23 @@ export function ComponentPlusMinusInput(input_settings){
                     input.value = value - settings.step;
                     input.dispatchEvent(new Event('change'));
                 }
+                
+                if (thisObj.callbackOnChangeInput){
+                    thisObj.callbackOnChangeInput();
+                }
+
             });
         });
         
         
+        elemText.addEventListener('input', function(event){
+            if (thisObj.callbackOnChangeInput) {
+                thisObj.callbackOnChangeInput();
+            }
+        });
+        
     }
+    
     
     
     

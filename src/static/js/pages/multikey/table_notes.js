@@ -361,6 +361,7 @@ export function TableNotes(input_settings){
         };
         
         navigation.pageNotesAddEdit.beforeShow(data_entry, options);
+        
         const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
         navigation.showThisPage(page_container);
 
@@ -470,6 +471,7 @@ export function TableNotes(input_settings){
         }
         
         navigation.pageNotesAddEdit.beforeShow(data_entry, options);
+        
         const page_container = navigation.getPageContainer(PAGE_ID.NOTES_ADD_EDIT);
         navigation.showThisPage(page_container);
 

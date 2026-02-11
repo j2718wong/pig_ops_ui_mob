@@ -413,7 +413,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         // Set Page Title
         let html;
-        if (options.is_add){
+        if (showOptions.is_add){
             html = `<i class="fas fa-plus me-2"></i>Add MedVac</span>`;
         }
         else{
@@ -428,7 +428,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         
         // Show/Hide add only or edit only elements
-        if (options.is_add){
+        if (showOptions.is_add){
             elemMedVacForShow.style.display = 'block';
             componentStaff.showDoneByMe();
         }

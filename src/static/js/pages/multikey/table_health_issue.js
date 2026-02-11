@@ -237,7 +237,7 @@ export function TableHealthIssue(input_settings){
         
         const html = `
             <tr data-hid="${cur_entry.prod_notes.hid}">
-                <td><span>${formatDate(dt_notes, FORMAT_COMPACT)}</span></td>
+                <td>${formatDate(dt_notes, FORMAT_COMPACT)}</td>
                 <td>${s_last_med}</td>
                 <td>${cur_entry.prod_notes.notes}</td>
             </tr>
@@ -401,11 +401,9 @@ export function TableHealthIssue(input_settings){
         };
         
         navigation.pageHealthAddEdit.beforeShow(data_entry, options);
+        
         const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
         navigation.showThisPage(page_container);
-                
-        
-        
     }
     
     
@@ -493,6 +491,7 @@ export function TableHealthIssue(input_settings){
                 }
                 
                 navigation.pageHealthAddEdit.beforeShow(dataSowBoar, options);
+                
                 const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
                 navigation.showThisPage(page_container);
                 
@@ -522,6 +521,7 @@ export function TableHealthIssue(input_settings){
                 }
                 
                 navigation.pageHealthAddEdit.beforeShow(dataPigProd, options);
+                
                 const page_container = navigation.getPageContainer(PAGE_ID.HEALTH_ADD_EDIT);
                 navigation.showThisPage(page_container);
                 
@@ -549,6 +549,7 @@ export function TableHealthIssue(input_settings){
                 }
                 
                 navigation.pageMedVacAddEdit.beforeShow(dataSowBoar, options);
+                
                 const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
                 navigation.showThisPage(page_container);
                 
@@ -578,6 +579,7 @@ export function TableHealthIssue(input_settings){
                 }
                 
                 navigation.pageMedVacAddEdit.beforeShow(dataPigProd, options);
+                
                 const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
                 navigation.showThisPage(page_container);
                 

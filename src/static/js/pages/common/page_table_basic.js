@@ -50,6 +50,7 @@ export function PageTableBasic(){
     let elemIdTableTotalPages   = null;
     let elemIdTableNextPage     = null;
     
+    let elemIdAddTextLinkShow   = null;
     let elemIdAddTextLink       = null;
     
     let elemIdTableContent      = null;
@@ -76,6 +77,7 @@ export function PageTableBasic(){
     let elemTableTotalPages     = null;
     let elemTableNextPage       = null;
     
+    let elemAddTextLinkShow     = null;
     let elemAddTextLink         = null;
     
     this.elemTableContent       = null;
@@ -150,6 +152,7 @@ export function PageTableBasic(){
         elemIdTableNextPage     = `${settings.uniqueKey}-next-page`;
         
         
+        elemIdAddTextLinkShow   = `${settings.uniqueKey}-add-entry-link-show`;
         elemIdAddTextLink       = `${settings.uniqueKey}-add-entry-link`;
         
         elemIdTableContent      = `${settings.uniqueKey}-table-content`;
@@ -212,9 +215,10 @@ export function PageTableBasic(){
         let html_add_entry_link = '';
         if (settings.addEntryLink){
             html_add_entry_link =`
-            <div>
+            <div id ="${elemIdAddTextLinkShow}">
                 <a href="javascript:void(0)" class="text-link" id ="${elemIdAddTextLink}">
-                    ${settings.addEntryLink.label}</a>
+                    ${settings.addEntryLink.label}
+                </a>
             </div>
             `;
             
@@ -302,6 +306,7 @@ export function PageTableBasic(){
         elemTableNextPage       = document.getElementById(elemIdTableNextPage);
         
         
+        elemAddTextLinkShow     = document.getElementById(elemIdAddTextLink);
         elemAddTextLink         = document.getElementById(elemIdAddTextLink);
         
         thisObj.elemIdTableContent  = document.getElementById(elemIdTableContent);
@@ -396,16 +401,29 @@ export function PageTableBasic(){
         const paginationManager = new createPaginationManager(config); 
         paginationManager.init();
         
-        // One event handler at a time
-        config.elemPrevPageBtn.onclick = function(){
-            paginationManager.goToPrevPage();
-        }
         
-        // One event handler at a time
-        config.elemNextPageBtn.onclick = function(){
-            paginationManager.goToNextPage();
+        if (settings.noControlsBar && settings.noControlsBar == true){}
+        else{
+            // One event handler at a time
+            config.elemPrevPageBtn.onclick = function(){
+                paginationManager.goToPrevPage();
+            }
+            
+            // One event handler at a time
+            config.elemNextPageBtn.onclick = function(){
+                paginationManager.goToNextPage();
+            }
         }
-        
+    }
+    
+    
+    this.addTextLinkShow = function(){
+        elemAddTextLinkShow.style.display = 'block';
+    }
+    
+    
+    this.addTextLinkHide = function(){
+        elemAddTextLinkShow.style.display = 'none';
     }
     
     

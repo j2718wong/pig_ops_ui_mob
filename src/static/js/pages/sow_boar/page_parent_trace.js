@@ -568,16 +568,14 @@ export function PageParentTrace(input_settings){
         if (data_sow_boar == null){return;}
         
         
-        const options_sow_boar ={
+        const options = {
             is_add:         false,
             sow_boar_type:  sow_boar_type,
             go_back_page:   elemDivContainer   // Go back to this page
-        }
+        };
         
         
-        
-        
-        navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar, data_sow_boar);
+        navigation.pageSowBoarAddEdit.beforeShow(options, data_sow_boar);
         //navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(thisObj.onSuccessUpdateStatus);
         
         const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);

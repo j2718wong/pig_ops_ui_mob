@@ -669,11 +669,10 @@ export function PageAccPigOpsList(input_settings){
             go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
         
-        navigation.pageAccPigOpsAddEdit.beforeShow(options, data_acc_pig_ops);
         const page_container = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_ADD_EDIT);
         navigation.showThisPage(page_container);
 
-    
+        navigation.pageAccPigOpsAddEdit.beforeShow(options, data_acc_pig_ops);
     
     }
     

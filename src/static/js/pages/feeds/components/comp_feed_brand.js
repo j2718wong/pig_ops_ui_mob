@@ -1,4 +1,4 @@
-// January 13, 2026
+// February 11, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -12,19 +12,19 @@ import {CommonSelectOptions}    from '../../common/common_select_options.js';
 import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
 
 
-export function ComponentMedVacType(input_settings){
+export function ComponentFeedBrand(input_settings){
     /*
     Typical settings
     {
         navigation:             navigation,
-        uniqueKey:              'medvac-add-edit-type',
+        uniqueKey:              'medvac-add-edit-brand-name',
 
-        titleExpandSection:     'Add New MedVac Type',
+        titleExpandSection:     'Add New Feed Brand',
         htmlExpandSection:      null,
-        labelBtnExpandSave:     'Save MedVac Type',
+        labelBtnExpandSave:     'Save Feed Brand',
         
-        labelSelect:            'Select MedVac Type',
-        helpText:               'MedVac type name or manufacturer'
+        labelSelect:            'Select Feed Brand',
+        helpText:               'Feed Brand'
 
     }
     */
@@ -41,25 +41,25 @@ export function ComponentMedVacType(input_settings){
     const thisObj           = this;
     
     
-    const MAXCHAR_MEDVAC_TYPE   = 50;
+    const MAXCHAR_FEED_BRAND_NAME   = 50;
     
     
-    const elemUiMedVacTypeName   = new UiInputTextWithCounter({
+    const elemUiFeedBrandName   = new UiInputTextWithCounter({
                                     uniqueKey:      input_settings.uniqueKey,
                                     className:      'form-group',
-                                    textLabel:      'MedVac Type',
+                                    textLabel:      'Brand Name',
                                     isRequired:     true,
-                                    textMaxChars:   MAXCHAR_MEDVAC_TYPE,
-                                    invalidFeedBack: 'Please enter a valid type.',
+                                    textMaxChars:   MAXCHAR_FEED_BRAND_NAME,
+                                    invalidFeedBack: 'Please enter a valid name.',
                                     textHelpText:   ''
                                 });
     
-    input_settings.htmlExpandSection = elemUiMedVacTypeName.getHtml();
+    input_settings.htmlExpandSection = elemUiFeedBrandName.getHtml();
     
     
-    let dataMedVacTypeList     = navigation.managerPublicData.dataMedVacTypeList;
+    let dataFeedBrandList     = navigation.managerPublicData.dataFeedBrandList;
     
-    let elemMedVacTypeName     = null;
+    let elemFeedBrandName     = null;
     
     
     // This needs to be set
@@ -68,31 +68,31 @@ export function ComponentMedVacType(input_settings){
     
     this.afterHtmlRender = function(){
         // This need to be called first
-        elemUiMedVacTypeName.afterHtmlRender();
+        elemUiFeedBrandName.afterHtmlRender();
         
         
         // Call the parent afterHtmlRender
         thisObj.afterHtmlRenderExpandable();
         
         
-        elemMedVacTypeName = elemUiMedVacTypeName.getElemText();
+        elemFeedBrandName = elemUiFeedBrandName.getElemText();
         
-        const elemSaveMedVacType = this.getElemEntrySave();
-        elemSaveMedVacType.addEventListener('click', thisObj.onClickSave);
+        const elemSaveFeedBrand = this.getElemEntrySave();
+        elemSaveFeedBrand.addEventListener('click', thisObj.onClickSave);
         
         
         this.callbackBeforeExpand = function(){
-            elemUiMedVacTypeName.reset()
+            elemUiFeedBrandName.reset()
         }
     }
     
     
-    this.setDataMedVacType = function(data, selected_entry_value){
-        dataMedVacTypeList = data;
+    this.setDataFeedBrand = function(data, selected_entry_value){
+        dataFeedBrandList = data;
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataMedVacType(dataMedVacTypeList, elem_select);
+        commonSelectOptions.setDataFeedBrandList(dataFeedBrandList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){
@@ -102,24 +102,24 @@ export function ComponentMedVacType(input_settings){
     
     
     this.beforeShow = function(options){
-        const medvac_type_list = navigation.managerPublicData.dataMedVacTypeList;
-        if (medvac_type_list == null){
+        // Check if there is a public data dataFeedBrandList and dataMedVacTypeList
+        const feed_brand_list = navigation.managerPublicData.dataFeedBrandList;
+        if (feed_brand_list == null){
             
             const callback_success = function(data){
-                thisObj.setDataMedVacType(data);
+                thisObj.setDataFeedBrand(data);
             };
             
             let elem_show_error = null;
             if (options && options.elem_show_error){
                 elem_show_error = options.elem_show_error;}
             
-            navigation.managerPublicData.requestDataMedVacType(callback_success, 
+            navigation.managerPublicData.requestDataFeedBrand(callback_success, 
                 elem_show_error);
         }
         else{
-            thisObj.setDataMedVacType(medvac_type_list);
+            thisObj.setDataFeedBrand(feed_brand_list);
         }
-        
     }
     
     
@@ -131,10 +131,10 @@ export function ComponentMedVacType(input_settings){
         let index;
         
         
-        if (dataMedVacTypeList == null){return null;}
+        if (dataFeedBrandList == null){return null;}
         
-        for (index = 0; index < dataMedVacTypeList.length; index++){
-            cur_entry = dataMedVacTypeList[index];
+        for (index = 0; index < dataFeedBrandList.length; index++){
+            cur_entry = dataFeedBrandList[index];
             
             // Will check name for duplicate 
             if (cur_entry.name.toUpperCase() == upper_name){
@@ -161,16 +161,16 @@ export function ComponentMedVacType(input_settings){
         let is_duplicate    = 0;
         
        
-        let input_name      = elemMedVacTypeName.value.trim();
+        let input_name      = elemFeedBrandName.value.trim();
         
        
-        input_elem          = elemMedVacTypeName;
+        input_elem          = elemFeedBrandName;
         
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_medvac_type = thisObj._getEntryByName(input_name);
-            if (cur_medvac_type != null){
+            const cur_feed_brand = thisObj._getEntryByName(input_name);
+            if (cur_feed_brand != null){
                 validation   = -1;
                 is_duplicate = 1;
             }
@@ -182,10 +182,10 @@ export function ComponentMedVacType(input_settings){
         
         if (validation != 0){
             if (is_duplicate > 0){
-                elemUiMedVacTypeName.setTextInvalid('Duplicate entry.');
+                elemUiFeedBrandName.setTextInvalid('Duplicate entry.');
             }
             else{
-                elemUiMedVacTypeName.setTextInvalid('Please enter a valid name.');
+                elemUiFeedBrandName.setTextInvalid('Please enter a valid name.');
             }
         }
         addValidationClassToElem(input_elem, validation);
@@ -195,7 +195,7 @@ export function ComponentMedVacType(input_settings){
         
         
         const user_hid      = navigation.userControl.getUserHid();
-        
+        const country_hid   = navigation.pigFarm.getCountryHid();
         
         const base_url      = window.location.origin;
 
@@ -203,6 +203,7 @@ export function ComponentMedVacType(input_settings){
         // send post request
         const post_data = {
             'uhid':             user_hid,
+            'country_hid':      country_hid,
             'name':             input_name
         };
 
@@ -215,7 +216,7 @@ export function ComponentMedVacType(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
-            url: `${base_url}/medvac_type/add`,
+            url: `${base_url}/feed_brand/add`,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -225,16 +226,16 @@ export function ComponentMedVacType(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const medvac_type_hid = response.medvac_type.hid;
+                    const feed_brand_hid = response.feed_brand.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataMedVacType(data, medvac_type_hid);
+                        thisObj.setDataFeedBrand(data, feed_brand_hid);
                         thisObj.closeExpandable();
                     };
                     
                     
                     
-                    navigation.managerPublicData.requestDataMedVacType(
+                    navigation.managerPublicData.requestDataFeedBrand(
                         callback_success, elemServerErrorMsg)
                 }
                 else{

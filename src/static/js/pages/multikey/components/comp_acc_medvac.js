@@ -126,7 +126,8 @@ export function ComponentAccMedVac(input_settings){
         
     }
     
-    this._getAccMedVac = function(name, exclude_hid){
+    
+    this._getEntryByName = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         
         
@@ -172,7 +173,7 @@ export function ComponentAccMedVac(input_settings){
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_medvac_type = thisObj._getAccMedVac(input_name);
+            const cur_medvac_type = thisObj._getEntryByName(input_name);
             if (cur_medvac_type != null){
                 validation   = -1;
                 is_duplicate = 1;

@@ -429,10 +429,9 @@ export function TableMedVac(input_settings){
         }
         
         navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
+        
         const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
         navigation.showThisPage(page_container);
-        
-        
     }
     
     
@@ -483,6 +482,7 @@ export function TableMedVac(input_settings){
             }
             
             navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
+            
             const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
             navigation.showThisPage(page_container);
             

@@ -72,7 +72,7 @@ export function TableFeedBuyItems(input_settings){
             noSearchAdd:    true,
             noControlsBar:  true,
             itemsPerPage:   20,
-            tableTitle:     'Feeds',
+            tableTitle:     'Feed Items',
             
             addEntryLink: {
                 label:      'Add Feed Item',
@@ -240,22 +240,20 @@ export function TableFeedBuyItems(input_settings){
     
     
     this.onClickAddEntry = function(){
-        let go_back_page_id = null;
-        
+        let go_back_page_id = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
         
         
         const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         
         const options ={
-            medvac_type:             settings.medvacType,
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   // Go back to this page; this is Div element
         }
         
-        navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
-        const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+        navigation.pagePfFeedBuyItemAddEdit.beforeShow(null, options);
+        const page_container = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT);
         navigation.showThisPage(page_container);
         
         

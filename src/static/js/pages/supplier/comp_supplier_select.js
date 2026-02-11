@@ -126,9 +126,9 @@ export function ComponentSupplierSelect(input_settings){
             
             
             const callback_success = function(new_supplier_hid){
-				thisObj.beforeShow();
-				
-				
+                thisObj.beforeShow();
+                
+                
                 const cur_supplier = thisObj.getDataSupplier(new_supplier_hid);
                 
                 if (cur_supplier == null){return;}
@@ -212,9 +212,9 @@ export function ComponentSupplierSelect(input_settings){
                 break;
             }
         }
+
         
-        
-        // Request semen_supplier if not yet requested
+        // Request account_suppliers if not yet requested
         if (account_suppliers == null){
             navigation.pigFarm.accountLists.requestDataSupplier(settings.supplierType,
                     thisObj.setDataSupplierList);

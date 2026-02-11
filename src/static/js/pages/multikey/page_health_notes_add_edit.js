@@ -112,10 +112,9 @@ export function PageHealthNotesAddEdit(input_settings){
     
     
     this.render = function(){
-        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
-        
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
             
         elemIdInfoShow          = `${settings.uniqueKey}-info-show`;
         elemIdInfo              = `${settings.uniqueKey}-info`;
@@ -247,10 +246,8 @@ export function PageHealthNotesAddEdit(input_settings){
     
     
     this._findElements = function(){
-                                                          
-        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
-                                                          
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
+        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
                                                           
                                                           
         elemInfoShow            = elemDivContainer.querySelector('#'+elemIdInfoShow);
@@ -336,7 +333,7 @@ export function PageHealthNotesAddEdit(input_settings){
         let html;
         
         if (settings.isNotes){
-            if (options.is_add){
+            if (showOptions.is_add){
                 html = `<i class="fas fa-plus me-2"></i>Add Notes`;
             }
             else{
@@ -346,7 +343,7 @@ export function PageHealthNotesAddEdit(input_settings){
             }
         }
         else{
-            if (options.is_add){
+            if (showOptions.is_add){
                 html = `<i class="fas fa-plus me-2"></i>Add Health Issue`;
                 
                 

@@ -254,23 +254,27 @@ export function createPaginationManager(config) {
         },
         
         updateEntryCount() {
-            elemEntryCount.textContent = `${data.length} Entries`;
-            
-            if (data.length <= itemsPerPage){
-                elemPagination.style.display = 'none';
-            }
-            else{
-                elemPagination.style.display = 'flex';
+            if (elemEntryCount){
+                elemEntryCount.textContent = `${data.length} Entries`;
+                
+                if (data.length <= itemsPerPage){
+                    elemPagination.style.display = 'none';
+                }
+                else{
+                    elemPagination.style.display = 'flex';
+                }
             }
         },
         
         updatePaginationInfo() {
-            elemCurrentPage.textContent = currentPage;
-            elemTotalPages.textContent = totalPages;
-            
-            // Enable/disable pagination buttons
-            elemPrevPageBtn.disabled = currentPage === 1;
-            elemNextPageBtn.disabled = currentPage === totalPages;
+            if (elemCurrentPage){
+                elemCurrentPage.textContent = currentPage;
+                elemTotalPages.textContent = totalPages;
+                
+                // Enable/disable pagination buttons
+                elemPrevPageBtn.disabled = currentPage === 1;
+                elemNextPageBtn.disabled = currentPage === totalPages;
+            }
         },
         
         goToPrevPage() {

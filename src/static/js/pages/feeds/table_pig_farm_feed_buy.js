@@ -62,8 +62,8 @@ export function TablePigFarmFeedBuy(input_settings){
     
     let dtCurrentDate           = null;
     
-    // This can be a data_sow_boar, data_pig_prod or data_prod_group
-    let curDataEntry            = null;
+    
+    let dataFarmFeedBuyList     = null;
     
     
     this.init = function(){
@@ -108,18 +108,18 @@ export function TablePigFarmFeedBuy(input_settings){
     }
     
     
-    this.beforeShow = function(data_entry){
-        curDataEntry = data_entry;
+    this.beforeShow = function(){
+        
         
         // Request data if not yet requested
-        const feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
-        if (feed_buy_list == null){
+        dataFarmFeedBuyList = navigation.pigFarm.dataFarmFeedBuyList;
+        if (dataFarmFeedBuyList == null){
             
             const callback_success = function(data){
-                const feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+                dataFarmFeedBuyList = navigation.pigFarm.dataFarmFeedBuyList;
                 
-                thisObj.setDataEntryList(feed_buy_list);
-                thisObj.renderTable(feed_buy_list);
+                thisObj.setDataEntryList(dataFarmFeedBuyList);
+                thisObj.renderTable(dataFarmFeedBuyList);
             };
             
             let elem_show_error = thisObj.elemServerErrorMsg;
@@ -130,8 +130,8 @@ export function TablePigFarmFeedBuy(input_settings){
         
         }
         else{
-            thisObj.setDataEntryList(feed_buy_list);
-            thisObj.renderTable(feed_buy_list);
+            thisObj.setDataEntryList(dataFarmFeedBuyList);
+            thisObj.renderTable(dataFarmFeedBuyList);
         }
      
         
@@ -205,53 +205,59 @@ export function TablePigFarmFeedBuy(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let  s_click = '';
         
-        
-        switch(settings.medvacType){
-        
-            case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
-                s_click = `gNavigation.pageSowBoarEntry.tableMedVac.onClickRowEntry("${cur_entry.medvac.hid}");`;
-                
-                if ('dispose_status_id' in curDataEntry.sow_boar){
-                    s_click = '';
-                }
-                break;
-            }
-        
-            case MULTIKEY_OBJ_TYPE.PIG_PROD: {
-                // how to chekc if pig prod is still active
-                break;
-            }
-            
-            case MULTIKEY_OBJ_TYPE.FATTENING: {
-                break;
-            }
-        }
-        
-        let s_medvac = `
-            <span class="medvac-type"><b>${cur_entry.medvac.type.name}</b></span>
-            <span class="medvac-brand">${cur_entry.medvac.brand.name}</span><br>
-            
-        `;
-        
-        let s_desc = `
-            <span class="medvac-name"><b>${cur_entry.medvac.acc_medvac.name}</b></span>
-            <span class="medvac-notes">${cur_entry.medvac.notes}</span>
-        `;
-        
-        const dt_medvac = new Date(cur_entry.medvac.date_medvac);
+        const dt_feed_buy = new Date(cur_entry.pf_feed_buy.date_buy);
         
         const html = `
             <tr>
-                <td><span>${formatDate(dt_medvac, FORMAT_COMPACT)}</span></td>
-                <td onclick='${s_click}'>${s_medvac}</td>
-                <td onclick='${s_click}'>${s_desc}</td>
+                <td>${formatDate(dt_feed_buy, FORMAT_COMPACT)}</td>
+                <td>${cur_entry.feed_supplier.name}</td>
+                <td></td>
+                <td></td>
             </tr>
         `;
         
         return html;
     }
+    
+    
+    
+    
+    this.getElemTableRow = function(cur_entry){
+        const elem_row = document.createElement('tr');
+        
+        const html = thisObj.getHtmlTableRow(cur_entry);
+        elem_row.innerHTML = html;
+         
+
+        
+        // TODO still evaluating if onclick is for row, td or span in td;
+        // To avoid un necessary clicks while scrolling. 
+        
+        
+        // Attach onclick listeners to td
+        
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        let index = 0
+        for (const cur_td of elem_tds){
+            
+            if (index == 0 || index == 1){
+                cur_td.onclick = function(){
+                    thisObj.onClickRowEntry(cur_entry.pf_feed_buy.hid);
+                };
+                        
+            }
+            
+            index += 1;
+        } 
+        
+        return elem_row;
+    }
+    
+    
+    
     
     
     this.search = function(key){
@@ -274,11 +280,9 @@ export function TablePigFarmFeedBuy(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        if ('list_medvac' in curDataEntry.data_details){
-            for (const cur_entry of curDataEntry.data_details.list_medvac){
-                if (cur_entry.medvac.hid == entry_hid){
-                    return cur_entry;
-                }
+        for (const cur_entry of dataFarmFeedBuyList){
+            if (cur_entry.pf_feed_buy.hid == entry_hid){
+                return cur_entry;
             }
         }
         
@@ -301,14 +305,14 @@ export function TablePigFarmFeedBuy(input_settings){
         const page_container = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_ADD_EDIT);
         navigation.showThisPage(page_container);
         
-		navigation.pagePfFeedBuyAddEdit.show(options);
+        navigation.pagePfFeedBuyAddEdit.beforeShow(options);
         
     }
     
     
     this.onSuccessAddEntry = function(){
         console.log('todo  onSuccessAddEntry');
-		
+        
     }
     
     
@@ -320,46 +324,23 @@ export function TablePigFarmFeedBuy(input_settings){
     
     this.onClickRowEntry = function(entry_hid){
         const row_entry = thisObj.getEntry(entry_hid);
-        
 
         if (row_entry){
-            let go_back_page_id;
-            
-            switch(settings.medvacType){
-        
-                case MULTIKEY_OBJ_TYPE.SOW_BOAR: {
-                    go_back_page_id = PAGE_ID.SOW_BOAR_ENTRY;
-                    break;
-                }
-            
-                case MULTIKEY_OBJ_TYPE.PIG_PROD: {
-                    go_back_page_id = PAGE_ID.PROD_LACTA_ENTRY;
-                    break;
-                }
-                
-                case MULTIKEY_OBJ_TYPE.FATTENING: {
-                    go_back_page_id = PAGE_ID.PROD_FATTENING_ENTRY;
-                    break;
-                }
-            }
+            let go_back_page_id = PAGE_ID.FARM_FEED_BUY_LIST;
             
             const go_back_page = navigation.getPageContainer(go_back_page_id);
         
             const options ={
-                medvac_type:            settings.medvacType,
                 is_add:                 false,   // false is edit
-                medvac_hid:             entry_hid,
                 callback_after_edit:    thisObj.onSuccessEditEntry,
                 go_back_page:           go_back_page   // Go back to this page; this is Div element
             }
+        
             
-            navigation.pageMedVacAddEdit.beforeShow(curDataEntry, options);
-            const page_container = navigation.getPageContainer(PAGE_ID.MEDVAC_ADD_EDIT);
+            const page_container = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_ADD_EDIT);
             navigation.showThisPage(page_container);
             
-            // Important; otherwise select dropdown not rendered
-            navigation.pageMedVacAddEdit.show();
-        
+            navigation.pagePfFeedBuyAddEdit.beforeShow(options, row_entry);
         }
     }
 }

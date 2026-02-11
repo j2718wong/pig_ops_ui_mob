@@ -1,4 +1,4 @@
-// December 23, 2025
+// February 3, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -14,7 +14,7 @@ import {PAGE_ID,
         SUPPLIER_TYPE}              from '../../constants.js';
 
 
-
+import {ComponentBreadCrumbs}       from '../common/ui/comp_breadcrumb.js';
 
 import {UiInputDatePicker}          from '../common/ui/input_datepicker.js';
 
@@ -45,7 +45,23 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
+    
+    const settingsBreadcrumb = {
+        uniqueKey:              `${settings.uniqueKey}-breadcrumbs`,
+        navigation:             navigation,
         
+        items:[
+            {
+                'label':        'Feed Buy List',
+                'gotoPageId':   PAGE_ID.FARM_FEED_BUY_LIST
+            }
+        ]
+        
+    };
+    let componentBreadcrumb     = new ComponentBreadCrumbs(settingsBreadcrumb);
+    
+    
+    let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
     
     let elemUiDateBuy           = null;
@@ -66,7 +82,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
     let elemIdFeedItems         = null;
     
     
-    
+    let elemHeaderTitle         = null;
     let elemBtnClose            = null;
     
     let elemDateBuy             = null;
@@ -85,12 +101,18 @@ export function PagePfFeedBuyAddEdit(input_settings){
     let elemFeedItems           = null;
     
     
-    let tableFeedItems          = null;
+    
+    
+
     
     let curDataPigFarmFeedBuy   = null;
     
     
     let showOptions             = null;
+    
+    
+    this.tableFeedItems         = null;
+    
     
     
     this.init = function(){
@@ -101,7 +123,8 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     this.render = function(){
         
-        elemIdBtnClose          = `${settings.uniqueKey}-select-close`;
+        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
         elemUiDateBuy           = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date-buy`,
@@ -143,6 +166,8 @@ export function PagePfFeedBuyAddEdit(input_settings){
         elemIdFeedItems         = `${settings.uniqueKey}-feed-items`;
         
         
+        const html_breadcrumb   = componentBreadcrumb.getHtml();
+        
         const html_date_buy     = elemUiDateBuy.getHtml();
         
         const html_supplier     = componentSupplier.getHtml();
@@ -152,16 +177,23 @@ export function PagePfFeedBuyAddEdit(input_settings){
 
         
 <div class="form-container">
+    ${html_breadcrumb}
 
     <div class="modal-header">
-        <h5 class="modal-title" id="add-entry-acc-pig-ops-modal-label">
-            <i class="fas fa-plus me-2"></i><span>Add Farm Feed Buy</span>
+        <h5 class="modal-title">
+            <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Add Farm Feed Buy</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
     
     
     <div class="modal-body">
+        <div class="warning-box" id="">
+            Create first a <b>Feed Buy</b> entry then add <b>Feed Items</b>
+            after saving Feed Buy.
+        </div>
+    
+    
         
         <!-- Date Buy -->
         ${html_date_buy}
@@ -171,8 +203,8 @@ export function PagePfFeedBuyAddEdit(input_settings){
             
         <!-- 3. Feed Cost -->
         <div class="form-group-number">
-            <label for="${elemIdFeedCost}" class="form-label">Feed Cost</label>
-            <span class="" id="${elemIdFeedCost}">0.00</span>
+            <label for="${elemIdFeedCost}" class="form-label" style="margin-bottom:0;">Feed Cost</label>
+            <span class="read-only-field" id="${elemIdFeedCost}">0.00</span>
         </div>
         
         
@@ -203,7 +235,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         
         
         
-        <div id="${elemIdFeedItems}"></div>
+        <div id="${elemIdFeedItems}" style="margin-top:5px;"> </div>
         
     </div>
 </div>
@@ -218,6 +250,8 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
+        componentBreadcrumb.afterHtmlRender();
+        
         elemUiDateBuy.afterHtmlRender();
         
         componentSupplier.afterHtmlRender();
@@ -227,19 +261,20 @@ export function PagePfFeedBuyAddEdit(input_settings){
         this._bindEventListeners();
         
         
-        tableFeedItems = new TableFeedBuyItems({
+        thisObj.tableFeedItems = new TableFeedBuyItems({
             navigation:             navigation,
             parentObj:              thisObj,
             uniqueKey:              'feed-buy-items',
             elemDivContainer:       elemFeedItems
         });
         
-        tableFeedItems.init();
+        thisObj.tableFeedItems.init();
         
     }
     
     
     this._findElements = function(){
+        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         
         
@@ -270,14 +305,17 @@ export function PagePfFeedBuyAddEdit(input_settings){
         });
          
         
+        
+        // Update Close and cancel button on click
+       
               
         elemBtnClose.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavFeedsExpenses();
         });
         
         
         elemBtnCancel.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavFeedsExpenses();
         });
         
         
@@ -314,7 +352,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
     }
     
     
-    this.show = function(options){
+    this.beforeShow = function(options, data_farm_feed_buy){
         thisObj._resetForm();
         
         /*
@@ -328,22 +366,53 @@ export function PagePfFeedBuyAddEdit(input_settings){
         */
         showOptions = options;
         
-        
-        if (showOptions.is_add){
-            // Hide tableFeedItems
-            elemFeedItems.style.display = 'none';
-        
-        }
-        
-        else{
-            elemFeedItems.style.display = 'block';
-        }
-        
+        console.log(`showOptions`);
+        console.log(showOptions);
         
         // Populate componentSupplier
         componentSupplier.beforeShow();
         
+        if (showOptions.is_add){
+            curDataPigFarmFeedBuy = null;
+            
+            const html = `<i class="fas fa-plus me-2"></i>Add Farm Feed Buy`;
+            elemHeaderTitle.innerHTML = html;
+            
+            const data_list = [];
+            thisObj.tableFeedItems.setDataEntryList(data_list);
+            thisObj.tableFeedItems.renderTable(data_list);
+            
+            thisObj.tableFeedItems.addTextLinkHide();
+        }
+        else{
+            curDataPigFarmFeedBuy = data_farm_feed_buy;
+            
+            const html = `<i class="fas fa-plus me-2"></i>Edit Farm Feed Buy`;
+            elemHeaderTitle.innerHTML = html;
+
+            
+            thisObj.tableFeedItems.addTextLinkShow();
+            
+            thisObj.populateForm();
+        }
+        
     }
+    
+    
+    this.populateForm = function(){
+        elemUiDateBuy.setDate(curDataPigFarmFeedBuy.pf_feed_buy.date_buy);
+        
+        // Necessary to display fully first the container
+        setTimeout(function(){
+            componentSupplier.setValue(curDataPigFarmFeedBuy.feed_supplier.hid);
+        }, 100);
+        
+        
+        const data_list = curDataPigFarmFeedBuy.feed_items;
+        thisObj.tableFeedItems.setDataEntryList(data_list);
+        thisObj.tableFeedItems.renderTable(data_list);
+    }
+    
     
     
     this.getPigFarmFeedBuyEntry = function(entry_hid){
@@ -410,7 +479,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         const post_data = {
             'uhid':             user_hid,
             'pig_farm_hid':     pig_farm_hid,
-            'supplier_hid':     input_supplier_hid,
+            'feed_supplier_hid': input_supplier_hid,
             'date_buy':         dt_feed_buy_s
         };
         
@@ -436,14 +505,13 @@ export function PagePfFeedBuyAddEdit(input_settings){
                     
                     // Request all pigfarm feed buy List
                     const callback_success = function(){
-                        curDataPigFarmFeedBuy = thisObj.getPigFarmFeedBuyEntry(pf_feed_buy_hid);
+                        thisObj.tableFeedItems.addTextLinkShow();
+                        curDataPigFarmFeedBuy = thisObj.getPigFarmFeedBuyEntry(
+                            pf_feed_buy_hid);
                     };
                     
                     navigation.pigFarm.requestDataPigFarmFeedBuyList(
                         callback_success, elemServerErrorMsg);
-                    
-                    
-                    
                     
                 }
                 else{
@@ -468,11 +536,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
     }
     
     
-    
-    this.populateForm = function(){
-        
-    }
-    
+
     
     
 }   

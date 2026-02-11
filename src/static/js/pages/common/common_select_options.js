@@ -253,4 +253,49 @@ export function CommonSelectOptions(){
         
         replaceSelectOptions(select_elem, select_data);
     }
+    
+    
+    this.setDataFeedTypeList = function(data, select_elem){
+        
+        let select_data = [];
+        if (data.length == 0){
+            select_data.push({value:"-1", text:"No Entries"});
+            replaceSelectOptions(select_elem, select_data);
+            return;
+        }
+        
+        
+        select_data = [];
+        select_data.push({value:"0", text:"Please Select"});
+        
+        for (const cur_entry of data){
+            select_data.push({value: cur_entry.hid, 
+                text: cur_entry.name});
+        }
+        
+        replaceSelectOptions(select_elem, select_data);
+    }
+    
+    
+    this.setDataFeedBrandList = function(data, select_elem){
+        
+        let select_data = [];
+        if (data.length == 0){
+            select_data.push({value:"-1", text:"No Entries"});
+            replaceSelectOptions(select_elem, select_data);
+            return;
+        }
+        
+        
+        select_data = [];
+        select_data.push({value:"0", text:"Please Select"});
+        
+        for (const cur_entry of data){
+            select_data.push({value: cur_entry.hid, 
+                text: cur_entry.name});
+        }
+        
+        replaceSelectOptions(select_elem, select_data);
+    }
+    
 }

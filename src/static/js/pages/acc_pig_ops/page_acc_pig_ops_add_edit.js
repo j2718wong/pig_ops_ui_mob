@@ -55,9 +55,9 @@ export function PageAccPigOpsAddEdit(input_settings){
     let componentBreadcrumb     = null;
     
     
-    
-    let elemIdBtnClose          = null;
     let elemIdHeaderTitle       = null;
+    let elemIdBtnClose          = null;
+    
 
     let elemUiName              = null;
     let elemUiDescription       = null;
@@ -71,8 +71,9 @@ export function PageAccPigOpsAddEdit(input_settings){
     let elemIdBtnSave           = null;
     
     
-    let elemBtnClose            = null;
     let elemHeaderTitle         = null;
+    let elemBtnClose            = null;
+    
     
     let elemDayNumber           = null;
     let elemDayNumberDesc       = null;
@@ -102,8 +103,10 @@ export function PageAccPigOpsAddEdit(input_settings){
         
         componentBreadcrumb     = new ComponentBreadCrumbs(settingsBreadcrumb);
         
-        elemIdBtnClose          = `${settings.uniqueKey}-close`;
+        
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
+        
         
         elemIdDayNumber         = `${settings.uniqueKey}-day-number`;
         elemIdDayNumberDesc     = `${settings.uniqueKey}-number-desc`;
@@ -226,8 +229,8 @@ export function PageAccPigOpsAddEdit(input_settings){
     
     
     this._findElements = function(){
-        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
+        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         
         elemDayNumber           = elemDivContainer.querySelector('#'+elemIdDayNumber);
         elemDayNumberDesc       = elemDivContainer.querySelector('#'+elemIdDayNumberDesc);
@@ -236,8 +239,6 @@ export function PageAccPigOpsAddEdit(input_settings){
         
         elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
         elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
-    
-    
     }
     
     

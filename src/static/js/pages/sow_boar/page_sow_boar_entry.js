@@ -669,7 +669,7 @@ export function PageSowBoarEntry(input_settings){
                 const options_sow_boar ={
                     sow_boar_type:  showOptions.sow_boar_type,
                     go_back_page:   elemDivContainer   // Go back to this page
-                }
+                };
 
                 
                 navigation.pageSowBoarDisposed.beforeShow(options_sow_boar, dataSowBoar);

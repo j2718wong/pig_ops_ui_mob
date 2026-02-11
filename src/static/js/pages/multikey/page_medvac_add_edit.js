@@ -71,11 +71,9 @@ export function PageMedVacAddEdit(input_settings){
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
 
-    
-    let elemIdBtnClose          = null;
-    
     let elemIdHeaderTitle       = null;
-    
+    let elemIdBtnClose          = null;
+     
         
     let elemIdInfoShow          = null;
     let elemIdInfo              = null;
@@ -108,9 +106,8 @@ export function PageMedVacAddEdit(input_settings){
     let elemIdBtnSave           = null;
     
     
-    let elemBtnClose            = null;
-    
     let elemHeaderTitle         = null;
+    let elemBtnClose            = null;
     
         
     let elemInfoShow            = null;
@@ -153,10 +150,9 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this.render = function(){
-        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
-        
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
             
         elemIdInfoShow          = `${settings.uniqueKey}-info-show`;
         elemIdInfo              = `${settings.uniqueKey}-info`;
@@ -379,11 +375,9 @@ export function PageMedVacAddEdit(input_settings){
     
     
     this._findElements = function(){
-                                                          
-        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
-                                                          
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
-                                                          
+        elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
+        
                                                           
         elemInfoShow            = elemDivContainer.querySelector('#'+elemIdInfoShow);
         elemInfo                = elemDivContainer.querySelector('#'+elemIdInfo);
@@ -507,7 +501,7 @@ export function PageMedVacAddEdit(input_settings){
         
         // Set Page Title
         let html;
-        if (options.is_add){
+        if (showOptions.is_add){
             html = `<i class="fas fa-plus me-2"></i>Add MedVac`;
         }
         else{
@@ -557,7 +551,7 @@ export function PageMedVacAddEdit(input_settings){
         
         
         // Show/Hide add only or edit only elements
-        if (options.is_add){
+        if (showOptions.is_add){
             elemMedVacForShow.style.display = 'block';
             componentStaff.showDoneByMe();
         }

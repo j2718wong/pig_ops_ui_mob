@@ -56,7 +56,7 @@ export function ProdEntryWean(input_settings){
     
     let elemIdContentContainer  = null;
     
-    let elemIdCannotUpdate      = null;
+    let elemIdWarningBox      = null;
     let elemIdSow               = null;
     let elemIdDaysSinceBirth      = null;
     
@@ -76,7 +76,7 @@ export function ProdEntryWean(input_settings){
     
     let elemContentContainer    = null;
     
-    let elemCannotUpdate        = null;
+    let elemWarningBox        = null;
     let elemSow                 = null;
     let elemDaysSinceBirth        = null;
     
@@ -107,7 +107,7 @@ export function ProdEntryWean(input_settings){
         
         elemIdContentContainer  = `${settings.uniqueKey}-content`;
                 
-        elemIdCannotUpdate      = `${settings.uniqueKey}-cannot-update`;
+        elemIdWarningBox      = `${settings.uniqueKey}-cannot-update`;
         
         elemIdSow               = `${settings.uniqueKey}-sow`;
         elemIdDaysSinceBirth      = `${settings.uniqueKey}-date-expected`;
@@ -186,8 +186,8 @@ export function ProdEntryWean(input_settings){
         Weaning Information
     </h2>
     
-    <div class="warning-box" id="${elemIdCannotUpdate}">
-        Setting the Date Weaning will update this production entry from 
+    <div class="warning-box" id="${elemIdWarningBox}">
+        Setting the <b>Date Wean</b> will update this production entry from 
         Lactating Status to Fattening Status and will be removed from Production 
         Lactating List. Will be put in Production Fattening List. 
         <b>This cannot be undone.</b>
@@ -265,9 +265,9 @@ export function ProdEntryWean(input_settings){
     this._findElements = function(){
         elemContentContainer    = elemDivContainer.querySelector('#'+elemIdContentContainer);
         
-        elemCannotUpdate        = elemDivContainer.querySelector('#'+elemIdCannotUpdate);
+        elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
         elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);
-        elemDaysSinceBirth        = elemDivContainer.querySelector('#'+elemIdDaysSinceBirth);
+        elemDaysSinceBirth      = elemDivContainer.querySelector('#'+elemIdDaysSinceBirth);
         
         elemWeanWeight          = elemDivContainer.querySelector('#'+elemIdWeanWeight);
         
