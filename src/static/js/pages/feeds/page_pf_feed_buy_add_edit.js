@@ -422,6 +422,21 @@ export function PagePfFeedBuyAddEdit(input_settings){
     }
     
     
+    this.recalculateFeedItemsTotal = function(){
+        const data_list = curDataPigFarmFeedBuy.feed_items;
+        
+        let total_cost = 0;
+        
+        for(const cur_entry of data_list){
+            total_cost += cur_entry.feed_item.total_cost;
+        } 
+        
+        const s_total_cost = thisObj.moneyFormatter.format(total_cost);
+        
+        
+        elemFeedCost.textContent = s_total_cost;
+    }
+    
     
     this.getPigFarmFeedBuyEntry = function(entry_hid){
         const feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;

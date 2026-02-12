@@ -252,7 +252,7 @@ export function PagePfBuyItemAddEdit(input_settings){
                 Unit Cost
             </label>
                 
-            <input type="number" class="form-control" id="${elemIdUnitCost}" placeholder="0.00" step="0.1" min="0">
+            <input type="text" class="form-control" id="${elemIdUnitCost}" placeholder="0.00" step="0.1" min="0">
             <div class="invalid-feedback">
                 Please enter numeric value.
             </div>
@@ -356,10 +356,11 @@ export function PagePfBuyItemAddEdit(input_settings){
     this._resetForm = function(){
         // Clear previous Form values and validation classes
      
-        
+        componentFeedType.reset();
         componentFeedBrand.reset();
-        elemWeightPerUnit.value = '';
+        componentQuantity.reset();
         
+        elemWeightPerUnit.value = '';
         elemUnitCost.value = '0.00';
         elemFeedCost.value = '0.00';
         
@@ -420,6 +421,12 @@ export function PagePfBuyItemAddEdit(input_settings){
         
         
         
+        if (showOptions.is_add){}
+        else{
+            thisObj.populateForm();
+        }
+        
+        
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
@@ -434,19 +441,8 @@ export function PagePfBuyItemAddEdit(input_settings){
     }
     
     
-    this.requestDataFeedType = function(){
-        const data_feed_type_list = navigation.managerPublicData.dataFeedTypeList;
-        
-        if (data_feed_type_list == null){
-            const callback_success = function(data){
-                
-            }
-            
-            
-            navigation.managerPublicData.requestDataFeedType(callback_success, 
-                elemServerErrorMsg);
-        }
-    }
+    
+   
     
     
     this.show = function(){
@@ -456,13 +452,22 @@ export function PagePfBuyItemAddEdit(input_settings){
     }
     
     
-    this.populateForm = function(data_entry, medvac_hid){
-      
+    this.populateForm = function(){
+        const s_unit_cost = thisObj.moneyFormatter.format(curDataEntry.feed_item.unit_cost);
+        const s_total_cost = thisObj.moneyFormatter.format(curDataEntry.feed_item.total_cost);
         
+        // Necessary to display fully first the container
+        setTimeout(function(){
+            componentFeedType.setValue(curDataEntry.feed_type.hid);
+            componentFeedBrand.setValue(curDataEntry.feed_brand.hid);
+        }, 100);
+
         
-        // Set Feed brand
-        componentFeedBrand.setValue(cur_medvac.medvac.brand.hid);
+        componentQuantity.setValue(curDataEntry.feed_item.quantity);
         
+        elemWeightPerUnit.value = curDataEntry.feed_item.kg_per_unit;
+        elemUnitCost.value = s_unit_cost;     
+        elemFeedCost.textContent = s_total_cost;     
        
     }
     
@@ -478,10 +483,10 @@ export function PagePfBuyItemAddEdit(input_settings){
 
     this.calculateFeedCost = function(){
         const input_quantity  = componentQuantity.getValue();
-        const input_unit_cost = elemUnitCost.value;
+        const input_unit_cost = elemUnitCost.value.replace(',', '');
         
-        let quantity    = null;
-        let unit_cost   = null;
+        let quantity    = 0;
+        let unit_cost   = 0;
         
         try{
             quantity = parseInt(input_quantity);
@@ -492,11 +497,8 @@ export function PagePfBuyItemAddEdit(input_settings){
         } catch(error) {}
         
         
-        let feed_cost = 0.0;
-        if (quantity && unit_cost){
-            feed_cost = quantity * unit_cost;
-        }
-
+        let feed_cost = quantity * unit_cost;
+        
         
         const s_feed_cost = thisObj.moneyFormatter.format(feed_cost);
         elemFeedCost.textContent = s_feed_cost;
@@ -514,7 +516,7 @@ export function PagePfBuyItemAddEdit(input_settings){
         
         let input_quantity      = componentQuantity.getValue();
         let input_unit_weight   = elemWeightPerUnit.value;
-        let input_unit_cost     = elemUnitCost.value;
+        let input_unit_cost     = elemUnitCost.value.replace(',', '');
         
         
         input_elem              = componentFeedType.getElemSelect();
@@ -619,7 +621,7 @@ export function PagePfBuyItemAddEdit(input_settings){
         }
         
         else {
-            post_data.pig_medvac_hid = showOptions.medvac_hid;
+            post_data.pf_feed_buy_item_hid = curDataEntry.feed_item.hid;
         }
         
         

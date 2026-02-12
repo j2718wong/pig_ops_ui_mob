@@ -312,6 +312,53 @@ export function PigFarm(_navigation){
     }
  
     
+    this.requestDataPigFarmFeedBuyItems = function(pig_farm_feed_buy, 
+            callback_success, elem_show_error){
+        
+        // Only request feed_buy items not the whole pig_farm_feed_buy
+        
+        const pf_feed_buy_hid = pig_farm_feed_buy.pf_feed_buy.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pf_feed_buy_item/list?pf_feed_buy_hid=${pf_feed_buy_hid}`;
+        
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                   pig_farm_feed_buy.feed_items = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
     
     
     this.requestDataPigMedVacList = function(medvac_type, data_entry, 

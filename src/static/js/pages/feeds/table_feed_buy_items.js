@@ -118,9 +118,7 @@ export function TableFeedBuyItems(input_settings){
     
     this.beforeShow = function(data_entry){
         curDataEntry = data_entry;
-        
-        
-        
+
     }
     
         
@@ -134,13 +132,6 @@ export function TableFeedBuyItems(input_settings){
         dtCurrentDate.setHours(0, 0, 0, 0);
         
         showOptions = options;
-        
-        
-        
-        
-        
-        
-        
     }
     
      
@@ -203,8 +194,8 @@ export function TableFeedBuyItems(input_settings){
                 <td>${cur_entry.feed_item.quantity}</td>
                 <td>${cur_entry.feed_type.name}</td>
                 <td>${cur_entry.feed_brand.name}</td>
-                <td>${s_unit_cost}</td>
-                <td>${s_total_cost}</td>
+                <td style="text-align:right;">${s_unit_cost}</td>
+                <td style="text-align:right; padding-right:4px;">${s_total_cost}</td>
             </tr>
         `;
         
@@ -267,7 +258,16 @@ export function TableFeedBuyItems(input_settings){
     
     
     this.getEntry = function(entry_hid){
+        const cur_data_entry = parentObj.getDataPigFarmFeedBuy();
+        const feed_items = cur_data_entry.feed_items;
         
+        for (const cur_entry of feed_items){
+            if (cur_entry.feed_item.hid == entry_hid){
+                return cur_entry;
+            }
+        } 
+        
+         
         return null;
     }
     
@@ -295,18 +295,29 @@ export function TableFeedBuyItems(input_settings){
     }
     
     
-    this.requestDataPfFeedBuyItems = function(){
-        
-    }
-    
     
     this.onSuccessAddEntry = function(){
+        const pig_farm_feed_buy = parentObj.getDataPigFarmFeedBuy();
+        
+        const callback_success = function(data){
+            const data_list = pig_farm_feed_buy.feed_items;
+            thisObj.setDataEntryList(data_list);
+            thisObj.renderTable(data_list);
+            
+            // Jusy use this instead of requesting the whole pig_farm_feed_buy
+            // object.
+            parentObj.recalculateFeedItemsTotal();
+        };
+        
+        navigation.pigFarm.requestDataPigFarmFeedBuyItems(
+            pig_farm_feed_buy, callback_success, thisObj.elemServerErrorMsg
+        );
         
     }
     
     
     this.onSuccessEditEntry = function(){
-        
+        thisObj.onSuccessAddEntry();  // same as this.onSuccessAddEntry
     }
     
     
@@ -323,7 +334,7 @@ export function TableFeedBuyItems(input_settings){
             
             const options ={
                 is_add:                 false,   // false is edit
-                callback_after_add:     thisObj.onSuccessEditEntry,
+                callback_after_edit:    thisObj.onSuccessEditEntry,
                 pig_farm_feed_buy:      cur_data_entry,
                 go_back_page:           go_back_page
             };
@@ -333,10 +344,6 @@ export function TableFeedBuyItems(input_settings){
             const goto_page_id   = PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT;
             const page_container = navigation.getPageContainer(goto_page_id);
             navigation.showThisPage(page_container);
-            
-            // Important; otherwise select dropdown not rendered
-            navigation.pageMedVacAddEdit.show();
-        
         }
     }
 }
