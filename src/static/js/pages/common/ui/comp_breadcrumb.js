@@ -19,7 +19,8 @@ export function ComponentBreadCrumbs(input_settings){
         items:[
             {
                 'label':        'SowList',
-                'gotoPageId':   4
+                'gotoPageId':   4,
+                'callbackOnClick': null
                 
             },
             
@@ -115,6 +116,10 @@ export function ComponentBreadCrumbs(input_settings){
 
                 const next_page = navigation.getPageContainer(breadcrumb_item.gotoPageId);
                 navigation.showThisPage(next_page);
+                
+                if (breadcrumb_item.callbackOnClick){
+                    breadcrumb_item.callbackOnClick();
+                }
                 
             });
         });

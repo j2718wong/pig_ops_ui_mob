@@ -170,7 +170,8 @@ export function TablePigFarmFeedBuy(input_settings){
             <colgroup>
                 <col style="width: 20%;">
                 <col style="width: 25%;">
-                <col style="width: 35%;">
+                <col style="width: 28%;">
+                <col style="width: 27%;">
             </colgroup>
             
             <thead>
@@ -207,12 +208,27 @@ export function TablePigFarmFeedBuy(input_settings){
         
         const dt_feed_buy = new Date(cur_entry.pf_feed_buy.date_buy);
         
+        let html_feeds = '';
+        let total_cost = 0.0;
+        
+        for (const cur_item of cur_entry.feed_items){
+            const html_feed = `
+            <div>${cur_item.feed_item.quantity} ${cur_item.feed_type.name}   
+            </div>
+            `;
+            html_feeds += html_feed;
+            
+            total_cost += cur_item.feed_item.total_cost;
+        }
+        
+        const s_total_cost = thisObj.moneyFormatter.format(total_cost);
+        
         const html = `
             <tr>
                 <td>${formatDate(dt_feed_buy, FORMAT_COMPACT)}</td>
                 <td>${cur_entry.feed_supplier.name}</td>
-                <td></td>
-                <td></td>
+                <td>${html_feeds}</td>
+                <td>${s_total_cost}</td>
             </tr>
         `;
         
@@ -242,7 +258,7 @@ export function TablePigFarmFeedBuy(input_settings){
         let index = 0
         for (const cur_td of elem_tds){
             
-            if (index == 0 || index == 1){
+            if (index == 0 || index == 1 || index == 2){
                 cur_td.onclick = function(){
                     thisObj.onClickRowEntry(cur_entry.pf_feed_buy.hid);
                 };

@@ -53,7 +53,8 @@ export function PagePfFeedBuyAddEdit(input_settings){
         items:[
             {
                 'label':        'Feed Buy List',
-                'gotoPageId':   PAGE_ID.FARM_FEED_BUY_LIST
+                'gotoPageId':   PAGE_ID.FARM_FEED_BUY_LIST,
+                'callbackOnClick': null     // update later
             }
         ]
         
@@ -63,6 +64,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
+    let elemIdInfoBox           = null;
     
     let elemUiDateBuy           = null;
     
@@ -84,10 +86,11 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;
+    let elemInfoBox             = null;
     
     let elemDateBuy             = null;
     
-    let elemFeedCost           = null;
+    let elemFeedCost            = null;
     
     let elemOtherCost           = null;
     let elemOtherCostShow       = null;
@@ -125,6 +128,9 @@ export function PagePfFeedBuyAddEdit(input_settings){
         
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
+        
+        elemIdInfoBox           = `${settings.uniqueKey}-info-box`;
+        
         
         elemUiDateBuy           = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date-buy`,
@@ -188,7 +194,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     
     <div class="modal-body">
-        <div class="warning-box" id="">
+        <div class="warning-box" id="${elemIdInfoBox}">
             Create first a <b>Feed Buy</b> entry then add <b>Feed Items</b>
             after saving Feed Buy.
         </div>
@@ -277,6 +283,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         
+        elemInfoBox             = elemDivContainer.querySelector('#'+elemIdInfoBox);
         
         elemFeedCost            = elemDivContainer.querySelector('#'+elemIdFeedCost);
         
@@ -300,11 +307,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     this._bindEventListeners = function(){
         
-       
-        elemOtherCost.addEventListener('blur', function() {
-        });
-         
-        
+      
         
         // Update Close and cancel button on click
        
@@ -317,6 +320,11 @@ export function PagePfFeedBuyAddEdit(input_settings){
         elemBtnCancel.addEventListener('click', function() {
             navigation._onClickNavFeedsExpenses();
         });
+        
+        
+        settingsBreadcrumb.items[0].callbackOnClick = function(){
+            navigation._onClickNavFeedsExpenses();
+        }
         
         
         elemBtnSave.addEventListener('click', function() {
@@ -340,15 +348,12 @@ export function PagePfFeedBuyAddEdit(input_settings){
         componentSupplier.reset();
         
         
-        elemFeedCost.value = '';
-        elemFeedCost.classList.remove('is-valid', 'is-invalid');
+        elemFeedCost.textContent = '0.00';
+        
         
         
         elemOtherCost.value = '';
         elemOtherCost.classList.remove('is-valid', 'is-invalid');
-        
-        
-        
     }
     
     
@@ -366,8 +371,6 @@ export function PagePfFeedBuyAddEdit(input_settings){
         */
         showOptions = options;
         
-        console.log(`showOptions`);
-        console.log(showOptions);
         
         // Populate componentSupplier
         componentSupplier.beforeShow();
@@ -375,9 +378,14 @@ export function PagePfFeedBuyAddEdit(input_settings){
         if (showOptions.is_add){
             curDataPigFarmFeedBuy = null;
             
+            // Set title 
             const html = `<i class="fas fa-plus me-2"></i>Add Farm Feed Buy`;
             elemHeaderTitle.innerHTML = html;
             
+            // Set info box
+            elemInfoBox.style.display = 'block';
+            
+            // Set Feed Items
             const data_list = [];
             thisObj.tableFeedItems.setDataEntryList(data_list);
             thisObj.tableFeedItems.renderTable(data_list);
@@ -385,12 +393,17 @@ export function PagePfFeedBuyAddEdit(input_settings){
             thisObj.tableFeedItems.addTextLinkHide();
         }
         else{
+            // Set title
             curDataPigFarmFeedBuy = data_farm_feed_buy;
             
             const html = `<i class="fas fa-plus me-2"></i>Edit Farm Feed Buy`;
             elemHeaderTitle.innerHTML = html;
 
             
+            // Set info box
+            elemInfoBox.style.display = 'none';
+
+            // Set Feed Items
             thisObj.tableFeedItems.addTextLinkShow();
             
             thisObj.populateForm();
@@ -413,12 +426,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         thisObj.tableFeedItems.renderTable(data_list);
         
         
-        const total_cost = curDataPigFarmFeedBuy.pf_feed_buy.total_feed_cost;
-        const s_total_cost = thisObj.moneyFormatter.format(total_cost);
-        
-        
-        elemFeedCost.textContent = s_total_cost;
-        
+        thisObj.recalculateFeedItemsTotal();
     }
     
     
@@ -510,6 +518,23 @@ export function PagePfFeedBuyAddEdit(input_settings){
             'date_buy':         dt_feed_buy_s
         };
         
+        if (showOptions.is_add == true){}
+        else{
+            delete post_data.pig_farm_hid;
+            post_data.pf_feed_buy_hid = curDataPigFarmFeedBuy.pf_feed_buy.hid;
+        }
+
+        
+        
+        let url;
+        
+        if (showOptions.is_add == true){
+            url = `${base_url}/pf_feed_buy/add`;
+        }
+        else{
+            url = `${base_url}/pf_feed_buy/update`;
+        }
+        
         
         $.ajax({
             type: 'POST',
@@ -526,20 +551,27 @@ export function PagePfFeedBuyAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    if (showOptions.is_add == true){
+                        const pf_feed_buy_hid = response.pf_feed_buy.hid;
+                        
+                        
+                        // Request all pigfarm feed buy List
+                        const callback_success = function(){
+                            thisObj.tableFeedItems.addTextLinkShow();
+                            curDataPigFarmFeedBuy = thisObj.getPigFarmFeedBuyEntry(
+                                pf_feed_buy_hid);
+                                
+                            elemInfoBox.style.display = 'none';
+                        };
+                        
+                        navigation.pigFarm.requestDataPigFarmFeedBuyList(
+                            callback_success, elemServerErrorMsg);
+                    }
                     
-                    const pf_feed_buy_hid = response.pf_feed_buy.hid;
-                    
-                    
-                    // Request all pigfarm feed buy List
-                    const callback_success = function(){
-                        thisObj.tableFeedItems.addTextLinkShow();
-                        curDataPigFarmFeedBuy = thisObj.getPigFarmFeedBuyEntry(
-                            pf_feed_buy_hid);
-                    };
-                    
-                    navigation.pigFarm.requestDataPigFarmFeedBuyList(
-                        callback_success, elemServerErrorMsg);
-                    
+                    else{
+                        // TODO
+                        // Request PigFarm FeedBuy, replace in the list
+                    }
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(
@@ -558,12 +590,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
     }
     
     
-    this.onClickAddItemEntry = function(){
-        
-    }
-    
-    
-
+  
     
     
 }   
