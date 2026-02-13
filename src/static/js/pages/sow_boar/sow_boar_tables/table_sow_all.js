@@ -6,6 +6,7 @@
 
 import {SowBoarTableBasic}          from './sow_boar_table_basic.js';
 
+
 import {APPLICATION,
         PAGE_ID,
         PIG_OPERATION_TYPE,
@@ -156,8 +157,9 @@ export function SowBoarTableSowAll(input_settings){
         
         
         if (sow_boar.status_id == SOW_STATUS.GESTATING){
-            if ('date_expected_birth' in sow_boar){
-                const date_expected_birth   = sow_boar.date_expected_birth;
+            if (sow_boar.cur_pig_production){
+                
+                const date_expected_birth   = sow_boar.cur_pig_production.date_expected_birth;
                 const dt_expected_birth     = new Date(date_expected_birth);
                 
                 const diff_msecs    = dt_expected_birth - parentObj.dtCurrentDate;

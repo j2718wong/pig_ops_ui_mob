@@ -17,12 +17,15 @@ import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
+        sortList,
         createPaginationManager}    from '../../utils.js';
 
 import {getSowBoarReference}        from '../common/common_app.js';
 
 
 import {SowBoarTableSowAll}         from './sow_boar_tables/table_sow_all.js'
+import {SowBoarTableSowGesta}       from './sow_boar_tables/table_sow_gesta.js'
+import {SowBoarTableSowLacta}       from './sow_boar_tables/table_sow_lacta.js'
 import {SowBoarTableSowOutput}      from './sow_boar_tables/table_sow_output.js'
 
 import {SowBoarTableBoar}           from './sow_boar_tables/table_boar.js'
@@ -159,6 +162,22 @@ export function PageSowBoarList(input_settings){
     });
     
     
+    let tableSowGesta           = new SowBoarTableSowGesta({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey 
+    });
+    
+    
+    let tableSowLacta           = new SowBoarTableSowLacta({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey 
+    });
+    
+    
     let tableSowOutput          = new SowBoarTableSowOutput({
         navigation:             navigation,
         parentObj:              this,
@@ -274,6 +293,8 @@ export function PageSowBoarList(input_settings){
         
         
         const html_table_sow_all    = tableSowAll.getHtml(); 
+        const html_table_sow_gesta  = tableSowGesta.getHtml();  
+        const html_table_sow_lacta  = tableSowLacta.getHtml();  
         const html_table_sow_output = tableSowOutput.getHtml();
         
         const html_table_boar       = tableBoar.getHtml(); 
@@ -379,6 +400,12 @@ ${html_style}
         <!-- Table Sow All-->
         ${html_table_sow_all}
         
+        <!-- Table Sow Gesta-->
+        ${html_table_sow_gesta}
+        
+        <!-- Table Sow Lacta-->
+        ${html_table_sow_lacta}
+        
         <!-- Table Sow Output-->
         ${html_table_sow_output}
         
@@ -410,6 +437,8 @@ ${html_style}
     
     this.afterHtmlRender = function(){
         tableSowAll.afterHtmlRender();
+        tableSowGesta.afterHtmlRender();
+        tableSowLacta.afterHtmlRender();
         tableSowOutput.afterHtmlRender();
         
         tableBoar.afterHtmlRender();
@@ -621,6 +650,8 @@ ${html_style}
                 
 
                 tableSowAll.show();
+                tableSowGesta.hide();
+                tableSowLacta.hide();
                 tableSowOutput.hide();
                 
                 tableBoar.hide();
@@ -658,6 +689,8 @@ ${html_style}
                 elemFilterControls.style.display = 'none';
                 
                 tableSowAll.hide();
+                tableSowGesta.hide();
+                tableSowLacta.hide();
                 tableSowOutput.hide();
                 
                 tableBoar.show();
@@ -693,6 +726,8 @@ ${html_style}
                 
                 
                 tableSowAll.hide();
+                tableSowGesta.hide();
+                tableSowLacta.hide();
                 tableSowOutput.hide();
                 
                 tableBoar.hide();
@@ -743,6 +778,8 @@ ${html_style}
                 
                 
                 tableSowAll.hide();
+                tableSowGesta.hide();
+                tableSowLacta.hide();
                 tableSowOutput.hide();
                 
                 tableBoar.hide();
@@ -756,7 +793,7 @@ ${html_style}
         }
         
         // Set Entry count
-        elemEntryCount.textContent = entry_count;
+        //elemEntryCount.textContent = entry_count;
         
         
         // Need to set click listener
@@ -885,43 +922,58 @@ ${html_style}
         
         
         
-        tableSowAll.show();
-        tableSowOutput.hide();
-        
-        
         switch(filter_type){
             case 'all':{
+                tableSowAll.show();
+                tableSowGesta.hide();
+                tableSowLacta.hide();
+                tableSowOutput.hide();
+
+                
                 curDataListView = dataSowList;
                 tableSowAll.renderTable(curDataListView);
-                
-                elemTableRowCount.textContent = `${curDataListView.length} Entries`;
                 break;
             }
             
             case 'gestating':{
-                sow_status_id = SOW_STATUS.GESTATING;
-                curDataListView = thisObj.filterDataSowList(sow_status_id);
-                thisObj.renderSowTable(curDataListView);
+                tableSowAll.hide();
+                tableSowGesta.show();
+                tableSowLacta.hide();
+                tableSowOutput.hide();
+
                 
-                elemTableRowCount.textContent = `${curDataListView.length} Entries`;
+                sow_status_id = SOW_STATUS.GESTATING;
+                const filtered_list = thisObj.filterDataSowList(sow_status_id);
+                const sort_key = 'sow_boar.cur_pig_production.birth.date_expected';
+                const sorted_list   = sortList(filtered_list, sort_key, 'asc');  
+                
+                curDataListView = sorted_list;
+                tableSowGesta.renderTable(curDataListView);
                 break;
             }
             
             case 'lactating':{
+                tableSowAll.hide();
+                tableSowGesta.hide();
+                tableSowLacta.show();
+                tableSowOutput.hide();
+
+
                 sow_status_id = SOW_STATUS.LACTATING;
-                curDataListView = thisObj.filterDataSowList(sow_status_id);
-                thisObj.renderSowTable(curDataListView);
+                const filtered_list = thisObj.filterDataSowList(sow_status_id);
+                const sort_key = 'sow_boar.cur_pig_production.birth.date_actual';
+                const sorted_list   = sortList(filtered_list, sort_key, 'asc');  
                 
-                elemTableRowCount.textContent = `${curDataListView.length} Entries`;
+                curDataListView = sorted_list;
+                tableSowLacta.renderTable(curDataListView);
                 break;
             }
             
             case 'weaning':{
                 sow_status_id = SOW_STATUS.WEANING;
+                
                 curDataListView = thisObj.filterDataSowList(sow_status_id);
                 thisObj.renderSowTable(curDataListView);
-                
-                elemTableRowCount.textContent = `${curDataListView.length} Entries`;
                 break;
             }
             
@@ -957,6 +1009,9 @@ ${html_style}
     this.onClickSowListOutput = function(){
         
         tableSowAll.hide();
+        tableSowGesta.hide();
+        tableSowLacta.hide();
+        
         tableSowOutput.show();
         
         

@@ -24,7 +24,7 @@ import {formatDate,
 import {getSowBoarReference}        from '../../common/common_app.js';
 
 
-export function SowBoarTableSowGesta(input_settings){
+export function SowBoarTableSowLacta(input_settings){
     SowBoarTableBasic.call(this, input_settings);
     
     const thisObj               = this;
@@ -45,6 +45,9 @@ export function SowBoarTableSowGesta(input_settings){
     const elemDivContainer      = settings.elemDivContainer;
     
     
+    const DEFAULT_NUM_DAYS_WEAN = 45;
+    
+    
     let elemIdTableShow         = null;
     let elemIdTableBody         = null;
     
@@ -53,28 +56,50 @@ export function SowBoarTableSowGesta(input_settings){
     let elemTableBody           = null;
     
     
+    this._writeInlineStyle = function(){
+        const html = `
+    <style>
+        
+        /* Updated Table Styles */
+        
+        .table-lacta th  {
+            padding-right:0;
+            overflow-wrap: anywhere; /* Breaks anywhere if needed */
+            word-break: break-word;
+            white-space: normal;
+        }
+        
+      </style>
+    `;
+        return html;
+    }
+    
     
     this.getHtml = function(){
         
-        elemIdTableShow         = `${settings.uniqueKey}-sow-gesta-show`;
-        elemIdTableBody         = `${settings.uniqueKey}-sow-gesta-tbody`;
+        elemIdTableShow         = `${settings.uniqueKey}-sow-lacta-show`;
+        elemIdTableBody         = `${settings.uniqueKey}-sow-lacta-tbody`;
+        
+        const html_style    = this._writeInlineStyle();
         
         
         const html = `
+        ${html_style}
         
         <div id="${elemIdTableShow}">
-            <table class="data-table table-sow">
+            <table class="data-table table-lacta">
                 <colgroup>
                     <col style="width: 30%;">
-                    <col style="width: 35%;">
-                    <col style="width: 35%;">
+                    <col style="width: 30%;">
+                    <col style="width: 20%;">
                 </colgroup>
       
                 <thead>
                     <tr>
                         <th>Sow</th>
-                        <th>Last Mate</th>
-                        <th>Expected</th>
+                        <th>Target Date Wean</th>
+                        <th style="text-align:center;">Num Piglets</th>
+                        <th>Dead after Birth</th>
                     </tr>
                 </thead>
                 
@@ -119,7 +144,7 @@ export function SowBoarTableSowGesta(input_settings){
     this.getHtmlTableRowEmpty = function(){
         const html = `
             <tr>
-                <td colspan="3"><div>No Entries</div></td>
+                <td colspan="4"><div>No Entries</div></td>
             </tr>
         `;
         
@@ -133,66 +158,67 @@ export function SowBoarTableSowGesta(input_settings){
         let sow_reference = parentObj.getSowBoarReference(sow_boar);
         
         
-        // Last Mate
-        const cur_pig_production = sow_boar.cur_pig_production;
-        const insemination = cur_pig_production.insemination;
-        const insem_type = insemination.insem_type;
-        
-        let s_last_mate = '';
-        
-        switch(insem_type){
-            case 'B': {
-                const insem_boar = insemination.boar;
-                s_last_mate = parentObj.getSowBoarReference(insem_boar);
-                
-                if (insem_boar.is_external){
-                    s_last_mate += ' (External)';
-                }
-                
-                break;
-            }
-            
-            case 'AI_X': {
-                s_last_mate = insemination.ai.semen_supplier.semen.name;
-                s_last_mate += ` (${insemination.ai.semen_supplier.name})`
-                break;
-            }
-            
-            case 'AI_N': {
-                const internal_boar = insemination.ai.internal_boar;
-                s_last_mate = parentObj.getSowBoarReference(internal_boar);
-                s_last_mate += `<span class="no-wrap"> (via AI)</span>`; 
-                break;
-            }
-        }
         
         
-        // Date Expected
-        const date_expected = sow_boar.cur_pig_production.birth.date_expected;
+        // Date Expected Wean
+        const pig_production    = sow_boar.cur_pig_production.pig_production;
+        const birth             = sow_boar.cur_pig_production.birth;
+        const date_actual_birth = birth.date_actual;
+        
         
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         
-        
         // Set important date; 
-        // gesta: expected date of birth 
-        let s_date_important = ''
-        let dt_important = new Date(date_expected);
-        let dt_important_s = formatDate(dt_important, FORMAT_COMPACT);
+        // lacta: expected date wean 
+        const dt_actual = new Date(date_actual_birth);
+            
+        let num_days_wean = DEFAULT_NUM_DAYS_WEAN;
         
-        let diff_days = parentObj.calculateNumDaysSinceInsem(
-                    sow_boar.cur_pig_production.insemination.insem_date, 
+        // check if the account has set num_days_wean
+        if (acc_settings_ops){
+            num_days_wean = acc_settings_ops.num_days_wean;
+            
+            // Adjust Day 1 on date of birth if needed
+            if (acc_settings_ops.day_1_on_date_of_birth > 0){
+                num_days_wean -= 1;
+            }
+        }
+        
+        let msecs_wean = dt_actual.getTime() + num_days_wean * parentObj.NUM_MSECS_1DAY;
+        let dt_wean = new Date(msecs_wean);
+        
+        let dt_important    = dt_wean;
+        let dt_important_s  = formatDate(dt_important, FORMAT_COMPACT);
+        
+        
+        
+        let diff_days = parentObj.calculateNumDaysSinceBirth(
+                    date_actual_birth, 
                     parentObj.dtCurrentDate,
                     acc_settings_ops);
                     
-        s_date_important = `${dt_important_s} (Day ${diff_days})`;
+        let s_date_important = `${dt_important_s} (Day ${diff_days})`;
         
         
+        // Current number of pigs
+        const cur_pig_count = pig_production.cur_pig_count;
+        
+        // Compute num_pigs dead after birth
+        
+        
+        
+        const num_live_pigs = birth.pigs_live_m + birth.pigs_live_f;
+        const num_dead_after_birth = num_live_pigs - cur_pig_count;    
+    
+        let s_dead = '';
+        if (num_dead_after_birth > 0){s_dead = `${num_dead_after_birth}`;} 
         
         const html = `
         <tr>
             <td><span>${sow_reference}</span></td>
-            <td>${s_last_mate}</td>
             <td>${s_date_important}</td>
+            <td style="text-align:center;">${cur_pig_count}</td>
+            <td>${s_dead}</td>
         </tr>
         `;
         
