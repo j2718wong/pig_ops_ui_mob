@@ -12,8 +12,6 @@ import {PAGE_ID,
         MULTIKEY_OBJ_TYPE}             from '../../../constants.js';
 
 
-import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
-
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryMating}        from './prod_entry_mating.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'

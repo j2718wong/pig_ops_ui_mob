@@ -300,8 +300,20 @@ export function TablePigletsOutput(input_settings){
             boar_name = getSowBoarReference(cur_entry.insemination.boar);
         }
         else{
-            boar_name = cur_entry.insemination.ai.semen_supplier.semen.name;
-            boar_name += ` (${cur_entry.insemination.ai.semen_supplier.name})`
+            // There are two types of artificial insemination;
+            // external AI - semen brought from outside 
+            // internal AI - semen extracted from one of the farm boars
+            
+            
+            if (cur_entry.insemination.ai.semen_supplier){
+                boar_name = cur_entry.insemination.ai.semen_supplier.semen.name;
+                boar_name += ` (${cur_entry.insemination.ai.semen_supplier.name})`
+            }
+            else{
+                boar_name = getSowBoarReference(cur_entry.insemination.ai.internal_boar);
+                boar_name += ` (via AI)`;
+            }
+            
         }
         
         

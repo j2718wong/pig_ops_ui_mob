@@ -684,12 +684,12 @@ export function ProdEntryBirth(input_settings){
             navigation.pigFarm.managerPigProd.removeFromProdList(
                     pig_prod_hid, prod_list);
         
+        
             const callback_success = function(data){
                 // Go Back to Lactating List Page
                 const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
                 navigation._onClickNavProdGestaLacta(null, operation_type);
             };
-            
             
             // request Lactating List
             navigation.pigFarm.managerPigProd.requestPigProdList(

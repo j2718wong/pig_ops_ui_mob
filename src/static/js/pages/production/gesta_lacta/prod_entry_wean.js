@@ -42,6 +42,11 @@ export function ProdEntryWean(input_settings){
     const INVALID_MSG_NUM_INPUT     = 'Please enter a valid number.';
     const INVALID_MSG_ZERO_INPUT    = 'At least one of these numbers cannot not be zero';
     
+    
+    const COUNT_PIGLETS_COMBINED    = 'combined';
+    const COUNT_PIGLETS_SEPARATE    = 'separate';
+    
+    
     /*
     Typical settings = {
         navigation:             navigation,
@@ -56,9 +61,10 @@ export function ProdEntryWean(input_settings){
     
     let elemIdContentContainer  = null;
     
-    let elemIdWarningBox      = null;
+    let elemIdWarningBox        = null;
     let elemIdSow               = null;
-    let elemIdDaysSinceBirth      = null;
+    let elemIdDaysSinceBirth    = null;
+    let elemIdDobIsDay1         = null;
     
     let elemUiDateWean          = null;
     
@@ -66,6 +72,10 @@ export function ProdEntryWean(input_settings){
     
     let componentNumFemale      = null;
     let componentNumMale        = null;
+
+    let elemIdRdoCombinedCount  = null;
+    let elemIdRdoSeparateCount  = null;
+    let elemIdSeparateCountShow = null;
     
     let elemIdWeanWeight        = null;
     
@@ -76,9 +86,14 @@ export function ProdEntryWean(input_settings){
     
     let elemContentContainer    = null;
     
-    let elemWarningBox        = null;
+    let elemWarningBox          = null;
     let elemSow                 = null;
-    let elemDaysSinceBirth        = null;
+    let elemDaysSinceBirth      = null;
+    let elemDobIsDay1           = null;
+
+    let elemRdoCombinedCount    = null;
+    let elemRdoSeparateCount    = null;
+    let elemSeparateCountShow   = null;
     
     let elemWeanWeight          = null;
     
@@ -86,10 +101,13 @@ export function ProdEntryWean(input_settings){
     let elemServerErrorMsg      = null;
     let elemBtnSave             = null;
     
-    
+
     let curDataPigProd          = null;
     
-
+    let dtCurrentDate           = null;
+    
+    let curCountPiglets         = null;
+    
     
     this.init = function(){
         this.render();
@@ -107,17 +125,20 @@ export function ProdEntryWean(input_settings){
         
         elemIdContentContainer  = `${settings.uniqueKey}-content`;
                 
-        elemIdWarningBox      = `${settings.uniqueKey}-cannot-update`;
+        elemIdWarningBox        = `${settings.uniqueKey}-cannot-update`;
         
         elemIdSow               = `${settings.uniqueKey}-sow`;
-        elemIdDaysSinceBirth      = `${settings.uniqueKey}-date-expected`;
+        elemIdDaysSinceBirth    = `${settings.uniqueKey}-num-days`;
+        elemIdDobIsDay1         = `${settings.uniqueKey}-day1`;
         
-        elemUiDateWean         = new UiInputDatePickerGesta({
-            uniqueKey:          `${settings.uniqueKey}-date-birth`,
+        
+        
+        elemUiDateWean          = new UiInputDatePickerGesta({
+            uniqueKey:          `${settings.uniqueKey}-date-wean`,
         
             className:          'form-group-date',
             textLabel:          'Date Wean',
-            isRequired:         true,
+            isRequired:         false,
             invalidFeedBack:    'Please enter a valid date.',
             helpText:           null
         });
@@ -131,7 +152,7 @@ export function ProdEntryWean(input_settings){
             textLabel:          'Number of Weaned Female Piglets',
             minValue:           0,
             step:               1,
-            isRequired:         true,
+            isRequired:         false,
             invalidFeedBack:    null,
             helpText:           null
         });
@@ -164,6 +185,11 @@ export function ProdEntryWean(input_settings){
         });
         
         
+        elemIdRdoCombinedCount  = `${settings.uniqueKey}-combined-count`;
+        elemIdRdoSeparateCount  = `${settings.uniqueKey}-separate-count`;
+        
+        elemIdSeparateCountShow = `${settings.uniqueKey}-separate-count-show`;
+        
         elemIdWeanWeight        = `${settings.uniqueKey}-total-weight`;
         
         
@@ -176,7 +202,7 @@ export function ProdEntryWean(input_settings){
         
         const html_num_female   = componentNumFemale.getHtml();
         const html_num_male     = componentNumMale.getHtml();
-        const html_num_total     = componentNumTotal.getHtml();
+        const html_num_total    = componentNumTotal.getHtml();
 
 
         
@@ -195,30 +221,60 @@ export function ProdEntryWean(input_settings){
     
     <!-- 1. Sow Field cannot be edited. -->
     <div class="form-group-text">
-        <label class="form-label">Sow Name</label>
+        <label class="form-label" style="margin-bottom:0;">Sow Name</label>
         <span class="" id="${elemIdSow}"></span>
     </div>
     
     
     <div class="form-group-text">
-        <label for="${elemIdDaysSinceBirth}" class="form-label">Days since Birth</label>
-        <span class="" id="${elemIdDaysSinceBirth}"></span>
-		<span class="" id="">Day of Birth is Day 1</span>
+        <label for="${elemIdDaysSinceBirth}" class="form-label" style="margin-bottom:0;">Days since Birth</label>
+        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <span class="read-only-field" id="${elemIdDaysSinceBirth}"></span>
+            <span class="" id="${elemIdDobIsDay1}" style="color:var(--dark-gray)">Day of Birth is Day 1</span>
+        </div>
     </div>
     
     ${html_date_birth}
     
-    <-- option to swith to total count or per sex count-->
+    <!-- Radio buttons -->
+    <div class="mb-3">
+        <label class="form-label d-block">Weaned Piglets Count</label>
+        
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" 
+                name="${settings.uniqueKey}-countWean" 
+                id="${elemIdRdoCombinedCount}" 
+                value="${COUNT_PIGLETS_COMBINED}" checked>
+            
+            <label class="form-check-label" for="${elemIdRdoCombinedCount}">
+                Combined Count
+            </label>
+        </div>
+        
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" 
+                name="${settings.uniqueKey}-countWean" 
+                id="${elemIdRdoSeparateCount}" 
+                value="${COUNT_PIGLETS_SEPARATE}">
+            
+            <label class="form-check-label" for="${elemIdRdoSeparateCount}">
+                Separate Male and Female count
+            </label>
+        </div>
+        
+    </div>
+    
     
     <!-- Number of Total Piglets with plus/minus buttons -->
     ${html_num_total}
     
-    <!-- Number of Female Piglets with plus/minus buttons -->
-    ${html_num_female}
-    
-    <!-- Number of Male Piglets with plus/minus buttons -->
-    ${html_num_male}
-            
+    <div id="${elemIdSeparateCountShow}">
+        <!-- Number of Female Piglets with plus/minus buttons -->
+        ${html_num_female}
+        
+        <!-- Number of Male Piglets with plus/minus buttons -->
+        ${html_num_male}
+    </div>
     
     <div class="form-group-number">
         <label for="${elemIdWeanWeight}" class="form-label">
@@ -268,6 +324,12 @@ export function ProdEntryWean(input_settings){
         elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
         elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);
         elemDaysSinceBirth      = elemDivContainer.querySelector('#'+elemIdDaysSinceBirth);
+        elemDobIsDay1           = elemDivContainer.querySelector('#'+elemIdDobIsDay1);
+        
+        
+        elemRdoCombinedCount    = elemDivContainer.querySelector('#'+elemIdRdoCombinedCount);
+        elemRdoSeparateCount    = elemDivContainer.querySelector('#'+elemIdRdoSeparateCount);
+        elemSeparateCountShow   = elemDivContainer.querySelector('#'+elemIdSeparateCountShow);
         
         elemWeanWeight          = elemDivContainer.querySelector('#'+elemIdWeanWeight);
         
@@ -283,7 +345,25 @@ export function ProdEntryWean(input_settings){
     
     
     this._bindEventListeners = function(){
-         elemBtnSave.addEventListener('click', function() {
+        const radios_name = `${settings.uniqueKey}-countWean`; 
+        const radios = elemDivContainer.querySelectorAll(`input[name="${radios_name}"]`);
+        
+        radios.forEach(radio => {
+            radio.addEventListener('change', function(event){
+                curCountPiglets = this.value;
+                console.log('\n\ncurCountPiglets =' + curCountPiglets);
+                if (curCountPiglets == 'separate'){
+                    componentNumTotal.hide();
+                    elemSeparateCountShow.style.display = 'block';
+                }
+                else{
+                    componentNumTotal.show();
+                    elemSeparateCountShow.style.display = 'none';
+                }
+            });
+        });
+        
+        elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
         });
         
@@ -311,6 +391,9 @@ export function ProdEntryWean(input_settings){
     this.show = function(data_pig_prod, options){
         thisObj._resetForm();
         
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
         curDataPigProd = data_pig_prod;
         
         const data_sow = curDataPigProd.sow;
@@ -330,15 +413,33 @@ export function ProdEntryWean(input_settings){
         };
         
         
+        // Set Number of days since birth
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const pig_prod_birth    = curDataPigProd.birth;
+        
+        const diff_days = thisObj.calculateNumDaysSinceBirth(
+            pig_prod_birth.date_actual, dtCurrentDate, acc_settings_ops);
+        
+        elemDaysSinceBirth.textContent = `Day ${diff_days}`;
         
         
-        const pig_prod_birth  = curDataPigProd.birth;
+        // Set Date of birth is Day 1 or Day 0 
+        let s_day_1 = ''
+        if (acc_settings_ops.day_1_on_date_of_birth == 1){
+            s_day_1 = 'Date of Birth is Day 1';
+        }
+        else{
+            s_day_1 = 'Date of Birth is Day 0';
+        }
+        elemDobIsDay1.textContent = s_day_1;
         
-        const dt_actual       = new Date(pig_prod_birth.date_actual);
-		
-		
-        elemDaysSinceBirth.textContent = 23;
         
+        if (curCountPiglets == COUNT_PIGLETS_SEPARATE){
+            elemRdoSeparateCount.dispatchEvent(new Event('change', {bubbles:true}));
+        }
+        else{
+            elemRdoCombinedCount.dispatchEvent(new Event('change', {bubbles:true}));
+        }
     }
     
     
@@ -372,24 +473,25 @@ export function ProdEntryWean(input_settings){
         let validation      = 0;
         
        
-        let input_date_birth= elemUiDateWean.getValue();
-        let input_num_dead  = componentNumTotal.getValue();
-        let input_num_male  = componentNumMale.getValue();
-        let input_num_female= componentNumFemale.getValue();
-        let input_staff     = componentStaff.getValue();
+        let input_date_wean     = elemUiDateWean.getValue();
+        let input_num_total     = componentNumTotal.getValue();
+        let input_num_male      = componentNumMale.getValue();
+        let input_num_female    = componentNumFemale.getValue();
+        
+        let input_wean_weight   = elemWeanWeight.value.trim();
         
         
         input_elem          = elemUiDateWean.getElemText();
         
         // Convert date to YYYY-MM-DD format
-        const dt_birth      = new Date(input_date_birth);
-        if (isNaN(dt_birth.getTime())){
+        const dt_wean      = new Date(input_date_wean);
+        if (isNaN(dt_wean.getTime())){
             validation      = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
         
-        const dt_birth_s   = dt_birth.toLocaleDateString('en-CA');
+        const dt_wean_s   = dt_wean.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
@@ -397,47 +499,52 @@ export function ProdEntryWean(input_settings){
         
         
         // Validate number counts
-        let number_dead = 0;
-        let number_male = 0;
-        let number_female = 0;
+        let number_male     = 0;
+        let number_female   = 0;
+        let number_total    = 0;
         
-        input_elem          = componentNumTotal.getElemText();
         
-        try{
-            number_dead = parseInt(input_num_dead)
-        }catch (error){
-            componentNumTotal.setTextInvalid(INVALID_MSG_NUM_INPUT);
-            validation = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
+        if (curCountPiglets == COUNT_PIGLETS_SEPARATE) {
+        
+            input_elem          = componentNumFemale.getElemText();
+            
+            try{
+                number_female = parseInt(input_num_female)
+            }catch (error){
+                componentNumFemale.setTextInvalid(INVALID_MSG_NUM_INPUT);
+                validation = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+            
+            
+            input_elem          = componentNumMale.getElemText();
+            
+            try{
+                number_male = parseInt(input_num_male)
+            }catch (error){
+                componentNumMale.setTextInvalid(INVALID_MSG_NUM_INPUT);
+                validation = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+        }
+        else{
+            input_elem          = componentNumTotal.getElemText();
+        
+            try{
+                number_total = parseInt(input_num_total)
+            }catch (error){
+                componentNumTotal.setTextInvalid(INVALID_MSG_NUM_INPUT);
+                validation = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
         }
         
         
-        input_elem          = componentNumFemale.getElemText();
         
-        try{
-            number_female = parseInt(input_num_female)
-        }catch (error){
-            componentNumFemale.setTextInvalid(INVALID_MSG_NUM_INPUT);
-            validation = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
-        
-        
-        input_elem          = componentNumMale.getElemText();
-        
-        try{
-            number_male = parseInt(input_num_male)
-        }catch (error){
-            componentNumMale.setTextInvalid(INVALID_MSG_NUM_INPUT);
-            validation = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
-        
-        
-        if (number_dead == 0 && number_male == 0 && number_female == 0){
+        if (number_total == 0 && number_male == 0 && number_female == 0){
             componentNumTotal.setTextInvalid(INVALID_MSG_ZERO_INPUT);
             componentNumFemale.setTextInvalid(INVALID_MSG_ZERO_INPUT);
             componentNumMale.setTextInvalid(INVALID_MSG_ZERO_INPUT);
@@ -457,33 +564,21 @@ export function ProdEntryWean(input_settings){
         }
         
         
-        // The staff can be from the drop down
-        // Or Done by User (Done by Me checkbox)
-        let done_by_user = 0
+        let total_weight = 0;
         
-        
-        input_elem = componentStaff.getElemCheckBox();
-        if (input_elem.checked){
-            done_by_user = 1;
-        }
-        
-        if (done_by_user == 0){
-            input_elem = componentStaff.getElemSelect();
-            if (input_staff == '0'  || input_staff == '-1'){
+        if (input_wean_weight.length > 0) {
+            input_elem = elemWeanWeight;
+            
+            try{
+                total_weight = parseInt(input_wean_weight)
+            }catch (error){
+                componentNumTotal.setTextInvalid(INVALID_MSG_NUM_INPUT);
                 validation = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
             }
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
+        
         }
-        
-        
-        
-        
-        
-        
-        // TODO need to check if data has changed or not;
-        // because changing date of birth is an expensive operation in back end
-        
         
         
         // Final check before sending request
@@ -495,28 +590,35 @@ export function ProdEntryWean(input_settings){
         const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
         
-        let url = `${base_url}/pig_prod/update_birth`;
+        let url = `${base_url}/pig_prod/update_weaning`;
         
         
         // send post request
         const post_data = {
             'uhid':             user_hid,
             'pig_prod_hid':     curDataPigProd.pig_production.hid,
-            'birth_staff_hid':  input_staff,
             
-            'date_actual_birth': dt_birth_s,
-            'num_pigs_dead':    number_dead,
+            'date_weaning':     dt_wean_s,
             'num_pigs_male':    number_male,
-            'num_pigs_female':  number_female
+            'num_pigs_female':  number_female,
+            
+            'num_pigs':         number_total
         };
         
-        if (done_by_user > 0){
-            post_data.done_by_user = 1;
-            delete post_data.birth_staff_hid;
+        
+        if (total_weight > 0){
+            post_data.total_weight = total_weight;
         }
         
-        // TODO: check if there is a change in the data
+        if (curCountPiglets == COUNT_PIGLETS_SEPARATE){
+            delete post_data.num_pigs;
+        }
+        else{
+            delete post_data.num_pigs_male;
+            delete post_data.num_pigs_female;
+        }
         
+      
         $.ajax({
             type: 'POST',
             contentType: "application/json",
@@ -532,7 +634,7 @@ export function ProdEntryWean(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    thisObj.onSuccessUpdateBirth();
+                    thisObj.onSuccessUpdateWean();
                     
                     if (thisObj.callBackOnSuccessUpdate){
                         thisObj.callBackOnSuccessUpdate();
@@ -555,44 +657,43 @@ export function ProdEntryWean(input_settings){
     }
   
     
-    this.onSuccessUpdateBirth = function(){
+    this.onSuccessUpdateWean = function(){
         // There are two cases that are covered for this:
         //
-        // 1.) Case 1: curDataPigProd has no date_actual_birth (PROD_STATUS.GESTATING)
-        // and date_actual_birth is updated; The sequence of steps that should happen is
-        //  - remove curDataPigProd from gestating List
-        //  - request Lactating List
-        //  - open to Lactating List Page; not to Lactating Entry page; 
-        //      this is to show that a new lactating entry has been added.
+        // 1.) Case 1: curDataPigProd has no date_weaning (PROD_STATUS.LACTATING)
+        // and date_weaning is updated; The sequence of steps that should happen is
+        //  - remove curDataPigProd from lactating List
+        //  - request Fattening List
+        //  - open to Fattening List Page; not to Fattening Entry page; 
+        //      this is to show that a new Fattening entry has been added.
         //
-        // 2.) Case 2: curDataPigProd has date_actual_birth (PROD_STATUS.LACTATING)
+        // 2.) Case 2: curDataPigProd has date_weaning (PROD_STATUS.WEANING)
         // The sequence of steps that should happen is
-        //  - request updated prod_entry data and replace curDataPigProd;
-        //  - should go back to Lactating Page showing PigOps List; this is 
-        //      important because any change in actual date_of_birth will 
-        //      recalculate lactating pigops schedule.
         
         
         const cur_prod_status = curDataPigProd.pig_production.prod_status_id;
         
-        if (cur_prod_status == PROD_STATUS.GESTATING){
-            // Remove from curDataPigProd from gestating List
+        if (cur_prod_status == PROD_STATUS.LACTATING){
+            // Remove from curDataPigProd from lactating List
             const pig_prod_hid = curDataPigProd.pig_production.hid;
-            const prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
+            const prod_list = navigation.pigFarm.managerPigProd.dataLactatingList;
             
             navigation.pigFarm.managerPigProd.removeFromProdList(
                     pig_prod_hid, prod_list);
         
+            // Need to  resetLactaTable before viewing again Lacta Table page
+            navigation.pageMobLactatingList.resetLactaTable();
+                
+        
+        
             const callback_success = function(data){
-                // Open to Lactating List
-                const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
-                navigation._onClickNavProdGestaLacta(null, operation_type);
+                // Open to Fattening List
+                navigation._onClickNavProdFattening();
             };
             
-            
-            // request Lactating List
+            // Request Fattening List
             navigation.pigFarm.managerPigProd.requestPigProdList(
-                PIG_PROD_TYPE.LACTATING, callback_success, elemServerErrorMsg);
+                PIG_PROD_TYPE.FATTENING, callback_success, elemServerErrorMsg);
         
         
             

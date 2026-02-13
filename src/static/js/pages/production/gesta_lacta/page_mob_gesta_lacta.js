@@ -219,13 +219,13 @@ export function PageMobGestaLacta(input_settings){
         elemIdAddEntryBtn       = `${settings.uniqueKey}-mobile-add-entry-btn`;
            
            
-        let html_pig_prod_table = '';
+        let html_prod_tables = '';
            
         let style_hide_add_button = '';
         if (settings.isGesta == false){
             style_hide_add_button = 'display:none;';
             
-            html_pig_prod_table = `
+            html_prod_tables = `
             <!-- Centered Filter Controls -->
             <div class="filter-controls" id="${elemIdTableColControls}">
                 <!-- Animal Filter Buttons - Centered, no gaps -->
@@ -289,7 +289,7 @@ export function PageMobGestaLacta(input_settings){
         }
         
         else{
-            html_pig_prod_table = `
+            html_prod_tables = `
             <!-- PogProd Gesta Table -->
             <table class="data-table table-gesta-lacta">
                 <colgroup>
@@ -364,7 +364,7 @@ ${html_style}
         <div class="card-container-pig-prod" id="${elemIdProdCardsContainer}" style="display:none;"></div>
         
         <div id="${elemIdProdTableContainer}" >
-            ${html_pig_prod_table}
+            ${html_prod_tables}
         </div>
     </div>
     
@@ -495,6 +495,12 @@ ${html_style}
     }
     
     
+    // Use to force redraw Lacta table in case there is change in data
+    this.resetLactaTable = function(){
+        curLactaTable = null;
+    }
+    
+    
     this.changeLactaTable = function(lacta_table, pig_prod_list){
         if (lacta_table){
             if (lacta_table == curLactaTable){return;}
@@ -564,6 +570,10 @@ ${html_style}
         }
         else{
             dataPigProdList = navigation.pigFarm.managerPigProd.dataLactatingList;
+            
+            
+            console.log(`\n\n\n\nTestetsteteteteetet`);
+            console.log(dataPigProdList);
         }
         
         

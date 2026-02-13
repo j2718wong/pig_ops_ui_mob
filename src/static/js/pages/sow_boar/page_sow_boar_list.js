@@ -17,10 +17,18 @@ import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
-        sortList,
         createPaginationManager}    from '../../utils.js';
 
 import {getSowBoarReference}        from '../common/common_app.js';
+
+
+import {SowBoarTableSowAll}         from './sow_boar_tables/table_sow_all.js'
+import {SowBoarTableSowOutput}      from './sow_boar_tables/table_sow_output.js'
+
+import {SowBoarTableBoar}           from './sow_boar_tables/table_boar.js'
+import {SowBoarTableGilt}           from './sow_boar_tables/table_gilt.js'
+import {SowBoarTableDisposed}       from './sow_boar_tables/table_disposed.js'
+
 
 
 
@@ -32,7 +40,8 @@ export function PageSowBoarList(input_settings){
     
     const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
     
-    const TABLE_ROW_PER_PAGE    = 10;
+    
+    this.TABLE_ROW_PER_PAGE     = 10;
     
     /*
     Typical input_settings
@@ -74,19 +83,6 @@ export function PageSowBoarList(input_settings){
     let elemIdTableNextPage     = null;
     
     
-    
-    let elemIdTableSow          = null;
-    let elemIdTableSowBody      = null;
-    
-    let elemIdTableBoar         = null;
-    let elemIdTableBoarBody     = null;
-    
-    let elemIdTableGilt         = null;
-    let elemIdTableGiltBody     = null;
-    
-    let elemIdTableDisposed     = null;
-    let elemIdTableDisposedBody = null;
-    
     let elemIdTableSowOutput    = null;
     let elemIdTableSowOutputBody= null;
 
@@ -114,18 +110,7 @@ export function PageSowBoarList(input_settings){
     let elemTableTotalPages     = null;
     let elemTableNextPage       = null;
     
-    
-    let elemTableSow            = null;
-    let elemTableSowBody        = null;
-    
-    let elemTableBoar           = null;
-    let elemTableBoarBody       = null;
-    
-    let elemTableGilt           = null;
-    let elemTableGiltBody       = null;
-    
-    let elemTableDisposed       = null;
-    let elemTableDisposedBody   = null;
+
     
     let elemTableSowOutput      = null;
     let elemTableSowOutputBody  = null;
@@ -166,8 +151,55 @@ export function PageSowBoarList(input_settings){
     let dtCurrentDate           = null;
     
     
-    let htmlSowDueWarning        = null;
+    let tableSowAll             = new SowBoarTableSowAll({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey 
+    });
     
+    
+    let tableSowOutput          = new SowBoarTableSowOutput({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey 
+    });
+    
+    
+    
+    let tableBoar               = new SowBoarTableBoar({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey 
+    });
+    
+    
+    let tableGilt               = new SowBoarTableGilt({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey 
+    });
+    
+    
+    let tableDiposed            = new SowBoarTableDisposed({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey
+    }); 
+    
+    
+    this.elemTableRowCount      = null;
+    this.elemTablePagination    = null;
+    this.elemTablePrevPage      = null;
+    this.elemTableCurPage       = null;
+    this.elemTableTotalPages    = null;
+    this.elemTableNextPage      = null;
+    
+    this.dtCurrentDate          = null;
     
     
     this.init = function(){
@@ -235,23 +267,18 @@ export function PageSowBoarList(input_settings){
         elemIdTableTotalPages   = `${settings.uniqueKey}-table-total-pages`;
         elemIdTableNextPage     = `${settings.uniqueKey}-table-next-page`;
         
-        elemIdTableSow          = `${settings.uniqueKey}-sow-table`;
-        elemIdTableSowBody      = `${settings.uniqueKey}-sow-tbody`;
-        
-        elemIdTableBoar         = `${settings.uniqueKey}-boar-table`;
-        elemIdTableBoarBody     = `${settings.uniqueKey}-boar-tbody`;
-        
-        elemIdTableGilt         = `${settings.uniqueKey}-gilt-table`;
-        elemIdTableGiltBody     = `${settings.uniqueKey}-gilt-tbody`;
-        
-        elemIdTableDisposed     = `${settings.uniqueKey}-disposed-table`;
-        elemIdTableDisposedBody = `${settings.uniqueKey}-disposed-tbody`;
-        
-        elemIdTableSowOutput    = `${settings.uniqueKey}-sow-output-table`;
-        elemIdTableSowOutputBody= `${settings.uniqueKey}-sow-output-tbody`;
         
         
-        const html_style = thisObj._writeInlineStyle();
+        
+        const html_style        = thisObj._writeInlineStyle();
+        
+        
+        const html_table_sow_all    = tableSowAll.getHtml(); 
+        const html_table_sow_output = tableSowOutput.getHtml();
+        
+        const html_table_boar       = tableBoar.getHtml(); 
+        const html_table_gilt       = tableGilt.getHtml();  
+        const html_table_disposed   = tableDiposed.getHtml();
            
         const html = `
 
@@ -349,133 +376,27 @@ ${html_style}
         </div>
 
 
-        <!-- Table Sow -->
-        <div id="${elemIdTableSow}">
-            <table class="data-table table-sow">
-                <colgroup>
-                    <col style="width: 30%;">
-                    <col style="width: 25%;">
-                    <col style="width: 25%;">
-                    <col style="width: 20%;">
-                </colgroup>
-      
-                <thead>
-                    <tr>
-                        <th>Sow</th>
-                        <th>Status</th>
-                        <th>Age</th>
-                        <th>Output</th>
-                    </tr>
-                </thead>
-                
-                <tbody id="${elemIdTableSowBody}">
-                </tbody>
-            </table>
-            
-            <div>Output at Wean (Number Birth)</div>
-        </div>
+        <!-- Table Sow All-->
+        ${html_table_sow_all}
+        
+        <!-- Table Sow Output-->
+        ${html_table_sow_output}
         
         
         <!-- Table Boar -->
-        <div id="${elemIdTableBoar}">
-            <table class="data-table table-boar" >
-                <colgroup>
-                    <col style="width: 30%;">
-                    <col style="width: 25%;">
-                    <col style="width: 16%;">
-                    
-                </colgroup>
-                
-                <thead>
-                    <tr>
-                        <th>Boar</th>
-                        <th>Age</th>
-                        <th style="padding-left:0;">Mates</th>
-                        <th style="padding-left:0;">Last Mate</th>
-                    </tr>
-                </thead>
-                
-                <tbody id="${elemIdTableBoarBody}">
-                </tbody>
-            </table>
-        </div>
+        ${html_table_boar}
         
         
         <!-- Table Gilt -->
-        <div id="${elemIdTableGilt}">
-            <table class="data-table table-gilt" >
-                <colgroup>
-                    <col style="width: 25%;">
-                    <col style="width: 25%;">
-                    <col style="width: 50%;">
-                </colgroup>
-                
-                <thead>
-                    <tr>
-                        <th>Gilt</th>
-                        <th>Age</th>
-                        <th>Next PigOp</th>
-                    </tr>
-                </thead>
-                
-                <tbody id="${elemIdTableGiltBody}">
-                </tbody>
-            </table>
-        </div>
+        ${html_table_gilt}
         
         
         <!-- Table Disposed -->
-        <div id="${elemIdTableDisposed}">
-            <table class="data-table table-disposed" >
-                <colgroup>
-                    <col style="width: 30%;">
-                    <col style="width: 20%;">
-                    <col style="width: 30%;">
-                    <col style="width: 20%;">
-                </colgroup>
-                
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Name</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                
-                <tbody id="${elemIdTableDisposedBody}">
-                </tbody>
-            </table>
-        </div>
+        ${html_table_disposed}
         
         
         <!-- Table SowOutput -->
-        <div id="${elemIdTableSowOutput}">
-            <table class="data-table table-output" id="">
-                <thead>
-                    <colgroup>
-                        <col style="width: 30%;">
-                        <col style="width: 16%;">
-                        <col style="width: 16%;">
-                        <col style="width: 19%;">
-                    </colgroup>
-                    
-                    
-                    <tr>
-                        <th>Sow</th>
-                        <th>Live Pigs Birth</th>
-                        <th>Dead at Birth</th>
-                        <th>Dead before Wean</th>
-                        <th>Live Pigs Wean</th>
-                    </tr>
-                    
-                </thead>
-                
-                <tbody id="${elemIdTableSowOutputBody}">
-                </tbody>
-            </table>
         
-        </div>
         
     </div>
     
@@ -488,6 +409,14 @@ ${html_style}
     
     
     this.afterHtmlRender = function(){
+        tableSowAll.afterHtmlRender();
+        tableSowOutput.afterHtmlRender();
+        
+        tableBoar.afterHtmlRender();
+        tableGilt.afterHtmlRender();
+        tableDiposed.afterHtmlRender();
+        
+        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -520,20 +449,16 @@ ${html_style}
         elemTableNextPage       = elemDivContainer.querySelector('#'+elemIdTableNextPage);
         
         
-        elemTableSow            = elemDivContainer.querySelector('#'+elemIdTableSow);
-        elemTableSowBody        = elemDivContainer.querySelector('#'+elemIdTableSowBody);
         
-        elemTableBoar           = elemDivContainer.querySelector('#'+elemIdTableBoar);
-        elemTableBoarBody       = elemDivContainer.querySelector('#'+elemIdTableBoarBody);
         
-        elemTableGilt           = elemDivContainer.querySelector('#'+elemIdTableGilt);
-        elemTableGiltBody       = elemDivContainer.querySelector('#'+elemIdTableGiltBody);
+        this.elemTableRowCount      = elemTableRowCount;
+        this.elemTablePagination    = elemTablePagination;
+        this.elemTablePrevPage      = elemTablePrevPage;  
+        this.elemTableCurPage       = elemTableCurPage;   
+        this.elemTableTotalPages    = elemTableTotalPages;
+        this.elemTableNextPage      = elemTableNextPage;  
         
-        elemTableDisposed       = elemDivContainer.querySelector('#'+elemIdTableDisposed);
-        elemTableDisposedBody   = elemDivContainer.querySelector('#'+elemIdTableDisposedBody);
         
-        elemTableSowOutput      = elemDivContainer.querySelector('#'+elemIdTableSowOutput);
-        elemTableSowOutputBody  = elemDivContainer.querySelector('#'+elemIdTableSowOutputBody);
     }
     
     
@@ -640,7 +565,7 @@ ${html_style}
         if (navigation.pigFarm.managerSowBoar.dataFarmPigletsOutput == null){
             const callback_success = function(){
                 // Still rendered even hidden;
-                thisObj.renderSowOutputTable(dataSowList);
+                tableSowOutput.renderTable(dataSowList);
             };
             
             navigation.pigFarm.managerSowBoar.requestFarmPigletsOutput(callback_success);
@@ -650,6 +575,9 @@ ${html_style}
         // So that not to instantiate in every table redraw
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
+        
+        this.dtCurrentDate = dtCurrentDate;
+        
         
         showOptions = options;
         
@@ -692,18 +620,18 @@ ${html_style}
                 }
                 
 
-                elemTableSow.style.display      = 'block';
-                elemTableBoar.style.display     = 'none';
-                elemTableGilt.style.display     = 'none';
-                elemTableDisposed.style.display = 'none';
+                tableSowAll.show();
+                tableSowOutput.hide();
                 
-                elemTableSowOutput.style.display = 'none';
+                tableBoar.hide();
+                tableGilt.hide();
+                tableDiposed.hide();
                 
                 
                 thisObj.resetSowFilterButton();
                 
                 curDataListView = dataSowList;
-                thisObj.renderSowTable(curDataListView);
+                tableSowAll.renderTable(curDataListView);
                 
                 break;
             }
@@ -729,15 +657,16 @@ ${html_style}
                 
                 elemFilterControls.style.display = 'none';
                 
-                elemTableSow.style.display      = 'none';
-                elemTableBoar.style.display     = 'block';
-                elemTableGilt.style.display     = 'none';
-                elemTableDisposed.style.display = 'none';
+                tableSowAll.hide();
+                tableSowOutput.hide();
                 
-                elemTableSowOutput.style.display = 'none';
+                tableBoar.show();
+                tableGilt.hide();
+                tableDiposed.hide();
+                
                 
                 curDataListView = dataBoarList;
-                thisObj.renderBoarTable(curDataListView);
+                tableBoar.renderTable(curDataListView);
                 break;
             }
             
@@ -763,15 +692,16 @@ ${html_style}
                 elemFilterControls.style.display = 'none';
                 
                 
-                elemTableSow.style.display      = 'none';
-                elemTableBoar.style.display     = 'none';
-                elemTableGilt.style.display     = 'block';
-                elemTableDisposed.style.display = 'none';
+                tableSowAll.hide();
+                tableSowOutput.hide();
                 
-                elemTableSowOutput.style.display = 'none';
+                tableBoar.hide();
+                tableGilt.show();
+                tableDiposed.hide();
+                
                 
                 curDataListView = dataGiltList;
-                thisObj.renderGiltTable(curDataListView);
+                tableGilt.renderTable(curDataListView);
                 break;
             }
             
@@ -798,26 +728,27 @@ ${html_style}
                     const callback = function(data){
                         dataDisposedList = data;
                         curDataListView = dataDisposedList;
-                        thisObj.renderDisposedTable(curDataListView);
+                        tableDiposed.renderTable(curDataListView);
                     };
                     
-                    thisObj.requestDisposedSowBoar(callback);
+                    tableDiposed.requestDisposedSowBoar(callback);
                 }
                 else {
                     curDataListView = dataDisposedList;
-                    thisObj.renderDisposedTable(curDataListView);
+                    tableDiposed.renderTable(curDataListView);
                 }
                 
                 
                 elemFilterControls.style.display = 'none';
                 
                 
-                elemTableSow.style.display      = 'none';
-                elemTableBoar.style.display     = 'none';
-                elemTableGilt.style.display     = 'none';
-                elemTableDisposed.style.display = 'block';
+                tableSowAll.hide();
+                tableSowOutput.hide();
                 
-                elemTableSowOutput.style.display = 'none';
+                tableBoar.hide();
+                tableGilt.hide();
+                tableDiposed.show();
+                
                 
                 break;
             }
@@ -942,253 +873,6 @@ ${html_style}
     }
     
     
-    
-    this.renderSowTable = function(sow_list){
-        curDataView = sow_list;
-
-        const config = {
-            elemPagination:     elemTablePagination,
-            elemTableBody:      elemTableSowBody,
-            elemEntryCount:     elemTableRowCount,
-            elemCurrentPage:    elemTableCurPage,
-            elemTotalPages:     elemTableTotalPages,
-            elemPrevPageBtn:    elemTablePrevPage,
-            elemNextPageBtn:    elemTableNextPage,
-            data:               curDataView,
-            itemsPerPage:       TABLE_ROW_PER_PAGE,
-            renderRow:          thisObj.getHtmlTableRowSow,
-            renderRowEmpty:     thisObj.getHtmlTableRowSowEmpty,
-            getRowElement:      thisObj.getElemTableRowSow
-        } 
-        
-        const paginationManager = new createPaginationManager(config); 
-        paginationManager.init();
-        
-        // One event handler at a time
-        elemTablePrevPage.onclick = function(){
-            paginationManager.goToPrevPage();
-        }
-        
-        // One event handler at a time
-        elemTableNextPage.onclick = function(){
-            paginationManager.goToNextPage();
-        }
-        
-    }
-    
-    
-    this.getHtmlTableRowSowEmpty = function(){
-        const html = `
-            <tr>
-                <td colspan="4"><div>No Entries</div></td>
-            </tr>
-        `;
-        
-        return html;
-    }
-    
-    
-    this.getHtmlTableRowSow = function(cur_entry){
-        
-        // Sow Name column
-        let sow_boar = cur_entry.sow_boar;
-        let sow_reference = thisObj.getSowBoarReference(sow_boar);
-        
-        
-        
-        // Sow Age column
-        let s_age = thisObj.getSowBoarAge(sow_boar);
-        
-        
-        
-        // Sow Status
-        
-        // This is declared at top level so that can be read in 
-        // this.getElemTableRowSow 
-        htmlSowDueWarning = null;
-        
-        
-        if (sow_boar.status_id == SOW_STATUS.GESTATING){
-            if ('date_expected_birth' in sow_boar){
-                const date_expected_birth   = sow_boar.date_expected_birth;
-                const dt_expected_birth     = new Date(date_expected_birth);
-                
-                const diff_msecs    = dt_expected_birth - dtCurrentDate;
-                const diff_days     = Math.round(diff_msecs / NUM_MSECS_1DAY);
-                
-                if ((diff_days >= 3) && (diff_days <= 7)) {
-                    htmlSowDueWarning = `<span class="due-soon">Due ${diff_days} Days</span>`;
-                } 
-                
-                if ((diff_days == 1) || (diff_days == 2)) {
-                    htmlSowDueWarning = `<span class="due-soon">Due Soon</span>`;
-                } 
-                
-                if (diff_days == 0) {
-                    htmlSowDueWarning = `<span class="due-soon">Due Today</span>`;
-                }
-                
-                if (diff_days < 0) {
-                    htmlSowDueWarning = `<span class="due-soon">Overdue</span>`;
-                }
-            }
-        }
-        
-        
-        let s_status = SOW_STATUS_NAME[sow_boar.status_id];
-            
-        switch (sow_boar.status_id){
-            case SOW_STATUS.GROWING:    {break;}
-            case SOW_STATUS.GESTATING:  {
-                
-                if (htmlSowDueWarning){
-                    s_status = `<span class="due-soon">${s_status}</span>`;
-                    s_status += '<br>' + htmlSowDueWarning;
-                } else{
-                    s_status = `<span>${s_status}</span>`;
-                    
-                }
-                        
-                break;
-            }
-            
-            case SOW_STATUS.LACTATING:  {
-                s_status = `<span>${s_status}</span>`;
-                break;
-            }
-            
-            case SOW_STATUS.WEANING:    {
-                s_status = `<span>${s_status}</span>`;
-                break;
-            }
-        }
-    
-        
-        
-        
-        // Sow Num piglets column
-        let s_num_piglets = ''
-        let num_pigs_wean = 0;
-        
-        if (sow_boar.num_pigs_wean){
-            num_pigs_wean = sow_boar.num_pigs_wean;
-        }
-        
-        if (num_pigs_wean > 0){
-            s_num_piglets = `${num_pigs_wean} (${sow_boar.num_births}B)`;
-        }
-        
-        
-        
-        let html = `
-        <tr>
-            <td><span>${sow_reference}</span></td>
-            <td>${s_status}</td>
-            <td>${s_age}</td>
-            <td>${s_num_piglets}</td>
-        </tr>
-        `;
-        
-        return html;
-    }
-    
-    
-    this.getElemTableRowSow = function(cur_entry){
-        let sow_boar = cur_entry.sow_boar;
-        
-        const elem_row = document.createElement('tr');
-        
-        const html = thisObj.getHtmlTableRowSow(cur_entry);
-        elem_row.innerHTML = html;
-         
-
-        
-        // Attach onclick listeners to td
-        
-        const elem_tds = elem_row.querySelectorAll('td'); 
-        
-        let index = 0
-        for (const cur_td of elem_tds){
-        
-            // Clicking on sow_name should goto SowBoarEntry
-            if (index == 0) {
-                cur_td.onclick = function(){
-                    thisObj.onClickSowBoarEntry(sow_boar.hid);
-                }
-            }
-            
-            
-            // Clicking on sow_status should do this:
-            // if SOW_STATUS.GESTATING 
-            //      if there is due warning, should go to GestatingEntry page
-            //      if no due warning, should go GestatingList page
-            //
-            // if SOW_STATUS.LACTATING
-            //      should go to LactatingEntry page
-            if (index == 1){
-            
-                switch (sow_boar.status_id){
-                    case SOW_STATUS.GROWING:    {break;}
-                    case SOW_STATUS.GESTATING:  {
-                        
-                        if (htmlSowDueWarning){
-                            // Goto GestatingEntry page
-                            cur_td.onclick = function(){
-                                navigation.onClickProdGestatingEntry(
-                                    sow_boar.last_farm_prod_id);
-                            };
-                                
-                        } else{
-                            // Goto GestaList Page
-                            cur_td.onclick = function(){
-                                navigation._onClickNavProdGestaLacta(null, 
-                                    PIG_OPERATION_TYPE.GESTATING);
-                            };
-                        }
-                                
-                        break;
-                    }
-                    
-                    case SOW_STATUS.LACTATING:  {
-                        // Goto LactatingEntry page
-                        cur_td.onclick = function(){
-                            navigation.onClickProdLactatingEntry(
-                                sow_boar.last_farm_prod_id);
-                        };
-                        
-                        break;
-                    }
-                    
-                    case SOW_STATUS.WEANING:    {
-                        // TODO
-                        break;
-                    }
-                }
-            
-            }
-            
-            
-            
-            // Clicking on sow_output should go to SowBoar entry page, 
-            // Piglet Output Tab
-            if (index == 3){
-                const tab_id_output = navigation.pageSowBoarEntry.elemIdTabOutput;
-            
-                cur_td.onclick = function(){
-                    navigation.pageSowBoarList.onClickSowBoarEntry(
-                        sow_boar.hid, null, tab_id_output);
-                };
-            }
-        
-        
-        
-            index += 1;
-        }
-        
-        return elem_row;
-    }
-    
-    
     this.onClickSowFilter = function(filter_type){
         
         if (curSowFilter == filter_type){return;}
@@ -1199,14 +883,16 @@ ${html_style}
         let sow_status_id = null;
         let filtered_sow_list = null;
         
-        // Hide elemTableSowOutput
-        elemTableSowOutput.style.display = 'none';
-        elemTableSow.style.display = 'block';
+        
+        
+        tableSowAll.show();
+        tableSowOutput.hide();
+        
         
         switch(filter_type){
             case 'all':{
                 curDataListView = dataSowList;
-                thisObj.renderSowTable(curDataListView);
+                tableSowAll.renderTable(curDataListView);
                 
                 elemTableRowCount.textContent = `${curDataListView.length} Entries`;
                 break;
@@ -1269,481 +955,20 @@ ${html_style}
     
     
     this.onClickSowListOutput = function(){
-
-        elemTableSowOutput.style.display = 'block';
-        elemTableSow.style.display = 'none';
+        
+        tableSowAll.hide();
+        tableSowOutput.show();
+        
         
         curDataListView         = dataSowList;
-        
-        elemTableRowCount.textContent = `${dataSowList.length} Entries`;
         
         curSowFilter = 'output';
         
         elemSowControls.style.display = 'block';
     }
     
-    
-    this.renderSowOutputTable = function(sow_list){
-        curDataView = sow_list;
-
-        const config = {
-            elemPagination:     elemTablePagination,
-            elemTableBody:      elemTableSowOutputBody,
-            elemEntryCount:     elemTableRowCount,
-            elemCurrentPage:    elemTableCurPage,
-            elemTotalPages:     elemTableTotalPages,
-            elemPrevPageBtn:    elemTablePrevPage,
-            elemNextPageBtn:    elemTableNextPage,
-            data:               curDataView,
-            itemsPerPage:       TABLE_ROW_PER_PAGE,
-            renderRow:          thisObj.getHtmlTableRowSowOutput,
-            renderRowEmpty:     thisObj.getHtmlTableRowSowOutputEmpty,
-            getRowElement:      thisObj.getElemTableRowSowOutput
-        } 
-        
-        const paginationManager = new createPaginationManager(config); 
-        paginationManager.init();
-        
-        // One event handler at a time
-        elemTablePrevPage.onclick = function(){
-            paginationManager.goToPrevPage();
-        }
-        
-        // One event handler at a time
-        elemTableNextPage.onclick = function(){
-            paginationManager.goToNextPage();
-        }
-        
-
-    }
-    
-    
-    this.getHtmlTableRowSowOutputEmpty = function(){
-        const html = `
-            <tr>
-                <td colspan="5"><div>No Entries</div></td>
-            </tr>
-        `;
-        
-        return html;
-    }
-    
-    
-    this.getHtmlTableRowSowOutput = function(cur_entry){
-        
-        const list_output = navigation.pigFarm.managerSowBoar.dataFarmPigletsOutput;
-        
-        
-        let live_pigs_birth   = 0;
-        let dead_at_birth     = 0;
-        let live_pigs_wean    = 0;
-        let dead_before_wean  = 0;
-        
-        const sow_boar = cur_entry.sow_boar;
-        const sow_boar_hid = sow_boar.hid;
-        
-        
-        
-        if (list_output){
-            for (const cur_output of list_output){
-                if (cur_output.sow_hid == sow_boar_hid){
-                    live_pigs_birth   = cur_output.num_pigs_live_m + cur_output.num_pigs_live_f ;
-                    dead_at_birth     = cur_output.dead_at_birth;
-                    live_pigs_wean    = cur_output.num_pigs_wean;
-                    dead_before_wean  = cur_output.dead_before_wean;
-                    
-                    break;
-                }
-            }
-        }
-        
-        let sow_reference = '';
-    
-    
-        if (sow_boar.name  && sow_boar.name.length >0 ){
-            sow_reference = `<span class="sow-boar-name">${sow_boar.name}</span>`;
-            if (sow_boar.number && sow_boar.name.length >0){
-                sow_reference += `<br>${sow_boar.number}`;
-            }
-        }
-        else{
-            sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
-        }
-       
-        
-        const html = `
-            <tr>
-                <td class = "">${sow_reference}</td>
-                <td class = "data-table-cell-no-padding">${live_pigs_birth}</td>
-                <td class = "data-table-cell-no-padding">${dead_at_birth}</td>
-                <td class = "data-table-cell-no-padding">${dead_before_wean}</td>
-                <td class = "data-table-cell-no-padding">${live_pigs_wean}</td>
-            </tr>
-        `;
-        
-        return html;
-    }
-    
-    
-    this.getElemTableRowSowOutput = function(cur_entry){
-        const sow_boar = cur_entry.sow_boar;
-        
-        const elem_row = document.createElement('tr');
-        
-        const html = thisObj.getHtmlTableRowSowOutput(cur_entry);
-        elem_row.innerHTML = html;
-         
-
-        
-        // Attach onclick listeners to td
-        
-        const elem_tds = elem_row.querySelectorAll('td'); 
-        
-        let index = 0
-        for (const cur_td of elem_tds){
-            // Clicking on sow_name should goto SowBoarEntry
-            if (index == 0){
-                cur_td.onclick = function(){
-                    thisObj.onClickSowBoarEntry(sow_boar.hid);
-                }
-            }
-            
-            else{
-            
-                // Clicking on sow_output should go to SowBoar entry page, 
-                // Piglet Output Tab
-                const tab_id_output = navigation.pageSowBoarEntry.elemIdTabOutput;
-                
-                cur_td.onclick = function(){
-                    thisObj.onClickSowBoarEntry(sow_boar.hid, null, tab_id_output);
-                }
-            }
-            
-            index += 1;
-        }
-        
-        return elem_row;
-    }
-    
-    
-    this.renderBoarTable = function(boar_list){
-        curDataView = boar_list;
-        
-        const config = {
-            elemPagination:     elemTablePagination,
-            elemTableBody:      elemTableBoarBody,
-            elemEntryCount:     elemTableRowCount,
-            elemCurrentPage:    elemTableCurPage,
-            elemTotalPages:     elemTableTotalPages,
-            elemPrevPageBtn:    elemTablePrevPage,
-            elemNextPageBtn:    elemTableNextPage,
-            data:               curDataView,
-            itemsPerPage:       TABLE_ROW_PER_PAGE,
-            renderRow:          thisObj.getHtmlTableRowBoar,
-            renderRowEmpty:     thisObj.getHtmlTableRowBoarEmpty,
-            getRowElement:      thisObj.getElemTableRowBoar
-        }
-        
-        const paginationManager = new createPaginationManager(config); 
-        paginationManager.init();
-        
-        // One event handler at a time
-        elemTablePrevPage.onclick = function(){
-            paginationManager.goToPrevPage();
-        }
-        
-        // One event handler at a time
-        elemTableNextPage.onclick = function(){
-            paginationManager.goToNextPage();
-        }
-        
-        thisObj.addToolTips();
-    }
-    
-    
-    this.getHtmlTableRowBoar = function(cur_entry){
-        let sow_boar = cur_entry.sow_boar;        
-        
-        let sow_reference = '';
-    
-        
-        // Boar Name column
-        let not_ready   = '';
-        let external    = '';
-        let boar_name   = '';
-        
-        if (sow_boar.is_production_ready == 0){
-            not_ready = '<span class="data-table-cell-detail"> Not Ready</span>';
-        }
-        
-        if (sow_boar.is_external && sow_boar.is_external > 0){
-            external = '<span class="data-table-cell-detail"> (External)</span>';
-        }
-            
-        boar_name = getSowBoarReference(sow_boar);
-    
-        sow_reference = `<span class="sow-boar-name">${boar_name} ${not_ready} ${external}</span>`;
-        
-        
-        // Boar Age column
-        let s_age = thisObj.getSowBoarAge(sow_boar);
-        
-        
-        let s_last_mate = '';
-        if (sow_boar.date_last_mate){
-            const dt_mate = new Date(sow_boar.date_last_mate);
-            s_last_mate = formatDate(dt_mate, FORMAT_COMPACT);
-        }
-        
-        let mate_count =  sow_boar.mate_count;
-        
-        const html = `
-            <tr>
-                <td>${sow_reference}</td>
-                <td>${s_age}</td>
-                <td style="padding-left:0;">${mate_count}</td>
-                <td style="padding-left:0;">${s_last_mate}</td>
-            </tr>
-        `;
-        
-        return html;
-    }
-    
-    
-    this.getElemTableRowBoar = function(cur_entry){
-        const sow_boar = cur_entry.sow_boar;
-        
-        const elem_row = document.createElement('tr');
-        
-        const html = thisObj.getHtmlTableRowBoar(cur_entry);
-        elem_row.innerHTML = html;
-         
-
-        
-        // Attach onclick listeners to td
-        
-        const elem_tds = elem_row.querySelectorAll('td'); 
-        
-        let index = 0
-        for (const cur_td of elem_tds){
-            // Clicking on boar_name should goto SowBoarEntry
-            if (index == 0 || index == 1){
-                cur_td.onclick = function(){
-                    thisObj.onClickSowBoarEntry(sow_boar.hid);
-                }
-            }
-            
-            
-            // Clicking on boar number of mates and last Mate should goto 
-            // SowBoarEntry Mates Tab
-            if (index == 2 || index == 3) {
-            
-                // Clicking on sow_output should go to SowBoar entry page, 
-                // Piglet Output Tab
-                const tab_id_output = navigation.pageSowBoarEntry.elemIdTabMates;
-                
-                cur_td.onclick = function(){
-                    thisObj.onClickSowBoarEntry(sow_boar.hid, null, tab_id_output);
-                }
-            }
-            
-            index += 1;
-        }
-        
-        return elem_row;
-    }
-    
-    
-    
-    this.renderGiltTable = function(gilt_list){
-        curDataView = gilt_list;
-        
-        const config = {
-            elemPagination:     elemTablePagination,
-            elemTableBody:      elemTableGiltBody,
-            elemEntryCount:     elemTableRowCount,
-            elemCurrentPage:    elemTableCurPage,
-            elemTotalPages:     elemTableTotalPages,
-            elemPrevPageBtn:    elemTablePrevPage,
-            elemNextPageBtn:    elemTableNextPage,
-            data:               curDataView,
-            itemsPerPage:       TABLE_ROW_PER_PAGE,
-            renderRow:          thisObj.getHtmlTableRowGilt,
-            renderRowEmpty:     thisObj.getHtmlTableRowGiltEmpty,
-            getRowElement:      thisObj.getElemTableRowGilt
-        } 
-
-        const paginationManager = new createPaginationManager(config); 
-        paginationManager.init();
-        
-        // One event handler at a time
-        elemTablePrevPage.onclick = function(){
-            paginationManager.goToPrevPage();
-        }
-        
-        // One event handler at a time
-        elemTableNextPage.onclick = function(){
-            paginationManager.goToNextPage();
-        }
-    }
-    
-    
-    this.getHtmlTableRowGilt= function(cur_entry){
-
-        // Sow Name column
-        let sow_boar = cur_entry.sow_boar;
-        let sow_reference = thisObj.getSowBoarReference(sow_boar);
-        
-
-        let s_age = thisObj.getSowBoarAge(sow_boar);
-        
-        
-        const html = `
-            <tr>
-                <td>${sow_reference}</td>
-                <td>${s_age}</td>
-                <td></td>
-            </tr>
-        `;
-        
-        return html;
-    }
-    
-    
-    this.getElemTableRowGilt = function(cur_entry){
-        const sow_boar = cur_entry.sow_boar;
-        
-        const elem_row = document.createElement('tr');
-        
-        const html = thisObj.getHtmlTableRowGilt(cur_entry);
-        elem_row.innerHTML = html;
-         
-
-        
-        // Attach onclick listeners to td
-        
-        const elem_tds = elem_row.querySelectorAll('td'); 
-        
-        let index = 0
-        for (const cur_td of elem_tds){
-            // Clicking on boar_name should goto SowBoarEntry
-            if (index == 0 || index == 1){
-                cur_td.onclick = function(){
-                    thisObj.onClickSowBoarEntry(sow_boar.hid);
-                }
-            }
-            
-            index += 1;
-        }
-        
-        return elem_row;
-    }
-    
-    
-    this.renderDisposedTable = function(disposed_list){
-        curDataView = disposed_list;
-        
-        const config = {
-            elemPagination:     elemTablePagination,
-            elemTableBody:      elemTableDisposedBody,
-            elemEntryCount:     elemTableRowCount,
-            elemCurrentPage:    elemTableCurPage,
-            elemTotalPages:     elemTableTotalPages,
-            elemPrevPageBtn:    elemTablePrevPage,
-            elemNextPageBtn:    elemTableNextPage,
-            data:               curDataView,
-            itemsPerPage:       TABLE_ROW_PER_PAGE,
-            renderRow:          thisObj.getHtmlTableRowDisposed,
-            renderRowEmpty:     thisObj.getHtmlTableRowSowEmpty
-        } 
-
-        const paginationManager = new createPaginationManager(config); 
-        paginationManager.init();
-        
-        // One event handler at a time
-        elemTablePrevPage.onclick = function(){
-            paginationManager.goToPrevPage();
-        }
-        
-        // One event handler at a time
-        elemTableNextPage.onclick = function(){
-            paginationManager.goToNextPage();
-        }
-        
-        // Set Entry count; This needs to be set since this is requested late
-        const entry_count = disposed_list.length;
-        elemEntryCount.textContent = entry_count;
-        
-    }
-    
-    
-    this.getHtmlTableRowDisposed = function(cur_entry){
-        let pig_type = '';
-        
-        if (cur_entry.sow_boar.farm_boar_id){
-            pig_type = 'Boar';
-        }
-        else{
-            if (cur_entry.sow_boar.status_id == SOW_STATUS.GROWING){
-                pig_type = 'Gilt';
-            }
-            else{
-                pig_type = 'Sow';
-            }
-        }
-        
-        
-        const dt_disposed = new Date(cur_entry.sow_boar.date_dispose);
-        const dt_disposed_s = formatDate(dt_disposed, FORMAT_COMPACT);
-        
-        
-        let sow_reference = '';
-        let sow_boar;
-        
-        if ('sow_boar' in cur_entry){
-            sow_boar = cur_entry.sow_boar;
-        }
-        else{
-            sow_boar = cur_entry;
-        }
-    
-        if ((sow_boar.name != null) && (sow_boar.name.length >0)){
-            sow_reference = `<span class="sow-boar-name">${sow_boar.name}</span>`;
-            
-            if (sow_boar.number && sow_boar.number.length >0){
-                sow_reference += `<br>${sow_boar.number}`;
-            }
-        }
-        else{
-            sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
-        }
-        
-        let s_status = '';
-        
-        switch(cur_entry.sow_boar.dispose_status_id){
-            case SOW_STATUS.CULLED: {s_status = 'Culled'; break;}
-            case SOW_STATUS.DEAD:   {s_status = 'Dead'; break;}
-            case SOW_STATUS.SOLD:   {s_status = 'Sold'; break;}
-            case SOW_STATUS.DELETE: {s_status = 'Deleted'; break;}
-                    
-        }
-        
-        let s_click = 'gNavigation.pageSowBoarList.onClickSowBoarEntry(';
-        s_click += `'${sow_boar.hid}');`;
-        
-        const html = `
-            <tr>
-                <td>${dt_disposed_s}</td>
-                <td>${pig_type}</td>
-                <td onclick="${s_click}">${sow_reference}</td>
-                <td>${s_status}</td>
-            </tr>
-        `;
-        
-        return html;
-        
-    }
-    
+   
+ 
     
     this.addToolTips = function(){
         const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -1975,43 +1200,4 @@ ${html_style}
 
     }
 
-    
-    this.requestDisposedSowBoar = function(callback){
-        const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
-        
-        const is_mob_view = 1; // TODO for desktop view
-        
-        const base_url = window.location.origin;
-        const url = `${base_url}/sow_boar/list?pfhid=${cur_pig_farm_hid}&is_disposed=1&inc_user_audit=1`;
-        
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    
-                    if (callback){
-                        callback(response.data)
-                    }
-                }
-                else {
-                    // TODO
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
-    }
 }

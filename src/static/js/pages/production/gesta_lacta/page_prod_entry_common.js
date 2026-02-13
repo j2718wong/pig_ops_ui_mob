@@ -466,6 +466,9 @@ export function PageProdEntryCommon(input_settings){
                 }
                 
                 case PIG_PROD_TYPE.FATTENING:{
+                    const next_page = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_LIST);
+                    navigation.showThisPage(next_page);
+                    navigation.pageProdFatteningList.show();
                     break;
                 }
             }
@@ -604,11 +607,11 @@ export function PageProdEntryCommon(input_settings){
             
             case PIG_PROD_TYPE.FATTENING:{
                 elemNavPrevEntry.onclick = function(){
-                    //navigation.onClickProdGestatingEntry(options.prev_prod_pid);
+                    navigation.onClickProdFatteningEntry(options.prev_prod_pid);
                 }
                 
                 elemNavNextEntry.onclick = function(){
-                    //navigation.onClickProdGestatingEntry(options.next_prod_pid);
+                    navigation.onClickProdFatteningEntry(options.next_prod_pid);
                 }
                 break;
             }
