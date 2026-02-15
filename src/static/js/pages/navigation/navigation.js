@@ -54,6 +54,8 @@ import {TablePigFarmFeedBuy}        from '../feeds/table_pig_farm_feed_buy.js';
 import {PagePfFeedBuyAddEdit}       from '../feeds/page_pf_feed_buy_add_edit.js';
 import {PagePfBuyItemAddEdit}       from '../feeds/page_pf_feed_buy_item_add_edit.js';
 
+import {PageProdFeedAddEdit}        from '../feeds/prod_feed/page_prod_feed_add_edit.js';
+
 
 import {PageAccPigOpsList}          from '../acc_pig_ops/page_acc_pig_ops_list.js';
 import {PageAccPigOpsAddEdit}       from '../acc_pig_ops/page_acc_pig_ops_add_edit.js';
@@ -270,6 +272,9 @@ export function Navigation(){
     const elemIdContFarmFeedBuyAddEdit  = 'container-farm-feed-buy-add-edit';
     const elemIdContFeedBuyItemAddEdit  = 'container-farm-feed-buy-item-add-edit';
     
+    const elemIdContProdFeedAddEdit     = 'container-prod-feed-add-edit';
+    
+    
     const elemIdContAccPigOpsList       = 'container-acc-pig-ops-list';
     const elemIdContAccPigOpsAddEdit    = 'container-acc-pig-ops-add-edit';
     
@@ -332,6 +337,8 @@ export function Navigation(){
     let elemPageContFarmFeedBuyList = null;
     let elemPageContFarmFeedBuyAddEdit = null;
     let elemPageContFeedBuyItemAddEdit = null;
+    
+    let elemPageContProdFeedAddEdit = null;
     
     
     let elemPageContAccPigOpsList   = null;
@@ -524,6 +531,14 @@ export function Navigation(){
     });
     
     
+    this.pageProdFeedAddEdit    = new PageProdFeedAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdFeedAddEdit,
+        uniqueKey:              'pig-prod-add-edit'
+    });
+    
+    
+    
     this.pageAccPigOpsList      = new PageAccPigOpsList({
         navigation:             this,
         elemIdDivContainer:     elemIdContAccPigOpsList,
@@ -585,6 +600,8 @@ export function Navigation(){
         this.pagePigFarmFeedBuyList.init();
         this.pagePfFeedBuyAddEdit.init();
         this.pagePfFeedBuyItemAddEdit.init();
+        
+        this.pageProdFeedAddEdit.init();
         
         
         this.pageAccPigOpsList.init();
@@ -660,7 +677,11 @@ export function Navigation(){
         elemPageContFarmFeedBuyAddEdit  = document.getElementById(elemIdContFarmFeedBuyAddEdit);
         elemPageContFeedBuyItemAddEdit  = document.getElementById(elemIdContFeedBuyItemAddEdit);
         
-    
+        elemPageContProdFeedAddEdit     = document.getElementById(elemIdContProdFeedAddEdit);
+        
+        
+        
+        
         elemPageContAccPigOpsList       = document.getElementById(elemIdContAccPigOpsList);
         elemPageContAccPigOpsAddEdit    = document.getElementById(elemIdContAccPigOpsAddEdit);
         
@@ -880,6 +901,14 @@ export function Navigation(){
             case PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT: {
                 return elemPageContFeedBuyItemAddEdit;
             }
+            
+            
+            case PAGE_ID.PROD_FEED_ADD_EDIT: {
+                return elemPageContProdFeedAddEdit;
+            }
+            
+            
+            
             
             
         

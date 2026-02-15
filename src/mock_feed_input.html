@@ -6,11 +6,11 @@
     <title>Pig Feed Balance Input</title>
     <!-- Bootstrap 5 CSS -->
     
-	<link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="static/css/main.css">
+	<link rel="stylesheet" type="text/css" href="static_m/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="static_m/css/main.css">
 	
 	
-	<script type="module" src="static/js/pages/common/ui/comp_feeds_input.js"></script>
+	<script type="module" src="static_m/js/pages/common/ui/comp_feeds_input.js"></script>
 	
 </head>
 <body>
@@ -36,26 +36,25 @@
     </div>
 
     <script type="module">
-        import {ComponentFeedsInput}   from './static/js/pages/common/ui/comp_feeds_input.js'
-		
+        	
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-			let comp_input = new ComponentFeedsInput({
-				uniqueKey: 'feed-balance',
-				header: {
-					col1Name:	'Feed<br>Type',
-					col2Name:	'Feed Buy <br>(sacks)',
-					col3Name:	'Balance <br>(sacks)'
-				}
-				
-			});
-			
-			const html_input = comp_input.getHtml();
-			
-			const elemContTable  = document.getElementById('container-table');
-			elemContTable.innerHTML = html_input;
-			
-			comp_input.afterHtmlRender();
+	let comp_input = new ComponentFeedsInput({
+		uniqueKey: 'feed-balance',
+		header: {
+			col1Name:	'Feed<br>Type',
+			col2Name:	'Feed Buy <br>(sacks)',
+			col3Name:	'Balance <br>(sacks)'
+		}
+		
+	});
+	
+	const html_input = comp_input.getHtml();
+	
+	const elemContTable  = document.getElementById('container-table');
+	elemContTable.innerHTML = html_input;
+	
+	comp_input.afterHtmlRender();
         });
     </script>
 </body>

@@ -3642,8 +3642,24 @@ textarea.form-control {
 
 
 /*********START OF FEED INPUT ***********************/
+.table-feed-input table {
+    table-layout: fixed;
+    width: 100%;
+}
+  
+
+
+.fi-readonly-cell {
+    vertical-align:middle;
+    font-size: 1.2rem;
+}
+
 .fi-input-cell {
     min-width: 150px;
+}
+
+.fi-col2 {
+
 }
 
 .fi-number-input-container {
@@ -3660,7 +3676,7 @@ textarea.form-control {
     border-right: none;
     border-radius: 6px 0 0 6px;
     text-align: right;
-    font-size: 1rem;
+    font-size: 1.3rem;
     height: 50px;
     min-width: 60px;
     width: 100%;

@@ -23,6 +23,7 @@ import {TableHealthIssue}       from '../../multikey/table_health_issue.js'
 
 import {ProdFeedSummary}        from '../feeds/prod_feed_summary.js'
 
+import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed_add.js'
 
 
 
@@ -55,7 +56,7 @@ export function PageProdLactatingEntry(input_settings){
     this.TAB_LACTA_HEALTH       = 5;
     this.TAB_LACTA_PIG_DEAD     = 6;
     this.TAB_LACTA_FEED_SUMMARY = 7;
-    this.TAB_LACTA_FEED_ADD     = 8;
+    this.TAB_LACTA_PROD_FEED     = 8;
     this.TAB_LACTA_NOTES        = 9;
     this.TAB_LACTA_MATING       = 10;
     
@@ -70,7 +71,7 @@ export function PageProdLactatingEntry(input_settings){
     let elemIdTabLactaHealth        = `prod-lacta-health`;
     let elemIdTabLactaPigDead       = `prod-lacta-pig-dead`;
     let elemIdTabLactaFeedSummary   = `prod-lacta-feed-summary`;
-    let elemIdTabLactaFeedAdd       = `prod-lacta-feed-add`;
+    let elemIdTabLactaProdFeed       = `prod-lacta-feed-add`;
     let elemIdTabLactaNotes         = `prod-lacta-notes`;
     let elemIdTabLactaMating        = `prod-lacta-mating`;
     let elemIdTabLactaExtra         = `prod-lacta-extra`;
@@ -114,7 +115,7 @@ export function PageProdLactatingEntry(input_settings){
         },
         
         {
-            data_tab_id:    elemIdTabLactaFeedAdd,
+            data_tab_id:    elemIdTabLactaProdFeed,
             label:          'Feed Add'
         },
         
@@ -140,7 +141,7 @@ export function PageProdLactatingEntry(input_settings){
     let elemTabLactaHealth          = null;
     let elemTabLactaPigDead         = null;
     let elemTabLactaFeedSummary     = null;
-    let elemTabLactaFeedAdd         = null;
+    let elemTabLactaProdFeed         = null;
     let elemTabLactaNotes           = null;
     let elemTabLactaMating          = null;
     
@@ -182,7 +183,7 @@ export function PageProdLactatingEntry(input_settings){
         elemTabLactaHealth          = elemDivContainer.querySelector('#'+elemIdTabLactaHealth);
         elemTabLactaPigDead         = elemDivContainer.querySelector('#'+elemIdTabLactaPigDead);
         elemTabLactaFeedSummary     = elemDivContainer.querySelector('#'+elemIdTabLactaFeedSummary);
-        elemTabLactaFeedAdd         = elemDivContainer.querySelector('#'+elemIdTabLactaFeedAdd);
+        elemTabLactaProdFeed        = elemDivContainer.querySelector('#'+elemIdTabLactaProdFeed);
         elemTabLactaNotes           = elemDivContainer.querySelector('#'+elemIdTabLactaNotes);
         elemTabLactaMating          = elemDivContainer.querySelector('#'+elemIdTabLactaMating);
         
@@ -227,6 +228,24 @@ export function PageProdLactatingEntry(input_settings){
         this.tableMedVac.init();
         
         
+        this.prodFeedSummary    = new ProdFeedSummary({
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-lacta-feed-summary',
+            elemDivContainer:   elemTabLactaFeedSummary
+        });
+        this.prodFeedSummary.init();
+        
+        
+        this.tablePigProdFeed   = new TablePigProdFeed({
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-feed',
+            elemDivContainer:   elemTabLactaProdFeed,
+        });
+        this.tablePigProdFeed.init();
+        
+        
         this.tablePigProdNotes  = new TableNotes({
             navigation:         settings.navigation,
             parentObj:          this,
@@ -251,13 +270,6 @@ export function PageProdLactatingEntry(input_settings){
     
     
     
-        this.prodFeedSummary    = new ProdFeedSummary({
-            navigation:         settings.navigation,
-            parentObj:          this,
-            uniqueKey:          'pig-prod-lacta-feed-summary',
-            elemDivContainer:   elemTabLactaFeedSummary
-        });
-        this.prodFeedSummary.init();
         
     
         this.prodEntryMating     = new ProdEntryMating({
@@ -358,8 +370,8 @@ export function PageProdLactatingEntry(input_settings){
             }
             
             
-            case thisObj.TAB_LACTA_FEED_ADD:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaFeedAdd);
+            case thisObj.TAB_LACTA_PROD_FEED:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaProdFeed);
                 break;
             }
             
@@ -451,8 +463,10 @@ export function PageProdLactatingEntry(input_settings){
             }
             
             
-            case elemIdTabLactaFeedAdd:{
-                curTabLacta = thisObj.TAB_LACTA_FEED_ADD;
+            case elemIdTabLactaProdFeed:{
+                thisObj.tablePigProdFeed.beforeShow(dataPigProd);
+                
+                curTabLacta = thisObj.TAB_LACTA_PROD_FEED;
                 break;
             }
             

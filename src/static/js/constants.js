@@ -40,7 +40,7 @@ const PAGE_ID = {
     
     PROD_PIG_OPS_EDIT:      39,
     
-    
+    PROD_FEED_ADD_EDIT:     40,     
     
     FARM_FEED_BUY_LIST:     50,
     FARM_FEED_BUY_ADD_EDIT: 51,
@@ -137,6 +137,17 @@ const MULTIKEY_OBJ_TYPE = {
 };
 
 
+const FEED_TYPE = {
+ GESTA:         1,   
+ LACTA:         2,   
+ BOOSTER:       3,     
+ PRESTARTER:    4, 
+ STARTER:       5,     
+ GROWER:        6,      
+ FINISHER:      7    
+}
+
+
 
 
 const REQUEST_ERROR_NUM ={
@@ -165,6 +176,7 @@ export {
     SUPPLIER_TYPE,
 
     MULTIKEY_OBJ_TYPE,
+    FEED_TYPE,
     
     REQUEST_ERROR_NUM
 };

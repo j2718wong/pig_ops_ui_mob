@@ -252,7 +252,7 @@ export function PagePfBuyItemAddEdit(input_settings){
                 Unit Cost
             </label>
                 
-            <input type="text" class="form-control" id="${elemIdUnitCost}" placeholder="0.00" step="0.1" min="0">
+            <input type="text" class="form-control" id="${elemIdUnitCost}" placeholder="0.0" step="0.1" min="0">
             <div class="invalid-feedback">
                 Please enter numeric value.
             </div>
@@ -263,7 +263,7 @@ export function PagePfBuyItemAddEdit(input_settings){
                 Feed Cost
             </label>
                 
-            <span class="read-only-field" id="${elemIdFeedCost}">0.00</span>
+            <span class="read-only-field" id="${elemIdFeedCost}">0.0</span>
         </div>
         
         
@@ -361,8 +361,8 @@ export function PagePfBuyItemAddEdit(input_settings){
         componentQuantity.reset();
         
         elemWeightPerUnit.value = '';
-        elemUnitCost.value = '0.00';
-        elemFeedCost.value = '0.00';
+        elemUnitCost.value = '0.0';
+        elemFeedCost.textContent = '0.0';
         
         
         elemServerErrorMsg.style.display = 'none';

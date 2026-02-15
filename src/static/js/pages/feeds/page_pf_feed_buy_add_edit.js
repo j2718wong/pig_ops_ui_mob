@@ -210,7 +210,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         <!-- 3. Feed Cost -->
         <div class="form-group-number">
             <label for="${elemIdFeedCost}" class="form-label" style="margin-bottom:0;">Feed Cost</label>
-            <span class="read-only-field" id="${elemIdFeedCost}">0.00</span>
+            <span class="read-only-field" id="${elemIdFeedCost}">0.0</span>
         </div>
         
         
@@ -220,7 +220,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
                 Other Cost
             </label>
                 
-            <input type="number" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">
+            <input type="number" class="form-control" id="${elemIdOtherCost}" placeholder="0.0" step="0.1" min="0">
             <div class="invalid-feedback">
                 Please enter numeric value.
             </div>
@@ -348,7 +348,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         componentSupplier.reset();
         
         
-        elemFeedCost.textContent = '0.00';
+        elemFeedCost.textContent = '0.0';
         
         
         
@@ -427,6 +427,15 @@ export function PagePfFeedBuyAddEdit(input_settings){
         
         
         thisObj.recalculateFeedItemsTotal();
+    
+        // Set other Cost
+        const other_cost = curDataPigFarmFeedBuy.pf_feed_buy.other_cost;
+        if (other_cost && other_cost > 0){
+            
+            const s_other_cost = thisObj.moneyFormatter.format(other_cost);
+            elemOtherCost.value = s_other_cost;
+        }
+        
     }
     
     
@@ -440,8 +449,6 @@ export function PagePfFeedBuyAddEdit(input_settings){
         } 
         
         const s_total_cost = thisObj.moneyFormatter.format(total_cost);
-        
-        
         elemFeedCost.textContent = s_total_cost;
     }
     
@@ -474,8 +481,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
 
         let input_date_feed_buy     = elemUiDateBuy.getValue();
         let input_supplier_hid      = componentSupplier.getValue();
-        let input_other_cost        = elemOtherCost.value;
-        
+        let input_other_cost        = elemOtherCost.value.replace(',', '');
         
         
         input_elem          = elemUiDateBuy.getElemText();
@@ -494,6 +500,10 @@ export function PagePfFeedBuyAddEdit(input_settings){
         if (validation != 0) {return;}
         
         
+        let other_cost   = null;
+        try{
+            other_cost = parseFloat(input_other_cost);
+        } catch(error) {}
         
         
         
@@ -518,6 +528,12 @@ export function PagePfFeedBuyAddEdit(input_settings){
             'date_buy':         dt_feed_buy_s
         };
         
+        if (other_cost && other_cost > 0){
+            post_data.other_cost = other_cost;
+        }
+        
+        
+        
         if (showOptions.is_add == true){}
         else{
             delete post_data.pig_farm_hid;
@@ -540,7 +556,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
-            url: `${base_url}/pf_feed_buy/add`,
+            url: url,
             async: true,
   
             data: JSON.stringify(post_data),

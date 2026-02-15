@@ -5,7 +5,7 @@
 'use strict';
 
 
-import {UiBasic}                    from './ui_basic.js';
+import {UiBasic}               from './ui_basic.js';
 
 
 export function ComponentFeedsInput(input_settings){
@@ -14,11 +14,16 @@ export function ComponentFeedsInput(input_settings){
     /* Typical settings
     settings = {
         uniqueKey:              '',
-        elemRoot:               element,    // Root element where to search for elements
-                                            // so that not all document will be searched.
-        
-       
-        
+        elemDivContainer:       element,    // Root element where to search for elements
+                                            // so that not all document will be searched
+        col2Hide:       true,     
+        step:           1,                               
+                                             
+        header: {
+            col1Name:	'Feed<br>Type',
+            col2Name:	'Feed Buy <br>(sacks)',
+            col3Name:	'Balance <br>(sacks)'
+        }
     }
     
     
@@ -27,7 +32,17 @@ export function ComponentFeedsInput(input_settings){
     
     const settings              = input_settings;
     
+    const elemDivContainer      = settings.elemDivContainer;
     
+    const DEFAULT_FEED_QTY_STEP = 0.5;
+    
+            
+    let step = DEFAULT_FEED_QTY_STEP;
+    if (settings.step){
+         step = settings.step;
+    }
+
+
         
     let elemIdUiShow            = `${settings.uniqueKey}-show`;
     let elemIdFeedInputBody     = `${settings.uniqueKey}-tbody`;
@@ -105,30 +120,49 @@ export function ComponentFeedsInput(input_settings){
     
     
     this.getHtml = function(){
+        let class_hidden = '';
+        
+        let html_col_group = `
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                        <col style="width: 50%;">
+                    </colgroup>        
+        `;
+        
+        if (settings.col2Hide){
+            class_hidden = 'hidden';
+            
+            html_col_group = `
+                    <colgroup>
+                        <col style="width: 30%;">
+                        <col style="width: 70%;">
+                    </colgroup>
+            `;
+        }
+        
+
         
         const html = `
-            <div class="table-responsive data-table" id="${elemIdUiShow}">
-                <table class="data-table" style="vertical-align:center;">
-					<colgroup>
-						<col style="width: 20%;">
-						<col style="width: 25%;">
-					</colgroup>
+            <div id="${elemIdUiShow}">
+                <table class="data-table table-feed-input">
+                    ${html_col_group}
                     
-					<thead>
+                    <thead>
                         <tr>
                             <th>${settings.header.col1Name}</th>
-                            <th class="fi-col2">${settings.header.col2Name}</th>
+                            <th class="fi-col2 no-wrap ${class_hidden}">${settings.header.col2Name}</th>
                             <th>${settings.header.col3Name}</th>
                         </tr>
                     </thead>
                     
                     <tbody id="${elemIdFeedInputBody}">
                         <tr id="${elemIdFinisherRow}">
-                            <td class="readonly-cell">Finisher</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdFinisherCol2}">150</td>
+                            <td class="fi-readonly-cell">Finisher</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdFinisherCol2}">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
-                                    <input type="text" class="fi-number-input" id="${elemIdFinisherInput}" value="0" step="0.5" min="0" data-feed="finisher">
+                                    <input type="text" class="fi-number-input" id="${elemIdFinisherInput}" value="0" step="${step}" min="0" data-feed="finisher">
                                     <div class="fi-step-buttons">
                                         <button type="button" class="fi-step-btn up" data-feed="finisher" aria-label="Increase value">▲</button>
                                         <button type="button" class="fi-step-btn down" data-feed="finisher" aria-label="Decrease value">▼</button>
@@ -139,11 +173,11 @@ export function ComponentFeedsInput(input_settings){
                         
                         
                         <tr id="${elemIdGrowerRow}">
-                            <td class="readonly-cell">Grower</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdGrowerCol2}">150</td>
+                            <td class="fi-readonly-cell">Grower</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGrowerCol2}">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
-                                    <input type="text" class="fi-number-input" id="${elemIdGrowerInput}" value="0" step="0.5" min="0" data-feed="grower">
+                                    <input type="text" class="fi-number-input" id="${elemIdGrowerInput}" value="0" step="${step}" min="0" data-feed="grower">
                                     <div class="fi-step-buttons">
                                         <button type="button" class="fi-step-btn up" data-feed="grower" aria-label="Increase value">▲</button>
                                         <button type="button" class="fi-step-btn down" data-feed="grower" aria-label="Decrease value">▼</button>
@@ -154,11 +188,11 @@ export function ComponentFeedsInput(input_settings){
                         
                         
                         <tr id="${elemIdStarterRow}">
-                            <td class="readonly-cell">Starter</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdStarterCol2}">150</td>
+                            <td class="fi-readonly-cell">Starter</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdStarterCol2}">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
-                                    <input type="text" class="fi-number-input" id="${elemIdStarterInput}" value="0" step="0.5" min="0" data-feed="starter">
+                                    <input type="text" class="fi-number-input" id="${elemIdStarterInput}" value="0" step="${step}" min="0" data-feed="starter">
                                     <div class="fi-step-buttons">
                                         <button type="button" class="fi-step-btn up" data-feed="starter" aria-label="Increase value">▲</button>
                                         <button type="button" class="fi-step-btn down" data-feed="starter" aria-label="Decrease value">▼</button>
@@ -169,11 +203,11 @@ export function ComponentFeedsInput(input_settings){
                         
                         
                         <tr id="${elemIdPreStarterRow}">
-                            <td class="readonly-cell">PreStart</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdPreStarterCol2}">150</td>
+                            <td class="fi-readonly-cell">PreStart</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdPreStarterCol2}">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
-                                    <input type="text" class="fi-number-input" id="${elemIdPreStarterInput}" value="0" step="0.5" min="0" data-feed="prestarter">
+                                    <input type="text" class="fi-number-input" id="${elemIdPreStarterInput}" value="0" step="${step}" min="0" data-feed="prestarter">
                                     <div class="fi-step-buttons">
                                         <button type="button" class="fi-step-btn up" data-feed="prestarter" aria-label="Increase value">▲</button>
                                         <button type="button" class="fi-step-btn down" data-feed="prestarter" aria-label="Decrease value">▼</button>
@@ -183,11 +217,11 @@ export function ComponentFeedsInput(input_settings){
                         </tr>
                         
                         <tr id="${elemIdBoosterRow}">
-                            <td class="readonly-cell">Booster</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdBoosterCol2}">150</td>
+                            <td class="fi-readonly-cell">Booster</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdBoosterCol2}">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
-                                    <input type="text" class="fi-number-input" id="${elemIdBoosterInput}" value="0" step="0.5" min="0" data-feed="booster">
+                                    <input type="text" class="fi-number-input" id="${elemIdBoosterInput}" value="0" step="${step}" min="0" data-feed="booster">
                                     <div class="fi-step-buttons">
                                         <button type="button" class="fi-step-btn up" data-feed="booster" aria-label="Increase value">▲</button>
                                         <button type="button" class="fi-step-btn down" data-feed="booster" aria-label="Decrease value">▼</button>
@@ -198,11 +232,11 @@ export function ComponentFeedsInput(input_settings){
                         
                         
                         <tr id="${elemIdLactaRow}">
-                            <td class="readonly-cell">Lacta</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdLactaCol2}">150</td>
+                            <td class="fi-readonly-cell">Lacta</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdLactaCol2}">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
-                                    <input type="text" class="fi-number-input" id="${elemIdLactaInput}" value="0" step="0.5" min="0" data-feed="lacta">
+                                    <input type="text" class="fi-number-input" id="${elemIdLactaInput}" value="0" step="${step}" min="0" data-feed="lacta">
                                     <div class="fi-step-buttons">
                                         <button type="button" class="fi-step-btn up" data-feed="lacta" aria-label="Increase value">▲</button>
                                         <button type="button" class="fi-step-btn down" data-feed="lacta" aria-label="Decrease value">▼</button>
@@ -212,11 +246,11 @@ export function ComponentFeedsInput(input_settings){
                         </tr>
                         
                         <tr id="${elemIdGestaRow}">
-                            <td class="readonly-cell">Gesta</td>
-                            <td class="readonly-cell fi-col2" id="${elemIdGestaCol2}">150</td>
+                            <td class="fi-readonly-cell">Gesta</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGestaCol2}">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
-                                    <input type="text" class="fi-number-input" id="${elemIdGestaInput}" value="0" step="0.5" min="0" data-feed="gesta">
+                                    <input type="text" class="fi-number-input" id="${elemIdGestaInput}" value="0" step="${step}" min="0" data-feed="gesta">
                                     <div class="fi-step-buttons">
                                         <button type="button" class="fi-step-btn up" data-feed="gesta" aria-label="Increase value">▲</button>
                                         <button type="button" class="fi-step-btn down" data-feed="gesta" aria-label="Decrease value">▼</button>
@@ -237,54 +271,52 @@ export function ComponentFeedsInput(input_settings){
     }
     
     
-    
-    
     this._findElements = function(){
-        thisObj.elemUiShow      = document.getElementById(elemIdUiShow);
+        thisObj.elemUiShow      = elemDivContainer.querySelector('#'+elemIdUiShow);
         
-        elemFeedInputBody       = document.getElementById(elemIdFeedInputBody);
+        elemFeedInputBody       = elemDivContainer.querySelector('#'+elemIdFeedInputBody);
                                   
-        elemFinisherRow         = document.getElementById(elemIdFinisherRow);
-        elemFinisherCol2        = document.getElementById(elemIdFinisherCol2);
-        elemFinisherInput       = document.getElementById(elemIdFinisherInput);
+        elemFinisherRow         = elemDivContainer.querySelector('#'+elemIdFinisherRow);
+        elemFinisherCol2        = elemDivContainer.querySelector('#'+elemIdFinisherCol2);
+        elemFinisherInput       = elemDivContainer.querySelector('#'+elemIdFinisherInput);
                                   
-        elemGrowerRow           = document.getElementById(elemIdGrowerRow);
-        elemGrowerCol2          = document.getElementById(elemIdGrowerCol2);
-        elemGrowerInput         = document.getElementById(elemIdGrowerInput);
+        elemGrowerRow           = elemDivContainer.querySelector('#'+elemIdGrowerRow);
+        elemGrowerCol2          = elemDivContainer.querySelector('#'+elemIdGrowerCol2);
+        elemGrowerInput         = elemDivContainer.querySelector('#'+elemIdGrowerInput);
                                   
-        elemStarterRow          = document.getElementById(elemIdStarterRow);
-        elemStarterCol2         = document.getElementById(elemIdStarterCol2);
-        elemStarterInput        = document.getElementById(elemIdStarterInput);
+        elemStarterRow          = elemDivContainer.querySelector('#'+elemIdStarterRow);
+        elemStarterCol2         = elemDivContainer.querySelector('#'+elemIdStarterCol2);
+        elemStarterInput        = elemDivContainer.querySelector('#'+elemIdStarterInput);
                                   
-        elemPreStarterRow       = document.getElementById(elemIdPreStarterRow);
-        elemPreStarterCol2      = document.getElementById(elemIdPreStarterCol2);
-        elemPreStarterInput     = document.getElementById(elemIdPreStarterInput);
+        elemPreStarterRow       = elemDivContainer.querySelector('#'+elemIdPreStarterRow);
+        elemPreStarterCol2      = elemDivContainer.querySelector('#'+elemIdPreStarterCol2);
+        elemPreStarterInput     = elemDivContainer.querySelector('#'+elemIdPreStarterInput);
                                   
-        elemBoosterRow          = document.getElementById(elemIdBoosterRow);
-        elemBoosterCol2         = document.getElementById(elemIdBoosterCol2);
-        elemBoosterInput        = document.getElementById(elemIdBoosterInput);
+        elemBoosterRow          = elemDivContainer.querySelector('#'+elemIdBoosterRow);
+        elemBoosterCol2         = elemDivContainer.querySelector('#'+elemIdBoosterCol2);
+        elemBoosterInput        = elemDivContainer.querySelector('#'+elemIdBoosterInput);
                                   
-        elemLactaRow            = document.getElementById(elemIdLactaRow);
-        elemLactaCol2           = document.getElementById(elemIdLactaCol2);
-        elemLactaInput          = document.getElementById(elemIdLactaInput);
+        elemLactaRow            = elemDivContainer.querySelector('#'+elemIdLactaRow);
+        elemLactaCol2           = elemDivContainer.querySelector('#'+elemIdLactaCol2);
+        elemLactaInput          = elemDivContainer.querySelector('#'+elemIdLactaInput);
                                   
-        elemGestaRow            = document.getElementById(elemIdGestaRow);
-        elemGestaCol2           = document.getElementById(elemIdGestaCol2);
-        elemGestaInput          = document.getElementById(elemIdGestaInput);
+        elemGestaRow            = elemDivContainer.querySelector('#'+elemIdGestaRow);
+        elemGestaCol2           = elemDivContainer.querySelector('#'+elemIdGestaCol2);
+        elemGestaInput          = elemDivContainer.querySelector('#'+elemIdGestaInput);
         
     }
     
     
     this._bindEventListeners = function(){
-		// Function to update value
-		function updateBalance(feedType, newValue) {
-			const inputField = document.querySelector(`.fi-number-input[data-feed="${feedType}"]`);
-			inputField.value = newValue;
-			dataFeed[feedType].balance = newValue;
-			console.log(`Updated ${feedType}: ${newValue} kg`);
-		}
-		
-		// Set up up/down buttons
+        // Function to update value
+        function updateBalance(feedType, newValue) {
+            const inputField = document.querySelector(`.fi-number-input[data-feed="${feedType}"]`);
+            inputField.value = newValue;
+            dataFeed[feedType].balance = newValue;
+            console.log(`Updated ${feedType}: ${newValue} kg`);
+        }
+        
+        // Set up up/down buttons
         document.querySelectorAll('.fi-step-btn').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -293,11 +325,11 @@ export function ComponentFeedsInput(input_settings){
                 let currentValue = parseFloat(inputField.value) || 0;
                 
                 if (this.classList.contains('up')) {
-                    // Increase by 0.5
-                    currentValue += 0.5;
+                    // Increase by step
+                    currentValue += step;
                 } else {
-                    // Decrease by 0.5, but not below 0
-                    currentValue = Math.max(0, currentValue - 0.5);
+                    // Decrease by step, but not below 0
+                    currentValue = Math.max(0, currentValue - step);
                 }
                 
                 updateBalance(feedType, currentValue);
@@ -330,7 +362,7 @@ export function ComponentFeedsInput(input_settings){
                 const feedType = this.getAttribute('data-feed');
                 let value = parseFloat(this.value) || 0;
                 
-                // Round to nearest 0.5 if needed
+                // Round to nearest step if needed
                 if (this.value.includes('.')) {
                     const decimal = this.value.split('.')[1];
                     if (decimal && decimal.length > 1) {
@@ -354,26 +386,121 @@ export function ComponentFeedsInput(input_settings){
                 const feedType = this.getAttribute('data-feed');
                 let currentValue = parseFloat(this.value) || 0;
                 
+                
+                
                 if (e.key === 'ArrowUp') {
                     e.preventDefault();
-                    currentValue += 0.5;
+                    currentValue += step;
                     updateBalance(feedType, currentValue);
                 } else if (e.key === 'ArrowDown') {
                     e.preventDefault();
-                    currentValue = Math.max(0, currentValue - 0.5);
+                    currentValue = Math.max(0, currentValue - step);
                     updateBalance(feedType, currentValue);
                 }
             });
             
             // Fix for iOS Safari
-            input.addEventListener('focus', function() {
-                this.style.fontSize = '16px'; // Prevent iOS zoom
-            });
+            //input.addEventListener('focus', function() {
+            //    this.style.fontSize = '1.2rem'; // Prevent iOS zoom
+            //});
         });
     }
     
 
-	
+    this.reset = function(){
+        elemFinisherInput.value     = 0;
+        elemGrowerInput.value       = 0;
+        elemStarterInput.value      = 0;
+        elemPreStarterInput.value   = 0;
+        elemBoosterInput.value      = 0;
+        elemLactaInput.value        = 0;
+        elemGestaInput.value        = 0; 
+        
+        dataFeed.gesta.input        = 0;
+        dataFeed.lacta.input        = 0;
+        dataFeed.booster.input      = 0;
+        dataFeed.prestarter.input   = 0;
+        dataFeed.grower.input       = 0;
+        dataFeed.starter.input      = 0;
+        dataFeed.finisher.input     = 0;
+        
+    }
     
     
+    this.getDataFeed = function(){
+        return dataFeed;
+    }
+    
+    
+    this.showFeedType = function(show_feed){
+        /*show_feed is a dictionary like this
+         * 
+         * show_feed = {
+         *  gesta: true,
+         *  lacta: true,
+         *  booster: true,
+         *  prestarter: true,
+         *  grower: true,
+         *  starter: true,
+         *  finisher: true
+         * }
+         * 
+         * */
+        
+        if (show_feed.gesta){
+            elemGestaRow.style.display = 'table';
+        }
+        else{
+            elemGestaRow.style.display = 'none';
+        }
+        
+        
+        if (show_feed.lacta){
+            elemLactaRow.style.display = 'table';
+        }
+        else{
+            elemLactaRow.style.display = 'none';
+        }
+        
+        
+        if (show_feed.booster){
+            elemBoosterRow.style.display = 'table';
+        }
+        else{
+            elemBoosterRow.style.display = 'none';
+        }
+        
+        
+        if (show_feed.prestarter){
+            elemPreStarterRow.style.display = 'table';
+        }
+        else{
+            elemPreStarterRow.style.display = 'none';
+        }
+        
+        
+        if (show_feed.starter){
+            elemStarterRow.style.display = 'table';
+        }
+        else{
+            elemStarterRow.style.display = 'none';
+        }
+        
+        
+        if (show_feed.grower){
+            elemGrowerRow.style.display = 'table';
+        }
+        else{
+            elemGrowerRow.style.display = 'none';
+        }
+        
+        
+        if (show_feed.finisher){
+            elemFinisherRow.style.display = 'table';
+        }
+        else{
+            elemFinisherRow.style.display = 'none';
+        }
+        
+    }
 }

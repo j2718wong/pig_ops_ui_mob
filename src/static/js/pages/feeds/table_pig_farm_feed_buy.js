@@ -275,8 +275,23 @@ export function TablePigFarmFeedBuy(input_settings){
     
     
     
-    this.search = function(key){
+    this.searchEntries = function(key){
         
+        if (key == ''){return dataFarmFeedBuyList;}
+        
+        
+        const filtered = [];
+        
+        
+        for (const cur_entry of dataFarmFeedBuyList){
+            let u_feed_supplier = cur_entry.feed_supplier.name.toUpperCase();
+            
+            if (u_feed_supplier.includes(key)){
+                filtered.push(cur_entry);
+            }
+        }
+        
+        return filtered;
     }
     
     
