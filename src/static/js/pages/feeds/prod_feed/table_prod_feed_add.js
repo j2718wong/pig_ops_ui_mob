@@ -112,6 +112,7 @@ export function TablePigProdFeed(input_settings){
         dataPigProd     = data_pig_prod;
         showOptions     = options;
         
+        thisObj.requestDataPigFarmFeedBuyList();
         
         thisObj.setDataEntryList([]);
         thisObj.renderTable([]);
@@ -134,6 +135,29 @@ export function TablePigProdFeed(input_settings){
         console.log(dataPigProd);
         
     }
+    
+    
+    this.requestDataPigFarmFeedBuyList = function(){
+        // Request data if not yet requested
+        let feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+        if (feed_buy_list == null){
+            
+            const callback_success = function(data){
+                feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+                
+            };
+            
+            let elem_show_error = thisObj.elemServerErrorMsg;
+       
+            
+            navigation.pigFarm.requestDataPigFarmFeedBuyList(callback_success, 
+                elem_show_error);
+        
+        }
+     
+        
+    }
+    
     
         
     this.show = function(options){

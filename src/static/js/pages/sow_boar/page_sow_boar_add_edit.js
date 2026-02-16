@@ -24,7 +24,8 @@ import {getSowBoarReference}        from '../common/common_app.js';
 
 import {PageSowBoarUpdateStatus}    from './page_sow_boar_update_status.js';
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         REQUEST_ERROR_NUM}      from '../../constants.js';
@@ -1295,6 +1296,7 @@ export function PageSowBoarAddEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

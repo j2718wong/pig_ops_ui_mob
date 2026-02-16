@@ -570,10 +570,6 @@ ${html_style}
         }
         else{
             dataPigProdList = navigation.pigFarm.managerPigProd.dataLactatingList;
-            
-            
-            console.log(`\n\n\n\nTestetsteteteteetet`);
-            console.log(dataPigProdList);
         }
         
         

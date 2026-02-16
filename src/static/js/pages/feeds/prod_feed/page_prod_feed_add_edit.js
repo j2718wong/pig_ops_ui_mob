@@ -11,6 +11,7 @@ import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 import {UiInputDatePicker}          from '../../common/ui/input_datepicker.js';
 
+import {PageTableBasic}         from '../../common/page_table_basic.js';
 
 
 import {ComponentFeedsInput}    from '../../common/ui/comp_feeds_input.js';
@@ -18,7 +19,8 @@ import {ComponentFeedsInput}    from '../../common/ui/comp_feeds_input.js';
 
 
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         MULTIKEY_OBJ_TYPE,
@@ -31,7 +33,7 @@ import {formatDate,
         FORMAT_COMPACT}         from '../../../utils.js';
 
 
-
+import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
 
@@ -47,13 +49,17 @@ export function PageProdFeedAddEdit(input_settings){
     Typical settings = {
         navigation:             this,
         elemIdDivContainer:     elemIdContMedVacAddEdit,
-        uniqueKey:              'medvac-add-edit'
+        uniqueKey:              'add-add-edit'
     };
     */
     const settings              = input_settings;
 
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
+        
+    const MAX_DAYS_TRIGGER_NO_FEED_BUY = 15;
+    const MAX_OLDER_ENTRIES     = 5;
+    
 
     let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
@@ -61,10 +67,22 @@ export function PageProdFeedAddEdit(input_settings){
         
     let elemIdInfoShow          = null;
     let elemIdInfo              = null;
+
+    let elemIdFeedBuyFrom       = null;
+    let elemIdFeedBuyNone       = null;
+    let elemIdFeedBuyControl    = null;
+    let elemIdLinkAddFeedBuy    = null;
+    let elemIdLinkOlderFeedBuy  = null;
+    let elemIdSelectOlderFeedBuy= null;
+    
+    let elemIdTableFeedBuy      = null;
+    let elemIdTableBodyFeedBuy  = null;
+    
+    let elemIdFeedInputShow     = null;
+    
     
     let elemUiDateAdd           = null;
 
-   
     let componentFeedsInput     = null;
     
     
@@ -80,6 +98,17 @@ export function PageProdFeedAddEdit(input_settings){
     let elemInfoShow            = null;
     let elemInfo                = null;
 
+    let elemFeedBuyFrom         = null;
+    let elemFeedBuyNone         = null;
+    let elemFeedBuyControl      = null;
+    let elemLinkAddFeedBuy      = null;
+    let elemLinkOlderFeedBuy    = null;
+    let elemSelectOlderFeedBuy  = null;
+    
+    let elemTableFeedBuy        = null;
+    let elemTableBodyFeedBuy    = null;
+    
+    let elemFeedInputShow       = null;
     
    
    
@@ -92,11 +121,19 @@ export function PageProdFeedAddEdit(input_settings){
     let dataPigProd             = null;
     let showOptions             = null;
     
+    let selectedPigFarmFeedBuy  = null;
 
     
     this.callbackOnSuccessAdd   = null;
     
     
+    let dtCurrentDate           = null;
+    
+    
+    let commonSelectOptions     = new CommonSelectOptions();
+    
+    
+    let tableFeedBuy            = null;
     
     
     this.init = function(){
@@ -114,10 +151,23 @@ export function PageProdFeedAddEdit(input_settings){
         elemIdInfo              = `${settings.uniqueKey}-info`;
         
         
+        elemIdFeedBuyFrom       = `${settings.uniqueKey}-feed-buy-from`;
+        elemIdFeedBuyNone       = `${settings.uniqueKey}-feed-buy-none`;
+        elemIdFeedBuyControl    = `${settings.uniqueKey}-feed-control`;
+        elemIdLinkAddFeedBuy    = `${settings.uniqueKey}-feed-buy-add`;
+        elemIdLinkOlderFeedBuy  = `${settings.uniqueKey}-feed-buy-old-show`;
+        elemIdSelectOlderFeedBuy= `${settings.uniqueKey}-feed-buy-old-select`;
+        
+        elemIdTableFeedBuy      = `${settings.uniqueKey}-feed-buy`;
+        elemIdTableBodyFeedBuy  = `${settings.uniqueKey}-feed-buy-tbody`;
+        
+        elemIdFeedInputShow     = `${settings.uniqueKey}-feed-add-input`;
+        
+        
         elemUiDateAdd           = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date`,
         
-            textLabel:          'Date',
+            textLabel:          'Date Add Feeds',
             isRequired:         true,
             invalidFeedBack:    'Please input date.',
             helpText:           'Date when feeds are added.'
@@ -131,9 +181,9 @@ export function PageProdFeedAddEdit(input_settings){
             step:               1,                                    
                                              
             header: {
-                col1Name:	    'Type',
-                col2Name:	    'Buy',
-                col3Name:	    'Feed Add (sacks)'
+                col1Name:       'Type',
+                col2Name:       'Buy',
+                col3Name:       'Feed Add (sacks)'
             }
         });
         
@@ -171,15 +221,68 @@ export function PageProdFeedAddEdit(input_settings){
         <div class="warning-box" id="${elemIdInfoShow}" style="display:none;"></div>
         
         
+        <!-- Select Feed Buy -->
+        <div class="form-group-number">
+            <label class="form-label">Feed Buy</label>
+            <span class="read-only-field">
+                <a href="javascript:void(0)" class="text-link" id="${elemIdFeedBuyFrom}">
+                    14 Feb 2026 Arnel Sampan
+                </a>
+            </span>
+        
+            <div id= "${elemIdFeedBuyNone}"> No Feed Buy entries for past ${MAX_DAYS_TRIGGER_NO_FEED_BUY} days.</div>
+            <div id= "${elemIdFeedBuyControl}">
+                <a href="javascript:void(0)" class="text-link" id ="${elemIdLinkAddFeedBuy}">
+                    Add Feed Buy
+                </a>
+                
+                
+            </div>
+            
+            <span id ="${elemIdLinkOlderFeedBuy}">
+                OR select older Feed Buy
+            </a>
+                
+            <select class="form-select" id="${elemIdSelectOlderFeedBuy}">
+                <option value="0" selected>Please Select</option>
+            </select>
+            
+            
+            <table class="data-table table-feed-buy-items" id="${elemIdTableFeedBuy}" style="margin-top:8px;">
+                <colgroup>
+                    <col style="width: 25%;">
+                    <col style="width: 35%;">
+                    <col style="width: 40%;">
+                </colgroup>
+                
+                <thead>
+                    
+                    <tr>
+                        <th>Qty</th>
+                        <th>Type</th>
+                        <th>Brand</th>
+                    </tr>
+                </thead>
+                
+                <tbody id="${elemIdTableBodyFeedBuy}">
+                </tbody>
+            </table>
+        
+            
+        </div>
         
         
+        <div id="${elemIdFeedInputShow}">
         
-        <!-- 1. Date Add -->
-        ${html_date_add}
+            <!-- Date Add -->
+            ${html_date_add}
+            
+            
+            ${html_feeds_input}
         
-        
-        ${html_feeds_input}
-        
+        </div>
+
+            
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
@@ -231,8 +334,19 @@ export function PageProdFeedAddEdit(input_settings){
         elemInfo                = elemDivContainer.querySelector('#'+elemIdInfo);
                                                           
         
+        elemFeedBuyFrom         = elemDivContainer.querySelector('#'+elemIdFeedBuyFrom);     
+        elemFeedBuyNone         = elemDivContainer.querySelector('#'+elemIdFeedBuyNone);     
+        elemFeedBuyControl      = elemDivContainer.querySelector('#'+elemIdFeedBuyControl);
+        elemLinkAddFeedBuy      = elemDivContainer.querySelector('#'+elemIdLinkAddFeedBuy);
+        elemLinkOlderFeedBuy    = elemDivContainer.querySelector('#'+elemIdLinkOlderFeedBuy);
+        elemSelectOlderFeedBuy  = elemDivContainer.querySelector('#'+elemIdSelectOlderFeedBuy);
         
-                                                          
+        elemTableFeedBuy        = elemDivContainer.querySelector('#'+elemIdTableFeedBuy);
+        elemTableBodyFeedBuy    = elemDivContainer.querySelector('#'+elemIdTableBodyFeedBuy);
+        
+        elemFeedInputShow        = elemDivContainer.querySelector('#'+elemIdFeedInputShow);    
+        
+        
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
         elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
@@ -243,11 +357,40 @@ export function PageProdFeedAddEdit(input_settings){
     
     this._processAfterHtmlRender = function(){
         
-  
+        tableFeedBuy = new PageTableBasic();
+        tableFeedBuy.setSettingsTable({
+            uniqueKey:      settings.uniqueKey,
+            noHeader:       true,
+            noSearchAdd:    true,
+            noControlsBar:  true,
+            itemsPerPage:   20,
+            tableTitle:     'Feed Buy Items'
+        });
+        
+        
+        tableFeedBuy.getElemTableBody = function(){return elemTableBodyFeedBuy;}
+        tableFeedBuy.getHtmlTableRowEmpty = thisObj.getHtmlTableFeedBuyRowEmpty;
+        tableFeedBuy.getHtmlTableRow = thisObj.getHtmlTableFeedBuyRow;
     }
     
     
     this._bindEventListeners = function(){
+        elemLinkAddFeedBuy.addEventListener('click', function() {
+            navigation._onClickNavFeedsExpenses(null);
+        });
+        
+        
+        elemSelectOlderFeedBuy.addEventListener('change', function() {
+            elemTableFeedBuy.style.display      = 'table';
+            elemFeedInputShow.style.display     = 'block';
+            elemBtnSave.style.display           = 'block';
+            
+            const selected_value = elemSelectOlderFeedBuy.value;
+
+            
+            selectedPigFarmFeedBuy = thisObj.getDataPigFarmFeedBuy(selected_value);
+            tableFeedBuy.renderTable(selectedPigFarmFeedBuy.feed_items);
+        });
         
         
         elemBtnSave.addEventListener('click', function() {
@@ -264,13 +407,16 @@ export function PageProdFeedAddEdit(input_settings){
         // Clear previous Form values and validation classes
         
         elemUiDateAdd.reset();
-        
+        componentFeedsInput.reset();
        
         elemServerErrorMsg.style.display = 'none';
     }
     
     
     this.beforeShow = function(data_pig_prod, options){
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
         
         dataPigProd  = data_pig_prod;
         showOptions = options;
@@ -285,10 +431,10 @@ export function PageProdFeedAddEdit(input_settings){
         // Set Page Title
         let html;
         if (showOptions.is_add){
-            html = `<i class="fas fa-plus me-2"></i>Add Prod Feed`;
+            html = `<i class="fas fa-plus me-2"></i>Add Production Feed`;
         }
         else{
-            html = `<i class="fas fa-edit me-2"></i>Edit Prod Feed`;
+            html = `<i class="fas fa-edit me-2"></i>Edit Production Feed`;
         }
         elemHeaderTitle.innerHTML = html;
                 
@@ -300,7 +446,8 @@ export function PageProdFeedAddEdit(input_settings){
         
         
         // Show/Hide feed type based on dataPigProd.pig_production.prod_status_id
-        /* TODO so many problems hiding table row
+        // TODO so many problems hiding table row
+        
         switch (dataPigProd.pig_production.prod_status_id){
             case PROD_STATUS.GESTATING:{
                 componentFeedsInput.showFeedType({
@@ -330,7 +477,15 @@ export function PageProdFeedAddEdit(input_settings){
                 break;
             }
         }
-        */
+        
+        
+        
+        // Populate kast Pig Farm Feed Buy where to get feeds
+        thisObj.populateFeedBuyFrom();
+        
+        
+        // Populate how many feeds already bought for this dataPigProd
+        thisObj.populateFeedsBought();
         
         
         // Update Close and cancel button on click
@@ -347,34 +502,178 @@ export function PageProdFeedAddEdit(input_settings){
     }
     
     
+    this.getDataPigFarmFeedBuy = function(entry_hid){
+        const feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+        
+        for (const cur_entry of feed_buy_list){
+            if (cur_entry.pf_feed_buy.hid == entry_hid){
+                return cur_entry;
+            }
+        } 
+        
+        return null;
+    }
+    
+    
+    this.populateFeedBuyFrom = function(){
+        elemFeedBuyFrom.style.display       = 'none'; 
+        elemFeedBuyNone.style.display       = 'none'; 
+        elemLinkAddFeedBuy.style.display    = 'none';
+        elemLinkOlderFeedBuy.style.display  = 'none';
+        elemSelectOlderFeedBuy.style.display= 'none';
+        
+        elemTableFeedBuy.style.display      = 'none';
+        
+        elemFeedInputShow.style.display     = 'none';
+        
+        elemBtnSave.style.display           = 'none'; 
+        
+        
+        
+        
+        
+        // Get PigFarm.dataFarmFeedBuyList
+        
+        const feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+        
+        
+        
+        
+        if (feed_buy_list == null || feed_buy_list.length == 0){
+            elemFeedBuyNone.style.display   = 'block';
+            elemLinkAddFeedBuy.style.display= 'block'; 
+        }
+        
+        else{
+            console.log(feed_buy_list);
+            
+            // Get latest entry
+            const last_feed_buy = feed_buy_list[0];
+            const date_buy  = last_feed_buy.pf_feed_buy.date_buy;
+            const dt_buy    = new Date(date_buy);
+            
+            // Calculate how many days passed from date buy to now
+        
+            const diff_msecs    = dtCurrentDate - dt_buy;
+            const diff_days     = Math.round(diff_msecs / thisObj.NUM_MSECS_1DAY);
+                
+            if (diff_days <= MAX_DAYS_TRIGGER_NO_FEED_BUY){
+                // need to save this
+                selectedPigFarmFeedBuy = feed_buy_list[0];
+                
+                // Populate elemFeedBuyFrom
+                const s_dt_buy = formatDate(dt_buy, FORMAT_COMPACT);
+                const s_feed_buy = `${s_dt_buy} ${last_feed_buy.feed_supplier.name}`;
+                
+                elemFeedBuyFrom.textContent         = s_feed_buy;
+                
+                elemLinkAddFeedBuy.style.display    = 'none';
+                 
+                elemTableFeedBuy.style.display      = 'table';
+                elemFeedInputShow.style.display     = 'block';
+            }
+            else{
+                elemFeedBuyNone.style.display       = 'block';
+                elemLinkAddFeedBuy.style.display    = 'block'; 
+                elemLinkOlderFeedBuy.style.display  = 'block';
+                
+                //show an option to the user to select older feed_buy
+                elemSelectOlderFeedBuy.style.display= 'block';
+
+        
+                // populate elemSelectOlderFeedBuy
+                let filtered = feed_buy_list;
+                if (feed_buy_list.lenght >= MAX_OLDER_ENTRIES) {
+                    filtered = feed_buy_list.slice(0, MAX_OLDER_ENTRIES);
+                }
+                
+                
+                commonSelectOptions.setDataPigFarmFeedBuyList(filtered, 
+                    elemSelectOlderFeedBuy);
+            }
+            
+        }
+        
+        
+        
+    }
+    
+    
+    
+    this.populateFeedsBought = function(){
+        const feeds_bought = dataPigProd.feeds.bought;
+        
+        let f_gesta     = null;
+        let f_lacta     = null;
+        let f_booster   = null;
+        let f_prestarter= null;
+        let f_starter   = null;
+        let f_grower    = null;
+        let f_finisher  = null;
+        
+        
+        if (feeds_bought && feeds_bought.gestating && feeds_bought.gestating > 0){
+            f_gesta = feeds_bought.gestating;
+        }
+        
+        if (feeds_bought && feeds_bought.lactating && feeds_bought.lactating > 0){
+            f_lacta = feeds_bought.lactating;
+        }
+        
+        if (feeds_bought && feeds_bought.booster && feeds_bought.booster > 0){
+            f_booster = feeds_bought.booster;
+        }
+        
+        if (feeds_bought && feeds_bought.prestarter && feeds_bought.prestarter > 0){
+            f_prestarter = feeds_bought.prestarter;
+        }
+
+        if (feeds_bought && feeds_bought.starter && feeds_bought.starter > 0){
+            f_starter = feeds_bought.starter;
+        }
+        
+        if (feeds_bought && feeds_bought.grower && feeds_bought.grower > 0){
+            f_grower = feeds_bought.grower;
+        }
+        
+        if (feeds_bought && feeds_bought.finisher && feeds_bought.finisher > 0){
+            f_booster = feeds_bought.finisher;
+        }
+        
+        
+        const data = {
+            gesta:      f_gesta,
+            lacta:      f_lacta,
+            booster:    f_booster,
+            prestarter: f_prestarter,
+            starter:    f_starter,
+            grower:     f_grower,
+            finisher:   f_finisher
+        };
+        
+        
+        componentFeedsInput.setColumn2(data);
+    }
+    
+    
+    
     this.show = function(){
         if (showOptions.is_add == false){
             // Necessary to display fully first the container
             setTimeout(function(){
-                thisObj.populateForm(curDataEntry, showOptions.medvac_hid);
+                thisObj.populateForm(curDataEntry, showOptions.add_hid);
             }, 100);
         }
     }
     
     
-    this.populateForm = function(data_entry, medvac_hid){
+    this.populateForm = function(data_entry, add_hid){
         
-        // Get medvac entry from data_entry
-        const list_medvac = data_entry.data_details.list_medvac;
         
-        let cur_medvac = null;
-        for (const cur_entry of list_medvac){
-            if (cur_entry.medvac.hid == medvac_hid){
-                cur_medvac = cur_entry;
-                break;
-            }
-        }
-        
-        if (cur_medvac == null){return;}
         
 
         // Set the datepicker to this date
-        elemUiDateAdd.setDate(cur_medvac.medvac.date_medvac);
+        elemUiDateAdd.setDate(cur_add.add.date_add);
         
         
         
@@ -383,34 +682,42 @@ export function PageProdFeedAddEdit(input_settings){
     
     this.disableAllInputs = function(){
         elemUiDateAdd.disableInputs();
-        
-        componentMedVacBrand.disableInputs();
-        componentMedVacType.disableInputs();
-        componentAccMedVac.disableInputs();
-        
-        elemUiNotes.disableInputs();
+      
+      
     }
     
     
     this.enableAllInputs = function(){
         elemUiDateAdd.enableInputs();
-        
-        componentMedVacBrand.enableInputs();
-        componentMedVacType.enableInputs();
-        componentAccMedVac.enableInputs();
-        
-        elemUiNotes.enableInputs();
+       
+    }
+    
+    
+    this.getHtmlTableFeedBuyRowEmpty = function(){
+        const html = `
+            <tr>
+                <td colspan="3"><div>No Entries</div></td>
+            </tr>
+        `;
+        return html;
     }
     
 
-    this.getMedVacBrandAndTypeHid = function(){
-        return {
-            brand_hid:  componentMedVacBrand.getValue(),
-            type_hid:   componentMedVacType.getValue()
-        }
+    this.getHtmlTableFeedBuyRow = function(cur_entry){
+        
+        const html = `
+            <tr>
+                <td>${cur_entry.feed_item.quantity}</td>
+                <td>${cur_entry.feed_type.name}</td>
+                <td>${cur_entry.feed_brand.name}</td>
+            </tr>
+        `;
+        
+        return html;
     }
-
-
+    
+    
+    
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
     
@@ -425,7 +732,7 @@ export function PageProdFeedAddEdit(input_settings){
         if (ev.checkValidity()) {
             switch(input_field){
                 
-                case 'date_medvac': {
+                case 'date_add': {
              
                 }
                 
@@ -445,21 +752,13 @@ export function PageProdFeedAddEdit(input_settings){
         let input_elem      = null;
         let validation      = 0;
         
-        let is_duplicate    = 0;
         
         
-        let input_date_medvac   = elemUiDateAdd.getValue().trim();
+        let input_date_add   = elemUiDateAdd.getValue().trim();
         
-        let input_medvac_brand  = componentMedVacBrand.getValue();
-        let input_medvac_type   = componentMedVacType.getValue();
-        let input_medvac_name   = componentAccMedVac.getValue();
-        let input_notes         = elemUiNotes.getValue().trim();
-        let input_staff         = componentStaff.getValue();
-        
-
         
         input_elem          = elemUiDateAdd.getElemText();
-        if (input_date_medvac.length == 0){
+        if (input_date_add.length == 0){
             validation = -1;
             addValidationClassToElem(input_elem, validation);
             return;
@@ -468,70 +767,32 @@ export function PageProdFeedAddEdit(input_settings){
         
         
         // Convert date to YYYY-MM-DD format
-        const dt_medvac     = new Date(input_date_medvac);
-        if (isNaN(dt_medvac.getTime())){
+        const dt_add     = new Date(input_date_add);
+        if (isNaN(dt_add.getTime())){
             validation      = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
             
         
-        const dt_medvac_s   = dt_medvac.toLocaleDateString('en-CA');
+        const dt_add_s   = dt_add.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         
         
-        input_elem = componentMedVacBrand.getElemSelect();
-        if (input_medvac_brand == '0'  || input_medvac_brand == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        input_elem = componentMedVacType.getElemSelect();
-        if (input_medvac_type == '0'  || input_medvac_type == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        input_elem = componentAccMedVac.getElemSelect();
-        if (input_medvac_name == '0'  || input_medvac_name == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        // Notes is required for Medvac
-        input_elem = elemUiNotes.getElemText();
-        if (input_notes.length == 0){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        let done_by_user = 0;
-        
-        input_elem = componentStaff.getElemCheckBox();
-        if (input_elem.checked){
-            done_by_user = 1;
-        }
-        
-        if (done_by_user == 0){
-            input_elem = componentStaff.getElemSelect();
-            if (input_staff == '0'  || input_staff == '-1'){
-                validation = -1;
-            }
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
+        // Check if there are feed inputs
+        if (componentFeedsInput.areAllInputsZero()){
+            elemServerErrorMsg.innerHTML = '<span>Feed Input should not be all zero.</span>'
+            elemServerErrorMsg.style.display = 'block';
+            return;
         }
         
         
+        const pf_feed_buy_hid = selectedPigFarmFeedBuy.pf_feed_buy.hid;
+        
+        
+ 
         
         // Final check before sending request
         if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
@@ -541,7 +802,6 @@ export function PageProdFeedAddEdit(input_settings){
         
         
         const user_hid      = navigation.userControl.getUserHid();
-        const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
         const base_url      = window.location.origin;
         
         
@@ -549,43 +809,49 @@ export function PageProdFeedAddEdit(input_settings){
         const post_data = {
             'uhid':             user_hid,
             
-            'date_medvac':      dt_medvac_s,
-            'medvac_brand_hid': input_medvac_brand,
-            'medvac_type_hid':  input_medvac_type,
-            'acc_medvac_hid':   input_medvac_name,
-            'notes':            input_notes,
-            'staff_hid':        input_staff
+            'date_add':         dt_add_s,
+            'pf_feed_buy_hid':  pf_feed_buy_hid
             
         };
         
+        
+        const feed_input = componentFeedsInput.getDataFeedInput();
+        
+        if (feed_input.gesta > 0){
+            post_data.num_gesta = feed_input.gesta;
+        }
+        
+        if (feed_input.lacta > 0){
+            post_data.num_lacta = feed_input.lacta;
+        }
+        
+        if (feed_input.booster > 0){
+            post_data.num_booster = feed_input.booster;
+        }
+        
+        if (feed_input.prestarter > 0){
+            post_data.num_prestarter = feed_input.prestarter;
+        }
+        
+        if (feed_input.starter > 0){
+            post_data.num_starter = feed_input.starter;
+        }
+        
+        if (feed_input.grower > 0){
+            post_data.num_grower = feed_input.grower;
+        }
+        
+        if (feed_input.finisher > 0){
+            post_data.num_finisher = feed_input.finisher;
+        }
+        
+         
+        
         if (showOptions.is_add == true){
-            // Add Key
-            switch (showOptions.medvac_type){ 
-                case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-                    post_data.sow_boar_hid = curDataEntry.sow_boar.hid;
-                    break;
-                }
-                
-                case MULTIKEY_OBJ_TYPE.PIG_PROD:{
-                    post_data.pig_prod_hid = curDataEntry.pig_production.hid;
-                    break;
-                }
-            }
             
-            if (done_by_user > 0){
-                post_data.done_by_user = 1;
-                delete post_data.staff_hid;
-            }
-            
-            if ('health_issue_entry' in showOptions){
-                const health_issue_hid = showOptions.health_issue_entry.prod_notes.hid;
-                post_data.health_issue_hid = health_issue_hid;
-                
-            }
         }
         
         else {
-            post_data.pig_medvac_hid = showOptions.medvac_hid;
         }
         
         
@@ -593,16 +859,20 @@ export function PageProdFeedAddEdit(input_settings){
         let url;
         
         if (showOptions.is_add == true){
-            url = `${base_url}/pig_medvac/add`;
+            url = `${base_url}/pig_prod_feed/add`;
         }
         else{
-            url = `${base_url}/pig_medvac/update`;
+            url = `${base_url}/pig_prod_feed/update`;
         }
+        
+        
+        return;
         
         $.ajax({
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -618,11 +888,11 @@ export function PageProdFeedAddEdit(input_settings){
                         navigation.showThisPage(showOptions.go_back_page);
                         
                         if (showOptions.callback_after_add){
-                            console.log('\n\npage_medvac_Add has callback_after_add');
+                            console.log('\n\npage_add_Add has callback_after_add');
                             showOptions.callback_after_add();
                         }
                         else{
-                            console.log('\n\npage_medvac_Add has no callback_after_add');
+                            console.log('\n\npage_add_Add has no callback_after_add');
                         }
                     }
                     

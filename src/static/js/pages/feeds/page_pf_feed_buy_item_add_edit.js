@@ -18,10 +18,11 @@ import {ComponentFeedBrand}         from './components/comp_feed_brand.js';
 import {ComponentPlusMinusInput}    from '../common/ui/comp_plus_minus_input.js';
 
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        MULTIKEY_OBJ_TYPE}            from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}          from '../../constants.js';
 
 
 import {formatDate,
@@ -361,7 +362,11 @@ export function PagePfBuyItemAddEdit(input_settings){
         componentQuantity.reset();
         
         elemWeightPerUnit.value = '';
+        elemWeightPerUnit.classList.remove('is-valid', 'is-invalid');
+        
         elemUnitCost.value = '0.0';
+        elemUnitCost.classList.remove('is-valid', 'is-invalid');
+        
         elemFeedCost.textContent = '0.0';
         
         
@@ -639,6 +644,7 @@ export function PagePfBuyItemAddEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

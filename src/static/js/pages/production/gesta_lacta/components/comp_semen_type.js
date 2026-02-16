@@ -11,6 +11,8 @@ import {CommonSelectOptions}        from '../../../common/common_select_options.
 
 import {addValidationClassToElem}   from '../../../common/ui/ui_utils.js';
 
+import {APPLICATION}                from '../../../../constants.js';
+
 
 export function ComponentSemenType(input_settings){
     /*
@@ -213,6 +215,7 @@ export function ComponentSemenType(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: `${base_url}/semen_sup_semen/add`,
             async: true,
   

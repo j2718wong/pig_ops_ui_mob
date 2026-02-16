@@ -3719,6 +3719,136 @@ textarea.form-control {
     margin-top: -1px;
 }
 
+
+
+/* Grid container */
+.grid-feed-input {
+    display: grid;
+    grid-template-columns: auto 80px 1fr; /* Adjust based on your colgroup widths */
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom:5px;
+}
+  
+/* Header styling */
+.grid-feed-input .grid-header {
+    display: contents;
+}
+  
+.grid-feed-input .grid-header .grid-cell {
+    background-color: var(--corporate-blue);
+    color: white;
+    font-weight: 600;
+    font-size:15px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left:6px;
+    padding-right: 0;
+    border: none;
+}
+  
+/* Body rows */
+.grid-feed-input .grid-row {
+    display: contents;
+}
+
+.grid-row:nth-child(even) {
+    background-color: var(--row-even);
+}
+
+  
+/* Cell styling */
+.grid-feed-input .grid-cell {
+    display: flex;
+    align-items: center;
+    padding: 5px 6px;
+    /*border: 1px solid #ddd;*/
+    border-bottom: 1px solid var(--medium-gray);
+    min-height: 45px; /* Match your table row height */
+}
+  
+/* Hide cells when hidden class is applied */
+.grid-feed-input .grid-cell.hidden {
+    display: none;
+}
+  
+/* Special column styling */
+.grid-feed-input .fi-col2 {
+    text-align:center;
+}
+  
+/* Readonly cell styling */
+.grid-feed-input .fi-readonly-cell {
+    vertical-align:center;
+    font-weight: 500;
+}
+  
+/* Input cell styling */
+.grid-feed-input .fi-input-cell {
+    padding: 5px;
+}
+  
+  /* Number input container (keeping your existing styles) */
+.grid-feed-input .fi-number-input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+  
+.grid-feed-input .fi-number-input {
+    flex: 1;
+    min-width: 80px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+}
+  
+.grid-feed-input .fi-step-buttons {
+    display: flex;
+    flex-direction: column;
+}
+  
+.grid-feed-input .fi-step-btn {
+    padding: 3px 8px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-left: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+}
+  
+.grid-feed-input .fi-step-btn.up {
+    border-radius: 0 4px 0 0;
+    border-bottom: none;
+}
+  
+.grid-feed-input .fi-step-btn.down {
+    border-radius: 0 0 4px 0;
+}
+  
+.grid-feed-input .fi-step-btn:hover {
+    background-color: #e0e0e0;
+}
+  
+/* No-wrap utility */
+.grid-feed-input .no-wrap {
+    white-space: nowrap;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*********END OF FEED INPUT ***********************/
 
 

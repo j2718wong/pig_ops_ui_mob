@@ -6,7 +6,8 @@
 
 import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
 
-import {SOW_STATUS,
+import {APPLICATION,
+        SOW_STATUS,
         PIG_OPERATION_TYPE,
         PROD_STATUS,
         PIG_PROD_TYPE}              from '../../../constants.js';
@@ -612,6 +613,7 @@ export function ProdEntryBirth(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

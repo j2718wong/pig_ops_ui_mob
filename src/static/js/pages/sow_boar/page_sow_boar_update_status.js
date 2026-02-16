@@ -14,7 +14,8 @@ import {getSowBoarReference}    from '../common/common_app.js';
 import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         REQUEST_ERROR_NUM}      from '../../constants.js';
@@ -448,6 +449,7 @@ export function PageSowBoarUpdateStatus(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

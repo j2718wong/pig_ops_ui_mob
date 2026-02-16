@@ -6,7 +6,8 @@
 
 import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
@@ -207,7 +208,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         <!-- Supplier Select -->
         ${html_supplier}
             
-        <!-- 3. Feed Cost -->
+        <!-- Feed Cost -->
         <div class="form-group-number">
             <label for="${elemIdFeedCost}" class="form-label" style="margin-bottom:0;">Feed Cost</label>
             <span class="read-only-field" id="${elemIdFeedCost}">0.0</span>
@@ -354,6 +355,8 @@ export function PagePfFeedBuyAddEdit(input_settings){
         
         elemOtherCost.value = '';
         elemOtherCost.classList.remove('is-valid', 'is-invalid');
+        
+        elemServerErrorMsg.style.display = 'none';
     }
     
     
@@ -556,6 +559,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

@@ -4,12 +4,21 @@
 
 'use strict';
 
-import {UiInputTextWithCounter} from '../../common/ui/input_text_with_counter.js';
-import {UiSelectWithAddExpandable} from '../../common/ui/select_with_add_expandable.js';
+import {UiInputTextWithCounter}     from '../../common/ui/input_text_with_counter.js';
+import {UiSelectWithAddExpandable}  from '../../common/ui/select_with_add_expandable.js';
 
-import {CommonSelectOptions}    from '../../common/common_select_options.js';
+import {CommonSelectOptions}        from '../../common/common_select_options.js';
 
-import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
+import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
+
+
+import {APPLICATION,
+        PAGE_ID,
+        SOW_BOAR_TYPE,
+        SOW_STATUS,
+        MULTIKEY_OBJ_TYPE,
+        PROD_STATUS}                from '../../../constants.js';
+
 
 
 export function ComponentAccBoarCustomer(input_settings){
@@ -219,6 +228,7 @@ export function ComponentAccBoarCustomer(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: `${base_url}/account_pig_buyer/add`,
             async: true,
   

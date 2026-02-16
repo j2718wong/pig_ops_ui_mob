@@ -16,7 +16,8 @@ import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
 
 
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         MULTIKEY_OBJ_TYPE,
@@ -574,6 +575,7 @@ export function PageHealthNotesAddEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

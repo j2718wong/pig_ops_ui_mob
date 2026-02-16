@@ -4,7 +4,8 @@
 
 'use strict';
 
-import {PIG_PROD_TYPE,
+import {APPLICATION,
+        PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
         SOW_STATUS,
         PROD_STATUS,
@@ -193,6 +194,7 @@ export function PigFarm(_navigation){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -237,6 +239,7 @@ export function PigFarm(_navigation){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -279,6 +282,7 @@ export function PigFarm(_navigation){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -327,6 +331,7 @@ export function PigFarm(_navigation){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -380,6 +385,7 @@ export function PigFarm(_navigation){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

@@ -236,6 +236,7 @@ export function SowBoarTableDisposed(input_settings){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

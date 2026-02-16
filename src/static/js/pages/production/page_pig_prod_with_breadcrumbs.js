@@ -41,7 +41,7 @@ export function PagePigProdWithBreadCrumbs(input_settings){
     const settings              = input_settings;
 
     
-	let elemIdContBreadCrumbs	= null;
+    let elemIdContBreadCrumbs   = null;
     
 
     

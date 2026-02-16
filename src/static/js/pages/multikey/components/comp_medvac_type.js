@@ -4,12 +4,15 @@
 
 'use strict';
 
-import {UiInputTextWithCounter} from '../../common/ui/input_text_with_counter.js';
-import {UiSelectWithAddExpandable} from '../../common/ui/select_with_add_expandable.js';
+import {UiInputTextWithCounter}     from '../../common/ui/input_text_with_counter.js';
+import {UiSelectWithAddExpandable}  from '../../common/ui/select_with_add_expandable.js';
 
-import {CommonSelectOptions}    from '../../common/common_select_options.js';
+import {CommonSelectOptions}        from '../../common/common_select_options.js';
 
-import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
+import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
+
+import {APPLICATION}                from '../../../constants.js';
+
 
 
 export function ComponentMedVacType(input_settings){
@@ -215,6 +218,7 @@ export function ComponentMedVacType(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: `${base_url}/medvac_type/add`,
             async: true,
   

@@ -4,13 +4,14 @@
 
 'use strict';
 
-import {PIG_PROD_TYPE,
+import {APPLICATION,
+        PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
         SOW_STATUS,
         PROD_STATUS,
         SUPPLIER_TYPE,
         MULTIKEY_OBJ_TYPE}            from '../../constants.js';
-		
+        
 
 export function ManagerSowBoar(input_settings){
     const thisObj               = this;
@@ -102,6 +103,7 @@ export function ManagerSowBoar(input_settings){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -152,6 +154,7 @@ export function ManagerSowBoar(input_settings){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -201,6 +204,7 @@ export function ManagerSowBoar(input_settings){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -258,6 +262,7 @@ export function ManagerSowBoar(input_settings){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

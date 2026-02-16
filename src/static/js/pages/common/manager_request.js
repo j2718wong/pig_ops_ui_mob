@@ -3,7 +3,7 @@
 // j2718wong@gmail.com
 'use strict';
 
-
+import {APPLICATION}            from '../../constants.js';
 
 export function ManagerRequest(_navigation){
     const thisObj           = this;
@@ -18,6 +18,7 @@ export function ManagerRequest(_navigation){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

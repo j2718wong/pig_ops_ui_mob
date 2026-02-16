@@ -80,9 +80,7 @@ export function PageTableBasic(){
     let elemAddTextLinkShow     = null;
     let elemAddTextLink         = null;
     
-    this.elemTableContent       = null;
-   
-    
+
     
     let dataEntryList           = null;
     
@@ -464,8 +462,9 @@ export function PageTableBasic(){
     }
     
     
-    this.getElemTableContent = function(){
-        return elemTableContent;
+    // Need to overwrite
+    this.getElemTableBody = function(){
+        return null;
     }
     
     

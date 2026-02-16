@@ -4,7 +4,8 @@
 
 'use strict';
 
-import {SUPPLIER_TYPE}          from '../../constants.js';
+import {APPLICATION, 
+        SUPPLIER_TYPE}          from '../../constants.js';
 
 
 export function AccountLists(_navigation){
@@ -58,6 +59,7 @@ export function AccountLists(_navigation){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -114,6 +116,7 @@ export function AccountLists(_navigation){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
@@ -154,6 +157,7 @@ export function AccountLists(_navigation){
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

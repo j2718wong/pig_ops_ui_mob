@@ -10,6 +10,13 @@ import {SOW_STATUS}             from '../../constants.js';
         
 import {getSowBoarReference}    from './common_app.js'
 
+import {formatDate,
+        FORMAT_SHORT_MONTH,
+        FORMAT_LONG_MONTH,
+        FORMAT_COMPACT}         from '../../utils.js';
+
+
+
         
 export function CommonSelectOptions(){
     
@@ -297,5 +304,34 @@ export function CommonSelectOptions(){
         
         replaceSelectOptions(select_elem, select_data);
     }
+    
+    
+    this.setDataPigFarmFeedBuyList = function(data, select_elem){
+        
+        let select_data = [];
+        if (data.length == 0){
+            select_data.push({value:"-1", text:"No Entries"});
+            replaceSelectOptions(select_elem, select_data);
+            return;
+        }
+        
+        
+        select_data = [];
+        select_data.push({value:"0", text:"Please Select"});
+        
+        for (const cur_entry of data){
+            const hid       = cur_entry.pf_feed_buy.hid;
+            const date_buy  = cur_entry.pf_feed_buy.date_buy;
+            const dt_buy    = new Date(date_buy);
+            const s_dt_buy  = formatDate(dt_buy, FORMAT_COMPACT);
+            
+            const text  = `${s_dt_buy} ${cur_entry.feed_supplier.name}`;
+            select_data.push({value: hid, text: text});
+        }
+        
+        replaceSelectOptions(select_elem, select_data);
+    }
+    
+    
     
 }

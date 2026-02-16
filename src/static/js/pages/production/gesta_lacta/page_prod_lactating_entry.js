@@ -242,6 +242,7 @@ export function PageProdLactatingEntry(input_settings){
             parentObj:          this,
             uniqueKey:          'pig-prod-feed',
             elemDivContainer:   elemTabLactaProdFeed,
+            parentPageId:       PAGE_ID.PROD_LACTA_ENTRY
         });
         this.tablePigProdFeed.init();
         

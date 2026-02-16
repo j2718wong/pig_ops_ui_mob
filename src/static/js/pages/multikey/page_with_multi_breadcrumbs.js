@@ -200,10 +200,6 @@ export function PageWithMultiBreadCrumbs(input_settings){
         
         
         if (data_pig_prod){
-            
-            console.log('updateBreadCrumbs, data_pig_prod');
-            console.log(data_pig_prod);
-            
             const prod_status_id = data_pig_prod.pig_production.prod_status_id;
             
             switch(prod_status_id) {

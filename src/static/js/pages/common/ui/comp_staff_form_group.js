@@ -10,6 +10,8 @@ import {CommonSelectOptions}    from '../common_select_options.js';
 
 import {addValidationClassToElem} from './ui_utils.js';
 
+import {APPLICATION}            from '../../../constants.js';
+
 
 export function ComponentStaffFormGroup(input_settings){
     
@@ -520,6 +522,7 @@ export function ComponentStaffFormGroup(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: `${base_url}/pig_farm_staff/add`,
             async: true,
   

@@ -8,7 +8,8 @@ import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {PageTableBasic}         from '../common/page_table_basic.js';
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
         SOW_BOAR_TYPE,
@@ -448,6 +449,7 @@ export function PageParentTrace(input_settings){
             type: 'GET',
             dataType: 'json',
             url: url,
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             async: true,
   
             beforeSend: function(){

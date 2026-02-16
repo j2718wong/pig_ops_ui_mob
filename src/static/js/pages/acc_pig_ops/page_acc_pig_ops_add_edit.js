@@ -6,7 +6,8 @@
 
 import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         PIG_OPERATION_TYPE}     from '../../constants.js';
 
 import {ComponentBreadCrumbs}   from '../common/ui/comp_breadcrumb.js';
@@ -512,6 +513,7 @@ export function PageAccPigOpsAddEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

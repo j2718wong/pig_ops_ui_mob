@@ -6,7 +6,8 @@
 
 import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
@@ -466,6 +467,7 @@ export function PageCommonSupplierAddEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: `${base_url}/account/selection/add`,
             async: true,
   

@@ -6,7 +6,8 @@
 
 import {PagePigProdWithBreadCrumbs} from '../page_pig_prod_with_breadcrumbs.js';
 
-import {PIG_OPERATION_TYPE}         from '../../../constants.js';
+import {APPLICATION,
+        PIG_OPERATION_TYPE}         from '../../../constants.js';
         
 import {formatDate,
         FORMAT_LONG_MONTH}          from '../../../utils.js';
@@ -657,6 +658,7 @@ export function PageProdPigOpsEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

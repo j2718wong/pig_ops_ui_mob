@@ -25,7 +25,8 @@ import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_b
 import {TextTranslation}        from '../common/translation.js';
 
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         MULTIKEY_OBJ_TYPE,
@@ -863,6 +864,7 @@ export function PageMedVacAddEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

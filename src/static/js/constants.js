@@ -4,6 +4,9 @@
 
 
 const APPLICATION = {
+    REQUEST_TIMEOUT:                5000,
+    
+    
     MOBILE_TABLE_ROW_PER_PAGE:      10,
     
     MAX_WIDTH_WINDOW_IS_MOBILE:     768

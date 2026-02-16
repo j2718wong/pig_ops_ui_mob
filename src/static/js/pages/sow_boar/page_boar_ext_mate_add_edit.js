@@ -18,7 +18,8 @@ import {ComponentAccBoarCustomer}   from './components/comp_acc_boar_customer.js
 
 
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         REQUEST_ERROR_NUM}      from '../../constants.js';
@@ -630,14 +631,14 @@ export function PageBoarExtMateAddEdit(input_settings){
         input_elem          = elemUiDateMate.getElemText();
         
         const dt_medvac     = new Date(input_date_medvac);
-		if (isNaN(dt_medvac.getTime())){
+        if (isNaN(dt_medvac.getTime())){
             validation      = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
-		
-		dt_medvac_s         = dt_medvac.toLocaleDateString('en-CA');
-		validation          = 0
+        
+        dt_medvac_s         = dt_medvac.toLocaleDateString('en-CA');
+        validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         
@@ -693,9 +694,9 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         
         // Final check before sending request
-		if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
-			return;
-		} 
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+            return;
+        } 
         
         
         
@@ -750,6 +751,7 @@ export function PageBoarExtMateAddEdit(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

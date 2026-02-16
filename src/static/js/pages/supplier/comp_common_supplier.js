@@ -4,7 +4,8 @@
 
 'use strict';
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
@@ -395,6 +396,7 @@ export function ComponentCommonSupplier(input_settings){
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   

@@ -108,14 +108,14 @@ export function ComponentFeedsInput(input_settings){
     let elemGestaInput          = null;
     
     
-    const dataFeed = {
-        gesta:      { input: 0 },
-        lacta:      { input: 0 },
-        booster:    { input: 0 },
-        prestarter: { input: 0 },
-        starter:    { input: 0 },
-        grower:     { input: 0 },
-        finisher:   { input: 0 }
+    const dataFeedInput = {
+        gesta:      0,
+        lacta:      0,
+        booster:    0,
+        prestarter: 0,
+        starter:    0,
+        grower:     0,
+        finisher:   0
     };
     
     
@@ -142,7 +142,9 @@ export function ComponentFeedsInput(input_settings){
         }
         
 
-        
+        // 20260215: 
+        // There is a current problem when using a table format;
+        // When rows are hidden and displayed again, the table row is messed up.
         const html = `
             <div id="${elemIdUiShow}">
                 <table class="data-table table-feed-input">
@@ -158,8 +160,8 @@ export function ComponentFeedsInput(input_settings){
                     
                     <tbody id="${elemIdFeedInputBody}">
                         <tr id="${elemIdFinisherRow}">
-                            <td class="fi-readonly-cell">Finisher</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdFinisherCol2}">150</td>
+                            <td class="fi-readonly-cell" style="vertical-align:middle;">Finisher</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdFinisherCol2}" style="vertical-align:middle;">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdFinisherInput}" value="0" step="${step}" min="0" data-feed="finisher">
@@ -173,8 +175,8 @@ export function ComponentFeedsInput(input_settings){
                         
                         
                         <tr id="${elemIdGrowerRow}">
-                            <td class="fi-readonly-cell">Grower</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGrowerCol2}">150</td>
+                            <td class="fi-readonly-cell" style="vertical-align:middle;">Grower</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGrowerCol2}" style="vertical-align:middle;">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdGrowerInput}" value="0" step="${step}" min="0" data-feed="grower">
@@ -188,8 +190,8 @@ export function ComponentFeedsInput(input_settings){
                         
                         
                         <tr id="${elemIdStarterRow}">
-                            <td class="fi-readonly-cell">Starter</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdStarterCol2}">150</td>
+                            <td class="fi-readonly-cell" style="vertical-align:middle;">Starter</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdStarterCol2}" style="vertical-align:middle;">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdStarterInput}" value="0" step="${step}" min="0" data-feed="starter">
@@ -203,8 +205,8 @@ export function ComponentFeedsInput(input_settings){
                         
                         
                         <tr id="${elemIdPreStarterRow}">
-                            <td class="fi-readonly-cell">PreStart</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdPreStarterCol2}">150</td>
+                            <td class="fi-readonly-cell" style="vertical-align:middle;">PreStart</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdPreStarterCol2}" style="vertical-align:middle;">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdPreStarterInput}" value="0" step="${step}" min="0" data-feed="prestarter">
@@ -217,8 +219,8 @@ export function ComponentFeedsInput(input_settings){
                         </tr>
                         
                         <tr id="${elemIdBoosterRow}">
-                            <td class="fi-readonly-cell">Booster</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdBoosterCol2}">150</td>
+                            <td class="fi-readonly-cell" style="vertical-align:middle;">Booster</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdBoosterCol2}" style="vertical-align:middle;">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdBoosterInput}" value="0" step="${step}" min="0" data-feed="booster">
@@ -232,8 +234,8 @@ export function ComponentFeedsInput(input_settings){
                         
                         
                         <tr id="${elemIdLactaRow}">
-                            <td class="fi-readonly-cell">Lacta</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdLactaCol2}">150</td>
+                            <td class="fi-readonly-cell" style="vertical-align:middle;">Lacta</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdLactaCol2}" style="vertical-align:middle;">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdLactaInput}" value="0" step="${step}" min="0" data-feed="lacta">
@@ -246,8 +248,8 @@ export function ComponentFeedsInput(input_settings){
                         </tr>
                         
                         <tr id="${elemIdGestaRow}">
-                            <td class="fi-readonly-cell">Gesta</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGestaCol2}">150</td>
+                            <td class="fi-readonly-cell" style="vertical-align:middle;">Gesta</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGestaCol2}" style="vertical-align:middle;">150</td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdGestaInput}" value="0" step="${step}" min="0" data-feed="gesta">
@@ -266,8 +268,128 @@ export function ComponentFeedsInput(input_settings){
         
         `;
         
-        return html;
         
+// Recommended layout by deepseek        
+const html_2 = `
+<!-- Grid Layout -->
+<div class="grid-feed-input" id="${elemIdFeedInputBody}">
+  
+  <!-- Header Row -->
+  <div class="grid-header">
+    <div class="grid-cell">${settings.header.col1Name}</div>
+    <div class="grid-cell fi-col2 no-wrap ${class_hidden}">${settings.header.col2Name}</div>
+    <div class="grid-cell">${settings.header.col3Name}</div>
+  </div>
+  
+  <!-- Finisher Row -->
+  <div class="grid-row" id="${elemIdFinisherRow}">
+    <div class="grid-cell fi-readonly-cell">Finisher</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdFinisherCol2}">150</div>
+    <div class="grid-cell fi-input-cell">
+      <div class="fi-number-input-container">
+        <input type="text" class="fi-number-input" id="${elemIdFinisherInput}" value="0" step="${step}" min="0" data-feed="finisher">
+        <div class="fi-step-buttons">
+          <button type="button" class="fi-step-btn up" data-feed="finisher" aria-label="Increase value">▲</button>
+          <button type="button" class="fi-step-btn down" data-feed="finisher" aria-label="Decrease value">▼</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Grower Row -->
+  <div class="grid-row" id="${elemIdGrowerRow}">
+    <div class="grid-cell fi-readonly-cell">Grower</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGrowerCol2}">150</div>
+    <div class="grid-cell fi-input-cell">
+      <div class="fi-number-input-container">
+        <input type="text" class="fi-number-input" id="${elemIdGrowerInput}" value="0" step="${step}" min="0" data-feed="grower">
+        <div class="fi-step-buttons">
+          <button type="button" class="fi-step-btn up" data-feed="grower" aria-label="Increase value">▲</button>
+          <button type="button" class="fi-step-btn down" data-feed="grower" aria-label="Decrease value">▼</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Starter Row -->
+  <div class="grid-row" id="${elemIdStarterRow}">
+    <div class="grid-cell fi-readonly-cell">Starter</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdStarterCol2}">150</div>
+    <div class="grid-cell fi-input-cell">
+      <div class="fi-number-input-container">
+        <input type="text" class="fi-number-input" id="${elemIdStarterInput}" value="0" step="${step}" min="0" data-feed="starter">
+        <div class="fi-step-buttons">
+          <button type="button" class="fi-step-btn up" data-feed="starter" aria-label="Increase value">▲</button>
+          <button type="button" class="fi-step-btn down" data-feed="starter" aria-label="Decrease value">▼</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- PreStarter Row -->
+  <div class="grid-row" id="${elemIdPreStarterRow}">
+    <div class="grid-cell fi-readonly-cell">PreStart</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdPreStarterCol2}">150</div>
+    <div class="grid-cell fi-input-cell">
+      <div class="fi-number-input-container">
+        <input type="text" class="fi-number-input" id="${elemIdPreStarterInput}" value="0" step="${step}" min="0" data-feed="prestarter">
+        <div class="fi-step-buttons">
+          <button type="button" class="fi-step-btn up" data-feed="prestarter" aria-label="Increase value">▲</button>
+          <button type="button" class="fi-step-btn down" data-feed="prestarter" aria-label="Decrease value">▼</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Booster Row -->
+  <div class="grid-row" id="${elemIdBoosterRow}">
+    <div class="grid-cell fi-readonly-cell">Booster</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdBoosterCol2}">150</div>
+    <div class="grid-cell fi-input-cell">
+      <div class="fi-number-input-container">
+        <input type="text" class="fi-number-input" id="${elemIdBoosterInput}" value="0" step="${step}" min="0" data-feed="booster">
+        <div class="fi-step-buttons">
+          <button type="button" class="fi-step-btn up" data-feed="booster" aria-label="Increase value">▲</button>
+          <button type="button" class="fi-step-btn down" data-feed="booster" aria-label="Decrease value">▼</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Lacta Row -->
+  <div class="grid-row" id="${elemIdLactaRow}">
+    <div class="grid-cell fi-readonly-cell">Lacta</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdLactaCol2}">150</div>
+    <div class="grid-cell fi-input-cell">
+      <div class="fi-number-input-container">
+        <input type="text" class="fi-number-input" id="${elemIdLactaInput}" value="0" step="${step}" min="0" data-feed="lacta">
+        <div class="fi-step-buttons">
+          <button type="button" class="fi-step-btn up" data-feed="lacta" aria-label="Increase value">▲</button>
+          <button type="button" class="fi-step-btn down" data-feed="lacta" aria-label="Decrease value">▼</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Gesta Row -->
+  <div class="grid-row" id="${elemIdGestaRow}">
+    <div class="grid-cell fi-readonly-cell">Gesta</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGestaCol2}">150</div>
+    <div class="grid-cell fi-input-cell">
+      <div class="fi-number-input-container">
+        <input type="text" class="fi-number-input" id="${elemIdGestaInput}" value="0" step="${step}" min="0" data-feed="gesta">
+        <div class="fi-step-buttons">
+          <button type="button" class="fi-step-btn up" data-feed="gesta" aria-label="Increase value">▲</button>
+          <button type="button" class="fi-step-btn down" data-feed="gesta" aria-label="Decrease value">▼</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+`;
+        
+        return html_2;
     }
     
     
@@ -312,7 +434,7 @@ export function ComponentFeedsInput(input_settings){
         function updateBalance(feedType, newValue) {
             const inputField = document.querySelector(`.fi-number-input[data-feed="${feedType}"]`);
             inputField.value = newValue;
-            dataFeed[feedType].balance = newValue;
+            dataFeedInput[feedType] = newValue;
             console.log(`Updated ${feedType}: ${newValue} kg`);
         }
         
@@ -377,7 +499,7 @@ export function ComponentFeedsInput(input_settings){
                     this.value = 0;
                 }
                 
-                dataFeed[feedType].input = value;
+                dataFeedInput[feedType] = value;
             });
             
             
@@ -416,26 +538,26 @@ export function ComponentFeedsInput(input_settings){
         elemLactaInput.value        = 0;
         elemGestaInput.value        = 0; 
         
-        dataFeed.gesta.input        = 0;
-        dataFeed.lacta.input        = 0;
-        dataFeed.booster.input      = 0;
-        dataFeed.prestarter.input   = 0;
-        dataFeed.grower.input       = 0;
-        dataFeed.starter.input      = 0;
-        dataFeed.finisher.input     = 0;
+        dataFeedInput.gesta         = 0;
+        dataFeedInput.lacta         = 0;
+        dataFeedInput.booster       = 0;
+        dataFeedInput.prestarter    = 0;
+        dataFeedInput.grower        = 0;
+        dataFeedInput.starter       = 0;
+        dataFeedInput.finisher      = 0;
         
     }
     
     
-    this.getDataFeed = function(){
-        return dataFeed;
+    this.getDataFeedInput = function(){
+        return dataFeedInput;
     }
     
     
-    this.showFeedType = function(show_feed){
-        /*show_feed is a dictionary like this
+    this.showFeedType = function(data){
+        /*data is a dictionary like this
          * 
-         * show_feed = {
+         * data = {
          *  gesta: true,
          *  lacta: true,
          *  booster: true,
@@ -447,60 +569,231 @@ export function ComponentFeedsInput(input_settings){
          * 
          * */
         
-        if (show_feed.gesta){
-            elemGestaRow.style.display = 'table';
+        if (data.gesta){
+            elemGestaRow.style.display = 'contents';
         }
         else{
             elemGestaRow.style.display = 'none';
         }
         
         
-        if (show_feed.lacta){
-            elemLactaRow.style.display = 'table';
+        if (data.lacta){
+            elemLactaRow.style.display = 'contents';
         }
         else{
             elemLactaRow.style.display = 'none';
         }
         
         
-        if (show_feed.booster){
-            elemBoosterRow.style.display = 'table';
+        if (data.booster){
+            elemBoosterRow.style.display = 'contents';
         }
         else{
             elemBoosterRow.style.display = 'none';
         }
         
         
-        if (show_feed.prestarter){
-            elemPreStarterRow.style.display = 'table';
+        if (data.prestarter){
+            elemPreStarterRow.style.display = 'contents';
         }
         else{
             elemPreStarterRow.style.display = 'none';
         }
         
         
-        if (show_feed.starter){
-            elemStarterRow.style.display = 'table';
+        if (data.starter){
+            elemStarterRow.style.display = 'contents';
         }
         else{
             elemStarterRow.style.display = 'none';
         }
         
         
-        if (show_feed.grower){
-            elemGrowerRow.style.display = 'table';
+        if (data.grower){
+            elemGrowerRow.style.display = 'contents';
         }
         else{
             elemGrowerRow.style.display = 'none';
         }
         
         
-        if (show_feed.finisher){
-            elemFinisherRow.style.display = 'table';
+        if (data.finisher){
+            elemFinisherRow.style.display = 'contents';
         }
         else{
             elemFinisherRow.style.display = 'none';
         }
         
+    }
+    
+    
+    this.setColumn2 = function(data){
+        /*data is a dictionary like this
+         * 
+         * data = {
+         *  gesta: 1,
+         *  lacta: 2,
+         *  booster: null,
+         *  prestarter: null,
+         *  grower: null,
+         *  starter: null,
+         *  finisher: null
+         * }
+         * 
+         * */
+        
+        if (data.gesta && data.gesta > 0){
+            elemGestaCol2.textContent = data.gesta;
+        }
+        else{
+            elemGestaCol2.textContent = '';
+        }
+        
+        
+        if (data.lacta && data.lacta > 0){
+            elemLactaCol2.textContent = data.lacta;
+        }
+        else{
+            elemLactaCol2.textContent = '';
+        }
+        
+        
+        if (data.booster && data.booster > 0){
+            elemBoosterCol2.textContent = data.booster;
+        }
+        else{
+            elemBoosterCol2.textContent = '';
+        }
+        
+        
+        if (data.prestarter && data.prestarter > 0){
+            elemPreStarterCol2.textContent = data.prestarter;
+        }
+        else{
+            elemPreStarterCol2.textContent = '';
+        }
+
+        
+        if (data.starter && data.starter > 0){
+            elemStarterCol2.textContent = data.starter;
+        }
+        else{
+            elemStarterCol2.textContent = '';
+        }
+        
+        
+        if (data.grower && data.grower > 0){
+            elemGrowerCol2.textContent = data.grower;
+        }
+        else{
+            elemGrowerCol2.textContent = '';
+        }
+        
+        
+        if (data.finisher && data.grower > 0){
+            elemFinisherCol2.textContent = data.finisher;
+        }
+        else{
+            elemFinisherCol2.textContent = '';
+        }
+    }
+
+
+    this.setFeedInput = function(data){
+        /*data is a dictionary like this
+         * 
+         * data = {
+         *  gesta: 1,
+         *  lacta: 2,
+         *  booster: null,
+         *  prestarter: null,
+         *  grower: null,
+         *  starter: null,
+         *  finisher: null
+         * }
+         * 
+         * */
+        
+        if (data.gesta && data.gesta > 0){
+            elemGestaInput.value = data.gesta;
+            dataFeedInput.gesta = data.gesta;
+        }
+        else{
+            elemGestaInput.value = 0;
+            dataFeedInput.gesta = 0;
+        }
+        
+        
+        if (data.lacta && data.lacta > 0){
+            elemLactaInput.value = data.lacta;
+            dataFeedInput.lacta = data.lacta;
+        }
+        else{
+            elemLactaInput.value = 0;
+            dataFeedInput.lacta = 0;
+        }
+        
+        
+        if (data.booster && data.booster > 0){
+            elemBoosterInput.value = data.booster;
+            dataFeedInput.booster = data.booster;
+        }
+        else{
+            elemBoosterInput.value = 0;
+            dataFeedInput.booster = 0;
+        }
+        
+        
+        if (data.prestarter && data.prestarter > 0){
+            elemPreStarterInput.value = data.prestarter;
+            dataFeedInput.prestarter = data.prestarter;
+        }
+        else{
+            elemPreStarterInput.value = 0;
+            dataFeedInput.prestarter = 0;
+        }
+
+        
+        if (data.starter && data.starter > 0){
+            elemStarterInput.value = data.starter;
+            dataFeedInput.starter = data.starter;
+        }
+        else{
+            elemStarterInput.value = 0;
+            dataFeedInput.starter = 0;
+        }
+        
+        
+        if (data.grower && data.grower > 0){
+            elemGrowerInput.value = data.grower;
+            dataFeedInput.grower = data.grower;
+        }
+        else{
+            elemGrowerInput.value = 0;
+            dataFeedInput.grower = 0;
+        }
+        
+        
+        if (data.finisher && data.grower > 0){
+            elemFinisherInput.value = data.finisher;
+            dataFeedInput.finisher = data.finisher;
+        }
+        else{
+            elemFinisherInput.value = 0;
+            dataFeedInput.finisher = 0;
+        }
+    }
+
+
+    this.areAllInputsZero = function(){
+        let temp =  dataFeedInput.gesta +
+                    dataFeedInput.lacta +
+                    dataFeedInput.booster +
+                    dataFeedInput.prestarter +
+                    dataFeedInput.starter +
+                    dataFeedInput.grower +
+                    dataFeedInput.finisher;
+        if (temp > 0){return false;}
+        return true;
     }
 }

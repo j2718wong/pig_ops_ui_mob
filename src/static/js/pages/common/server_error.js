@@ -48,20 +48,20 @@ export function ServerError(_navigation){
         let error_code = response.result.code;
         let error_desc = response.result.desc;
         
-		let html = `<span>${error_code}</span>`;
-		
-		if (error_desc && error_desc.length > 0){
-			html += `<br><span>${error_desc}</span>`;
-		}
-		
+        let html = `<span>${error_code}</span>`;
+        
+        if (error_desc && error_desc.length > 0){
+            html += `<br><span>${error_desc}</span>`;
+        }
+        
         if (elem_show_error) {
             // Display first before innerHTML
             elem_show_error.style.display = 'block'
             elem_show_error.innerHTML = html;
-		}
+        }
         else{
             console.log('\n\nServerError.receivedErrorMessage(); elem_show_error is null');
-			navigation.toastAlert.showToast('Oops something is wrong', html, 'error');
+            navigation.toastAlert.showToast('Oops something is wrong', html, 'error');
         }
         
         // Check special error numbers;
@@ -94,7 +94,20 @@ export function ServerError(_navigation){
     
     
     this.serverErrorThrown = function(jqXHR, textStatus, errorThrown){
-        // TODO 
+        console.log('\n\n\nServerError.serverErrorThrown');
+        
+        console.log('jqXHR')
+        console.log(jqXHR)
+        
+        console.log('textStatus')
+        console.log(textStatus)
+        
+        
+        console.log('errorThrown')
+        console.log(errorThrown)
+        
+        
+        
     }
     
 }

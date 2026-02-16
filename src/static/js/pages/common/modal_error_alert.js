@@ -9,14 +9,47 @@
 export function PageModalAlert(){
     const thisObj               = this;
     
+    // Error configurations
+    const errorConfigs = {
+        connection_lost: {
+            title: "Connection Lost",
+            message: "Your connection to the server has been lost. Please check your internet connection.",
+            icon: "fa-wifi-slash",
+            iconClass: "error",
+            details: "Error code: 1001\nStatus: Connection lost\nType: Network disruption\nSuggested action: Check router or mobile data"
+        },
+        timeout: {
+            title: "Request Timeout",
+            message: "The server is taking too long to respond. This might be due to high traffic or server issues.",
+            icon: "fa-clock",
+            iconClass: "warning",
+            details: "Error code: 408\nStatus: Request timeout\nTimeout: 30 seconds\nSuggested action: Try again in a moment"
+        },
+        server_error: {
+            title: "Server Error",
+            message: "We're experiencing technical difficulties on our end. Our team has been notified.",
+            icon: "fa-server",
+            iconClass: "info",
+            details: "Error code: 500\nStatus: Internal server error\nServer: api.example.com\nSuggested action: Wait for maintenance"
+        },
+        network_error: {
+            title: "Network Error",
+            message: "Unable to establish a connection to the server. This might be due to firewall or DNS issues.",
+            icon: "fa-globe",
+            iconClass: "error",
+            details: "Error code: 0\nStatus: Network error\nConnection: Failed\nSuggested action: Check firewall settings"
+        }
+    };
+        
+    
     
     this.render = function(){
-		
-		elemIdModalId        	= `modal-alert`;
-		elemIdAlertErrorIcon    = `modal-alert-error-icon`;
-		
-		
-		
+        
+        elemIdModalId           = `modal-alert`;
+        elemIdAlertErrorIcon    = `modal-alert-error-icon`;
+        
+        
+        
         return `
         <!-- Connection Error Modal -->
     <div class="modal fade" id="${elemIdModalId}" tabindex="-1" aria-labelledby="${elemIdModalId}Label" aria-hidden="true">
@@ -25,7 +58,7 @@ export function PageModalAlert(){
                 <div class="modal-header border-0 pb-0">
                     <button type="button" class="btn-close modal-close-top" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-				
+                
                 <div class="modal-body text-center p-4 pt-0">
                     <div class="error-icon error pulse-animation" id="${elemIdAlertErrorIcon}">
                         <i class="fas fa-exclamation-triangle"></i>
