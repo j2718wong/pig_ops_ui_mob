@@ -116,20 +116,25 @@ export function TableNotes(input_settings){
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
                 dataSowBoar     = data;
                 
-                if ('list_notes' in dataSowBoar.data_details){
-                    thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
-                    thisObj.renderTable(dataSowBoar.data_details.list_notes);
-                } else{
-                    const callback_success = function(){
-                        // Set table entry list; This will set also the entry count;
+                if (dataSowBoar.data_details){
+                    if ('list_notes' in dataSowBoar.data_details){
                         thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
                         thisObj.renderTable(dataSowBoar.data_details.list_notes);
-                    };
-                    
-                    navigation.pigFarm.managerSowBoar.requestNotesList(
-                        dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
+                    } else{
+                        const callback_success = function(){
+                            // Set table entry list; This will set also the entry count;
+                            thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
+                            thisObj.renderTable(dataSowBoar.data_details.list_notes);
+                        };
+                        
+                        navigation.pigFarm.managerSowBoar.requestNotesList(
+                            dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
+                    }
                 }
-                
+                else{
+                    thisObj.setDataEntryList([]);
+                    thisObj.renderTable([]);
+                }
                 
                 // no add entry if already disposed
                 // Still thinking if search control will be removed

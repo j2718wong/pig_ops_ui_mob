@@ -114,22 +114,27 @@ export function TableHealthIssue(input_settings){
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
                 dataSowBoar     = data;
         
-
-                if ('list_health_issues' in dataSowBoar.data_details){
-                    let data_list = dataSowBoar.data_details.list_health_issues;
-                    
-                    thisObj.setDataEntryList(data_list);
-                    thisObj.renderTable(data_list);
-                } else{
-                    const callback_success = function(){
+                if (dataSowBoar.data_details){
+                    if ('list_health_issues' in dataSowBoar.data_details){
                         let data_list = dataSowBoar.data_details.list_health_issues;
                         
                         thisObj.setDataEntryList(data_list);
                         thisObj.renderTable(data_list);
+                    } else{
+                        const callback_success = function(){
+                            let data_list = dataSowBoar.data_details.list_health_issues;
+                            
+                            thisObj.setDataEntryList(data_list);
+                            thisObj.renderTable(data_list);
+                        }
+                        
+                        navigation.pigFarm.managerSowBoar.requestNotesList(
+                            dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
                     }
-                    
-                    navigation.pigFarm.managerSowBoar.requestNotesList(
-                        dataSowBoar, callback_success, thisObj.elemServerErrorMsg);
+                }
+                else{
+                    thisObj.setDataEntryList([]);
+                    thisObj.renderTable([]);
                 }
                 
                 
@@ -148,20 +153,27 @@ export function TableHealthIssue(input_settings){
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
                 dataPigProd     = data;
 
-                if ('list_health_issues' in dataPigProd.data_details){
-                    let data_list = dataPigProd.data_details.list_health_issues;
-                    
-                    thisObj.setDataEntryList(data_list);
-                    thisObj.renderTable(data_list);
-                } else{
-                    const callback_success = function(){
+                if (dataPigProd.data_details) {
+                    if ('list_health_issues' in dataPigProd.data_details){
                         let data_list = dataPigProd.data_details.list_health_issues;
                         
                         thisObj.setDataEntryList(data_list);
                         thisObj.renderTable(data_list);
+                    } else{
+                        const callback_success = function(){
+                            let data_list = dataPigProd.data_details.list_health_issues;
+                            
+                            thisObj.setDataEntryList(data_list);
+                            thisObj.renderTable(data_list);
+                        }
                     }
-                    
                 }
+                else{
+                    thisObj.setDataEntryList([]);
+                    thisObj.renderTable([]);
+                }
+                
+                
                 
                 break;
             }

@@ -6,8 +6,10 @@
 
 
 
-export function PageModalAlert(){
+export function AlertModal(_navigation){
     const thisObj               = this;
+    const navigation            = _navigation;
+    
     
     // Error configurations
     const errorConfigs = {

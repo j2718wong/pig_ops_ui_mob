@@ -5,7 +5,7 @@
 
 const APPLICATION = {
     REQUEST_TIMEOUT:                5000,
-    
+    NUM_MSECS_1DAY:                 1000 * 60 * 60 * 24,
     
     MOBILE_TABLE_ROW_PER_PAGE:      10,
     

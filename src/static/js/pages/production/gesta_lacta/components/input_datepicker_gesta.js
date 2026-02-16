@@ -12,6 +12,10 @@ import {formatDate,
         FORMAT_COMPACT}         from '../../../../utils.js';
 
 
+import {APPLICATION}            from '../../../../constants.js';
+
+
+
 export function UiInputDatePickerGesta(input_settings){
     UiBasic.call(this);
     
@@ -32,8 +36,6 @@ export function UiInputDatePickerGesta(input_settings){
     const thisObj               = this;
     
     const settings              = input_settings;
-    
-    const NUM_MSECS_1DAY        = 24*60*60*1000;
     
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     
@@ -129,7 +131,7 @@ export function UiInputDatePickerGesta(input_settings){
         
             const diff_msecs          = dt_current - dt_date;
             
-            let   diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+            let   diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
         
             thisObj.setGestationDays(diff_days);
         });

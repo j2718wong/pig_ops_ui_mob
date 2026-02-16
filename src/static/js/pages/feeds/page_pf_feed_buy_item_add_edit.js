@@ -503,7 +503,8 @@ export function PagePfBuyItemAddEdit(input_settings){
         
         
         let feed_cost = quantity * unit_cost;
-        
+        if (feed_cost > 0){}
+        else {feed_cost = 0;}
         
         const s_feed_cost = thisObj.moneyFormatter.format(feed_cost);
         elemFeedCost.textContent = s_feed_cost;

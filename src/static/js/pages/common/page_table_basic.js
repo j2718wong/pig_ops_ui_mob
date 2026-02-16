@@ -16,7 +16,6 @@ export function PageTableBasic(){
     
     const thisObj               = this;
     
-    this.NUM_MSECS_1DAY         = 1000 * 60 * 60 * 24;
     
     let TABLE_ROW_PER_PAGE      = APPLICATION.MOBILE_TABLE_ROW_PER_PAGE;
     

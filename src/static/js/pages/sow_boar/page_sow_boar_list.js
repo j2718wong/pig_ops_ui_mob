@@ -40,9 +40,7 @@ export function PageSowBoarList(input_settings){
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
-    
-    const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
-    
+
     
     this.TABLE_ROW_PER_PAGE     = 10;
     
@@ -875,7 +873,7 @@ ${html_style}
             dt_birth            = new Date(sow_boar.date_of_birth);
         
             diff_msecs          = dtCurrentDate - dt_birth;
-            diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+            diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
             
             let num_years       = Math.floor(diff_days / 365);
             let excess_days     = diff_days % 365;

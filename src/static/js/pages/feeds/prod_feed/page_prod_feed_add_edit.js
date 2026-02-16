@@ -57,7 +57,7 @@ export function PageProdFeedAddEdit(input_settings){
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
         
-    const MAX_DAYS_TRIGGER_NO_FEED_BUY = 15;
+    const MAX_DAYS_TRIGGER_NO_FEED_BUY = 20;
     const MAX_OLDER_ENTRIES     = 5;
     
 
@@ -235,13 +235,11 @@ export function PageProdFeedAddEdit(input_settings){
                 <a href="javascript:void(0)" class="text-link" id ="${elemIdLinkAddFeedBuy}">
                     Add Feed Buy
                 </a>
-                
-                
             </div>
             
             <span id ="${elemIdLinkOlderFeedBuy}">
                 OR select older Feed Buy
-            </a>
+            </span>
                 
             <select class="form-select" id="${elemIdSelectOlderFeedBuy}">
                 <option value="0" selected>Please Select</option>
@@ -555,11 +553,13 @@ export function PageProdFeedAddEdit(input_settings){
             // Calculate how many days passed from date buy to now
         
             const diff_msecs    = dtCurrentDate - dt_buy;
-            const diff_days     = Math.round(diff_msecs / thisObj.NUM_MSECS_1DAY);
+            const diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
+                
+            console.log('diff_days = ' + diff_days);
                 
             if (diff_days <= MAX_DAYS_TRIGGER_NO_FEED_BUY){
                 // need to save this
-                selectedPigFarmFeedBuy = feed_buy_list[0];
+                selectedPigFarmFeedBuy = last_feed_buy;
                 
                 // Populate elemFeedBuyFrom
                 const s_dt_buy = formatDate(dt_buy, FORMAT_COMPACT);
@@ -567,10 +567,19 @@ export function PageProdFeedAddEdit(input_settings){
                 
                 elemFeedBuyFrom.textContent         = s_feed_buy;
                 
+
+                elemFeedBuyFrom.style.display       = 'block'; 
                 elemLinkAddFeedBuy.style.display    = 'none';
                  
                 elemTableFeedBuy.style.display      = 'table';
                 elemFeedInputShow.style.display     = 'block';
+                elemBtnSave.style.display           = 'block';
+                
+                console.log(`selectedPigFarmFeedBuy`);
+                console.log(selectedPigFarmFeedBuy);
+        
+            
+                tableFeedBuy.renderTable(selectedPigFarmFeedBuy.feed_items);
             }
             else{
                 elemFeedBuyNone.style.display       = 'block';

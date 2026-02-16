@@ -6,8 +6,8 @@
 
 
 
-import {PAGE_ID,
-        APPLICATION,
+import {APPLICATION,
+        PAGE_ID,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
         PROD_STATUS}            from '../../../constants.js';
@@ -123,7 +123,7 @@ export function GestaLactaCards(input_settings){
                 dt_important_sf     = formatDate(dt_important);
                 
                 diff_msecs          = dt_important - dt_current;
-                diff_days           = Math.round(diff_msecs / parentObj.NUM_MSECS_1DAY);
+                diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
                 diff_days_important = diff_days;
                 
                 if ((diff_days >= 3) && (diff_days <= 5)) {
@@ -600,7 +600,7 @@ export function GestaLactaCards(input_settings){
         
         // Compute the number of days from  dt_target to dt_current
         diff_msecs          = dt_target - dt_current;
-        diff_days           = Math.round(diff_msecs / parentObj.NUM_MSECS_1DAY);
+        diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
         
         
         let operation_class = '';

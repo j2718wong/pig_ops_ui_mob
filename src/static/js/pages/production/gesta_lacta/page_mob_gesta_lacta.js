@@ -6,8 +6,8 @@
 
 import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
-import {PAGE_ID,
-        APPLICATION,
+import {APPLICATION,
+        PAGE_ID,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
         PROD_STATUS}            from '../../../constants.js';
@@ -761,7 +761,7 @@ ${html_style}
                 }
             }
             
-            msecs_wean = dt_actual.getTime() + num_days_wean * thisObj.NUM_MSECS_1DAY;
+            msecs_wean = dt_actual.getTime() + num_days_wean * APPLICATION.NUM_MSECS_1DAY;
             dt_wean = new Date(msecs_wean);
             
             dt_important    = dt_wean;

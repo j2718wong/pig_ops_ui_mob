@@ -163,7 +163,7 @@ export function SowBoarTableSowAll(input_settings){
                 const dt_expected_birth     = new Date(date_expected_birth);
                 
                 const diff_msecs    = dt_expected_birth - parentObj.dtCurrentDate;
-                const diff_days     = Math.round(diff_msecs / parentObj.NUM_MSECS_1DAY);
+                const diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
                 
                 if ((diff_days >= 3) && (diff_days <= 7)) {
                     htmlSowDueWarning = `<span class="due-soon">Due ${diff_days} Days</span>`;

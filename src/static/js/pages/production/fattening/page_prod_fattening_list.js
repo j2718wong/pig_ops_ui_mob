@@ -6,8 +6,8 @@
 
 import {PageTableBasic}         from '../../common/page_table_basic.js';
 
-import {PAGE_ID,
-        APPLICATION,
+import {APPLICATION,
+        PAGE_ID,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
         PROD_STATUS}            from '../../../constants.js';
@@ -336,14 +336,14 @@ export function PageProdFatteningList(input_settings){
             const dt_birth      = new Date(cur_entry.birth.date_actual);
             
             diff_msecs          = dtCurrentDate - dt_birth;
-            diff_days           = Math.round(diff_msecs / thisObj.NUM_MSECS_1DAY);
+            diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
             
             
             // num_days from birth
             num_days_harvest    = DEFAULT_NUM_DAYS_HARVEST_FROM_BIRTH;
                 
             
-            msecs_harvest = dt_birth.getTime() + num_days_harvest * thisObj.NUM_MSECS_1DAY;
+            msecs_harvest = dt_birth.getTime() + num_days_harvest * APPLICATION.NUM_MSECS_1DAY;
             dt_target_harvest   = new Date(msecs_harvest);
             
         }
@@ -357,7 +357,7 @@ export function PageProdFatteningList(input_settings){
                 num_days_harvest    = DEFAULT_NUM_DAYS_HARVEST_FROM_WEAN;
                     
                 
-                msecs_harvest = dt_wean.getTime() + num_days_harvest * thisObj.NUM_MSECS_1DAY;
+                msecs_harvest = dt_wean.getTime() + num_days_harvest * APPLICATION.NUM_MSECS_1DAY;
                 dt_target_harvest   = new Date(msecs_harvest);
             }
         }
@@ -369,7 +369,8 @@ export function PageProdFatteningList(input_settings){
         let s_target_harvest = '';
         
         if (diff_days){s_days = `${diff_days}`;}
-        if (dt_target_harvest) {s_target_harvest = formatDate(dt_target_harvest, FORMAT_COMPACT); }
+        if (dt_target_harvest) {
+            s_target_harvest = formatDate(dt_target_harvest, FORMAT_COMPACT); }
         
         
         let s_click = `gNavigation.onClickProdFatteningEntry(${pid});`;

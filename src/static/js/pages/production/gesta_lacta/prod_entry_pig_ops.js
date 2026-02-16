@@ -6,7 +6,8 @@
 
 import {PageViewPigFarmPage}          from '../../common/page_view_basic.js';
 
-import {PAGE_ID,
+import {APPLICATION,
+        PAGE_ID,
         SOW_STATUS,
         PROD_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
@@ -40,9 +41,6 @@ export function ProdEntryPigOps(input_settings){
     const settings              = input_settings;
     
     const elemDivContainer      = settings.elemDivContainer;
-    
-    
-    const NUM_MSECS_1DAY        = 1000 * 60 * 60 * 24;
     
     
     let elemIdContentContainer  = null;
@@ -434,7 +432,7 @@ ${html_style}
             let dt_target           = new Date(pig_prod_pig_ops.date_target);
             
             let diff_msecs          = dt_target - dt_current;
-            let diff_days           = Math.round(diff_msecs / NUM_MSECS_1DAY);
+            let diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
 
             
             // compute is_due

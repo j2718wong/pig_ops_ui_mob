@@ -522,13 +522,16 @@ export function PageSowBoarAddEdit(input_settings){
             
         }
         
+        
         // TODO: how to add disposed sows
         
         
         const elem_select = elemUiParentSow.getElemSelect();
-        const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
-        thisObj.commonSelectOptions.setDataSowList(filtered, elem_select, special_options);
-        elemUiParentSow.setEntryCount(filtered);
+        //const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
+        
+        const select_data = thisObj.commonSelectOptions.setDataSowList(filtered, 
+            elem_select, null, {parent_sow_only: true});
+        elemUiParentSow.setEntryCount(select_data);
     }
     
     
@@ -832,6 +835,9 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this.populateForm = function(data_sow_boar){
+        console.log(`sow_baor_add_edit populate form data_sow_boar`);
+        
+        console.log(data_sow_boar);
         
         let cur_sow_boar = data_sow_boar;
         if ('sow_boar' in data_sow_boar){

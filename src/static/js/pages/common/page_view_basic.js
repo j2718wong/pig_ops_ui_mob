@@ -7,6 +7,8 @@
 
 import {CommonSelectOptions}    from './common_select_options.js';
 
+import {APPLICATION}            from '../../constants.js';
+
 
 export function replaceSelectOptions(select_elem, new_options){
     select_elem.innerHTML = '';
@@ -60,8 +62,6 @@ export function updateCharCounter(input_elem, counter_elem, max_length) {
 
 export function PageViewBasic(){
     const thisObj           = this;
-    
-    this.NUM_MSECS_1DAY     = 1000 * 60 * 60 * 24;
     
     this.navigation         = null;
     
@@ -126,7 +126,7 @@ export function PageViewPigFarmPage(){
         const dt_insem            = new Date(insem_date);
         const diff_msecs          = dt_current - dt_insem;
         
-        let   diff_days           = Math.round(diff_msecs / thisObj.NUM_MSECS_1DAY);
+        let   diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
         
         // Adjust Day 1 on date of insemination/coupling if needed
         if (settings_operations){
@@ -147,7 +147,7 @@ export function PageViewPigFarmPage(){
         const dt_birth            = new Date(date_of_birth);
         const diff_msecs          = dt_current - dt_birth;
         
-        let   diff_days           = Math.round(diff_msecs / thisObj.NUM_MSECS_1DAY);
+        let   diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
         
         // Adjust Day 1 on date of birth if needed
         if (settings_operations){

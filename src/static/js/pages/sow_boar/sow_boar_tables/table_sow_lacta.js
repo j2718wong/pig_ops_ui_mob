@@ -184,7 +184,7 @@ export function SowBoarTableSowLacta(input_settings){
             }
         }
         
-        let msecs_wean = dt_actual.getTime() + num_days_wean * parentObj.NUM_MSECS_1DAY;
+        let msecs_wean = dt_actual.getTime() + num_days_wean * APPLICATION.NUM_MSECS_1DAY;
         let dt_wean = new Date(msecs_wean);
         
         let dt_important    = dt_wean;

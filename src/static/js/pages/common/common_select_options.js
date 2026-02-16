@@ -20,7 +20,16 @@ import {formatDate,
         
 export function CommonSelectOptions(){
     
-    this.setDataSowList = function(data, select_elem, special_options){
+    this.setDataSowList = function(data, select_elem, special_options, options){
+        /**
+         * Optional parameters
+         * 
+         * options:{
+         *  parent_sow_only: true
+         * }
+         * 
+         * */
+        
         
         let select_data = [];
         if (data.length == 0){
@@ -45,23 +54,44 @@ export function CommonSelectOptions(){
             for (const cur_option of special_options){select_data.push(cur_option);}
         }
         
-        for (const cur_sow_boar of data){
-            // This is because there is this data can come into
-            // minimum and not minimum info.
-            const cur_entry = ('sow_boar' in cur_sow_boar)? cur_sow_boar.sow_boar: cur_sow_boar;
+        
+        const actual_data = [];
+        
+        for (const cur_entry of data){
+            const cur_sow_boar = cur_entry.sow_boar;
             
-            if (cur_entry.status_id == SOW_STATUS.GROWING ||
-                cur_entry.status_id == SOW_STATUS.GESTATING ||
-                cur_entry.status_id == SOW_STATUS.WEANING) {
-            
-                const sow_boar_name = getSowBoarReference(cur_entry, true);
+            if (options && options.parent_sow_only){
+                if (cur_sow_boar.num_births && cur_sow_boar.num_births > 0){
+                        
+                    const sow_boar_name = getSowBoarReference(cur_sow_boar, true);
+                    const cur_data_option = {value: cur_sow_boar.hid, text: sow_boar_name};
+                    
+                    select_data.push(cur_data_option);
+                    
+                    // need to have list of actual options with data
+                    actual_data.push(cur_data_option); 
+                }
+            }
+            else{
+                if (cur_sow_boar.status_id == SOW_STATUS.GROWING ||
+                    cur_sow_boar.status_id == SOW_STATUS.GESTATING ||
+                    cur_sow_boar.status_id == SOW_STATUS.WEANING) {
                 
-                select_data.push({value: cur_entry.hid, text: sow_boar_name});
+                    const sow_boar_name = getSowBoarReference(cur_sow_boar, true);
+                    const cur_data_option = {value: cur_sow_boar.hid, text: sow_boar_name};
+                    
+                    select_data.push(cur_data_option);
+                    
+                    // need to have list of actual options with data
+                    actual_data.push(cur_data_option);
+                }
             }
         }
         
 
         replaceSelectOptions(select_elem, select_data);
+        
+        return actual_data;
     }
     
     
@@ -101,6 +131,7 @@ export function CommonSelectOptions(){
         
         replaceSelectOptions(select_elem, select_data);
         
+        return select_data;
     }
     
     

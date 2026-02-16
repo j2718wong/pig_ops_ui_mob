@@ -103,17 +103,21 @@ export function TableGiltOps(input_settings){
         dataSowBoar     = data_sow_boar;
         showOptions     = options;
         
-        if ('list_mates' in dataSowBoar.data_details){
-            thisObj.setDataEntryList(dataSowBoar.data_details.list_mates);
-            thisObj.renderTable(dataSowBoar.data_details.list_mates);
-        } else{
-            const callback_success = function(){
-                // Set table entry list; This will set also the entry count;
-                thisObj.setDataEntryList(dataSowBoar.list_notes);
-                thisObj.renderTable(dataSowBoar.list_notes);
-            };
-            
-            
+        if (dataSowBoar.data_details) {
+            if ('list_mates' in dataSowBoar.data_details){
+                thisObj.setDataEntryList(dataSowBoar.data_details.list_mates);
+                thisObj.renderTable(dataSowBoar.data_details.list_mates);
+            } else{
+                const callback_success = function(){
+                    // Set table entry list; This will set also the entry count;
+                    thisObj.setDataEntryList(dataSowBoar.list_notes);
+                    thisObj.renderTable(dataSowBoar.list_notes);
+                };
+            }
+        }
+        else{
+            thisObj.setDataEntryList([]);
+            thisObj.renderTable([]);
         }
         
     }

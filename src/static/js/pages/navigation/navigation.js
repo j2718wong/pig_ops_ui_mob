@@ -225,8 +225,7 @@ function UserControl(_navigation) {
 export function Navigation(){
     const thisObj               = this;
     
-    let dataCompanyApp          = null;
-   
+    
     
     
     let elemSubnavSummary       = null;
@@ -350,6 +349,9 @@ export function Navigation(){
     
     this.pageData                   = null;
     
+    
+    this.dataCompanyApp             = null;
+   
     
     this.curScreenIsMobile          = null;
     
@@ -763,13 +765,13 @@ export function Navigation(){
     
     
     this.setDataCompanyApp = function(data){
-        dataCompanyApp = data;
+        this.dataCompanyApp = data;
         
         const elems = document.getElementsByClassName('product-name');
 
         
         for (let i = 0; i < elems.length; i++) {
-            elems[i].innerHTML = dataCompanyApp.product_name;
+            elems[i].innerHTML = thisObj.dataCompanyApp.product_name;
         }
     }
     
