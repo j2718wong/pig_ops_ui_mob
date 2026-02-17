@@ -3151,7 +3151,6 @@ textarea.form-control {
 .date-item {
     display: flex;
     flex-direction: column;
-    flex: 1;
 }
 
 .date-label {

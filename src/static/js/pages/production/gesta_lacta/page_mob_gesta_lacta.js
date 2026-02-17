@@ -31,10 +31,6 @@ export function PageMobGestaLacta(input_settings){
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
-    const DEFAULT_NUM_DAYS_WEAN = 45;
-    
-    
-    
     
     const LACTA_TABLE_PIGOPS    = 1;
     const LACTA_TABLE_PIG_COUNT = 2;
@@ -747,26 +743,10 @@ ${html_style}
             s_date_important = `${dt_important_s} (Day ${diff_days})`;
         }
         else{
-            dt_actual = new Date(cur_entry.birth.date_actual);
-            
-            num_days_wean = DEFAULT_NUM_DAYS_WEAN;
-            
-            // check if the account has set num_days_wean
-            if (acc_settings_ops){
-                num_days_wean = acc_settings_ops.num_days_wean;
-                
-                // Adjust Day 1 on date of birth if needed
-                if (acc_settings_ops.day_1_on_date_of_birth > 0){
-                    num_days_wean -= 1;
-                }
-            }
-            
-            msecs_wean = dt_actual.getTime() + num_days_wean * APPLICATION.NUM_MSECS_1DAY;
-            dt_wean = new Date(msecs_wean);
-            
-            dt_important    = dt_wean;
-            dt_important_s  = formatDate(dt_important, FORMAT_COMPACT);
-            
+
+            dt_important_s  = thisObj.calculateDateExpectedWean(
+                        cur_entry.birth.date_actual, acc_settings_ops);
+                                    
             diff_days = thisObj.calculateNumDaysSinceBirth(
                         cur_entry.birth.date_actual, dtCurrentDate,
                         acc_settings_ops);

@@ -9,6 +9,10 @@ import {CommonSelectOptions}    from './common_select_options.js';
 
 import {APPLICATION}            from '../../constants.js';
 
+import {formatDate,
+        FORMAT_COMPACT}         from '../../utils.js';
+
+
 
 export function replaceSelectOptions(select_elem, new_options){
     select_elem.innerHTML = '';
@@ -109,15 +113,11 @@ export function PageViewPigFarmPage(){
     
 
     
-    
     this.commonSelectOptions    = new CommonSelectOptions();
     
     
     
-    
-    
-    
-    this.calculateNumDaysSinceInsem = function(insem_date, dt_current, settings_operations){
+    this.calculateNumDaysSinceInsem = function(insem_date, dt_current, acc_settings_ops){
         if (!dt_current){
             dt_current = new Date();
             dt_current.setHours(0, 0, 0, 0);
@@ -129,8 +129,8 @@ export function PageViewPigFarmPage(){
         let   diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
         
         // Adjust Day 1 on date of insemination/coupling if needed
-        if (settings_operations){
-            if (settings_operations.day_1_on_date_of_insem > 0){
+        if (acc_settings_ops){
+            if (acc_settings_ops.day_1_on_date_of_insem > 0){
                 diff_days += 1;
             }
         }
@@ -138,7 +138,7 @@ export function PageViewPigFarmPage(){
     }
 
     
-    this.calculateNumDaysSinceBirth = function(date_of_birth, dt_current, settings_operations){
+    this.calculateNumDaysSinceBirth = function(date_of_birth, dt_current, acc_settings_ops){
         if (!dt_current){
             dt_current = new Date();
             dt_current.setHours(0, 0, 0, 0);
@@ -150,12 +150,34 @@ export function PageViewPigFarmPage(){
         let   diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
         
         // Adjust Day 1 on date of birth if needed
-        if (settings_operations){
-            if (settings_operations.day_1_on_date_of_birth > 0){
+        if (acc_settings_ops){
+            if (acc_settings_ops.day_1_on_date_of_birth > 0){
                 diff_days += 1;
             }
         }
         return diff_days;
+    }
+    
+    
+    this.calculateDateExpectedWean = function(date_of_birth, acc_settings_ops){
+        const dt_actual = new Date(date_of_birth);
+            
+        let num_days_wean = APPLICATION.DEFAULT_NUM_DAYS_WEAN;
+        
+        // check if the account has set num_days_wean
+        if (acc_settings_ops){
+            num_days_wean = acc_settings_ops.num_days_wean;
+            
+            // Adjust Day 1 on date of birth if needed
+            if (acc_settings_ops.day_1_on_date_of_birth > 0){
+                num_days_wean -= 1;
+            }
+        }
+        
+        let msecs_wean = dt_actual.getTime() + num_days_wean * APPLICATION.NUM_MSECS_1DAY;
+        let dt_wean = new Date(msecs_wean);
+        
+        return formatDate(dt_wean, FORMAT_COMPACT);
     }
     
 }

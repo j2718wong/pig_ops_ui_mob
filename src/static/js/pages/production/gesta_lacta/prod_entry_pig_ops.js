@@ -79,9 +79,6 @@ export function ProdEntryPigOps(input_settings){
         
         /* Updated Table Styles */
         
-        .data-table.table-pigops th:nth-child(1) { width: 22%; }
-        .data-table.table-pigops th:nth-child(2) { width: 38%; }
-        .data-table.table-pigops th:nth-child(3) { width: 40%; }
         
         
         
@@ -109,7 +106,6 @@ export function ProdEntryPigOps(input_settings){
         }
         
         .date-content {
-            margin-left: 10px;
             font-size: 14px;
             line-height: 1.3;
         }
@@ -274,6 +270,12 @@ ${html_style}
 
     <!-- Operations Table -->
     <table class="data-table table-pigops">
+        <colgroup>
+            <col style="width: 18%;">
+            <col style="width: 41%;">
+            <col style="width: 41%;">
+        </colgroup>
+    
         <thead>
             <tr>
                 <th>Date</th>
@@ -281,8 +283,8 @@ ${html_style}
                 <th>Done By</th>
             </tr>
         </thead>
+        
         <tbody id="${elemIdPigOpsTableBody}">
-            <!-- Operations populated by JavaScript -->
         </tbody>
     </table>
 </div>
@@ -584,13 +586,7 @@ ${html_style}
             dateCell.className = 'date-cell';
             const dateContent = document.createElement('div');
             dateContent.style.position = 'relative';
-            dateContent.style.paddingLeft = '10px';
             
-            if (op.isDue && !op.isCompleted) {
-                const dueIndicator = document.createElement('div');
-                dueIndicator.className = 'due-indicator';
-                dateContent.appendChild(dueIndicator);
-            }
             
             const dateWithYear = document.createElement('div');
             dateWithYear.className = 'date-with-year';
@@ -699,7 +695,17 @@ ${html_style}
                 checkmarkContainer.className = 'checkmark-container';
                 
                 const checkmark = document.createElement('div');
-                checkmark.className = 'checkmark';
+                
+                const html_check_mark = `
+                <img src="static/images/box_check.png" 
+                    alt="Checkmark" 
+                    data-bs-toggle="tooltip" 
+                    data-bs-placement="top" 
+                    title ="Already Done" 
+                    width="25" height="25">`;
+                checkmark.innerHTML = html_check_mark
+                
+                //checkmark.className = 'checkmark';
                 checkmarkContainer.appendChild(checkmark);
                 
                 // Right div - staff name and full date

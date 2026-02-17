@@ -45,9 +45,6 @@ export function SowBoarTableSowLacta(input_settings){
     const elemDivContainer      = settings.elemDivContainer;
     
     
-    const DEFAULT_NUM_DAYS_WEAN = 45;
-    
-    
     let elemIdTableShow         = null;
     let elemIdTableBody         = null;
     
@@ -158,46 +155,24 @@ export function SowBoarTableSowLacta(input_settings){
         let sow_reference = parentObj.getSowBoarReference(sow_boar);
         
         
-        
-        
         // Date Expected Wean
         const pig_production    = sow_boar.cur_pig_production.pig_production;
         const birth             = sow_boar.cur_pig_production.birth;
         const date_actual_birth = birth.date_actual;
-        
-        
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         
-        // Set important date; 
-        // lacta: expected date wean 
-        const dt_actual = new Date(date_actual_birth);
-            
-        let num_days_wean = DEFAULT_NUM_DAYS_WEAN;
         
-        // check if the account has set num_days_wean
-        if (acc_settings_ops){
-            num_days_wean = acc_settings_ops.num_days_wean;
-            
-            // Adjust Day 1 on date of birth if needed
-            if (acc_settings_ops.day_1_on_date_of_birth > 0){
-                num_days_wean -= 1;
-            }
-        }
-        
-        let msecs_wean = dt_actual.getTime() + num_days_wean * APPLICATION.NUM_MSECS_1DAY;
-        let dt_wean = new Date(msecs_wean);
-        
-        let dt_important    = dt_wean;
-        let dt_important_s  = formatDate(dt_important, FORMAT_COMPACT);
-        
+        let dt_wean_s  = parentObj.calculateDateExpectedWean(
+                                date_actual_birth,
+                                acc_settings_ops);
         
         
         let diff_days = parentObj.calculateNumDaysSinceBirth(
-                    date_actual_birth, 
-                    parentObj.dtCurrentDate,
-                    acc_settings_ops);
+                                date_actual_birth, 
+                                parentObj.dtCurrentDate,
+                                acc_settings_ops);
                     
-        let s_date_important = `${dt_important_s} (Day ${diff_days})`;
+        let s_date_important = `${dt_wean_s} (Day ${diff_days})`;
         
         
         // Current number of pigs

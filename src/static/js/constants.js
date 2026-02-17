@@ -9,7 +9,10 @@ const APPLICATION = {
     
     MOBILE_TABLE_ROW_PER_PAGE:      10,
     
-    MAX_WIDTH_WINDOW_IS_MOBILE:     768
+    MAX_WIDTH_WINDOW_IS_MOBILE:     768,
+    
+    
+    DEFAULT_NUM_DAYS_WEAN:          45
 }
 
 

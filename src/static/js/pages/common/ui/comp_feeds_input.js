@@ -699,7 +699,7 @@ const html_2 = `
     }
 
 
-    this.setFeedInput = function(data){
+    this.setFeedsInput = function(data){
         /*data is a dictionary like this
          * 
          * data = {

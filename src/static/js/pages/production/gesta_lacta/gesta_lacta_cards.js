@@ -176,9 +176,6 @@ export function GestaLactaCards(input_settings){
             case PROD_STATUS.LACTATING: {
                 header_class = 'lactating-sow';
                 
-                // Need to add number of days for date weaning
-                date_important      = birth.date_actual;
-                dt_important        = new Date(date_important);
                 
                 
                 cur_num_pigs_male   = birth.pigs_live_m;
@@ -192,8 +189,27 @@ export function GestaLactaCards(input_settings){
                 
                 style_piglet_counter= '';
                 
+                
+                dt_important_sf = parentObj.calculateDateExpectedWean(
+                        birth.date_actual, 
+                        navigation.pigFarm.getSettingsOperations());
+
+                
+                diff_days = parentObj.calculateNumDaysSinceBirth(
+                        birth.date_actual, dt_current,
+                        navigation.pigFarm.getSettingsOperations());
+                        
+                numdays_since       = diff_days;
+                
+                
+                
                 label_date_important= 'Expected Wean';
                 label_num_days_since= 'Days Since Birth';
+                
+                const dt_birth      = new Date(birth.date_actual);
+                const dt_birth_s    = formatDate(dt_birth, FORMAT_SHORT_MONTH);
+                value_num_days_since= `${numdays_since} Days (${dt_birth_s})`;
+                
                 break;
             }
         }
@@ -217,13 +233,15 @@ export function GestaLactaCards(input_settings){
                 
                 <!-- Dates side by side -->
                 <div class="dates-container">
-                    <div class="date-item">
+                    <div class="date-item" style="width:45%;">
                         <div class="date-label">
                             ${label_date_important}
                             ${html_due_soon}
                         </div>
+                        
                         <div class="date-value">
                             ${dt_important_sf}
+                            
                             <span class="running-animation">
                                 <span class="horse-running" style="${style_animation_horse}">
                                     <i class="fas fa-horse"></i>
@@ -238,7 +256,8 @@ export function GestaLactaCards(input_settings){
                             </span>
                         </div>
                     </div>
-                    <div class="date-item">
+                    
+                    <div class="date-item" style="width:55%;">
                         <div class="date-label">${label_num_days_since}</div>
                         <div class="date-value">${value_num_days_since}</div>
                     </div>

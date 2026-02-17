@@ -11,10 +11,10 @@ import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 import {UiInputDatePicker}          from '../../common/ui/input_datepicker.js';
 
-import {PageTableBasic}         from '../../common/page_table_basic.js';
+import {PageTableBasic}             from '../../common/page_table_basic.js';
 
 
-import {ComponentFeedsInput}    from '../../common/ui/comp_feeds_input.js';
+import {ComponentFeedsInput}        from '../../common/ui/comp_feeds_input.js';
 
 
 
@@ -494,6 +494,7 @@ export function PageProdFeedAddEdit(input_settings){
         if (showOptions.is_add){}
         else{
             thisObj.populateForm();
+            thisObj.populateFeedAdd();
         }
         
         
@@ -723,7 +724,60 @@ export function PageProdFeedAddEdit(input_settings){
     
     
     this.populateFeedAdd = function(){
+        const pig_prod_feed = showOptions.pig_prod_feed;
+        const feed_items    = pig_prod_feed.feed_items;
         
+        const feeds_input    = {
+            gesta:      null,
+            lacta:      null,
+            booster:    null,
+            prestarter: null,
+            grower:     null,
+            starter:    null,
+            finisher:   null
+        };
+        
+        for (const cur_entry of feed_items){
+            switch (cur_entry.feed_type.name){
+                case 'GESTA':{
+                    feeds_input.gesta = cur_entry.feed_item.quantity;
+                    break;
+                }
+                  
+                case 'LACTA':{
+                    feeds_input.lacta = cur_entry.feed_item.quantity;
+                    break;
+                } 
+                 
+                case 'BOST':{
+                    feeds_input.booster = cur_entry.feed_item.quantity;
+                    break;
+                }
+                   
+                case 'PRES':{
+                    feeds_input.prestarter = cur_entry.feed_item.quantity;
+                    break;
+                } 
+                  
+                case 'START':{
+                    feeds_input.starter = cur_entry.feed_item.quantity;
+                    break;
+                }  
+                
+                case 'GROW':{
+                    feeds_input.grower = cur_entry.feed_item.quantity;
+                    break;
+                }
+                   
+                case 'FINISH':{
+                    feeds_input.grower = cur_entry.feed_item.quantity;
+                    break;
+                } 
+                
+            }
+        } 
+        
+        componentFeedsInput.setFeedsInput(feeds_input);
     }
     
     
