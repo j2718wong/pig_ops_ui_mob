@@ -40,7 +40,7 @@ export function ProdFeedSummary(input_settings){
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-medvac',
         elemDivContainer:       '<element>'
-        medvacType:             MULTIKEY_OBJ_TYPE.SOW_BOAR
+        includeProdSummary:     true
     }   
     */  
     const settings              = input_settings;
@@ -60,8 +60,21 @@ export function ProdFeedSummary(input_settings){
     
     let elemDivContainer        = settings.elemDivContainer;
 
+    let elemIdTdPigCount        = null;
+    let elemIdTdNumDaysLabel    = null;
+    let elemIdTdNumDays         = null;
+    let elemIdTdTargetHarvest   = null;
+    let elemIdTdPigsHarvested   = null;
+
     let elemIdTableBody         = null;
 
+
+
+    let elemTdPigCount          = null;
+    let elemTdNumDaysLabel      = null;
+    let elemTdNumDays           = null;
+    let elemTdTargetHarvest     = null;
+    let elemTdPigsHarvested     = null;
     
     let elemTableBody           = null;
     
@@ -76,7 +89,7 @@ export function ProdFeedSummary(input_settings){
     
     let dtCurrentDate           = null;
     
-    // This can be a data_sow_boar, data_pig_prod or data_prod_group
+    // This can be a data_pig_prod or data_prod_group
     let curDataEntry            = null;
     
     
@@ -94,18 +107,57 @@ export function ProdFeedSummary(input_settings){
     
     this.getHtml = function(){
         
-        const html_style = thisObj._writeInlineStyle();
-        const html_table = thisObj.getHtmlTableHeader();
+        elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
+        
+        const html_style        = this._writeInlineStyle();
+        
+        let html_prod_summary = '';
+        
+        if (settings.includeProdSummary){
+            html_prod_summary = this.getHtmlProdSummary();
+        }
+        
+        
         
         const html = `
+    <div class="modal-body" id="">
+        ${html_prod_summary}
         
+        <h2 class="tab-title">
+            Feed Summary
+        </h2>
+    
         ${html_style}
         
-        ${html_table}
+        <div>Last Feed Balance: 02 Feb 2026  </div>
+        
+        <table class="data-table table-feed-summary" id="">
+            <colgroup>
+                <col style="width: 25%;">
+                <col style="width: 25%;">
+                <col style="width: 25%;">
+                <col style="width: 25%;">
+            </colgroup>
+            
+            <thead>
+                <tr>
+                    <th>Feed<br>Type</th>
+                    <th>Buy<br>(sacks)</th>
+                    <th>Cons<br>(sacks)</th>
+                    <th>Bal<br>(sacks)</th>
+                </tr>
+            </thead>
+            
+            <tbody id="${elemIdTableBody}">
+            </tbody>
+        </table>
+        
+        
+    </div>
         `;
-        
-        
+       
         return html;
+
     }
     
     
@@ -118,7 +170,15 @@ export function ProdFeedSummary(input_settings){
     
     this._findElements = function(){
         elemTableBody           = document.getElementById(elemIdTableBody);
+        
+        elemTdPigCount          = document.getElementById(elemTdPigCount);     
+        elemTdNumDaysLabel      = document.getElementById(elemTdNumDaysLabel); 
+        elemTdNumDays           = document.getElementById(elemTdNumDays);
+        elemTdTargetHarvest     = document.getElementById(elemTdTargetHarvest);
+        elemTdPigsHarvested     = document.getElementById(elemTdPigsHarvested);
+        
     }
+    
     
     this._processAfterHtmlRender= function(){}
     this._bindEventListeners= function(){}
@@ -141,6 +201,16 @@ export function ProdFeedSummary(input_settings){
     
     this.beforeShow = function(data_entry){
         curDataEntry = data_entry;
+        
+        
+        
+        
+        if (settings.includeProdSummary){
+            console.log('Prod Summary');
+            console.log(curDataEntry);
+            
+        }
+        
         
         const prod_entry_feeds = curDataEntry.feeds;
         const feeds_bought  = prod_entry_feeds.bought;
@@ -222,51 +292,59 @@ export function ProdFeedSummary(input_settings){
         
     }
     
-     
-    this.getHtmlTableHeader = function(){
-        elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
+    
+    this.getHtmlProdSummary = function(){
         
-        const html_style = this._writeInlineStyle();
+        elemIdTdPigCount        = `${settings.uniqueKey}-pig-count`;
+        elemIdTdNumDaysLabel    = `${settings.uniqueKey}-num-days-label`;
+        elemIdTdNumDays         = `${settings.uniqueKey}-num-days`;
+        elemIdTdTargetHarvest   = `${settings.uniqueKey}-target-harvest`;
+        elemIdTdPigsHarvested   = `${settings.uniqueKey}-pig-harvested`;
         
         
         const html = `
-    <div class="modal-body" id="">
         <h2 class="tab-title">
-            Feed Summary
+            Production
         </h2>
-    
-        ${html_style}
         
-        <div>Last Feed Balance: 02 Feb 2026  </div>
         
-        <table class="data-table table-feed-summary" id="">
+        <table class="data-table">
             <colgroup>
-                <col style="width: 25%;">
-                <col style="width: 25%;">
-                <col style="width: 25%;">
-                <col style="width: 25%;">
+                <col style="width: 40%;">
+                <col style="width: 60%;">
             </colgroup>
             
-            <thead>
-                <tr>
-                    <th>Feed<br>Type</th>
-                    <th>Buy<br>(sacks)</th>
-                    <th>Cons<br>(sacks)</th>
-                    <th>Bal<br>(sacks)</th>
-                </tr>
-            </thead>
             
-            <tbody id="${elemIdTableBody}">
+            <tbody>
+                <tr>
+                    <td>Pig Count</td>
+                    <td id="${elemIdTdPigCount}">15</td>
+                </tr>
+                
+                <tr>
+                    <td id="${elemIdTdNumDaysLabel}">Days Since Birth</td>
+                    <td id="${elemIdTdNumDays}">145</td>
+                </tr>
+                
+                <tr>
+                    <td>Target Harvest</td>
+                    <td id="${elemIdTdTargetHarvest}">05 April 2026(150 days)</td>
+                </tr>
+                
+                <tr>
+                    <td>Pigs Harvested</td>
+                    <td id="${elemIdTdPigsHarvested}">0</td>
+                </tr>
+            
             </tbody>
         </table>
-    
-    </div>
-        `;
-       
-        return html;
         
+        <br>
+        `;
+        
+        return html;
     }
-       
+    
 
 
     this.getHtmlTableRow = function(cur_entry){

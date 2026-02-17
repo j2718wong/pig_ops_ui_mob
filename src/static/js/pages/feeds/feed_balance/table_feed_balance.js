@@ -1,4 +1,4 @@
-// February 14, 2026
+// February 18, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -25,7 +25,7 @@ import {formatDate,
 
 
 
-export function TablePigProdFeed(input_settings){
+export function TableFeedBalance(input_settings){
     PageTableBasic.call(this);
     
     const thisObj               = this;
@@ -38,9 +38,9 @@ export function TablePigProdFeed(input_settings){
     {
         navigation:             this,
         parentObj:              thisObj,
-        uniqueKey:              'pig-prod-feed'
+        uniqueKey:              'prod-fat-feed-bal'
         elemDivContainer:       '<element>',
-        parentPageId:           PAGE_ID.PROD_LACTA_ENTRY
+        parentPageId:           PAGE_ID.PROD_FATTENING_ENTRY
         
     }   
     */  
@@ -78,7 +78,7 @@ export function TablePigProdFeed(input_settings){
             tableTitle:     'Feed Add',
             
             addEntryLink: {
-                label:      'Add Feed Item',
+                label:      'Add Entry',
                 onclickAddEntry: thisObj.onClickAddEntry
             }
             
@@ -112,8 +112,6 @@ export function TablePigProdFeed(input_settings){
         dataPigProd     = data_pig_prod;
         showOptions     = options;
         
-        // This is needed when adding and editing PigProdFeed
-        thisObj.requestDataPigFarmFeedBuyList();
         
         // Request data if not yet requested
         if ('data_details' in dataPigProd){
@@ -123,10 +121,10 @@ export function TablePigProdFeed(input_settings){
             thisObj.renderTable(dataPigProd.data_details.list_prod_feed);
         } else{
             
-            thisObj.requestDataPigProdFeedList()();
+            thisObj.requestDataPigProdFeedList();
         }
         
-        console.log(dataPigProd);
+
         
     }
     
@@ -217,7 +215,7 @@ export function TablePigProdFeed(input_settings){
     this.getHtmlTableRowEmpty = function(){
         const html = `
             <tr>
-                <td colspan="2"><div>No Entries</div></td>
+                <td colspan="3"><div>No Entries</div></td>
             </tr>
         `;
         return html;

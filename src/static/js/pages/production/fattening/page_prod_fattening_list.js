@@ -5,6 +5,8 @@
 'use strict';
 
 import {PageTableBasic}         from '../../common/page_table_basic.js';
+import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
+
 
 import {APPLICATION,
         PAGE_ID,
@@ -72,6 +74,9 @@ export function PageProdFatteningList(input_settings){
 
     
     let dtCurrentDate           = null;
+
+
+    let farmPage                = new PageViewPigFarmPage();
 
     
     this.init = function(){
@@ -321,56 +326,29 @@ export function PageProdFatteningList(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         
-        console.log(`\n\nFattening.getHtmlTableRow`);
-        console.log(cur_entry);
-        
-        let diff_msecs;
-        let diff_days;
-        
-        let num_days_harvest;
-        let msecs_harvest;
-        let dt_target_harvest;
-        
-        if (cur_entry.birth.date_actual){
-            const dt_birth      = new Date(cur_entry.birth.date_actual);
-            
-            diff_msecs          = dtCurrentDate - dt_birth;
-            diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
-            
-            
-            // num_days from birth
-            num_days_harvest    = DEFAULT_NUM_DAYS_HARVEST_FROM_BIRTH;
-                
-            
-            msecs_harvest = dt_birth.getTime() + num_days_harvest * APPLICATION.NUM_MSECS_1DAY;
-            dt_target_harvest   = new Date(msecs_harvest);
-            
-        }
-        else{
-            // No cur_entry.birth.date_actual are fatteners brought from outside
-            
-            if (cur_entry.weaning.date_weaning){
-                const dt_wean   = new Date(cur_entry.weaning.date_weaning);
-                
-                // num_days from wean
-                num_days_harvest    = DEFAULT_NUM_DAYS_HARVEST_FROM_WEAN;
-                    
-                
-                msecs_harvest = dt_wean.getTime() + num_days_harvest * APPLICATION.NUM_MSECS_1DAY;
-                dt_target_harvest   = new Date(msecs_harvest);
-            }
-        }
+        const target_harvest = farmPage.calculateDateTargetHarvest(cur_entry, 
+            dtCurrentDate, acc_settings_ops)
         
         
         let pid = cur_entry.pig_production.farm_prod_id;
         
+        
+        let diff_days = null;
         let s_days = '';
         let s_target_harvest = '';
         
+        if (target_harvest.days_since_birth) {
+            diff_days = target_harvest.days_since_birth;
+        }
+        else{
+            diff_days = target_harvest.days_since_wean;
+        }
+        
+        
         if (diff_days){s_days = `${diff_days}`;}
-        if (dt_target_harvest) {
-            s_target_harvest = formatDate(dt_target_harvest, FORMAT_COMPACT); }
+        s_target_harvest = target_harvest.date_target_harvest;
         
         
         let s_click = `gNavigation.onClickProdFatteningEntry(${pid});`;

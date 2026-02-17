@@ -23,7 +23,7 @@ import {TableNotes}             from '../../multikey/table_notes.js'
 import {TableHealthIssue}       from '../../multikey/table_health_issue.js'
 
 import {ProdFeedSummary}        from '../feeds/prod_feed_summary.js'
-
+import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed.js'
 
 
 
@@ -51,7 +51,7 @@ export function PageProdFatteningEntry(input_settings){
     
     
     this.TAB_FAT_FEED_SUMMARY   = 1;
-    this.TAB_FAT_FEED_ADD       = 2;
+    this.TAB_FAT_PROD_FEED      = 2;
     this.TAB_FAT_FEED_BALANCE   = 3;
     this.TAB_FAT_HARVEST        = 4;
     
@@ -65,8 +65,8 @@ export function PageProdFatteningEntry(input_settings){
     this.TAB_FAT_EXTRA          = 12;
     
     
-    let elemIdTabFatFeedSummary = `prod-fat-feed-summary`;
-    let elemIdTabFatFeedAdd     = `prod-fat-feed-add`;
+    let elemIdTabFatProdSummary = `prod-fat-feed-summary`;
+    let elemIdTabFatProdFeed    = `prod-fat-prod-feed`;
     let elemIdTabFatFeedBalance = `prod-fat-feed-bal`;
     let elemIdTabFatHarvest     = `prod-fat-harvest`;
     
@@ -82,13 +82,13 @@ export function PageProdFatteningEntry(input_settings){
     
     let tabsProdFattening = [
         {
-            data_tab_id:    elemIdTabFatFeedSummary,
-            label:          'Feeds'
+            data_tab_id:    elemIdTabFatProdSummary,
+            label:          'Prod'
         },
         
         {
-            data_tab_id:    elemIdTabFatFeedAdd,
-            label:          'Add'
+            data_tab_id:    elemIdTabFatProdFeed,
+            label:          'Feeds'
         },
         
         {
@@ -146,8 +146,8 @@ export function PageProdFatteningEntry(input_settings){
     ];
     
     
-    let elemTabFatFeedSummary   = null; 
-    let elemTabFatFeedAdd       = null;
+    let elemTabFatProdSummary   = null; 
+    let elemTabFatProdFeed       = null;
     let elemTabFatFeedBalance   = null;
     let elemTabFatHarvest       = null;
                                 
@@ -191,8 +191,8 @@ export function PageProdFatteningEntry(input_settings){
     
     this._findElementsThis = function(){
         
-        elemTabFatFeedSummary   = elemDivContainer.querySelector('#'+elemIdTabFatFeedSummary);
-        elemTabFatFeedAdd       = elemDivContainer.querySelector('#'+elemIdTabFatFeedAdd);
+        elemTabFatProdSummary   = elemDivContainer.querySelector('#'+elemIdTabFatProdSummary);
+        elemTabFatProdFeed      = elemDivContainer.querySelector('#'+elemIdTabFatProdFeed);
         elemTabFatFeedBalance   = elemDivContainer.querySelector('#'+elemIdTabFatFeedBalance);
         elemTabFatHarvest       = elemDivContainer.querySelector('#'+elemIdTabFatHarvest);    
                                                                                             
@@ -210,17 +210,26 @@ export function PageProdFatteningEntry(input_settings){
     
     this._processAfterHtmlRenderThis = function(){
        
-        this.prodFeedSummary    = new ProdFeedSummary({
+        this.pigProdSummary    = new ProdFeedSummary({
             navigation:         settings.navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-fat-feed-summary',
-            elemDivContainer:   elemTabFatFeedSummary
+            elemDivContainer:   elemTabFatProdSummary,
+            includeProdSummary: true
         });
-        this.prodFeedSummary.init();
-       
+        this.pigProdSummary.init();
         
         
-    
+        this.tablePigProdFeed   = new TablePigProdFeed({
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-fat-feed',
+            elemDivContainer:   elemTabFatProdFeed,
+            parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY
+        });
+        this.tablePigProdFeed.init();
+        
+        
         this.tableMedVac        = new TableMedVac({
             navigation:         settings.navigation,
             parentObj:          this,
@@ -334,12 +343,12 @@ export function PageProdFatteningEntry(input_settings){
         
         switch(tab_lacta){
             case thisObj.TAB_FAT_FEED_SUMMARY:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabFatFeedSummary);
+                thisObj.componentTabsWithMore.switchTab(elemIdTabFatProdSummary);
                 break;
             }
             
-            case thisObj.TAB_FAT_FEED_ADD:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabFatFeedAdd);
+            case thisObj.TAB_FAT_PROD_FEED:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabFatProdFeed);
                 break;
             }
             
@@ -387,7 +396,7 @@ export function PageProdFatteningEntry(input_settings){
             }
             
             default: {
-                thisObj.componentTabsWithMore.switchTab(elemIdTabFatFeedSummary)
+                thisObj.componentTabsWithMore.switchTab(elemIdTabFatProdSummary)
                 break;
             }
 
@@ -402,16 +411,18 @@ export function PageProdFatteningEntry(input_settings){
         console.log(dataPigProd);
         
         switch(tabId) {
-            case elemIdTabFatFeedSummary:{
-                thisObj.prodFeedSummary.beforeShow(dataPigProd);
+            case elemIdTabFatProdSummary:{
+                thisObj.pigProdSummary.beforeShow(dataPigProd);
                 
                 curTabFat = thisObj.TAB_FAT_FEED_SUMMARY;
                 break;
             }
             
             
-            case elemIdTabFatFeedAdd:{
-                curTabFat = thisObj.TAB_FAT_FEED_ADD;
+            case elemIdTabFatProdFeed:{
+                thisObj.tablePigProdFeed.beforeShow(dataPigProd);
+                
+                curTabFat = thisObj.TAB_FAT_PROD_FEED;
                 break;
             }
             

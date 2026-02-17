@@ -6,8 +6,6 @@
 
 import {UiBasic}                    from './ui_basic.js';
 
-import {updateCharCounter}          from '../page_view_basic.js'
-
 
 export function UiSelectWithAddExpandable(input_settings){
     UiBasic.call(this);

@@ -187,8 +187,6 @@ export function ComponentAddressLevels(input_settings){
     
     this.setValue = function(text){
         elemText.value      = text;
-        
-        updateCharCounter(elemText, elemCharCounter, settings.textMaxChars);
     }
     
     

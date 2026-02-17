@@ -23,7 +23,7 @@ import {TableHealthIssue}       from '../../multikey/table_health_issue.js'
 
 import {ProdFeedSummary}        from '../feeds/prod_feed_summary.js'
 
-import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed_add.js'
+import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed.js'
 
 
 

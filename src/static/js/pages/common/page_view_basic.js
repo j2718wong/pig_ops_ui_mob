@@ -86,20 +86,7 @@ export function PageViewBasic(){
     this.setNavigation = function(navigation){
         this.navigation = navigation;
     }
-    
-    
-    // Update character counter
-    this.updateCharCounter = function(input_elem, counter_elem, max_length) {
-        updateCharCounter(input_elem, counter_elem, max_length);
-        return;
-    }
-    
-    
-    this.replaceSelectOptions = function(select_elem, new_options){
-        replaceSelectOptions(select_elem, new_options);
-        return;
-    }
-    
+
 }
     
     
@@ -110,11 +97,9 @@ export function PageViewPigFarmPage(){
     
     PageViewBasic.call(this);
     
-    
 
     
     this.commonSelectOptions    = new CommonSelectOptions();
-    
     
     
     this.calculateNumDaysSinceInsem = function(insem_date, dt_current, acc_settings_ops){
@@ -178,6 +163,63 @@ export function PageViewPigFarmPage(){
         let dt_wean = new Date(msecs_wean);
         
         return formatDate(dt_wean, FORMAT_COMPACT);
+    }
+    
+    
+    this.calculateDateTargetHarvest = function(data_pig_prod, dt_current, acc_settings_ops){
+        if (!dt_current){
+            dt_current = new Date();
+            dt_current.setHours(0, 0, 0, 0);
+        }
+        
+        let diff_msecs;
+        let diff_days_birth = null;
+        let diff_days_wean  = null;
+        
+        let num_days_harvest;
+        let msecs_harvest;
+        let dt_target_harvest;
+        
+        if (data_pig_prod.birth.date_actual){
+            const dt_birth  = new Date(data_pig_prod.birth.date_actual);
+            
+            diff_msecs      = dt_current - dt_birth;
+            diff_days_birth = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
+            
+            
+            // num_days from birth
+            num_days_harvest    = acc_settings_ops.num_days_harvest_from_birth;
+                
+            
+            msecs_harvest = dt_birth.getTime() + num_days_harvest * APPLICATION.NUM_MSECS_1DAY;
+            dt_target_harvest   = new Date(msecs_harvest);
+            
+        }
+        else{
+            // No cur_entry.birth.date_actual are fatteners brought from outside
+            
+            if (data_pig_prod.weaning.date_weaning){
+                const dt_wean   = new Date(cur_entry.weaning.date_weaning);
+                
+                diff_msecs      = dt_current - dt_wean;
+                diff_days_wean  = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
+            
+                
+                // num_days from wean
+                num_days_harvest    = acc_settings_ops.num_days_harvest_from_wean;
+
+
+                msecs_harvest = dt_wean.getTime() + num_days_harvest * APPLICATION.NUM_MSECS_1DAY;
+                dt_target_harvest   = new Date(msecs_harvest);
+            }
+        }
+        
+        return {
+            date_target_harvest:  formatDate(dt_target_harvest, FORMAT_COMPACT),
+            days_since_birth:     diff_days_birth,
+            days_since_wean:      diff_days_wean  
+        }
+    
     }
     
 }
