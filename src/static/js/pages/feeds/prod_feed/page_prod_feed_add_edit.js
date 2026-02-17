@@ -964,6 +964,10 @@ export function PageProdFeedAddEdit(input_settings){
         }
         
         else {
+            delete post_data.pig_farm_feed_buy_hid;
+            
+            const pig_prod_feed_hid = showOptions.pig_prod_feed.pig_prod_feed.hid;
+            post_data.pig_prod_feed_hid = pig_prod_feed_hid;
         }
         
         

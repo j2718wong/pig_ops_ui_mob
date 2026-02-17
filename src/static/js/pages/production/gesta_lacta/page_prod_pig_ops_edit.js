@@ -733,7 +733,7 @@ export function PageProdPigOpsEdit(input_settings){
                     const data_sow_boar = navigation.pigFarm.managerSowBoar.
                                             getDataSowBoar('F', sow_hid);
                     
-                    
+
                     // Update sow_boar pig_medvac list if already requested;
                     if ('data_details' in data_sow_boar) {
                         navigation.pigFarm.requestDataPigMedVacList(
