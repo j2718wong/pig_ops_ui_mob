@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageTableBasic}         from '../common/page_table_basic.js';
+import {PageTableBasic}         from '../../common/page_table_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
@@ -12,14 +12,14 @@ import {APPLICATION,
         SOW_STATUS,
         SOW_STATUS_NAME,
         MULTIKEY_OBJ_TYPE,
-        PROD_STATUS}            from '../../constants.js';
+        PROD_STATUS}            from '../../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
         FORMAT_COMPACT_NO_SPACE,
-        createPaginationManager} from '../../utils.js';
+        createPaginationManager} from '../../../utils.js';
 
 
 

@@ -50,9 +50,9 @@ import {PageProdLactatingEntry}     from '../production/gesta_lacta/page_prod_la
 import {PageProdFatteningList}      from '../production/fattening/page_prod_fattening_list.js'
 import {PageProdFatteningEntry}     from '../production/fattening/page_prod_fattening_entry.js'
 
-import {TablePigFarmFeedBuy}        from '../feeds/table_pig_farm_feed_buy.js';
-import {PagePfFeedBuyAddEdit}       from '../feeds/page_pf_feed_buy_add_edit.js';
-import {PagePfBuyItemAddEdit}       from '../feeds/page_pf_feed_buy_item_add_edit.js';
+import {TablePigFarmFeedBuy}        from '../feeds/pig_farm_feed_buy/table_pig_farm_feed_buy.js';
+import {PagePfFeedBuyAddEdit}       from '../feeds/pig_farm_feed_buy/page_pf_feed_buy_add_edit.js';
+import {PagePfBuyItemAddEdit}       from '../feeds/pig_farm_feed_buy/page_pf_feed_buy_item_add_edit.js';
 
 import {PageProdFeedAddEdit}        from '../feeds/prod_feed/page_prod_feed_add_edit.js';
 

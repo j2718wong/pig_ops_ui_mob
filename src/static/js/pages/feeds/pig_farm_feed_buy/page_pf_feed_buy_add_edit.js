@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
@@ -12,19 +12,19 @@ import {APPLICATION,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
         PROD_STATUS,
-        SUPPLIER_TYPE}              from '../../constants.js';
+        SUPPLIER_TYPE}              from '../../../constants.js';
 
 
-import {ComponentBreadCrumbs}       from '../common/ui/comp_breadcrumb.js';
+import {ComponentBreadCrumbs}       from '../../common/ui/comp_breadcrumb.js';
 
-import {UiInputDatePicker}          from '../common/ui/input_datepicker.js';
+import {UiInputDatePicker}          from '../../common/ui/input_datepicker.js';
 
 
-import {ComponentSupplierSelect}    from '../supplier/comp_supplier_select.js'
+import {ComponentSupplierSelect}    from '../../supplier/comp_supplier_select.js'
 
 import {TableFeedBuyItems}          from './table_feed_buy_items.js'
 
-import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
+import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 
 

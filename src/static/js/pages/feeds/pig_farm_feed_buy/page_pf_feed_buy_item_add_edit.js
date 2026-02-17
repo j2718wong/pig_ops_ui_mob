@@ -4,32 +4,32 @@
 
 'use strict';
 
-import {PageViewBasic}              from '../common/page_view_basic.js';
+import {PageViewBasic}              from '../../common/page_view_basic.js';
 
-import {CommonSelectOptions}        from '../common/common_select_options.js';
+import {CommonSelectOptions}        from '../../common/common_select_options.js';
 
-import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
+import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 
-import {ComponentBreadCrumbs}       from '../common/ui/comp_breadcrumb.js';
+import {ComponentBreadCrumbs}       from '../../common/ui/comp_breadcrumb.js';
 
-import {ComponentFeedType}          from './components/comp_feed_type.js';
-import {ComponentFeedBrand}         from './components/comp_feed_brand.js';
-import {ComponentPlusMinusInput}    from '../common/ui/comp_plus_minus_input.js';
+import {ComponentFeedType}          from '../components/comp_feed_type.js';
+import {ComponentFeedBrand}         from '../components/comp_feed_brand.js';
+import {ComponentPlusMinusInput}    from '../../common/ui/comp_plus_minus_input.js';
 
 
 import {APPLICATION,
         PAGE_ID,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        MULTIKEY_OBJ_TYPE}          from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}          from '../../../constants.js';
 
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
-        FORMAT_COMPACT_NO_SPACE} from '../../utils.js';
+        FORMAT_COMPACT_NO_SPACE}    from '../../../utils.js';
 
 
 export function PagePfBuyItemAddEdit(input_settings){
