@@ -34,9 +34,11 @@ export function PageProdGestatingEntry(input_settings){
     */
     const settings              = input_settings;
 
-    
    
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
+    
+    
+    this.PAGE_ID                = PAGE_ID.PROD_GESTA_ENTRY;
     
     
     this.TAB_GESTA_PIGOPS       = 1;

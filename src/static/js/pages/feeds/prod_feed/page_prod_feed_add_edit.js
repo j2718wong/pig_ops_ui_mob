@@ -170,7 +170,7 @@ export function PageProdFeedAddEdit(input_settings){
             textLabel:          'Date Add Feeds',
             isRequired:         true,
             invalidFeedBack:    'Please input date.',
-            helpText:           'Date when feeds are added.'
+            helpText:           'Date when feeds are added to this production entry.'
         });
         
         
@@ -478,12 +478,23 @@ export function PageProdFeedAddEdit(input_settings){
         
         
         
-        // Populate kast Pig Farm Feed Buy where to get feeds
-        thisObj.populateFeedBuyFrom();
+        // Populate Pig Farm Feed Buy Section where to get feeds
+        thisObj.populateFeedBuyFromSection();
         
         
         // Populate how many feeds already bought for this dataPigProd
         thisObj.populateFeedsBought();
+        
+        
+        
+        console.log('pigprodfeed showOptions');
+        console.log(showOptions);
+        
+        
+        if (showOptions.is_add){}
+        else{
+            thisObj.populateForm();
+        }
         
         
         // Update Close and cancel button on click
@@ -513,7 +524,7 @@ export function PageProdFeedAddEdit(input_settings){
     }
     
     
-    this.populateFeedBuyFrom = function(){
+    this.populateFeedBuyFromSection = function(){
         elemFeedBuyFrom.style.display       = 'none'; 
         elemFeedBuyNone.style.display       = 'none'; 
         elemLinkAddFeedBuy.style.display    = 'none';
@@ -536,77 +547,113 @@ export function PageProdFeedAddEdit(input_settings){
         
         
         
-        
-        if (feed_buy_list == null || feed_buy_list.length == 0){
-            elemFeedBuyNone.style.display   = 'block';
-            elemLinkAddFeedBuy.style.display= 'block'; 
-        }
-        
-        else{
-            console.log(feed_buy_list);
-            
-            // Get latest entry
-            const last_feed_buy = feed_buy_list[0];
-            const date_buy  = last_feed_buy.pf_feed_buy.date_buy;
-            const dt_buy    = new Date(date_buy);
-            
-            // Calculate how many days passed from date buy to now
-        
-            const diff_msecs    = dtCurrentDate - dt_buy;
-            const diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
-                
-            console.log('diff_days = ' + diff_days);
-                
-            if (diff_days <= MAX_DAYS_TRIGGER_NO_FEED_BUY){
-                // need to save this
-                selectedPigFarmFeedBuy = last_feed_buy;
-                
-                // Populate elemFeedBuyFrom
-                const s_dt_buy = formatDate(dt_buy, FORMAT_COMPACT);
-                const s_feed_buy = `${s_dt_buy} ${last_feed_buy.feed_supplier.name}`;
-                
-                elemFeedBuyFrom.textContent         = s_feed_buy;
-                
-
-                elemFeedBuyFrom.style.display       = 'block'; 
-                elemLinkAddFeedBuy.style.display    = 'none';
-                 
-                elemTableFeedBuy.style.display      = 'table';
-                elemFeedInputShow.style.display     = 'block';
-                elemBtnSave.style.display           = 'block';
-                
-                console.log(`selectedPigFarmFeedBuy`);
-                console.log(selectedPigFarmFeedBuy);
-        
-            
-                tableFeedBuy.renderTable(selectedPigFarmFeedBuy.feed_items);
+        if (showOptions.is_add) {
+            if (feed_buy_list == null || feed_buy_list.length == 0){
+                elemFeedBuyNone.style.display   = 'block';
+                elemLinkAddFeedBuy.style.display= 'block'; 
             }
+            
             else{
-                elemFeedBuyNone.style.display       = 'block';
-                elemLinkAddFeedBuy.style.display    = 'block'; 
-                elemLinkOlderFeedBuy.style.display  = 'block';
+                console.log(feed_buy_list);
                 
-                //show an option to the user to select older feed_buy
-                elemSelectOlderFeedBuy.style.display= 'block';
+                // Get latest entry
+                const last_feed_buy = feed_buy_list[0];
+                const date_buy  = last_feed_buy.pf_feed_buy.date_buy;
+                const dt_buy    = new Date(date_buy);
+                
+                // Calculate how many days passed from date buy to now
+            
+                const diff_msecs    = dtCurrentDate - dt_buy;
+                const diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
+                    
+                console.log('diff_days = ' + diff_days);
+                    
+                if (diff_days <= MAX_DAYS_TRIGGER_NO_FEED_BUY){
+                    // need to save this
+                    selectedPigFarmFeedBuy = last_feed_buy;
+                    
+                    
+                    // Populate elemFeedBuyFrom
+                    thisObj.populateFeedBuyFromLink(selectedPigFarmFeedBuy);
+                }
+                else {
+                    elemFeedBuyNone.style.display       = 'block';
+                    elemLinkAddFeedBuy.style.display    = 'block'; 
+                    elemLinkOlderFeedBuy.style.display  = 'block';
+                    
+                    //show an option to the user to select older feed_buy
+                    elemSelectOlderFeedBuy.style.display= 'block';
 
-        
-                // populate elemSelectOlderFeedBuy
-                let filtered = feed_buy_list;
-                if (feed_buy_list.lenght >= MAX_OLDER_ENTRIES) {
-                    filtered = feed_buy_list.slice(0, MAX_OLDER_ENTRIES);
+            
+                    // populate elemSelectOlderFeedBuy
+                    let filtered = feed_buy_list;
+                    if (feed_buy_list.lenght >= MAX_OLDER_ENTRIES) {
+                        filtered = feed_buy_list.slice(0, MAX_OLDER_ENTRIES);
+                    }
+                    
+                    
+                    commonSelectOptions.setDataPigFarmFeedBuyList(filtered, 
+                        elemSelectOlderFeedBuy);
                 }
                 
-                
-                commonSelectOptions.setDataPigFarmFeedBuyList(filtered, 
-                    elemSelectOlderFeedBuy);
             }
-            
         }
         
+        else {
+            const pig_prod_feed = showOptions.pig_prod_feed;
+            const pig_farm_feed_buy = showOptions.pig_farm_feed_buy;
+            
+            selectedPigFarmFeedBuy  = pig_farm_feed_buy;
+            
+            // Populate elemFeedBuyFrom
+            thisObj.populateFeedBuyFromLink(selectedPigFarmFeedBuy);
+        }
         
         
     }
     
+    
+    this.populateFeedBuyFromLink = function(pig_farm_feed_buy){
+        const date_buy  = pig_farm_feed_buy.pf_feed_buy.date_buy;
+        const dt_buy    = new Date(date_buy);
+        const s_dt_buy  = formatDate(dt_buy, FORMAT_COMPACT);
+        const supplier  = pig_farm_feed_buy.feed_supplier.name;
+        
+        
+        elemFeedBuyFrom.textContent = `${s_dt_buy} ${supplier}`;
+        
+        
+        elemFeedBuyFrom.onclick = function(){
+            const row_entry = pig_farm_feed_buy;
+            
+            const go_back_page_id = PAGE_ID.PROD_FEED_ADD_EDIT;
+            const go_back_page = navigation.getPageContainer(go_back_page_id);
+        
+            const options ={
+                is_add:                 false,   // false is edit
+                callback_after_edit:    null,
+                go_back_page:           go_back_page
+            }
+            navigation.pagePfFeedBuyAddEdit.beforeShow(options, row_entry);
+            
+            
+            const goto_page_id   = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
+            const page_container = navigation.getPageContainer(goto_page_id);
+            navigation.showThisPage(page_container);
+        }
+        
+        
+        elemFeedBuyFrom.style.display       = 'block'; 
+        elemLinkAddFeedBuy.style.display    = 'none';
+         
+        elemTableFeedBuy.style.display      = 'table';
+        elemFeedInputShow.style.display     = 'block';
+        elemBtnSave.style.display           = 'block';
+        
+    
+        tableFeedBuy.renderTable(selectedPigFarmFeedBuy.feed_items);
+        
+    }
     
     
     this.populateFeedsBought = function(){
@@ -665,6 +712,20 @@ export function PageProdFeedAddEdit(input_settings){
     }
     
     
+    this.populateForm = function(){
+        
+        const pig_prod_feed = showOptions.pig_prod_feed;
+        const date_add = pig_prod_feed.pig_prod_feed.date_add;
+
+        
+        elemUiDateAdd.setDate(date_add);
+    }
+    
+    
+    this.populateFeedAdd = function(){
+        
+    }
+    
     
     this.show = function(){
         if (showOptions.is_add == false){
@@ -675,18 +736,6 @@ export function PageProdFeedAddEdit(input_settings){
         }
     }
     
-    
-    this.populateForm = function(data_entry, add_hid){
-        
-        
-        
-
-        // Set the datepicker to this date
-        elemUiDateAdd.setDate(cur_add.add.date_add);
-        
-        
-        
-    }
     
     
     this.disableAllInputs = function(){
@@ -819,7 +868,7 @@ export function PageProdFeedAddEdit(input_settings){
             'uhid':             user_hid,
             
             'date_add':         dt_add_s,
-            'pf_feed_buy_hid':  pf_feed_buy_hid
+            'pig_farm_feed_buy_hid':  pf_feed_buy_hid
             
         };
         
@@ -857,7 +906,7 @@ export function PageProdFeedAddEdit(input_settings){
          
         
         if (showOptions.is_add == true){
-            
+            post_data.pig_prod_hid = dataPigProd.pig_production.hid;
         }
         
         else {
@@ -874,8 +923,7 @@ export function PageProdFeedAddEdit(input_settings){
             url = `${base_url}/pig_prod_feed/update`;
         }
         
-        
-        return;
+
         
         $.ajax({
             type: 'POST',

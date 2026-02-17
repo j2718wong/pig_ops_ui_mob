@@ -148,12 +148,6 @@ export function TablePigFarmFeedBuy(input_settings){
         
         showOptions = options;
         
-        
-        
-        
-        
-        
-        
     }
     
      
@@ -310,7 +304,11 @@ export function TablePigFarmFeedBuy(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        for (const cur_entry of dataFarmFeedBuyList){
+        dataFarmFeedBuyList = navigation.pigFarm.dataFarmFeedBuyList;
+        
+        const data_list = dataFarmFeedBuyList;
+        
+        for (const cur_entry of data_list){
             if (cur_entry.pf_feed_buy.hid == entry_hid){
                 return cur_entry;
             }

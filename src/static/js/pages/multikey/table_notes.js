@@ -391,8 +391,8 @@ export function TableNotes(input_settings){
         
         if (data_entry){
             if ('list_notes' in data_entry.data_details){
-
-                for (const cur_entry of data_entry.data_details.list_notes){
+                let data_list = data_entry.data_details.list_notes;
+                for (const cur_entry of data_list){
                     if (cur_entry.prod_notes.hid == entry_hid){
                         return cur_entry;
                     }

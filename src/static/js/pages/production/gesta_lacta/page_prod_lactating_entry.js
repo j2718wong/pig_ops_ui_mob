@@ -9,7 +9,7 @@ import {PageProdEntryCommon}    from './page_prod_entry_common.js';
 import {PAGE_ID,
         SOW_STATUS,
         PIG_OPERATION_TYPE,
-        MULTIKEY_OBJ_TYPE}             from '../../../constants.js';
+        MULTIKEY_OBJ_TYPE}      from '../../../constants.js';
 
 
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
@@ -43,9 +43,11 @@ export function PageProdLactatingEntry(input_settings){
     */
     const settings              = input_settings;
 
-    
    
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
+    
+    
+    this.PAGE_ID                = PAGE_ID.PROD_LACTA_ENTRY;
     
     
     this.TAB_LACTA_PIGOPS       = 1;

@@ -312,7 +312,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         
         // Update Close and cancel button on click
        
-              
+        /* This is updated dynamically; not fixed;     
         elemBtnClose.addEventListener('click', function() {
             navigation._onClickNavFeedsExpenses();
         });
@@ -321,7 +321,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         elemBtnCancel.addEventListener('click', function() {
             navigation._onClickNavFeedsExpenses();
         });
-        
+        */
         
         settingsBreadcrumb.items[0].callbackOnClick = function(){
             navigation._onClickNavFeedsExpenses();
@@ -411,6 +411,17 @@ export function PagePfFeedBuyAddEdit(input_settings){
             
             thisObj.populateForm();
         }
+        
+        
+        // Update Close and cancel button on click
+        
+        elemBtnClose.onclick = function() {
+            navigation.showThisPage(showOptions.go_back_page);
+        };
+        
+        elemBtnCancel.onclick = function() {
+            navigation.showThisPage(showOptions.go_back_page);
+        };
         
     }
     

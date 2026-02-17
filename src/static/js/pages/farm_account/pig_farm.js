@@ -364,8 +364,6 @@ export function PigFarm(_navigation){
     }
     
     
-    
-    
     this.requestDataPigMedVacList = function(medvac_type, data_entry, 
             callback_success, elem_show_error){
         

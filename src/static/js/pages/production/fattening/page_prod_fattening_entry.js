@@ -43,9 +43,11 @@ export function PageProdFatteningEntry(input_settings){
     */
     const settings              = input_settings;
 
-    
    
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
+    
+    
+    this.PAGE_ID                = PAGE_ID.PROD_FATTENING_ENTRY;
     
     
     this.TAB_FAT_FEED_SUMMARY   = 1;

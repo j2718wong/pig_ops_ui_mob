@@ -112,13 +112,19 @@ export function TablePigProdFeed(input_settings){
         dataPigProd     = data_pig_prod;
         showOptions     = options;
         
+        // This is needed when adding and editing PigProdFeed
         thisObj.requestDataPigFarmFeedBuyList();
         
-        thisObj.setDataEntryList([]);
-        thisObj.renderTable([]);
-        
-       
-       
+        // Request data if not yet requested
+        if ('data_details' in dataPigProd){
+            
+            // Set table entry list; This will set also the entry count;
+            thisObj.setDataEntryList(dataPigProd.data_details.list_prod_feed);
+            thisObj.renderTable(dataPigProd.data_details.list_prod_feed);
+        } else{
+            
+            thisObj.requestDataPigProdFeedList()();
+        }
         
         console.log(dataPigProd);
         
@@ -147,6 +153,22 @@ export function TablePigProdFeed(input_settings){
     }
     
     
+    
+    this.requestDataPigProdFeedList = function(){
+        const callback_success = function(data){
+            thisObj.setDataEntryList(dataPigProd.data_details.list_prod_feed);
+            thisObj.renderTable(dataPigProd.data_details.list_prod_feed);
+        };
+        
+        navigation.pigFarm.managerPigProd.requestPigProdFeedList(dataPigProd, 
+            callback_success, thisObj.elemServerErrorMsg);
+            
+            
+        // Parallel request as this is needed later on.
+        navigation.pigFarm.requestDataPigFarmFeedBuyList();
+    }
+    
+    
         
     this.show = function(options){
         
@@ -169,13 +191,15 @@ export function TablePigProdFeed(input_settings){
         <table class="data-table" id="">
             <colgroup>
                 <col style="width: 18%;">
-                <col style="width: 82%;">
+                <col style="width: 47%;">
+                <col style="width: 35%;">
             </colgroup>
                 
             <thead>
                 <tr>
                     <th>Date</th>
                     <th>Feed Item</th>
+                    <th>Supplier</th>
                 </tr>
             </thead>
             
@@ -201,22 +225,63 @@ export function TablePigProdFeed(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-
-
-        const dt_mate = new Date(cur_entry.date_mate);
+        const dt_add = new Date(cur_entry.pig_prod_feed.date_add);
         
-        const sow_boar_name     = getSowBoarReference(dataPigProd.sow_boar, false)
-        const sow_boar_mate_name = getSowBoarReference(cur_entry.mate_sow_boar, false)
+        let html_items = '';
+        
+        for (const cur_item of cur_entry.feed_items){
+            const html_item = `
+            <div>
+                <span>
+                ${cur_item.feed_item.quantity} ${cur_item.feed_type.name}, ${cur_item.feed_brand.name}  
+                </span>
+            </div>
+            `;
+            
+            html_items += html_item;
+        }
+        
         
         const html = `
             <tr>
-                <td><span>${formatDate(dt_mate, FORMAT_COMPACT)}</span></td>
-                <td >${cur_entry.farm_prod_id}</td>
-                <td >${sow_boar_name} <span class="love-icon">❤️</span> ${sow_boar_mate_name}</td>
+                <td><span>${formatDate(dt_add, FORMAT_COMPACT)}</span></td>
+                <td>${html_items}</td>
+                <td>${cur_entry.feed_supplier.name}</td>
             </tr>
         `;
         
         return html;
+    }
+    
+    
+    this.getElemTableRow = function(cur_entry){
+        const pig_prod_feed = cur_entry.pig_prod_feed;
+        
+        const elem_row = document.createElement('tr');
+        
+        const html = thisObj.getHtmlTableRow(cur_entry);
+        elem_row.innerHTML = html;
+         
+
+        
+        // Attach onclick listeners to td
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        let index = 0
+        for (const cur_td of elem_tds){
+
+            if (index == 1){
+                cur_td.onclick = function(){
+                    thisObj.onClickRowEntry(pig_prod_feed.hid);
+                };
+
+            }
+            
+            index += 1;
+        }
+        
+        return elem_row;
     }
     
       
@@ -232,11 +297,22 @@ export function TablePigProdFeed(input_settings){
     }
     
     
+    this.getEntry = function(entry_hid){
+        const data_list = dataPigProd.data_details.list_prod_feed;
+        
+        for (const cur_entry of data_list){
+            if (cur_entry.pig_prod_feed.hid == entry_hid){
+                return cur_entry;
+            }
+        }
+        
+        return null;
+    }
+    
+    
     this.onClickAddEntry = function(){
         let go_back_page_id = settings.parentPageId;
         
-        
-       
         
         const go_back_page = navigation.getPageContainer(go_back_page_id);
         const options ={
@@ -253,4 +329,41 @@ export function TablePigProdFeed(input_settings){
     }
     
     
+    this.onSuccessAddEntry = function(){
+        thisObj.requestDataPigProdFeedList();
+    }
+    
+    
+    this.onClickRowEntry = function(entry_hid){
+        const row_entry = thisObj.getEntry(entry_hid);
+        
+
+        if (row_entry){
+            const go_back_page_id = parentObj.PAGE_ID;
+            const go_back_page = navigation.getPageContainer(go_back_page_id);
+            
+            //TODO: This is the pig_farm_feed_buy where the pig_prod_feed was taken.
+            const pf_feed_buy_hid = row_entry.pig_prod_feed.pf_feed_buy_hid;
+            const pig_farm_feed_buy = navigation.pagePigFarmFeedBuyList.getEntry(pf_feed_buy_hid);
+            
+            const options ={
+                is_add:                 false,   // false is edit
+                callback_after_edit:    thisObj.onSuccessEditEntry,
+                pig_farm_feed_buy:      pig_farm_feed_buy, 
+                pig_prod_feed:          row_entry, // this is entry to be edited
+                go_back_page:           go_back_page
+            };
+            navigation.pageProdFeedAddEdit.beforeShow(dataPigProd, options);
+            
+            
+            const goto_page_id   = PAGE_ID.PROD_FEED_ADD_EDIT;
+            const page_container = navigation.getPageContainer(goto_page_id);
+            navigation.showThisPage(page_container);
+        }
+    }
+    
+    
+    this.onSuccessEditEntry = function(){
+        thisObj.requestDataPigProdFeedList();
+    }
 }

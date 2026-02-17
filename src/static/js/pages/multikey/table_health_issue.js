@@ -334,18 +334,13 @@ export function TableHealthIssue(input_settings){
     
     
     this.getEntry = function(entry_hid){
+        let data_list = null;
+        
         
         switch (settings.healthType) {
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
                 if ('list_health_issues' in dataSowBoar.data_details){
-                    
-                    let data_list = dataSowBoar.data_details.list_health_issues;
-                    
-                    for (const cur_entry of data_list){
-                        if (cur_entry.prod_notes.hid == entry_hid){
-                            return cur_entry;
-                        }
-                    }
+                    data_list = dataSowBoar.data_details.list_health_issues;
                 }
                 
                 break;
@@ -353,19 +348,20 @@ export function TableHealthIssue(input_settings){
             
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
                 if ('list_health_issues' in dataPigProd.data_details){
-                    
-                    let data_list = dataPigProd.data_details.list_health_issues;
-                    
-                    for (const cur_entry of data_list){
-                        if (cur_entry.prod_notes.hid == entry_hid){
-                            return cur_entry;
-                        }
-                    }
+                    data_list = dataPigProd.data_details.list_health_issues;
                 }
                 
                 break;
             }
-            
+        }
+        
+        
+        if (data_list) {
+            for (const cur_entry of data_list){
+                if (cur_entry.prod_notes.hid == entry_hid){
+                    return cur_entry;
+                }
+            }
         }
         
         return null;

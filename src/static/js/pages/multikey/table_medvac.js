@@ -385,7 +385,8 @@ export function TableMedVac(input_settings){
     
     this.getEntry = function(entry_hid){
         if ('list_medvac' in curDataEntry.data_details){
-            for (const cur_entry of curDataEntry.data_details.list_medvac){
+            let data_list = curDataEntry.data_details.list_medvac;
+            for (const cur_entry of data_list){
                 if (cur_entry.medvac.hid == entry_hid){
                     return cur_entry;
                 }
