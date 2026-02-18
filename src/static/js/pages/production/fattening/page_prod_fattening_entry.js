@@ -24,7 +24,7 @@ import {TableHealthIssue}       from '../../multikey/table_health_issue.js'
 
 import {ProdFeedSummary}        from '../feeds/prod_feed_summary.js'
 import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed.js'
-
+import {TableFeedBalance}       from '../../feeds/feed_balance/table_feed_balance.js'
 
 
 export function PageProdFatteningEntry(input_settings){
@@ -190,7 +190,7 @@ export function PageProdFatteningEntry(input_settings){
     
     
     this._findElementsThis = function(){
-        
+   
         elemTabFatProdSummary   = elemDivContainer.querySelector('#'+elemIdTabFatProdSummary);
         elemTabFatProdFeed      = elemDivContainer.querySelector('#'+elemIdTabFatProdFeed);
         elemTabFatFeedBalance   = elemDivContainer.querySelector('#'+elemIdTabFatFeedBalance);
@@ -229,6 +229,16 @@ export function PageProdFatteningEntry(input_settings){
         });
         this.tablePigProdFeed.init();
         
+        
+        this.tableFeedBalance   = new TableFeedBalance({
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-fat-feed-bal',
+            elemDivContainer:   elemTabFatFeedBalance,
+            parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY
+        });
+        this.tableFeedBalance.init();
+
         
         this.tableMedVac        = new TableMedVac({
             navigation:         settings.navigation,
@@ -339,9 +349,9 @@ export function PageProdFatteningEntry(input_settings){
     
 
     
-    this.switchTab = function(tab_lacta){
+    this.switchTab = function(tab_fattening){
         
-        switch(tab_lacta){
+        switch(tab_fattening){
             case thisObj.TAB_FAT_FEED_SUMMARY:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabFatProdSummary);
                 break;
@@ -349,6 +359,11 @@ export function PageProdFatteningEntry(input_settings){
             
             case thisObj.TAB_FAT_PROD_FEED:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabFatProdFeed);
+                break;
+            }
+            
+            case thisObj.TAB_FAT_FEED_BALANCE:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabFatFeedBalance);
                 break;
             }
             
@@ -425,6 +440,18 @@ export function PageProdFatteningEntry(input_settings){
                 curTabFat = thisObj.TAB_FAT_PROD_FEED;
                 break;
             }
+            
+            
+            case elemIdTabFatFeedBalance:{
+                thisObj.tableFeedBalance.beforeShow(dataPigProd);
+                
+                curTabFat = thisObj.TAB_FAT_FEED_BALANCE;
+                break;
+            }
+            
+            
+            
+            
             
             
             case elemIdTabFatMedVac:{

@@ -326,10 +326,10 @@ export function PageProdFatteningList(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const acc_settings_ops = navigation.pigFarm.getSettingsOperations();
         
         const target_harvest = farmPage.calculateDateTargetHarvest(cur_entry, 
-            dtCurrentDate, acc_settings_ops)
+            dtCurrentDate, acc_settings_ops);
         
         
         let pid = cur_entry.pig_production.farm_prod_id;

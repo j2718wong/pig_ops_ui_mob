@@ -175,7 +175,7 @@ export function PageProdFeedAddEdit(input_settings){
         
         
         componentFeedsInput     = new ComponentFeedsInput({
-            uniqueKey:          `${settings.uniqueKey}-feeds_input`,
+            uniqueKey:          `${settings.uniqueKey}-feeds-input`,
             elemDivContainer:   elemDivContainer,
             
             step:               1,                                    
@@ -470,7 +470,7 @@ export function PageProdFeedAddEdit(input_settings){
                 componentFeedsInput.showFeedType({
                      starter: true,
                      grower: true,
-                     finsher: true
+                     finisher: true
                 });
                 break;
             }

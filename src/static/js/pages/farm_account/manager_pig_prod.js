@@ -436,6 +436,57 @@ export function ManagerPigProd(input_settings){
     }
     
     
+    this.requestDataProdFeedBalanceList = function(data_pig_prod, 
+            callback_success, elem_show_error){
+        
+        
+        const pig_prod_hid = data_pig_prod.pig_production.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/feed_balance/list?pig_prod_hid=${pig_prod_hid}`;
+        
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                   data_pig_prod.data_details.list_feed_balance = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    
+    
+    
+    
     /* Will remove pig_prod_entry from given prod_list.
     * @param prod_list - either 
         this.dataGestatingList

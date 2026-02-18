@@ -258,12 +258,13 @@ export function PageTableBasic(){
         <div id="${elemIdServerErrorMsg}"></div>
     
         
+        <!-- Add entry Link instead of button -->
+        ${html_add_entry_link}
+    
+        
         <!-- Controls Bar -->
         ${html_controls_bar}
     
-        <!-- Add entry Link instead of button -->
-        ${html_add_entry_link}
-        
 
         <div id="${elemIdTableContent}">
             ${html_table}

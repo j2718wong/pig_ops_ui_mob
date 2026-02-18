@@ -32,6 +32,7 @@ export function ProdFeedSummary(input_settings){
 
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    const parentObj             = input_settings.parentObj;
     
     /*
     Typical input_settings
@@ -67,6 +68,7 @@ export function ProdFeedSummary(input_settings){
     let elemIdTdPigsHarvested   = null;
 
     let elemIdTableBody         = null;
+    let elemIdLastFeedBalance   = null;
 
 
 
@@ -77,7 +79,7 @@ export function ProdFeedSummary(input_settings){
     let elemTdPigsHarvested     = null;
     
     let elemTableBody           = null;
-    
+    let elemLastFeedBalance     = null;
 
 
 
@@ -108,6 +110,7 @@ export function ProdFeedSummary(input_settings){
     this.getHtml = function(){
         
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
+        elemIdLastFeedBalance   = `${settings.uniqueKey}-last-feed-balance`;
         
         const html_style        = this._writeInlineStyle();
         
@@ -129,7 +132,7 @@ export function ProdFeedSummary(input_settings){
     
         ${html_style}
         
-        <div>Last Feed Balance: 02 Feb 2026  </div>
+        <div>Last Feed Balance: <span id="${elemIdLastFeedBalance}">02 Feb 2026</span>  </div>
         
         <table class="data-table table-feed-summary" id="">
             <colgroup>
@@ -169,13 +172,14 @@ export function ProdFeedSummary(input_settings){
     
     
     this._findElements = function(){
-        elemTableBody           = document.getElementById(elemIdTableBody);
+        elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
+        elemLastFeedBalance     = elemDivContainer.querySelector('#'+elemIdLastFeedBalance);
         
-        elemTdPigCount          = document.getElementById(elemTdPigCount);     
-        elemTdNumDaysLabel      = document.getElementById(elemTdNumDaysLabel); 
-        elemTdNumDays           = document.getElementById(elemTdNumDays);
-        elemTdTargetHarvest     = document.getElementById(elemTdTargetHarvest);
-        elemTdPigsHarvested     = document.getElementById(elemTdPigsHarvested);
+        elemTdPigCount          = elemDivContainer.querySelector('#'+elemIdTdPigCount);     
+        elemTdNumDaysLabel      = elemDivContainer.querySelector('#'+elemIdTdNumDaysLabel); 
+        elemTdNumDays           = elemDivContainer.querySelector('#'+elemIdTdNumDays);
+        elemTdTargetHarvest     = elemDivContainer.querySelector('#'+elemIdTdTargetHarvest);
+        elemTdPigsHarvested     = elemDivContainer.querySelector('#'+elemIdTdPigsHarvested);
         
     }
     
@@ -209,12 +213,48 @@ export function ProdFeedSummary(input_settings){
             console.log('Prod Summary');
             console.log(curDataEntry);
             
+            const acc_settings_ops = navigation.pigFarm.getSettingsOperations();
+            
+            const target_harvest = parentObj.calculateDateTargetHarvest(
+                curDataEntry, null, acc_settings_ops);
+        
+            let numdays_label = '';
+            
+            if (curDataEntry.birth.date_actual){
+                elemTdNumDaysLabel.innerHTML  = 'Days Since Birth';  
+                elemTdNumDays.innerHTML = target_harvest.days_since_birth;  
+            }
+            else{
+                elemTdNumDaysLabel.innerHTML  = 'Days Since Wean';  
+                elemTdNumDays.innerHTML = target_harvest.days_since_wean;
+            }
+            
+            elemTdPigCount.innerHTML  = curDataEntry.pig_production.cur_pig_count;
+            
+                  
+            elemTdTargetHarvest.innerHTML =  target_harvest.date_target_harvest;
+            
+            
+            //elemTdPigsHarvested 
+            
+            
         }
         
         
         const prod_entry_feeds = curDataEntry.feeds;
         const feeds_bought  = prod_entry_feeds.bought;
         const feeds_balance = prod_entry_feeds.balance;
+        
+        
+        let s_date_balance = '';
+        if (feeds_balance.date_balance){
+            const dt_balance = new Date(feeds_balance.date_balance);
+            s_date_balance = formatDate(dt_balance, FORMAT_COMPACT);
+        }
+        else{
+            s_date_balance = 'None';
+        }
+        elemLastFeedBalance.textContent = s_date_balance;
         
         const feed_summary = [
             {   

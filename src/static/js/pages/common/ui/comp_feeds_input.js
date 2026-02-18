@@ -161,7 +161,7 @@ export function ComponentFeedsInput(input_settings){
                     <tbody id="${elemIdFeedInputBody}">
                         <tr id="${elemIdFinisherRow}">
                             <td class="fi-readonly-cell" style="vertical-align:middle;">Finisher</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdFinisherCol2}" style="vertical-align:middle;">150</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdFinisherCol2}" style="vertical-align:middle;">   </td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdFinisherInput}" value="0" step="${step}" min="0" data-feed="finisher">
@@ -176,7 +176,7 @@ export function ComponentFeedsInput(input_settings){
                         
                         <tr id="${elemIdGrowerRow}">
                             <td class="fi-readonly-cell" style="vertical-align:middle;">Grower</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGrowerCol2}" style="vertical-align:middle;">150</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGrowerCol2}" style="vertical-align:middle;">   </td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdGrowerInput}" value="0" step="${step}" min="0" data-feed="grower">
@@ -191,7 +191,7 @@ export function ComponentFeedsInput(input_settings){
                         
                         <tr id="${elemIdStarterRow}">
                             <td class="fi-readonly-cell" style="vertical-align:middle;">Starter</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdStarterCol2}" style="vertical-align:middle;">150</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdStarterCol2}" style="vertical-align:middle;">   </td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdStarterInput}" value="0" step="${step}" min="0" data-feed="starter">
@@ -206,7 +206,7 @@ export function ComponentFeedsInput(input_settings){
                         
                         <tr id="${elemIdPreStarterRow}">
                             <td class="fi-readonly-cell" style="vertical-align:middle;">PreStart</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdPreStarterCol2}" style="vertical-align:middle;">150</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdPreStarterCol2}" style="vertical-align:middle;">   </td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdPreStarterInput}" value="0" step="${step}" min="0" data-feed="prestarter">
@@ -220,7 +220,7 @@ export function ComponentFeedsInput(input_settings){
                         
                         <tr id="${elemIdBoosterRow}">
                             <td class="fi-readonly-cell" style="vertical-align:middle;">Booster</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdBoosterCol2}" style="vertical-align:middle;">150</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdBoosterCol2}" style="vertical-align:middle;">   </td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdBoosterInput}" value="0" step="${step}" min="0" data-feed="booster">
@@ -235,7 +235,7 @@ export function ComponentFeedsInput(input_settings){
                         
                         <tr id="${elemIdLactaRow}">
                             <td class="fi-readonly-cell" style="vertical-align:middle;">Lacta</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdLactaCol2}" style="vertical-align:middle;">150</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdLactaCol2}" style="vertical-align:middle;">   </td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdLactaInput}" value="0" step="${step}" min="0" data-feed="lacta">
@@ -249,7 +249,7 @@ export function ComponentFeedsInput(input_settings){
                         
                         <tr id="${elemIdGestaRow}">
                             <td class="fi-readonly-cell" style="vertical-align:middle;">Gesta</td>
-                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGestaCol2}" style="vertical-align:middle;">150</td>
+                            <td class="fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGestaCol2}" style="vertical-align:middle;">   </td>
                             <td class="fi-input-cell">
                                 <div class="fi-number-input-container">
                                     <input type="text" class="fi-number-input" id="${elemIdGestaInput}" value="0" step="${step}" min="0" data-feed="gesta">
@@ -284,7 +284,7 @@ const html_2 = `
   <!-- Finisher Row -->
   <div class="grid-row" id="${elemIdFinisherRow}">
     <div class="grid-cell fi-readonly-cell">Finisher</div>
-    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdFinisherCol2}">150</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdFinisherCol2}">   </div>
     <div class="grid-cell fi-input-cell">
       <div class="fi-number-input-container">
         <input type="text" class="fi-number-input" id="${elemIdFinisherInput}" value="0" step="${step}" min="0" data-feed="finisher">
@@ -299,7 +299,7 @@ const html_2 = `
   <!-- Grower Row -->
   <div class="grid-row" id="${elemIdGrowerRow}">
     <div class="grid-cell fi-readonly-cell">Grower</div>
-    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGrowerCol2}">150</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGrowerCol2}">   </div>
     <div class="grid-cell fi-input-cell">
       <div class="fi-number-input-container">
         <input type="text" class="fi-number-input" id="${elemIdGrowerInput}" value="0" step="${step}" min="0" data-feed="grower">
@@ -314,7 +314,7 @@ const html_2 = `
   <!-- Starter Row -->
   <div class="grid-row" id="${elemIdStarterRow}">
     <div class="grid-cell fi-readonly-cell">Starter</div>
-    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdStarterCol2}">150</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdStarterCol2}">   </div>
     <div class="grid-cell fi-input-cell">
       <div class="fi-number-input-container">
         <input type="text" class="fi-number-input" id="${elemIdStarterInput}" value="0" step="${step}" min="0" data-feed="starter">
@@ -329,7 +329,7 @@ const html_2 = `
   <!-- PreStarter Row -->
   <div class="grid-row" id="${elemIdPreStarterRow}">
     <div class="grid-cell fi-readonly-cell">PreStart</div>
-    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdPreStarterCol2}">150</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdPreStarterCol2}">   </div>
     <div class="grid-cell fi-input-cell">
       <div class="fi-number-input-container">
         <input type="text" class="fi-number-input" id="${elemIdPreStarterInput}" value="0" step="${step}" min="0" data-feed="prestarter">
@@ -344,7 +344,7 @@ const html_2 = `
   <!-- Booster Row -->
   <div class="grid-row" id="${elemIdBoosterRow}">
     <div class="grid-cell fi-readonly-cell">Booster</div>
-    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdBoosterCol2}">150</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdBoosterCol2}">   </div>
     <div class="grid-cell fi-input-cell">
       <div class="fi-number-input-container">
         <input type="text" class="fi-number-input" id="${elemIdBoosterInput}" value="0" step="${step}" min="0" data-feed="booster">
@@ -359,7 +359,7 @@ const html_2 = `
   <!-- Lacta Row -->
   <div class="grid-row" id="${elemIdLactaRow}">
     <div class="grid-cell fi-readonly-cell">Lacta</div>
-    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdLactaCol2}">150</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdLactaCol2}">   </div>
     <div class="grid-cell fi-input-cell">
       <div class="fi-number-input-container">
         <input type="text" class="fi-number-input" id="${elemIdLactaInput}" value="0" step="${step}" min="0" data-feed="lacta">
@@ -374,7 +374,7 @@ const html_2 = `
   <!-- Gesta Row -->
   <div class="grid-row" id="${elemIdGestaRow}">
     <div class="grid-cell fi-readonly-cell">Gesta</div>
-    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGestaCol2}">150</div>
+    <div class="grid-cell fi-readonly-cell fi-col2 ${class_hidden}" id="${elemIdGestaCol2}">   </div>
     <div class="grid-cell fi-input-cell">
       <div class="fi-number-input-container">
         <input type="text" class="fi-number-input" id="${elemIdGestaInput}" value="0" step="${step}" min="0" data-feed="gesta">
@@ -432,14 +432,14 @@ const html_2 = `
     this._bindEventListeners = function(){
         // Function to update value
         function updateBalance(feedType, newValue) {
-            const inputField = document.querySelector(`.fi-number-input[data-feed="${feedType}"]`);
+            const inputField = elemDivContainer.querySelector(`.fi-number-input[data-feed="${feedType}"]`);
             inputField.value = newValue;
             dataFeedInput[feedType] = newValue;
             console.log(`Updated ${feedType}: ${newValue} kg`);
         }
         
         // Set up up/down buttons
-        document.querySelectorAll('.fi-step-btn').forEach(button => {
+        elemDivContainer.querySelectorAll('.fi-step-btn').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
                 const feedType = this.getAttribute('data-feed');
@@ -479,7 +479,7 @@ const html_2 = `
         
         
         // Handle direct input changes
-        document.querySelectorAll('.fi-number-input').forEach(input => {
+        elemDivContainer.querySelectorAll('.fi-number-input').forEach(input => {
             input.addEventListener('input', function() {
                 const feedType = this.getAttribute('data-feed');
                 let value = parseFloat(this.value) || 0;

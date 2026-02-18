@@ -74,8 +74,7 @@ export function TableFeedBalance(input_settings){
         thisObj.setSettingsTable({
             uniqueKey:      `${settings.uniqueKey}-table`,
             noSearchAdd:    true,
-            noControlsBar:  true,
-            tableTitle:     'Feed Add',
+            tableTitle:     'Feed Balance',
             
             addEntryLink: {
                 label:      'Add Entry',
@@ -117,11 +116,11 @@ export function TableFeedBalance(input_settings){
         if ('data_details' in dataPigProd){
             
             // Set table entry list; This will set also the entry count;
-            thisObj.setDataEntryList(dataPigProd.data_details.list_prod_feed);
-            thisObj.renderTable(dataPigProd.data_details.list_prod_feed);
+            thisObj.setDataEntryList(dataPigProd.data_details.list_feed_balance);
+            thisObj.renderTable(dataPigProd.data_details.list_feed_balance);
         } else{
             
-            thisObj.requestDataPigProdFeedList();
+            thisObj.requestDataProdFeedBalanceList();
         }
         
 
@@ -129,23 +128,22 @@ export function TableFeedBalance(input_settings){
     }
     
     
-    this.requestDataPigFarmFeedBuyList = function(){
+    this.requestDataProdFeedBalanceList = function(){
         // Request data if not yet requested
-        let feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
-        if (feed_buy_list == null){
             
-            const callback_success = function(data){
-                feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
-                
-            };
+        const callback_success = function(data){
+             // Set table entry list; This will set also the entry count;
+            thisObj.setDataEntryList(dataPigProd.data_details.list_feed_balance);
+            thisObj.renderTable(dataPigProd.data_details.list_feed_balance);
             
-            let elem_show_error = thisObj.elemServerErrorMsg;
-       
-            
-            navigation.pigFarm.requestDataPigFarmFeedBuyList(callback_success, 
-                elem_show_error);
+        };
         
-        }
+        let elem_show_error = thisObj.elemServerErrorMsg;
+
+        
+        navigation.pigFarm.requestDataProdFeedBalanceList(callback_success, 
+            elem_show_error);
+        
      
         
     }
@@ -189,15 +187,16 @@ export function TableFeedBalance(input_settings){
         <table class="data-table" id="">
             <colgroup>
                 <col style="width: 18%;">
-                <col style="width: 47%;">
-                <col style="width: 35%;">
+                <col style="width: 18%;">
+                <col style="width: 64%;">
             </colgroup>
                 
             <thead>
                 <tr>
                     <th>Date</th>
+                    <th>Pigs</th>
                     <th>Feed Item</th>
-                    <th>Supplier</th>
+                    
                 </tr>
             </thead>
             
@@ -223,15 +222,28 @@ export function TableFeedBalance(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        const dt_add = new Date(cur_entry.pig_prod_feed.date_add);
+        const dt_balance = new Date(cur_entry.feed_balance.date_balance);
         
         let html_items = '';
         
-        for (const cur_item of cur_entry.feed_items){
+        
+        if (cur_entry.feed_balance.num_finisher) {
             const html_item = `
             <div>
                 <span>
-                ${cur_item.feed_item.quantity} ${cur_item.feed_type.name}, ${cur_item.feed_brand.name}  
+                ${cur_entry.feed_balance.num_finisher} Finisher  
+                </span>
+            </div>
+            `;
+            
+            html_items += html_item;
+        }
+        
+        if (cur_entry.feed_balance.num_grower) {
+            const html_item = `
+            <div>
+                <span>
+                ${cur_entry.feed_balance.num_grower} Grower  
                 </span>
             </div>
             `;
@@ -240,11 +252,75 @@ export function TableFeedBalance(input_settings){
         }
         
         
+        if (cur_entry.feed_balance.num_starter) {
+            const html_item = `
+            <div>
+                <span>
+                ${cur_entry.feed_balance.num_starter} Starter  
+                </span>
+            </div>
+            `;
+            
+            html_items += html_item;
+        }
+        
+        
+        if (cur_entry.feed_balance.num_prestarter) {
+            const html_item = `
+            <div>
+                <span>
+                ${cur_entry.feed_balance.num_prestarter} Prestart
+                </span>
+            </div>
+            `;
+            
+            html_items += html_item;
+        }
+
+        
+        if (cur_entry.feed_balance.num_booster) {
+            const html_item = `
+            <div>
+                <span>
+                ${cur_entry.feed_balance.num_booster} Booster
+                </span>
+            </div>
+            `;
+            
+            html_items += html_item;
+        }
+
+        
+        if (cur_entry.feed_balance.num_lactating) {
+            const html_item = `
+            <div>
+                <span>
+                ${cur_entry.feed_balance.num_lactating} Lacta
+                </span>
+            </div>
+            `;
+            
+            html_items += html_item;
+        }
+
+
+        if (cur_entry.feed_balance.num_gestating) {
+            const html_item = `
+            <div>
+                <span>
+                ${cur_entry.feed_balance.num_gestating} Gesta
+                </span>
+            </div>
+            `;
+            
+            html_items += html_item;
+        }
+
         const html = `
             <tr>
-                <td><span>${formatDate(dt_add, FORMAT_COMPACT)}</span></td>
+                <td><span>${formatDate(dt_balance, FORMAT_COMPACT)}</span></td>
+                <td style="text-align:center;">${cur_entry.feed_balance.num_pigs}</td>
                 <td>${html_items}</td>
-                <td>${cur_entry.feed_supplier.name}</td>
             </tr>
         `;
         
@@ -318,10 +394,10 @@ export function TableFeedBalance(input_settings){
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         };
-        navigation.pageProdFeedAddEdit.beforeShow(dataPigProd, options);
+        navigation.pageFeedBalanceAddEdit.beforeShow(dataPigProd, options);
         
         
-        const goto_page_id   = PAGE_ID.PROD_FEED_ADD_EDIT;
+        const goto_page_id   = PAGE_ID.FEED_BALANCE_ADD_EDIT;
         const page_container = navigation.getPageContainer(goto_page_id);
         navigation.showThisPage(page_container);
     }

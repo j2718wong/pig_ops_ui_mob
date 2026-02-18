@@ -46,7 +46,8 @@ const PAGE_ID = {
     
     PROD_PIG_OPS_EDIT:      39,
     
-    PROD_FEED_ADD_EDIT:     40,     
+    PROD_FEED_ADD_EDIT:     40,   
+    FEED_BALANCE_ADD_EDIT:  41,     
     
     FARM_FEED_BUY_LIST:     50,
     FARM_FEED_BUY_ADD_EDIT: 51,
