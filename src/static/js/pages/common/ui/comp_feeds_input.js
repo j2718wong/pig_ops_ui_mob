@@ -774,7 +774,7 @@ const html_2 = `
         }
         
         
-        if (data.finisher && data.grower > 0){
+        if (data.finisher && data.finisher > 0){
             elemFinisherInput.value = data.finisher;
             dataFeedInput.finisher = data.finisher;
         }

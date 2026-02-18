@@ -354,7 +354,7 @@ export function PageFeedBalanceAddEdit(input_settings){
         
         if (showOptions.is_add){}
         else{
-           
+            thisObj.populateForm();
         }
         
         
@@ -386,8 +386,55 @@ export function PageFeedBalanceAddEdit(input_settings){
     
     
     this.populateForm = function(){
+        const feed_balance = showOptions.feed_balance.feed_balance;
+        const date_balance = feed_balance.date_balance;
+        elemUiDateBalance.setDate(date_balance);
         
-     
+        
+        const feeds_input    = {
+            gesta:      null,
+            lacta:      null,
+            booster:    null,
+            prestarter: null,
+            starter:    null,
+            grower:     null,
+            finisher:   null
+        };
+        
+        
+        if (feed_balance.num_finisher) {
+            feeds_input.finisher = feed_balance.num_finisher;
+        }
+        
+        if (feed_balance.num_grower) {
+            feeds_input.grower = feed_balance.num_grower;
+        }
+        
+        if (feed_balance.num_starter) {
+           feeds_input.starter = feed_balance.num_starter;
+        }
+        
+        if (feed_balance.num_prestarter) {
+            feeds_input.prestarter = feed_balance.num_prestarter;
+        }
+
+        if (feed_balance.num_booster) {
+            feeds_input.booster = feed_balance.num_booster;
+        }
+
+        
+        if (feed_balance.num_lactating) {
+            feeds_input.lacta = feed_balance.num_lactating;
+        }
+
+
+        if (feed_balance.num_gestating) {
+            feeds_input.gesta = feed_balance.num_gestating;
+        }
+
+
+        componentFeedsInput.setFeedsInput(feeds_input);
+
     }
     
     
@@ -452,11 +499,11 @@ export function PageFeedBalanceAddEdit(input_settings){
         
         
         
-        let input_date_add   = elemUiDateBalance.getValue().trim();
+        let input_date_balance  = elemUiDateBalance.getValue().trim();
         
         
         input_elem          = elemUiDateBalance.getElemText();
-        if (input_date_add.length == 0){
+        if (input_date_balance.length == 0){
             validation = -1;
             addValidationClassToElem(input_elem, validation);
             return;
@@ -465,15 +512,15 @@ export function PageFeedBalanceAddEdit(input_settings){
         
         
         // Convert date to YYYY-MM-DD format
-        const dt_add     = new Date(input_date_add);
-        if (isNaN(dt_add.getTime())){
+        const dt_balance     = new Date(input_date_balance);
+        if (isNaN(dt_balance.getTime())){
             validation      = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
             
         
-        const dt_add_s   = dt_add.toLocaleDateString('en-CA');
+        const dt_balance_s   = dt_balance.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
@@ -485,10 +532,6 @@ export function PageFeedBalanceAddEdit(input_settings){
             elemServerErrorMsg.style.display = 'block';
             return;
         }
-        
-        
-        const pf_feed_buy_hid = selectedPigFarmFeedBuy.pf_feed_buy.hid;
-        
         
  
         
@@ -507,8 +550,8 @@ export function PageFeedBalanceAddEdit(input_settings){
         const post_data = {
             'uhid':             user_hid,
             
-            'date_add':         dt_add_s,
-            'pig_farm_feed_buy_hid':  pf_feed_buy_hid
+            'pig_prod_hid':     dataPigProd.pig_production.hid,
+            'date_balance':     dt_balance_s
             
         };
         
@@ -543,28 +586,16 @@ export function PageFeedBalanceAddEdit(input_settings){
             post_data.num_finisher = feed_input.finisher;
         }
         
-         
-        
-        if (showOptions.is_add == true){
-            post_data.pig_prod_hid = dataPigProd.pig_production.hid;
-        }
-        
-        else {
-            delete post_data.pig_farm_feed_buy_hid;
-            
-            const pig_prod_feed_hid = showOptions.pig_prod_feed.pig_prod_feed.hid;
-            post_data.pig_prod_feed_hid = pig_prod_feed_hid;
-        }
-        
+    
         
         
         let url;
         
         if (showOptions.is_add == true){
-            url = `${base_url}/pig_prod_feed/add`;
+            url = `${base_url}/feed_balance/add`;
         }
         else{
-            url = `${base_url}/pig_prod_feed/update`;
+            url = `${base_url}/feed_balance/update`;
         }
         
 

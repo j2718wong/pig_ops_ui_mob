@@ -141,31 +141,12 @@ export function TableFeedBalance(input_settings){
         let elem_show_error = thisObj.elemServerErrorMsg;
 
         
-        navigation.pigFarm.requestDataProdFeedBalanceList(callback_success, 
-            elem_show_error);
-        
-     
-        
+        navigation.pigFarm.managerPigProd.requestDataProdFeedBalanceList(
+            dataPigProd, callback_success, elem_show_error);
     }
     
     
-    
-    this.requestDataPigProdFeedList = function(){
-        const callback_success = function(data){
-            thisObj.setDataEntryList(dataPigProd.data_details.list_prod_feed);
-            thisObj.renderTable(dataPigProd.data_details.list_prod_feed);
-        };
-        
-        navigation.pigFarm.managerPigProd.requestPigProdFeedList(dataPigProd, 
-            callback_success, thisObj.elemServerErrorMsg);
-            
-            
-        // Parallel request as this is needed later on.
-        navigation.pigFarm.requestDataPigFarmFeedBuyList();
-    }
-    
-    
-        
+         
     this.show = function(options){
         
         // show the last showOptions if there is no options
@@ -186,9 +167,9 @@ export function TableFeedBalance(input_settings){
         const html = `
         <table class="data-table" id="">
             <colgroup>
+                <col style="width: 30%;">
                 <col style="width: 18%;">
-                <col style="width: 18%;">
-                <col style="width: 64%;">
+                <col style="width: 52%;">
             </colgroup>
                 
             <thead>
@@ -329,30 +310,34 @@ export function TableFeedBalance(input_settings){
     
     
     this.getElemTableRow = function(cur_entry){
-        const pig_prod_feed = cur_entry.pig_prod_feed;
+        const feed_balance = cur_entry.feed_balance;
         
         const elem_row = document.createElement('tr');
         
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
          
-
+        
+        const row_entry = thisObj.getEntry(feed_balance.hid);
         
         // Attach onclick listeners to td
+        // No action to older entries other than first row
+        if (row_entry.list_index == 0) {
         
-        const elem_tds = elem_row.querySelectorAll('td'); 
-        
-        let index = 0
-        for (const cur_td of elem_tds){
-
-            if (index == 1){
-                cur_td.onclick = function(){
-                    thisObj.onClickRowEntry(pig_prod_feed.hid);
-                };
-
-            }
+            const elem_tds = elem_row.querySelectorAll('td'); 
             
-            index += 1;
+            let index = 0
+            for (const cur_td of elem_tds){
+
+                if (index == 0 || index == 2){
+                    cur_td.onclick = function(){
+                        thisObj.onClickRowEntry(feed_balance.hid);
+                    };
+
+                }
+                
+                index += 1;
+            }
         }
         
         return elem_row;
@@ -372,12 +357,18 @@ export function TableFeedBalance(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        const data_list = dataPigProd.data_details.list_prod_feed;
+        const data_list = dataPigProd.data_details.list_feed_balance;
         
+        let index = 0;
         for (const cur_entry of data_list){
-            if (cur_entry.pig_prod_feed.hid == entry_hid){
-                return cur_entry;
+            if (cur_entry.feed_balance.hid == entry_hid){
+                return {
+                    list_index:     index,
+                    feed_balance: cur_entry
+                };
             }
+            
+            index += 1;
         }
         
         return null;
@@ -404,33 +395,29 @@ export function TableFeedBalance(input_settings){
     
     
     this.onSuccessAddEntry = function(){
-        thisObj.requestDataPigProdFeedList();
+        thisObj.requestDataProdFeedBalanceList();
     }
     
     
     this.onClickRowEntry = function(entry_hid){
         const row_entry = thisObj.getEntry(entry_hid);
         
-
-        if (row_entry){
+        // Cannot edit older entries;
+        if (row_entry && row_entry.list_index == 0){
             const go_back_page_id = parentObj.PAGE_ID;
             const go_back_page = navigation.getPageContainer(go_back_page_id);
             
-            //TODO: This is the pig_farm_feed_buy where the pig_prod_feed was taken.
-            const pf_feed_buy_hid = row_entry.pig_prod_feed.pf_feed_buy_hid;
-            const pig_farm_feed_buy = navigation.pagePigFarmFeedBuyList.getEntry(pf_feed_buy_hid);
             
             const options ={
                 is_add:                 false,   // false is edit
                 callback_after_edit:    thisObj.onSuccessEditEntry,
-                pig_farm_feed_buy:      pig_farm_feed_buy, 
-                pig_prod_feed:          row_entry, // this is entry to be edited
+                feed_balance:           row_entry.feed_balance, // this is entry to be edited
                 go_back_page:           go_back_page
             };
-            navigation.pageProdFeedAddEdit.beforeShow(dataPigProd, options);
+            navigation.pageFeedBalanceAddEdit.beforeShow(dataPigProd, options);
             
             
-            const goto_page_id   = PAGE_ID.PROD_FEED_ADD_EDIT;
+            const goto_page_id   = PAGE_ID.FEED_BALANCE_ADD_EDIT;
             const page_container = navigation.getPageContainer(goto_page_id);
             navigation.showThisPage(page_container);
         }
@@ -438,6 +425,6 @@ export function TableFeedBalance(input_settings){
     
     
     this.onSuccessEditEntry = function(){
-        thisObj.requestDataPigProdFeedList();
+        thisObj.requestDataProdFeedBalanceList();
     }
 }
