@@ -10,6 +10,9 @@ import {PageWithMultiBreadCrumbs}   from '../../multikey/page_with_multi_breadcr
 import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 import {UiInputDatePicker}          from '../../common/ui/input_datepicker.js';
+import {ComponentPlusMinusInput}    from '../../common/ui/comp_plus_minus_input.js';
+import {ComponentWeightPerPig}      from './comp_weight_per_pig.js';
+
 
 import {PageTableBasic}             from '../../common/page_table_basic.js';
 
@@ -70,7 +73,15 @@ export function PageProdHarvestAddEdit(input_settings){
     
     let elemUiDateHarvest       = null;
     let componentHarvestType    = null;
-
+    let componentNumPigs        = null;
+    
+    let componentLWPerPig       = null;
+    
+    let elemIdLWShow            = null;   
+    
+    let elemIdLWPanelHeader     = null;
+    let elemIdLWPanelArrowIcon  = null;
+    let elemIdLWPanelBody       = null;
     
     
     let elemIdServerErrorMsg    = null;
@@ -85,17 +96,13 @@ export function PageProdHarvestAddEdit(input_settings){
     let elemInfoShow            = null;
     let elemInfo                = null;
 
-    let elemFeedBuyFrom         = null;
-    let elemFeedBuyNone         = null;
-    let elemFeedBuyControl      = null;
-    let elemLinkAddFeedBuy      = null;
-    let elemLinkOlderFeedBuy    = null;
-    let elemSelectOlderFeedBuy  = null;
     
-    let elemTableFeedBuy        = null;
-    let elemTableBodyFeedBuy    = null;
+    let elemLWShow              = null;   
+        
+    let elemLWPanelHeader       = null;
+    let elemLWPanelArrowIcon    = null;
+    let elemLWPanelBody         = null;
     
-    let elemFeedInputShow       = null;
     
    
    
@@ -158,6 +165,31 @@ export function PageProdHarvestAddEdit(input_settings){
         });
         
         
+        
+        componentNumPigs        = new ComponentPlusMinusInput({
+            uniqueKey:          `${settings.uniqueKey}-num-pigs`,
+            
+            className:          'form-group-number',
+            textLabel:          'Number of Pigs',
+            minValue:           1,
+            value:              1,
+            step:               1,
+            isRequired:         true,
+            invalidFeedBack:    null,
+            helpText:           null
+        });
+        
+
+        componentLWPerPig       = new ComponentWeightPerPig({
+            uniqueKey:          `${settings.uniqueKey}-lw-per-pigs`,
+            elemDivContainer:   elemDivContainer,
+        
+            
+            labelText:          'Weight Per Pig',
+            helpText:           ''
+            
+        });
+
 
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
@@ -169,7 +201,9 @@ export function PageProdHarvestAddEdit(input_settings){
         const html_date_harvest = elemUiDateHarvest.getHtml();
         
         const html_harvest_type = componentHarvestType.getHtml();
+        const html_num_pigs     = componentNumPigs.getHtml();
         
+        const html_live_weight  = componentLWPerPig.getHtml();
         
         const html =`
 
@@ -198,8 +232,9 @@ export function PageProdHarvestAddEdit(input_settings){
             
         ${html_harvest_type}
 
-
-            
+        ${html_num_pigs}
+    
+        ${html_live_weight}
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
@@ -225,6 +260,53 @@ export function PageProdHarvestAddEdit(input_settings){
     }
     
     
+    this.getHtmlLiveWeight = function(){
+        elemIdLWShow            = `${settings.uniqueKey}-lw-show`;
+        
+        elemIdLWPanelHeader     = `${settings.uniqueKey}-lw-panel-header`;
+        elemIdLWPanelArrowIcon  = `${settings.uniqueKey}-lw-panel-arrow`;
+        elemIdLWPanelBody       = `${settings.uniqueKey}-lw-panel-body`;
+        
+        
+        const html = `
+        <!-- Collapsible Panel -->
+        <div class="collapsible-panel mb-4" id="${elemIdLWShow}" style="margin-top:10px; padding-top:10px; border-top: 2px solid var(--corporate-blue);">
+            <!-- Header with arrow icon -->
+            <div class="collapsible-header" id="${elemIdLWPanelHeader}">
+                <span>Live Weight</span>
+                <i class="bi bi-chevron-down arrow-icon" id="${elemIdLWPanelArrowIcon}"></i>
+            </div>
+            
+            <!-- Body content -->
+            <div class="collapsible-body" id="${elemIdLWPanelBody}">
+                <!-- Warning box -->
+                <div class="warning-box">
+                    <div class="warning-header">
+                        <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
+                        <span>Update Pig Status</span>
+                    </div>
+                    <div>
+                        Updating pig status to any of the options below will remove it from the active list.
+                        <b>This cannot be undone.</b>
+                    </div>
+                </div>
+                
+                
+                
+               
+                
+            </div>
+        </div>
+        
+        `;
+        
+        return html;
+        
+    }
+    
+    
+    
+    
     this.afterHtmlRender = function(){
         // Do the afterHtmlRender to UI elements first;
         
@@ -232,6 +314,10 @@ export function PageProdHarvestAddEdit(input_settings){
         
         elemUiDateHarvest.afterHtmlRender();
         componentHarvestType.afterHtmlRender();
+        componentNumPigs.afterHtmlRender();
+        
+        componentLWPerPig.afterHtmlRender();
+
         
         
         this._findElements();

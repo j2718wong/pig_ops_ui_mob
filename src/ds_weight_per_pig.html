@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐷 Pig weight · corporate blue (reusable component)</title>
+    <!-- Bootstrap 5 + icons (optional, used for remove icon) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons (clean x-circle) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        /* corporate blue palette – reusable component scope */
+        .pig-weight-card {
+            --blue-deep: #0a2f6c;    /* primary corporate */
+            --blue-medium: #1e4d8f;
+            --blue-soft: #e6f0ff;
+            --blue-border: #b8d1f0;
+            max-width: 600px;
+            margin: 1rem 0;
+            border: 1px solid var(--blue-border);
+            border-radius: 0.75rem;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,40,80,0.08);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        .pig-weight-header {
+            background-color: var(--blue-soft);
+            padding: 1rem 1.25rem 0.5rem 1.25rem;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+            border-bottom: 1px solid var(--blue-border);
+        }
+        .pig-weight-header .form-label {
+            font-weight: 600;
+            color: var(--blue-deep);
+            margin-bottom: 0.35rem;
+            font-size: 1.1rem;
+        }
+        .pig-weight-header .input-group {
+            box-shadow: 0 2px 4px rgba(0,40,80,0.05);
+        }
+        .pig-weight-header .form-control {
+            border-color: var(--blue-border);
+            border-radius: 0.5rem 0 0 0.5rem;
+            color: #0a2f6c;
+        }
+        .pig-weight-header .form-control:focus {
+            border-color: var(--blue-medium);
+            box-shadow: 0 0 0 0.2rem rgba(30, 77, 143, 0.25);
+        }
+        .pig-weight-header .input-group-text {
+            background-color: white;
+            border-left: none;
+            border-color: var(--blue-border);
+            color: var(--blue-deep);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s, color 0.15s;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .pig-weight-header .input-group-text:hover {
+            background-color: var(--blue-deep);
+            color: white;
+            border-color: var(--blue-deep);
+        }
+        /* inline "Add Entry" link style – but inside input group we use text, keep interactive */
+        .add-entry-inline {
+            background: transparent;
+            border: none;
+            color: var(--blue-deep);
+            font-weight: 500;
+            text-decoration: underline;
+            text-decoration-color: var(--blue-medium);
+            text-underline-offset: 0.2rem;
+            padding: 0 0.5rem;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+        .add-entry-inline:hover {
+            color: var(--blue-medium);
+            text-decoration-color: currentColor;
+        }
+        /* weight list container */
+        .weight-list {
+            padding: 1rem 1.25rem 1.25rem 1.25rem;
+            background: white;
+            border-bottom-left-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+            min-height: 5rem;
+        }
+        .weight-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--blue-soft);
+            border: 1px solid var(--blue-border);
+            color: var(--blue-deep);
+            padding: 0.4rem 1rem 0.4rem 1.2rem;
+            margin: 0.25rem 0.5rem 0.25rem 0;
+            border-radius: 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 1px 3px rgba(0,40,80,0.1);
+            transition: background-color 0.2s;
+            line-height: 1.4;
+        }
+        .weight-badge:hover {
+            background-color: #d9e8ff;
+        }
+        .remove-weight {
+            background: transparent;
+            border: none;
+            color: var(--blue-deep);
+            opacity: 0.7;
+            font-size: 1.3rem;
+            line-height: 1;
+            margin-left: 0.4rem;
+            padding: 0 0.2rem;
+            display: inline-flex;
+            align-items: center;
+            transition: opacity 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+        .remove-weight:hover {
+            opacity: 1;
+            color: #b02a37;   /* gentle red hint for removal, still corporate friendly */
+        }
+        .remove-weight i {
+            font-size: 1.2rem;
+        }
+        /* placeholder when list empty */
+        .weight-list-empty-msg {
+            color: #7a8baa;
+            font-style: italic;
+            margin: 0.5rem 0 0 0;
+            padding-left: 0.5rem;
+            border-left: 3px solid var(--blue-border);
+        }
+        /* reusable component wrapper – can be dropped anywhere */
+        .pig-weight-reusable {
+            width: 100%;
+        }
+        /* simple corporate focus */
+        .btn-focus:focus-visible {
+            outline: 2px solid var(--blue-medium);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="bg-light p-4">
+    <!-- 
+        ==========  REUSABLE HTML COMPONENT ==========
+        Use .pig-weight-reusable anywhere. 
+        Includes bootstrap input, label, inline "Add Entry" link,
+        and dynamic weight list with removable spans (corporate blue).
+        No external JS dependency – all built-in with vanilla JS,
+        encapsulated in a self-contained component.
+    -->
+    <div class="pig-weight-reusable" id="pigWeightComponent1">
+        <!-- The component card -->
+        <div class="pig-weight-card">
+            <div class="pig-weight-header">
+                <label class="form-label">⚖️ Weight Per Pig</label>
+                <div class="input-group">
+                    <input type="number" step="0.1" min="0" class="form-control" placeholder="e.g., 72.5 kg" id="pigWeightInput" aria-label="Pig weight">
+                    <span class="input-group-text" id="addWeightTrigger" role="button" tabindex="0" aria-label="Add weight entry">
+                        <span class="add-entry-inline">Add Entry</span>
+                    </span>
+                </div>
+                <div class="form-text mt-1" style="color: var(--blue-medium);">→ weight in kg (numbers only)</div>
+            </div>
+
+            <!-- dynamic list where weight spans appear -->
+            <div class="weight-list" id="weightListContainer">
+                <!-- weights will be injected here as spans with remove button -->
+                <!-- default empty state (will be overwritten if list empty) -->
+                <div class="weight-list-empty-msg" id="emptyListMsg">No weights added yet.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- small note: you can reuse the same component by copying the block above.
+         For demo, we show two instances to prove reusability (independent). 
+         Second instance with slightly different id (but still self-contained).
+    -->
+    <div class="mt-5"><hr class="text-secondary w-25"></div>
+    <p class="text-secondary small">↓ second reusable instance (independent state) ↓</p>
+
+    <!-- duplicate of component (just to prove reusability). Same structure, different ID prefix -->
+    <div class="pig-weight-reusable" id="pigWeightComponent2">
+        <div class="pig-weight-card">
+            <div class="pig-weight-header">
+                <label class="form-label">⚖️ Weight Per Pig <span style="font-size:0.85rem; font-weight:normal;">(batch #2)</span></label>
+                <div class="input-group">
+                    <input type="number" step="0.1" min="0" class="form-control" placeholder="lbs? kg?" id="pigWeightInput2" aria-label="Pig weight second">
+                    <span class="input-group-text" id="addWeightTrigger2" role="button" tabindex="0">
+                        <span class="add-entry-inline">Add Entry</span>
+                    </span>
+                </div>
+                <div class="form-text mt-1" style="color: var(--blue-medium);">any numeric value</div>
+            </div>
+            <div class="weight-list" id="weightListContainer2">
+                <div class="weight-list-empty-msg" id="emptyListMsg2">No weights yet.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SELF‑INITIALISATION SCRIPT (reusable + isolated) ==========
+         The script below automatically hooks all .pig-weight-reusable components.
+         It uses unique identifiers or DOM traversal so each instance manages its own list.
+         No global variables, works for current and future instances if re-run.
+    -->
+    <script>
+        (function() {
+            'use strict';
+
+            // helper: create a new weight element (span with remove button)
+            function createWeightBadge(weightValue, onRemoveCallback) {
+                const badge = document.createElement('span');
+                badge.className = 'weight-badge';
+                // format weight (keep decimals tidy)
+                const formatted = Number(weightValue).toFixed(1).replace(/\.0$/, '') + ' kg';
+                badge.innerHTML = `${formatted} `;  // space before button
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-weight';
+                removeBtn.setAttribute('aria-label', 'remove weight');
+                removeBtn.innerHTML = '<i class="bi bi-x-circle"></i>';  // bootstrap icon
+                removeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    onRemoveCallback(badge);
+                });
+                badge.appendChild(removeBtn);
+                return badge;
+            }
+
+            // function to initialise a single component container
+            function initPigWeightComponent(containerEl) {
+                // locate child elements inside this container
+                const inputField = containerEl.querySelector('input[type="number"]');
+                const addTrigger = containerEl.querySelector('.input-group-text');
+                const elemListContainer = containerEl.querySelector('.weight-list');
+                if (!inputField || !addTrigger || !elemListContainer) return; // sanity
+
+                // get or create empty message placeholder (we will manage it dynamically)
+                let elemEmptyMsg = elemListContainer.querySelector('.weight-list-empty-msg');
+                if (!elemEmptyMsg) {
+                    elemEmptyMsg = document.createElement('div');
+                    elemEmptyMsg.className = 'weight-list-empty-msg';
+                    elemEmptyMsg.innerText = 'No weights added yet.';
+                    // only append if list is empty (initially it should be there)
+                }
+
+                // function to update empty message visibility
+                function refreshEmptyMessage() {
+                    const items = elemListContainer.querySelectorAll('.weight-badge');
+                    if (items.length === 0) {
+                        if (!elemListContainer.contains(elemEmptyMsg)) {
+                            elemListContainer.appendChild(elemEmptyMsg);
+                        }
+                    } else {
+                        if (elemListContainer.contains(elemEmptyMsg)) {
+                            elemEmptyMsg.remove();
+                        }
+                    }
+                }
+
+                // initial clean: if container has any .weight-badge (if preset from HTML), keep them but attach remove logic
+                const preExistingBadges = elemListContainer.querySelectorAll('.weight-badge');
+                preExistingBadges.forEach(badge => {
+                    // wrap remove behaviour: find existing remove button?
+                    let rmBtn = badge.querySelector('.remove-weight');
+                    if (rmBtn) {
+                        // rebind remove event (in case of inner HTML, we re-create to be safe, but we can re-attach)
+                        // simplest: remove and rebuild to have consistent remove handling? 
+                        // but we want to preserve demo content: rebuild same badge.
+                        const weightText = badge.innerText.replace('remove', '').replace('×', '').trim(); // crude
+                        const weightNum = parseFloat(weightText) || 0;
+                        const newBadge = createWeightBadge(weightNum, function(badgeToRemove) {
+                            badgeToRemove.remove();
+                            refreshEmptyMessage();
+                        });
+                        badge.replaceWith(newBadge);
+                    }
+                });
+
+                // ensure remove works for any programmatic adds
+                // remove all default empty message except ours
+                Array.from(elemListContainer.children).forEach(child => {
+                    if (child.classList.contains('weight-list-empty-msg')) return;
+                    if (!child.classList.contains('weight-badge')) child.remove();
+                });
+
+                // attach add event
+                function addWeightFromInput() {
+                    let rawValue = inputField.value.trim();
+                    if (rawValue === '') {
+                        // optional: alert or just ignore
+                        return;
+                    }
+                    // try to convert to number
+                    const num = parseFloat(rawValue);
+                    if (isNaN(num) || num < 0) {
+                        alert('Please enter a valid positive number.');
+                        return;
+                    }
+                    // create badge
+                    const newBadge = createWeightBadge(num, function(badgeToRemove) {
+                        badgeToRemove.remove();
+                        refreshEmptyMessage();
+                    });
+
+                    // insert before empty message if present, or just append
+                    if (elemListContainer.contains(elemEmptyMsg)) {
+                        elemListContainer.insertBefore(newBadge, elemEmptyMsg);
+                    } else {
+                        elemListContainer.appendChild(newBadge);
+                    }
+
+                    // clear input
+                    inputField.value = '';
+                    refreshEmptyMessage();
+                }
+
+                // click on the add trigger
+                addTrigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    addWeightFromInput();
+                });
+
+                // allow keyboard: pressing Enter in input
+                inputField.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addWeightFromInput();
+                    }
+                });
+
+                // also support trigger with keyboard (space/enter on the .input-group-text)
+                addTrigger.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        addWeightFromInput();
+                    }
+                });
+
+                // make trigger focusable (already tabindex=0)
+                // initial refresh
+                refreshEmptyMessage();
+
+                // Also, handle pre-existing badges that might have been manually added in static HTML (none, but just in case)
+                // For demo: second container maybe empty. 
+            }
+
+            // initialise all existing components on page
+            document.querySelectorAll('.pig-weight-reusable').forEach(container => {
+                initPigWeightComponent(container);
+            });
+
+            // (optional) if new components are added dynamically, you could expose initializer.
+            // But for this demo, we are done.
+        })();
+    </script>
+
+    <!-- extra explanation / usage note (just for demo) -->
+    <div class="mt-4 small text-secondary border-start border-2 ps-3" style="border-color: var(--blue-medium) !important;">
+        <i class="bi bi-droplet" style="color: #1e4d8f;"></i>
+        <strong>Corporate blue reusable component</strong> – each instance manages its own list.<br>
+        • click <strong>Add Entry</strong> (inline link) or press Enter → weight added as removable badge.<br>
+        • use Bootstrap input with blue highlight. spans can be removed via <i class="bi bi-x-circle"></i> icon.<br>
+        • pure HTML/JS, no framework. copy any <code>.pig-weight-reusable</code> block.
+    </div>
+
+    <!-- optionally show that it works with another instance outside script -->
+</body>
+</html>
