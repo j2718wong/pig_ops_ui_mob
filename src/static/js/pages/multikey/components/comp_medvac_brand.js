@@ -90,12 +90,12 @@ export function ComponentMedVacBrand(input_settings){
     }
     
     
-    this.setDataMedVacBrand = function(data, selected_entry_value){
+    this.setDataMedVacBrandList = function(data, selected_entry_value){
         dataMedVacBrandList = data;
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataMedVacBrand(dataMedVacBrandList, elem_select);
+        commonSelectOptions.setDataMedVacBrandList(dataMedVacBrandList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){
@@ -110,7 +110,7 @@ export function ComponentMedVacBrand(input_settings){
         if (medvac_brand_list == null){
             
             const callback_success = function(data){
-                thisObj.setDataMedVacBrand(data);
+                thisObj.setDataMedVacBrandList(data);
             };
             
             let elem_show_error = null;
@@ -121,12 +121,12 @@ export function ComponentMedVacBrand(input_settings){
                 elem_show_error);
         }
         else{
-            thisObj.setDataMedVacBrand(medvac_brand_list);
+            thisObj.setDataMedVacBrandList(medvac_brand_list);
         }
     }
     
     
-    this._getEntryByName = function(name, exclude_hid){
+    this.getEntryByName = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         
         
@@ -172,7 +172,7 @@ export function ComponentMedVacBrand(input_settings){
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_medvac_brand = thisObj._getEntryByName(input_name);
+            const cur_medvac_brand = thisObj.getEntryByName(input_name);
             if (cur_medvac_brand != null){
                 validation   = -1;
                 is_duplicate = 1;
@@ -195,6 +195,12 @@ export function ComponentMedVacBrand(input_settings){
         
         
         if (validation != 0) {return;}
+        
+        
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+            return;
+        }
         
         
         const user_hid      = navigation.userControl.getUserHid();
@@ -233,7 +239,7 @@ export function ComponentMedVacBrand(input_settings){
                     const medvac_brand_hid = response.medvac_brand.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataMedVacBrand(data, medvac_brand_hid);
+                        thisObj.setDataMedVacBrandList(data, medvac_brand_hid);
                         thisObj.closeExpandable();
                     };
                     

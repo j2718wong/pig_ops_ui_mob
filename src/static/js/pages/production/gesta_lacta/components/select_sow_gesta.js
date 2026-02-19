@@ -236,11 +236,11 @@ export function SelectSowGesta(input_settings){
     }
     
     
-	this.beforeShow = function(){
+    this.beforeShow = function(){
         this.setDataSowList(navigation.pigFarm.managerSowBoar.dataSowList);
     }
     
-	
+    
     this.onChangeSow = function(){
         let sow_hid       = elemSelect.value;
         

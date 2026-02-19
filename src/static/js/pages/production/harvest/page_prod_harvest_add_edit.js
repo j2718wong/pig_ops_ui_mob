@@ -38,6 +38,10 @@ import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 import {ComponentHarvestType}   from './comp_harvest_type.js';
 
+import {ComponentAccPigBuyer}   from './comp_acc_pig_buyer.js';   
+
+
+
 
 export function PageProdHarvestAddEdit(input_settings){
     PageWithMultiBreadCrumbs.call(this, input_settings);
@@ -100,6 +104,8 @@ export function PageProdHarvestAddEdit(input_settings){
     let elemIdSWPricePerWeight  = null;
     
     let componentSWPerPig       = null;
+    
+    let componentAccPigBuyer    = null;
     
     let elemUiNotes             = null;
     
@@ -215,7 +221,21 @@ export function PageProdHarvestAddEdit(input_settings){
             invalidFeedBack:    null,
             helpText:           null
         });
+
         
+        componentAccPigBuyer    = new ComponentAccPigBuyer({
+            navigation:         navigation,
+            parentObj:          thisObj,
+            uniqueKey:          `${settings.uniqueKey}-pig-buyer`,
+
+            titleExpandSection: 'Add Pig Buyer',
+            htmlExpandSection:  null,
+            labelBtnExpandSave: 'Save Pig Buyer',
+            
+            labelSelect:        'Select Pig Buyer',
+            helpText:           null
+        }); 
+
 
         elemUiNotes             = new UiInputTextWithCounter({
             uniqueKey:          `${settings.uniqueKey}-notes`,
@@ -248,6 +268,7 @@ export function PageProdHarvestAddEdit(input_settings){
         const html_live_weight  = thisObj.getHtmlLiveWeight();
         const html_slaughter_weight = thisObj.getHtmlSlaughterWeight();
         
+        const html_pig_buyer    = componentAccPigBuyer.getHtml();
         const html_notes        = elemUiNotes.getHtml();
         
         
@@ -284,6 +305,8 @@ export function PageProdHarvestAddEdit(input_settings){
         
         ${html_slaughter_weight}
         
+        ${html_pig_buyer}
+        
         <div class="form-group-number">
             <label for="${elemIdNetSales}" class="form-label">
                 Net Sales
@@ -305,6 +328,7 @@ export function PageProdHarvestAddEdit(input_settings){
                 Please enter numeric value.
             </div>
         </div>
+        
         
         ${html_notes}
         
@@ -397,7 +421,6 @@ export function PageProdHarvestAddEdit(input_settings){
     }
     
     
-    
     this.getHtmlSlaughterWeight = function(){
         elemIdSWShow            = `${settings.uniqueKey}-sw-show`;
                                                          
@@ -476,10 +499,7 @@ export function PageProdHarvestAddEdit(input_settings){
     }
     
     
-    
-    
-    
-    
+
     this.afterHtmlRender = function(){
         // Do the afterHtmlRender to UI elements first;
         
@@ -491,6 +511,8 @@ export function PageProdHarvestAddEdit(input_settings){
         
         componentLWPerPig.afterHtmlRender();
         componentSWPerPig.afterHtmlRender();
+        
+        componentAccPigBuyer.afterHtmlRender();
         
         elemUiNotes.afterHtmlRender();
         
@@ -607,9 +629,15 @@ export function PageProdHarvestAddEdit(input_settings){
         elemUiDateHarvest.reset();
         
         componentLWPerPig.reset();
+        componentSWPerPig.reset();
+        
+        componentAccPigBuyer.reset();
+        elemUiNotes.reset();
         
         elemLWAverageWeight.innerHTML = '&nbsp;';
+        elemSWAverageWeight.innerHTML = '&nbsp;';
         
+        elemSWMinusWeight.value = '';
        
         elemServerErrorMsg.style.display = 'none';
     }
@@ -647,6 +675,7 @@ export function PageProdHarvestAddEdit(input_settings){
         
         
         componentHarvestType.beforeShow();
+        componentAccPigBuyer.beforeShow();
         
         
         // Hide Live Weight Details

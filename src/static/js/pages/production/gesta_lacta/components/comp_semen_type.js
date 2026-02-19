@@ -109,7 +109,7 @@ export function ComponentSemenType(input_settings){
     }
     
     
-    this.getSemenType = function(name, exclude_hid){
+    this.getEntryByName = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         
         
@@ -154,7 +154,7 @@ export function ComponentSemenType(input_settings){
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_semen_type = thisObj.getSemenType(input_name);
+            const cur_semen_type = thisObj.getEntryByName(input_name);
             if (cur_semen_type != null){
                 validation   = -1;
                 is_duplicate = 1;

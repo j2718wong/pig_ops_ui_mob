@@ -32,14 +32,14 @@ export function ComponentAccPigBuyer(input_settings){
     {
         navigation:         navigation,
         parentObj:          thisObj,
-        uniqueKey:          'acc-boar-customer',
+        uniqueKey:          'acc-pig-buyer',
 
-        titleExpandSection: 'Add Boar Customer',
+        titleExpandSection: 'Add Pig Buyer',
         htmlExpandSection:  null,
-        labelBtnExpandSave: 'Save Boar Customer',
+        labelBtnExpandSave: 'Save Pig Buyer',
         
-        labelSelect:        'Select Boar Customer',
-        helpText:           'Neighbor who wants to breed with your boar'
+        labelSelect:        'Select Pig Buyer',
+        helpText:           null
 
     }
     */
@@ -102,12 +102,12 @@ export function ComponentAccPigBuyer(input_settings){
     }
     
     
-    this.setDataAccPigBuyer = function(data, selected_entry_value){
+    this.setDataAccPigBuyerList = function(data, selected_entry_value){
         dataAccPigBuyerList = data;
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataAccPigBuyer(dataAccPigBuyerList, elem_select);
+        commonSelectOptions.setDataAccPigBuyerList(dataAccPigBuyerList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){
@@ -116,7 +116,29 @@ export function ComponentAccPigBuyer(input_settings){
     }
     
     
-    this._getAccPigBuyer = function(name, exclude_hid){
+    this.beforeShow = function(options){
+        
+        const pig_buyer_list = navigation.pigFarm.accountLists.dataAccPigBuyerList;
+        if (pig_buyer_list == null){
+            
+            const callback_success = function(data){
+                thisObj.setDataAccPigBuyerList(data);
+            };
+            
+            let elem_show_error = null;
+            if (options && options.elem_show_error){
+                elem_show_error = options.elem_show_error;}
+            
+            navigation.pigFarm.accountLists.requestDataAccPigBuyer(
+                callback_success, elem_show_error);
+        }
+        else{
+            thisObj.setDataAccPigBuyerList(pig_buyer_list);
+        }
+    }
+    
+    
+    this.getEntryByName = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         
         
@@ -130,7 +152,7 @@ export function ComponentAccPigBuyer(input_settings){
             cur_entry = dataAccPigBuyerList[index];
             
             // Will check name for duplicate 
-            if (cur_entry.acc_medvac.name.toUpperCase() == upper_name){
+            if (cur_entry.pig_buyer.name.toUpperCase() == upper_name){
                 if (exclude_hid){
                     if (cur_entry.hid != exclude_hid){
                         return cur_entry;
@@ -162,7 +184,7 @@ export function ComponentAccPigBuyer(input_settings){
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_medvac_type = thisObj._getAccPigBuyer(input_name);
+            const cur_medvac_type = thisObj.getEntryByName(input_name);
             if (cur_medvac_type != null){
                 validation   = -1;
                 is_duplicate = 1;
@@ -187,14 +209,10 @@ export function ComponentAccPigBuyer(input_settings){
         if (validation != 0) {return;}
         
         
-        // Check if user_account_hid is same with farm_account_hid;
-        const user_account_hid = navigation.userControl.getUserAccountHid();
-        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
-        
-        if (user_account_hid != farm_account_hid){
-            console.log('User account_hid not equal to farm_account_hid');
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
             return;
-        } 
+        }
         
         
         
@@ -211,23 +229,11 @@ export function ComponentAccPigBuyer(input_settings){
         };
         
         
-        // Append medvac_brand_hid and medvac_type_hid if there is any
-        const brand_type = parentObj.getMedVacBrandAndTypeHid();
-        if (brand_type){
-            if (brand_type.brand_hid && brand_type.brand_hid.length > 2){
-                post_data.medvac_brand_hid = brand_type.brand_hid;
-            }
-            
-            if (brand_type.type_hid && brand_type.type_hid.length > 2){
-                post_data.medvac_type_hid = brand_type.type_hid;
-            }
-        }
-        
 
         // Element where to display server error message in this component
         const elemServerErrorMsg = thisObj.getElemServerErrorMsg();
         
-		// Note: boar_customer and account_pig_buyer shares same table
+        // Note: boar_customer and account_pig_buyer shares same table
         
         $.ajax({
             type: 'POST',
@@ -247,7 +253,7 @@ export function ComponentAccPigBuyer(input_settings){
                     const account_pig_buyer_hid = response.account_pig_buyer.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataAccPigBuyer(data, account_pig_buyer_hid);
+                        thisObj.setDataAccPigBuyerList(data, account_pig_buyer_hid);
                         thisObj.closeExpandable();
                     };
                     

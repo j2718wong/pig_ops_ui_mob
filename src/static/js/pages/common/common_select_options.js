@@ -179,7 +179,6 @@ export function CommonSelectOptions(){
     }
     
     
-    
     this.setDataStaffList = function(data, select_elem){
         
         let select_data = [];
@@ -202,7 +201,7 @@ export function CommonSelectOptions(){
     }
     
     
-    this.setDataMedVacBrand = function(data, select_elem){
+    this.setDataMedVacBrandList = function(data, select_elem){
         
         let select_data = [];
         if (data.length == 0){
@@ -224,7 +223,7 @@ export function CommonSelectOptions(){
     }
     
     
-    this.setDataMedVacType = function(data, select_elem){
+    this.setDataMedVacTypeList = function(data, select_elem){
         
         let select_data = [];
         if (data.length == 0){
@@ -246,7 +245,7 @@ export function CommonSelectOptions(){
     }
     
     
-    this.setDataAccMedVac = function(data, select_elem){
+    this.setDataAccMedVacList = function(data, select_elem){
         
         let select_data = [];
         if (data.length == 0){
@@ -268,9 +267,7 @@ export function CommonSelectOptions(){
     }
     
     
-    
-    
-    this.setDataAddressLevel = function(data, select_elem, special_options){
+    this.setDataAddressLevelList = function(data, select_elem, special_options){
         
         let select_data = [];
         if (!special_options){
@@ -384,4 +381,27 @@ export function CommonSelectOptions(){
         
         replaceSelectOptions(select_elem, select_data);
     }
+    
+    
+    this.setDataAccPigBuyerList = function(data, select_elem){
+        
+        let select_data = [];
+        if (data.length == 0){
+            select_data.push({value:"-1", text:"No Entries"});
+            replaceSelectOptions(select_elem, select_data);
+            return;
+        }
+        
+        
+        select_data = [];
+        select_data.push({value:"0", text:"Please Select"});
+        
+        for (const cur_entry of data){
+            select_data.push({value: cur_entry.pig_buyer.hid, 
+                text: cur_entry.pig_buyer.name});
+        }
+        
+        replaceSelectOptions(select_elem, select_data);
+    }
+    
 }

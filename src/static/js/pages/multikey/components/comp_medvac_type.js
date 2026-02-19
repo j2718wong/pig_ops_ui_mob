@@ -90,12 +90,12 @@ export function ComponentMedVacType(input_settings){
     }
     
     
-    this.setDataMedVacType = function(data, selected_entry_value){
+    this.setDataMedVacTypeList = function(data, selected_entry_value){
         dataMedVacTypeList = data;
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataMedVacType(dataMedVacTypeList, elem_select);
+        commonSelectOptions.setDataMedVacTypeList(dataMedVacTypeList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){
@@ -109,7 +109,7 @@ export function ComponentMedVacType(input_settings){
         if (medvac_type_list == null){
             
             const callback_success = function(data){
-                thisObj.setDataMedVacType(data);
+                thisObj.setDataMedVacTypeList(data);
             };
             
             let elem_show_error = null;
@@ -120,13 +120,13 @@ export function ComponentMedVacType(input_settings){
                 elem_show_error);
         }
         else{
-            thisObj.setDataMedVacType(medvac_type_list);
+            thisObj.setDataMedVacTypeList(medvac_type_list);
         }
         
     }
     
     
-    this._getEntryByName = function(name, exclude_hid){
+    this.getEntryByName = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         
         
@@ -172,7 +172,7 @@ export function ComponentMedVacType(input_settings){
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_medvac_type = thisObj._getEntryByName(input_name);
+            const cur_medvac_type = thisObj.getEntryByName(input_name);
             if (cur_medvac_type != null){
                 validation   = -1;
                 is_duplicate = 1;
@@ -195,6 +195,12 @@ export function ComponentMedVacType(input_settings){
         
         
         if (validation != 0) {return;}
+        
+        
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+            return;
+        }
         
         
         const user_hid      = navigation.userControl.getUserHid();
@@ -232,7 +238,7 @@ export function ComponentMedVacType(input_settings){
                     const medvac_type_hid = response.medvac_type.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataMedVacType(data, medvac_type_hid);
+                        thisObj.setDataMedVacTypeList(data, medvac_type_hid);
                         thisObj.closeExpandable();
                     };
                     

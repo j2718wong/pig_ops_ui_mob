@@ -92,12 +92,12 @@ export function ComponentAccMedVac(input_settings){
     }
     
     
-    this.setDataAccMedVac = function(data, selected_entry_value){
+    this.setDataAccMedVacList = function(data, selected_entry_value){
         dataAccMedVacList = data;
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataAccMedVac(dataAccMedVacList, elem_select);
+        commonSelectOptions.setDataAccMedVacList(dataAccMedVacList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){
@@ -112,7 +112,7 @@ export function ComponentAccMedVac(input_settings){
         if (acc_medvac_list == null){
             
             const callback_success = function(data){
-                thisObj.setDataAccMedVac(data);
+                thisObj.setDataAccMedVacList(data);
             };
             
             let elem_show_error = null;
@@ -124,13 +124,13 @@ export function ComponentAccMedVac(input_settings){
         
         }
         else{
-            thisObj.setDataAccMedVac(data);
+            thisObj.setDataAccMedVacList(data);
         }
         
     }
     
     
-    this._getEntryByName = function(name, exclude_hid){
+    this.getEntryByName = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         
         
@@ -176,7 +176,7 @@ export function ComponentAccMedVac(input_settings){
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_medvac_type = thisObj._getEntryByName(input_name);
+            const cur_medvac_type = thisObj.getEntryByName(input_name);
             if (cur_medvac_type != null){
                 validation   = -1;
                 is_duplicate = 1;
@@ -201,14 +201,10 @@ export function ComponentAccMedVac(input_settings){
         if (validation != 0) {return;}
         
         
-        // Check if user_account_hid is same with farm_account_hid;
-        const user_account_hid = navigation.userControl.getUserAccountHid();
-        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
-        
-        if (user_account_hid != farm_account_hid){
-            console.log('User account_hid not equal to farm_account_hid');
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
             return;
-        } 
+        }
         
         
         
@@ -260,7 +256,7 @@ export function ComponentAccMedVac(input_settings){
                     const account_medvac_hid = response.account_medvac.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataAccMedVac(data, account_medvac_hid);
+                        thisObj.setDataAccMedVacList(data, account_medvac_hid);
                         thisObj.closeExpandable();
                     };
                     

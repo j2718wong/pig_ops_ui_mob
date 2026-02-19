@@ -212,7 +212,7 @@ export function ComponentAddressLevels(input_settings){
         elemCountry.textContent = cur_country.name;
         
         const data = navigation.managerAddress.getAddressLevel1List();
-        commonSelectOptions.setDataAddressLevel(data, elemAddressLevel1);
+        commonSelectOptions.setDataAddressLevelList(data, elemAddressLevel1);
         
         elemAddressLevel2.selectedIndex = 0;
         elemAddressLevel2.dispatchEvent(new Event('change')); 
@@ -237,7 +237,7 @@ export function ComponentAddressLevels(input_settings){
         let callback_success = function(data){
             elemAddressLevel1.disabled = false;
             
-            commonSelectOptions.setDataAddressLevel(data, elemAddressLevel1);
+            commonSelectOptions.setDataAddressLevelList(data, elemAddressLevel1);
         };
         
         const country_hid = managerAddress.getCurCountry().hid;
@@ -265,7 +265,7 @@ export function ComponentAddressLevels(input_settings){
                 elemAddressLevel1   .disabled = false;
                 elemAddressLevel2   .disabled = false;
         
-                commonSelectOptions.setDataAddressLevel(data, elemAddressLevel2);
+                commonSelectOptions.setDataAddressLevelList(data, elemAddressLevel2);
             }
         };
         
@@ -275,7 +275,7 @@ export function ComponentAddressLevels(input_settings){
     
     
     this.onChangeAddressLevel1 = function(){
-        commonSelectOptions.setDataAddressLevel([], elemAddressLevel3, []);
+        commonSelectOptions.setDataAddressLevelList([], elemAddressLevel3, []);
 		elemAddressLevel3.disabled = true;
         
         const level_1_hid = elemAddressLevel1.value;
@@ -295,7 +295,7 @@ export function ComponentAddressLevels(input_settings){
             elemAddressLevel1.disabled = false;
             elemAddressLevel2.disabled = false;
 
-			commonSelectOptions.setDataAddressLevel(level_2_addresses, 
+			commonSelectOptions.setDataAddressLevelList(level_2_addresses, 
 					elemAddressLevel2);
         }
         
@@ -333,7 +333,7 @@ export function ComponentAddressLevels(input_settings){
             elemAddressLevel2.disabled = false;
             elemAddressLevel3.disabled = false;
             
-            commonSelectOptions.setDataAddressLevel(level_3_addresses, elemAddressLevel3);
+            commonSelectOptions.setDataAddressLevelList(level_3_addresses, elemAddressLevel3);
             
         }
         
@@ -370,7 +370,7 @@ export function ComponentAddressLevels(input_settings){
             elemAddressLevel2.disabled = false;
             elemAddressLevel3.disabled = false;
             
-            commonSelectOptions.setDataAddressLevel(data, elemAddressLevel3);
+            commonSelectOptions.setDataAddressLevelList(data, elemAddressLevel3);
         };
 
         managerAddress.requestDataAddressLevel3(address_level_2, 

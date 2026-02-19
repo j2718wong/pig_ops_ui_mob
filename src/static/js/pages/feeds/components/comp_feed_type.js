@@ -74,12 +74,12 @@ export function ComponentFeedType(input_settings){
     }
 
     
-    this.setDataFeedType = function(data, selected_entry_value){
+    this.setDataFeedTypeList = function(data, selected_entry_value){
         dataFeedTypeList = data;
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataFeedTypeList(dataFeedTypeList, elem_select);
+        commonSelectOptions.setDataFeedTypeListList(dataFeedTypeList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){
@@ -94,7 +94,7 @@ export function ComponentFeedType(input_settings){
         if (feed_type_list == null){
             
             const callback_success = function(data){
-                thisObj.setDataFeedType(data);
+                thisObj.setDataFeedTypeList(data);
             };
             
             let elem_show_error = null;
@@ -105,7 +105,7 @@ export function ComponentFeedType(input_settings){
                 elem_show_error);
         }
         else{
-            thisObj.setDataFeedType(feed_type_list);
+            thisObj.setDataFeedTypeList(feed_type_list);
         }
     }
     

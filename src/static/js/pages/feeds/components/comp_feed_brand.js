@@ -91,12 +91,12 @@ export function ComponentFeedBrand(input_settings){
     }
     
     
-    this.setDataFeedBrand = function(data, selected_entry_value){
+    this.setDataFeedBrandList = function(data, selected_entry_value){
         dataFeedBrandList = data;
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataFeedBrandList(dataFeedBrandList, elem_select);
+        commonSelectOptions.setDataFeedBrandListList(dataFeedBrandList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){
@@ -111,7 +111,7 @@ export function ComponentFeedBrand(input_settings){
         if (feed_brand_list == null){
             
             const callback_success = function(data){
-                thisObj.setDataFeedBrand(data);
+                thisObj.setDataFeedBrandList(data);
             };
             
             let elem_show_error = null;
@@ -122,12 +122,12 @@ export function ComponentFeedBrand(input_settings){
                 elem_show_error);
         }
         else{
-            thisObj.setDataFeedBrand(feed_brand_list);
+            thisObj.setDataFeedBrandList(feed_brand_list);
         }
     }
     
     
-    this._getEntryByName = function(name, exclude_hid){
+    this.getEntryByName = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         
         
@@ -173,7 +173,7 @@ export function ComponentFeedBrand(input_settings){
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_feed_brand = thisObj._getEntryByName(input_name);
+            const cur_feed_brand = thisObj.getEntryByName(input_name);
             if (cur_feed_brand != null){
                 validation   = -1;
                 is_duplicate = 1;
@@ -234,7 +234,7 @@ export function ComponentFeedBrand(input_settings){
                     const feed_brand_hid = response.feed_brand.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataFeedBrand(data, feed_brand_hid);
+                        thisObj.setDataFeedBrandList(data, feed_brand_hid);
                         thisObj.closeExpandable();
                     };
                     

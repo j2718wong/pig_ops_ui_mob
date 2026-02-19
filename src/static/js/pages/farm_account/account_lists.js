@@ -18,8 +18,8 @@ export function AccountLists(_navigation){
     
     this.dataAccMedVacList      = null;
     
-    this.dataAccPigBuyer        = null;
-    this.dataAccBoarCustomer    = null;
+    this.dataAccPigBuyerList    = null;
+    this.dataAccBoarCustomerList= null;
     
     
     let accountHid      = null;
