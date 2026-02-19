@@ -57,6 +57,9 @@ import {PagePfBuyItemAddEdit}       from '../feeds/pig_farm_feed_buy/page_pf_fee
 import {PageProdFeedAddEdit}        from '../feeds/prod_feed/page_prod_feed_add_edit.js';
 import {PageFeedBalanceAddEdit}     from '../feeds/feed_balance/page_feed_balance_add_edit.js';
 
+import {PageProdHarvestAddEdit}     from '../production/harvest/page_prod_harvest_add_edit.js';
+
+
 import {PageAccPigOpsList}          from '../acc_pig_ops/page_acc_pig_ops_list.js';
 import {PageAccPigOpsAddEdit}       from '../acc_pig_ops/page_acc_pig_ops_add_edit.js';
 
@@ -274,6 +277,9 @@ export function Navigation(){
     const elemIdContProdFeedAddEdit     = 'container-prod-feed-add-edit';
     const elemIdContFeedBalanceAddEdit  = 'container-feed-balance-add-edit';
     
+    const elemIdContProdHarvestAddEdit  = 'container-prod-harvest-add-edit';
+    
+    
     const elemIdContAccPigOpsList       = 'container-acc-pig-ops-list';
     const elemIdContAccPigOpsAddEdit    = 'container-acc-pig-ops-add-edit';
     
@@ -339,7 +345,7 @@ export function Navigation(){
     
     let elemPageContProdFeedAddEdit     = null;
     let elemPageContFeedBalanceAddEdit  = null;
-    
+    let elemPageContProdHarvestAddEdit  = null;
     
     let elemPageContAccPigOpsList       = null;
     let elemPageContAccPigOpsAddEdit    = null;
@@ -548,6 +554,13 @@ export function Navigation(){
     });
     
     
+    this.pageProdHarvestAddEdit = new PageProdHarvestAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdHarvestAddEdit,
+        uniqueKey:              'prod-harvest-add-edit'
+    });
+    
+    
     
     this.pageAccPigOpsList      = new PageAccPigOpsList({
         navigation:             this,
@@ -613,6 +626,7 @@ export function Navigation(){
         
         this.pageProdFeedAddEdit.init();
         this.pageFeedBalanceAddEdit.init();
+        this.pageProdHarvestAddEdit.init();
         
         
         this.pageAccPigOpsList.init();
@@ -620,6 +634,7 @@ export function Navigation(){
         
         
         this.pageSupplierAddEdit.init();
+        
         
         this.afterHtmlRender();
         
@@ -691,6 +706,7 @@ export function Navigation(){
         elemPageContProdFeedAddEdit     = document.getElementById(elemIdContProdFeedAddEdit);
         elemPageContFeedBalanceAddEdit  = document.getElementById(elemIdContFeedBalanceAddEdit);
         
+        elemPageContProdHarvestAddEdit  = document.getElementById(elemIdContProdHarvestAddEdit);
         
         
         elemPageContAccPigOpsList       = document.getElementById(elemIdContAccPigOpsList);
@@ -923,6 +939,10 @@ export function Navigation(){
             }
             
             
+            case PAGE_ID.PROD_HARVEST_ADD_EDIT: {
+                return elemPageContProdHarvestAddEdit;
+            }
+
             
             
         

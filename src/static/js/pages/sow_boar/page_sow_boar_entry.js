@@ -666,13 +666,13 @@ export function PageSowBoarEntry(input_settings){
         } 
         else{
             elemEntryName.onclick = function(){
-                const options_sow_boar ={
+                const options_disposed ={
                     sow_boar_type:  showOptions.sow_boar_type,
                     go_back_page:   elemDivContainer   // Go back to this page
                 };
 
                 
-                navigation.pageSowBoarDisposed.beforeShow(options_sow_boar, dataSowBoar);
+                navigation.pageSowBoarDisposed.beforeShow(dataSowBoar, options_disposed);
                 
                 const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_DISPOSED);
                 navigation.showThisPage(next_page)

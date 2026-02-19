@@ -466,9 +466,7 @@ export function PageMedVacAddEdit(input_settings){
         
         curDataEntry    = data_entry;
         showOptions     = options;
-        
-        console.log(`\n\nshowOptions`);
-        console.log(showOptions);
+    
         
         
         console.log(`\n\ncurDataEntry`);

@@ -22,14 +22,17 @@ export function ManagerPublicData(_navigation){
     this.dataMedVacBrandList = null;
     
     // This will be ordered by what? for faster search
-    this.dataMedVacTypeList     = null;
+    this.dataMedVacTypeList  = null;
+    
+    
+    this.dataHarvestTypeList = null;
     
     
     this.requestDataFeedType = function(callback_success, elem_show_error){
         
         // Need to request feed brands
         const base_url = window.location.origin;
-        const url = `${base_url}/feed_type/list`;
+        const url = `${base_url}/lookup/feed_type/list`;
         
         
         $.ajax({
@@ -111,7 +114,6 @@ export function ManagerPublicData(_navigation){
             }
         });
     }
-    
     
     
     
@@ -227,6 +229,49 @@ export function ManagerPublicData(_navigation){
                 else {
                     navigation.serverError.receivedErrorMessage(
                         response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    this.requestDataHarvestType = function(callback_success, elem_show_error){
+        
+        // Need to request feed brands
+        const base_url = window.location.origin;
+        const url = `${base_url}/lookup/harvest_type/list`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataFeedTypeList = response.data;
+                    
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                    
                 }
             },
   

@@ -1,0 +1,173 @@
+suggest how to present these info into a compact page 
+ viewable via mobile web page; use clean corporate blue themes
+
+[
+
+
+
+
+{
+    'pig_harvest'{
+        'date_harvest':     '02 Feb 2026',
+        'num_pigs':         4,
+        'num_days':         150,
+        
+        'harvest_type':     'Slaugther',
+        'internal':         0,
+        'notes':           'Rasyon Naga'
+    },
+    
+    'live_weight': {
+        'weight':       350,
+        'weight_ave':   87.5,
+        'price':        null
+    },
+        
+
+    'slaugther_weight': {
+        'weight':       310,
+        'net_weight':   306,
+        'weight_ave':   77.5,
+        'price':        215,
+        'per_pig_weight': '78, 76, 79, 77'
+    },
+    
+    
+    
+    'sales':           { 
+        'net_sales':    65390.0,
+        'sales_pp':     16447.5,
+        'harvest_cost': 400
+    
+    },
+
+    
+    'pig_buyer':{
+        'name':         Rasyon Naga
+    }
+    
+},
+
+{
+    'pig_harvest'{
+        'date_harvest':     '02 Feb 2026',
+        'num_pigs':         4,
+        'num_days':         150,
+        
+        'harvest_type':     'Internal Gilt, Boar',
+        'internal': 1
+    },
+    
+    'live_weight': {
+        'weight':       350,
+        'weight_ave':   87.5,
+        'price':        null
+    },
+        
+    
+},
+
+
+{
+    'pig_harvest'{
+        'date_harvest':     '02 Feb 2026',
+        'num_pigs':         4,
+        'num_days':         150,
+        
+        'harvest_type':     'External Gilt, Boar',
+        'internal':         0
+    },
+    
+    'live_weight': {
+        'weight':       350,
+        'weight_ave':   87.5,
+        'price':        null
+    },
+        
+    'sales':           { 
+        'net_sales':    70000.0,
+        'sales_pp':     17500,
+        'harvest_cost': 0
+    
+    }
+}
+
+
+]
+
+
+1.) Use corporate blue themes;
+2.) put the number of pigs and numdays inline with Live WT and SLAUGTHER
+
+
+1.) The first line should just be the Harvest Date and the Badge
+2.) The customer name and notes should be at the bottom.
+3.) The Number of pigs,  Live weight and slaugther wegther numbers should be same size.
+4.) remove the icon in the number of pigs and number days
+5.) use minimum margin and paddings as this is viewed in mobile
+
+
+Use these already defines CSS colors or some variants of these
+    --corporate-blue:  #1e3a8a; /*#1e5aa7; */
+    --corporate-blue-company: #1877F0;
+    --corporate-blue-dark: #15467d;
+    --corporate-blue-light: #4a8adb;
+    --corporate-blue-border: #dbeafe;
+    --corporate-bg: #e0f2fe;
+    
+    --alert-gold: #ffc107;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+    --bg-light: #f8f9fa;
+    --border-color: #dee2e6;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    --icon-blue: #1e5aa7;
+    --icon-green: #28a745;
+    --icon-orange: #fd7e14;
+    --icon-purple: #6f42c1;
+    --icon-red: #dc3545;
+    --icon-teal: #20c997;
+    --icon-pink: #e83e8c;
+    --icon-indigo: #6610f2;
+    --icon-syringe: #6c757d;
+    
+    --critical-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    
+    --success-green: #10b981;
+    --warning-orange: #f59e0b;
+    --danger-red: #ef4444;
+    --text-dark: #1f2937;
+    --text-light: #f9fafb;
+    
+    --light-gray: #f8fafc;
+    --medium-gray: #e2e8f0;
+    --neutral-gray: #6b7280;
+    --dark-gray: #64748b;
+    
+    --warning-bg: #fef3c7;
+    --warning-border: #f59e0b;
+    --success-bg: #d1fae5;
+    --success-border: #10b981;
+    
+    --text-light: #f8fafc;
+    --alert-red: #ef4444;
+    --alert-glow: rgba(239, 68, 68, 0.7);
+    --green-complete: #10b981;
+
+    --gestating-color:  #693FE9;
+    --lactating-piglets-color:  #2394EF;
+	--lactating-sow-color:  #e83e8c;
+    --weaning-color: #07A4C4;
+    --gilt-color: #2ecc71;
+    
+    --row-even: #eff7ff;
+    --row-odd: #ffffff;
+    --row-hover: #e0f2fe;
+    --clickable-highlight: #1e40af;
+    
+    --white: #ffffff;
+    
+    --body-default-bg: #f5f7fa; 

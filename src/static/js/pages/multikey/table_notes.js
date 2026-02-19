@@ -109,12 +109,12 @@ export function TableNotes(input_settings){
     
     
     
-    this.beforeShow = function(data, options){
+    this.beforeShow = function(data_entry, options){
         showOptions     = options;
         
         switch (settings.notesType){
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
-                dataSowBoar     = data;
+                dataSowBoar     = data_entry;
                 
                 if (dataSowBoar.data_details){
                     if ('list_notes' in dataSowBoar.data_details){
@@ -150,7 +150,7 @@ export function TableNotes(input_settings){
             }
             
             case MULTIKEY_OBJ_TYPE.PIG_PROD:{
-                dataPigProd     = data;
+                dataPigProd     = data_entry;
                 
                 if ('list_notes' in dataPigProd.data_details){
                     thisObj.setDataEntryList(dataPigProd.data_details.list_notes);

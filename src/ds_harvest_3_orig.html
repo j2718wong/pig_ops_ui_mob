@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Pig Harvest · Corporate Blue</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        :root {
+            --corporate-blue: #1e3a8a;
+            --corporate-blue-company: #1877F0;
+            --corporate-blue-dark: #15467d;
+            --corporate-blue-light: #4a8adb;
+            --corporate-blue-border: #dbeafe;
+            --corporate-bg: #e0f2fe;
+            
+            --alert-gold: #ffc107;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            
+            --icon-blue: #1e5aa7;
+            --icon-green: #28a745;
+            --icon-orange: #fd7e14;
+            --icon-purple: #6f42c1;
+            --icon-red: #dc3545;
+            --icon-teal: #20c997;
+            --icon-pink: #e83e8c;
+            --icon-indigo: #6610f2;
+            --icon-syringe: #6c757d;
+            
+            --critical-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            
+            --light-gray: #f8fafc;
+            --medium-gray: #e2e8f0;
+            --neutral-gray: #6b7280;
+            --dark-gray: #64748b;
+            
+            --warning-bg: #fef3c7;
+            --warning-border: #f59e0b;
+            --success-bg: #d1fae5;
+            --success-border: #10b981;
+            
+            --alert-red: #ef4444;
+            --alert-glow: rgba(239, 68, 68, 0.7);
+            --green-complete: #10b981;
+
+            --gestating-color: #693FE9;
+            --lactating-piglets-color: #2394EF;
+            --lactating-sow-color: #e83e8c;
+            --weaning-color: #07A4C4;
+            --gilt-color: #2ecc71;
+            
+            --row-even: #eff7ff;
+            --row-odd: #ffffff;
+            --row-hover: #e0f2fe;
+            --clickable-highlight: #1e40af;
+            
+            --white: #ffffff;
+            
+            --body-default-bg: #f5f7fa;
+        }
+
+        body {
+            background: var(--body-default-bg);
+            min-height: 100vh;
+            padding: 12px 10px;
+        }
+
+        .dashboard {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        
+        /* card-harvest */
+        .card-harvest {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 14px 12px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--corporate-blue-border);
+        }
+
+        /* card-harvest header - only date and badge */
+        .card-harvest-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .date {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--corporate-blue-dark);
+            line-height: 1.2;
+        }
+        .type-tag {
+            background: var(--corporate-bg);
+            color: var(--corporate-blue);
+            font-weight: 600;
+            font-size: 13px;
+            padding: 5px 12px;
+            border-radius: 30px;
+            border: 1px solid var(--corporate-blue-border);
+        }
+        .type-tag.internal {
+            background: var(--success-bg);
+            color: var(--success-green);
+            border-color: var(--success-border);
+        }
+        .type-tag.external {
+            background: var(--warning-bg);
+            color: var(--warning-orange);
+            border-color: var(--warning-border);
+        }
+
+        /* metrics row: pigs | live | slaughter - labels above numbers */
+        .metrics-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            background: var(--row-even);
+            border-radius: 18px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            border: 1px solid var(--corporate-blue-border);
+        }
+        .pigs-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 70px;
+        }
+        .pigs-block .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--corporate-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 2px;
+        }
+        .pigs-block .number {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--corporate-blue-dark);
+            line-height: 1.1;
+        }
+        .live-slaughter {
+            display: flex;
+            gap: 20px;
+        }
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .metric-item .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--corporate-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 2px;
+        }
+        .metric-item .value-block {
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+        }
+        .metric-item .number {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--corporate-blue-dark);
+            line-height: 1.1;
+        }
+        .metric-item .unit {
+            font-size: 12px;
+            color: var(--dark-gray);
+            font-weight: 500;
+            margin-left: 2px;
+        }
+
+        /* info row for averages and days - labels above */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            background: var(--light-gray);
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border: 1px solid var(--medium-gray);
+        }
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .info-item .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--corporate-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 2px;
+        }
+        .info-item .value {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        .info-item .unit {
+            font-size: 11px;
+            color: var(--neutral-gray);
+            margin-left: 2px;
+            font-weight: 400;
+        }
+
+        /* weight panel */
+        .weight-panel {
+            background: var(--row-even);
+            border-radius: 16px;
+            padding: 12px 14px;
+            margin: 10px 0;
+            border-left: 3px solid var(--corporate-blue);
+        }
+        .weight-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        .weight-row:last-child {
+            margin-bottom: 0;
+        }
+        .weight-label {
+            color: var(--corporate-blue-dark);
+            font-weight: 500;
+        }
+        .weight-figure {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .per-pig-list {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 8px 14px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--corporate-blue);
+            border: 1px dashed var(--corporate-blue-light);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* sales block */
+        .sales-block {
+            background: var(--corporate-blue-dark);
+            border-radius: 16px;
+            padding: 14px;
+            margin: 10px 0 8px;
+            color: var(--text-light);
+        }
+        .sales-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+        }
+        .sales-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .sales-amount {
+            font-weight: 700;
+            font-size: 17px;
+            color: var(--text-light);
+        }
+        .sales-total {
+            color: var(--alert-gold);
+            font-size: 20px;
+        }
+
+        /* footer */
+        .card-harvest-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid var(--corporate-blue-border);
+            font-size: 14px;
+        }
+        .buyer-name {
+            background: var(--corporate-blue);
+            color: var(--text-light);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        .notes-text {
+            color: var(--dark-gray);
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        /* internal/external alt info */
+        .alt-info {
+            background: var(--light-gray);
+            border-radius: 14px;
+            padding: 12px;
+            margin: 8px 0 4px;
+            text-align: center;
+            color: var(--dark-gray);
+            border: 1px solid var(--medium-gray);
+            font-size: 14px;
+        }
+
+        /* adjust for live-only card-harvests */
+        .live-only .live-slaughter {
+            gap: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+
+
+        <!-- CARD 1 — slaughter with full details -->
+        <div class="card-harvest">
+            <div class="card-harvest-header">
+                <span class="date">02 Feb 2026</span>
+                <span class="type-tag">SLAUGHTER</span>
+            </div>
+
+            <!-- pigs, live, slaughter - labels ABOVE numbers -->
+            <div class="metrics-row">
+                <div class="pigs-block">
+                    <span class="label">PIGS</span>
+                    <span class="number">4</span>
+                </div>
+                
+                <div class="live-slaughter">
+                    <div class="metric-item">
+                        <span class="label">LIVE</span>
+                        <div class="value-block">
+                            <span class="number">350</span>
+                            <span class="unit">kg</span>
+                        </div>
+                    </div>
+                    <div class="metric-item">
+                        <span class="label">SLAUGHTER</span>
+                        <div class="value-block">
+                            <span class="number">310</span>
+                            <span class="unit">kg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- averages and days - labels ABOVE -->
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="label">AVE LIVE</span>
+                    <span class="value">87.5 <span class="unit">kg</span></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">AVE SLTR</span>
+                    <span class="value">77.5 <span class="unit">kg</span></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">DAYS</span>
+                    <span class="value">150</span>
+                </div>
+            </div>
+
+            <!-- weight details -->
+            <div class="weight-panel">
+                <div class="weight-row">
+                    <span class="weight-label">Net weight</span>
+                    <span class="weight-figure">306 kg</span>
+                </div>
+                <div class="weight-row">
+                    <span class="weight-label">Price/kg</span>
+                    <span class="weight-figure">₱215</span>
+                </div>
+                <div class="per-pig-list">
+                    per pig: 78, 76, 79, 77 kg
+                </div>
+            </div>
+
+            <!-- sales -->
+            <div class="sales-block">
+                <div class="sales-row">
+                    <span>Net sales</span>
+                    <span class="sales-amount sales-total">₱65,390</span>
+                </div>
+                <div class="sales-row">
+                    <span>Per pig</span>
+                    <span class="sales-amount">₱16,447.50</span>
+                </div>
+                <div class="sales-row">
+                    <span>Harvest cost</span>
+                    <span class="sales-amount">₱400</span>
+                </div>
+            </div>
+
+            <!-- customer and notes at bottom -->
+            <div class="card-harvest-footer">
+                <span class="buyer-name">Rasyon Naga</span>
+                <span class="notes-text">Rasyon Naga</span>
+            </div>
+        </div>
+
+        <!-- CARD 2 — internal gilt, boar -->
+        <div class="card-harvest">
+            <div class="card-harvest-header">
+                <span class="date">02 Feb 2026</span>
+                <span class="type-tag internal">INTERNAL</span>
+            </div>
+
+            <div class="metrics-row live-only">
+                <div class="pigs-block">
+                    <span class="label">PIGS</span>
+                    <span class="number">4</span>
+                </div>
+                <div class="live-slaughter">
+                    <div class="metric-item">
+                        <span class="label">LIVE</span>
+                        <div class="value-block">
+                            <span class="number">350</span>
+                            <span class="unit">kg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="label">AVE LIVE</span>
+                    <span class="value">87.5 <span class="unit">kg</span></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">TYPE</span>
+                    <span class="value">Gilt/Boar</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">DAYS</span>
+                    <span class="value">150</span>
+                </div>
+            </div>
+
+            <div class="alt-info">
+                internal transfer · no slaughter data
+            </div>
+
+            <div class="card-harvest-footer">
+                <span class="notes-text">internal use</span>
+                <span></span>
+            </div>
+        </div>
+
+        <!-- CARD 3 — external gilt/boar -->
+        <div class="card-harvest">
+            <div class="card-harvest-header">
+                <span class="date">02 Feb 2026</span>
+                <span class="type-tag external">EXTERNAL</span>
+            </div>
+
+            <div class="metrics-row live-only">
+                <div class="pigs-block">
+                    <span class="label">PIGS</span>
+                    <span class="number">4</span>
+                </div>
+                <div class="live-slaughter">
+                    <div class="metric-item">
+                        <span class="label">LIVE</span>
+                        <div class="value-block">
+                            <span class="number">350</span>
+                            <span class="unit">kg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="label">AVE LIVE</span>
+                    <span class="value">87.5 <span class="unit">kg</span></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">TYPE</span>
+                    <span class="value">Gilt/Boar</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">DAYS</span>
+                    <span class="value">150</span>
+                </div>
+            </div>
+
+            <div class="sales-block" style="background: var(--corporate-blue);">
+                <div class="sales-row">
+                    <span>Net sales</span>
+                    <span class="sales-amount sales-total">₱70,000</span>
+                </div>
+                <div class="sales-row">
+                    <span>Per pig</span>
+                    <span class="sales-amount">₱17,500</span>
+                </div>
+                <div class="sales-row">
+                    <span>Harvest cost</span>
+                    <span class="sales-amount">₱0</span>
+                </div>
+            </div>
+
+            <div class="card-harvest-footer">
+                <span class="notes-text">external sale</span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

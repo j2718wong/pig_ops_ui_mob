@@ -61,22 +61,46 @@ export function ProdFeedSummary(input_settings){
     
     let elemDivContainer        = settings.elemDivContainer;
 
-    let elemIdTdPigCount        = null;
+    let elemIdTdPigCountBirth   = null;
+    let elemIdTdPigCountWean    = null;
+    let elemIdTdPigCountLatest  = null;
+    
     let elemIdTdNumDaysLabel    = null;
     let elemIdTdNumDays         = null;
     let elemIdTdTargetHarvest   = null;
+    
     let elemIdTdPigsHarvested   = null;
+    let elemIdTdPigsSold        = null;
+    let elemIdTdIntGiltBoar     = null;
+    
+    let elemIdTrFeedsCost       = null;
+    let elemIdTdFeedsCost       = null;
+    let elemIdTrTotalSales      = null;
+    let elemIdTdTotalSales      = null;
+    
 
     let elemIdTableBody         = null;
     let elemIdLastFeedBalance   = null;
 
 
 
-    let elemTdPigCount          = null;
+    let elemTdPigCountBirth     = null;
+    let elemTdPigCountWean      = null;
+    let elemTdPigCountLatest    = null;
+    
     let elemTdNumDaysLabel      = null;
     let elemTdNumDays           = null;
     let elemTdTargetHarvest     = null;
+    
     let elemTdPigsHarvested     = null;
+    let elemTdPigsSold          = null;
+    let elemTdIntGiltBoar       = null;
+    
+    let elemTrFeedsCost         = null;
+    let elemTdFeedsCost         = null;
+    let elemTrTotalSales        = null;
+    let elemTdTotalSales        = null;
+    
     
     let elemTableBody           = null;
     let elemLastFeedBalance     = null;
@@ -175,12 +199,23 @@ export function ProdFeedSummary(input_settings){
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
         elemLastFeedBalance     = elemDivContainer.querySelector('#'+elemIdLastFeedBalance);
         
-        elemTdPigCount          = elemDivContainer.querySelector('#'+elemIdTdPigCount);     
+        elemTdPigCountBirth     = elemDivContainer.querySelector('#'+elemIdTdPigCountBirth);
+        elemTdPigCountWean      = elemDivContainer.querySelector('#'+elemIdTdPigCountWean);  
+        elemTdPigCountLatest    = elemDivContainer.querySelector('#'+elemIdTdPigCountLatest);
+
         elemTdNumDaysLabel      = elemDivContainer.querySelector('#'+elemIdTdNumDaysLabel); 
         elemTdNumDays           = elemDivContainer.querySelector('#'+elemIdTdNumDays);
         elemTdTargetHarvest     = elemDivContainer.querySelector('#'+elemIdTdTargetHarvest);
-        elemTdPigsHarvested     = elemDivContainer.querySelector('#'+elemIdTdPigsHarvested);
         
+        elemTdPigsHarvested     = elemDivContainer.querySelector('#'+elemIdTdPigsHarvested);
+        elemTdPigsSold          = elemDivContainer.querySelector('#'+elemIdTdPigsSold);
+        elemTdIntGiltBoar       = elemDivContainer.querySelector('#'+elemIdTdIntGiltBoar);
+        
+        elemTrFeedsCost         = elemDivContainer.querySelector('#'+elemIdTrFeedsCost);
+        elemTdFeedsCost         = elemDivContainer.querySelector('#'+elemIdTdFeedsCost);
+        
+        elemTrTotalSales        = elemDivContainer.querySelector('#'+elemIdTrTotalSales);
+        elemTdTotalSales        = elemDivContainer.querySelector('#'+elemIdTdTotalSales);
     }
     
     
@@ -229,13 +264,73 @@ export function ProdFeedSummary(input_settings){
                 elemTdNumDays.innerHTML = target_harvest.days_since_wean;
             }
             
-            elemTdPigCount.innerHTML  = curDataEntry.pig_production.cur_pig_count;
+            
+            // Pig Counts
+            let s_count_pigs_birth = '';
+            if (curDataEntry.birth){
+                let pig_count = 0;
+                
+                if (curDataEntry.birth.pigs_live_f){
+                    pig_count += curDataEntry.birth.pigs_live_f;
+                    s_count_pigs_birth += `${curDataEntry.birth.pigs_live_f}F`;
+                }
+                
+                if (curDataEntry.birth.pigs_live_m){
+                    pig_count += curDataEntry.birth.pigs_live_m;
+                    s_count_pigs_birth += `, ${curDataEntry.birth.pigs_live_m}M`;
+                }
+                
+               
+            }
+            elemTdPigCountBirth.innerHTML = s_count_pigs_birth;
+            
+            
+            let s_count_pigs_wean = '';
+            if (curDataEntry.weaning){
+                let pig_count = 0;
+                
+                if (curDataEntry.weaning.num_pigs){
+                    s_count_pigs_wean = `${curDataEntry.weaning.num_pigs}`;
+                }
+                else{
+                    if (curDataEntry.weaning.num_pigs_f){
+                        pig_count += curDataEntry.birth.num_pigs_f;
+                        s_count_pigs_wean += `${curDataEntry.weaning.num_pigs_f}F`;
+                    }
+                    
+                    if (curDataEntry.weaning.num_pigs_m){
+                        pig_count += curDataEntry.birth.num_pigs_m;
+                        s_count_pigs_wean += `, ${curDataEntry.weaning.num_pigs_m}M`;
+                    }
+                }
+            }
+            elemTdPigCountWean.innerHTML = s_count_pigs_wean;
+            
+            
+            elemTdPigCountLatest.innerHTML = curDataEntry.pig_production.cur_pig_count;
             
                   
             elemTdTargetHarvest.innerHTML =  target_harvest.date_target_harvest;
             
             
             //elemTdPigsHarvested 
+            
+            // Compute feeds cost
+            const prod_feeds_cost = curDataEntry.feeds.cost;
+            
+            let feeds_cost = 0;
+            
+            if (prod_feeds_cost.gestating)  {feeds_cost+= prod_feeds_cost.gestating;}
+            if (prod_feeds_cost.lactating)  {feeds_cost+= prod_feeds_cost.lactating;}
+            if (prod_feeds_cost.booster)    {feeds_cost+= prod_feeds_cost.booster;}
+            if (prod_feeds_cost.prestarter) {feeds_cost+= prod_feeds_cost.prestarter;}
+            if (prod_feeds_cost.starter)    {feeds_cost+= prod_feeds_cost.starter;}
+            if (prod_feeds_cost.grower)     {feeds_cost+= prod_feeds_cost.grower;}
+            if (prod_feeds_cost.finisher)   {feeds_cost+= prod_feeds_cost.finisher;}
+            
+            const s_feeds_cost = parentObj.moneyFormatter.format(feeds_cost);
+            elemTdFeedsCost.innerHTML = s_feeds_cost;
+        
             
             
         }
@@ -256,47 +351,160 @@ export function ProdFeedSummary(input_settings){
         }
         elemLastFeedBalance.textContent = s_date_balance;
         
+        
+        let consumed_gestating  = null;
+        let consumed_lactating  = null;
+        let consumed_booster    = null;
+        let consumed_prestarter = null;
+        let consumed_starter    = null;
+        let consumed_grower     = null;
+        let consumed_finisher   = null;
+        
+        
+        let balance_gestating   = null;
+        let balance_lactating   = null;
+        let balance_booster     = null;
+        let balance_prestarter  = null;
+        let balance_starter     = null;
+        let balance_grower      = null;
+        let balance_finisher    = null;
+        
+        
+        
+        if (feeds_bought.gestating) {
+            if (feeds_balance.gestating){
+                balance_gestating   = feeds_balance.gestating;
+                consumed_gestating  = feeds_bought.gestating - feeds_balance.gestating;
+            }
+            else{
+                balance_gestating   = 0;
+                consumed_gestating  = feeds_bought.gestating;
+            }
+        }
+        
+        
+        if (feeds_bought.lactating) {
+            if (feeds_balance.lactating){
+                balance_lactating   = feeds_balance.lactating
+                consumed_lactating  = feeds_bought.lactating - feeds_balance.lactating;
+            }
+            else{
+                balance_lactating   = 0;
+                consumed_lactating  = feeds_bought.lactating;
+            }
+        }
+        
+        
+        if (feeds_bought.booster) {
+            if (feeds_balance.booster){
+                balance_booster     = feeds_balance.booster;
+                consumed_booster    = feeds_bought.booster - feeds_balance.booster;
+            }
+            else{
+                balance_booster     = 0;
+                consumed_booster    = feeds_bought.booster;
+            }
+        }
+        
+        
+        if (feeds_bought.prestarter) {
+            if (feeds_balance.prestarter){
+                balance_prestarter  = feeds_balance.prestarter;
+                consumed_prestarter = feeds_bought.prestarter - feeds_balance.prestarter;
+            }
+            else{
+                balance_prestarter  = 0;
+                consumed_prestarter = feeds_bought.prestarter;
+            }
+        }
+        
+        
+        if (feeds_bought.starter) {
+            if (feeds_balance.starter){
+                balance_starter     = feeds_balance.starter;
+                consumed_starter    = feeds_bought.starter - feeds_balance.starter;
+            }
+            else{
+                balance_starter     = 0;
+                consumed_starter    = feeds_bought.starter;
+            }
+        }
+        
+        
+         if (feeds_bought.grower) {
+            if (feeds_balance.grower){
+                balance_grower      = feeds_balance.grower;
+                consumed_grower     = feeds_bought.grower - feeds_balance.grower;
+            }
+            else{
+                balance_grower      = 0;
+                consumed_grower     = feeds_bought.grower;
+            }
+        }
+        
+        
+        if (feeds_bought.finisher) {
+            if (feeds_balance.finisher){
+                balance_finisher    = feeds_balance.finisher;
+                consumed_finisher   = feeds_bought.finisher - feeds_balance.finisher;
+            }
+            else{
+                balance_finisher    = 0;
+                consumed_finisher   = feeds_bought.finisher;
+            }
+        }
+        
+        
         const feed_summary = [
-            {   
-                type:   FEED_TYPE_LABEL.GESTA,
-                buy:    feeds_bought.gestating,
-                bal:    feeds_balance.gestating
-            },
             
             {   
-                type:   FEED_TYPE_LABEL.LACTA,
-                buy:    feeds_bought.lactating,
-                bal:    feeds_balance.lactating
-            },
-            
-            {   
-                type:   FEED_TYPE_LABEL.BOOSTER,
-                buy:    feeds_bought.booster,
-                bal:    feeds_balance.booster
-            },
-            
-            {   
-                type:   FEED_TYPE_LABEL.PRESTART,
-                buy:    feeds_bought.prestarter,
-                bal:    feeds_balance.prestarter
-            },
-            
-            {   
-                type:   FEED_TYPE_LABEL.STARTER,
-                buy:    feeds_bought.starter,
-                bal:    feeds_balance.starter
+                type:   FEED_TYPE_LABEL.FINISHER,
+                buy:    feeds_bought.finisher,
+                cons:   consumed_finisher,
+                bal:    balance_finisher
             },
             
             {   
                 type:   FEED_TYPE_LABEL.GROWER,
                 buy:    feeds_bought.grower,
-                bal:    feeds_balance.grower
+                cons:   consumed_grower,
+                bal:    balance_grower
             },
             
             {   
-                type:   FEED_TYPE_LABEL.FINISHER,
-                buy:    feeds_bought.finisher,
-                bal:    feeds_balance.finisher
+                type:   FEED_TYPE_LABEL.STARTER,
+                buy:    feeds_bought.starter,
+                cons:   consumed_starter,
+                bal:    balance_starter
+            },
+            
+            {   
+                type:   FEED_TYPE_LABEL.PRESTART,
+                buy:    feeds_bought.prestarter,
+                cons:   consumed_prestarter,
+                bal:    balance_prestarter
+            },
+            
+            {   
+                type:   FEED_TYPE_LABEL.BOOSTER,
+                buy:    feeds_bought.booster,
+                cons:   consumed_booster,
+                bal:    balance_booster
+            },
+            
+            {   
+                type:   FEED_TYPE_LABEL.LACTA,
+                buy:    feeds_bought.lactating,
+                cons:   consumed_lactating,
+                bal:    balance_lactating
+            },
+            
+            
+            {   
+                type:   FEED_TYPE_LABEL.GESTA,
+                buy:    feeds_bought.gestating,
+                cons:   consumed_gestating,
+                bal:    balance_gestating
             }
         
         ];
@@ -334,31 +542,52 @@ export function ProdFeedSummary(input_settings){
     
     
     this.getHtmlProdSummary = function(){
-        
-        elemIdTdPigCount        = `${settings.uniqueKey}-pig-count`;
+        elemIdTdPigCountBirth   = `${settings.uniqueKey}-pig-count-birth`;
+        elemIdTdPigCountWean    = `${settings.uniqueKey}-pig-count-wean`;
+        elemIdTdPigCountLatest  = `${settings.uniqueKey}-pig-count-latest`;
         elemIdTdNumDaysLabel    = `${settings.uniqueKey}-num-days-label`;
         elemIdTdNumDays         = `${settings.uniqueKey}-num-days`;
         elemIdTdTargetHarvest   = `${settings.uniqueKey}-target-harvest`;
+        
         elemIdTdPigsHarvested   = `${settings.uniqueKey}-pig-harvested`;
+        elemIdTdPigsSold        = `${settings.uniqueKey}-pig-sold`;
+        elemIdTdIntGiltBoar     = `${settings.uniqueKey}-int-gilt-boar`;
+        
+        elemIdTrFeedsCost       = `${settings.uniqueKey}-tr-feeds-cost`;
+        elemIdTdFeedsCost       = `${settings.uniqueKey}-td-feeds-cost`;
+        
+        elemIdTrTotalSales      = `${settings.uniqueKey}-tr-total-sales`;
+        elemIdTdTotalSales      = `${settings.uniqueKey}-td-total-sales`;
         
         
         const html = `
-        <h2 class="tab-title">
-            Production
+        <h2>
+            <span class="nav-title blue">Production Summary</span>
         </h2>
         
         
         <table class="data-table">
             <colgroup>
-                <col style="width: 40%;">
-                <col style="width: 60%;">
+                <col style="width: 50%;">
+                <col style="width: 50%;">
             </colgroup>
             
             
             <tbody>
                 <tr>
-                    <td>Pig Count</td>
-                    <td id="${elemIdTdPigCount}">15</td>
+                    <td>Pig Count at Birth</td>
+                    <td id="${elemIdTdPigCountBirth}">15</td>
+                </tr>
+                
+                <tr>
+                    <td>Pig Count at Wean</td>
+                    <td id="${elemIdTdPigCountWean}">15</td>
+                </tr>
+                
+                
+                <tr>
+                    <td>Pig Count Latest</td>
+                    <td id="${elemIdTdPigCountLatest}">15</td>
                 </tr>
                 
                 <tr>
@@ -372,8 +601,28 @@ export function ProdFeedSummary(input_settings){
                 </tr>
                 
                 <tr>
-                    <td>Pigs Harvested</td>
+                    <td>Total Pigs Harvested</td>
                     <td id="${elemIdTdPigsHarvested}">0</td>
+                </tr>
+                
+                <tr>
+                    <td>Total Pigs Sold</td>
+                    <td id="${elemIdTdPigsSold}">0</td>
+                </tr>
+                
+                <tr>
+                    <td>Gilt, Boar Harvested</td>
+                    <td id="${elemIdTdIntGiltBoar}">0</td>
+                </tr>
+                
+                <tr id="${elemIdTrFeedsCost}">
+                    <td>Feeds Cost</td>
+                    <td id="${elemIdTdFeedsCost}">0</td>
+                </tr>
+                
+                <tr id="${elemIdTrTotalSales}">
+                    <td>Total Sales</td>
+                    <td id="${elemIdTdTotalSales}">0</td>
                 </tr>
             
             </tbody>
@@ -392,7 +641,14 @@ export function ProdFeedSummary(input_settings){
         let s_feed_consumed = '';
         let s_feed_balance  = '';
         
-        if (cur_entry.buy){s_feed_buy = `${cur_entry.buy}`;}
+        if (cur_entry.buy ) {
+            s_feed_buy       = `${cur_entry.buy}`;}
+        
+        if (cur_entry.cons != null  && cur_entry.cons >= 0){
+            s_feed_consumed = `${cur_entry.cons}`;}
+        
+        if (cur_entry.bal != null && cur_entry.bal >= 0){
+            s_feed_balance   = `${cur_entry.bal}`;}
         
         
         const html = `

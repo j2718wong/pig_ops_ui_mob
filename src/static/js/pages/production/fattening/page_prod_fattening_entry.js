@@ -27,6 +27,10 @@ import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed.js'
 import {TableFeedBalance}       from '../../feeds/feed_balance/table_feed_balance.js'
 
 
+import {ProdHarvestList}        from '../harvest/prod_harvest_list.js'
+
+
+
 export function PageProdFatteningEntry(input_settings){
     PageProdEntryCommon.call(this, input_settings);
     
@@ -240,6 +244,16 @@ export function PageProdFatteningEntry(input_settings){
         this.tableFeedBalance.init();
 
         
+        this.prodHarvestList    = new ProdHarvestList({
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-harvest-list',
+            elemDivContainer:   elemTabFatHarvest,
+            parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY
+        });
+        this.prodHarvestList.init();
+        
+        
         this.tableMedVac        = new TableMedVac({
             navigation:         settings.navigation,
             parentObj:          this,
@@ -368,6 +382,12 @@ export function PageProdFatteningEntry(input_settings){
             }
             
             
+            case thisObj.TAB_FAT_HARVEST:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabFatHarvest);
+                break;
+            }
+            
+            
             
             case thisObj.TAB_FAT_MEDVAC:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabFatMedVac);
@@ -450,7 +470,12 @@ export function PageProdFatteningEntry(input_settings){
             }
             
             
-            
+            case elemIdTabFatHarvest:{
+                thisObj.prodHarvestList.beforeShow(dataPigProd);
+                
+                curTabFat = thisObj.TAB_FAT_HARVEST;
+                break;
+            }
             
             
             

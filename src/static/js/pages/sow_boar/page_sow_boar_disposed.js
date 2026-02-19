@@ -407,7 +407,7 @@ export function PageSowBoarDisposed(input_settings){
     }
     
         
-    this.beforeShow = function(options, data_sow_boar){
+    this.beforeShow = function(data_sow_boar, options){
         /*
         Typical options
         options ={

@@ -33,7 +33,7 @@ export function PageTableBasic(){
     let elemIdTableEntryCount   = null;
     let elemIdTableInfo         = null;
     
-    let elemIdSeachAddControl   = null;
+    let elemIdSearchAddControl  = null;
     let elemIdSearchInput       = null;
     let elemIdAddEntryBtn       = null;
     let elemIdFilterControls    = null;
@@ -60,7 +60,7 @@ export function PageTableBasic(){
     let elemTableEntryCount     = null;
     let elemTableInfo           = null;
 
-    let elemSeachAddControl     = null;
+    let elemSearchAddControl    = null;
     let elemSearchInput         = null;
     let elemAddEntryBtn         = null;
     let elemFilterControls      = null;
@@ -139,7 +139,7 @@ export function PageTableBasic(){
         elemIdTableEntryCount   = `${settings.uniqueKey}-table-entry-count`;
         elemIdTableInfo         = `${settings.uniqueKey}-table-info`;
         
-        elemIdSeachAddControl   = `${settings.uniqueKey}-search-add-control`;
+        elemIdSearchAddControl  = `${settings.uniqueKey}-search-add-control`;
         elemIdSearchInput       = `${settings.uniqueKey}-mobile-search-input`;
         elemIdAddEntryBtn       = `${settings.uniqueKey}-mobile-add-entry-btn`;
         elemIdFilterControls    = `${settings.uniqueKey}-mobile-filter-control`;
@@ -175,7 +175,7 @@ export function PageTableBasic(){
         
         
         let html_search_add     = `
-        <div class="mobile-controls" id="${elemIdSeachAddControl}">
+        <div class="mobile-controls" id="${elemIdSearchAddControl}">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
                 <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Search">
@@ -294,7 +294,7 @@ export function PageTableBasic(){
         elemTableEntryCount     = document.getElementById(elemIdTableEntryCount);
         elemTableInfo           = document.getElementById(elemIdTableInfo);
 
-        elemSeachAddControl     = document.getElementById(elemIdSeachAddControl);
+        elemSearchAddControl    = document.getElementById(elemIdSearchAddControl);
         elemSearchInput         = document.getElementById(elemIdSearchInput);
         elemAddEntryBtn         = document.getElementById(elemIdAddEntryBtn);
         elemFilterControls      = document.getElementById(elemIdFilterControls);
@@ -433,7 +433,7 @@ export function PageTableBasic(){
     
     
     this.getElemSearchAddControl = function(){
-        return elemSeachAddControl;
+        return elemSearchAddControl;
     }
     
     
