@@ -14,7 +14,7 @@ import {UiInputDatePicker}          from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter}     from '../common/ui/input_text_with_counter.js';
 
 
-import {ComponentAccBoarCustomer}   from './components/comp_acc_boar_customer.js'
+import {ComponentAccPigBuyer}       from '../production/harvest/comp_acc_pig_buyer.js'
 
 
 

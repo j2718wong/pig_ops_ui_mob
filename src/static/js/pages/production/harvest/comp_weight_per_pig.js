@@ -71,7 +71,7 @@ export function ComponentWeightPerPig(input_settings){
         
         
         return `
-        <div class="form-group-select" id="${elemIdUiShow}">
+        <div class="form-group-number" id="${elemIdUiShow}">
             
         
             <label for="${elemIdText}" class="form-label">
@@ -147,33 +147,13 @@ export function ComponentWeightPerPig(input_settings){
     
 
     
-    this.getElemSelect  = function(){
-        return elemSelect;
-    }
-
-
-
-    this.getElemServerErrorMsg = function(){
-        return elemServerErrorMsg;
-    }
-
-    
-    this.getValue = function(){
-        return elemText.value;
-    }
-    
-    
-    this.setValue = function(value){
-
-    }
-    
-    
-   
-    
-    
     this.reset = function(){
-       
-       
+        const items = elemListContainer.querySelectorAll('.weight-badge');
+        for (const cur_entry of items){
+            cur_entry.remove();
+        }
+        
+        thisObj.refreshEmptyMessage();
     } 
     
     
@@ -282,4 +262,6 @@ export function ComponentWeightPerPig(input_settings){
         return result;
     }
        
+       
+   
 }

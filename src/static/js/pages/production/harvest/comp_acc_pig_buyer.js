@@ -21,7 +21,12 @@ import {APPLICATION,
 
 
 
-export function ComponentAccBoarCustomer(input_settings){
+/**
+ * Note: account_pig_buyer and boar_customer are saved in the same back end table.
+ * 
+ * */
+
+export function ComponentAccPigBuyer(input_settings){
     /*
     Typical settings
     {
@@ -54,7 +59,7 @@ export function ComponentAccBoarCustomer(input_settings){
     const MAXCHAR_CUSTOMER_NAME   = 50;
     
     
-    const elemUiAccBoarCustomer   = new UiInputTextWithCounter({
+    const elemUiAccPigBuyer   = new UiInputTextWithCounter({
                                     uniqueKey:      input_settings.uniqueKey,
                                     className:      'form-group',
                                     textLabel:      'Customer Name',
@@ -64,12 +69,12 @@ export function ComponentAccBoarCustomer(input_settings){
                                     textHelpText:   ''
                                 });
     
-    input_settings.htmlExpandSection = elemUiAccBoarCustomer.getHtml();
+    input_settings.htmlExpandSection = elemUiAccPigBuyer.getHtml();
     
     
-    let dataAccBoarCustomerList       = null;
+    let dataAccPigBuyerList       = null;
     
-    let elemAccBoarCustomer           = null;
+    let elemAccPigBuyer           = null;
     
     
     // This needs to be set
@@ -78,31 +83,31 @@ export function ComponentAccBoarCustomer(input_settings){
     
     this.afterHtmlRender = function(){
         // This need to be called first
-        elemUiAccBoarCustomer.afterHtmlRender();
+        elemUiAccPigBuyer.afterHtmlRender();
         
         
         // Call the parent afterHtmlRender
         thisObj.afterHtmlRenderExpandable();
         
         
-        elemAccBoarCustomer = elemUiAccBoarCustomer.getElemText();
+        elemAccPigBuyer = elemUiAccPigBuyer.getElemText();
         
-        const elemSaveAccBoarCustomer = this.getElemEntrySave();
-        elemSaveAccBoarCustomer.addEventListener('click', thisObj.onClickSave);
+        const elemSaveAccPigBuyer = this.getElemEntrySave();
+        elemSaveAccPigBuyer.addEventListener('click', thisObj.onClickSave);
         
         
         this.callbackBeforeExpand = function(){
-            elemUiAccBoarCustomer.reset()
+            elemUiAccPigBuyer.reset()
         }
     }
     
     
-    this.setDataAccBoarCustomer = function(data, selected_entry_value){
-        dataAccBoarCustomerList = data;
+    this.setDataAccPigBuyer = function(data, selected_entry_value){
+        dataAccPigBuyerList = data;
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataAccBoarCustomer(dataAccBoarCustomerList, elem_select);
+        commonSelectOptions.setDataAccPigBuyer(dataAccPigBuyerList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){
@@ -111,7 +116,7 @@ export function ComponentAccBoarCustomer(input_settings){
     }
     
     
-    this._getAccBoarCustomer = function(name, exclude_hid){
+    this._getAccPigBuyer = function(name, exclude_hid){
         let upper_name = name.toUpperCase();
         
         
@@ -119,10 +124,10 @@ export function ComponentAccBoarCustomer(input_settings){
         let index;
         
         
-        if (dataAccBoarCustomerList == null){return null;}
+        if (dataAccPigBuyerList == null){return null;}
         
-        for (index = 0; index < dataAccBoarCustomerList.length; index++){
-            cur_entry = dataAccBoarCustomerList[index];
+        for (index = 0; index < dataAccPigBuyerList.length; index++){
+            cur_entry = dataAccPigBuyerList[index];
             
             // Will check name for duplicate 
             if (cur_entry.acc_medvac.name.toUpperCase() == upper_name){
@@ -149,15 +154,15 @@ export function ComponentAccBoarCustomer(input_settings){
         let is_duplicate    = 0;
         
        
-        let input_name      = elemAccBoarCustomer.value.trim();
+        let input_name      = elemAccPigBuyer.value.trim();
         
        
-        input_elem          = elemAccBoarCustomer;
+        input_elem          = elemAccPigBuyer;
         
         if (input_name.length > 0){
             // check for duplicates
             validation = 0;
-            const cur_medvac_type = thisObj._getAccBoarCustomer(input_name);
+            const cur_medvac_type = thisObj._getAccPigBuyer(input_name);
             if (cur_medvac_type != null){
                 validation   = -1;
                 is_duplicate = 1;
@@ -170,10 +175,10 @@ export function ComponentAccBoarCustomer(input_settings){
         
         if (validation != 0){
             if (is_duplicate > 0){
-                elemUiAccBoarCustomer.setTextInvalid('Duplicate entry.');
+                elemUiAccPigBuyer.setTextInvalid('Duplicate entry.');
             }
             else{
-                elemUiAccBoarCustomer.setTextInvalid('Please enter a valid name.');
+                elemUiAccPigBuyer.setTextInvalid('Please enter a valid name.');
             }
         }
         addValidationClassToElem(input_elem, validation);
@@ -242,13 +247,13 @@ export function ComponentAccBoarCustomer(input_settings){
                     const account_pig_buyer_hid = response.account_pig_buyer.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataAccBoarCustomer(data, account_pig_buyer_hid);
+                        thisObj.setDataAccPigBuyer(data, account_pig_buyer_hid);
                         thisObj.closeExpandable();
                     };
                     
                     
                     
-                    navigation.pigFarm.accountLists.requestDataAccBoarCustomer(
+                    navigation.pigFarm.accountLists.requestDataAccPigBuyer(
                         callback_success, elemServerErrorMsg)
                 }
                 else{

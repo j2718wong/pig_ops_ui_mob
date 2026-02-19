@@ -10,6 +10,7 @@ import {PageWithMultiBreadCrumbs}   from '../../multikey/page_with_multi_breadcr
 import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 import {UiInputDatePicker}          from '../../common/ui/input_datepicker.js';
+import {UiInputTextWithCounter}     from '../../common/ui/input_text_with_counter.js';
 import {ComponentPlusMinusInput}    from '../../common/ui/comp_plus_minus_input.js';
 import {ComponentWeightPerPig}      from './comp_weight_per_pig.js';
 
@@ -75,14 +76,35 @@ export function PageProdHarvestAddEdit(input_settings){
     let componentHarvestType    = null;
     let componentNumPigs        = null;
     
-    let componentLWPerPig       = null;
     
     let elemIdLWShow            = null;   
     
     let elemIdLWPanelHeader     = null;
+    let elemIdLWHeaderWeight    = null;
     let elemIdLWPanelArrowIcon  = null;
     let elemIdLWPanelBody       = null;
+    let elemIdLWAverageWeight   = null;
+    let elemIdLWPricePerWeight  = null;
     
+    let componentLWPerPig       = null;
+    
+    
+    let elemIdSWShow            = null;   
+    
+    let elemIdSWPanelHeader     = null;
+    let elemIdSWHeaderWeight    = null;
+    let elemIdSWPanelArrowIcon  = null;
+    let elemIdSWPanelBody       = null;
+    let elemIdSWAverageWeight   = null;
+    let elemIdSWMinusWeight     = null;
+    let elemIdSWPricePerWeight  = null;
+    
+    let componentSWPerPig       = null;
+    
+    let elemUiNotes             = null;
+    
+    let elemIdNetSales          = null;
+    let elemIdHarvestCost       = null;
     
     let elemIdServerErrorMsg    = null;
     let elemIdBtnCancel         = null;
@@ -100,12 +122,27 @@ export function PageProdHarvestAddEdit(input_settings){
     let elemLWShow              = null;   
         
     let elemLWPanelHeader       = null;
+    let elemLWHeaderWeight      = null;
     let elemLWPanelArrowIcon    = null;
     let elemLWPanelBody         = null;
+    let elemLWAverageWeight     = null;
+    let elemLWPricePerWeight    = null;
     
     
-   
-   
+    let elemSWShow              = null;   
+        
+    let elemSWPanelHeader       = null;
+    let elemSWHeaderWeight      = null;
+    let elemSWPanelArrowIcon    = null;
+    let elemSWPanelBody         = null;
+    let elemSWAverageWeight     = null;
+    let elemSWMinusWeight       = null;
+    let elemSWPricePerWeight    = null;
+    
+    
+    let elemNetSales            = null;
+    let elemHarvestCost         = null;
+    
     
     let elemServerErrorMsg      = null;
     let elemBtnCancel           = null;
@@ -180,15 +217,20 @@ export function PageProdHarvestAddEdit(input_settings){
         });
         
 
-        componentLWPerPig       = new ComponentWeightPerPig({
-            uniqueKey:          `${settings.uniqueKey}-lw-per-pigs`,
-            elemDivContainer:   elemDivContainer,
-        
+        elemUiNotes             = new UiInputTextWithCounter({
+            uniqueKey:          `${settings.uniqueKey}-notes`,
             
-            labelText:          'Weight Per Pig',
-            helpText:           ''
-            
+            isTextArea:         true,
+            className:          'form-group-text-area',
+            textLabel:          'Notes',
+            textMaxChars:       160,
+            rows:               3,
+            helpText:           null  
         });
+        
+        
+        elemIdNetSales          = `${settings.uniqueKey}-net-sales`;
+        elemIdHarvestCost       = `${settings.uniqueKey}-harvest-cost`;
 
 
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
@@ -203,7 +245,11 @@ export function PageProdHarvestAddEdit(input_settings){
         const html_harvest_type = componentHarvestType.getHtml();
         const html_num_pigs     = componentNumPigs.getHtml();
         
-        const html_live_weight  = componentLWPerPig.getHtml();
+        const html_live_weight  = thisObj.getHtmlLiveWeight();
+        const html_slaughter_weight = thisObj.getHtmlSlaughterWeight();
+        
+        const html_notes        = elemUiNotes.getHtml();
+        
         
         const html =`
 
@@ -236,6 +282,32 @@ export function PageProdHarvestAddEdit(input_settings){
     
         ${html_live_weight}
         
+        ${html_slaughter_weight}
+        
+        <div class="form-group-number">
+            <label for="${elemIdNetSales}" class="form-label">
+                Net Sales
+            </label>
+            
+            <input type="number" class="form-control" id="${elemIdNetSales}" step="0.1" min="0" >
+            <div class="invalid-feedback">
+                Please enter numeric value.
+            </div>
+        </div>
+        
+        <div class="form-group-number">
+            <label for="${elemIdHarvestCost}" class="form-label">
+                Harvest Cost
+            </label>
+            
+            <input type="number" class="form-control" id="${elemIdHarvestCost}" step="0.1" min="0" >
+            <div class="invalid-feedback">
+                Please enter numeric value.
+            </div>
+        </div>
+        
+        ${html_notes}
+        
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
         <!-- Footer Buttons -->
@@ -264,36 +336,56 @@ export function PageProdHarvestAddEdit(input_settings){
         elemIdLWShow            = `${settings.uniqueKey}-lw-show`;
         
         elemIdLWPanelHeader     = `${settings.uniqueKey}-lw-panel-header`;
+        elemIdLWHeaderWeight    = `${settings.uniqueKey}-lw-header-weight`;
         elemIdLWPanelArrowIcon  = `${settings.uniqueKey}-lw-panel-arrow`;
         elemIdLWPanelBody       = `${settings.uniqueKey}-lw-panel-body`;
+        elemIdLWAverageWeight   = `${settings.uniqueKey}-lw-ave-weight`;
+        elemIdLWPricePerWeight  = `${settings.uniqueKey}-lw-price`;
         
+        
+        componentLWPerPig       = new ComponentWeightPerPig({
+            uniqueKey:          `${settings.uniqueKey}-lw-per-pig`,
+            elemDivContainer:   elemDivContainer,
+        
+            
+            labelText:          'Weight Per Pig',
+            helpText:           ''
+            
+        });
+        
+         const html_pp_weight  = componentLWPerPig.getHtml();
+
         
         const html = `
         <!-- Collapsible Panel -->
-        <div class="collapsible-panel mb-4" id="${elemIdLWShow}" style="margin-top:10px; padding-top:10px; border-top: 2px solid var(--corporate-blue);">
+        <div class="collapsible-panel mb-4" id="${elemIdLWShow}" style="margin-top:8px; margin-bottom:0 !important; padding:5px; ">
             <!-- Header with arrow icon -->
             <div class="collapsible-header" id="${elemIdLWPanelHeader}">
-                <span>Live Weight</span>
+                <span>Live Weight<span id="${elemIdLWHeaderWeight}"></span></span>
                 <i class="bi bi-chevron-down arrow-icon" id="${elemIdLWPanelArrowIcon}"></i>
             </div>
             
             <!-- Body content -->
             <div class="collapsible-body" id="${elemIdLWPanelBody}">
-                <!-- Warning box -->
-                <div class="warning-box">
-                    <div class="warning-header">
-                        <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
-                        <span>Update Pig Status</span>
-                    </div>
-                    <div>
-                        Updating pig status to any of the options below will remove it from the active list.
-                        <b>This cannot be undone.</b>
+
+                ${html_pp_weight}
+               
+                <div class="form-group-number">
+                    <label class="form-label" style="margin-bottom:0;">Average Weight, kg</label>
+                    <span class="read-only-field" id="${elemIdLWAverageWeight}">&nbsp;</span>
+                </div>
+                
+                <div class="form-group-number">
+                    <label for="${elemIdLWPricePerWeight}" class="form-label">
+                        Price per kg
+                    </label>
+                    
+                    <input type="number" class="form-control" id="${elemIdLWPricePerWeight}" step="0.1" min="0" >
+                    <div class="invalid-feedback">
+                        Please enter numeric value.
                     </div>
                 </div>
                 
-                
-                
-               
                 
             </div>
         </div>
@@ -303,6 +395,87 @@ export function PageProdHarvestAddEdit(input_settings){
         return html;
         
     }
+    
+    
+    
+    this.getHtmlSlaughterWeight = function(){
+        elemIdSWShow            = `${settings.uniqueKey}-sw-show`;
+                                                         
+        elemIdSWPanelHeader     = `${settings.uniqueKey}-sw-panel-header`;
+        elemIdSWHeaderWeight    = `${settings.uniqueKey}-sw-header-weight`;
+        elemIdSWPanelArrowIcon  = `${settings.uniqueKey}-sw-panel-arrow`;
+        elemIdSWPanelBody       = `${settings.uniqueKey}-sw-panel-body`;
+        elemIdSWAverageWeight   = `${settings.uniqueKey}-sw-ave-weight`;
+        elemIdSWMinusWeight     = `${settings.uniqueKey}-sw-minus-weight`;
+        elemIdSWPricePerWeight  = `${settings.uniqueKey}-sw-price`;
+        
+        
+        componentSWPerPig       = new ComponentWeightPerPig({
+            uniqueKey:          `${settings.uniqueKey}-sw-per-pig`,
+            elemDivContainer:   elemDivContainer,
+        
+            
+            labelText:          'Weight Per Pig',
+            helpText:           ''
+            
+        });
+        
+        const html_pp_weight  = componentSWPerPig.getHtml();
+
+        
+        const html = `
+        <!-- Collapsible Panel -->
+        <div class="collapsible-panel mb-4" id="${elemIdSWShow}" style="margin-top:8px; padding:5px; ">
+            <!-- Header with arrow icon -->
+            <div class="collapsible-header" id="${elemIdSWPanelHeader}">
+                <span>Slaughter Weight<span id="${elemIdSWHeaderWeight}"></span></span>
+                <i class="bi bi-chevron-down arrow-icon" id="${elemIdSWPanelArrowIcon}"></i>
+            </div>
+            
+            <!-- Body content -->
+            <div class="collapsible-body" id="${elemIdSWPanelBody}">
+
+                ${html_pp_weight}
+               
+                <div class="form-group-number">
+                    <label class="form-label" style="margin-bottom:0;">Average Weight, kg</label>
+                    <span class="read-only-field" id="${elemIdSWAverageWeight}">&nbsp;</span>
+                </div>
+                
+                <div class="form-group-number">
+                    <label for="${elemIdSWMinusWeight}" class="form-label">
+                        Minus Weight, kg
+                    </label>
+                    
+                    <input type="number" class="form-control" id="${elemIdSWMinusWeight}" step="0.1" min="0">
+                    <div class="invalid-feedback">
+                        Please enter numeric value.
+                    </div>
+                    <div class="form-text">Sometimes buyers will subtract bone weight.</div>
+                </div>
+                
+                <div class="form-group-number">
+                    <label for="${elemIdSWPricePerWeight}" class="form-label">
+                        Price per kg
+                    </label>
+                    
+                    <input type="number" class="form-control" id="${elemIdSWPricePerWeight}" step="0.1" min="0" >
+                    <div class="invalid-feedback">
+                        Please enter numeric value.
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+        
+        `;
+        
+        return html;
+        
+    }
+    
+    
     
     
     
@@ -317,7 +490,9 @@ export function PageProdHarvestAddEdit(input_settings){
         componentNumPigs.afterHtmlRender();
         
         componentLWPerPig.afterHtmlRender();
-
+        componentSWPerPig.afterHtmlRender();
+        
+        elemUiNotes.afterHtmlRender();
         
         
         this._findElements();
@@ -333,8 +508,30 @@ export function PageProdHarvestAddEdit(input_settings){
                                                           
         elemInfoShow            = elemDivContainer.querySelector('#'+elemIdInfoShow);
         elemInfo                = elemDivContainer.querySelector('#'+elemIdInfo);
-                                                          
+                                                        
+        elemLWShow              = elemDivContainer.querySelector('#'+elemIdLWShow); 
         
+        elemLWPanelHeader       = elemLWShow.querySelector('#'+elemIdLWPanelHeader);   
+        elemLWHeaderWeight      = elemLWShow.querySelector('#'+elemIdLWHeaderWeight);
+        elemLWPanelArrowIcon    = elemLWShow.querySelector('#'+elemIdLWPanelArrowIcon);
+        elemLWPanelBody         = elemLWShow.querySelector('#'+elemIdLWPanelBody);     
+        elemLWAverageWeight     = elemLWShow.querySelector('#'+elemIdLWAverageWeight);
+        elemLWPricePerWeight    = elemLWShow.querySelector('#'+elemIdLWPricePerWeight);
+        
+        
+        elemSWShow              = elemDivContainer.querySelector('#'+elemIdSWShow); 
+        
+        elemSWPanelHeader       = elemSWShow.querySelector('#'+elemIdSWPanelHeader);   
+        elemSWHeaderWeight      = elemSWShow.querySelector('#'+elemIdSWHeaderWeight);
+        elemSWPanelArrowIcon    = elemSWShow.querySelector('#'+elemIdSWPanelArrowIcon);
+        elemSWPanelBody         = elemSWShow.querySelector('#'+elemIdSWPanelBody);     
+        elemSWAverageWeight     = elemSWShow.querySelector('#'+elemIdSWAverageWeight);
+        elemSWMinusWeight       = elemSWShow.querySelector('#'+elemIdSWMinusWeight);
+        elemSWPricePerWeight    = elemSWShow.querySelector('#'+elemIdSWPricePerWeight);
+        
+        
+        elemNetSales            = elemDivContainer.querySelector('#'+elemIdNetSales);
+        elemHarvestCost         = elemDivContainer.querySelector('#'+elemIdHarvestCost);
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
@@ -346,12 +543,20 @@ export function PageProdHarvestAddEdit(input_settings){
     
     this._processAfterHtmlRender = function(){
         
-        
+        componentLWPerPig.callbackOnChangeInputs = thisObj.onChangeLWPerPigInput;
+        componentSWPerPig.callbackOnChangeInputs = thisObj.onChangeSWPerPigInput;
     }
     
     
     this._bindEventListeners = function(){
         
+        elemLWPanelHeader.addEventListener('click', function() {
+            thisObj.togglePanelLW();
+        });
+        
+        elemSWPanelHeader.addEventListener('click', function() {
+            thisObj.togglePanelSW();
+        });
         
         
         
@@ -363,13 +568,47 @@ export function PageProdHarvestAddEdit(input_settings){
         
     }
     
-
+    
+    this.togglePanelLW = function(){
+        const panelBody     = elemLWPanelBody;
+        const panelHeader   = elemLWPanelHeader;
+        const arrowIcon     = elemLWPanelArrowIcon;
+        
+        // Toggle visibility
+        panelBody.classList.toggle('collapsed');
+        
+        // Toggle header border radius
+        panelHeader.classList.toggle('collapsed');
+        
+        // Rotate arrow icon
+        arrowIcon.classList.toggle('rotated');
+    }
+    
+    
+    this.togglePanelSW = function(){
+        const panelBody     = elemSWPanelBody;
+        const panelHeader   = elemSWPanelHeader;
+        const arrowIcon     = elemSWPanelArrowIcon;
+        
+        // Toggle visibility
+        panelBody.classList.toggle('collapsed');
+        
+        // Toggle header border radius
+        panelHeader.classList.toggle('collapsed');
+        
+        // Rotate arrow icon
+        arrowIcon.classList.toggle('rotated');
+    }
+    
     
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
         elemUiDateHarvest.reset();
         
+        componentLWPerPig.reset();
+        
+        elemLWAverageWeight.innerHTML = '&nbsp;';
         
        
         elemServerErrorMsg.style.display = 'none';
@@ -409,6 +648,16 @@ export function PageProdHarvestAddEdit(input_settings){
         
         componentHarvestType.beforeShow();
         
+        
+        // Hide Live Weight Details
+        if (!elemLWPanelBody.classList.contains('collapsed')) {
+            thisObj.togglePanelLW();
+        }
+        
+        // Hide Slaughter Weight Details
+        if (!elemSWPanelBody.classList.contains('collapsed')) {
+            thisObj.togglePanelSW();
+        }
         
         
         // Update Close and cancel button on click
@@ -472,7 +721,60 @@ export function PageProdHarvestAddEdit(input_settings){
     }
     
     
-       
+    
+    this.onChangeLWPerPigInput = function(){
+        const pig_weights = componentLWPerPig.getPigWeights();
+        
+        if (pig_weights.length > 0){
+            let total_weight = 0;
+            for (const cur_entry of pig_weights){
+                total_weight += parseFloat(cur_entry);
+            }
+            
+            const average = total_weight / pig_weights.length;
+            
+            const s_average = Math.round(average * 10) / 10;
+            elemLWAverageWeight.textContent = s_average;
+            
+            elemLWHeaderWeight.textContent = `  ${total_weight} kg`
+            
+            componentNumPigs.setValue(pig_weights.length);
+            
+        }
+        else{
+            elemLWHeaderWeight.textContent = '';
+            componentNumPigs.setValue(1);
+        }
+        
+    }
+    
+    
+    this.onChangeSWPerPigInput = function(){
+        const pig_weights = componentSWPerPig.getPigWeights();
+        
+        if (pig_weights.length > 0){
+            let total_weight = 0;
+            for (const cur_entry of pig_weights){
+                total_weight += parseFloat(cur_entry);
+            }
+            
+            const average = total_weight / pig_weights.length;
+            
+            const s_average = Math.round(average * 10) / 10;
+            elemSWAverageWeight.textContent = s_average;
+            
+            elemSWHeaderWeight.textContent = `  ${total_weight} kg`
+            
+            componentNumPigs.setValue(pig_weights.length);
+            
+        }
+        else{
+            elemSWHeaderWeight.textContent = '';
+            componentNumPigs.setValue(1);
+        }
+        
+    }
+    
     
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
