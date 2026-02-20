@@ -38,8 +38,8 @@ export function formatDate(dt, format){
 
         return `${day} ${month} ${year}`;
     }
-	
-	if (format == FORMAT_COMPACT_NO_SPACE) {
+    
+    if (format == FORMAT_COMPACT_NO_SPACE) {
         day     = String(dt.getDate()).padStart(2, '0');
         month   = monthNames[dt.getMonth()];
         year    = dt.getFullYear();

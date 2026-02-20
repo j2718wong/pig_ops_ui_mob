@@ -3954,3 +3954,264 @@ input[type=number] {
 }
 
 /************************************************************************/
+
+
+/*************************************************************************/
+
+/* card-harvest */
+        .card-harvest {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 14px 12px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--corporate-blue-border);
+        }
+
+        /* card-harvest header - only harvest-date and badge */
+        .card-harvest-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .harvest-date {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--corporate-blue-dark);
+            line-height: 1.2;
+        }
+        .harvest-type-tag {
+            background: var(--corporate-bg);
+            color: var(--corporate-blue);
+            font-weight: 600;
+            font-size: 13px;
+            padding: 5px 12px;
+            border-radius: 30px;
+            border: 1px solid var(--corporate-blue-border);
+        }
+        .harvest-type-tag.internal {
+            background: var(--success-bg);
+            color: var(--success-green);
+            border-color: var(--success-border);
+        }
+        .harvest-type-tag.external {
+            background: var(--warning-bg);
+            color: var(--warning-orange);
+            border-color: var(--warning-border);
+        }
+
+        /* metrics row: pigs | live | slaughter - labels above numbers */
+        .metrics-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            background: var(--row-even);
+            border-radius: 18px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            border: 1px solid var(--corporate-blue-border);
+        }
+        .pigs-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /*flex-start*/
+            min-width: 70px;
+        }
+        .pigs-block .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--corporate-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 2px;
+        }
+        .pigs-block .number {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--corporate-blue-dark);
+            line-height: 1.1;
+        }
+        .live-slaughter {
+            display: flex;
+            gap: 20px;
+        }
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .metric-item .label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--corporate-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 2px;
+        }
+        .metric-item .value-block {
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+        }
+        .metric-item .number {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--corporate-blue-dark);
+            line-height: 1.1;
+        }
+        .metric-item .unit {
+            font-size: 12px;
+            color: var(--dark-gray);
+            font-weight: 500;
+            margin-left: 2px;
+        }
+
+        /* info row for averages and days - labels above */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            background: var(--light-gray);
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border: 1px solid var(--medium-gray);
+        }
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .info-item .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--corporate-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 2px;
+        }
+        .info-item .value {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        .info-item .unit {
+            font-size: 11px;
+            color: var(--neutral-gray);
+            margin-left: 2px;
+            font-weight: 400;
+        }
+
+        /* weight panel */
+        .weight-panel {
+            background: var(--row-even);
+            border-radius: 16px;
+            padding: 12px 14px;
+            margin: 10px 0;
+            border-left: 3px solid var(--corporate-blue);
+        }
+        .weight-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        .weight-row:last-child {
+            margin-bottom: 0;
+        }
+        .weight-label {
+            color: var(--corporate-blue-dark);
+            font-weight: 500;
+        }
+        .weight-figure {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .per-pig-list {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 8px 14px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--corporate-blue);
+            border: 1px dashed var(--corporate-blue-light);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* sales block */
+        .sales-block {
+            background: var(--corporate-blue-dark);
+            border-radius: 16px;
+            padding: 14px;
+            margin: 10px 0 8px;
+            color: var(--text-light);
+        }
+        .sales-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 14px;
+        }
+        .sales-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .sales-amount {
+            font-weight: 700;
+            font-size: 17px;
+            color: var(--text-light);
+        }
+        .sales-total {
+            color: var(--alert-gold);
+            font-size: 20px;
+        }
+
+        /* footer */
+        .card-harvest-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid var(--corporate-blue-border);
+            font-size: 14px;
+        }
+        .buyer-name {
+            background: var(--corporate-blue);
+            color: var(--text-light);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 13px;
+        }
+        .notes-text {
+            color: var(--dark-gray);
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        /* internal/external alt info */
+        .alt-info {
+            background: var(--light-gray);
+            border-radius: 14px;
+            padding: 12px;
+            margin: 8px 0 4px;
+            text-align: center;
+            color: var(--dark-gray);
+            border: 1px solid var(--medium-gray);
+            font-size: 14px;
+        }
+
+        /* adjust for live-only card-harvests */
+        .live-only .live-slaughter {
+            gap: 0;
+        }
+
+/*************************************************************************/
+
+
+
+

@@ -12,7 +12,8 @@ import {APPLICATION,
         SOW_STATUS,
         SOW_STATUS_NAME,
         MULTIKEY_OBJ_TYPE,
-        PROD_STATUS}            from '../../../constants.js';
+        PROD_STATUS,
+        HARVEST_TYPE}            from '../../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -71,7 +72,8 @@ export function ProdFeedSummary(input_settings){
     
     let elemIdTdPigsHarvested   = null;
     let elemIdTdPigsSold        = null;
-    let elemIdTdIntGiltBoar     = null;
+    let elemIdTdGiltBoarInt     = null;
+    let elemIdTdGiltBoarSold    = null;
     
     let elemIdTrFeedsCost       = null;
     let elemIdTdFeedsCost       = null;
@@ -94,7 +96,9 @@ export function ProdFeedSummary(input_settings){
     
     let elemTdPigsHarvested     = null;
     let elemTdPigsSold          = null;
-    let elemTdIntGiltBoar       = null;
+    let elemTdGiltBoarInt       = null;
+    let elemTdGiltBoarSold      = null;
+    
     
     let elemTrFeedsCost         = null;
     let elemTdFeedsCost         = null;
@@ -114,6 +118,13 @@ export function ProdFeedSummary(input_settings){
     let showOptions             = null;
     
     let dtCurrentDate           = null;
+    
+    
+    const moneyFormatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    });
+    
     
     // This can be a data_pig_prod or data_prod_group
     let curDataEntry            = null;
@@ -209,7 +220,8 @@ export function ProdFeedSummary(input_settings){
         
         elemTdPigsHarvested     = elemDivContainer.querySelector('#'+elemIdTdPigsHarvested);
         elemTdPigsSold          = elemDivContainer.querySelector('#'+elemIdTdPigsSold);
-        elemTdIntGiltBoar       = elemDivContainer.querySelector('#'+elemIdTdIntGiltBoar);
+        elemTdGiltBoarInt       = elemDivContainer.querySelector('#'+elemIdTdGiltBoarInt);
+        elemTdGiltBoarSold      = elemDivContainer.querySelector('#'+elemIdTdGiltBoarSold);
         
         elemTrFeedsCost         = elemDivContainer.querySelector('#'+elemIdTrFeedsCost);
         elemTdFeedsCost         = elemDivContainer.querySelector('#'+elemIdTdFeedsCost);
@@ -307,13 +319,58 @@ export function ProdFeedSummary(input_settings){
             elemTdPigCountWean.innerHTML = s_count_pigs_wean;
             
             
+            // Latest pig count
             elemTdPigCountLatest.innerHTML = curDataEntry.pig_production.cur_pig_count;
             
                   
+            // Target date harvest
             elemTdTargetHarvest.innerHTML =  target_harvest.date_target_harvest;
             
             
-            //elemTdPigsHarvested 
+            // Harvested pigs
+            const list_harvest  = curDataEntry.data_details.list_harvest;
+            if (list_harvest){
+                let num_pigs_harvested  = 0;
+                let num_pigs_sold       = 0;
+                let num_gilt_boar_int   = 0;
+                let num_gilt_boar_sold  = 0;
+                let total_sales         = 0.0;
+                
+                
+                for (const cur_entry of list_harvest){
+                    const prod_harvest  = cur_entry.prod_harvest;
+                    
+                    num_pigs_harvested  += prod_harvest.num_pigs;
+                    
+                    if (prod_harvest.sales && prod_harvest.sales.net_sales){
+                        num_pigs_sold   += prod_harvest.num_pigs;
+                        total_sales     += prod_harvest.sales.net_sales;
+                    }
+                    
+                    if (prod_harvest.harvest_type_id == HARVEST_TYPE.INTERNAL_GILT_BOAR){
+                        num_gilt_boar_int += prod_harvest.num_pigs;
+                    }
+                    
+                    if (prod_harvest.harvest_type_id == HARVEST_TYPE.GILT_SALE){
+                        num_gilt_boar_sold += prod_harvest.num_pigs;
+                    }
+                    
+                    if (prod_harvest.harvest_type_id == HARVEST_TYPE.BOAR_SALE){
+                        num_gilt_boar_sold += prod_harvest.num_pigs;
+                    }
+                }
+                
+                const s_total_sales = moneyFormatter.format(total_sales);
+                
+                elemTdPigsHarvested.innerHTML   = `${num_pigs_harvested}`;
+                elemTdPigsSold.innerHTML        = `${num_pigs_sold}`;
+                elemTdGiltBoarInt.innerHTML     = `${num_gilt_boar_int}`;
+                elemTdGiltBoarSold.innerHTML    = `${num_gilt_boar_sold}`;
+                
+                elemTdTotalSales.innerHTML      = `${s_total_sales}`;
+            }
+            
+            
             
             // Compute feeds cost
             const prod_feeds_cost = curDataEntry.feeds.cost;
@@ -331,6 +388,9 @@ export function ProdFeedSummary(input_settings){
             const s_feeds_cost = parentObj.moneyFormatter.format(feeds_cost);
             elemTdFeedsCost.innerHTML = s_feeds_cost;
         
+            
+            // Sales
+            
             
             
         }
@@ -551,7 +611,8 @@ export function ProdFeedSummary(input_settings){
         
         elemIdTdPigsHarvested   = `${settings.uniqueKey}-pig-harvested`;
         elemIdTdPigsSold        = `${settings.uniqueKey}-pig-sold`;
-        elemIdTdIntGiltBoar     = `${settings.uniqueKey}-int-gilt-boar`;
+        elemIdTdGiltBoarInt     = `${settings.uniqueKey}-gilt-boar-int`;
+        elemIdTdGiltBoarSold    = `${settings.uniqueKey}-gilt-boar-sold`;
         
         elemIdTrFeedsCost       = `${settings.uniqueKey}-tr-feeds-cost`;
         elemIdTdFeedsCost       = `${settings.uniqueKey}-td-feeds-cost`;
@@ -612,7 +673,12 @@ export function ProdFeedSummary(input_settings){
                 
                 <tr>
                     <td>Gilt, Boar Harvested</td>
-                    <td id="${elemIdTdIntGiltBoar}">0</td>
+                    <td id="${elemIdTdGiltBoarInt}">0</td>
+                </tr>
+                
+                <tr>
+                    <td>Gilt, Boar Sold</td>
+                    <td id="${elemIdTdGiltBoarSold}">0</td>
                 </tr>
                 
                 <tr id="${elemIdTrFeedsCost}">

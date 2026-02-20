@@ -147,16 +147,27 @@ const MULTIKEY_OBJ_TYPE = {
 
 
 const FEED_TYPE = {
- GESTA:         1,   
- LACTA:         2,   
- BOOSTER:       3,     
- PRESTARTER:    4, 
- STARTER:       5,     
- GROWER:        6,      
- FINISHER:      7    
-}
+    GESTA:              1,   
+    LACTA:              2,   
+    BOOSTER:            3,     
+    PRESTARTER:         4, 
+    STARTER:            5,     
+    GROWER:             6,      
+    FINISHER:           7    
+};
 
 
+const HARVEST_TYPE = {
+    PIGLETS_SALE:       1,
+    LIVE_PIGS_SALE:     2,
+    SLAUGHTER_PIGS_SALE: 3,
+    GILT_SALE:          4,
+    BOAR_SALE:          5,
+    INTERNAL_GILT_BOAR: 6, 
+    BOAR_MATE_PAYMENT:  7,
+    INTERNAL_CONSUMPTION:8,
+    INTERNAL_SALE:      9
+};
 
 
 const REQUEST_ERROR_NUM ={
@@ -186,6 +197,8 @@ export {
 
     MULTIKEY_OBJ_TYPE,
     FEED_TYPE,
+    HARVEST_TYPE,
+    
     
     REQUEST_ERROR_NUM
 };

@@ -115,9 +115,14 @@ export function TableFeedBalance(input_settings){
         // Request data if not yet requested
         if ('data_details' in dataPigProd){
             
-            // Set table entry list; This will set also the entry count;
-            thisObj.setDataEntryList(dataPigProd.data_details.list_feed_balance);
-            thisObj.renderTable(dataPigProd.data_details.list_feed_balance);
+            if (dataPigProd.data_details.list_feed_balance){
+                // Set table entry list; This will set also the entry count;
+                thisObj.setDataEntryList(dataPigProd.data_details.list_feed_balance);
+                thisObj.renderTable(dataPigProd.data_details.list_feed_balance);
+            }
+            else{
+                thisObj.requestDataProdFeedBalanceList();
+            }
         } else{
             
             thisObj.requestDataProdFeedBalanceList();

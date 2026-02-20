@@ -22,11 +22,9 @@ import {formatDate,
         createPaginationManager} from '../../../utils.js';
 
 
-/*
- is used in these objects
+import {HarvestCard}            from './harvest_card.js';
 
 
-*/
 
 export function ProdHarvestList(input_settings){
 
@@ -53,14 +51,18 @@ export function ProdHarvestList(input_settings){
     let elemDivContainer        = settings.elemDivContainer;
 
 
-    let elemIdSearchAddControl   = null;
+    let elemIdSearchAddControl  = null;
     let elemIdSearchInput       = null;
     let elemIdAddEntryBtn       = null;
     
+    let elemIdCardContainer     = null;
     
-    let elemSearchAddControl     = null;
+    
+    let elemSearchAddControl    = null;
     let elemSearchInput         = null;
     let elemAddEntryBtn         = null;
+    
+    let elemCardContainer       = null;
     
 
 
@@ -74,6 +76,12 @@ export function ProdHarvestList(input_settings){
     
     // This can be a data_pig_prod or data_prod_group
     let dataPigProd            = null;
+    
+    
+    let harvestCard             = new HarvestCard({
+        navigation:             navigation,
+        parentObj:              thisObj    
+    });
     
     
     this.init = function(){
@@ -93,6 +101,8 @@ export function ProdHarvestList(input_settings){
         elemIdSearchAddControl  = `${settings.uniqueKey}-search-add-control`;
         elemIdSearchInput       = `${settings.uniqueKey}-mobile-search-input`;
         elemIdAddEntryBtn       = `${settings.uniqueKey}-mobile-add-entry-btn`;
+        
+        elemIdCardContainer     = `${settings.uniqueKey}-card-container`;
         
         
         const html_style        = this._writeInlineStyle();
@@ -120,6 +130,8 @@ export function ProdHarvestList(input_settings){
             </button>
         </div>
         
+        <div id="${elemIdCardContainer}"></div>
+        
         <div>No Entries</div>
 
         
@@ -143,6 +155,7 @@ export function ProdHarvestList(input_settings){
         elemSearchInput             = elemDivContainer.querySelector('#'+elemIdSearchInput);
         elemAddEntryBtn             = elemDivContainer.querySelector('#'+elemIdAddEntryBtn);
         
+        elemCardContainer           = elemDivContainer.querySelector('#'+elemIdCardContainer);
     }
     
     
@@ -172,12 +185,46 @@ export function ProdHarvestList(input_settings){
     
 
     
-    this.beforeShow = function(data_pig_prod){
+    this.beforeShow = function(data_pig_prod, options){
         dataPigProd = data_pig_prod;
         
+        showOptions     = options;
         
+        
+        // Request data if not yet requested
+        if ('data_details' in dataPigProd){
+            
+            if (dataPigProd.data_details.list_harvest){
+                thisObj.renderTable(dataPigProd.data_details.list_harvest);
+            }
+            else{
+                thisObj.requestDataProdHarvestList();
+
+            }
+        } else{
+            
+            thisObj.requestDataProdHarvestList();
+        }
         
     }
+    
+    
+    this.requestDataProdHarvestList = function(){
+        // Request data if not yet requested
+            
+        const callback_success = function(data){
+            thisObj.renderTable(dataPigProd.data_details.list_harvest);
+            
+        };
+        
+        let elem_show_error = null;
+   
+        
+        navigation.pigFarm.managerPigProd.requestDataProdHarvestList(dataPigProd,
+            callback_success, elem_show_error);
+        
+    }
+    
     
         
     this.show = function(options){
@@ -197,6 +244,18 @@ export function ProdHarvestList(input_settings){
         
         
         
+    }
+    
+    
+    this.renderTable = function(data){
+        elemCardContainer.innerHTML = '';
+        
+        for (const cur_entry of data){
+            const cur_card = harvestCard.getElemHarvestCard(cur_entry);
+            if (cur_card){
+                elemCardContainer.appendChild(cur_card);
+            }
+        }
     }
     
     
@@ -233,7 +292,7 @@ export function ProdHarvestList(input_settings){
     
     
     this.onSuccessAddEntry = function(){
-        //thisObj.requestDataPigProdFeedList();
+        thisObj.requestDataProdHarvestList();
     }
     
     
