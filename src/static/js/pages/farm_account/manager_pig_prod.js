@@ -546,7 +546,7 @@ export function ManagerPigProd(input_settings){
         let cur_entry;
         
         for(index = 0; index<prod_list.length; index++){
-            cur_entry = thisObj.dataGestatingList[index];
+            cur_entry = prod_list[index];
             
             if (cur_entry.pig_production.hid == pig_prod_hid){
                 prod_list.splice(index, 1);

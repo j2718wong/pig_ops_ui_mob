@@ -273,6 +273,44 @@ export function ComponentWeightPerPig(input_settings){
         return result.sort(function(a,b){return b-a;});
     }
     
-       
+    
+    // pig_weights, comma separated string
+    this.setPigWeights = function(pig_weights){
+        if (pig_weights.lenght == 0){return;}
+        
+        const weights = pig_weights.split(',');
+        
+        for (const cur_entry of weights){
+            // create badge
+            const newBadge = thisObj.createWeightBadge(cur_entry, function(badgeToRemove) {
+                badgeToRemove.remove();
+                thisObj.refreshEmptyMessage();
+                
+                if (thisObj.callbackOnChangeInputs){
+                    thisObj.callbackOnChangeInputs();
+                }
+
+            });
+
+
+
+            // insert before empty message if present, or just append
+            if (elemListContainer.contains(elemEmptyMsg)) {
+                elemListContainer.insertBefore(newBadge, elemEmptyMsg);
+            } else {
+                elemListContainer.appendChild(newBadge);
+            }
+
+            
+            if (thisObj.callbackOnChangeInputs){
+                thisObj.callbackOnChangeInputs();
+            }
+    
+        }
+        
+        thisObj.refreshEmptyMessage();
+        
+    }
+    
    
 }

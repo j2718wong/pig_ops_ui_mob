@@ -347,15 +347,15 @@ export function ProdFeedSummary(input_settings){
                         total_sales     += prod_harvest.sales.net_sales;
                     }
                     
-                    if (prod_harvest.harvest_type_id == HARVEST_TYPE.INTERNAL_GILT_BOAR){
+                    if (prod_harvest.harvest_type_hid == HARVEST_TYPE.INTERNAL_GILT_BOAR){
                         num_gilt_boar_int += prod_harvest.num_pigs;
                     }
                     
-                    if (prod_harvest.harvest_type_id == HARVEST_TYPE.GILT_SALE){
+                    if (prod_harvest.harvest_type_hid == HARVEST_TYPE.GILT_SALE){
                         num_gilt_boar_sold += prod_harvest.num_pigs;
                     }
                     
-                    if (prod_harvest.harvest_type_id == HARVEST_TYPE.BOAR_SALE){
+                    if (prod_harvest.harvest_type_hid == HARVEST_TYPE.BOAR_SALE){
                         num_gilt_boar_sold += prod_harvest.num_pigs;
                     }
                 }
@@ -389,7 +389,6 @@ export function ProdFeedSummary(input_settings){
             elemTdFeedsCost.innerHTML = s_feeds_cost;
         
             
-            // Sales
             
             
             

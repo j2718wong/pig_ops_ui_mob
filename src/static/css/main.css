@@ -4185,7 +4185,7 @@ input[type=number] {
             padding: 4px 14px;
             border-radius: 30px;
             font-weight: 500;
-            font-size: 13px;
+            font-size: 15px;
         }
         .notes-text {
             color: var(--dark-gray);

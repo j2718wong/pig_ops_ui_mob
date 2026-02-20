@@ -642,7 +642,13 @@ export function PageProdHarvestAddEdit(input_settings){
         elemSWAverageWeight.innerHTML = '&nbsp;';
         
         elemSWMinusWeight.value = '';
-       
+        
+        elemNetSales.value      = '';
+        
+        elemHarvestCost.value = '';
+        
+        elemUiNotes.setValue('');
+        
         elemServerErrorMsg.style.display = 'none';
     }
     
@@ -693,6 +699,12 @@ export function PageProdHarvestAddEdit(input_settings){
         }
         
         
+        if (showOptions.is_add){}
+        else{
+            thisObj.populateForm();
+        }
+        
+        
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
@@ -721,12 +733,52 @@ export function PageProdHarvestAddEdit(input_settings){
     
     
     this.populateForm = function(){
+        const prod_harvest = showOptions.prod_harvest.prod_harvest;
         
-        const pig_prod_feed = showOptions.pig_prod_feed;
-        const date_harvest = pig_prod_feed.pig_prod_feed.date_harvest;
+        const date_harvest = prod_harvest.date_harvest;
+
+        elemUiDateHarvest.setDate(date_harvest);
+        
+        componentNumPigs.setValue(prod_harvest.num_pigs);
+        
+        setTimeout(function(){
+            componentHarvestType.setValue(prod_harvest.harvest_type_hid);
+        }, 200);
+        
+        
+        if (prod_harvest.sales){   
+            if (prod_harvest.sales.net_sales){
+                elemNetSales.value = prod_harvest.sales.net_sales;
+            }
+        
+            if (prod_harvest.sales.harvest_cost){
+                elemHarvestCost.value = prod_harvest.sales.harvest_cost;
+            }
+        } 
+        
+        if (prod_harvest.notes) {
+            elemUiNotes.setValue(prod_harvest.notes);
+        }
 
         
-        elemUiDateHarvest.setDate(date_harvest);
+        if (prod_harvest.slaughter_weight && prod_harvest.slaughter_weight.minus){
+            elemSWMinusWeight.value = prod_harvest.slaughter_weight.minus;
+        }
+
+
+        if (prod_harvest.live_weight && prod_harvest.live_weight.pp_csv){
+            componentLWPerPig.setPigWeights(prod_harvest.live_weight.pp_csv);
+        }
+        
+        if (prod_harvest.slaughter_weight && prod_harvest.slaughter_weight.pp_csv){
+            componentSWPerPig.setPigWeights(prod_harvest.slaughter_weight.pp_csv);
+        }
+
+        if (prod_harvest.pig_buyer && prod_harvest.pig_buyer.hid){
+            setTimeout(function(){
+                componentAccPigBuyer.setValue(prod_harvest.pig_buyer.hid);
+            }, 200);
+        }
     }
     
       
@@ -740,7 +792,6 @@ export function PageProdHarvestAddEdit(input_settings){
     }
     
     
-    
     this.disableAllInputs = function(){
         elemUiDateHarvest.disableInputs();
       
@@ -752,7 +803,6 @@ export function PageProdHarvestAddEdit(input_settings){
         elemUiDateHarvest.enableInputs();
        
     }
-    
     
     
     this.onChangeLWPerPigInput = function(){
@@ -1129,11 +1179,9 @@ export function PageProdHarvestAddEdit(input_settings){
             post_data.pig_prod_hid = dataPigProd.pig_production.hid;
         }
         
-        else {
-            delete post_data.pig_farm_feed_buy_hid;
-            
-            const pig_prod_feed_hid = showOptions.pig_prod_feed.pig_prod_feed.hid;
-            post_data.pig_prod_feed_hid = pig_prod_feed_hid;
+        else {  
+            const prod_harvest_hid = showOptions.prod_harvest.prod_harvest.hid;
+            post_data.prod_harvest_hid = prod_harvest_hid;
         }
         
         
@@ -1141,10 +1189,10 @@ export function PageProdHarvestAddEdit(input_settings){
         let url;
         
         if (showOptions.is_add == true){
-            url = `${base_url}/production_harvest/add`;
+            url = `${base_url}/prod_harvest/add`;
         }
         else{
-            url = `${base_url}/production_harvest/update`;
+            url = `${base_url}/prod_harvest/update`;
         }
         
 
@@ -1164,24 +1212,43 @@ export function PageProdHarvestAddEdit(input_settings){
             },
   
             success: function(response){
+                /** The prod_harvest add or update entry can cause to update
+                 * pig_production.pig_prod_status_id into PROD_STATUS.HARVESTED.
+                 * If pig_prod_status_id is PROD_STATUS.HARVESTED, 
+                 * production entry should remove production list 
+                 * and should go back to production list page and not to 
+                 * production entry page.
+                 * */
+                
+                
                 if (response.result.num == 0){
-                    if (showOptions.is_add == true){
-                        navigation.showThisPage(showOptions.go_back_page);
-                        
-                        if (showOptions.callback_after_add){
-                            console.log('\n\npage_add_Add has callback_after_add');
-                            showOptions.callback_after_add();
-                        }
-                        else{
-                            console.log('\n\npage_add_Add has no callback_after_add');
-                        }
+                    if (response.prod_harvest.prod_status_id == PROD_STATUS.HARVESTED){
+                        // Remove production entry from list
+                        const pig_prod_hid = dataPigProd.pig_production.hid;
+                        const prod_list = navigation.pigFarm.managerPigProd.dataFatteningList;
+            
+                        navigation.pigFarm.managerPigProd.removeFromProdList(
+                                pig_prod_hid, prod_list);
+                                    
+                        // Goto Fattening List Page
+                        navigation._onClickNavProdFattening();
                     }
                     
                     else{
-                        navigation.showThisPage(showOptions.go_back_page);
+                        if (showOptions.is_add == true){
+                            navigation.showThisPage(showOptions.go_back_page);
+                            
+                            if (showOptions.callback_after_add){
+                                showOptions.callback_after_add();
+                            }
+                        }
                         
-                        if (showOptions.callback_after_edit){
-                            showOptions.callback_after_edit();
+                        else{
+                            navigation.showThisPage(showOptions.go_back_page);
+                            
+                            if (showOptions.callback_after_edit){
+                                showOptions.callback_after_edit();
+                            }
                         }
                     }
                 }

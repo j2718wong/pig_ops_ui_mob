@@ -56,6 +56,7 @@ export function ProdHarvestList(input_settings){
     let elemIdAddEntryBtn       = null;
     
     let elemIdCardContainer     = null;
+    let elemIdNoEntries         = null;
     
     
     let elemSearchAddControl    = null;
@@ -63,7 +64,7 @@ export function ProdHarvestList(input_settings){
     let elemAddEntryBtn         = null;
     
     let elemCardContainer       = null;
-    
+    let elemNoEntries           = null;
 
 
     //let textTranslation         = new TextTranslation();
@@ -80,7 +81,8 @@ export function ProdHarvestList(input_settings){
     
     let harvestCard             = new HarvestCard({
         navigation:             navigation,
-        parentObj:              thisObj    
+        parentObj:              thisObj,  
+        parentPageId:           settings.parentPageId
     });
     
     
@@ -103,7 +105,7 @@ export function ProdHarvestList(input_settings){
         elemIdAddEntryBtn       = `${settings.uniqueKey}-mobile-add-entry-btn`;
         
         elemIdCardContainer     = `${settings.uniqueKey}-card-container`;
-        
+        elemIdNoEntries         = `${settings.uniqueKey}-no-entries`;
         
         const html_style        = this._writeInlineStyle();
         
@@ -132,7 +134,7 @@ export function ProdHarvestList(input_settings){
         
         <div id="${elemIdCardContainer}"></div>
         
-        <div>No Entries</div>
+        <div id="${elemIdNoEntries}">No Entries</div>
 
         
     </div>
@@ -156,6 +158,7 @@ export function ProdHarvestList(input_settings){
         elemAddEntryBtn             = elemDivContainer.querySelector('#'+elemIdAddEntryBtn);
         
         elemCardContainer           = elemDivContainer.querySelector('#'+elemIdCardContainer);
+        elemNoEntries               = elemDivContainer.querySelector('#'+elemIdNoEntries);
     }
     
     
@@ -250,11 +253,19 @@ export function ProdHarvestList(input_settings){
     this.renderTable = function(data){
         elemCardContainer.innerHTML = '';
         
+        
         for (const cur_entry of data){
-            const cur_card = harvestCard.getElemHarvestCard(cur_entry);
+            const cur_card = harvestCard.getElemHarvestCard(dataPigProd, cur_entry);
             if (cur_card){
                 elemCardContainer.appendChild(cur_card);
             }
+        }
+        
+        if (data.length == 0){
+            elemNoEntries.style.display  = 'block';
+        }
+        else{
+            elemNoEntries.style.display  = 'none';
         }
     }
     
@@ -295,5 +306,9 @@ export function ProdHarvestList(input_settings){
         thisObj.requestDataProdHarvestList();
     }
     
+    
+    this.onSuccessEditEntry = function(){
+        thisObj.requestDataProdHarvestList();
+    } 
     
 }

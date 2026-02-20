@@ -11,7 +11,8 @@ import {formatDate,
 
 
 
-import {HARVEST_TYPE}               from '../../../constants.js';
+import {PAGE_ID,
+        HARVEST_TYPE}               from '../../../constants.js';
 
 
 
@@ -32,9 +33,11 @@ export function HarvestCard(input_settings){
        
     
     const navigation        = input_settings.navigation;
-    
+    const parentObj         = input_settings.parentObj;
     
     const thisObj           = this;
+    
+    const settings          = input_settings;
     
     
     const moneyFormatter = new Intl.NumberFormat('en-US', {
@@ -43,14 +46,14 @@ export function HarvestCard(input_settings){
     });
     
     
-    this.getElemHarvestCard = function(data_harvest){
+    this.getElemHarvestCard = function(data_pig_prod, data_harvest){
         const html_card = thisObj.getHtmlHarvestCard(data_harvest);
         
         if (html_card){
             const elem_card = document.createElement('div');
             elem_card.innerHTML = html_card;
             
-            thisObj.attachListeners(data_harvest, elem_card);
+            thisObj.attachListeners(data_pig_prod, data_harvest, elem_card);
             return elem_card;
         }
         
@@ -61,9 +64,9 @@ export function HarvestCard(input_settings){
     
     this.getHtmlHarvestCard = function(data_harvest){
         const prod_harvest      = data_harvest.prod_harvest;
-        const harvest_type_id   = prod_harvest.harvest_type_id;
+        const harvest_type_hid   = prod_harvest.harvest_type_hid;
         
-        switch (harvest_type_id){
+        switch (harvest_type_hid){
             case HARVEST_TYPE.PIGLETS_SALE:{
                 break;
             }
@@ -235,7 +238,7 @@ export function HarvestCard(input_settings){
 
             <!-- averages and days - labels ABOVE -->
             <div class="metrics-row">
-                <div class="pigs-block">
+                <div class="metric-item">
                     <span class="label">DAYS</span>
                     <div class="value-block">
                         <span class="number">${num_days}</span>
@@ -313,28 +316,28 @@ export function HarvestCard(input_settings){
         const dt_harvest        = new Date(date_harvest);
         const s_dt_harvest      = formatDate(dt_harvest, FORMAT_COMPACT);
         
-        const harvest_type_id   = prod_harvest.harvest_type_id;
+        const harvest_type_hid   = prod_harvest.harvest_type_hid;
         
         let harvest_tag         = '';
         let tag_class           = '';
         
         let s_gilt_boar         = '';
         
-        if (harvest_type_id == HARVEST_TYPE.INTERNAL_GILT_BOAR){
+        if (harvest_type_hid == HARVEST_TYPE.INTERNAL_GILT_BOAR){
             harvest_tag         = 'INTERNAL';
             tag_class           = 'internal';
             
             s_gilt_boar         = 'GILT/BOAR';
         }
         
-        if (harvest_type_id == HARVEST_TYPE.BOAR_SALE) {
+        if (harvest_type_hid == HARVEST_TYPE.BOAR_SALE) {
             harvest_tag         = 'BOAR SALE';
             tag_class           = 'external';
             
             s_gilt_boar         = 'BOAR';
         }
 
-        if (harvest_type_id == HARVEST_TYPE.GILT_SALE){
+        if (harvest_type_hid == HARVEST_TYPE.GILT_SALE){
             harvest_tag         = 'GILT SALE';
             tag_class           = 'external';
             
@@ -374,8 +377,8 @@ export function HarvestCard(input_settings){
         
         
         let html_sales = '';
-        if (harvest_type_id == HARVEST_TYPE.BOAR_SALE ||
-            harvest_type_id == HARVEST_TYPE.GILT_SALE) {
+        if (harvest_type_hid == HARVEST_TYPE.BOAR_SALE ||
+            harvest_type_hid == HARVEST_TYPE.GILT_SALE) {
             
             let s_net_sales     = '0.0';
             let s_sales_pp      = '0.0';
@@ -478,7 +481,27 @@ export function HarvestCard(input_settings){
     }
     
     
-    this.attachListeners = function(data_harvest, elem_card){
+    this.attachListeners = function(data_pig_prod, data_harvest, elem_card){
+        const elem_tag = elem_card.querySelector('.harvest-type-tag');
+        
+        elem_tag.onclick = function(){
+            let go_back_page_id = settings.parentPageId;
+        
+        
+            const go_back_page = navigation.getPageContainer(go_back_page_id);
+            const options ={
+                is_add:                 false,   // false is edit
+                callback_after_edit:    parentObj.onSuccessEditEntry,
+                prod_harvest:           data_harvest, // this is entry to be edited
+                go_back_page:           go_back_page   
+            };
+            navigation.pageProdHarvestAddEdit.beforeShow(data_pig_prod, options);
+            
+            
+            const goto_page_id   = PAGE_ID.PROD_HARVEST_ADD_EDIT;
+            const page_container = navigation.getPageContainer(goto_page_id);
+            navigation.showThisPage(page_container);
+        };
     }
 
     

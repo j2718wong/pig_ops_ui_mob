@@ -158,15 +158,15 @@ const FEED_TYPE = {
 
 
 const HARVEST_TYPE = {
-    PIGLETS_SALE:       1,
-    LIVE_PIGS_SALE:     2,
-    SLAUGHTER_PIGS_SALE: 3,
-    GILT_SALE:          4,
-    BOAR_SALE:          5,
-    INTERNAL_GILT_BOAR: 6, 
-    BOAR_MATE_PAYMENT:  7,
-    INTERNAL_CONSUMPTION:8,
-    INTERNAL_SALE:      9
+    PIGLETS_SALE:           "Q92W83",
+    LIVE_PIGS_SALE:         "EKQY8R",
+    SLAUGHTER_PIGS_SALE:    "0KP5K7",
+    GILT_SALE:              "1K7D9J",
+    BOAR_SALE:              "08DZKQ",
+    INTERNAL_GILT_BOAR:     "M9ZN9G", 
+    BOAR_MATE_PAYMENT:      "M8BE8P",
+    INTERNAL_CONSUMPTION:   "NKNG81",
+    INTERNAL_SALE:          "18XJK5"
 };
 
 
