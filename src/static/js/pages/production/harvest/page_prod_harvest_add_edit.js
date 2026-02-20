@@ -581,6 +581,10 @@ export function PageProdHarvestAddEdit(input_settings){
         });
         
         
+        elemSWMinusWeight.addEventListener('blur', function() {
+            thisObj.onChangeSWMinusWeight();
+        });
+        
         
         elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
@@ -719,10 +723,10 @@ export function PageProdHarvestAddEdit(input_settings){
     this.populateForm = function(){
         
         const pig_prod_feed = showOptions.pig_prod_feed;
-        const date_add = pig_prod_feed.pig_prod_feed.date_add;
+        const date_harvest = pig_prod_feed.pig_prod_feed.date_harvest;
 
         
-        elemUiDateHarvest.setDate(date_add);
+        elemUiDateHarvest.setDate(date_harvest);
     }
     
       
@@ -792,6 +796,18 @@ export function PageProdHarvestAddEdit(input_settings){
             const s_average = Math.round(average * 10) / 10;
             elemSWAverageWeight.textContent = s_average;
             
+            
+            // Subtract elemSWMinusWeight if there is any
+            const input_minus_weight = elemSWMinusWeight.value.trim();
+              
+            if (input_minus_weight.length > 0){
+                try {
+                    const minus_weight = parseFloat(input_minus_weight);
+                    total_weight = total_weight - minus_weight;
+                }
+                catch(error){} 
+            }
+            
             elemSWHeaderWeight.textContent = `  ${total_weight} kg`
             
             componentNumPigs.setValue(pig_weights.length);
@@ -802,6 +818,11 @@ export function PageProdHarvestAddEdit(input_settings){
             componentNumPigs.setValue(1);
         }
         
+    }
+    
+    
+    this.onChangeSWMinusWeight = function(){
+        thisObj.onChangeSWPerPigInput();
     }
     
     
@@ -819,7 +840,7 @@ export function PageProdHarvestAddEdit(input_settings){
         if (ev.checkValidity()) {
             switch(input_field){
                 
-                case 'date_add': {
+                case 'date_harvest': {
              
                 }
                 
@@ -833,7 +854,7 @@ export function PageProdHarvestAddEdit(input_settings){
         }
 
     }
-    
+     
     
     this.onClickSaveButton = function(){
         let input_elem      = null;
@@ -841,45 +862,181 @@ export function PageProdHarvestAddEdit(input_settings){
         
         
         
-        let input_date_add   = elemUiDateHarvest.getValue().trim();
+        let input_date_harvest  = elemUiDateHarvest.getValue().trim();
+        let input_harvest_type  = componentHarvestType.getValue();
+        let input_num_pigs      = componentNumPigs.getValue();
+        let input_acc_pig_buyer = componentAccPigBuyer.getValue();
+        let input_comments      = elemUiNotes.getValue();
         
         
         input_elem          = elemUiDateHarvest.getElemText();
-        if (input_date_add.length == 0){
+        if (input_date_harvest.length == 0){
             validation = -1;
             addValidationClassToElem(input_elem, validation);
             return;
         } 
         
         
-        
+
         // Convert date to YYYY-MM-DD format
-        const dt_add     = new Date(input_date_add);
-        if (isNaN(dt_add.getTime())){
+        const dt_harvest     = new Date(input_date_harvest);
+        if (isNaN(dt_harvest.getTime())){
             validation      = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
             
         
-        const dt_add_s   = dt_add.toLocaleDateString('en-CA');
+        const dt_harvest_s   = dt_harvest.toLocaleDateString('en-CA');
         validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         
         
-        // Check if there are feed inputs
-        if (componentFeedsInput.areAllInputsZero()){
-            elemServerErrorMsg.innerHTML = '<span>Feed Input should not be all zero.</span>'
-            elemServerErrorMsg.style.display = 'block';
-            return;
+        input_elem          = componentHarvestType.getElemSelect();
+        if (input_harvest_type == '0' || input_harvest_type == '-1'){
+            validation          = 0;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
         }
         
         
-        const pf_feed_buy_hid = selectedPigFarmFeedBuy.pf_feed_buy.hid;
+        
+        let num_pigs = 0;
+        try{
+            num_pigs= parseInt(input_num_pigs)
+        } catch(error){
+        }
         
         
- 
+        
+        const weight_per_pig_live = componentLWPerPig.getPigWeights();
+        const weight_per_pig_slau = componentSWPerPig.getPigWeights();
+           
+        let s_weight_pp_lw    = null;
+        let s_weight_pp_sw    = null;
+        
+           
+        let live_weight = 0;
+        if (weight_per_pig_live != null){
+            for (const cur_entry of weight_per_pig_live){
+                live_weight += cur_entry;
+            }
+        }
+        
+        if (live_weight == 0){
+            live_weight = null;
+        }
+        else{
+            s_weight_pp_lw = weight_per_pig_live.join(',');
+        }
+        
+        
+        let slaughter_weight = 0;
+        if (weight_per_pig_slau != null){
+            for (const cur_entry of weight_per_pig_slau){
+                slaughter_weight += cur_entry;
+            }
+        }
+        
+        if (slaughter_weight == 0){
+            slaughter_weight = null;
+        }
+        else{
+            s_weight_pp_sw = weight_per_pig_slau.join(',');
+        }
+        
+        
+           
+        
+        let live_price  = null;
+        const input_lw_price      = elemLWPricePerWeight.value.trim();
+        
+        input_elem          = elemLWPricePerWeight;
+        if (input_lw_price.length > 0){
+            try{
+                live_price = parseFloat(input_lw_price)
+            }
+            catch(error){
+                validation          = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+        }
+        
+        
+        let slaughter_price  = null;
+        const input_sw_price      = elemSWPricePerWeight.value.trim();
+        
+        input_elem          = elemSWPricePerWeight;
+        if (input_sw_price.length > 0){
+            try{
+                slaughter_price = parseFloat(input_sw_price)
+            }
+            catch(error){
+                validation          = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+        }
+        
+        
+        let sw_minus_weight  = null;
+        const input_sw_minus_weight      = elemSWMinusWeight.value.trim();
+        
+        input_elem          = elemSWMinusWeight;
+        if (input_sw_minus_weight.length > 0){
+            try{
+                sw_minus_weight = parseFloat(input_sw_minus_weight)
+            }
+            catch(error){
+                validation          = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+        }
+        
+        
+        let acc_pig_buyer_hid = null;
+        if (input_acc_pig_buyer == '0' || input_acc_pig_buyer == '-1'){}
+        else{acc_pig_buyer_hid = input_acc_pig_buyer;}
+        
+        
+        let net_sales = null;
+        const input_net_sales           = elemNetSales.value.trim();
+        
+        input_elem          = elemNetSales;
+        if (input_net_sales.length > 0){
+            try{
+                net_sales = parseFloat(input_net_sales)
+            }
+            catch(error){
+                validation          = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+        }
+        
+        
+        
+        let harvest_cost = null;
+        const input_harvest_cost           = elemHarvestCost.value.trim();
+        
+        input_elem          = elemHarvestCost;
+        if (input_harvest_cost.length > 0){
+            try{
+                harvest_cost = parseFloat(input_harvest_cost)
+            }
+            catch(error){
+                validation          = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+        }
+        
+        
+        
+        
         
         // Final check before sending request
         if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
@@ -894,45 +1051,79 @@ export function PageProdHarvestAddEdit(input_settings){
         
         // send post request
         const post_data = {
-            'uhid':             user_hid,
+            'uhid':                 user_hid,
             
-            'date_add':         dt_add_s,
-            'pig_farm_feed_buy_hid':  pf_feed_buy_hid
+            'date_harvest':         dt_harvest_s,
+            'acc_pig_buyer_hid':    acc_pig_buyer_hid,
+            
+            'num_pigs':             num_pigs,
+            'harvest_type_hid':     input_harvest_type,
+            
+            'live_weight':          live_weight,
+            'live_price':           live_price,
+            
+            'slaughter_weight':     slaughter_weight,
+            'slaughter_minus_weight': sw_minus_weight,
+            'slaughter_price':      slaughter_price, 
+            
+            'net_sales':            net_sales,
+            'harvest_cost':         harvest_cost,
+            'comments':             input_comments,
+            
+            'weight_pp_lw_csv':     s_weight_pp_lw,
+            'weight_pp_sw_csv':     s_weight_pp_sw
             
         };
         
-        
-        const feed_input = componentFeedsInput.getDataFeedInput();
-        
-        if (feed_input.gesta > 0){
-            post_data.num_gesta = feed_input.gesta;
+        // remove null fields
+        if (acc_pig_buyer_hid == null){
+            delete post_data.acc_pig_buyer_hid;
         }
         
-        if (feed_input.lacta > 0){
-            post_data.num_lacta = feed_input.lacta;
+        if (live_weight == null){
+            delete post_data.live_weight;
         }
         
-        if (feed_input.booster > 0){
-            post_data.num_booster = feed_input.booster;
+        if (live_price == null){
+            delete post_data.live_price;
         }
         
-        if (feed_input.prestarter > 0){
-            post_data.num_prestarter = feed_input.prestarter;
+        if (slaughter_weight == null){
+            delete post_data.slaughter_weight;
         }
         
-        if (feed_input.starter > 0){
-            post_data.num_starter = feed_input.starter;
+        if (sw_minus_weight == null){
+            delete post_data.slaughter_minus_weight;
         }
         
-        if (feed_input.grower > 0){
-            post_data.num_grower = feed_input.grower;
+        if (slaughter_price == null){
+            delete post_data.slaughter_price;
         }
         
-        if (feed_input.finisher > 0){
-            post_data.num_finisher = feed_input.finisher;
+        if (net_sales == null){
+            delete post_data.net_sales;
         }
         
-         
+        
+        if (harvest_cost == null){
+            delete post_data.harvest_cost;
+        }
+        
+        if (input_comments == null){
+            delete post_data.comments;
+        }
+        
+        if (s_weight_pp_lw == null){
+            delete post_data.weight_pp_lw_csv;
+        }
+        
+        
+        if (s_weight_pp_sw == null){
+            delete post_data.weight_pp_sw_csv;
+        }
+        
+        
+        
         
         if (showOptions.is_add == true){
             post_data.pig_prod_hid = dataPigProd.pig_production.hid;
@@ -950,10 +1141,10 @@ export function PageProdHarvestAddEdit(input_settings){
         let url;
         
         if (showOptions.is_add == true){
-            url = `${base_url}/pig_prod_feed/add`;
+            url = `${base_url}/production_harvest/add`;
         }
         else{
-            url = `${base_url}/pig_prod_feed/update`;
+            url = `${base_url}/production_harvest/update`;
         }
         
 

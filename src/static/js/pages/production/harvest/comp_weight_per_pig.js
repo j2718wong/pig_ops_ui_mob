@@ -115,7 +115,7 @@ export function ComponentWeightPerPig(input_settings){
         
         elemEntryAdd            = elemDivContainer.querySelector('#'+elemIdEntryAdd);
         
-        elemListContainer       = elemDivContainer.querySelector('.weight-list');
+        elemListContainer       = thisObj.elemUiShow.querySelector('.weight-list');
         elemEmptyMsg            = elemListContainer.querySelector('.weight-list-empty-msg');
         
     }
@@ -250,18 +250,29 @@ export function ComponentWeightPerPig(input_settings){
     
     
     
+    // return weights in csv
     this.getPigWeights = function(){
         const items = elemListContainer.querySelectorAll('.weight-badge');
         
-        const result = [];
+        let result = [];
         
         for (const cur_entry of items){
-            result.push(cur_entry.textContent);
+            let cur_weight = null;
+            
+            try{
+                cur_weight= parseFloat(cur_entry.textContent)
+                result.push(cur_weight);
+            }
+            catch(error){}
+             
+            
         }
         
-        return result;
+        if (result.length == 0) {return null;}
+        
+        return result.sort(function(a,b){return b-a;});
     }
-       
+    
        
    
 }
