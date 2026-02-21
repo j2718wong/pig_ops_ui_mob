@@ -25,6 +25,8 @@ export function ManagerPigProd(input_settings){
     this.dataLactatingList      = null;
     this.dataFatteningList      = null;
     
+    this.dataProdHistoryList    = null;
+    
     
     this.setDataPigProdList = function(data){
         thisObj.dataGestatingList   = [];
@@ -137,6 +139,11 @@ export function ManagerPigProd(input_settings){
                         
                         case PIG_PROD_TYPE.ALL: {
                             thisObj.setDataPigProdList(response.data);
+                            break;
+                        }
+                        
+                        case PIG_PROD_TYPE.HARVESTED: {
+                            thisObj.dataProdHistoryList = response.data;
                             break;
                         }
                     }

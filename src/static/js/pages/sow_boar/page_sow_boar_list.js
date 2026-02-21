@@ -139,7 +139,7 @@ export function PageSowBoarList(input_settings){
     
     let curDataListView         = null;
     
-    let curSowFilter            = null;
+    let curDataFilter            = null;
     
     
     // This must be set before rendering the autotable
@@ -523,7 +523,7 @@ ${html_style}
                 button.classList.add('active');
                 
                 if (data_filter != 'output') {
-                    thisObj.onClickSowFilter(data_filter);
+                    thisObj.onClickDataFilter(data_filter);
                 }
                 else{
                     thisObj.onClickSowListOutput();
@@ -593,7 +593,7 @@ ${html_style}
         dataGiltList    = navigation.pigFarm.managerSowBoar.dataGiltList;
         
         // Default all
-        curSowFilter = 'all';
+        curDataFilter = 'all';
         
         // show the last showOptions if there is no options
         if (options == null){options = showOptions;}
@@ -923,15 +923,15 @@ ${html_style}
     }
     
     
-    this.onClickSowFilter = function(filter_type){
+    this.onClickDataFilter = function(filter_type){
         
-        if (curSowFilter == filter_type){return;}
+        if (curDataFilter == filter_type){return;}
         
         elemSowControls.style.display = 'none';
         
         
         let sow_status_id = null;
-        let filtered_sow_list = null;
+        let filtered_data_list = null;
         
         
         
@@ -1005,7 +1005,7 @@ ${html_style}
             
         }
         
-        curSowFilter = filter_type;
+        curDataFilter = filter_type;
     }
     
     
@@ -1042,7 +1042,7 @@ ${html_style}
         
         curDataListView         = dataSowList;
         
-        curSowFilter = 'output';
+        curDataFilter = 'output';
         
         elemSowControls.style.display = 'block';
     }
@@ -1067,7 +1067,7 @@ ${html_style}
                 cur_list = curDataListView;
                 
                 if (key.length == 0){
-                    if (curSowFilter != 'output') {
+                    if (curDataFilter != 'output') {
                         thisObj.renderSowTable(cur_list);
                     }
                     else{
@@ -1142,7 +1142,7 @@ ${html_style}
         
         switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW:{
-                if (curSowFilter != 'output') {
+                if (curDataFilter != 'output') {
                     thisObj.renderSowTable(filtered);
                 }
                 else{

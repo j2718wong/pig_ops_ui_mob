@@ -51,6 +51,10 @@ const PAGE_ID = {
     
     PROD_HARVEST_ADD_EDIT:  42,
     
+    PROD_HISTORY_LIST:      43,
+    PROD_HISTORY_ENTRY:     44,
+    
+    
     FARM_FEED_BUY_LIST:     50,
     FARM_FEED_BUY_ADD_EDIT: 51,
     FARM_FEED_BUY_ITEM_ADD_EDIT: 52,
@@ -125,7 +129,9 @@ const PIG_PROD_TYPE = {
     LACTATING:          2,
     GESTA_LACTA:        3,
     FATTENING:          4,
-    ALL:                5
+    ALL:                5,
+    
+    HARVESTED:          6
 };
 
 

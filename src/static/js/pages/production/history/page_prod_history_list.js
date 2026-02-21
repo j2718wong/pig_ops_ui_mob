@@ -1,0 +1,785 @@
+// February 21, 2026
+// Jack Wong
+// j2718wong@gmail.com
+
+'use strict';
+
+import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
+
+import {APPLICATION,
+        PAGE_ID,
+        PIG_OPERATION_TYPE,
+        SOW_BOAR_TYPE,
+        SOW_STATUS,
+        SOW_STATUS_NAME,
+        PIG_PROD_TYPE}              from '../../../constants.js';
+
+import {formatDate,
+        FORMAT_SHORT_MONTH,
+        FORMAT_LONG_MONTH,
+        FORMAT_COMPACT,
+        sortList,
+        createPaginationManager}    from '../../../utils.js';
+
+import {getSowBoarReference}        from '../../common/common_app.js';
+
+
+import {ProdHistTableAll}           from './prod_hist_tables/table_prod_hist_all.js'
+import {ProdHistTableWeights}       from './prod_hist_tables/table_prod_hist_weights.js'
+
+
+
+export function PageProdHistoryList(input_settings){
+    PageViewPigFarmPage.call(this);
+    
+    const thisObj               = this;
+    const navigation            = input_settings.navigation;
+
+    
+    this.TABLE_ROW_PER_PAGE     = 10;
+    
+    /*
+    Typical input_settings
+    {
+        navigation:             this,
+        elemIdDivContainer:     elemIdContSowBoarList,
+        uniqueKey:              'sow-boar'
+    }   
+    */  
+    const settings               = input_settings;
+    
+    
+    // This is needed as ths will be first element to be rendered
+    let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
+    
+    
+    let elemIdNavPrevEntry      = null;
+    let elemIdNavNextEntry      = null;
+    
+    let elemIdPageTitle         = null;
+    let elemIdPageHeaderAlarm   = null;
+    let elemIdEntryCount        = null;
+    let elemIdPageInfo          = null;
+    
+    let elemIdSearchInput       = null;
+    let elemIdAddEntryBtn       = null;
+    let elemIdFilterControls    = null;
+    
+    let elemIdSowControls       = null;     
+    let elemIdIncludeDisposed   = null;
+    let elemIdSowOutputToggle   = null;
+    
+    
+    let elemIdTableRowCount     = null;
+    let elemIdTablePagination   = null;
+    let elemIdTablePrevPage     = null;
+    let elemIdTableCurPage      = null;
+    let elemIdTableTotalPages   = null;
+    let elemIdTableNextPage     = null;
+    
+    
+    let elemIdTableSowOutput    = null;
+    let elemIdTableSowOutputBody= null;
+
+
+    let elemNavPrevEntry        = null;
+    let elemNavNextEntry        = null;
+
+    let elemPageTitle           = null;
+    let elemPageHeaderAlarm     = null;
+    let elemEntryCount          = null;
+    let elemPageInfo            = null;
+
+    let elemSearchInput         = null;
+    let elemAddEntryBtn         = null;
+    let elemFilterControls      = null;
+    
+    let elemSowControls         = null;     
+
+    
+    let elemTableRowCount       = null;
+    let elemTablePagination     = null;
+    let elemTablePrevPage       = null;
+    let elemTableCurPage        = null;
+    let elemTableTotalPages     = null;
+    let elemTableNextPage       = null;
+    
+
+    
+    let elemTableSowOutput      = null;
+    let elemTableSowOutputBody  = null;
+
+    
+    let dataProdHistoryList             = null;
+    let dataBoarList            = null;
+    let dataGiltList            = null;
+    
+    let dataDisposedList        = null;
+    
+    let curDataView             = null;
+    
+
+    let curSowBoarType          = null;
+
+    //let textTranslation         = new TextTranslation();
+    let curUserLanguageKey      = 'en';
+
+
+    let showpageHeaderAlarm     = false;
+    let pigOpsAlarmList         = null;
+    
+    
+    let curDataListView         = null;
+    
+    let curDataFilter            = null;
+    
+    
+    this.accountData            = null;
+    
+    
+    let showOptions             = null;
+    
+    
+    let dtCurrentDate           = null;
+    
+    
+    let tableProdHistAll        = new ProdHistTableAll({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey 
+    });
+    
+    
+    let tableProdHistWeights    = new ProdHistTableWeights({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey 
+    });
+    
+    
+    this.elemTableRowCount      = null;
+    this.elemTablePagination    = null;
+    this.elemTablePrevPage      = null;
+    this.elemTableCurPage       = null;
+    this.elemTableTotalPages    = null;
+    this.elemTableNextPage      = null;
+    
+    this.dtCurrentDate          = null;
+    
+    
+    let dataProdHistList        = null;
+    
+    
+    this.init = function(){
+        //textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
+        
+        this.render();
+        this.afterHtmlRender();
+        
+        
+    }
+    
+    
+    this._writeInlineStyle = function(){
+        const html = `
+    <style>
+        
+        .sow-boar-controls{
+            display: flex;
+            justify-content:center;
+        }
+        
+      
+        
+      </style>
+    `;
+        return html;
+    }
+    
+    
+    this.render = function(){
+        
+        elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
+        elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
+        
+        elemIdPageTitle         = `${settings.uniqueKey}-page-title-list`;
+        elemIdPageHeaderAlarm   = `${settings.uniqueKey}-page-title-alarm`;
+        elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
+        
+        elemIdSearchInput       = `${settings.uniqueKey}-search-input`;
+        elemIdAddEntryBtn       = `${settings.uniqueKey}-add-entry-btn`;
+        elemIdFilterControls    = `${settings.uniqueKey}-filter-control`;
+        
+        
+        elemIdSowControls       = `${settings.uniqueKey}-sow-controls`;
+        elemIdIncludeDisposed   = `${settings.uniqueKey}-inc-disposed`;
+        elemIdSowOutputToggle   = `${settings.uniqueKey}-output-toggle`;
+        
+        
+        elemIdTableRowCount     = `${settings.uniqueKey}-table-row-count`;
+        elemIdTablePagination   = `${settings.uniqueKey}-table-pagination`;
+        elemIdTablePrevPage     = `${settings.uniqueKey}-table-prev-page`;
+        elemIdTableCurPage      = `${settings.uniqueKey}-table-cur-page`;
+        elemIdTableTotalPages   = `${settings.uniqueKey}-table-total-pages`;
+        elemIdTableNextPage     = `${settings.uniqueKey}-table-next-page`;
+        
+        
+        
+        
+        const html_style            = thisObj._writeInlineStyle();
+        
+        
+        const html_table_all        = tableProdHistAll.getHtml(); 
+        const html_table_weights    = tableProdHistWeights.getHtml();
+        
+        const html = `
+
+${html_style}
+        
+<div class="mobile-container">
+    <div class="nav-left-right">
+        <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
+                
+        <span>
+            <span class="nav-title blue" id="${elemIdEntryCount}"></span>
+            <span class="nav-title blue" id="${elemIdPageTitle}">Prod History List</span>
+        </span>
+        
+        <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
+            
+    </div>
+    
+    <!-- Mobile Info Box -->
+        <!--
+        <div class="mobile-info-box">
+            <div class="info-text" id="${elemIdPageInfo}">
+            </div>
+        </div>
+        -->
+    
+    
+    <div>
+        <!-- Search and Add Entry Controls -->
+        <div class="mobile-controls">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Sow Name or PID">
+            </div>
+            
+        </div>
+        
+        <!-- Centered Filter Controls -->
+        <div id="${elemIdFilterControls}">
+        
+            <div class="filter-controls">
+                <!-- Animal Filter Buttons - Centered, no gaps -->
+                <div class="animal-filter">
+                    <div class="filter-buttons sow">
+                        <button class="filter-button active" data-filter="all">All</button>
+                        <button class="filter-button" data-filter="weights">Weights</button>
+                        
+                    </div>
+                    
+                    
+                    
+                </div>
+                
+            </div>
+            
+            
+        </div>
+        
+        
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+            <div class="entry-count" id="${elemIdTableRowCount}">
+                12 Entries
+            </div>
+            
+            <div class="pagination-controls" id="${elemIdTablePagination}">
+                <button class="pagination-btn" id="${elemIdTablePrevPage}" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="page-indicator">
+                    <span id="${elemIdTableCurPage}">1</span> / <span id="${elemIdTableTotalPages}">3</span>
+                </span>
+                <button class="pagination-btn" id="${elemIdTableNextPage}">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Table Prod History All-->
+        ${html_table_all}
+        
+        
+        <!-- Table Weights-->
+        ${html_table_weights}
+        
+    </div>
+    
+    
+</div>
+        `;
+        
+        elemDivContainer.innerHTML = html;
+    }
+    
+    
+    this.afterHtmlRender = function(){
+        tableProdHistAll.afterHtmlRender();
+        tableProdHistWeights.afterHtmlRender();
+        
+        
+        this._findElements();
+        this._processAfterHtmlRender();
+        this._bindEventListeners();
+    }
+    
+    
+    this._findElements = function(){
+        elemNavPrevEntry        = elemDivContainer.querySelector('#'+elemIdNavPrevEntry);
+        elemNavNextEntry        = elemDivContainer.querySelector('#'+elemIdNavNextEntry);
+        
+        elemPageTitle           = elemDivContainer.querySelector('#'+elemIdPageTitle);
+        elemPageHeaderAlarm     = elemDivContainer.querySelector('#'+elemIdPageHeaderAlarm);
+        elemEntryCount          = elemDivContainer.querySelector('#'+elemIdEntryCount);
+        elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
+
+        elemSearchInput         = elemDivContainer.querySelector('#'+elemIdSearchInput);
+        elemAddEntryBtn         = elemDivContainer.querySelector('#'+elemIdAddEntryBtn);
+        elemFilterControls      = elemDivContainer.querySelector('#'+elemIdFilterControls);
+        
+        elemSowControls         = elemDivContainer.querySelector('#'+elemIdSowControls);    
+        
+        
+        
+        elemTableRowCount       = elemDivContainer.querySelector('#'+elemIdTableRowCount);
+        elemTablePagination     = elemDivContainer.querySelector('#'+elemIdTablePagination);
+        elemTablePrevPage       = elemDivContainer.querySelector('#'+elemIdTablePrevPage);
+        elemTableCurPage        = elemDivContainer.querySelector('#'+elemIdTableCurPage);
+        elemTableTotalPages     = elemDivContainer.querySelector('#'+elemIdTableTotalPages);
+        elemTableNextPage       = elemDivContainer.querySelector('#'+elemIdTableNextPage);
+        
+        
+        
+        
+        this.elemTableRowCount      = elemTableRowCount;
+        this.elemTablePagination    = elemTablePagination;
+        this.elemTablePrevPage      = elemTablePrevPage;  
+        this.elemTableCurPage       = elemTableCurPage;   
+        this.elemTableTotalPages    = elemTableTotalPages;
+        this.elemTableNextPage      = elemTableNextPage;  
+        
+        
+    }
+    
+    
+    this._processAfterHtmlRender = function(){
+        this.handleWindowResize();
+    }
+    
+    
+    this._bindEventListeners = function(){
+        
+        
+        
+        const filterButtons  = elemDivContainer.querySelectorAll('.filter-button');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const data_filter = button.getAttribute('data-filter');
+                
+                // Update active tab button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+    
+                thisObj.onClickDataFilter(data_filter);
+
+            });
+        });
+        
+        
+        elemSearchInput.addEventListener('input', function() {
+            const search_term = this.value.toUpperCase().trim();
+            thisObj.searchSowBoar(search_term);
+            
+        });
+        
+    }
+    
+    
+    this.resetSowFilterButton = function(){
+        const filterButtons  = elemDivContainer.querySelectorAll('.filter-button');
+        
+        
+        for (const cur_entry of filterButtons){
+            cur_entry.classList.remove('active');
+        } 
+        
+        filterButtons[0].classList.add('active');
+        
+    }
+    
+    
+    this.getSowBoarEntry = function(entry_hid){
+        
+    }
+    
+    
+    // Handle window resize for view switching
+    this.handleWindowResize = function() {
+        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
+                
+        /*
+        if (isMobile) {
+            elemMobileContainer.style.display = 'flex';
+            elemTableContainer.style.display = 'none';
+        } else {
+            elemMobileContainer.style.display = 'none';
+            elemTableContainer.style.display = 'block';
+        }*/
+    }
+    
+    
+    this.show = function(options){
+        dataProdHistList  = navigation.pigFarm.managerPigProd.dataProdHistoryList;
+
+        if (dataProdHistList == null){
+        
+            const callback_success = function(data){
+                dataProdHistList  = navigation.pigFarm.managerPigProd.dataProdHistoryList;
+                tableProdHistAll.renderTable(dataProdHistList);
+            };
+            
+            // Request ProdHistory List
+            navigation.pigFarm.managerPigProd.requestPigProdList(
+                PIG_PROD_TYPE.HARVESTED, callback_success, null);
+        
+        }
+        else{
+            dataProdHistList  = navigation.pigFarm.managerPigProd.dataProdHistoryList;
+            tableProdHistAll.renderTable(dataProdHistList);
+        }
+
+
+        
+        // Default all
+        curDataFilter = 'all';
+        tableProdHistAll.show();
+        tableProdHistWeights.hide();
+        
+        
+        // show the last showOptions if there is no options
+        if (options == null){options = showOptions;}
+        
+        
+        
+        
+        
+        // So that not to instantiate in every table redraw
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
+        this.dtCurrentDate = dtCurrentDate;
+        
+        
+        showOptions = options;
+        
+
+    }
+    
+    
+    this.getSowBoarReference = function(sow_boar){
+        let sow_reference = '';
+        
+        // The Sow Boar name and number are shown together.
+        if (sow_boar.name  && sow_boar.name.length >0 ){
+            sow_reference = `<span class="sow-boar-name">${sow_boar.name}</span>`;
+        }
+        else{
+            sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
+        }
+        
+        return sow_reference;
+    }
+    
+       
+    this.onClickDataFilter = function(filter_type){
+        
+        if (curDataFilter == filter_type){return;}
+
+        
+        let sow_status_id = null;
+        let filtered_data_list = null;
+        
+        
+        
+        switch(filter_type){
+            case 'all':{
+                tableProdHistAll.show();
+                tableProdHistWeights.hide();
+
+                
+                curDataListView = dataProdHistList;
+                tableProdHistAll.renderTable(curDataListView);
+                break;
+            }
+            
+            case 'weights':{
+                tableProdHistAll.hide();
+                tableProdHistWeights.show();
+                
+                curDataListView = dataProdHistList;
+                
+                console.log('curDataListView');
+                console.log(curDataListView);
+                
+                
+                tableProdHistWeights.renderTable(curDataListView);
+                break;
+            }
+            
+           
+        }
+        
+        curDataFilter = filter_type;
+    }
+    
+      
+    this.addToolTips = function(){
+        const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
+        console.log('with_tooltips='+with_tooltips.length);
+        for (const cur_entry of with_tooltips){
+            new bootstrap.Tooltip(cur_entry);
+        }
+    }
+    
+    
+    this.searchProdHist = function(key){
+        let cur_list;
+        
+        switch (showOptions.sow_boar_type){
+            case SOW_BOAR_TYPE.SOW:{
+                cur_list = curDataListView;
+                
+                if (key.length == 0){
+                    if (curDataFilter != 'output') {
+                        thisObj.renderSowTable(cur_list);
+                    }
+                    else{
+
+                        cur_list = dataProdHistoryList;
+                        thisObj.renderSowOutputTable(cur_list);
+                    }
+                    return;
+                }
+                
+                break;
+            }
+            
+            case SOW_BOAR_TYPE.BOAR:{
+                cur_list = dataBoarList;
+                
+                if (key.length == 0){
+                    thisObj.renderBoarTable(cur_list);
+                    return;
+                }
+                
+                break;
+            }
+            
+            case SOW_BOAR_TYPE.GILT:{
+                cur_list = dataGiltList;
+                
+                if (key.length == 0){
+                    thisObj.renderGiltTable(cur_list);
+                    return;
+                }
+                
+                break;
+            }
+            
+            default:{
+                cur_list = dataDisposedList;
+                
+                if (key.length == 0){
+                    return;
+                }
+                
+                break;
+            }
+            
+        }
+        
+        
+        
+        
+        
+        
+        let upper_key = key.toUpperCase();
+        
+        let filtered = [];
+        
+        for (const cur_entry of cur_list){
+            const sow_boar_name = cur_entry.sow_boar.name; 
+            
+            if (sow_boar_name && sow_boar_name.toUpperCase().startsWith(upper_key)){
+                filtered.push(cur_entry)
+            }
+            else{
+                const sow_boar_number = cur_entry.sow_boar.number; 
+                
+                if (sow_boar_number && sow_boar_number.toUpperCase().startsWith(upper_key)){
+                    filtered.push(cur_entry)
+                }
+            }
+        }
+        
+        
+        switch (showOptions.sow_boar_type){
+            case SOW_BOAR_TYPE.SOW:{
+                if (curDataFilter != 'output') {
+                    thisObj.renderSowTable(filtered);
+                }
+                else{
+                    thisObj.renderSowOutputTable(filtered);
+                }
+                return;
+            }
+            case SOW_BOAR_TYPE.BOAR:{
+                thisObj.renderBoarTable(filtered);
+                return;
+            }
+            case SOW_BOAR_TYPE.GILT:{
+                thisObj.renderGiltTable(filtered);
+                return;
+            }
+            
+            default:{
+                    return;
+            }
+            
+        }
+
+        
+    }
+    
+    
+    this.setUserLanguage = function(language_key){
+        curUserLanguageKey = language_key;
+        thisObj.onUserChangeLanguage();
+    }
+    
+    
+    this.onUserChangeLanguage = function(){
+        
+       
+    }
+         
+         
+    this.onClickProdHistEntry = function(sow_boar_hid, pig_prod_id, tab_id, sow_boar_type){
+        if (sow_boar_hid == null){
+            // Go back to this page
+            const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+            navigation.showThisPage(page_container);
+            return;
+        }
+    
+        if (pig_prod_id){
+            navigation.onClickProdGestatingEntry(pig_prod_id);
+            return;
+        }
+    
+        let cur_sow_boar_list = null;
+        
+        if (sow_boar_type){}
+        else{
+            // use showOptions.sow_boar_type if sow_boar_type is not specified
+            sow_boar_type = showOptions.sow_boar_type;
+        }
+        
+        switch (sow_boar_type){
+            case SOW_BOAR_TYPE.SOW:  {cur_sow_boar_list = dataProdHistoryList; break;}
+            case SOW_BOAR_TYPE.BOAR: {cur_sow_boar_list = dataBoarList; break;}
+            case SOW_BOAR_TYPE.GILT: {cur_sow_boar_list = dataGiltList; break;}
+            
+            case SOW_BOAR_TYPE.DISPOSED: {cur_sow_boar_list = dataDisposedList; break;}
+        }
+        
+        this.gotoProdHistEntryPage(cur_sow_boar_list, sow_boar_hid, 
+            sow_boar_type, tab_id); 
+    }
+        
+        
+    this.gotoProdHistEntryPage = function(sow_boar_list, sow_boar_hid, 
+            sow_boar_type, tab_id){
+        
+        let prev_sow_boar_hid = null;
+        let next_sow_boar_hid = null;
+        
+        let index;
+        let cur_entry   = null;
+        let prev_entry  = null;
+        let next_entry  = null;
+        
+        if (sow_boar_list == null){
+            sow_boar_list = navigation.pigFarm.managerSowBoar.dataProdHistoryList;
+            sow_boar_type = SOW_BOAR_TYPE.SOW;
+            
+            
+            // Use default show options
+            showOptions = {
+                sow_boar_type: sow_boar_type
+            }
+        }
+        
+        for (index = 0; index< sow_boar_list.length; index++){
+            cur_entry = sow_boar_list[index];
+            
+            if (cur_entry.sow_boar.hid == sow_boar_hid){
+        
+                if ((index-1) >=0){
+                    prev_entry = sow_boar_list[index-1];
+                    prev_sow_boar_hid = prev_entry.sow_boar.hid;
+                }
+                
+                if ((index+1) < sow_boar_list.length){
+                    next_entry = sow_boar_list[index+1];
+                    next_sow_boar_hid = next_entry.sow_boar.hid;
+                }
+                
+                const options = {
+                    sow_boar_type:      sow_boar_type,
+                    prev_sow_boar_hid:  prev_sow_boar_hid,
+                    next_sow_boar_hid:  next_sow_boar_hid,
+                    sow_boar_list:      sow_boar_list,
+                    data_index:         index+1,
+                    total_entries:      sow_boar_list.length
+                };
+                
+                if (tab_id){
+                    options.tab_id = tab_id;
+                }
+                
+                navigation.pageSowBoarEntry.beforeShow(cur_entry, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                navigation.showThisPage(page_container);
+                return;
+            }
+
+        }
+        
+
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        navigation.showThisPage(next_page)
+
+    }
+
+}

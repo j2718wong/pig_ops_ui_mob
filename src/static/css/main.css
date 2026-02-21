@@ -1530,6 +1530,11 @@ p {
     text-align:center;
 }
 
+.data-table-legend {
+    color: var(--dark-gray);
+    font-size: 15px;
+}
+
 
 .btn-full {
     display: block;
