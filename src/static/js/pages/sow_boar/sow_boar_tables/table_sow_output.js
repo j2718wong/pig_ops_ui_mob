@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {SowBoarTableBasic}          from './sow_boar_table_basic.js';
+import {TableBasic}                 from '../../common/table_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
@@ -24,7 +24,7 @@ import {getSowBoarReference}        from '../../common/common_app.js';
 
 
 export function SowBoarTableSowOutput(input_settings){
-    SowBoarTableBasic.call(this, input_settings);
+    TableBasic.call(this, input_settings);
     
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;

@@ -9,30 +9,25 @@ import {APPLICATION,
         PIG_OPERATION_TYPE,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        SOW_STATUS_NAME}            from '../../../constants.js';
+        SOW_STATUS_NAME}            from '../../constants.js';
 
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
-        createPaginationManager}    from '../../../utils.js';
-
-import {getSowBoarReference}        from '../../common/common_app.js';
+        createPaginationManager}    from '../../utils.js';
 
 
-export function SowBoarTableBasic(input_settings){
+
+export function TableBasic(input_settings){
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
-    const navigation            = input_settings.navigation;
     
     /*
     Typical input_settings
     {
-        navigation:             this,
         parentObj:              parentObj,
-        elemDivContainer:       null,
-        uniqueKey:              'sow-boar'
     }   
     */  
     const settings              = input_settings;
