@@ -26,6 +26,7 @@ import {getSowBoarReference}        from '../common/common_app.js';
 import {SowBoarTableSowAll}         from './sow_boar_tables/table_sow_all.js'
 import {SowBoarTableSowGesta}       from './sow_boar_tables/table_sow_gesta.js'
 import {SowBoarTableSowLacta}       from './sow_boar_tables/table_sow_lacta.js'
+import {SowBoarTableSowWean}        from './sow_boar_tables/table_sow_wean.js'
 import {SowBoarTableSowOutput}      from './sow_boar_tables/table_sow_output.js'
 
 import {SowBoarTableBoar}           from './sow_boar_tables/table_boar.js'
@@ -176,6 +177,14 @@ export function PageSowBoarList(input_settings){
     });
     
     
+    let tableSowWean            = new SowBoarTableSowWean({
+        navigation:             navigation,
+        parentObj:              this,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey
+    });
+    
+    
     let tableSowOutput          = new SowBoarTableSowOutput({
         navigation:             navigation,
         parentObj:              this,
@@ -292,7 +301,8 @@ export function PageSowBoarList(input_settings){
         
         const html_table_sow_all    = tableSowAll.getHtml(); 
         const html_table_sow_gesta  = tableSowGesta.getHtml();  
-        const html_table_sow_lacta  = tableSowLacta.getHtml();  
+        const html_table_sow_lacta  = tableSowLacta.getHtml(); 
+        const html_table_sow_wean   = tableSowWean.getHtml();
         const html_table_sow_output = tableSowOutput.getHtml();
         
         const html_table_boar       = tableBoar.getHtml(); 
@@ -404,6 +414,10 @@ ${html_style}
         <!-- Table Sow Lacta-->
         ${html_table_sow_lacta}
         
+        <!-- Table Sow Wean-->
+        ${html_table_sow_wean}
+        
+        
         <!-- Table Sow Output-->
         ${html_table_sow_output}
         
@@ -433,6 +447,7 @@ ${html_style}
         tableSowAll.afterHtmlRender();
         tableSowGesta.afterHtmlRender();
         tableSowLacta.afterHtmlRender();
+        tableSowWean.afterHtmlRender();
         tableSowOutput.afterHtmlRender();
         
         tableBoar.afterHtmlRender();
@@ -646,6 +661,7 @@ ${html_style}
                 tableSowAll.show();
                 tableSowGesta.hide();
                 tableSowLacta.hide();
+                tableSowWean.hide();
                 tableSowOutput.hide();
                 
                 tableBoar.hide();
@@ -685,6 +701,7 @@ ${html_style}
                 tableSowAll.hide();
                 tableSowGesta.hide();
                 tableSowLacta.hide();
+                tableSowWean.hide();
                 tableSowOutput.hide();
                 
                 tableBoar.show();
@@ -722,6 +739,7 @@ ${html_style}
                 tableSowAll.hide();
                 tableSowGesta.hide();
                 tableSowLacta.hide();
+                tableSowWean.hide();
                 tableSowOutput.hide();
                 
                 tableBoar.hide();
@@ -774,6 +792,7 @@ ${html_style}
                 tableSowAll.hide();
                 tableSowGesta.hide();
                 tableSowLacta.hide();
+                tableSowWean.hide();
                 tableSowOutput.hide();
                 
                 tableBoar.hide();
@@ -921,6 +940,7 @@ ${html_style}
                 tableSowAll.show();
                 tableSowGesta.hide();
                 tableSowLacta.hide();
+                tableSowWean.hide();
                 tableSowOutput.hide();
 
                 
@@ -933,6 +953,7 @@ ${html_style}
                 tableSowAll.hide();
                 tableSowGesta.show();
                 tableSowLacta.hide();
+                tableSowWean.hide();
                 tableSowOutput.hide();
 
                 
@@ -950,6 +971,7 @@ ${html_style}
                 tableSowAll.hide();
                 tableSowGesta.hide();
                 tableSowLacta.show();
+                tableSowWean.hide();
                 tableSowOutput.hide();
 
 
@@ -964,10 +986,19 @@ ${html_style}
             }
             
             case 'weaning':{
-                sow_status_id = SOW_STATUS.WEANING;
+                tableSowAll.hide();
+                tableSowGesta.hide();
+                tableSowLacta.hide();
+                tableSowWean.show();
+                tableSowOutput.hide();
                 
-                curDataListView = thisObj.filterDataSowList(sow_status_id);
-                thisObj.renderSowTable(curDataListView);
+                sow_status_id = SOW_STATUS.WEANING;
+                const filtered_list = thisObj.filterDataSowList(sow_status_id);
+                const sort_key = 'sow_boar.cur_pig_production.weaning.date_weaning';
+                const sorted_list   = sortList(filtered_list, sort_key, 'asc');  
+                
+                curDataListView = sorted_list;
+                tableSowWean.renderTable(curDataListView);
                 break;
             }
             
@@ -1005,7 +1036,7 @@ ${html_style}
         tableSowAll.hide();
         tableSowGesta.hide();
         tableSowLacta.hide();
-        
+        tableSowWean.hide();
         tableSowOutput.show();
         
         

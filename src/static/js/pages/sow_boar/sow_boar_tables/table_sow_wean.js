@@ -1,4 +1,4 @@
-// February 12, 2025
+// February 21, 2025
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -24,7 +24,7 @@ import {formatDate,
 import {getSowBoarReference}        from '../../common/common_app.js';
 
 
-export function SowBoarTableSowLacta(input_settings){
+export function SowBoarTableSowWean(input_settings){
     TableBasic.call(this, input_settings);
     
     const thisObj               = this;
@@ -59,7 +59,7 @@ export function SowBoarTableSowLacta(input_settings){
         
         /* Updated Table Styles */
         
-        .table-lacta th  {
+        .table-wean th  {
             padding-right:0;
             overflow-wrap: anywhere; /* Breaks anywhere if needed */
             word-break: break-word;
@@ -74,8 +74,8 @@ export function SowBoarTableSowLacta(input_settings){
     
     this.getHtml = function(){
         
-        elemIdTableShow         = `${settings.uniqueKey}-sow-lacta-show`;
-        elemIdTableBody         = `${settings.uniqueKey}-sow-lacta-tbody`;
+        elemIdTableShow         = `${settings.uniqueKey}-sow-wean-show`;
+        elemIdTableBody         = `${settings.uniqueKey}-sow-wean-tbody`;
         
         const html_style    = this._writeInlineStyle();
         
@@ -84,19 +84,18 @@ export function SowBoarTableSowLacta(input_settings){
         ${html_style}
         
         <div id="${elemIdTableShow}">
-            <table class="data-table table-lacta">
+            <table class="data-table table-wean">
                 <colgroup>
                     <col style="width: 30%;">
-                    <col style="width: 30%;">
-                    <col style="width: 20%;">
+                    <col style="width: 35%;">
+                    <col style="width: 45%;">
                 </colgroup>
       
                 <thead>
                     <tr>
                         <th>Sow</th>
-                        <th>Target Date Wean</th>
-                        <th style="text-align:center;">Num Piglets</th>
-                        <th>Dead after Birth</th>
+                        <th>Date Wean</th>
+                        <th>Pig Operation</th>
                     </tr>
                 </thead>
                 
@@ -141,7 +140,7 @@ export function SowBoarTableSowLacta(input_settings){
     this.getHtmlTableRowEmpty = function(){
         const html = `
             <tr>
-                <td colspan="4"><div>No Entries</div></td>
+                <td colspan="3"><div>No Entries</div></td>
             </tr>
         `;
         
@@ -155,45 +154,18 @@ export function SowBoarTableSowLacta(input_settings){
         let sow_reference = parentObj.getSowBoarReference(sow_boar);
         
         
-        // Date Expected Wean
-        const pig_production    = sow_boar.cur_pig_production.pig_production;
-        const birth             = sow_boar.cur_pig_production.birth;
-        const date_actual_birth = birth.date_actual;
-        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
-        
-        
-        let dt_wean_s  = parentObj.calculateDateExpectedWean(
-                                date_actual_birth,
-                                acc_settings_ops);
-        
-        
-        let diff_days = parentObj.calculateNumDaysSinceBirth(
-                                date_actual_birth, 
-                                parentObj.dtCurrentDate,
-                                acc_settings_ops);
+        // Date Actual Wean
+        const weaning       = sow_boar.cur_pig_production.weaning;
+        const date_wean     = weaning.date_weaning;
+        const dt_wean       = new Date(date_wean)
+        const s_dt_wean     = formatDate(dt_wean, FORMAT_COMPACT); 
                     
-        let s_date_important = `${dt_wean_s} (Day ${diff_days})`;
-        
-        
-        // Current number of pigs
-        const cur_pig_count = pig_production.cur_pig_count;
-        
-        // Compute num_pigs dead after birth
-        
-        
-        
-        const num_live_pigs = birth.pigs_live_m + birth.pigs_live_f;
-        const num_dead_after_birth = num_live_pigs - cur_pig_count;    
-    
-        let s_dead = '';
-        if (num_dead_after_birth > 0){s_dead = `${num_dead_after_birth}`;} 
         
         const html = `
         <tr>
             <td><span>${sow_reference}</span></td>
-            <td>${s_date_important}</td>
-            <td style="text-align:center;">${cur_pig_count}</td>
-            <td>${s_dead}</td>
+            <td>${s_dt_wean}</td>
+            <td></td>
         </tr>
         `;
         
@@ -227,10 +199,7 @@ export function SowBoarTableSowLacta(input_settings){
             
             
             if (index == 2){
-                // Goto LactaEntry Page
-                cur_td.onclick = function(){
-                    navigation.onClickProdLactatingEntry(pid);
-                };
+                
             }
             
         
