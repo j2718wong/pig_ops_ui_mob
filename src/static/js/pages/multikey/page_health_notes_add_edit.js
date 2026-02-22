@@ -420,7 +420,6 @@ export function PageHealthNotesAddEdit(input_settings){
     this.show = function(){
         thisObj._resetForm();
         
-        console.log('PageAddGestating show');
     }
     
     

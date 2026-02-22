@@ -554,8 +554,6 @@ export function PageParentTrace(input_settings){
     
     
     this.onClickSowBoarName = function(sow_boar_hid){
-        console.log('Parent Trace onClickSowBoarName sow_boar_hid = ' + sow_boar_hid);
-        
         
         let data_sow_boar = null;
         

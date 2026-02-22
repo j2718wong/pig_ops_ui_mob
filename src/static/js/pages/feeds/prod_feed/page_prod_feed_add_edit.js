@@ -24,7 +24,8 @@ import {APPLICATION,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         MULTIKEY_OBJ_TYPE,
-        PROD_STATUS}            from '../../../constants.js';
+        PROD_STATUS,
+        FEED_TYPE_NAME}         from '../../../constants.js';
 
 
 import {formatDate,
@@ -75,10 +76,13 @@ export function PageProdFeedAddEdit(input_settings){
     let elemIdLinkOlderFeedBuy  = null;
     let elemIdSelectOlderFeedBuy= null;
     
+    let elemIdSelectFeedBuy     = null;
+    
     let elemIdTableFeedBuy      = null;
     let elemIdTableBodyFeedBuy  = null;
     
     let elemIdFeedInputShow     = null;
+    let elemIdShowOtherTypes    = null;
     
     
     let elemUiDateAdd           = null;
@@ -105,10 +109,14 @@ export function PageProdFeedAddEdit(input_settings){
     let elemLinkOlderFeedBuy    = null;
     let elemSelectOlderFeedBuy  = null;
     
+    let elemSelectFeedBuy       = null;
+    
+    
     let elemTableFeedBuy        = null;
     let elemTableBodyFeedBuy    = null;
     
     let elemFeedInputShow       = null;
+    let elemShowOtherTypes      = null;
     
    
    
@@ -136,6 +144,11 @@ export function PageProdFeedAddEdit(input_settings){
     let tableFeedBuy            = null;
     
     
+    let filteredFeedTypes       = null;
+    let showFilteredTypes       = null;
+    
+    
+    
     this.init = function(){
         this.render();
         this.afterHtmlRender();
@@ -158,10 +171,15 @@ export function PageProdFeedAddEdit(input_settings){
         elemIdLinkOlderFeedBuy  = `${settings.uniqueKey}-feed-buy-old-show`;
         elemIdSelectOlderFeedBuy= `${settings.uniqueKey}-feed-buy-old-select`;
         
+        
+        elemIdSelectFeedBuy     = `${settings.uniqueKey}-feed-buy-select`;
+        
+        
         elemIdTableFeedBuy      = `${settings.uniqueKey}-feed-buy`;
         elemIdTableBodyFeedBuy  = `${settings.uniqueKey}-feed-buy-tbody`;
         
         elemIdFeedInputShow     = `${settings.uniqueKey}-feed-add-input`;
+        elemIdShowOtherTypes    = `${settings.uniqueKey}-feed-other-types`;
         
         
         elemUiDateAdd           = new UiInputDatePicker({
@@ -223,7 +241,9 @@ export function PageProdFeedAddEdit(input_settings){
         
         <!-- Select Feed Buy -->
         <div class="form-group-number">
-            <label class="form-label">Feed Buy</label>
+            <label class="form-label">Feed Buy From</label>
+            
+            <!-- Older design; complicated
             <span class="read-only-field">
                 <a href="javascript:void(0)" class="text-link" id="${elemIdFeedBuyFrom}">
                     14 Feb 2026 Arnel Sampan
@@ -240,10 +260,18 @@ export function PageProdFeedAddEdit(input_settings){
             <span id ="${elemIdLinkOlderFeedBuy}">
                 OR select older Feed Buy
             </span>
-                
+            
+            
             <select class="form-select" id="${elemIdSelectOlderFeedBuy}">
                 <option value="0" selected>Please Select</option>
             </select>
+            -->
+            
+            <!-- Simplified, no add new, no link; must be added in Feeds Expenses page -->
+            <select class="form-select" id="${elemIdSelectFeedBuy}">
+                <option value="0" selected>Please Select</option>
+            </select>
+            
             
             
             <table class="data-table table-feed-buy-items" id="${elemIdTableFeedBuy}" style="margin-top:8px;">
@@ -270,13 +298,19 @@ export function PageProdFeedAddEdit(input_settings){
         </div>
         
         
-        <div id="${elemIdFeedInputShow}">
+        <div id="${elemIdFeedInputShow}" style="margin-bottom: 8px;">
         
             <!-- Date Add -->
             ${html_date_add}
             
             
             ${html_feeds_input}
+            
+            <span>
+                <a href="javascript:void(0)" class="text-link" id="${elemIdShowOtherTypes}">
+                    Show other Feed Types
+                </a>
+            </span>
         
         </div>
 
@@ -339,10 +373,15 @@ export function PageProdFeedAddEdit(input_settings){
         elemLinkOlderFeedBuy    = elemDivContainer.querySelector('#'+elemIdLinkOlderFeedBuy);
         elemSelectOlderFeedBuy  = elemDivContainer.querySelector('#'+elemIdSelectOlderFeedBuy);
         
+        
+        elemSelectFeedBuy       = elemDivContainer.querySelector('#'+elemIdSelectFeedBuy);
+        
+        
         elemTableFeedBuy        = elemDivContainer.querySelector('#'+elemIdTableFeedBuy);
         elemTableBodyFeedBuy    = elemDivContainer.querySelector('#'+elemIdTableBodyFeedBuy);
         
-        elemFeedInputShow        = elemDivContainer.querySelector('#'+elemIdFeedInputShow);    
+        elemFeedInputShow       = elemDivContainer.querySelector('#'+elemIdFeedInputShow);    
+        elemShowOtherTypes      = elemDivContainer.querySelector('#'+elemIdShowOtherTypes);
         
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
@@ -373,21 +412,43 @@ export function PageProdFeedAddEdit(input_settings){
     
     
     this._bindEventListeners = function(){
-        elemLinkAddFeedBuy.addEventListener('click', function() {
-            navigation._onClickNavFeedsExpenses(null);
-        });
+        if (elemLinkAddFeedBuy){
+            elemLinkAddFeedBuy.addEventListener('click', function() {
+                navigation._onClickNavFeedsExpenses(null);
+            });
+        }
+
+
+        if (elemSelectOlderFeedBuy){
+            elemSelectOlderFeedBuy.addEventListener('change', function() {
+                elemTableFeedBuy.style.display      = 'table';
+                elemFeedInputShow.style.display     = 'block';
+                elemBtnSave.style.display           = 'block';
+                
+                const selected_value = elemSelectOlderFeedBuy.value;
+
+                
+                selectedPigFarmFeedBuy = thisObj.getDataPigFarmFeedBuy(selected_value);
+                tableFeedBuy.renderTable(selectedPigFarmFeedBuy.feed_items);
+            });
+        }
+
         
-        
-        elemSelectOlderFeedBuy.addEventListener('change', function() {
+        elemSelectFeedBuy.addEventListener('change', function() {
             elemTableFeedBuy.style.display      = 'table';
             elemFeedInputShow.style.display     = 'block';
             elemBtnSave.style.display           = 'block';
             
-            const selected_value = elemSelectOlderFeedBuy.value;
+            const selected_value = elemSelectFeedBuy.value;
 
             
             selectedPigFarmFeedBuy = thisObj.getDataPigFarmFeedBuy(selected_value);
             tableFeedBuy.renderTable(selectedPigFarmFeedBuy.feed_items);
+        });
+        
+        
+        elemShowOtherTypes.addEventListener('click', function() {
+            thisObj.onClickShowOtherFeedTypes();
         });
         
         
@@ -444,34 +505,43 @@ export function PageProdFeedAddEdit(input_settings){
         
         
         // Show/Hide feed type based on dataPigProd.pig_production.prod_status_id
-        // TODO so many problems hiding table row
         
         switch (dataPigProd.pig_production.prod_status_id){
             case PROD_STATUS.GESTATING:{
-                componentFeedsInput.showFeedType({
-                     gesta: true,
-                     lacta: true
-                });
+                filteredFeedTypes = {
+                    gesta: true,
+                    lacta: true
+                };
+                
+                componentFeedsInput.showFeedType(filteredFeedTypes);
+                showFilteredTypes = true;
                 
                 break;
             }
             
             case PROD_STATUS.LACTATING:{
-                componentFeedsInput.showFeedType({
+                filteredFeedTypes = {
                      lacta: true,
                      booster: true,
                      prestarter: true
-                });
+                };
+                
+                componentFeedsInput.showFeedType(filteredFeedTypes);
+                showFilteredTypes = true;
                 
                 break;
             }
             
             default:{
-                componentFeedsInput.showFeedType({
+                filteredFeedTypes = {
                      starter: true,
                      grower: true,
                      finisher: true
-                });
+                };
+                
+                componentFeedsInput.showFeedType(filteredFeedTypes);
+                showFilteredTypes = true;
+                
                 break;
             }
         }
@@ -479,16 +549,16 @@ export function PageProdFeedAddEdit(input_settings){
         
         
         // Populate Pig Farm Feed Buy Section where to get feeds
-        thisObj.populateFeedBuyFromSection();
+        // Too complicated
+        //thisObj.populateFeedBuyFromSection();
+        
+        
+        // Populate Pig Farm Feed Buy Select
+        thisObj.populateFeedBuySelect();
         
         
         // Populate how many feeds already bought for this dataPigProd
         thisObj.populateFeedsBought();
-        
-        
-        
-        console.log('pigprodfeed showOptions');
-        console.log(showOptions);
         
         
         if (showOptions.is_add){}
@@ -532,10 +602,8 @@ export function PageProdFeedAddEdit(input_settings){
         elemLinkOlderFeedBuy.style.display  = 'none';
         elemSelectOlderFeedBuy.style.display= 'none';
         
-        elemTableFeedBuy.style.display      = 'none';
-        
+        elemTableFeedBuy.style.display      = 'table';
         elemFeedInputShow.style.display     = 'none';
-        
         elemBtnSave.style.display           = 'none'; 
         
         
@@ -555,7 +623,6 @@ export function PageProdFeedAddEdit(input_settings){
             }
             
             else{
-                console.log(feed_buy_list);
                 
                 // Get latest entry
                 const last_feed_buy = feed_buy_list[0];
@@ -567,7 +634,6 @@ export function PageProdFeedAddEdit(input_settings){
                 const diff_msecs    = dtCurrentDate - dt_buy;
                 const diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
                     
-                console.log('diff_days = ' + diff_days);
                     
                 if (diff_days <= MAX_DAYS_TRIGGER_NO_FEED_BUY){
                     // need to save this
@@ -654,6 +720,35 @@ export function PageProdFeedAddEdit(input_settings){
     
         tableFeedBuy.renderTable(selectedPigFarmFeedBuy.feed_items);
         
+    }
+    
+    
+    this.populateFeedBuySelect = function(){
+        elemTableFeedBuy.style.display      = 'none';
+        elemFeedInputShow.style.display     = 'none';
+        elemBtnSave.style.display           = 'none'; 
+        
+        const feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+        
+        if (feed_buy_list == null || feed_buy_list.length == 0){
+            commonSelectOptions.setDataPigFarmFeedBuyList([], 
+                        elemSelectFeedBuy);
+            return;
+        }
+        
+        const latest_entry = feed_buy_list[0];
+        
+        
+        commonSelectOptions.setDataPigFarmFeedBuyList(feed_buy_list, 
+                        elemSelectFeedBuy);
+        
+        elemSelectFeedBuy.value = latest_entry.pf_feed_buy.hid; 
+    
+        elemTableFeedBuy.style.display      = 'table';
+        elemFeedInputShow.style.display     = 'block';
+        elemBtnSave.style.display           = 'block'; 
+        
+        tableFeedBuy.renderTable(latest_entry.feed_items);
     }
     
     
@@ -816,11 +911,27 @@ export function PageProdFeedAddEdit(input_settings){
     
 
     this.getHtmlTableFeedBuyRow = function(cur_entry){
+        // Convert cur_entry.feed_type.name(this is a short name coming from database).
+        // Convert to FEED_TYPE_NAME to make it readable to user.
+        
+        let feed_type_name = '';
+        
+        switch(cur_entry.feed_type.name){
+            case 'GESTA':   {feed_type_name = FEED_TYPE_NAME.GESTA; break;}
+            case 'LACTA':   {feed_type_name = FEED_TYPE_NAME.LACTA; break;}
+            case 'BOST':    {feed_type_name = FEED_TYPE_NAME.BOST;  break;}
+            case 'PRES':    {feed_type_name = FEED_TYPE_NAME.PRES;  break;}
+            case 'START':   {feed_type_name = FEED_TYPE_NAME.START; break;}
+            case 'GROW':    {feed_type_name = FEED_TYPE_NAME.GROW;  break;}
+            case 'FINISH':  {feed_type_name = FEED_TYPE_NAME.FINISH; break;}
+            default: {break;}
+        }
+        
         
         const html = `
             <tr>
                 <td>${cur_entry.feed_item.quantity}</td>
-                <td>${cur_entry.feed_type.name}</td>
+                <td>${feed_type_name}</td>
                 <td>${cur_entry.feed_brand.name}</td>
             </tr>
         `;
@@ -857,6 +968,29 @@ export function PageProdFeedAddEdit(input_settings){
             ev.classList.add('is-invalid');
         }
 
+    }
+    
+    
+    this.onClickShowOtherFeedTypes = function(){
+        if (showFilteredTypes){
+            const show_all_types =  {
+                gesta: true,
+                lacta: true,
+                booster: true,
+                prestarter: true,
+                grower: true,
+                starter: true,
+                finisher: true
+            };
+            
+            componentFeedsInput.showFeedType(show_all_types);
+            showFilteredTypes = false;
+        }
+        
+        else{
+            componentFeedsInput.showFeedType(filteredFeedTypes);
+            showFilteredTypes = true;
+        }
     }
     
     

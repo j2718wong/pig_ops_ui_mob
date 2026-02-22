@@ -201,11 +201,8 @@ export function ComponentTabsWithMore(input_settings){
     
     
     this.switchTab = function(tabId){
-        
-        console.log('switchTab tabId =' + tabId) ;
-            
+
         this.curActiveTabId = tabId;
-        
         
         if (tabId != tabIdShowMore){
         

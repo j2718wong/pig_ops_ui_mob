@@ -178,6 +178,17 @@ const FEED_TYPE = {
 };
 
 
+const FEED_TYPE_NAME = {
+    GESTA:              'Gesta',
+    LACTA:              'Lacta',
+    BOST:               'Booster',
+    PRES:               'PreStarter',
+    START:              'Starter',
+    GROW:               'Grower',
+    FINISH:             'Finisher'
+};
+
+
 const HARVEST_TYPE = {
     PIGLETS_SALE:           "Q92W83",
     LIVE_PIGS_SALE:         "EKQY8R",
@@ -220,6 +231,7 @@ export {
 
     MULTIKEY_OBJ_TYPE,
     FEED_TYPE,
+    FEED_TYPE_NAME,
     HARVEST_TYPE,
     
     

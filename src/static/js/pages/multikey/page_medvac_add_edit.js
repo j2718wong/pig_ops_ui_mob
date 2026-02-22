@@ -466,12 +466,8 @@ export function PageMedVacAddEdit(input_settings){
         
         curDataEntry    = data_entry;
         showOptions     = options;
-    
-        
-        
-        console.log(`\n\ncurDataEntry`);
-        console.log(curDataEntry);
-        
+
+
         // Update BreadCrumbs
         switch (showOptions.medvac_type){ 
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
@@ -878,11 +874,7 @@ export function PageMedVacAddEdit(input_settings){
                         navigation.showThisPage(showOptions.go_back_page);
                         
                         if (showOptions.callback_after_add){
-                            console.log('\n\npage_medvac_Add has callback_after_add');
                             showOptions.callback_after_add();
-                        }
-                        else{
-                            console.log('\n\npage_medvac_Add has no callback_after_add');
                         }
                     }
                     

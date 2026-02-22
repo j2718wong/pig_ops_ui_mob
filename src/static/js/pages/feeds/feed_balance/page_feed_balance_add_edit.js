@@ -620,11 +620,7 @@ export function PageFeedBalanceAddEdit(input_settings){
                         navigation.showThisPage(showOptions.go_back_page);
                         
                         if (showOptions.callback_after_add){
-                            console.log('\n\npage_add_Add has callback_after_add');
                             showOptions.callback_after_add();
-                        }
-                        else{
-                            console.log('\n\npage_add_Add has no callback_after_add');
                         }
                     }
                     

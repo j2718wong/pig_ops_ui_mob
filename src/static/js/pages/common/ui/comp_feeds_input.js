@@ -435,7 +435,6 @@ const html_2 = `
             const inputField = elemDivContainer.querySelector(`.fi-number-input[data-feed="${feedType}"]`);
             inputField.value = newValue;
             dataFeedInput[feedType] = newValue;
-            console.log(`Updated ${feedType}: ${newValue} kg`);
         }
         
         // Set up up/down buttons

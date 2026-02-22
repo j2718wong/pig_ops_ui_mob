@@ -835,10 +835,6 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this.populateForm = function(data_sow_boar){
-        console.log(`sow_baor_add_edit populate form data_sow_boar`);
-        
-        console.log(data_sow_boar);
-        
         let cur_sow_boar = data_sow_boar;
         if ('sow_boar' in data_sow_boar){
             cur_sow_boar = data_sow_boar.sow_boar;

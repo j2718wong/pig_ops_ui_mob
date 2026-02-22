@@ -96,7 +96,7 @@ export function ComponentFeedBrand(input_settings){
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataFeedBrandListList(dataFeedBrandList, elem_select);
+        commonSelectOptions.setDataFeedBrandList(dataFeedBrandList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){

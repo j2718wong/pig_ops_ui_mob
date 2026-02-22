@@ -115,8 +115,6 @@ export function TablePigProdFeed(input_settings){
         // This is needed when adding and editing PigProdFeed
         thisObj.requestDataPigFarmFeedBuyList();
         
-        console.log('\n\n\ndataPigProd');
-        console.log(dataPigProd);
         
         // Request data if not yet requested
         if ('data_details' in dataPigProd){

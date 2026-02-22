@@ -589,7 +589,7 @@ export function PageProdHistoryList(input_settings){
       
     this.addToolTips = function(){
         const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
-        console.log('with_tooltips='+with_tooltips.length);
+
         for (const cur_entry of with_tooltips){
             new bootstrap.Tooltip(cur_entry);
         }

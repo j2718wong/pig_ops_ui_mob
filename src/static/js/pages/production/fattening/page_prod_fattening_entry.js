@@ -491,10 +491,7 @@ export function PageProdFatteningEntry(input_settings){
     
     
     this.beforeShowTab = function(tabId){
-        console.log('beforeShowTab');
-        console.log('beforeShowTab tabId = ' + tabId);
-        console.log(dataPigProd);
-        
+
         switch(tabId) {
             case elemIdTabFatProdSummary:{
                 thisObj.pigProdSummary.beforeShow(dataPigProd);

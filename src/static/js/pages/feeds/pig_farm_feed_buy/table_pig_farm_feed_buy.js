@@ -338,7 +338,6 @@ export function TablePigFarmFeedBuy(input_settings){
     
     
     this.onSuccessAddEntry = function(){
-        console.log('todo  onSuccessAddEntry');
         
     }
     

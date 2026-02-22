@@ -333,7 +333,6 @@ export function ComponentFeedBuyInput(input_settings){
 			const inputField = document.querySelector(`.fi-number-input[data-feed="${feedType}"]`);
 			inputField.value = newValue;
 			dataFeed[feedType].balance = newValue;
-			console.log(`Updated ${feedType}: ${newValue} kg`);
 		}
 		
 		// Set up up/down buttons

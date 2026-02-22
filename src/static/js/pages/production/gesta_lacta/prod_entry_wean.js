@@ -352,7 +352,7 @@ export function ProdEntryWean(input_settings){
         radios.forEach(radio => {
             radio.addEventListener('change', function(event){
                 curCountPiglets = this.value;
-                console.log('\n\ncurCountPiglets =' + curCountPiglets);
+
                 if (curCountPiglets == 'separate'){
                     componentNumTotal.hide();
                     elemSeparateCountShow.style.display = 'block';

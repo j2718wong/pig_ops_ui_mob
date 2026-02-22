@@ -79,7 +79,7 @@ export function ComponentFeedType(input_settings){
         
         const elem_select = thisObj.getElemSelect();
         
-        commonSelectOptions.setDataFeedTypeListList(dataFeedTypeList, elem_select);
+        commonSelectOptions.setDataFeedTypeList(dataFeedTypeList, elem_select);
         thisObj.setEntryCount(data);
         
         if (selected_entry_value){
