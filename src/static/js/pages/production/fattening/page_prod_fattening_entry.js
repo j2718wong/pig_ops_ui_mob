@@ -70,19 +70,19 @@ export function PageProdFatteningEntry(input_settings){
     this.TAB_FAT_EXTRA          = 12;
     
     
-    let elemIdTabFatProdSummary = `prod-fat-feed-summary`;
-    let elemIdTabFatProdFeed    = `prod-fat-prod-feed`;
-    let elemIdTabFatFeedBalance = `prod-fat-feed-bal`;
-    let elemIdTabFatHarvest     = `prod-fat-harvest`;
+    let elemIdTabFatProdSummary = `${settings.uniqueKey}-feed-summary`;
+    let elemIdTabFatProdFeed    = `${settings.uniqueKey}-prod-feed`;
+    let elemIdTabFatFeedBalance = `${settings.uniqueKey}-feed-bal`;
+    let elemIdTabFatHarvest     = `${settings.uniqueKey}-harvest`;
     
-    let elemIdTabFatMedVac      = `prod-fat-medvac`;
-    let elemIdTabFatHealth      = `prod-fat-health`;
-    let elemIdTabFatPigDead     = `prod-fat-pig-dead`;
-    let elemIdTabFatNotes       = `prod-fat-notes`;
-    let elemIdTabFatWean        = `prod-fat-wean`;
-    let elemIdTabFatBirth       = `prod-fat-birth`;
-    let elemIdTabFatMating      = `prod-fat-mating`;
-    let elemIdTabFatExtra       = `prod-fat-extra`;
+    let elemIdTabFatMedVac      = `${settings.uniqueKey}-medvac`;
+    let elemIdTabFatHealth      = `${settings.uniqueKey}-health`;
+    let elemIdTabFatPigDead     = `${settings.uniqueKey}-pig-dead`;
+    let elemIdTabFatNotes       = `${settings.uniqueKey}-notes`;
+    let elemIdTabFatWean        = `${settings.uniqueKey}-wean`;
+    let elemIdTabFatBirth       = `${settings.uniqueKey}-birth`;
+    let elemIdTabFatMating      = `${settings.uniqueKey}-mating`;
+    let elemIdTabFatExtra       = `${settings.uniqueKey}-extra`;
     
     
     let tabsProdFattening = [
@@ -153,7 +153,7 @@ export function PageProdFatteningEntry(input_settings){
     
     if (settings.isProdHistory){
         // Remove the following tabs: Harvest, Extra
-        tabsProdFattening.splice(10, 1); // remove Extra
+        tabsProdFattening.splice(11, 1); // remove Extra
         tabsProdFattening.splice(3, 1); // remove Harvest
     }
     
@@ -182,7 +182,7 @@ export function PageProdFatteningEntry(input_settings){
     let curTabFat               = null;
     
     let isProdHistory           = false;
-    if (settings.isProdHistory && settings.isProdHistory == true){
+    if (settings.isProdHistory){
         isProdHistory = true;
     }
     

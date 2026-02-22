@@ -42,7 +42,8 @@ export function ProdFeedSummary(input_settings){
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-medvac',
         elemDivContainer:       '<element>'
-        includeProdSummary:     true
+        includeProdSummary:     true,
+        showFinancial:          true
     }   
     */  
     const settings              = input_settings;
@@ -75,10 +76,11 @@ export function ProdFeedSummary(input_settings){
     let elemIdTdGiltBoarInt     = null;
     let elemIdTdGiltBoarSold    = null;
     
-    let elemIdTrFeedsCost       = null;
+
     let elemIdTdFeedsCost       = null;
-    let elemIdTrTotalSales      = null;
     let elemIdTdTotalSales      = null;
+    let elemIdTdGrossProfit     = null;
+    let elemIdTdGrossProfitPP   = null;
     
 
     let elemIdTableBody         = null;
@@ -100,10 +102,10 @@ export function ProdFeedSummary(input_settings){
     let elemTdGiltBoarSold      = null;
     
     
-    let elemTrFeedsCost         = null;
     let elemTdFeedsCost         = null;
-    let elemTrTotalSales        = null;
     let elemTdTotalSales        = null;
+    let elemTdGrossProfit       = null;
+    let elemTdGrossProfitPP     = null;
     
     
     let elemTableBody           = null;
@@ -223,11 +225,11 @@ export function ProdFeedSummary(input_settings){
         elemTdGiltBoarInt       = elemDivContainer.querySelector('#'+elemIdTdGiltBoarInt);
         elemTdGiltBoarSold      = elemDivContainer.querySelector('#'+elemIdTdGiltBoarSold);
         
-        elemTrFeedsCost         = elemDivContainer.querySelector('#'+elemIdTrFeedsCost);
+
         elemTdFeedsCost         = elemDivContainer.querySelector('#'+elemIdTdFeedsCost);
-        
-        elemTrTotalSales        = elemDivContainer.querySelector('#'+elemIdTrTotalSales);
         elemTdTotalSales        = elemDivContainer.querySelector('#'+elemIdTdTotalSales);
+        elemTdGrossProfit       = elemDivContainer.querySelector('#'+elemIdTdGrossProfit);
+        elemTdGrossProfitPP     = elemDivContainer.querySelector('#'+elemIdTdGrossProfitPP);
     }
     
     
@@ -253,12 +255,8 @@ export function ProdFeedSummary(input_settings){
     this.beforeShow = function(data_entry){
         curDataEntry = data_entry;
         
-        
-        
-        
         if (settings.includeProdSummary){
-            console.log('Prod Summary');
-            console.log(curDataEntry);
+ 
             
             const acc_settings_ops = navigation.pigFarm.getSettingsOperations();
             
@@ -328,13 +326,16 @@ export function ProdFeedSummary(input_settings){
             
             
             // Harvested pigs
-            const list_harvest  = curDataEntry.data_details.list_harvest;
+            let total_sales         = 0.0;
+            let num_pigs_sold       = 0;
+            
+            const list_harvest      = curDataEntry.data_details.list_harvest;
             if (list_harvest){
                 let num_pigs_harvested  = 0;
-                let num_pigs_sold       = 0;
+                
                 let num_gilt_boar_int   = 0;
                 let num_gilt_boar_sold  = 0;
-                let total_sales         = 0.0;
+                
                 
                 
                 for (const cur_entry of list_harvest){
@@ -367,7 +368,10 @@ export function ProdFeedSummary(input_settings){
                 elemTdGiltBoarInt.innerHTML     = `${num_gilt_boar_int}`;
                 elemTdGiltBoarSold.innerHTML    = `${num_gilt_boar_sold}`;
                 
-                elemTdTotalSales.innerHTML      = `${s_total_sales}`;
+                
+                if (settings.showFinancial) {
+                    elemTdTotalSales.innerHTML  = `${s_total_sales}`;
+                }
             }
             
             
@@ -386,13 +390,29 @@ export function ProdFeedSummary(input_settings){
             if (prod_feeds_cost.finisher)   {feeds_cost+= prod_feeds_cost.finisher;}
             
             const s_feeds_cost = parentObj.moneyFormatter.format(feeds_cost);
-            elemTdFeedsCost.innerHTML = s_feeds_cost;
-        
             
+            if (settings.showFinancial) {
+                elemTdFeedsCost.innerHTML = s_feeds_cost;
             
-            
-            
+                if (total_sales > 0){
+                    const gross_profit      = total_sales - feeds_cost;
+                    const gross_profit_pp   = gross_profit/  num_pigs_sold;
+                    
+                    const s_gross_profit    = parentObj.moneyFormatter.format(gross_profit);
+                    const s_gross_profit_pp = parentObj.moneyFormatter.format(gross_profit_pp);
+                    
+                    elemIdTdGrossProfit.innerHTML   = s_gross_profit; 
+                    elemIdTdGrossProfitPP.innerHTML = s_gross_profit_pp;
+                }
+                
+                else{
+                    elemIdTdGrossProfit.innerHTML   = '0.0'; 
+                    elemIdTdGrossProfitPP.innerHTML = '0.0';
+                }
+            } 
         }
+        
+        
         
         
         const prod_entry_feeds = curDataEntry.feeds;
@@ -613,11 +633,41 @@ export function ProdFeedSummary(input_settings){
         elemIdTdGiltBoarInt     = `${settings.uniqueKey}-gilt-boar-int`;
         elemIdTdGiltBoarSold    = `${settings.uniqueKey}-gilt-boar-sold`;
         
-        elemIdTrFeedsCost       = `${settings.uniqueKey}-tr-feeds-cost`;
+
         elemIdTdFeedsCost       = `${settings.uniqueKey}-td-feeds-cost`;
-        
-        elemIdTrTotalSales      = `${settings.uniqueKey}-tr-total-sales`;
         elemIdTdTotalSales      = `${settings.uniqueKey}-td-total-sales`;
+        elemIdTdGrossProfit     = `${settings.uniqueKey}-td-gross-profit`;
+        elemIdTdGrossProfitPP   = `${settings.uniqueKey}-td-gross-profit-pp`;
+        
+        
+        
+        let html_financial = `
+                <tr>
+                    <td>Feeds Cost</td>
+                    <td id="${elemIdTdFeedsCost}">0</td>
+                </tr>
+                
+                <tr>
+                    <td>Total Sales</td>
+                    <td id="${elemIdTdTotalSales}">0</td>
+                </tr>
+                
+                <tr>
+                    <td>Gross Profit</td>
+                    <td id="${elemIdTdGrossProfit}">0</td>
+                </tr>
+                
+                <tr>
+                    <td>Gross Profit Per Pig</td>
+                    <td id="${elemIdTdGrossProfitPP}">0</td>
+                </tr>
+                
+        `;
+        
+        if (settings.showFinancial){}
+        else{
+            html_financial = '';
+        }
         
         
         const html = `
@@ -680,15 +730,7 @@ export function ProdFeedSummary(input_settings){
                     <td id="${elemIdTdGiltBoarSold}">0</td>
                 </tr>
                 
-                <tr id="${elemIdTrFeedsCost}">
-                    <td>Feeds Cost</td>
-                    <td id="${elemIdTdFeedsCost}">0</td>
-                </tr>
-                
-                <tr id="${elemIdTrTotalSales}">
-                    <td>Total Sales</td>
-                    <td id="${elemIdTdTotalSales}">0</td>
-                </tr>
+                ${html_financial}
             
             </tbody>
         </table>

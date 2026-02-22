@@ -610,46 +610,52 @@ ${html_style}
     }
          
          
-    this.onClickProdHistEntry = function(pig_prod_hid){
-        let prev_pig_prod_hid = null;
-        let next_pig_prod_hid = null;
+    this.onClickProdHistEntry = function(pig_prod_pid, tab_id){
+        if (pig_prod_pid == null){
+            navigation._onClickNavProdHistory(null);
+            return;
+        }
+        
+        let prev_prod_pid = null;
+        let next_prod_pid = null;
         
         let index;
         let cur_entry   = null;
         let prev_entry  = null;
         let next_entry  = null;
         
-        const pig_prod_list = dataProdHistList;
+        const data_pig_prod_list = dataProdHistList;
         
-        for (index = 0; index< pig_prod_list.length; index++){
-            cur_entry = pig_prod_list[index];
+        for (index = 0; index< data_pig_prod_list.length; index++){
+            cur_entry = data_pig_prod_list[index];
             
-            if (cur_entry.pig_production.hid == pig_prod_hid){
+            if (cur_entry.pig_production.farm_prod_id == pig_prod_pid){
         
                 if ((index-1) >=0){
-                    prev_entry = pig_prod_list[index-1];
-                    prev_pig_prod_hid = prev_entry.pig_production.hid;
+                    prev_entry = data_pig_prod_list[index-1];
+                    prev_prod_pid = prev_entry.pig_production.farm_prod_id;
                 }
                 
-                if ((index+1) < pig_prod_list.length){
-                    next_entry = pig_prod_list[index+1];
-                    next_pig_prod_hid = next_entry.pig_production.hid;
+                if ((index+1) < data_pig_prod_list.length){
+                    next_entry = data_pig_prod_list[index+1];
+                    next_prod_pid = next_entry.pig_production.farm_prod_id;
                 }
                 
                 const options = {
-                    prev_pig_prod_hid:  prev_pig_prod_hid,
-                    next_pig_prod_hid:  next_pig_prod_hid,
-                    pig_prod_list:      pig_prod_list,
+                    pig_prod_type:      PIG_PROD_TYPE.HARVESTED,
+                    prev_prod_pid:      prev_prod_pid,
+                    next_prod_pid:      next_prod_pid,
+                    pig_prod_list:      data_pig_prod_list,
                     data_index:         index+1,
-                    total_entries:      pig_prod_list.length
+                    total_entries:      data_pig_prod_list.length
                 };
                 
                 if (tab_id){
                     options.tab_id = tab_id;
                 }
                 
-                navigation.pageSowBoarEntry.beforeShow(cur_entry, options);
-                const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                navigation.pageProdHistoryEntry.show(cur_entry, options);
+                const page_container = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_ENTRY);
                 navigation.showThisPage(page_container);
                 return;
             }
@@ -658,7 +664,7 @@ ${html_style}
         
 
         
-        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        const next_page = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_ENTRY);
         navigation.showThisPage(next_page)
 
         

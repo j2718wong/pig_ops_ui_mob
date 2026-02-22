@@ -349,8 +349,8 @@ export function PageProdEntryCommon(input_settings){
 
 
         this.componentTabsWithMore   = new ComponentTabsWithMore({
-            navigation:         navigation,
-            uniqueKey:          `${settings.uniqueKey}-tab`,
+            navigation:             navigation,
+            uniqueKey:              `${settings.uniqueKey}-tab`,
             elemIdDivContainer:     settings.elemIdDivContainer,
             elemIdTabsContainer:    elemIdTabsContainer,
             elemIdTabContentArea:   thisObj.elemIdTabContentArea,
@@ -471,6 +471,14 @@ export function PageProdEntryCommon(input_settings){
                     navigation.pageProdFatteningList.show();
                     break;
                 }
+                
+                case PIG_PROD_TYPE.HARVESTED:{
+                    const next_page = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_LIST);
+                    navigation.showThisPage(next_page);
+                    navigation.pageProdHistoryList.show();
+                    break;
+                }
+                
             }
             
             
@@ -510,6 +518,12 @@ export function PageProdEntryCommon(input_settings){
                 title_list = 'Fattening';
                 break;
             }
+            
+            case PIG_PROD_TYPE.HARVESTED:{
+                title_list = 'Prod Hist';
+                break;
+            }
+            
         }
         
         
@@ -612,6 +626,20 @@ export function PageProdEntryCommon(input_settings){
                 
                 elemNavNextEntry.onclick = function(){
                     navigation.onClickProdFatteningEntry(options.next_prod_pid);
+                }
+                break;
+            }
+            
+            
+            case PIG_PROD_TYPE.HARVESTED:{
+                elemNavPrevEntry.onclick = function(){
+                    navigation.pageProdHistoryList.onClickProdHistEntry(
+                        options.prev_prod_pid);
+                }
+                
+                elemNavNextEntry.onclick = function(){
+                    navigation.pageProdHistoryList.onClickProdHistEntry(
+                        options.next_prod_pid);
                 }
                 break;
             }
