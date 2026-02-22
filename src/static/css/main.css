@@ -1536,6 +1536,21 @@ p {
 }
 
 
+
+.table-prod-hist th  {
+    padding-right:0;
+    overflow-wrap: anywhere; /* Breaks anywhere if needed */
+    word-break: break-word;
+    white-space: normal;
+}
+
+.table-prod-hist td {
+    padding-right:0;
+}
+
+
+
+
 .btn-full {
     display: block;
     width: 100%;

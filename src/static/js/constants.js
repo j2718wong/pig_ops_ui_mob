@@ -54,6 +54,11 @@ const PAGE_ID = {
     PROD_HISTORY_LIST:      43,
     PROD_HISTORY_ENTRY:     44,
     
+    PROD_SALES_LIST:        48,
+    PROD_SALES_ENTRY:       49,
+    
+    
+    
     
     FARM_FEED_BUY_LIST:     50,
     FARM_FEED_BUY_ADD_EDIT: 51,

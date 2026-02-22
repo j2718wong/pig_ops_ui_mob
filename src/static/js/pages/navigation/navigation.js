@@ -286,6 +286,10 @@ export function Navigation(){
     const elemIdContFeedBalanceAddEdit  = 'container-feed-balance-add-edit';
     
     
+    const elemIdContProdSalesList       = 'container-prod-sales-list';
+    const elemIdContProdSalesEntry      = 'container-prod-sales-entry';
+    
+    
     
     const elemIdContAccPigOpsList       = 'container-acc-pig-ops-list';
     const elemIdContAccPigOpsAddEdit    = 'container-acc-pig-ops-add-edit';
@@ -299,49 +303,49 @@ export function Navigation(){
     
     
     
-    let elemDesktopNavSettings      = null;
-    let elemDesktopNavSowBoarGilt   = null;
-    let elemDesktopNavProduction    = null;
-    let elemDesktopNavOperations    = null;
-    let elemDesktopNavFinancials    = null;
-    let elemDesktopNavAccountLists  = null;
-    let elemDesktopNavAdmin         = null;
-    
-    let elemMobileNavSettings       = null;
-    let elemMobileNavSowBoarGilt    = null;
-    let elemMobileNavProduction     = null;
-    let elemMobileNavOperations     = null;
-    let elemMobileNavFinancials     = null;
-    let elemMobileNavAccountLists   = null;
-    let elemMobileNavAdmin          = null;
-
-    
-    let elemPageContAccDisabled     = null;
-    let elemPageContUserDisabled    = null;
-    let elemPageContBillUnpaid      = null;
-    
-    let elemPageContSowBoarList     = null;
-    let elemPageContSowBoarAddEdit  = null;
-    let elemPageContSowBoarEntry    = null;
-    let elemPageContSowBoarDisposed = null;
-    
-    
-    let elemPageContMedVacAddEdit   = null;
-    let elemPageContHealthAddEdit   = null;
-    let elemPageContNotesAddEdit    = null;
-    let elemPageContParentTrace     = null;
+    let elemDesktopNavSettings          = null;
+    let elemDesktopNavSowBoarGilt       = null;
+    let elemDesktopNavProduction        = null;
+    let elemDesktopNavOperations        = null;
+    let elemDesktopNavFinancials        = null;
+    let elemDesktopNavAccountLists      = null;
+    let elemDesktopNavAdmin             = null;
         
-    let elemPageContProdGestaList   = null;
-    let elemPageContProdGestaAdd    = null;
-    let elemPageContProdGestaEntry  = null;
+    let elemMobileNavSettings           = null;
+    let elemMobileNavSowBoarGilt        = null;
+    let elemMobileNavProduction         = null;
+    let elemMobileNavOperations         = null;
+    let elemMobileNavFinancials         = null;
+    let elemMobileNavAccountLists       = null;
+    let elemMobileNavAdmin              = null;
+    
         
-    let elemPageContProdLactaList   = null;
-    let elemPageContProdLactaEntry  = null;
-    
-    
-    let elemPageContFatteningList   = null;
-    let elemPageContFatteningAdd    = null;
-    let elemPageContFatteningEntry  = null;
+    let elemPageContAccDisabled         = null;
+    let elemPageContUserDisabled        = null;
+    let elemPageContBillUnpaid          = null;
+        
+    let elemPageContSowBoarList         = null;
+    let elemPageContSowBoarAddEdit      = null;
+    let elemPageContSowBoarEntry        = null;
+    let elemPageContSowBoarDisposed     = null;
+        
+        
+    let elemPageContMedVacAddEdit       = null;
+    let elemPageContHealthAddEdit       = null;
+    let elemPageContNotesAddEdit        = null;
+    let elemPageContParentTrace         = null;
+            
+    let elemPageContProdGestaList       = null;
+    let elemPageContProdGestaAdd        = null;
+    let elemPageContProdGestaEntry      = null;
+            
+    let elemPageContProdLactaList       = null;
+    let elemPageContProdLactaEntry      = null;
+        
+        
+    let elemPageContFatteningList       = null;
+    let elemPageContFatteningAdd        = null;
+    let elemPageContFatteningEntry      = null;
         
     let elemPageContProdPigOpsEdit      = null; 
     let elemPageContProdFeedAddEdit     = null;
@@ -350,6 +354,8 @@ export function Navigation(){
     let elemPageContProdHistoryList     = null;
     let elemPageContProdHistoryEntry    = null;
     
+    let elemPageContProdSalesList       = null;
+    let elemPageContProdSalesEntry      = null;
     
     let elemPageContFarmFeedBuyList     = null;
     let elemPageContFarmFeedBuyAddEdit  = null;
@@ -585,6 +591,15 @@ export function Navigation(){
     });
     
     
+    this.pageProdSalesList    = new PageProdHistoryList({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdSalesList,
+        uniqueKey:              'prod-sales-list',
+        isProdSalesHistory:     true
+    });
+    
+    
+    
     this.pageAccPigOpsList      = new PageAccPigOpsList({
         navigation:             this,
         elemIdDivContainer:     elemIdContAccPigOpsList,
@@ -655,6 +670,8 @@ export function Navigation(){
         this.pageProdHistoryList.init();
         this.pageProdHistoryEntry.init();
         
+        
+        this.pageProdSalesList.init();
         
         this.pageAccPigOpsList.init();
         this.pageAccPigOpsAddEdit.init();
@@ -731,6 +748,11 @@ export function Navigation(){
         
         elemPageContProdHistoryList     = document.getElementById(elemIdContProdHistoryList);
         elemPageContProdHistoryEntry    = document.getElementById(elemIdContProdHistoryEntry);
+    
+        
+        elemPageContProdSalesList       = document.getElementById(elemIdContProdSalesList);
+        elemPageContProdSalesEntry      = document.getElementById(elemIdContProdSalesEntry);
+    
     
     
         elemPageContFarmFeedBuyList     = document.getElementById(elemIdContFarmFeedBuyList);
@@ -970,6 +992,15 @@ export function Navigation(){
             }
             
             
+            case PAGE_ID.PROD_SALES_LIST: {
+                return elemPageContProdSalesList;
+                break;
+            }
+             
+            case PAGE_ID.PROD_SALES_ENTRY: {
+                break;
+            }
+            
             
             case PAGE_ID.FARM_FEED_BUY_LIST: {
                 return elemPageContFarmFeedBuyList;
@@ -1195,6 +1226,13 @@ export function Navigation(){
             }
             
             
+            
+            case 'prod-sales':{
+                thisObj._onClickNavProdSales(is_mobile);
+                break;
+            }
+            
+            
             case 'feeds-expenses':{
                 thisObj._onClickNavFeedsExpenses(is_mobile);
                 break;
@@ -1205,10 +1243,7 @@ export function Navigation(){
                 break;
             }
             
-            case 'sales':{
-                thisObj._onClickNavSales(is_mobile);
-                break;
-            }
+            
             
             
             case 'staff':{
@@ -1355,10 +1390,6 @@ export function Navigation(){
     }
         
            
-    this._onClickNavPigHarvests = function(is_mobile){
-        console.log('_onClickNavPigHarvests not yet implemented; is_mobile=' + is_mobile);
-    }
-        
         
     this._onClickNavReports = function(is_mobile){
         console.log('_onClickNavReports not yet implemented; is_mobile=' + is_mobile);
@@ -1368,6 +1399,13 @@ export function Navigation(){
     this._onClickNavFeedCalculator = function(is_mobile){
         console.log('_onClickNavFeedCalculator not yet implemented; is_mobile=' + is_mobile);
     }
+    
+    
+    this._onClickNavProdSales = function(is_mobile){
+        thisObj.showThisPage(elemPageContProdSalesList);
+        thisObj.pageProdSalesList.show();
+    }
+    
         
         
     this._onClickNavFeedsExpenses = function(is_mobile){
@@ -1381,9 +1419,6 @@ export function Navigation(){
     }
         
         
-    this._onClickNavSales = function(is_mobile){
-        console.log('_onClickNavSales not yet implemented; is_mobile=' + is_mobile);
-    }
         
         
         

@@ -12,7 +12,8 @@ import {APPLICATION,
         PIG_OPERATION_TYPE,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        SOW_STATUS_NAME}            from '../../../../constants.js';
+        SOW_STATUS_NAME,
+        HARVEST_TYPE}               from '../../../../constants.js';
 
 
 import {formatDate,
@@ -24,7 +25,7 @@ import {formatDate,
 import {getSowBoarReference}        from '../../../common/common_app.js';
 
 
-export function ProdHistTableAll(input_settings){
+export function ProdGrossProfitTable(input_settings){
     TableBasic.call(this, input_settings);
     
     const thisObj               = this;
@@ -51,13 +52,14 @@ export function ProdHistTableAll(input_settings){
     
     let elemTableShow           = null;
     let elemTableBody           = null;
-
-
+    
     
     this.getHtml = function(){
         
-        elemIdTableShow         = `${settings.uniqueKey}-prod-hist-all-show`;
-        elemIdTableBody         = `${settings.uniqueKey}-prod-hist-all-tbody`;
+        elemIdTableShow         = `${settings.uniqueKey}-prod-gross-profit-show`;
+        elemIdTableBody         = `${settings.uniqueKey}-prod-gross-profit-tbody`;
+        
+        
         
         const html = `
         
@@ -65,11 +67,10 @@ export function ProdHistTableAll(input_settings){
         <div id="${elemIdTableShow}">
             <table class="data-table table-prod-hist">
                 <colgroup>
-                    <col style="width: 33%;">
-                    <col style="width: 18%;">
-                    <col style="width: 14%;">
-                    <col style="width: 15%;">
-                    <col style="width: 20%;">
+                    <col style="width: 29%;">
+                    <col style="width: 25%;">
+                    <col style="width: 23%;">
+                    <col style="width: 23%;">
                 </colgroup>
       
                 <thead>
@@ -78,10 +79,9 @@ export function ProdHistTableAll(input_settings){
                             <div>PID, Sow</div> 
                             <div><span class="love-icon">❤️</span> Boar</div>
                         </th>
-                        <th style="padding-left:0; text-align:center;">Date Birth</th>
-                        <th style="padding-left:0; text-align:center;">Pigs Birth</th>
-                        <th style="padding-left:0; text-align:center;">Pigs Dead</th>
-                        <th>Pigs Wean</th>
+                        <th style="padding-left:0; text-align:center;">Gross Sales</th>
+                        <th style="padding-left:0; text-align:center;">Feeds Cost</th>
+                        <th style="padding-left:0; text-align:center;">Gross Profit</th>
                     </tr>
                 </thead>
                 
@@ -89,8 +89,7 @@ export function ProdHistTableAll(input_settings){
                 </tbody>
             </table>
             
-            <div class="data-table-legend">Pigs Dead = Deat At Birth | Dead before Wean</div>
-            <div class="data-table-legend">Pigs Wean = Pigs weaned | Average Weight</div>
+            
         </div>
         `;
         
@@ -130,7 +129,7 @@ export function ProdHistTableAll(input_settings){
     this.getHtmlTableRowEmpty = function(){
         const html = `
             <tr>
-                <td colspan="4"><div>No Entries</div></td>
+                <td colspan="5"><div>No Entries</div></td>
             </tr>
         `;
         
@@ -181,74 +180,99 @@ export function ProdHistTableAll(input_settings){
         const s_dt_birth    = formatDate(dt_birth, FORMAT_COMPACT);
         
         
-        // Pigs Birth column
-        let num_pigs_birth = birth.pigs_live_m + birth.pigs_live_f;
-        
-        let num_pigs_dead_birth = 0;
-        if (birth.num_dead_at_birth){
-            num_pigs_dead_birth = birth.num_dead_at_birth;
-        }
-        
-        
-        // Pigs Wean column
-        let num_pigs_wean = 0;
+        let num_pigs_wean   = 0;
         if (weaning.num_pigs){
             num_pigs_wean = weaning.num_pigs;
-        } else{
-            if (weaning.num_pigs_m) {
+        }
+        else{
+            if (weaning.num_pigs_m){
                 num_pigs_wean += weaning.num_pigs_m;
             }
             
-            if (weaning.num_pigs_f) {
+            if (weaning.num_pigs_f){
                 num_pigs_wean += weaning.num_pigs_f;
             }
+
         }
         
         
-        // Pigs Dead column
-        let num_pigs_dead_wean = num_pigs_birth - num_pigs_wean;
+        // Harvested pigs
+        let num_pigs_sold       = 0;
         
-        let s_dead = '';
-        if (num_pigs_dead_birth > 0 || num_pigs_dead_wean > 0){
-            if (num_pigs_dead_birth > 0){
-                s_dead += `${num_pigs_dead_birth}`
-            }
-            else{
-                s_dead += '--';
+        let total_sales         = 0.0;
+        let feeds_cost          = 0.0;
+        let gross_profit        = 0;
+        
+        const list_harvest      = cur_entry.data_details.list_harvest;
+        if (list_harvest){
+            let num_pigs_harvested  = 0;
+            
+            let num_gilt_boar_int   = 0;
+            let num_gilt_boar_sold  = 0;
+            
+            
+            
+            for (const cur_entry of list_harvest){
+                const prod_harvest  = cur_entry.prod_harvest;
+                
+                num_pigs_harvested  += prod_harvest.num_pigs;
+                
+                if (prod_harvest.sales && prod_harvest.sales.net_sales){
+                    num_pigs_sold   += prod_harvest.num_pigs;
+                    total_sales     += prod_harvest.sales.net_sales;
+                }
+                
+                if (prod_harvest.harvest_type_hid == HARVEST_TYPE.INTERNAL_GILT_BOAR){
+                    num_gilt_boar_int += prod_harvest.num_pigs;
+                }
+                
+                if (prod_harvest.harvest_type_hid == HARVEST_TYPE.GILT_SALE){
+                    num_gilt_boar_sold += prod_harvest.num_pigs;
+                }
+                
+                if (prod_harvest.harvest_type_hid == HARVEST_TYPE.BOAR_SALE){
+                    num_gilt_boar_sold += prod_harvest.num_pigs;
+                }
             }
             
-            s_dead += '|';
             
-            if (num_pigs_dead_wean > 0){
-                s_dead += `${num_pigs_dead_wean}`
-            }
-            else{
-                s_dead += '--';
-            }
             
+            
+            
+            // Compute feeds cost
+            const prod_feeds_cost = cur_entry.feeds.cost;
+            
+            
+            
+            if (prod_feeds_cost.gestating)  {feeds_cost+= prod_feeds_cost.gestating;}
+            if (prod_feeds_cost.lactating)  {feeds_cost+= prod_feeds_cost.lactating;}
+            if (prod_feeds_cost.booster)    {feeds_cost+= prod_feeds_cost.booster;}
+            if (prod_feeds_cost.prestarter) {feeds_cost+= prod_feeds_cost.prestarter;}
+            if (prod_feeds_cost.starter)    {feeds_cost+= prod_feeds_cost.starter;}
+            if (prod_feeds_cost.grower)     {feeds_cost+= prod_feeds_cost.grower;}
+            if (prod_feeds_cost.finisher)   {feeds_cost+= prod_feeds_cost.finisher;}
+            
+            
+            
+            
+            if (total_sales > 0){
+                gross_profit  = total_sales - feeds_cost;
+            }
         }
         
         
-        // Pigs Wean column
-        let s_wean = `${num_pigs_wean}`
-        
-        let ave_wean_wt = null;
-        if (weaning.weight && num_pigs_wean > 0){
-            let ave_wean_wt = weaning.weight/num_pigs_wean;
-            let s_ave_wean_wt = parentObj.moneyFormatter.format(ave_wean_wt);
-            
-            s_wean += ` <span class="nowrap" style="font-weight: 600; color:var(--corporate-blue);">${s_ave_wean_wt} kg</span>` 
-        }
+        const s_total_sales     = parentObj.moneyFormatter.format(total_sales);
+        const s_feeds_cost      = parentObj.moneyFormatter.format(feeds_cost);
+        const s_gross_profit    = parentObj.moneyFormatter.format(gross_profit);       
         
         
         
         const html = `
         <tr>
             <td>${html_pid_sow}</td>
-            <td style="padding-left:0; text-align:center;">${s_dt_birth}</td>
-            <td style="padding-left:0; text-align:center;">${num_pigs_birth}</td>
-            <td style="padding-left:0; text-align:center;">${s_dead}</td>
-            <td style="padding-left:0; text-align:center;">${s_wean}</td>
+            <td style="padding-left:0; text-align:center;">${s_total_sales}</td>
+            <td style="padding-left:0; text-align:center;">${s_feeds_cost}</td>
+            <td style="padding-left:0; text-align:center;">${s_gross_profit}</td>
         </tr>
         `;
         

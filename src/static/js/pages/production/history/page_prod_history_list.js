@@ -26,7 +26,8 @@ import {getSowBoarReference}        from '../../common/common_app.js';
 
 import {ProdHistTableAll}           from './prod_hist_tables/table_prod_hist_all.js'
 import {ProdHistTableWeights}       from './prod_hist_tables/table_prod_hist_weights.js'
-
+import {ProdGrossSalesTable}        from './prod_hist_tables/table_prod_gross_sales.js'
+import {ProdGrossProfitTable}       from './prod_hist_tables/table_prod_gross_profit.js'
 
 
 export function PageProdHistoryList(input_settings){
@@ -43,7 +44,8 @@ export function PageProdHistoryList(input_settings){
     {
         navigation:             this,
         elemIdDivContainer:     elemIdContSowBoarList,
-        uniqueKey:              'sow-boar'
+        uniqueKey:              'sow-boar',
+        isProdSalesHistory:     true
     }   
     */  
     const settings               = input_settings;
@@ -64,10 +66,6 @@ export function PageProdHistoryList(input_settings){
     let elemIdSearchInput       = null;
     let elemIdAddEntryBtn       = null;
     let elemIdFilterControls    = null;
-    
-    let elemIdSowControls       = null;     
-    let elemIdIncludeDisposed   = null;
-    let elemIdSowOutputToggle   = null;
     
     
     let elemIdTableRowCount     = null;
@@ -94,8 +92,6 @@ export function PageProdHistoryList(input_settings){
     let elemAddEntryBtn         = null;
     let elemFilterControls      = null;
     
-    let elemSowControls         = null;     
-
     
     let elemTableRowCount       = null;
     let elemTablePagination     = null;
@@ -106,35 +102,14 @@ export function PageProdHistoryList(input_settings){
     
 
     
-    let elemTableSowOutput      = null;
-    let elemTableSowOutputBody  = null;
+    let dataProdHistoryList     = null;
 
-    
-    let dataProdHistoryList             = null;
-    let dataBoarList            = null;
-    let dataGiltList            = null;
-    
-    let dataDisposedList        = null;
-    
-    let curDataView             = null;
-    
-
-    let curSowBoarType          = null;
-
-    //let textTranslation         = new TextTranslation();
-    let curUserLanguageKey      = 'en';
-
-
-    let showpageHeaderAlarm     = false;
-    let pigOpsAlarmList         = null;
     
     
     let curDataListView         = null;
     
     let curDataFilter            = null;
     
-    
-    this.accountData            = null;
     
     
     let showOptions             = null;
@@ -143,20 +118,44 @@ export function PageProdHistoryList(input_settings){
     let dtCurrentDate           = null;
     
     
-    let tableProdHistAll        = new ProdHistTableAll({
-        navigation:             navigation,
-        parentObj:              this,
-        elemDivContainer:       elemDivContainer,
-        uniqueKey:              settings.uniqueKey 
-    });
+    let tableProdHistAll        = null;
+    let tableProdHistWeights    = null;
+    let tableProdGrossSales     = null;
+    let tableProdGrossProfit    = null;
     
     
-    let tableProdHistWeights    = new ProdHistTableWeights({
-        navigation:             navigation,
-        parentObj:              this,
-        elemDivContainer:       elemDivContainer,
-        uniqueKey:              settings.uniqueKey 
-    });
+    if (settings.isProdSalesHistory){
+        tableProdGrossSales         = new ProdGrossSalesTable({
+            navigation:             navigation,
+            parentObj:              this,
+            elemDivContainer:       elemDivContainer,
+            uniqueKey:              settings.uniqueKey
+        });
+        
+        tableProdGrossProfit        = new ProdGrossProfitTable({
+            navigation:             navigation,
+            parentObj:              this,
+            elemDivContainer:       elemDivContainer,
+            uniqueKey:              settings.uniqueKey
+        });
+    }
+    
+    else{
+        tableProdHistAll            = new ProdHistTableAll({
+            navigation:             navigation,
+            parentObj:              this,
+            elemDivContainer:       elemDivContainer,
+            uniqueKey:              settings.uniqueKey 
+        });
+        
+        
+        tableProdHistWeights        = new ProdHistTableWeights({
+            navigation:             navigation,
+            parentObj:              this,
+            elemDivContainer:       elemDivContainer,
+            uniqueKey:              settings.uniqueKey 
+        });
+    }
     
     
     this.elemTableRowCount      = null;
@@ -173,31 +172,11 @@ export function PageProdHistoryList(input_settings){
     
     
     this.init = function(){
-        //textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
-        
         this.render();
         this.afterHtmlRender();
-        
-        
     }
     
-    
-    this._writeInlineStyle = function(){
-        const html = `
-    <style>
-        
-        .sow-boar-controls{
-            display: flex;
-            justify-content:center;
-        }
-        
-      
-        
-      </style>
-    `;
-        return html;
-    }
-    
+
     
     this.render = function(){
         
@@ -214,11 +193,6 @@ export function PageProdHistoryList(input_settings){
         elemIdFilterControls    = `${settings.uniqueKey}-filter-control`;
         
         
-        elemIdSowControls       = `${settings.uniqueKey}-sow-controls`;
-        elemIdIncludeDisposed   = `${settings.uniqueKey}-inc-disposed`;
-        elemIdSowOutputToggle   = `${settings.uniqueKey}-output-toggle`;
-        
-        
         elemIdTableRowCount     = `${settings.uniqueKey}-table-row-count`;
         elemIdTablePagination   = `${settings.uniqueKey}-table-pagination`;
         elemIdTablePrevPage     = `${settings.uniqueKey}-table-prev-page`;
@@ -227,17 +201,48 @@ export function PageProdHistoryList(input_settings){
         elemIdTableNextPage     = `${settings.uniqueKey}-table-next-page`;
         
         
+        let page_title          = '';
+        
+        if (settings.isProdSalesHistory){
+            page_title          = 'Prod Sales List';
+        }
+        else{
+            page_title          = 'Prod History List';
+        }
         
         
-        const html_style            = thisObj._writeInlineStyle();
+        let html_table_gross_sales= '';
+        let html_table_gross_profit ='';
         
+        let html_table_hist_all = '';
+        let html_table_weights  = '';
         
-        const html_table_all        = tableProdHistAll.getHtml(); 
-        const html_table_weights    = tableProdHistWeights.getHtml();
+        let html_filter_buttons = '';
         
+        if (settings.isProdSalesHistory){
+            html_table_gross_sales    = tableProdGrossSales.getHtml();
+            html_table_gross_profit   = tableProdGrossProfit.getHtml();
+            
+            html_filter_buttons = `
+                        <button class="filter-button active" data-filter="sales">Sales</button>
+                        <button class="filter-button" data-filter="profit">Profit</button>
+            `;
+            
+             
+        }
+        else{
+            html_table_hist_all     = tableProdHistAll.getHtml(); 
+            html_table_weights      = tableProdHistWeights.getHtml();
+            
+            html_filter_buttons = `
+                        <button class="filter-button active" data-filter="all">All</button>
+                        <button class="filter-button" data-filter="weights">Weight</button>
+                        <button class="filter-button" data-filter="harvests">Harvest</button>
+            `;
+        }
+    
         const html = `
 
-${html_style}
         
 <div class="mobile-container">
     <div class="nav-left-right">
@@ -245,7 +250,7 @@ ${html_style}
                 
         <span>
             <span class="nav-title blue" id="${elemIdEntryCount}"></span>
-            <span class="nav-title blue" id="${elemIdPageTitle}">Prod History List</span>
+            <span class="nav-title blue" id="${elemIdPageTitle}">${page_title}</span>
         </span>
         
         <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
@@ -278,13 +283,9 @@ ${html_style}
                 <!-- Animal Filter Buttons - Centered, no gaps -->
                 <div class="animal-filter">
                     <div class="filter-buttons sow">
-                        <button class="filter-button active" data-filter="all">All</button>
-                        <button class="filter-button" data-filter="weights">Weight</button>
-                        <button class="filter-button" data-filter="harvests">Harvest</button>
+                        ${html_filter_buttons}
                     </div>
-                    
-                    
-                    
+ 
                 </div>
                 
             </div>
@@ -312,11 +313,16 @@ ${html_style}
             </div>
         </div>
 
+        
+        <!-- Table Prod Gross Sales-->
+        ${html_table_gross_sales}
+        
+        <!-- Table Prod Gross Profit-->
+        ${html_table_gross_profit}
 
         <!-- Table Prod History All-->
-        ${html_table_all}
-        
-        
+        ${html_table_hist_all}
+            
         <!-- Table Weights-->
         ${html_table_weights}
         
@@ -331,9 +337,13 @@ ${html_style}
     
     
     this.afterHtmlRender = function(){
-        tableProdHistAll.afterHtmlRender();
-        tableProdHistWeights.afterHtmlRender();
-        
+        if (settings.isProdSalesHistory){
+            tableProdGrossSales.afterHtmlRender();
+            tableProdGrossProfit.afterHtmlRender();
+        } else{
+            tableProdHistAll.afterHtmlRender();
+            tableProdHistWeights.afterHtmlRender();
+        }
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -353,9 +363,6 @@ ${html_style}
         elemSearchInput         = elemDivContainer.querySelector('#'+elemIdSearchInput);
         elemAddEntryBtn         = elemDivContainer.querySelector('#'+elemIdAddEntryBtn);
         elemFilterControls      = elemDivContainer.querySelector('#'+elemIdFilterControls);
-        
-        elemSowControls         = elemDivContainer.querySelector('#'+elemIdSowControls);    
-        
         
         
         elemTableRowCount       = elemDivContainer.querySelector('#'+elemIdTableRowCount);
@@ -385,8 +392,7 @@ ${html_style}
     
     
     this._bindEventListeners = function(){
-        
-        
+
         
         const filterButtons  = elemDivContainer.querySelectorAll('.filter-button');
         
@@ -414,7 +420,7 @@ ${html_style}
     }
     
     
-    this.resetSowFilterButton = function(){
+    this.resetFilterButtons = function(){
         const filterButtons  = elemDivContainer.querySelectorAll('.filter-button');
         
         
@@ -427,11 +433,7 @@ ${html_style}
     }
     
     
-    this.getSowBoarEntry = function(entry_hid){
-        
-    }
-    
-    
+
     // Handle window resize for view switching
     this.handleWindowResize = function() {
         const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
@@ -454,7 +456,13 @@ ${html_style}
         
             const callback_success = function(data){
                 dataProdHistList  = navigation.pigFarm.managerPigProd.dataProdHistoryList;
-                tableProdHistAll.renderTable(dataProdHistList);
+                
+                if (settings.isProdSalesHistory){
+                    tableProdGrossSales.renderTable(dataProdHistList);
+                }
+                else{
+                    tableProdHistAll.renderTable(dataProdHistList);
+                }
             };
             
             // Request ProdHistory List
@@ -464,15 +472,26 @@ ${html_style}
         }
         else{
             dataProdHistList  = navigation.pigFarm.managerPigProd.dataProdHistoryList;
-            tableProdHistAll.renderTable(dataProdHistList);
+            if (settings.isProdSalesHistory){
+                tableProdGrossSales.renderTable(dataProdHistList);
+            }
+            else{
+                tableProdHistAll.renderTable(dataProdHistList);
+            }
         }
 
 
-        
-        // Default all
-        curDataFilter = 'all';
-        tableProdHistAll.show();
-        tableProdHistWeights.hide();
+        if (settings.isProdSalesHistory){
+            // Default all
+            curDataFilter = 'sales';
+            tableProdGrossSales.show();
+        }
+        else{
+            // Default all
+            curDataFilter = 'all';
+            tableProdHistAll.show();
+            tableProdHistWeights.hide();
+        }
         
         
         // show the last showOptions if there is no options
@@ -521,6 +540,27 @@ ${html_style}
         
         
         switch(filter_type){
+            case 'sales':{
+                tableProdGrossSales.show();
+                tableProdGrossProfit.hide();
+
+                
+                curDataListView = dataProdHistList;
+                tableProdGrossSales.renderTable(curDataListView);
+                break;
+            }
+            
+            case 'profit':{
+                tableProdGrossSales.hide();
+                tableProdGrossProfit.show();
+
+                
+                curDataListView = dataProdHistList;
+                tableProdGrossProfit.renderTable(curDataListView);
+                break;
+            }
+            
+            
             case 'all':{
                 tableProdHistAll.show();
                 tableProdHistWeights.hide();
@@ -536,11 +576,6 @@ ${html_style}
                 tableProdHistWeights.show();
                 
                 curDataListView = dataProdHistList;
-                
-                console.log('curDataListView');
-                console.log(curDataListView);
-                
-                
                 tableProdHistWeights.renderTable(curDataListView);
                 break;
             }
@@ -654,9 +689,14 @@ ${html_style}
                     options.tab_id = tab_id;
                 }
                 
-                navigation.pageProdHistoryEntry.show(cur_entry, options);
-                const page_container = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_ENTRY);
-                navigation.showThisPage(page_container);
+                if (settings.isProdSalesHistory){
+                }
+                else{
+                    navigation.pageProdHistoryEntry.show(cur_entry, options);
+                    const page_container = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_ENTRY);
+                    navigation.showThisPage(page_container);
+                }
+                
                 return;
             }
 
