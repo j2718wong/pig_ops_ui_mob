@@ -351,19 +351,53 @@ export function PageProdFatteningList(input_settings){
         s_target_harvest = target_harvest.date_target_harvest;
         
         
-        let s_click = `gNavigation.onClickProdFatteningEntry(${pid});`;
-        
         const html = `
             <tr>
-                <td onclick='${s_click}'>${pid}</td>
-                <td onclick='${s_click}' style="text-align:center;">${s_days}</td>
-                <td onclick='${s_click}' style="text-align:center;">${cur_entry.pig_production.cur_pig_count}</td>
-                <td onclick='${s_click}'>${s_target_harvest}</td>
+                <td>${pid}</td>
+                <td style="text-align:center;">${s_days}</td>
+                <td style="text-align:center;">${cur_entry.pig_production.cur_pig_count}</td>
+                <td>${s_target_harvest}</td>
             </tr>
         `;
         
         return html;
     }
+    
+    
+    this.getElemTableRow = function(cur_entry){
+        const elem_row = document.createElement('tr');
+        
+        const html = thisObj.getHtmlTableRow(cur_entry);
+        elem_row.innerHTML = html;
+        
+        let pid = cur_entry.pig_production.farm_prod_id;
+        
+         
+
+        
+        // Attach onclick listeners to td
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        let index = 0
+        for (const cur_td of elem_tds){
+        
+
+            if (index == 0 || index == 1) {
+                cur_td.onclick = function(){
+                    navigation.onClickProdFatteningEntry(pid);
+                }
+            }
+            
+        
+            index += 1;
+        }
+        
+        return elem_row;
+    }
+    
+    
+    
     
     
     

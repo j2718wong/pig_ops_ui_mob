@@ -42,7 +42,8 @@ export function PageProdFatteningEntry(input_settings){
     Typical settings = {
         navigation:             this,
         elemIdDivContainer:     elemIdContProdLactaEntry
-        uniqueKey:              'prod-fat'
+        uniqueKey:              'prod-fat',
+        isProdHistory:          false
     };
     */
     const settings              = input_settings;
@@ -150,8 +151,16 @@ export function PageProdFatteningEntry(input_settings){
     ];
     
     
+    if (settings.isProdHistory){
+        // Remove the following tabs: Harvest, Extra
+        tabsProdFattening.splice(10, 1); // remove Extra
+        tabsProdFattening.splice(3, 1); // remove Harvest
+    }
+    
+    
+    
     let elemTabFatProdSummary   = null; 
-    let elemTabFatProdFeed       = null;
+    let elemTabFatProdFeed      = null;
     let elemTabFatFeedBalance   = null;
     let elemTabFatHarvest       = null;
                                 
@@ -171,6 +180,12 @@ export function PageProdFatteningEntry(input_settings){
     let showOptions             = null;
     
     let curTabFat               = null;
+    
+    let isProdHistory           = false;
+    if (settings.isProdHistory && settings.isProdHistory == true){
+        isProdHistory = true;
+    }
+    
     
     this.setDataTabMenus(tabsProdFattening);
     
@@ -217,9 +232,10 @@ export function PageProdFatteningEntry(input_settings){
         this.pigProdSummary    = new ProdFeedSummary({
             navigation:         settings.navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-fat-feed-summary',
+            uniqueKey:          `${settings.uniqueKey}-feed-summary`,
             elemDivContainer:   elemTabFatProdSummary,
-            includeProdSummary: true
+            includeProdSummary: true,
+            isProdHistory:      isProdHistory
         });
         this.pigProdSummary.init();
         
@@ -227,9 +243,10 @@ export function PageProdFatteningEntry(input_settings){
         this.tablePigProdFeed   = new TablePigProdFeed({
             navigation:         settings.navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-fat-feed',
+            uniqueKey:          `${settings.uniqueKey}-feed`,
             elemDivContainer:   elemTabFatProdFeed,
-            parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY
+            parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY,
+            isProdHistory:      isProdHistory
         });
         this.tablePigProdFeed.init();
         
@@ -237,29 +254,38 @@ export function PageProdFatteningEntry(input_settings){
         this.tableFeedBalance   = new TableFeedBalance({
             navigation:         settings.navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-fat-feed-bal',
+            uniqueKey:          `${settings.uniqueKey}-feed-bal`,
             elemDivContainer:   elemTabFatFeedBalance,
-            parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY
+            parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY,
+            isProdHistory:      isProdHistory
         });
         this.tableFeedBalance.init();
 
         
-        this.prodHarvestList    = new ProdHarvestList({
-            navigation:         settings.navigation,
-            parentObj:          this,
-            uniqueKey:          'pig-prod-harvest-list',
-            elemDivContainer:   elemTabFatHarvest,
-            parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY
-        });
-        this.prodHarvestList.init();
+        if (settings.isProdHistory){
+            // No prodHarvestList if isProdHistory; 
+            this.prodHarvestList = null
+        }
+        else{
+            this.prodHarvestList    = new ProdHarvestList({
+                navigation:         settings.navigation,
+                parentObj:          this,
+                uniqueKey:          `${settings.uniqueKey}-harvest-list`,
+                elemDivContainer:   elemTabFatHarvest,
+                parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY,
+                isProdHistory:      isProdHistory
+            });
+            this.prodHarvestList.init();
+        }
         
         
         this.tableMedVac        = new TableMedVac({
             navigation:         settings.navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-fat-medvac',
+            uniqueKey:          `${settings.uniqueKey}-medvac`,
             elemDivContainer:   elemTabFatMedVac,
-            medvacType:         MULTIKEY_OBJ_TYPE.PIG_PROD
+            medvacType:         MULTIKEY_OBJ_TYPE.PIG_PROD,
+            isProdHistory:      isProdHistory
         });
         this.tableMedVac.init();
         
@@ -267,9 +293,10 @@ export function PageProdFatteningEntry(input_settings){
         this.tablePigProdNotes  = new TableNotes({
             navigation:         settings.navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-fat-notes',
+            uniqueKey:          `${settings.uniqueKey}-notes`,
             elemDivContainer:   elemTabFatNotes,
-            notesType:          MULTIKEY_OBJ_TYPE.PIG_PROD
+            notesType:          MULTIKEY_OBJ_TYPE.PIG_PROD,
+            isProdHistory:      isProdHistory
         });
         this.tablePigProdNotes.init();
         
@@ -277,9 +304,10 @@ export function PageProdFatteningEntry(input_settings){
         this.tablePigProdHealth = new TableHealthIssue({
             navigation:         settings.navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-fat-health',
+            uniqueKey:          `${settings.uniqueKey}-health`,
             elemDivContainer:   elemTabFatHealth,
-            healthType:         MULTIKEY_OBJ_TYPE.PIG_PROD
+            healthType:         MULTIKEY_OBJ_TYPE.PIG_PROD,
+            isProdHistory:      isProdHistory
         });
         this.tablePigProdHealth.init();
         
@@ -290,8 +318,9 @@ export function PageProdFatteningEntry(input_settings){
         this.prodEntryBirth    = new ProdEntryBirth({
             navigation:         navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-fat-birth',
-            elemDivContainer:   elemTabFatBirth
+            uniqueKey:          `${settings.uniqueKey}-birth`,
+            elemDivContainer:   elemTabFatBirth,
+            isProdHistory:      isProdHistory
         });
         this.prodEntryBirth.init();
         
@@ -299,8 +328,9 @@ export function PageProdFatteningEntry(input_settings){
         this.prodEntryWean      = new ProdEntryWean({
             navigation:         navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-fat-wean',
-            elemDivContainer:   elemTabFatWean
+            uniqueKey:          `${settings.uniqueKey}-wean`,
+            elemDivContainer:   elemTabFatWean,
+            isProdHistory:      isProdHistory
         });
         this.prodEntryWean.init();
         
@@ -308,8 +338,9 @@ export function PageProdFatteningEntry(input_settings){
         this.prodEntryMating     = new ProdEntryMating({
             navigation:         navigation,
             parentObj:          this,
-            uniqueKey:          'pig-prod-fat-insem',
-            elemDivContainer:   elemTabFatMating
+            uniqueKey:          `${settings.uniqueKey}-insem`,
+            elemDivContainer:   elemTabFatMating,
+            isProdHistory:      isProdHistory
         });
         this.prodEntryMating.init();
         

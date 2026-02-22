@@ -47,7 +47,8 @@ export function TableHealthIssue(input_settings){
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-health',
         elemDivContainer:       elemTabHealth,
-        healthType:             MULTIKEY_OBJ_TYPE.SOW_BOAR
+        healthType:             MULTIKEY_OBJ_TYPE.SOW_BOAR,
+        isProdHistory:          false
     }   
     */  
     let settings                = input_settings;
@@ -78,10 +79,16 @@ export function TableHealthIssue(input_settings){
     
     this.init = function(){
         
-        thisObj.setSettingsTable({
+        const settings_table = {
             uniqueKey:      `${settings.uniqueKey}-table`,
             tableTitle:     'Health Issues'
-        });
+        };
+        if (settings.isProdHistory){
+            settings_table.noAddButton = true;
+        }
+        
+        thisObj.setSettingsTable(settings_table);
+        
         
         const html = thisObj.getHtml();
         elemDivContainer.innerHTML = html;
@@ -265,7 +272,12 @@ export function TableHealthIssue(input_settings){
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
          
-
+        
+        if (settings.isProdHistory){
+            // No Click action;
+            return elem_row;
+        }
+        
         
         // TODO still evaluating if onclick is for row, td or span in td;
         // To avoid un necessary clicks while scrolling. 

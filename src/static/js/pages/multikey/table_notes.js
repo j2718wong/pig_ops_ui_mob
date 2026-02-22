@@ -49,7 +49,8 @@ export function TableNotes(input_settings){
         parentObj:              thisObj,
         uniqueKey:              'sow-boar-notes'
         elemDivContainer:       '<element>',
-        notesType:              MULTIKEY_OBJ_TYPE.SOW_BOAR
+        notesType:              MULTIKEY_OBJ_TYPE.SOW_BOAR,
+        isProdHistory:          false
     }   
     */  
     const settings              = input_settings;
@@ -80,10 +81,15 @@ export function TableNotes(input_settings){
     
     this.init = function(){
         
-        thisObj.setSettingsTable({
+        const settings_table ={
             uniqueKey:      `${settings.uniqueKey}-table`,
             tableTitle:     'Notes'
-        });
+        };
+        if (settings.isProdHistory){
+            settings_table.noAddButton = true;
+        }
+        
+        thisObj.setSettingsTable(settings_table);
         
         const html_table = thisObj.getHtml();
         elemDivContainer.innerHTML = html_table;
@@ -265,7 +271,12 @@ export function TableNotes(input_settings){
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
          
-
+        
+        if (settings.isProdHistory){
+            // No Click action;
+            return elem_row;
+        }
+        
         
         // TODO still evaluating if onclick is for row, td or span in td;
         // To avoid un necessary clicks while scrolling. 

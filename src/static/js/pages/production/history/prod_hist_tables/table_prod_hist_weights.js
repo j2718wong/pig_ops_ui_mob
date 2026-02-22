@@ -163,10 +163,6 @@ export function ProdHistTableWeights(input_settings){
     
     
     this.getHtmlTableRow = function(cur_entry){
-        console.log('\n\ngetHtmlTableRow');
-        console.log(cur_entry);
-        
-        
         const pig_production = cur_entry.pig_production;
         
         const s_pid = `<span>${pig_production.farm_prod_id}</span>`; 

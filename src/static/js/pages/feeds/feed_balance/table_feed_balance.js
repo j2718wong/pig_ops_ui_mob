@@ -40,7 +40,8 @@ export function TableFeedBalance(input_settings){
         parentObj:              thisObj,
         uniqueKey:              'prod-fat-feed-bal'
         elemDivContainer:       '<element>',
-        parentPageId:           PAGE_ID.PROD_FATTENING_ENTRY
+        parentPageId:           PAGE_ID.PROD_FATTENING_ENTRY,
+        isProdHistory:          false
         
     }   
     */  
@@ -70,8 +71,7 @@ export function TableFeedBalance(input_settings){
     
     
     this.init = function(){
-        
-        thisObj.setSettingsTable({
+        const settings_table = {
             uniqueKey:      `${settings.uniqueKey}-table`,
             noSearchAdd:    true,
             tableTitle:     'Feed Balance',
@@ -80,8 +80,14 @@ export function TableFeedBalance(input_settings){
                 label:      'Add Entry',
                 onclickAddEntry: thisObj.onClickAddEntry
             }
-            
-        });
+        };
+        
+        if (settings.isProdHistory){
+            delete settings_table.addEntryLink;
+        }
+        
+        thisObj.setSettingsTable(settings_table);
+        
         
         const html = thisObj.getHtml();
         elemDivContainer.innerHTML = html;
@@ -321,7 +327,13 @@ export function TableFeedBalance(input_settings){
         
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
-         
+        
+        
+        if (settings.isProdHistory){
+            // No Click action;
+            return elem_row;
+        }
+        
         
         const row_entry = thisObj.getEntry(feed_balance.hid);
         

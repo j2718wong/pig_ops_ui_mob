@@ -329,4 +329,9 @@ export function ProdHistTableAll(input_settings){
     }
     
     
+    this.searchEntries = function(key){
+        const result = [];
+        
+        return result;
+    }
 } 

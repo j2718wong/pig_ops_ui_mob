@@ -577,6 +577,12 @@ export function Navigation(){
         uniqueKey:              'prod-history-list'
     });
     
+    this.pageProdHistoryEntry   = new PageProdFatteningEntry({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContFatteningEntry,
+        uniqueKey:              'prod-history-entry',
+        isProdHistory:          true
+    });
     
     
     this.pageAccPigOpsList      = new PageAccPigOpsList({
@@ -647,7 +653,7 @@ export function Navigation(){
         
         
         this.pageProdHistoryList.init();
-        
+        //this.pageProdHistoryEntry.init();
         
         
         this.pageAccPigOpsList.init();

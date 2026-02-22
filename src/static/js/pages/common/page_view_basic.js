@@ -222,4 +222,56 @@ export function PageViewPigFarmPage(){
     
     }
     
+    
+    // Will search searchable string in data_pig_prod;
+    // If found, return true; else return false
+    this.searchStrInPigProdEntry = function(data_pig_prod, key){
+        const s_pid = `${data_pig_prod.pig_production.farm_prod_id}`;
+            
+        let sow_name = data_pig_prod.sow.name;
+        if (sow_name == null) {sow_name = data_pig_prod.sow.number;}
+        
+        let u_sow_name = sow_name.toUpperCase();
+            
+        
+        const insemination = data_pig_prod.insemination;
+        
+        let boar_name = '';
+        switch (insemination.insem_type){
+            case 'B':{
+                boar_name = insemination.boar.name;
+                if (boar_name == null){
+                    boar_name = insemination.boar.number;
+                }
+                break;
+            }
+            
+            case 'AI_X':{
+                boar_name = insemination.ai.semen_supplier.semen.name;
+                break;
+            }
+            
+            case 'AI_N':{
+                const internal_boar = insemination.ai.internal_boar;
+                
+                boar_name = internal_boar.name;
+                if (boar_name == null){
+                    boar_name = internal_boar.number;
+                }
+
+                break;
+            }
+            
+        }
+        
+        let u_boar_name = boar_name.toUpperCase();
+        
+        
+        if (s_pid.startsWith(key)){return true;} 
+        if (u_sow_name.startsWith(key)){return true;} 
+        if (u_boar_name.startsWith(key)){return true;} 
+        
+        return false;
+    }
+    
 }

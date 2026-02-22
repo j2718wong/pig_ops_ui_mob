@@ -109,7 +109,8 @@ export function PageTableBasic(){
     settings = {
         uniqueKey:      `parent-trace-sow-boar-table`,
         noHeader:       false,
-        noSearchAdd:    true,
+        noSearchAdd:    false,
+        noAddButton:    true,
         noControlsBar:  false,
         itemsPerPage:   20,
         tableTitle:     'Sow List',
@@ -161,7 +162,7 @@ export function PageTableBasic(){
         
         elemIdTableContent      = `${settings.uniqueKey}-table-content`;
 
-        let htm_header = `
+        let html_header = `
         <h2>
             <span class="nav-title blue" id="${elemIdTableEntryCount}">8</span>
             <span class="nav-title blue" id="${elemIdTableTitle}">${settings.tableTitle}</span>
@@ -169,9 +170,21 @@ export function PageTableBasic(){
         `;
         
         if (settings.noHeader){
-            htm_header = '';
+            html_header = '';
         }
         
+        
+        let html_add_button = `
+            <button class="btn-add-entry" id="${elemIdAddEntryBtn}">
+                <i class="fas fa-plus"></i>
+                Add Entry
+            </button>
+        `;
+        
+        if (settings.noAddButton){
+            html_add_button = '';
+        }
+         
         
         
         let html_search_add     = `
@@ -180,10 +193,7 @@ export function PageTableBasic(){
                 <i class="fas fa-search search-icon"></i>
                 <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Search">
             </div>
-            <button class="btn-add-entry" id="${elemIdAddEntryBtn}">
-                <i class="fas fa-plus"></i>
-                Add Entry
-            </button>
+            ${html_add_button}
         </div>
         `;
         
@@ -241,7 +251,7 @@ export function PageTableBasic(){
         
 <div class="mobile-container" id="${elemIdTableContainer}">
 
-    ${htm_header}
+    ${html_header}
     
     
     <div class="mobile-info-box hidden" >
@@ -326,7 +336,7 @@ export function PageTableBasic(){
     
     this._bindEventListeners = function(){
         
-        if ('noSearchAdd' in settings){}
+        if (settings.noSearchAdd){}
         else{
             elemSearchInput.addEventListener('input', function() {
                 const search_term = this.value.toUpperCase().trim();
@@ -335,7 +345,7 @@ export function PageTableBasic(){
             });
         }
         
-        if ('addEntryLink' in settings){
+        if (settings.addEntryLink){
             elemAddTextLink.addEventListener('click', function() {
                 settings.addEntryLink.onclickAddEntry();
             });
@@ -360,11 +370,14 @@ export function PageTableBasic(){
     
     
     this.setOnClickAddEntry = function(callback){
-        if ('noSearchAdd' in settings){}
+        if (settings.noSearchAdd){}
         else{
-            elemAddEntryBtn.addEventListener('click', function() {
-                callback();
-            });
+            if (settings.noAddButton){}
+            else{
+                elemAddEntryBtn.addEventListener('click', function() {
+                    callback();
+                });
+            }
         }
     }
     

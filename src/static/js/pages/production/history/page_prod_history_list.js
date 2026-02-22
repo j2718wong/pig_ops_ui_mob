@@ -279,8 +279,8 @@ ${html_style}
                 <div class="animal-filter">
                     <div class="filter-buttons sow">
                         <button class="filter-button active" data-filter="all">All</button>
-                        <button class="filter-button" data-filter="weights">Weights</button>
-                        
+                        <button class="filter-button" data-filter="weights">Weight</button>
+                        <button class="filter-button" data-filter="harvests">Harvest</button>
                     </div>
                     
                     
@@ -407,7 +407,7 @@ ${html_style}
         
         elemSearchInput.addEventListener('input', function() {
             const search_term = this.value.toUpperCase().trim();
-            thisObj.searchSowBoar(search_term);
+            thisObj.searchProdHist(search_term);
             
         });
         
@@ -495,15 +495,15 @@ ${html_style}
     }
     
     
-    this.getSowBoarReference = function(sow_boar){
+    this.getSowBoarReference = function(pig_prod){
         let sow_reference = '';
         
         // The Sow Boar name and number are shown together.
-        if (sow_boar.name  && sow_boar.name.length >0 ){
-            sow_reference = `<span class="sow-boar-name">${sow_boar.name}</span>`;
+        if (pig_prod.name  && pig_prod.name.length >0 ){
+            sow_reference = `<span class="sow-boar-name">${pig_prod.name}</span>`;
         }
         else{
-            sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
+            sow_reference = `<span class="sow-boar-name">${pig_prod.number}</span>`;
         }
         
         return sow_reference;
@@ -564,110 +564,37 @@ ${html_style}
     this.searchProdHist = function(key){
         let cur_list;
         
-        switch (showOptions.sow_boar_type){
-            case SOW_BOAR_TYPE.SOW:{
-                cur_list = curDataListView;
-                
-                if (key.length == 0){
-                    if (curDataFilter != 'output') {
-                        thisObj.renderSowTable(cur_list);
-                    }
-                    else{
-
-                        cur_list = dataProdHistoryList;
-                        thisObj.renderSowOutputTable(cur_list);
-                    }
-                    return;
-                }
-                
-                break;
-            }
-            
-            case SOW_BOAR_TYPE.BOAR:{
-                cur_list = dataBoarList;
-                
-                if (key.length == 0){
-                    thisObj.renderBoarTable(cur_list);
-                    return;
-                }
-                
-                break;
-            }
-            
-            case SOW_BOAR_TYPE.GILT:{
-                cur_list = dataGiltList;
-                
-                if (key.length == 0){
-                    thisObj.renderGiltTable(cur_list);
-                    return;
-                }
-                
-                break;
-            }
-            
-            default:{
-                cur_list = dataDisposedList;
-                
-                if (key.length == 0){
-                    return;
-                }
-                
-                break;
-            }
-            
-        }
-        
-        
-        
-        
-        
-        
-        let upper_key = key.toUpperCase();
-        
-        let filtered = [];
-        
-        for (const cur_entry of cur_list){
-            const sow_boar_name = cur_entry.sow_boar.name; 
-            
-            if (sow_boar_name && sow_boar_name.toUpperCase().startsWith(upper_key)){
-                filtered.push(cur_entry)
-            }
-            else{
-                const sow_boar_number = cur_entry.sow_boar.number; 
-                
-                if (sow_boar_number && sow_boar_number.toUpperCase().startsWith(upper_key)){
-                    filtered.push(cur_entry)
-                }
-            }
-        }
-        
-        
-        switch (showOptions.sow_boar_type){
-            case SOW_BOAR_TYPE.SOW:{
-                if (curDataFilter != 'output') {
-                    thisObj.renderSowTable(filtered);
-                }
-                else{
-                    thisObj.renderSowOutputTable(filtered);
-                }
-                return;
-            }
-            case SOW_BOAR_TYPE.BOAR:{
-                thisObj.renderBoarTable(filtered);
-                return;
-            }
-            case SOW_BOAR_TYPE.GILT:{
-                thisObj.renderGiltTable(filtered);
-                return;
-            }
-            
-            default:{
-                    return;
-            }
-            
+        if (key.length == 0){
+            thisObj.renderTableFilteredData(dataProdHistList);
+            return;
         }
 
         
+        const filtered = [];
+        
+        for (const cur_entry of dataProdHistList){
+            if (thisObj.searchStrInPigProdEntry(cur_entry, key)){
+                filtered.push(cur_entry);
+            }
+        }
+        
+        thisObj.renderTableFilteredData(filtered);
+    }
+    
+    
+    this.renderTableFilteredData = function(filtered_data){
+        switch(curDataFilter){
+            case 'all': {
+                tableProdHistAll.renderTable(filtered_data)
+                break;
+            }
+            
+            case 'weights': {
+                tableProdHistWeights.renderTable(filtered_data)
+            }
+
+        }
+
     }
     
     
@@ -683,84 +610,38 @@ ${html_style}
     }
          
          
-    this.onClickProdHistEntry = function(sow_boar_hid, pig_prod_id, tab_id, sow_boar_type){
-        if (sow_boar_hid == null){
-            // Go back to this page
-            const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
-            navigation.showThisPage(page_container);
-            return;
-        }
-    
-        if (pig_prod_id){
-            navigation.onClickProdGestatingEntry(pig_prod_id);
-            return;
-        }
-    
-        let cur_sow_boar_list = null;
-        
-        if (sow_boar_type){}
-        else{
-            // use showOptions.sow_boar_type if sow_boar_type is not specified
-            sow_boar_type = showOptions.sow_boar_type;
-        }
-        
-        switch (sow_boar_type){
-            case SOW_BOAR_TYPE.SOW:  {cur_sow_boar_list = dataProdHistoryList; break;}
-            case SOW_BOAR_TYPE.BOAR: {cur_sow_boar_list = dataBoarList; break;}
-            case SOW_BOAR_TYPE.GILT: {cur_sow_boar_list = dataGiltList; break;}
-            
-            case SOW_BOAR_TYPE.DISPOSED: {cur_sow_boar_list = dataDisposedList; break;}
-        }
-        
-        this.gotoProdHistEntryPage(cur_sow_boar_list, sow_boar_hid, 
-            sow_boar_type, tab_id); 
-    }
-        
-        
-    this.gotoProdHistEntryPage = function(sow_boar_list, sow_boar_hid, 
-            sow_boar_type, tab_id){
-        
-        let prev_sow_boar_hid = null;
-        let next_sow_boar_hid = null;
+    this.onClickProdHistEntry = function(pig_prod_hid){
+        let prev_pig_prod_hid = null;
+        let next_pig_prod_hid = null;
         
         let index;
         let cur_entry   = null;
         let prev_entry  = null;
         let next_entry  = null;
         
-        if (sow_boar_list == null){
-            sow_boar_list = navigation.pigFarm.managerSowBoar.dataProdHistoryList;
-            sow_boar_type = SOW_BOAR_TYPE.SOW;
-            
-            
-            // Use default show options
-            showOptions = {
-                sow_boar_type: sow_boar_type
-            }
-        }
+        const pig_prod_list = dataProdHistList;
         
-        for (index = 0; index< sow_boar_list.length; index++){
-            cur_entry = sow_boar_list[index];
+        for (index = 0; index< pig_prod_list.length; index++){
+            cur_entry = pig_prod_list[index];
             
-            if (cur_entry.sow_boar.hid == sow_boar_hid){
+            if (cur_entry.pig_production.hid == pig_prod_hid){
         
                 if ((index-1) >=0){
-                    prev_entry = sow_boar_list[index-1];
-                    prev_sow_boar_hid = prev_entry.sow_boar.hid;
+                    prev_entry = pig_prod_list[index-1];
+                    prev_pig_prod_hid = prev_entry.pig_production.hid;
                 }
                 
-                if ((index+1) < sow_boar_list.length){
-                    next_entry = sow_boar_list[index+1];
-                    next_sow_boar_hid = next_entry.sow_boar.hid;
+                if ((index+1) < pig_prod_list.length){
+                    next_entry = pig_prod_list[index+1];
+                    next_pig_prod_hid = next_entry.pig_production.hid;
                 }
                 
                 const options = {
-                    sow_boar_type:      sow_boar_type,
-                    prev_sow_boar_hid:  prev_sow_boar_hid,
-                    next_sow_boar_hid:  next_sow_boar_hid,
-                    sow_boar_list:      sow_boar_list,
+                    prev_pig_prod_hid:  prev_pig_prod_hid,
+                    next_pig_prod_hid:  next_pig_prod_hid,
+                    pig_prod_list:      pig_prod_list,
                     data_index:         index+1,
-                    total_entries:      sow_boar_list.length
+                    total_entries:      pig_prod_list.length
                 };
                 
                 if (tab_id){
@@ -780,6 +661,8 @@ ${html_style}
         const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
         navigation.showThisPage(next_page)
 
+        
+        
     }
-
+        
 }
