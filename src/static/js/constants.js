@@ -13,7 +13,17 @@ const APPLICATION = {
     
     
     DEFAULT_NUM_DAYS_WEAN:          45
-}
+};
+
+
+const ACC_USER_GROUP = {
+    ADMIN:                  1,     
+    MANAGEMENT:             2,
+    OPERATIONS:             3,
+    FARM_STAFF:             4
+};
+
+
 
 
 const PAGE_ID = {
@@ -195,6 +205,8 @@ const REQUEST_ERROR_NUM ={
 
 export {
     APPLICATION,
+    ACC_USER_GROUP,
+    
     PAGE_ID,
     
     SOW_BOAR_TYPE,

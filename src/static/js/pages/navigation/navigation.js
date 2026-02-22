@@ -61,6 +61,7 @@ import {PageProdHarvestAddEdit}     from '../production/harvest/page_prod_harves
 
 import {PageProdHistoryList}        from '../production/history/page_prod_history_list.js';
 
+import {PageProdSalesEntry}         from '../financials/prod_sales/page_prod_sales_entry.js';
 
 
 import {PageAccPigOpsList}          from '../acc_pig_ops/page_acc_pig_ops_list.js';
@@ -86,7 +87,6 @@ function UserControl(_navigation) {
     let elemMobileUserRole              = null;
     
     
-    let dataUserAccount             = null;
     
     let userCurrentFarmHid          = null;
     let userCurrentLanguage         = null;
@@ -95,6 +95,11 @@ function UserControl(_navigation) {
     let userIsEnabled               = true;
     let userAccountIsEnabled        = true;
     let userAccounthasOverdueBill   = false;
+    
+    
+    this.dataUserAccount            = null;
+    
+    
     
     this.init = function(){
         this.afterHtmlRender();
@@ -136,11 +141,11 @@ function UserControl(_navigation) {
     
     
     this.setDataUserAccount = function(data){
-        dataUserAccount     = data;
+        this.dataUserAccount= data;
         
 
-        const user          = dataUserAccount.user.user;
-        const user_pig_farms= dataUserAccount.user.pig_farms; 
+        const user          = this.dataUserAccount.user.user;
+        const user_pig_farms= this.dataUserAccount.user.pig_farms; 
         
         userCurrentFarmHid  = user_pig_farms[0]; // default to first pig farm
 
@@ -164,21 +169,21 @@ function UserControl(_navigation) {
     
     
     this.getUserHid = function(){
-        if (dataUserAccount == null){return null;}
+        if (thisObj.dataUserAccount == null){return null;}
         
-        return dataUserAccount.user.user.hid;
+        return thisObj.dataUserAccount.user.user.hid;
     }
     
     
     this.getUserAccountHid = function(){
-        if (dataUserAccount == null){return null;}
+        if (thisObj.dataUserAccount == null){return null;}
         
-        return dataUserAccount.account.account.hid;
+        return thisObj.dataUserAccount.account.account.hid;
     }
 
 
     this.getCurrentFarm = function(){
-        const account_farms = dataUserAccount.account.pig_farms;
+        const account_farms = thisObj.dataUserAccount.account.pig_farms;
 
         for (const cur_entry of account_farms){
             if (cur_entry.pig_farm.hid == userCurrentFarmHid){
@@ -599,6 +604,15 @@ export function Navigation(){
     });
     
     
+    this.pageProdSalesEntry   = new PageProdSalesEntry({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdSalesEntry,
+        uniqueKey:              'prod-sales-entry',
+        isProdHistory:          true
+    });
+    
+    
+    
     
     this.pageAccPigOpsList      = new PageAccPigOpsList({
         navigation:             this,
@@ -672,6 +686,8 @@ export function Navigation(){
         
         
         this.pageProdSalesList.init();
+        this.pageProdSalesEntry.init();
+        
         
         this.pageAccPigOpsList.init();
         this.pageAccPigOpsAddEdit.init();
@@ -998,6 +1014,7 @@ export function Navigation(){
             }
              
             case PAGE_ID.PROD_SALES_ENTRY: {
+                return elemPageContProdSalesEntry;
                 break;
             }
             
@@ -1209,11 +1226,6 @@ export function Navigation(){
             
             
             
-            
-            case 'pig-harvest':{
-                thisObj._onClickNavPigHarvest(is_mobile);
-                break;
-            }
             
             case 'reports':{
                 thisObj._onClickNavReports(is_mobile);

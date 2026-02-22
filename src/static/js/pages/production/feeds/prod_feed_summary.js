@@ -369,9 +369,9 @@ export function ProdFeedSummary(input_settings){
                 elemTdGiltBoarSold.innerHTML    = `${num_gilt_boar_sold}`;
                 
                 
-                if (settings.showFinancial) {
-                    elemTdTotalSales.innerHTML  = `${s_total_sales}`;
-                }
+
+                elemTdTotalSales.innerHTML  = `${s_total_sales}`;
+
             }
             
             
@@ -391,25 +391,20 @@ export function ProdFeedSummary(input_settings){
             
             const s_feeds_cost = parentObj.moneyFormatter.format(feeds_cost);
             
-            if (settings.showFinancial) {
-                elemTdFeedsCost.innerHTML = s_feeds_cost;
-            
-                if (total_sales > 0){
-                    const gross_profit      = total_sales - feeds_cost;
-                    const gross_profit_pp   = gross_profit/  num_pigs_sold;
-                    
-                    const s_gross_profit    = parentObj.moneyFormatter.format(gross_profit);
-                    const s_gross_profit_pp = parentObj.moneyFormatter.format(gross_profit_pp);
-                    
-                    elemIdTdGrossProfit.innerHTML   = s_gross_profit; 
-                    elemIdTdGrossProfitPP.innerHTML = s_gross_profit_pp;
-                }
+
+            elemTdFeedsCost.innerHTML = s_feeds_cost;
+        
+            if (total_sales > 0){
+                const gross_profit      = total_sales - feeds_cost;
+                const gross_profit_pp   = gross_profit/  num_pigs_sold;
                 
-                else{
-                    elemIdTdGrossProfit.innerHTML   = '0.0'; 
-                    elemIdTdGrossProfitPP.innerHTML = '0.0';
-                }
-            } 
+                const s_gross_profit    = parentObj.moneyFormatter.format(gross_profit);
+                const s_gross_profit_pp = parentObj.moneyFormatter.format(gross_profit_pp);
+                
+                elemTdGrossProfit.innerHTML   = s_gross_profit; 
+                elemTdGrossProfitPP.innerHTML = s_gross_profit_pp;
+            }
+
         }
         
         
@@ -664,11 +659,22 @@ export function ProdFeedSummary(input_settings){
                 
         `;
         
-        if (settings.showFinancial){}
-        else{
-            html_financial = '';
-        }
         
+        
+        let show_financial = 0;
+        
+        /* not working
+        // Get user.acc_group_num
+        const cur_user = navigation.userControl.dataUserAccount.user;
+        const user_group_num = cur_user.user_group.group_num;
+        
+        if (user_roup_num == ACC_USER_GROUP.ADMIN || 
+            user_roup_num == ACC_USER_GROUP.MANAGEMENT){
+            show_financial = 1;
+        } 
+        
+        if (show_financial == 0){html_financial = '';}
+        */
         
         const html = `
         <h2>

@@ -690,6 +690,9 @@ export function PageProdHistoryList(input_settings){
                 }
                 
                 if (settings.isProdSalesHistory){
+                    navigation.pageProdHistoryEntry.show(cur_entry, options);
+                    const page_container = navigation.getPageContainer(PAGE_ID.PROD_SALES_ENTRY);
+                    navigation.showThisPage(page_container);
                 }
                 else{
                     navigation.pageProdHistoryEntry.show(cur_entry, options);

@@ -298,7 +298,7 @@ export function ProdGrossSalesTable(input_settings){
         let index = 0
         for (const cur_td of elem_tds){
         
-            // Clicking on sow_name should goto SowBoarEntry
+
             if (index == 0 || index== 1) {
                 cur_td.onclick = function(){
                     parentObj.onClickProdHistEntry(pid);

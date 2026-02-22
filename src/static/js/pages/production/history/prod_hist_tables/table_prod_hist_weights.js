@@ -339,7 +339,8 @@ export function ProdHistTableWeights(input_settings){
     
     
     this.getElemTableRow = function(cur_entry){
-        const sow_boar = cur_entry.sow_boar;
+        const pig_prod  = cur_entry.pig_production;
+        const pid       = pig_prod.farm_prod_id; 
         
         const elem_row = document.createElement('tr');
         
@@ -356,25 +357,12 @@ export function ProdHistTableWeights(input_settings){
         for (const cur_td of elem_tds){
         
             // Clicking on sow_name should goto SowBoarEntry
-            if (index == 0) {
+            if (index == 0 || index == 1) {
                 cur_td.onclick = function(){
-                    parentObj.onClickSowBoarEntry(sow_boar.hid);
+                    parentObj.onClickProdHistEntry(pid);
                 }
             }
             
-            
-            if (index == 1){
-            
-                
-            
-            }
-            
-            
-            
-            if (index == 3){
-            }
-        
-        
         
             index += 1;
         }

@@ -375,20 +375,39 @@ export function PageProdFatteningEntry(input_settings){
             curTabFat = showOptions.tab_lacta;
         }
         
+        
+        let is_to_request_details = 0;
+        
+        
         // Request pig_prod data details if there is none yet
         if ('data_details' in data_pig_prod){
             thisObj.switchTab(curTabFat);
+            
+            // Prod History List will only include the list_harvest data during 
+            // list request. Other details need to be requested.
+            
+            if (data_pig_prod.list_prod_feed){}
+            else{
+                is_to_request_details = 1;
+            }
         }
         else{
+            is_to_request_details = 1;
+        }
+        
+        
+        if (is_to_request_details > 0) {
             const callback_success = function(){
                 thisObj.switchTab(curTabFat);
             }
             navigation.pigFarm.managerPigProd.requestPigProdDetails(
                 dataPigProd, callback_success);
         }
+        else{
+            thisObj.switchTab(curTabFat);
+        }
         
         
-    
         
     }
     
