@@ -60,6 +60,8 @@ import {PageFeedBalanceAddEdit}     from '../feeds/feed_balance/page_feed_balanc
 import {PageProdHarvestAddEdit}     from '../production/harvest/page_prod_harvest_add_edit.js';
 
 import {PageProdHistoryList}        from '../production/history/page_prod_history_list.js';
+import {PageProdNotPregnantList}    from '../production/history/page_prod_not_pregnant_list.js';
+
 
 import {PageProdSalesEntry}         from '../financials/prod_sales/page_prod_sales_entry.js';
 
@@ -283,6 +285,8 @@ export function Navigation(){
     const elemIdContProdHistoryList     = 'container-prod-history-list';
     const elemIdContProdHistoryEntry    = 'container-prod-history-entry';
     
+    const elemIdContProdNotPregnantList = 'container-prod-not-pregnant-list';
+    
     
     const elemIdContFarmFeedBuyList     = 'container-farm-feed-buy-list';
     const elemIdContFarmFeedBuyAddEdit  = 'container-farm-feed-buy-add-edit';
@@ -358,6 +362,8 @@ export function Navigation(){
     
     let elemPageContProdHistoryList     = null;
     let elemPageContProdHistoryEntry    = null;
+    let elemPageContProdNotPregnantList = null;
+    
     
     let elemPageContProdSalesList       = null;
     let elemPageContProdSalesEntry      = null;
@@ -596,6 +602,13 @@ export function Navigation(){
     });
     
     
+    this.pageNotPregnantList    = new PageProdNotPregnantList({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContProdNotPregnantList,
+        uniqueKey:              'prod-not-pregnant'
+    });
+    
+    
     this.pageProdSalesList    = new PageProdHistoryList({
         navigation:             this,
         elemIdDivContainer:     elemIdContProdSalesList,
@@ -683,7 +696,7 @@ export function Navigation(){
         
         this.pageProdHistoryList.init();
         this.pageProdHistoryEntry.init();
-        
+        this.pageNotPregnantList.init();
         
         this.pageProdSalesList.init();
         this.pageProdSalesEntry.init();
@@ -764,7 +777,9 @@ export function Navigation(){
         
         elemPageContProdHistoryList     = document.getElementById(elemIdContProdHistoryList);
         elemPageContProdHistoryEntry    = document.getElementById(elemIdContProdHistoryEntry);
-    
+        
+        elemPageContProdNotPregnantList = document.getElementById(elemIdContProdNotPregnantList);
+        
         
         elemPageContProdSalesList       = document.getElementById(elemIdContProdSalesList);
         elemPageContProdSalesEntry      = document.getElementById(elemIdContProdSalesEntry);
@@ -1007,6 +1022,10 @@ export function Navigation(){
                 return elemPageContProdHistoryEntry;
             }
             
+            case PAGE_ID.PROD_NOT_PREGNANT_LIST: {
+                return elemIdContProdNotPregnantList;
+            }
+            
             
             case PAGE_ID.PROD_SALES_LIST: {
                 return elemPageContProdSalesList;
@@ -1188,6 +1207,12 @@ export function Navigation(){
             
             case 'prod-history':{
                 thisObj._onClickNavProdHistory(is_mobile);
+                break;
+            }
+            
+            case 'prod-not-pregnant':{
+                thisObj._onClickNavProdNotPregnant(is_mobile);
+                break;
             }
             
             case 'prod-feeds':{
@@ -1394,6 +1419,12 @@ export function Navigation(){
     this._onClickNavProdHistory = function(is_mobile){
         thisObj.showThisPage(elemPageContProdHistoryList);
         thisObj.pageProdHistoryList.show();
+    }
+    
+    
+    this._onClickNavProdNotPregnant = function(is_mobile){
+        thisObj.showThisPage(elemPageContProdNotPregnantList);
+        thisObj.pageNotPregnantList.show();
     }
     
         

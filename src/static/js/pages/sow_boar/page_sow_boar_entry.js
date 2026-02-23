@@ -704,6 +704,13 @@ export function PageSowBoarEntry(input_settings){
             }
             thisObj.beforeShowTab(show_tab_id);
             
+            /*
+            const rt_updates_enabled = navigation.dataCompanyApp.rt_updates_enabled;
+            
+            if (rt_updates_enabled == 0){
+                
+            }*/
+            
         }
         else{
             const callback_success = function(){

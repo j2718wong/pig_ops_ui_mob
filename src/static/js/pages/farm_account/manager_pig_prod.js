@@ -27,6 +27,9 @@ export function ManagerPigProd(input_settings){
     
     this.dataProdHistoryList    = null;
     
+    this.dataNotPregnantList    = null;
+    
+    
     
     this.setDataPigProdList = function(data){
         thisObj.dataGestatingList   = [];
@@ -167,6 +170,56 @@ export function ManagerPigProd(input_settings){
         });
         
     }
+    
+    
+    this.requestPigProdNotPregnantList = function(callback_success, 
+            elem_show_error){
+        
+        
+        const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
+        
+        const is_mob_view = 1; // TODO for desktop view
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/pig_prod/not_pregnant?pfhid=${cur_pig_farm_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataNotPregnantList = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+    
     
     
     

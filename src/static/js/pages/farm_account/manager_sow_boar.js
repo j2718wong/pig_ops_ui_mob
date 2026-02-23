@@ -141,6 +141,51 @@ export function ManagerSowBoar(input_settings){
     }
     
     
+    this.requestSowBoarDataVerNum = function(data_sow_boar, callback_success, 
+            elem_show_error){
+        
+        const sow_boar_hid = data_sow_boar.sow_boar.hid;
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/sow_boar/data_ver_num?sow_boar_hid=${sow_boar_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                
+                if (response.result.num == 0){
+                    
+                   
+                }    
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
     // This is a request to get sow_boar details that returns tables.
     this.requestSowBoarDetails = function(data_sow_boar, callback_success, 
             elem_show_error){
