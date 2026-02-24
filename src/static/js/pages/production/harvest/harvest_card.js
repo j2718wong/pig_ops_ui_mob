@@ -97,6 +97,9 @@ export function HarvestCard(input_settings){
     
     
     this.getHtmlSaleLiveOrSlaughterPigs = function(data_harvest){
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        
         const prod_harvest      = data_harvest.prod_harvest;
         const date_harvest      = prod_harvest.date_harvest;
         const dt_harvest        = new Date(date_harvest);
@@ -128,7 +131,7 @@ export function HarvestCard(input_settings){
             harvest_tag         = 'LIVE PIGS';
             live_weight         = prod_harvest.live_weight.weight;
             live_weight_ave     = prod_harvest.live_weight.average;
-            live_weight_unit    = 'kg'; // TODO for non kg
+            live_weight_unit    = weight_unit; 
             
             per_pig_weight_csv  = prod_harvest.live_weight.pp_csv;
         }
@@ -137,7 +140,7 @@ export function HarvestCard(input_settings){
         if (prod_harvest.slaughter_weight && prod_harvest.slaughter_weight.weight){
             slaughter_weight     = prod_harvest.slaughter_weight.weight;
             slaughter_weight_ave = prod_harvest.slaughter_weight.average;
-            slaughter_weight_unit= 'kg';
+            slaughter_weight_unit= weight_unit;
             
             net_weight          = prod_harvest.slaughter_weight.net_weight;
             
@@ -169,7 +172,7 @@ export function HarvestCard(input_settings){
         let s_pp_weight = '';
         if (per_pig_weight_csv) {
             const csv = per_pig_weight_csv.replaceAll(",", ", ");
-            s_pp_weight = `Per Pig:  ${csv} kg`;
+            s_pp_weight = `Per Pig:  ${csv} ${weight_unit}`;
         }
         
         
@@ -267,10 +270,10 @@ export function HarvestCard(input_settings){
             <div class="weight-panel">
                 <div class="weight-row">
                     <span class="weight-label">Net weight</span>
-                    <span class="weight-figure">${net_weight} kg</span>
+                    <span class="weight-figure">${net_weight} ${weight_unit}</span>
                 </div>
                 <div class="weight-row">
-                    <span class="weight-label">Price/kg</span>
+                    <span class="weight-label">Price/${weight_unit}</span>
                     <span class="weight-figure">${s_price_per_unit_wt}</span>
                 </div>
                 <div class="per-pig-list">
@@ -311,6 +314,9 @@ export function HarvestCard(input_settings){
     
     
     this.getHtmlSaleGiltBoar = function(data_harvest){
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        
         const prod_harvest      = data_harvest.prod_harvest;
         const date_harvest      = prod_harvest.date_harvest;
         const dt_harvest        = new Date(date_harvest);
@@ -357,7 +363,7 @@ export function HarvestCard(input_settings){
         if (prod_harvest.live_weight && prod_harvest.live_weight.weight){
             live_weight         = prod_harvest.live_weight.weight;
             live_weight_ave     = prod_harvest.live_weight.average;
-            live_weight_unit    = 'kg'; // TODO for non kg
+            live_weight_unit    = weight_unit;
             
             per_pig_weight_csv  = prod_harvest.live_weight.pp_csv;
         }
@@ -456,7 +462,7 @@ export function HarvestCard(input_settings){
             <div class="info-row">
                 <div class="info-item">
                     <span class="label">AVE LIVE</span>
-                    <span class="value">${live_weight_ave}<span class="unit">kg</span></span>
+                    <span class="value">${live_weight_ave}<span class="unit">${weight_unit}</span></span>
                 </div>
                 <div class="info-item">
                     <span class="label">TYPE</span>

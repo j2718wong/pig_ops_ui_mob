@@ -438,7 +438,7 @@ export function ProdEntryMating(input_settings){
     }
     
     
-    this.show = function(data_pig_prod, options){
+    this.beforeShow = function(data_pig_prod, options){
         thisObj._resetForm();
         
         curDataPigProd = data_pig_prod;

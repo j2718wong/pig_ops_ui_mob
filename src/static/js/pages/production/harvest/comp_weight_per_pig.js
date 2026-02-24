@@ -12,6 +12,7 @@ export function ComponentWeightPerPig(input_settings){
     
     /* Typical settings
     settings = {
+        navigation:             navigation,
         uniqueKey:              '',
         elemDivContainer:       elemDivContainer,
     
@@ -24,19 +25,22 @@ export function ComponentWeightPerPig(input_settings){
     
     */
     const thisObj               = this;
+    const navigation            = input_settings.navigation;
+    
     const settings              = input_settings;
 
     const elemDivContainer      = settings.elemDivContainer;
 
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
-
+    const elemIdWeightUnit      = `${settings.uniqueKey}-weight-unit`;
 
     const elemIdText            = `${settings.uniqueKey}-text`;
-    
     const elemIdEntryAdd        = `${settings.uniqueKey}-entry-add`;
         
    
-   
+    let elemUiShow              = null;    
+    let elemWeightUnit          = null;
+    
     let elemText                = null;
     let elemEntryAdd            = null;
     
@@ -51,6 +55,12 @@ export function ComponentWeightPerPig(input_settings){
     
     
     this.getHtml = function(){
+        // At this point, acc_settings_ops is not yet available.
+        // Temporary set to default; will be updated later 
+        // when account data is set. 
+        const weight_unit       = 'kg';
+        
+    
         let is_required = false;
         
         if ('isRequired' in settings){
@@ -75,15 +85,10 @@ export function ComponentWeightPerPig(input_settings){
             
         
             <label for="${elemIdText}" class="form-label">
-                ${settings.labelText}, kg
+                ${settings.labelText}, <span id="${elemIdWeightUnit}">${weight_unit}</span>
             </label>
             
             <div class="input-group">
-                <!--
-                <select class="form-select" id="">
-                </select>
-                -->
-                
                 <input  type="text" 
                     class="form-control" 
                     id="${elemIdText}" 
@@ -108,16 +113,17 @@ export function ComponentWeightPerPig(input_settings){
     
     
     this._findElements = function(){
-        thisObj.elemUiShow      = elemDivContainer.querySelector('#'+elemIdUiShow);
         
-       
+        elemUiShow              = elemDivContainer.querySelector('#'+elemIdUiShow);
+        elemWeightUnit          = elemDivContainer.querySelector('#'+elemIdWeightUnit);
+        
         elemText                = elemDivContainer.querySelector('#'+elemIdText);
-        
         elemEntryAdd            = elemDivContainer.querySelector('#'+elemIdEntryAdd);
         
-        elemListContainer       = thisObj.elemUiShow.querySelector('.weight-list');
+        elemListContainer       = elemUiShow.querySelector('.weight-list');
         elemEmptyMsg            = elemListContainer.querySelector('.weight-list-empty-msg');
         
+        thisObj.elemUiShow      = elemUiShow;
     }
     
     
@@ -148,6 +154,15 @@ export function ComponentWeightPerPig(input_settings){
 
     
     this.reset = function(){
+        // Need to update weight_unit, since this is not yet correctly set at 
+        // object instance.
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        
+        
+        
+        
+        
         const items = elemListContainer.querySelectorAll('.weight-badge');
         for (const cur_entry of items){
             cur_entry.remove();

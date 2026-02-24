@@ -558,7 +558,7 @@ export function PageProdFatteningEntry(input_settings){
                 // Set Wean tab
                 const options_wean ={
                 }
-                thisObj.prodEntryWean.show(dataPigProd, options_wean);
+                thisObj.prodEntryWean.beforeShow(dataPigProd, options_wean);
                 
                 
                 curTabFat = thisObj.TAB_FAT_WEAN;
@@ -570,7 +570,7 @@ export function PageProdFatteningEntry(input_settings){
                 const options_birth ={
                     is_read_only: true
                 }
-                thisObj.prodEntryBirth.show(dataPigProd, options_birth);
+                thisObj.prodEntryBirth.beforeShow(dataPigProd, options_birth);
                 
                 curTabFat = thisObj.TAB_FAT_BIRTH;
                 break;
@@ -581,7 +581,7 @@ export function PageProdFatteningEntry(input_settings){
                 const options_insem ={
                     is_read_only:   true
                 }
-                thisObj.prodEntryMating.show(dataPigProd, options_insem);
+                thisObj.prodEntryMating.beforeShow(dataPigProd, options_insem);
                 
                 curTabFat = thisObj.TAB_GESTA_MATING;
                 break;

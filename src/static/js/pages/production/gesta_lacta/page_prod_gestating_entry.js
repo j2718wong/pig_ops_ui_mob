@@ -214,7 +214,7 @@ export function PageProdGestatingEntry(input_settings){
                 // Set Birth tab
                 const options_birth ={
                 }
-                thisObj.prodEntryBirth.show(dataPigProd, options_birth);
+                thisObj.prodEntryBirth.beforeShow(dataPigProd, options_birth);
                 
                 curTab = thisObj.TAB_GESTA_BIRTH;
                 break;
@@ -225,7 +225,7 @@ export function PageProdGestatingEntry(input_settings){
                 const options_insem ={
                     is_read_only:   false
                 }
-                thisObj.prodEntryMating.show(dataPigProd, options_insem);
+                thisObj.prodEntryMating.beforeShow(dataPigProd, options_insem);
                 
                 curTab = thisObj.TAB_GESTA_MATING;
                 break;

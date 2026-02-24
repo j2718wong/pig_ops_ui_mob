@@ -71,6 +71,8 @@ export function PageProdNotPregnantList(input_settings){
     let dataNotPregnantList     = null;
 
     
+    let searchIncludeInsem      = true;
+    
     let dtCurrentDate           = null;
 
 
@@ -186,7 +188,7 @@ export function PageProdNotPregnantList(input_settings){
         
         // Set up listeners for navigation arrows
         elemNavPrevEntry.onclick = function(){
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation._onClickNavProdHistory();
         }
 
         elemNavNextEntry.onclick = function(){
@@ -405,17 +407,8 @@ export function PageProdNotPregnantList(input_settings){
     
     
     this.searchEntries = function(key){
-        let data_pig_prod_list = null;
+        let data_pig_prod_list = dataNotPregnantList;
         
-        if (settings.isGesta){
-            data_pig_prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
-        }
-        else{
-            data_pig_prod_list = navigation.pigFarm.managerPigProd.dataLactatingList;
-        }
-        
-        
-        if (key == ''){return data_pig_prod_list;}
         
         
         const filtered = [];

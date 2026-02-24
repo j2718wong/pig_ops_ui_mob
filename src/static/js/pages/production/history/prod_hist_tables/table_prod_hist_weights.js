@@ -53,6 +53,7 @@ export function ProdHistTableWeights(input_settings){
     let elemTableBody           = null;
     
     
+    
     this._writeInlineStyle = function(){
         const html = `
     <style>
@@ -79,6 +80,13 @@ export function ProdHistTableWeights(input_settings){
     
     
     this.getHtml = function(){
+        /* TODO not working, account not yet set at this point.
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        */
+        
+        const weight_unit       = 'kg';
+        
         
         elemIdTableShow         = `${settings.uniqueKey}-prod-hist-weights-show`;
         elemIdTableBody         = `${settings.uniqueKey}-prod-hist-weights-tbody`;
@@ -104,8 +112,8 @@ export function ProdHistTableWeights(input_settings){
                             <div>PID, Sow</div> 
                             <div><span class="love-icon">❤️</span> Boar</div>
                         </th>
-                        <th style="text-align:center;">Average <span class="nowrap">Wt, kg</span></th>
-                        <th style="text-align:center;">Weights, kg</th>
+                        <th style="text-align:center;">Average <span class="nowrap">Wt, ${weight_unit}</span></th>
+                        <th style="text-align:center;">Weights, ${weight_unit}</th>
                     </tr>
                 </thead>
                 

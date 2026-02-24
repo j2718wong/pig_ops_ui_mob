@@ -141,6 +141,56 @@ export function ManagerSowBoar(input_settings){
     }
     
     
+    
+    this.requestSowBoarEntry = function(sow_boar_hid, callback_success, 
+            elem_show_error){
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/sow_boar/entry/${sow_boar_hid}`;
+        
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
+                    
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+ 
+    
+    
     this.requestSowBoarDataVerNum = function(data_sow_boar, callback_success, 
             elem_show_error){
         
@@ -339,4 +389,22 @@ export function ManagerSowBoar(input_settings){
             }
         });
     } 
+
+
+    this.replaceInSowBoarList = function(entry_hid, entry_list, new_entry){
+        let index;
+        let cur_entry;
+        
+        for(index = 0; index<entry_list.length; index++){
+            cur_entry = entry_list[index];
+            
+            if (cur_entry.sow_boar.hid == entry_hid){
+                entry_list.splice(index, 1, new_entry);
+                return;
+            }
+        }
+    }
+    
+
+
 }

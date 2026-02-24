@@ -782,7 +782,16 @@ export function PageProdGestatingAdd(input_settings){
             navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         };
         
-        navigation.pigFarm.managerPigProd.requestPigProdList(pig_prod_type, callback_success);
+        
+        // Sow Entry in SowList needs to be updated
+        // This will request the whole sow_list
+        navigation.pigFarm.managerSowBoar.requestSowBoarList(true, null,
+            elemServerErrorMsg);
+        
+        
+        // Request PigProdList
+        navigation.pigFarm.managerPigProd.requestPigProdList(
+            pig_prod_type, callback_success, elemServerErrorMsg);
         
     }
     

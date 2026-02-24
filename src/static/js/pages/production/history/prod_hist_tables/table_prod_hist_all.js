@@ -52,7 +52,6 @@ export function ProdHistTableAll(input_settings){
     let elemTableShow           = null;
     let elemTableBody           = null;
 
-
     
     this.getHtml = function(){
         
@@ -139,6 +138,9 @@ export function ProdHistTableAll(input_settings){
     
     
     this.getHtmlTableRow = function(cur_entry){
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+    
         
         const pig_production = cur_entry.pig_production;
         
@@ -237,7 +239,7 @@ export function ProdHistTableAll(input_settings){
             let ave_wean_wt = weaning.weight/num_pigs_wean;
             let s_ave_wean_wt = parentObj.moneyFormatter.format(ave_wean_wt);
             
-            s_wean += ` <span class="nowrap" style="font-weight: 600; color:var(--corporate-blue);">${s_ave_wean_wt} kg</span>` 
+            s_wean += ` <span class="nowrap" style="font-weight: 600; color:var(--corporate-blue);">${s_ave_wean_wt} ${weight_unit}</span>` 
         }
         
         

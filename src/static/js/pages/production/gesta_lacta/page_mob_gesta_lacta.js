@@ -439,7 +439,7 @@ ${html_style}
         if (settings.isGesta == true){
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
-                navigation._onClickNavProdFattening(null);
+                navigation._onClickNavProdNotPregnant(null);
             }
 
             elemNavNextEntry.onclick = function(){

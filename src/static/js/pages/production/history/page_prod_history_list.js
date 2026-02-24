@@ -417,6 +417,19 @@ export function PageProdHistoryList(input_settings){
             
         });
         
+        
+        if (settings.isProdSalesHistory){}
+        else{
+            // Set up listeners for navigation arrows
+            elemNavPrevEntry.onclick = function(){
+                navigation._onClickNavProdFattening();
+            }
+
+            elemNavNextEntry.onclick = function(){
+                navigation._onClickNavProdNotPregnant();
+            }
+        }
+        
     }
     
     

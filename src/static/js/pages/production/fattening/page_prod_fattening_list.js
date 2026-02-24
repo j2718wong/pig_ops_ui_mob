@@ -191,7 +191,7 @@ export function PageProdFatteningList(input_settings){
         }
 
         elemNavNextEntry.onclick = function(){
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavProdHistory();
         }
         
              

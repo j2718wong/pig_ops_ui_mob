@@ -25,7 +25,7 @@ import {UiInputDatePickerGesta}     from './components/input_datepicker_gesta.js
 
 import {ComponentStaffFormGroup}    from '../../common/ui/comp_staff_form_group.js';
 import {ComponentPlusMinusInput}    from '../../common/ui/comp_plus_minus_input.js';
-
+import {ComponentWeightPerPig}      from '../harvest/comp_weight_per_pig.js';
 
 import {CommonSelectOptions}        from '../../common/common_select_options.js';
 
@@ -78,7 +78,12 @@ export function ProdEntryWean(input_settings){
     let elemIdRdoSeparateCount  = null;
     let elemIdSeparateCountShow = null;
     
-    let elemIdWeanWeight        = null;
+    let elemIdTotalWeight       = null;
+    let elemIdAverageWeight     = null;
+    
+    
+    let componentLWPerPig        = null;
+
     
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
@@ -96,7 +101,9 @@ export function ProdEntryWean(input_settings){
     let elemRdoSeparateCount    = null;
     let elemSeparateCountShow   = null;
     
-    let elemWeanWeight          = null;
+    
+    let elemTotalWeight         = null;
+    let elemAverageWeight       = null;
     
     
     let elemServerErrorMsg      = null;
@@ -108,6 +115,8 @@ export function ProdEntryWean(input_settings){
     let dtCurrentDate           = null;
     
     let curCountPiglets         = null;
+    
+    let totalWeanWeight         = null;
     
     
     this.init = function(){
@@ -139,7 +148,7 @@ export function ProdEntryWean(input_settings){
         
             className:          'form-group-date',
             textLabel:          'Date Wean',
-            isRequired:         false,
+            isRequired:         true,
             invalidFeedBack:    'Please enter a valid date.',
             helpText:           null
         });
@@ -153,7 +162,7 @@ export function ProdEntryWean(input_settings){
             textLabel:          'Number of Weaned Female Piglets',
             minValue:           0,
             step:               1,
-            isRequired:         false,
+            isRequired:         true,
             invalidFeedBack:    null,
             helpText:           null
         });
@@ -191,7 +200,19 @@ export function ProdEntryWean(input_settings){
         
         elemIdSeparateCountShow = `${settings.uniqueKey}-separate-count-show`;
         
-        elemIdWeanWeight        = `${settings.uniqueKey}-total-weight`;
+        elemIdTotalWeight       = `${settings.uniqueKey}-total-weight`;
+        elemIdAverageWeight     = `${settings.uniqueKey}-average-weight`;
+        
+        
+        componentLWPerPig        = new ComponentWeightPerPig({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-lw-per-pig`,
+            elemDivContainer:   elemDivContainer,
+        
+            
+            labelText:          'Weight Per Pig (Optional)',
+            helpText:           ''
+        });
         
         
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
@@ -204,6 +225,7 @@ export function ProdEntryWean(input_settings){
         const html_num_female   = componentNumFemale.getHtml();
         const html_num_male     = componentNumMale.getHtml();
         const html_num_total    = componentNumTotal.getHtml();
+        const html_weights_pp   = componentLWPerPig.getHtml();
 
 
         
@@ -238,7 +260,7 @@ export function ProdEntryWean(input_settings){
     ${html_date_birth}
     
     <!-- Radio buttons -->
-    <div class="mb-3">
+    <div class="mb-3" style="padding-left:5px;">
         <label class="form-label d-block">Weaned Piglets Count</label>
         
         <div class="form-check mb-2">
@@ -278,17 +300,27 @@ export function ProdEntryWean(input_settings){
     </div>
     
     <div class="form-group-number">
-        <label for="${elemIdWeanWeight}" class="form-label">
-            Total Wean Weight (Optional)
+        <label class="form-label">
+            Wean Weight
         </label>
         
-        <input type="number" class="form-control" id="${elemIdWeanWeight}" step="0.1" min="0" >
-        <div class="invalid-feedback">
-            Please enter numeric value.
+    
+        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <span>
+                Total:  
+                <span class="read-only-field" id="${elemIdTotalWeight}">----</span>
+            </span>
+            
+            <span>
+                Average:
+                <span class="read-only-field" id="${elemIdAverageWeight}">----</span>
+            </span>
         </div>
+        
     </div>
     
-
+    ${html_weights_pp}
+    
     <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
     
     <!-- Footer Buttons -->
@@ -311,6 +343,8 @@ export function ProdEntryWean(input_settings){
         componentNumMale.afterHtmlRender();
         componentNumTotal.afterHtmlRender();
         
+        componentLWPerPig.afterHtmlRender();
+        
        
         
         this._findElements();
@@ -332,7 +366,8 @@ export function ProdEntryWean(input_settings){
         elemRdoSeparateCount    = elemDivContainer.querySelector('#'+elemIdRdoSeparateCount);
         elemSeparateCountShow   = elemDivContainer.querySelector('#'+elemIdSeparateCountShow);
         
-        elemWeanWeight          = elemDivContainer.querySelector('#'+elemIdWeanWeight);
+        elemTotalWeight         = elemDivContainer.querySelector('#'+elemIdTotalWeight);
+        elemAverageWeight       = elemDivContainer.querySelector('#'+elemIdAverageWeight);
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
@@ -341,7 +376,7 @@ export function ProdEntryWean(input_settings){
     
     
     this._processAfterHtmlRender = function(){
-        
+        componentLWPerPig.callbackOnChangeInputs = thisObj.onChangeLWPerPigInput;
     }
     
     
@@ -378,24 +413,30 @@ export function ProdEntryWean(input_settings){
           
         elemUiDateWean.reset();
         
-        componentNumTotal.reset()
-        componentNumFemale.reset()
-        componentNumMale.reset()
+        componentNumTotal.reset();
+        componentNumFemale.reset();
+        componentNumMale.reset();
         
-        
+        componentLWPerPig.reset();
 
         
         elemServerErrorMsg.style.display = 'none';
     }
     
     
-    this.show = function(data_pig_prod, options){
+    this.beforeShow = function(data_pig_prod, options){
         thisObj._resetForm();
         
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         
         curDataPigProd = data_pig_prod;
+        
+        thisObj.populateForm();
+    }
+    
+    
+    this.populateForm = function(){
         
         const data_sow = curDataPigProd.sow;
         
@@ -444,6 +485,42 @@ export function ProdEntryWean(input_settings){
     }
     
     
+    this.onChangeLWPerPigInput = function(){
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        
+        
+        const pig_weights = componentLWPerPig.getPigWeights();
+        
+        if (pig_weights.length > 0){
+            let total_weight = 0;
+            for (const cur_entry of pig_weights){
+                total_weight += parseFloat(cur_entry);
+            }
+            
+            // Fix for crazy decimals
+            total_weight = Math.round(total_weight * 10) / 10;
+            
+            totalWeanWeight = total_weight;
+            
+            
+            const average   = total_weight / pig_weights.length;
+            
+            const s_average = Math.round(average * 10) / 10;
+            elemAverageWeight.textContent   = `  ${s_average} ${weight_unit}`;
+            elemTotalWeight.textContent     = `  ${total_weight} ${weight_unit}`;
+
+        }
+        else{
+            totalWeanWeight = null;
+            
+            elemAverageWeight.textContent = '----';
+            elemTotalWeight.textContent = '----';
+        }
+        
+    }
+    
+    
     this._validateAfterChangeInput = function(ev, input_field){
         /* Use this to validate new entry form input.*/
     
@@ -479,7 +556,6 @@ export function ProdEntryWean(input_settings){
         let input_num_male      = componentNumMale.getValue();
         let input_num_female    = componentNumFemale.getValue();
         
-        let input_wean_weight   = elemWeanWeight.value.trim();
         
         
         input_elem          = elemUiDateWean.getElemText();
@@ -565,22 +641,13 @@ export function ProdEntryWean(input_settings){
         }
         
         
-        let total_weight = 0;
-        
-        if (input_wean_weight.length > 0) {
-            input_elem = elemWeanWeight;
-            
-            try{
-                total_weight = parseInt(input_wean_weight)
-            }catch (error){
-                componentNumTotal.setTextInvalid(INVALID_MSG_NUM_INPUT);
-                validation = -1;
-                addValidationClassToElem(input_elem, validation);
-                if (validation != 0) {return;}
-            }
-        
+        let weight_pp = null;
+        const pig_weights = componentLWPerPig.getPigWeights();
+        if (pig_weights && pig_weights.length > 0){
+            weight_pp = pig_weights.join(',');
         }
         
+       
         
         // Final check before sending request
         if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
@@ -607,16 +674,21 @@ export function ProdEntryWean(input_settings){
         };
         
         
-        if (total_weight > 0){
-            post_data.total_weight = total_weight;
-        }
-        
         if (curCountPiglets == COUNT_PIGLETS_SEPARATE){
             delete post_data.num_pigs;
         }
         else{
             delete post_data.num_pigs_male;
             delete post_data.num_pigs_female;
+        }
+        
+        if (totalWeanWeight &&  totalWeanWeight > 0){
+            post_data.total_weight = totalWeanWeight;
+        }
+        
+        
+        if (weight_pp){
+            post_data.weight_pp = weight_pp;
         }
         
       

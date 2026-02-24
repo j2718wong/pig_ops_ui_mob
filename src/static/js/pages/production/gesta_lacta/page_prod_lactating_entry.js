@@ -417,7 +417,7 @@ export function PageProdLactatingEntry(input_settings){
                 // Set Birth tab
                 const options_birth ={
                 }
-                thisObj.prodEntryBirth.show(dataPigProd, options_birth);
+                thisObj.prodEntryBirth.beforeShow(dataPigProd, options_birth);
                 
                 curTabLacta = thisObj.TAB_LACTA_BIRTH;
                 break;
@@ -428,7 +428,7 @@ export function PageProdLactatingEntry(input_settings){
                 // Set Birth tab
                 const options_wean ={
                 }
-                thisObj.prodEntryWean.show(dataPigProd, options_wean);
+                thisObj.prodEntryWean.beforeShow(dataPigProd, options_wean);
                 
                 
                 curTabLacta = thisObj.TAB_LACTA_WEAN;
@@ -483,7 +483,7 @@ export function PageProdLactatingEntry(input_settings){
                 const options_insem ={
                     is_read_only:   true
                 }
-                thisObj.prodEntryMating.show(dataPigProd, options_insem);
+                thisObj.prodEntryMating.beforeShow(dataPigProd, options_insem);
                 
                 curTabLacta = thisObj.TAB_GESTA_MATING;
                 break;

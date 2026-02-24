@@ -357,6 +357,15 @@ export function PageProdHarvestAddEdit(input_settings){
     
     
     this.getHtmlLiveWeight = function(){
+        /*
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        const currency          = acc_settings_ops.currency;
+        */
+        const weight_unit       = 'kg';
+        const currency          = 'PHP';
+        
+        
         elemIdLWShow            = `${settings.uniqueKey}-lw-show`;
         
         elemIdLWPanelHeader     = `${settings.uniqueKey}-lw-panel-header`;
@@ -368,6 +377,7 @@ export function PageProdHarvestAddEdit(input_settings){
         
         
         componentLWPerPig       = new ComponentWeightPerPig({
+            navigation:         navigation,
             uniqueKey:          `${settings.uniqueKey}-lw-per-pig`,
             elemDivContainer:   elemDivContainer,
         
@@ -395,13 +405,16 @@ export function PageProdHarvestAddEdit(input_settings){
                 ${html_pp_weight}
                
                 <div class="form-group-number">
-                    <label class="form-label" style="margin-bottom:0;">Average Weight, kg</label>
+                    <label class="form-label" style="margin-bottom:0;">
+                        Average Weight, <span class="acc-weight-unit">${weight_unit}</span>
+                    </label>
+                    
                     <span class="read-only-field" id="${elemIdLWAverageWeight}">&nbsp;</span>
                 </div>
                 
                 <div class="form-group-number">
                     <label for="${elemIdLWPricePerWeight}" class="form-label">
-                        Price per kg
+                        Price per <span class="acc-weight-unit">${weight_unit}</span>, <span class="acc-currency">${currency}</span>
                     </label>
                     
                     <input type="number" class="form-control" id="${elemIdLWPricePerWeight}" step="0.1" min="0" >
@@ -422,6 +435,15 @@ export function PageProdHarvestAddEdit(input_settings){
     
     
     this.getHtmlSlaughterWeight = function(){
+        /*
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        const currency          = acc_settings_ops.currency;
+        */
+        
+        const weight_unit       = 'kg';
+        const currency          = 'PHP';
+        
         elemIdSWShow            = `${settings.uniqueKey}-sw-show`;
                                                          
         elemIdSWPanelHeader     = `${settings.uniqueKey}-sw-panel-header`;
@@ -434,6 +456,7 @@ export function PageProdHarvestAddEdit(input_settings){
         
         
         componentSWPerPig       = new ComponentWeightPerPig({
+            navigation:         navigation,
             uniqueKey:          `${settings.uniqueKey}-sw-per-pig`,
             elemDivContainer:   elemDivContainer,
         
@@ -461,13 +484,15 @@ export function PageProdHarvestAddEdit(input_settings){
                 ${html_pp_weight}
                
                 <div class="form-group-number">
-                    <label class="form-label" style="margin-bottom:0;">Average Weight, kg</label>
+                    <label class="form-label" style="margin-bottom:0;">
+                        Average Weight, <span class="acc-weight-unit">${weight_unit}</span>
+                    </label>
                     <span class="read-only-field" id="${elemIdSWAverageWeight}">&nbsp;</span>
                 </div>
                 
                 <div class="form-group-number">
                     <label for="${elemIdSWMinusWeight}" class="form-label">
-                        Minus Weight, kg
+                        Minus Weight, <span class="acc-weight-unit">${weight_unit}</span>
                     </label>
                     
                     <input type="number" class="form-control" id="${elemIdSWMinusWeight}" step="0.1" min="0">
@@ -479,7 +504,7 @@ export function PageProdHarvestAddEdit(input_settings){
                 
                 <div class="form-group-number">
                     <label for="${elemIdSWPricePerWeight}" class="form-label">
-                        Price per kg
+                        Price per <span class="acc-weight-unit">${weight_unit}</span>, <span class="acc-currency">${currency}</span>
                     </label>
                     
                     <input type="number" class="form-control" id="${elemIdSWPricePerWeight}" step="0.1" min="0" >
@@ -650,6 +675,23 @@ export function PageProdHarvestAddEdit(input_settings){
         elemUiNotes.setValue('');
         
         elemServerErrorMsg.style.display = 'none';
+        
+        
+        // Update account weight_unit and currency
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        const currency          = acc_settings_ops.currency;
+        
+        const elems_weight_unit = elemDivContainer.querySelectorAll('.acc-weight-unit');
+        for(const cur_entry of elems_weight_unit){
+            cur_entry.textContent = weight_unit;
+        }  
+        
+        const elems_currency = elemDivContainer.querySelectorAll('.acc-currency');
+        for(const cur_entry of elems_currency){
+            cur_entry.textContent = currency;
+        }
+        
     }
     
     
@@ -806,6 +848,9 @@ export function PageProdHarvestAddEdit(input_settings){
     
     
     this.onChangeLWPerPigInput = function(){
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        
         const pig_weights = componentLWPerPig.getPigWeights();
         
         if (pig_weights.length > 0){
@@ -819,7 +864,7 @@ export function PageProdHarvestAddEdit(input_settings){
             const s_average = Math.round(average * 10) / 10;
             elemLWAverageWeight.textContent = s_average;
             
-            elemLWHeaderWeight.textContent = `  ${total_weight} kg`
+            elemLWHeaderWeight.textContent = `  ${total_weight} ${weight_unit}`;
             
             componentNumPigs.setValue(pig_weights.length);
             
@@ -833,6 +878,9 @@ export function PageProdHarvestAddEdit(input_settings){
     
     
     this.onChangeSWPerPigInput = function(){
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        
         const pig_weights = componentSWPerPig.getPigWeights();
         
         if (pig_weights.length > 0){
@@ -858,7 +906,7 @@ export function PageProdHarvestAddEdit(input_settings){
                 catch(error){} 
             }
             
-            elemSWHeaderWeight.textContent = `  ${total_weight} kg`
+            elemSWHeaderWeight.textContent = `  ${total_weight} ${weight_unit}`;
             
             componentNumPigs.setValue(pig_weights.length);
             
