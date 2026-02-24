@@ -13,7 +13,8 @@ import {APPLICATION,
         SOW_STATUS_NAME,
         MULTIKEY_OBJ_TYPE,
         PROD_STATUS,
-        HARVEST_TYPE}            from '../../../constants.js';
+        HARVEST_TYPE,
+        ACC_USER_GROUP}         from '../../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -29,7 +30,7 @@ import {formatDate,
 
 */
 
-export function ProdFeedSummary(input_settings){
+export function ProdSummary(input_settings){
 
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -256,159 +257,203 @@ export function ProdFeedSummary(input_settings){
         curDataEntry = data_entry;
         
         if (settings.includeProdSummary){
- 
-            
-            const acc_settings_ops = navigation.pigFarm.getSettingsOperations();
-            
-            const target_harvest = parentObj.calculateDateTargetHarvest(
-                curDataEntry, null, acc_settings_ops);
+            this.populateProdSummary();
+        }
         
-            let numdays_label = '';
-            
-            if (curDataEntry.birth.date_actual){
-                elemTdNumDaysLabel.innerHTML  = 'Days Since Birth';  
-                elemTdNumDays.innerHTML = target_harvest.days_since_birth;  
-            }
-            else{
-                elemTdNumDaysLabel.innerHTML  = 'Days Since Wean';  
-                elemTdNumDays.innerHTML = target_harvest.days_since_wean;
-            }
-            
-            
-            // Pig Counts
-            let s_count_pigs_birth = '';
-            if (curDataEntry.birth){
-                let pig_count = 0;
-                
-                if (curDataEntry.birth.pigs_live_f){
-                    pig_count += curDataEntry.birth.pigs_live_f;
-                    s_count_pigs_birth += `${curDataEntry.birth.pigs_live_f}F`;
-                }
-                
-                if (curDataEntry.birth.pigs_live_m){
-                    pig_count += curDataEntry.birth.pigs_live_m;
-                    s_count_pigs_birth += `, ${curDataEntry.birth.pigs_live_m}M`;
-                }
-                
-               
-            }
-            elemTdPigCountBirth.innerHTML = s_count_pigs_birth;
-            
-            
-            let s_count_pigs_wean = '';
-            if (curDataEntry.weaning){
-                let pig_count = 0;
-                
-                if (curDataEntry.weaning.num_pigs){
-                    s_count_pigs_wean = `${curDataEntry.weaning.num_pigs}`;
-                }
-                else{
-                    if (curDataEntry.weaning.num_pigs_f){
-                        pig_count += curDataEntry.birth.num_pigs_f;
-                        s_count_pigs_wean += `${curDataEntry.weaning.num_pigs_f}F`;
-                    }
-                    
-                    if (curDataEntry.weaning.num_pigs_m){
-                        pig_count += curDataEntry.birth.num_pigs_m;
-                        s_count_pigs_wean += `, ${curDataEntry.weaning.num_pigs_m}M`;
-                    }
-                }
-            }
-            elemTdPigCountWean.innerHTML = s_count_pigs_wean;
-            
-            
-            // Latest pig count
-            elemTdPigCountLatest.innerHTML = curDataEntry.pig_production.cur_pig_count;
-            
-                  
-            // Target date harvest
-            elemTdTargetHarvest.innerHTML =  target_harvest.date_target_harvest;
-            
-            
-            // Harvested pigs
-            let total_sales         = 0.0;
-            let num_pigs_sold       = 0;
-            
-            const list_harvest      = curDataEntry.data_details.list_harvest;
-            if (list_harvest){
-                let num_pigs_harvested  = 0;
-                
-                let num_gilt_boar_int   = 0;
-                let num_gilt_boar_sold  = 0;
-                
-                
-                
-                for (const cur_entry of list_harvest){
-                    const prod_harvest  = cur_entry.prod_harvest;
-                    
-                    num_pigs_harvested  += prod_harvest.num_pigs;
-                    
-                    if (prod_harvest.sales && prod_harvest.sales.net_sales){
-                        num_pigs_sold   += prod_harvest.num_pigs;
-                        total_sales     += prod_harvest.sales.net_sales;
-                    }
-                    
-                    if (prod_harvest.harvest_type_hid == HARVEST_TYPE.INTERNAL_GILT_BOAR){
-                        num_gilt_boar_int += prod_harvest.num_pigs;
-                    }
-                    
-                    if (prod_harvest.harvest_type_hid == HARVEST_TYPE.GILT_SALE){
-                        num_gilt_boar_sold += prod_harvest.num_pigs;
-                    }
-                    
-                    if (prod_harvest.harvest_type_hid == HARVEST_TYPE.BOAR_SALE){
-                        num_gilt_boar_sold += prod_harvest.num_pigs;
-                    }
-                }
-                
-                const s_total_sales = moneyFormatter.format(total_sales);
-                
-                elemTdPigsHarvested.innerHTML   = `${num_pigs_harvested}`;
-                elemTdPigsSold.innerHTML        = `${num_pigs_sold}`;
-                elemTdGiltBoarInt.innerHTML     = `${num_gilt_boar_int}`;
-                elemTdGiltBoarSold.innerHTML    = `${num_gilt_boar_sold}`;
-                
-                
-
-                elemTdTotalSales.innerHTML  = `${s_total_sales}`;
-
-            }
-            
-            
-            
-            // Compute feeds cost
-            const prod_feeds_cost = curDataEntry.feeds.cost;
-            
-            let feeds_cost = 0;
-            
-            if (prod_feeds_cost.gestating)  {feeds_cost+= prod_feeds_cost.gestating;}
-            if (prod_feeds_cost.lactating)  {feeds_cost+= prod_feeds_cost.lactating;}
-            if (prod_feeds_cost.booster)    {feeds_cost+= prod_feeds_cost.booster;}
-            if (prod_feeds_cost.prestarter) {feeds_cost+= prod_feeds_cost.prestarter;}
-            if (prod_feeds_cost.starter)    {feeds_cost+= prod_feeds_cost.starter;}
-            if (prod_feeds_cost.grower)     {feeds_cost+= prod_feeds_cost.grower;}
-            if (prod_feeds_cost.finisher)   {feeds_cost+= prod_feeds_cost.finisher;}
-            
-            const s_feeds_cost = parentObj.moneyFormatter.format(feeds_cost);
-            
-
-            elemTdFeedsCost.innerHTML = s_feeds_cost;
+        thisObj.populateFeedSummary();
+    }
+    
+    
+    this.populateProdSummary = function(){
+        // Update account weight_unit and currency
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const currency          = acc_settings_ops.currency;
         
-            if (total_sales > 0){
-                const gross_profit      = total_sales - feeds_cost;
-                const gross_profit_pp   = gross_profit/  num_pigs_sold;
-                
-                const s_gross_profit    = parentObj.moneyFormatter.format(gross_profit);
-                const s_gross_profit_pp = parentObj.moneyFormatter.format(gross_profit_pp);
-                
-                elemTdGrossProfit.innerHTML   = s_gross_profit; 
-                elemTdGrossProfitPP.innerHTML = s_gross_profit_pp;
-            }
-
+        const elems_currency = elemDivContainer.querySelectorAll('.acc-currency');
+        for(const cur_entry of elems_currency){
+            cur_entry.textContent = currency;
+        }
+        
+            
+        const target_harvest = parentObj.calculateDateTargetHarvest(
+            curDataEntry, null, acc_settings_ops);
+    
+        let numdays_label = '';
+        
+        if (curDataEntry.birth.date_actual){
+            elemTdNumDaysLabel.innerHTML  = 'Days Since Birth';  
+            elemTdNumDays.innerHTML = target_harvest.days_since_birth;  
+        }
+        else{
+            elemTdNumDaysLabel.innerHTML  = 'Days Since Wean';  
+            elemTdNumDays.innerHTML = target_harvest.days_since_wean;
         }
         
         
+        // Pig Counts
+        let s_count_pigs_birth = '';
+        if (curDataEntry.birth){
+            let pig_count = 0;
+            
+            if (curDataEntry.birth.pigs_live_f){
+                pig_count += curDataEntry.birth.pigs_live_f;
+                s_count_pigs_birth += `${curDataEntry.birth.pigs_live_f}F`;
+            }
+            
+            if (curDataEntry.birth.pigs_live_m){
+                pig_count += curDataEntry.birth.pigs_live_m;
+                s_count_pigs_birth += `, ${curDataEntry.birth.pigs_live_m}M`;
+            }
+            
+           
+        }
+        elemTdPigCountBirth.innerHTML = s_count_pigs_birth;
         
+        
+        let s_count_pigs_wean = '';
+        if (curDataEntry.weaning){
+            let pig_count = 0;
+            
+            if (curDataEntry.weaning.num_pigs){
+                s_count_pigs_wean = `${curDataEntry.weaning.num_pigs}`;
+            }
+            else{
+                if (curDataEntry.weaning.num_pigs_f){
+                    pig_count += curDataEntry.birth.num_pigs_f;
+                    s_count_pigs_wean += `${curDataEntry.weaning.num_pigs_f}F`;
+                }
+                
+                if (curDataEntry.weaning.num_pigs_m){
+                    pig_count += curDataEntry.birth.num_pigs_m;
+                    s_count_pigs_wean += `, ${curDataEntry.weaning.num_pigs_m}M`;
+                }
+            }
+        }
+        elemTdPigCountWean.innerHTML = s_count_pigs_wean;
+        
+        
+        // Latest pig count
+        elemTdPigCountLatest.innerHTML = curDataEntry.pig_production.cur_pig_count;
+        
+              
+        // Target date harvest
+        elemTdTargetHarvest.innerHTML =  target_harvest.date_target_harvest;
+        
+        
+        // Harvested pigs
+        let total_sales         = 0.0;
+        let num_pigs_sold       = 0;
+        
+        const list_harvest      = curDataEntry.data_details.list_harvest;
+        if (list_harvest){
+            let num_pigs_harvested  = 0;
+            
+            let num_gilt_boar_int   = 0;
+            let num_gilt_boar_sold  = 0;
+            
+            
+            
+            for (const cur_entry of list_harvest){
+                const prod_harvest  = cur_entry.prod_harvest;
+                
+                num_pigs_harvested  += prod_harvest.num_pigs;
+                
+                if (prod_harvest.sales && prod_harvest.sales.net_sales){
+                    num_pigs_sold   += prod_harvest.num_pigs;
+                    total_sales     += prod_harvest.sales.net_sales;
+                }
+                
+                if (prod_harvest.harvest_type_hid == HARVEST_TYPE.INTERNAL_GILT_BOAR){
+                    num_gilt_boar_int += prod_harvest.num_pigs;
+                }
+                
+                if (prod_harvest.harvest_type_hid == HARVEST_TYPE.GILT_SALE){
+                    num_gilt_boar_sold += prod_harvest.num_pigs;
+                }
+                
+                if (prod_harvest.harvest_type_hid == HARVEST_TYPE.BOAR_SALE){
+                    num_gilt_boar_sold += prod_harvest.num_pigs;
+                }
+            }
+            
+            
+            elemTdPigsHarvested.innerHTML   = `${num_pigs_harvested}`;
+            elemTdPigsSold.innerHTML        = `${num_pigs_sold}`;
+            elemTdGiltBoarInt.innerHTML     = `${num_gilt_boar_int}`;
+            elemTdGiltBoarSold.innerHTML    = `${num_gilt_boar_sold}`;
+        }
+        
+        
+        const elems_trs = elemDivContainer.querySelectorAll('.tr-financial');
+        
+        let show_financial = 0;
+        
+        // Get user.acc_group_num
+
+        const cur_user = navigation.userControl.dataUserAccount.user;
+        const user_group_num = cur_user.user_group.group_num;
+        
+        if (user_group_num == ACC_USER_GROUP.ADMIN || 
+            user_group_num == ACC_USER_GROUP.MANAGEMENT){
+            show_financial = 1;
+        } 
+        
+        if (show_financial == 0){
+            for(const cur_entry of elems_trs){
+                cur_entry.textContent = '----';
+            }
+            
+            return;
+        }
+       
+        
+        
+        
+        // Show Total sales
+        const s_total_sales         = moneyFormatter.format(total_sales);
+        elemTdTotalSales.innerHTML  = `${s_total_sales}`;
+        
+        
+        // Compute feeds cost
+        const prod_feeds_cost = curDataEntry.feeds.cost;
+        
+        let feeds_cost = 0;
+        
+        if (prod_feeds_cost.gestating)  {feeds_cost+= prod_feeds_cost.gestating;}
+        if (prod_feeds_cost.lactating)  {feeds_cost+= prod_feeds_cost.lactating;}
+        if (prod_feeds_cost.booster)    {feeds_cost+= prod_feeds_cost.booster;}
+        if (prod_feeds_cost.prestarter) {feeds_cost+= prod_feeds_cost.prestarter;}
+        if (prod_feeds_cost.starter)    {feeds_cost+= prod_feeds_cost.starter;}
+        if (prod_feeds_cost.grower)     {feeds_cost+= prod_feeds_cost.grower;}
+        if (prod_feeds_cost.finisher)   {feeds_cost+= prod_feeds_cost.finisher;}
+        
+        const s_feeds_cost = parentObj.moneyFormatter.format(feeds_cost);
+        
+        // Show Total feeds cost
+        elemTdFeedsCost.innerHTML = s_feeds_cost;
+    
+    
+        // Show Gross Profit and Gross Profit per pig
+        if (total_sales > 0){
+            const gross_profit      = total_sales - feeds_cost;
+            const gross_profit_pp   = gross_profit/  num_pigs_sold;
+            
+            const s_gross_profit    = parentObj.moneyFormatter.format(gross_profit);
+            const s_gross_profit_pp = parentObj.moneyFormatter.format(gross_profit_pp);
+            
+            elemTdGrossProfit.innerHTML   = s_gross_profit; 
+            elemTdGrossProfitPP.innerHTML = s_gross_profit_pp;
+        }
+        else{
+            elemTdGrossProfit.innerHTML   = '0.0'; 
+            elemTdGrossProfitPP.innerHTML = '0.0';
+        }
+
+    }
+    
+    
+        
+    this.populateFeedSummary = function(){
         
         const prod_entry_feeds = curDataEntry.feeds;
         const feeds_bought  = prod_entry_feeds.bought;
@@ -594,6 +639,7 @@ export function ProdFeedSummary(input_settings){
         
     }
     
+    
         
     this.show = function(options){
         
@@ -637,24 +683,24 @@ export function ProdFeedSummary(input_settings){
         
         
         let html_financial = `
-                <tr>
-                    <td>Feeds Cost</td>
-                    <td id="${elemIdTdFeedsCost}">0</td>
+                <tr class="tr-financial">
+                    <td>Feeds Cost, <span class="acc-currency"></span></td>
+                    <td id="${elemIdTdFeedsCost}">0.0</td>
                 </tr>
                 
-                <tr>
-                    <td>Total Sales</td>
-                    <td id="${elemIdTdTotalSales}">0</td>
+                <tr class="tr-financial">
+                    <td>Total Sales, <span class="acc-currency"></td>
+                    <td id="${elemIdTdTotalSales}">0.0</td>
                 </tr>
                 
-                <tr>
-                    <td>Gross Profit</td>
-                    <td id="${elemIdTdGrossProfit}">0</td>
+                <tr class="tr-financial">
+                    <td>Gross Profit, <span class="acc-currency"></td>
+                    <td id="${elemIdTdGrossProfit}">0.0</td>
                 </tr>
                 
-                <tr>
-                    <td>Gross Profit Per Pig</td>
-                    <td id="${elemIdTdGrossProfitPP}">0</td>
+                <tr class="tr-financial">
+                    <td>Gross Profit Per Pig, <span class="acc-currency"></td>
+                    <td id="${elemIdTdGrossProfitPP}">0.0</td>
                 </tr>
                 
         `;
@@ -663,13 +709,13 @@ export function ProdFeedSummary(input_settings){
         
         let show_financial = 0;
         
-        /* not working
         // Get user.acc_group_num
+        /*
         const cur_user = navigation.userControl.dataUserAccount.user;
         const user_group_num = cur_user.user_group.group_num;
         
-        if (user_roup_num == ACC_USER_GROUP.ADMIN || 
-            user_roup_num == ACC_USER_GROUP.MANAGEMENT){
+        if (user_group_num == ACC_USER_GROUP.ADMIN || 
+            user_group_num == ACC_USER_GROUP.MANAGEMENT){
             show_financial = 1;
         } 
         
@@ -737,7 +783,7 @@ export function ProdFeedSummary(input_settings){
                 </tr>
                 
                 ${html_financial}
-            
+                
             </tbody>
         </table>
         

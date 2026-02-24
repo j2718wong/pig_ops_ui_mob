@@ -273,5 +273,55 @@ export function PageViewPigFarmPage(){
         
         return false;
     }
+ 
+ 
+    this.getSowBoarReference = function(sow_boar){
+        let sow_reference = '';
+        
+        if (sow_boar.name  && sow_boar.name.length >0 ){
+            sow_reference = `<span class="sow-boar-name">${sow_boar.name}</span>`;
+        }
+        else{
+            sow_reference = `<span class="sow-boar-name">${sow_boar.number}</span>`;
+        }
+        
+        return sow_reference;
+    }
+    
+    
+    this.getHtmlPidSowLoveBoar = function(data_pig_prod){
+        const pig_production = data_pig_prod.pig_production;
+        
+        // PID, Sow ❤ Boar column
+        const s_pid = `<span>${pig_production.farm_prod_id}</span>`; 
+        
+        let sow_name = thisObj.getSowBoarReference(data_pig_prod.sow);
+        let boar_name = '';
+        
+        
+        const insemination = data_pig_prod.insemination;
+        switch (insemination.insem_type){
+            case 'B': {
+                boar_name = thisObj.getSowBoarReference(insemination.boar);
+                break;
+            }
+            
+            case 'AI_X':{
+                boar_name = insemination.ai.semen_supplier.semen.name;
+                break;
+            }
+            
+            case 'AI_N':{
+                boar_name = thisObj.getSowBoarReference(insemination.ai.internal_boar);
+                break;
+            }
+        }
+        
+        return `
+            <div>${s_pid}, ${sow_name} </div>
+            <div><span class="love-icon">❤️</span> ${boar_name}</div>`;
+        
+        
+    }
     
 }

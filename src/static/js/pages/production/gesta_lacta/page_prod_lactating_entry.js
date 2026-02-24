@@ -21,7 +21,7 @@ import {TableMedVac}            from '../../multikey/table_medvac.js'
 import {TableNotes}             from '../../multikey/table_notes.js'
 import {TableHealthIssue}       from '../../multikey/table_health_issue.js'
 
-import {ProdFeedSummary}        from '../feeds/prod_feed_summary.js'
+import {ProdSummary}            from '../summary/prod_summary.js'
 
 import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed.js'
 
@@ -230,13 +230,13 @@ export function PageProdLactatingEntry(input_settings){
         this.tableMedVac.init();
         
         
-        this.prodFeedSummary    = new ProdFeedSummary({
+        this.prodSummary        = new ProdSummary({
             navigation:         settings.navigation,
             parentObj:          this,
             uniqueKey:          'pig-prod-lacta-feed-summary',
             elemDivContainer:   elemTabLactaFeedSummary
         });
-        this.prodFeedSummary.init();
+        this.prodSummary.init();
         
         
         this.tablePigProdFeed   = new TablePigProdFeed({
@@ -456,7 +456,7 @@ export function PageProdLactatingEntry(input_settings){
             }
             
             case elemIdTabLactaFeedSummary:{
-                thisObj.prodFeedSummary.beforeShow(dataPigProd);
+                thisObj.prodSummary.beforeShow(dataPigProd);
                 
                 curTabLacta = thisObj.TAB_LACTA_FEED_SUMMARY;
                 break;

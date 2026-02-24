@@ -253,25 +253,9 @@ export function PageProdFatteningList(input_settings){
         
         
         thisObj.renderTable(dataPigProdList);
-        
-        
     }
     
 
-    this._writeInlineStyle = function(){
-        const html = `
-        <style>
-            
-            /* Updated Table Styles */
-            .table-fattening td {padding-right:0}
-            .table-fattening th {padding-right:0}
-        </style>
-        `;
-        return html;
-
-    }
-    
-    
     this.getElemTableBody = function(){
         return elemTableBody;
     }
@@ -280,23 +264,23 @@ export function PageProdFatteningList(input_settings){
     this.getHtmlTableHeader = function(){
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
         
-        const html_style = this._writeInlineStyle();
-        
         
         const html = `
-        ${html_style}
         
         <table class="data-table table-fattening" id="">
             <colgroup>
-                <col style="width: 13%;">
+                <col style="width: 33%;">
                 <col style="width: 15%;">
                 <col style="width: 15%;">
-                <col style="width: 47%;">
+                <col style="width: 27%;">
             </colgroup>
 
             <thead>
                 <tr>
-                    <th>PID</th>
+                    <th>
+                        <div>PID, Sow</div> 
+                        <div><span class="love-icon">❤️</span> Boar</div>
+                    </th>
                     <th>Days</th>
                     <th>Pigs</th>
                     <th>Target Harvest</th>
@@ -332,7 +316,7 @@ export function PageProdFatteningList(input_settings){
             dtCurrentDate, acc_settings_ops);
         
         
-        let pid = cur_entry.pig_production.farm_prod_id;
+        const html_pid_sow_boar = farmPage.getHtmlPidSowLoveBoar(cur_entry);
         
         
         let diff_days = null;
@@ -353,7 +337,7 @@ export function PageProdFatteningList(input_settings){
         
         const html = `
             <tr>
-                <td>${pid}</td>
+                <td>${html_pid_sow_boar}</td>
                 <td style="text-align:center;">${s_days}</td>
                 <td style="text-align:center;">${cur_entry.pig_production.cur_pig_count}</td>
                 <td>${s_target_harvest}</td>

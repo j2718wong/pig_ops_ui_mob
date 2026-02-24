@@ -22,7 +22,7 @@ import {TableMedVac}            from '../../multikey/table_medvac.js'
 import {TableNotes}             from '../../multikey/table_notes.js'
 import {TableHealthIssue}       from '../../multikey/table_health_issue.js'
 
-import {ProdFeedSummary}        from '../feeds/prod_feed_summary.js'
+import {ProdSummary}            from '../summary/prod_summary.js'
 import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed.js'
 import {TableFeedBalance}       from '../../feeds/feed_balance/table_feed_balance.js'
 
@@ -229,7 +229,7 @@ export function PageProdFatteningEntry(input_settings){
     
     this._processAfterHtmlRenderThis = function(){
        
-        this.pigProdSummary    = new ProdFeedSummary({
+        this.pigProdSummary    = new ProdSummary({
             navigation:         settings.navigation,
             parentObj:          this,
             uniqueKey:          `${settings.uniqueKey}-feed-summary`,

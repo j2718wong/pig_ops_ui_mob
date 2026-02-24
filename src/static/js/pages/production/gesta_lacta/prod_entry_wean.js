@@ -220,7 +220,7 @@ export function ProdEntryWean(input_settings){
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         
-        const html_date_birth   = elemUiDateWean.getHtml();
+        const html_date_wean    = elemUiDateWean.getHtml();
         
         const html_num_female   = componentNumFemale.getHtml();
         const html_num_male     = componentNumMale.getHtml();
@@ -257,7 +257,7 @@ export function ProdEntryWean(input_settings){
         </div>
     </div>
     
-    ${html_date_birth}
+    ${html_date_wean}
     
     <!-- Radio buttons -->
     <div class="mb-3" style="padding-left:5px;">
@@ -267,7 +267,7 @@ export function ProdEntryWean(input_settings){
             <input class="form-check-input" type="radio" 
                 name="${settings.uniqueKey}-countWean" 
                 id="${elemIdRdoCombinedCount}" 
-                value="${COUNT_PIGLETS_COMBINED}" checked>
+                value="${COUNT_PIGLETS_COMBINED}">
             
             <label class="form-check-label" for="${elemIdRdoCombinedCount}">
                 Combined Count
@@ -417,8 +417,19 @@ export function ProdEntryWean(input_settings){
         componentNumFemale.reset();
         componentNumMale.reset();
         
+        elemTotalWeight.textContent = '----';
+        elemAverageWeight.textContent = '----';
+        
         componentLWPerPig.reset();
 
+        
+        curCountPiglets = COUNT_PIGLETS_COMBINED;
+        if (curCountPiglets == COUNT_PIGLETS_SEPARATE){
+            elemRdoSeparateCount.dispatchEvent(new Event('change', {bubbles:true}));
+        }
+        else{
+            elemRdoCombinedCount.dispatchEvent(new Event('change', {bubbles:true}));
+        }
         
         elemServerErrorMsg.style.display = 'none';
     }
@@ -432,11 +443,6 @@ export function ProdEntryWean(input_settings){
         
         curDataPigProd = data_pig_prod;
         
-        thisObj.populateForm();
-    }
-    
-    
-    this.populateForm = function(){
         
         const data_sow = curDataPigProd.sow;
         
@@ -453,6 +459,7 @@ export function ProdEntryWean(input_settings){
             const sow_boar_list = navigation.pigFarm.managerSowBoar.dataSowList;
             navigation.pageSowBoarList.gotoSowBoarEntryPage(sow_boar_list, data_sow.hid);
         };
+        
         
         
         // Set Number of days since birth
@@ -476,11 +483,57 @@ export function ProdEntryWean(input_settings){
         elemDobIsDay1.textContent = s_day_1;
         
         
+        // Populate rest of data if available
+        if (curDataPigProd.weaning && curDataPigProd.weaning.date_weaning) {
+            thisObj.populateForm();
+        }
+    }
+    
+    
+    this.populateForm = function(){
+        
+        
+        console.log('wqean populateForm');
+        console.log(curDataPigProd);
+        
+        // Set Date Wean
+        const weaning       = curDataPigProd.weaning;
+        const date_weaning  = weaning.date_weaning;
+       
+        elemUiDateWean.setDate(date_weaning );
+        
+        
+        // Set Number Weaned pigs
+        if (weaning.num_pigs) {
+            componentNumTotal.setValue(weaning.num_pigs);
+            curCountPiglets = COUNT_PIGLETS_COMBINED;
+        }
+        else{
+            if (weaning.num_pigs_f){
+               componentNumFemale.setValue(weaning.num_pigs_f)
+            }
+            
+            if (weaning.num_pigs_m){
+               componentNumMale.setValue(weaning.num_pigs_m)
+            }
+            
+            curCountPiglets = COUNT_PIGLETS_SEPARATE;
+        }
+       
+
         if (curCountPiglets == COUNT_PIGLETS_SEPARATE){
+            console.log('test a');
             elemRdoSeparateCount.dispatchEvent(new Event('change', {bubbles:true}));
         }
         else{
             elemRdoCombinedCount.dispatchEvent(new Event('change', {bubbles:true}));
+        }
+        
+        
+        
+        // Set weight per pig if there is any
+        if (weaning.weight_pp){
+            componentLWPerPig.setPigWeights(weaning.weight_pp);
         }
     }
     

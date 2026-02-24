@@ -527,20 +527,6 @@ export function PageProdHistoryList(input_settings){
     }
     
     
-    this.getSowBoarReference = function(pig_prod){
-        let sow_reference = '';
-        
-        // The Sow Boar name and number are shown together.
-        if (pig_prod.name  && pig_prod.name.length >0 ){
-            sow_reference = `<span class="sow-boar-name">${pig_prod.name}</span>`;
-        }
-        else{
-            sow_reference = `<span class="sow-boar-name">${pig_prod.number}</span>`;
-        }
-        
-        return sow_reference;
-    }
-    
        
     this.onClickDataFilter = function(filter_type){
         

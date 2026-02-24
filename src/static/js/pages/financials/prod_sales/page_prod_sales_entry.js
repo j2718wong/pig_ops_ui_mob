@@ -14,7 +14,7 @@ import {PAGE_ID,
 
 import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
 
-import {ProdFeedSummary}        from '../../production/feeds/prod_feed_summary.js'
+import {ProdSummary}            from '../../production/summary/prod_summary.js'
 import {ProdHarvestList}        from '../../production/harvest/prod_harvest_list.js'
 
 
@@ -108,7 +108,7 @@ export function PageProdSalesEntry(input_settings){
     
     this._processAfterHtmlRenderThis = function(){
        
-        this.pigProdSummary    = new ProdFeedSummary({
+        this.pigProdSummary    = new ProdSummary({
             navigation:         settings.navigation,
             parentObj:          this,
             uniqueKey:          `${settings.uniqueKey}-feed-summary`,

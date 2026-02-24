@@ -177,33 +177,7 @@ export function ProdHistTableWeights(input_settings){
         
         
         // PID, Sow ❤ Boar column
-        
-        let sow_name = parentObj.getSowBoarReference(cur_entry.sow);
-        let boar_name = '';
-        
-        
-        const insemination = cur_entry.insemination;
-        switch (insemination.insem_type){
-            case 'B': {
-                boar_name = parentObj.getSowBoarReference(insemination.boar);
-                break;
-            }
-            
-            case 'AI_X':{
-                boar_name = insemination.ai.semen_supplier.semen.name;
-                break;
-            }
-            
-            case 'AI_N':{
-                boar_name = parentObj.getSowBoarReference(insemination.ai.internal_boar);
-                break;
-            }
-        }
-        
-        const html_pid_sow = `
-            <div>${s_pid}, ${sow_name} </div>
-            <div><span class="love-icon">❤️</span> ${boar_name}</div>`;
-        
+        const html_pid_sow  = parentObj.getHtmlPidSowLoveBoar(cur_entry);
         
         
         const birth         = cur_entry.birth; 
