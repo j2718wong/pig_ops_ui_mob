@@ -20,6 +20,8 @@ export function ManagerPigProd(input_settings){
     const parentObj             = input_settings.parentObj
     
     
+    this.dataPigProdList        = null;           
+    
     
     this.dataGestatingList      = null;
     this.dataLactatingList      = null;
@@ -32,6 +34,8 @@ export function ManagerPigProd(input_settings){
     
     
     this.setDataPigProdList = function(data){
+        thisObj.dataPigProdList     = data;
+        
         thisObj.dataGestatingList   = [];
         thisObj.dataLactatingList   = [];
         thisObj.dataFatteningList   = [];

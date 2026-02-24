@@ -498,6 +498,7 @@ export function PageProdHistoryList(input_settings){
             // Default all
             curDataFilter = 'sales';
             tableProdGrossSales.show();
+            tableProdGrossProfit.hide();
         }
         else{
             // Default all
@@ -650,6 +651,7 @@ export function PageProdHistoryList(input_settings){
             return;
         }
         
+        
         let prev_prod_pid = null;
         let next_prod_pid = null;
         
@@ -689,7 +691,8 @@ export function PageProdHistoryList(input_settings){
                 }
                 
                 if (settings.isProdSalesHistory){
-                    navigation.pageProdHistoryEntry.show(cur_entry, options);
+                    options.is_prod_sales = true;
+                    navigation.pageProdSalesEntry.show(cur_entry, options);
                     const page_container = navigation.getPageContainer(PAGE_ID.PROD_SALES_ENTRY);
                     navigation.showThisPage(page_container);
                 }

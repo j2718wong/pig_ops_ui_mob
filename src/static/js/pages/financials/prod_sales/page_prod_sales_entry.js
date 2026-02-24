@@ -148,7 +148,10 @@ export function PageProdSalesEntry(input_settings){
             showOptions = options;
         }
         
-        this.populateHeader(data_pig_prod, showOptions);
+        console.log(`sales entry showOptions`);
+        console.log(showOptions);
+        
+        this.populateHeader(dataPigProd, showOptions);
         
         if (curTabSales == null){
             curTabSales = thisObj.TAB_SALES_FEED_SUMMARY;

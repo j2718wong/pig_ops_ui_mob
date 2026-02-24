@@ -189,9 +189,20 @@ export function ProdHarvestList(input_settings){
 
     
     this.beforeShow = function(data_pig_prod, options){
-        dataPigProd = data_pig_prod;
+        dataPigProd     = data_pig_prod;
+        this.dataPigProd = dataPigProd;
         
         showOptions     = options;
+        
+        // Hide Search Add Controls if already harvested
+        const prod_status_id = dataPigProd.pig_production.prod_status_id; 
+        if (prod_status_id == PROD_STATUS.HARVESTED || prod_status_id == PROD_STATUS.CLOSED){
+            elemSearchAddControl.style.display = 'none';
+        }
+        else{
+            elemSearchAddControl.style.display = 'block';
+        }
+        
         
         
         // Request data if not yet requested

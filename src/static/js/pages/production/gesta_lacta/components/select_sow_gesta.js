@@ -253,18 +253,21 @@ export function SelectSowGesta(input_settings){
         
         for(index = 0; index < dataSowList.length; index++){
             cur_entry = dataSowList[index];
-            if ('sow_boar' in cur_entry){
-                cur_entry = cur_entry.sow_boar;
-            }
             
-            if (cur_entry.hid == sow_hid){
-                if (cur_entry.status_id == SOW_STATUS.GESTATING){
-                    if (cur_entry.last_farm_prod_id){
+
+            const sow_boar = cur_entry.sow_boar;
+
+            
+            if (sow_boar.hid == sow_hid){
+                if (sow_boar.status_id == SOW_STATUS.GESTATING){
+                    if (sow_boar.cur_pig_production){
                         
-                        const dt_insem = new Date(cur_entry.date_insemination);
+                        const pig_production = sow_boar.cur_pig_production;
+                        
+                        const dt_insem = new Date(pig_production.insemination.insem_date);
                         
                         elemSowLastInsem.textContent  = formatDate(dt_insem);
-                        elemSowLastPid.textContent    = cur_entry.last_farm_prod_id;  
+                        elemSowLastPid.textContent    = pig_production.pig_production.farm_prod_id;  
                         
                         elemSowStatusShow.style.display = 'block';
                     }

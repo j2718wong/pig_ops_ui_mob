@@ -521,6 +521,10 @@ export function PageProdEntryCommon(input_settings){
             
             case PIG_PROD_TYPE.HARVESTED:{
                 title_list = 'Prod Hist';
+                
+                if (showOptions.is_prod_sales){
+                    title_list = 'Prod Sales';
+                }
                 break;
             }
             

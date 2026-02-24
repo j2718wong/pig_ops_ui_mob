@@ -7,12 +7,13 @@
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT}             from '../../../utils.js';
+        FORMAT_COMPACT}        from '../../../utils.js';
 
 
 
 import {PAGE_ID,
-        HARVEST_TYPE}               from '../../../constants.js';
+        HARVEST_TYPE,
+        PROD_STATUS}           from '../../../constants.js';
 
 
 
@@ -488,6 +489,14 @@ export function HarvestCard(input_settings){
     
     
     this.attachListeners = function(data_pig_prod, data_harvest, elem_card){
+        const prod_status_id = parentObj.dataPigProd.pig_production.prod_status_id; 
+        if (prod_status_id == PROD_STATUS.HARVESTED || prod_status_id == PROD_STATUS.CLOSED){
+            // Cannot be edited;
+            return;
+        }
+        
+        
+        
         const elem_tag = elem_card.querySelector('.harvest-type-tag');
         
         elem_tag.onclick = function(){

@@ -265,6 +265,9 @@ export function ProdSummary(input_settings){
     
     
     this.populateProdSummary = function(){
+        const list_harvest      = curDataEntry.data_details.list_harvest;
+        
+        
         // Update account weight_unit and currency
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         const currency          = acc_settings_ops.currency;
@@ -278,17 +281,25 @@ export function ProdSummary(input_settings){
         const target_harvest = parentObj.calculateDateTargetHarvest(
             curDataEntry, null, acc_settings_ops);
     
+
+    
         let numdays_label = '';
         
-        if (curDataEntry.birth.date_actual){
-            elemTdNumDaysLabel.innerHTML  = 'Days Since Birth';  
-            elemTdNumDays.innerHTML = target_harvest.days_since_birth;  
+        const prod_status_id = curDataEntry.pig_production.prod_status_id; 
+        if (prod_status_id == PROD_STATUS.HARVESTED || prod_status_id == PROD_STATUS.CLOSED){
+            elemTdNumDaysLabel.innerHTML  = 'Days Birth to Last Harvest';
         }
-        else{
-            elemTdNumDaysLabel.innerHTML  = 'Days Since Wean';  
-            elemTdNumDays.innerHTML = target_harvest.days_since_wean;
+        else {
+            if (curDataEntry.birth.date_actual){
+                elemTdNumDaysLabel.innerHTML  = 'Days Since Birth';  
+                elemTdNumDays.innerHTML = target_harvest.days_since_birth;  
+            }
+            else{
+                elemTdNumDaysLabel.innerHTML  = 'Days Since Wean';  
+                elemTdNumDays.innerHTML = target_harvest.days_since_wean;
+            }
         }
-        
+    
         
         // Pig Counts
         let s_count_pigs_birth = '';
@@ -344,7 +355,6 @@ export function ProdSummary(input_settings){
         let total_sales         = 0.0;
         let num_pigs_sold       = 0;
         
-        const list_harvest      = curDataEntry.data_details.list_harvest;
         if (list_harvest){
             let num_pigs_harvested  = 0;
             
