@@ -309,7 +309,7 @@ export function ProdEntryBirth(input_settings){
     
     
     this._bindEventListeners = function(){
-         elemBtnSave.addEventListener('click', function() {
+        elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
         });
         

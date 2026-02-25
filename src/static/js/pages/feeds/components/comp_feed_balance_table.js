@@ -69,7 +69,7 @@ export function ComponentFeedBalanceTable(input_settings){
         
         
         const table_before_starter = `
-            <table class="data-table table-prod-hist">
+            <table class="data-table">
                 <colgroup>
                     <col style="width: 20%;">
                     <col style="width: 20%;">

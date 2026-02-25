@@ -11,6 +11,8 @@ import {PIG_OPERATION_TYPE,
         SUPPLIER_TYPE}              from '../../constants.js';
 
 
+import {ManagerNavLinks}            from './manager_nav_links.js';
+
 import {ServerError}                from '../common/server_error.js';
 import {ToastAlert}                 from '../common/toast_alert.js';
 import {MoreModal}                  from '../common/more_modal.js';
@@ -296,6 +298,9 @@ export function Navigation(){
     
     const elemIdContProdNotPregnantList = 'container-prod-not-pregnant-list';
     
+    const elemIdContAllFeedBalanceInput = 'container-all-feed-bal-add-edit';
+    
+    
     
     const elemIdContFarmFeedBuyList     = 'container-farm-feed-buy-list';
     const elemIdContFarmFeedBuyAddEdit  = 'container-farm-feed-buy-add-edit';
@@ -321,24 +326,6 @@ export function Navigation(){
     
     
     let elemNavLeftProductName          = null;
-    
-    
-    
-    let elemDesktopNavSettings          = null;
-    let elemDesktopNavSowBoarGilt       = null;
-    let elemDesktopNavProduction        = null;
-    let elemDesktopNavOperations        = null;
-    let elemDesktopNavFinancials        = null;
-    let elemDesktopNavAccountLists      = null;
-    let elemDesktopNavAdmin             = null;
-        
-    let elemMobileNavSettings           = null;
-    let elemMobileNavSowBoarGilt        = null;
-    let elemMobileNavProduction         = null;
-    let elemMobileNavOperations         = null;
-    let elemMobileNavFinancials         = null;
-    let elemMobileNavAccountLists       = null;
-    let elemMobileNavAdmin              = null;
     
     
     let elemPageContHomeDashBoard       = null;
@@ -379,6 +366,8 @@ export function Navigation(){
     let elemPageContProdHistoryEntry    = null;
     let elemPageContProdNotPregnantList = null;
     
+    let elemPageContAllFeedBalanceInput = null;
+    
     
     let elemPageContProdSalesList       = null;
     let elemPageContProdSalesEntry      = null;
@@ -410,6 +399,8 @@ export function Navigation(){
     
     this.curScreenIsMobile          = null;
     
+    
+    this.managerNavLinks        = new ManagerNavLinks(this);
     
     this.userControl            = new UserControl(this);
     
@@ -689,6 +680,7 @@ export function Navigation(){
     
     
     this.init = function(){
+        this.managerNavLinks.init();
         
         this.userControl.init();
         
@@ -777,25 +769,8 @@ export function Navigation(){
         const elemTopNavContainer       = document.querySelector('.top-nav-container');
         elemNavLeftProductName          = elemTopNavContainer.querySelector('.nav-left > .product-name');
         
-        
-        
-        
-        elemDesktopNavSettings          = document.getElementById('desktop-nav-settings');
-        elemDesktopNavSowBoarGilt       = document.getElementById('desktop-nav-sow-boar-gilt');
-        elemDesktopNavProduction        = document.getElementById('desktop-nav-production');
-        elemDesktopNavOperations        = document.getElementById('desktop-nav-operations');
-        elemDesktopNavFinancials        = document.getElementById('desktop-nav-financials');
-        elemDesktopNavAccountLists      = document.getElementById('desktop-nav-account-lists');
-        elemDesktopNavAdmin             = document.getElementById('desktop-nav-admin');
-            
-        elemMobileNavSettings           = document.getElementById('mobile-nav-settings');
-        elemMobileNavSowBoarGilt        = document.getElementById('mobile-nav-sow-boar-gilt');
-        elemMobileNavProduction         = document.getElementById('mobile-nav-production');
-        elemMobileNavOperations         = document.getElementById('mobile-nav-operations');
-        elemMobileNavFinancials         = document.getElementById('mobile-nav-financials');
-        elemMobileNavAccountLists       = document.getElementById('mobile-nav-account-lists');
-        elemMobileNavAdmin              = document.getElementById('mobile-nav-admin');
 
+        
         
         elemPageContHomeDashBoard       = document.getElementById(elemIdContHomeDashBoard);
 
@@ -836,6 +811,8 @@ export function Navigation(){
         elemPageContProdHistoryEntry    = document.getElementById(elemIdContProdHistoryEntry);
         
         elemPageContProdNotPregnantList = document.getElementById(elemIdContProdNotPregnantList);
+        
+        elemPageContAllFeedBalanceInput = document.getElementById(elemIdContAllFeedBalanceInput);
         
         
         elemPageContProdSalesList       = document.getElementById(elemIdContProdSalesList);
@@ -1264,186 +1241,7 @@ export function Navigation(){
         thisObj.pageHomeDashBoard.show();
     }
     
-    
-    this.onClickNav = function(is_mobile, nav_name){
-    
-        thisObj.curScreenIsMobile = is_mobile;
-        
-        
-        switch(nav_name){
-            case 'prod-gesta':{
-                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.GESTATING);
-                break;
-            }
-            
-            case 'prod-lacta-piglets':{
-                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
-                break;
-            }
-            
-            case 'prod-lacta-sows':{
-                thisObj._onClickNavProdGestaLacta(is_mobile, PIG_OPERATION_TYPE.LACTATING_SOW);
-                break;
-            }
-            
-            case 'prod-fattening':{
-                thisObj._onClickNavProdFattening(is_mobile);
-                break;
-            }
-            
-            case 'prod-history':{
-                thisObj._onClickNavProdHistory(is_mobile);
-                break;
-            }
-            
-            case 'prod-not-pregnant':{
-                thisObj._onClickNavProdNotPregnant(is_mobile);
-                break;
-            }
-            
-            case 'prod-feeds':{
-                thisObj._onClickNavProdFeeds(is_mobile);
-                break;
-            }
-            
-            
-            
-            case 'sows':{
-                thisObj._onClickNavSowBoar(is_mobile, SOW_BOAR_TYPE.SOW);
-                break;
-            }
-            
-            case 'boars':{
-                thisObj._onClickNavSowBoar(is_mobile, SOW_BOAR_TYPE.BOAR);
-                break;
-            }
-            
-            case 'gilts':{
-                thisObj._onClickNavSowBoar(is_mobile, SOW_BOAR_TYPE.GILT);
-                break;
-            }
-            
-            case 'disposed':{
-                thisObj._onClickNavSowBoar(is_mobile, SOW_BOAR_TYPE.DISPOSED);
-                break;
-            }
-            
-            case 'trace_parents':{
-                thisObj._onClickNavParentTrace(is_mobile);
-                break;
-            }
-            
-            
-            
-            
-            
-            
-            case 'reports':{
-                thisObj._onClickNavReports(is_mobile);
-                break;
-            }
-            
-            case 'feed-caculator':{
-                thisObj._onClickNavFeedCalculator(is_mobile);
-                break;
-            }
-            
-            
-            
-            case 'prod-sales':{
-                thisObj._onClickNavProdSales(is_mobile);
-                break;
-            }
-            
-            
-            case 'feeds-expenses':{
-                thisObj._onClickNavFeedsExpenses(is_mobile);
-                break;
-            }
-            
-            case 'nonfeeds-expenses':{
-                thisObj._onClickNavNonFeedsExpenses(is_mobile);
-                break;
-            }
-            
-            
-            
-            
-            case 'staff':{
-                thisObj._onClickNavStaff(is_mobile);
-                break;
-            }
-            
-            case 'pig-buyers':{
-                thisObj._onClickPigBuyers(is_mobile);
-                break;
-            }
-            
-            case 'feed-suppliers':{
-                thisObj._onClickFeedSuppliers(is_mobile);
-                break;
-            }
-            
-            case 'semen-suppliers':{
-                thisObj._onClickSemenSuppliers(is_mobile);
-                break;
-            }
-            
-            case 'gilt-suppliers':{
-                thisObj._onClickGiltSuppliers(is_mobile);
-                break;
-            }
-            
-            
-            case 'op-settings':{
-                thisObj._onClickNavOpsSettings(is_mobile);
-                break;
-            }
-            
-            case 'gesta-sow-ops':{
-                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.GESTATING);
-                break;
-            }
-            
-            case 'lacta-piglets-ops':{
-                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
-                break;
-            }
-                
-            case 'lacta-sow-ops':{
-                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.LACTATING_SOW);
-                break;
-            }
-            
-            case 'wean-sow-ops':{
-                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.WEANING_SOW);
-                break;
-            }
-            
-            case 'gilt-ops':{
-                thisObj._onClickNavAccPigOps(is_mobile, PIG_OPERATION_TYPE.GILT);
-                break;
-            }
-            
-            
-            case 'users': {
-                thisObj._onClickNavUsers(is_mobile);
-                break;
-            }
-            
-            case 'users-requests':{
-                thisObj._onClickNavUsersRequest(is_mobile);
-                break;
-            }
-            
-            
-        
-        }
-        
-        
-    }
-    
-    
+      
     this._onClickNavOpsSettings = function(is_mobile){
         console.log('_onClickNavOpsSettings not yet implemented; is_mobile=' + is_mobile);
     }

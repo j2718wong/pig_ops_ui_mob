@@ -58,7 +58,7 @@
 
     --gestating-color:  #693FE9;
     --lactating-piglets-color:  #2394EF;
-	--lactating-sow-color:  #e83e8c;
+    --lactating-sow-color:  #e83e8c;
     --weaning-color: #07A4C4;
     --gilt-color: #2ecc71;
     
@@ -70,6 +70,11 @@
     --white: #ffffff;
     
     --body-default-bg: #f5f7fa; 
+    
+    --farm-row-bg: #fef7e6;
+    --farm-row-border: #f5cba0;
+    --total-row-bg: #d1ecf1;
+    --total-row-border: #bee5eb;
 }
 
 * {
@@ -1299,19 +1304,19 @@ p {
 
 
 .expandable {
-	overflow: hidden;
-	padding-top:0 !important;
-	padding-bottom:0 !important;
-	margin-top:0 !important;
+    overflow: hidden;
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+    margin-top:0 !important;
 
     max-height: 0;
     transition: max-height 0.3s ease, padding 0.3s ease;
 }
 
 .expandable.expanded{
-	max-height: 500px;
-	
-	/*should restore the previous padding and margin before un expanded*/
+    max-height: 500px;
+    
+    /*should restore the previous padding and margin before un expanded*/
 
 }
 
@@ -1937,7 +1942,7 @@ p {
 /* Custom modal styling with extra large radius */
 .custom-modal {
     border: none;
-	margin-left:0 !important;
+    margin-left:0 !important;
     /*box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);*/
 
 }
@@ -2092,33 +2097,33 @@ p {
 
 /* Tabs Navigation */
 .tabs-container {
-	display: flex;
-	overflow-y: auto;
-	background-color: var(--corporate-blue);
-	padding: 0 5px;
-	-webkit-overflow-scrolling: touch;
+    display: flex;
+    overflow-y: auto;
+    background-color: var(--corporate-blue);
+    padding: 0 5px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .tab-button {
-	flex: 1;
-	min-width: 80px;
-	background: none;
-	border: none;
-	color: rgba(255, 255, 255, 0.7);
-	padding: 12px 10px;
-	font-size: 16px;
-	font-weight: 600;
-	text-align: center;
-	border-bottom: 3px solid transparent;
-	transition: all 0.2s;
-	white-space: nowrap;
-	cursor: pointer;
+    flex: 1;
+    min-width: 80px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 12px 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    cursor: pointer;
 }
 
 .tab-button.active {
-	color: white;
-	border-bottom-color: white;
-	background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+    border-bottom-color: white;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .tabs-container button.tab-button:first-child {
@@ -2127,31 +2132,31 @@ p {
 
 /* Tab Content Area - Scrolls below fixed sections */
 .tab-content-area {
-	margin-top: 0;
-	padding: 0 0 20px 0;
-	overflow-y: auto;
-	max-height: calc(200vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
+    margin-top: 0;
+    padding: 0 0 20px 0;
+    overflow-y: auto;
+    max-height: calc(200vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
 }
 
 /* Individual Tab Content */
 .tab-content {
-	display: none;
+    display: none;
 }
 
 .tab-content.active {
-	display: block;
-	animation: fadeIn 0.3s ease;
+    display: block;
+    animation: fadeIn 0.3s ease;
 }
 
 .tab-title {
-	font-size: 1.3rem;
-	margin-bottom: 10px;
-	color: var(--corporate-blue);
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: var(--corporate-blue);
 }
 
 @keyframes fadeIn {
-	from { opacity: 0; }
-	to { opacity: 1; }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 
@@ -2636,8 +2641,8 @@ p {
 
 
 .text-overdue{
-	color: var(--danger-red);
-	font-weight: 600;
+    color: var(--danger-red);
+    font-weight: 600;
 }
 
 
@@ -3895,24 +3900,24 @@ textarea.form-control {
 
 /*********** FEED BUY INPUT ***********************/
 .fb-feed-type{
-	min-width: 50px;
+    min-width: 50px;
 }
 
 .kg-input {
-	min-width: 50px;
+    min-width: 50px;
 }
 
 .kg-input {
-	min-width: 50px;
+    min-width: 50px;
 }
 
 
 .simple-input {
-	width:100%;
-	border-radius: 6px 6px 6px 6px;
-	font-size: 18px;
-	padding: 8px 5px;
-	text-align: right;
+    width:100%;
+    border-radius: 6px 6px 6px 6px;
+    font-size: 18px;
+    padding: 8px 5px;
+    text-align: right;
 }
 
 
@@ -4437,3 +4442,98 @@ input[type=number] {
 /*************************************************************************/
 
 
+/*********************FEED_BALANCE_INPUT_ALL*****************************/
+ .data-table tr:nth-child(even):not(.farm-row):not(.total-row) {
+    background-color: var(--row-even);
+}
+.data-table tr:hover:not(.farm-row):not(.total-row) {
+    background-color: var(--row-hover);
+}
+
+.farm-row {
+    background-color: var(--farm-row-bg) !important;
+    border-top: 2px solid var(--farm-row-border);
+    border-bottom: 2px solid var(--farm-row-border);
+    font-weight: 500;
+}
+
+.total-row {
+    background-color: var(--total-row-bg) !important;
+    border-top: 2px solid var(--total-row-border);
+    border-bottom: 2px solid var(--total-row-border);
+    font-weight: 600;
+}
+.total-row td {
+    background-color: inherit;
+}
+
+.data-table td input[type="number"] {
+    width: 100%;
+    padding: 8px 2px;
+    border: none;
+    outline: none;
+    -moz-appearance: textfield;
+    background: transparent;
+    font-size: 13px;
+    font-family: inherit;
+    text-align: center;
+    min-height: 40px;
+    border-radius: 0;
+}
+.data-table td input[type="number"]:focus {
+    background: var(--alert-gold);
+    outline: 2px solid var(--corporate-blue-dark);
+    border-radius: 4px;
+}
+/* remove spinners for Firefox */
+.data-table td input[type="number"] {
+    -moz-appearance: textfield;
+}
+.data-table td input[type="number"]::-webkit-outer-spin-button,
+.data-table td input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.second-table colgroup col {
+    width: 25% !important;
+}
+
+.toggle-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+.toggle-btn {
+    background-color: var(--corporate-blue-company);
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 40px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: 0.1s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 200px;
+    justify-content: center;
+}
+.toggle-btn:active {
+    background-color: var(--corporate-blue-dark);
+    transform: scale(0.97);
+}
+.arrow-icon {
+    font-size: 1.3rem;
+}
+
+.total-row td:not(:first-child) {
+    background-color: inherit;
+    text-align: center;
+    font-weight: 700;
+    color: var(--blue-deep);
+}
+
+/******************************************************************************/

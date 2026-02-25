@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>swine · collect {rowIndex, feedType, value}</title>
+    <style>
+        /* ----- COLOR VARIABLES (recycled) ----- */
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --corporate-blue: #1e3a8a;
+            --corporate-blue-company: #1877F0;
+            --corporate-blue-dark: #15467d;
+            --corporate-blue-light: #4a8adb;
+            --corporate-blue-border: #dbeafe;
+            --corporate-bg: #e0f2fe;
+
+            --blue-deep: #0a2f6c;    
+            --blue-medium: #1e4d8f;
+            --blue-soft: #e6f0ff;
+            --blue-border: #b8d1f0;
+
+            --alert-gold: #ffc107;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+            --icon-blue: #1e5aa7;
+            --icon-green: #28a745;
+            --icon-orange: #fd7e14;
+            --icon-purple: #6f42c1;
+            --icon-red: #dc3545;
+            --icon-teal: #20c997;
+            --icon-pink: #e83e8c;
+            --icon-indigo: #6610f2;
+            --icon-syringe: #6c757d;
+
+            --critical-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --text-dark: #1f2937;
+            --text-light: #f9fafb;
+
+            --light-gray: #f8fafc;
+            --medium-gray: #e2e8f0;
+            --neutral-gray: #6b7280;
+            --dark-gray: #64748b;
+
+            --warning-bg: #fef3c7;
+            --warning-border: #f59e0b;
+            --success-bg: #d1fae5;
+            --success-border: #10b981;
+
+            --alert-red: #ef4444;
+            --alert-glow: rgba(239, 68, 68, 0.7);
+            --green-complete: #10b981;
+
+            --gestating-color: #693FE9;
+            --lactating-piglets-color: #2394EF;
+            --lactating-sow-color: #e83e8c;
+            --weaning-color: #07A4C4;
+            --gilt-color: #2ecc71;
+
+            --row-even: #eff7ff;
+            --row-odd: #ffffff;
+            --row-hover: #e0f2fe;
+            --clickable-highlight: #1e40af;
+
+            --white: #ffffff;
+            --body-default-bg: #f5f7fa;
+            
+            --farm-row-bg: #fef7e6;
+            --farm-row-border: #f5cba0;
+            --total-row-bg: #d1ecf1;
+            --total-row-border: #bee5eb;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--body-default-bg);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 4px;
+        }
+
+        .mobile-card {
+            width: 100%;
+            max-width: 480px;
+            background: transparent;
+            padding: 0;
+        }
+
+        .slider-frame {
+            width: 100%;
+            overflow: hidden;
+            background: var(--blue-border);
+            box-shadow: var(--shadow);
+        }
+
+        .slider-wrapper {
+            display: flex;
+            width: 200%;
+            transition: transform 0.3s ease-out;
+            transform: translateX(0%);
+            will-change: transform;
+        }
+
+        .slide-panel {
+            width: 50%;
+            padding: 4px 4px 4px 4px;
+            background-color: var(--white);
+        }
+
+        /* ----- data-table base ----- */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: fixed;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            font-size: 13.5px;
+            background: var(--white);
+        }
+
+       
+
+        .data-table th {
+            background-color: var(--corporate-blue-company);
+            color: var(--text-light);
+            padding: 8px 2px 8px 3px;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-right: 1px solid var(--blue-soft);
+            text-align: center;
+            border-bottom: 2px solid var(--blue-deep);
+        }
+        .data-table th:last-child {
+            border-right: none;
+        }
+
+        .data-table td {
+            padding: 3px 2px;
+            font-size: 13px;
+            vertical-align: middle;
+            border-right: 1px solid var(--blue-border);
+            border-bottom: 1px solid var(--medium-gray);
+            line-height: 1.2;
+        }
+        .data-table td:last-child {
+            border-right: none;
+        }
+        .data-table tbody tr:last-child td {
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .data-table td:first-child {
+            background-color: var(--light-gray);
+            color: var(--text-dark);
+            font-weight: 500;
+            text-align: center;
+            border-right: 1px solid var(--border-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 3px 1px;
+        }
+
+        .data-table tr:nth-child(even):not(.farm-row):not(.total-row) {
+            background-color: var(--row-even);
+        }
+        .data-table tr:hover:not(.farm-row):not(.total-row) {
+            background-color: var(--row-hover);
+        }
+
+        .farm-row {
+            background-color: var(--farm-row-bg) !important;
+            border-top: 2px solid var(--farm-row-border);
+            border-bottom: 2px solid var(--farm-row-border);
+            font-weight: 500;
+        }
+
+        .total-row {
+            background-color: var(--total-row-bg) !important;
+            border-top: 2px solid var(--total-row-border);
+            border-bottom: 2px solid var(--total-row-border);
+            font-weight: 600;
+        }
+        .total-row td {
+            background-color: inherit;
+        }
+
+        .data-table td input[type="number"] {
+            width: 100%;
+            padding: 8px 2px;
+            border: none;
+            outline: none;
+            -moz-appearance: textfield;
+            background: transparent;
+            font-size: 13px;
+            font-family: inherit;
+            text-align: center;
+            min-height: 40px;
+            border-radius: 0;
+        }
+        .data-table td input[type="number"]:focus {
+            background: var(--alert-gold);
+            outline: 2px solid var(--corporate-blue-dark);
+            border-radius: 4px;
+        }
+        /* remove spinners for Firefox */
+        .data-table td input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .data-table td input[type="number"]::-webkit-outer-spin-button,
+        .data-table td input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .second-table colgroup col {
+            width: 25% !important;
+        }
+
+        .toggle-area {
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .toggle-btn {
+            background-color: var(--corporate-blue-company);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 40px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 200px;
+            justify-content: center;
+        }
+        .toggle-btn:active {
+            background-color: var(--corporate-blue-dark);
+            transform: scale(0.97);
+        }
+        .arrow-icon {
+            font-size: 1.3rem;
+        }
+
+        .total-row td:not(:first-child) {
+            background-color: inherit;
+            text-align: center;
+            font-weight: 700;
+            color: var(--blue-deep);
+        }
+
+        .data-snapshot {
+            margin-top: 10px;
+            background: var(--white);
+            border-radius: 30px;
+            padding: 10px 8px;
+            border: 1px solid var(--blue-border);
+            font-size: 11px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 120px;
+            overflow: auto;
+            box-shadow: var(--shadow);
+            color: var(--blue-deep);
+        }
+        .collect-btn {
+            background: var(--corporate-blue);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 12px;
+            font-size: 13px;
+            margin-top: 6px;
+            width: 100%;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="mobile-card">
+    <div class="slider-frame">
+        <div class="slider-wrapper" id="sliderWrapper">
+            <!-- FIRST DIV (5 columns) : feedType mapping: Gesta=1, Lacta=2, Booster=3, Prestart=4 -->
+            <div class="slide-panel">
+                <table class="data-table" id="tableOne">
+                    <colgroup>
+                        <col style="width:20%">
+                        <col style="width:20%">
+                        <col style="width:20%">
+                        <col style="width:20%">
+                        <col style="width:20%">
+                    </colgroup>
+                    <thead>
+                        <tr><th>PID</th><th>Gesta</th><th>Lacta</th><th>Booster</th><th>Prestart</th></tr>
+                    </thead>
+                    <tbody id="tbodyOne"></tbody>
+                </table>
+            </div>
+            <!-- SECOND DIV (4 columns) : feedType mapping: Starter=5, Grower=6, Finisher=7 -->
+            <div class="slide-panel">
+                <table class="data-table second-table" id="tableTwo">
+                    <colgroup>
+                        <col style="width:25%">
+                        <col style="width:25%">
+                        <col style="width:25%">
+                        <col style="width:25%">
+                    </colgroup>
+                    <thead>
+                        <tr><th>PID</th><th>Starter</th><th>Grower</th><th>Finisher</th></tr>
+                    </thead>
+                    <tbody id="tbodyTwo"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="toggle-area">
+        <button class="toggle-btn" id="toggleBtn"><span class="arrow-icon">↔️</span> SLIDE TABLES</button>
+    </div>
+
+    <!-- collection button + display -->
+    <button class="collect-btn" id="collectInputsBtn">📋 COLLECT {rowIndex, feedType, value}</button>
+    <div class="data-snapshot" id="inputSnapshot">Click to see collected data (excludes total rows)</div>
+</div>
+
+<script>
+    (function() {
+        // ---------- helper: build rows (NO PLACEHOLDERS) ----------
+        function createDataRow(pid, inputCount, rowClass = '') {
+            const tr = document.createElement('tr');
+            if (rowClass) tr.classList.add(rowClass);
+
+            const tdPid = document.createElement('td');
+            tdPid.textContent = pid;
+            tr.appendChild(tdPid);
+
+            for (let i = 0; i < inputCount; i++) {
+                const td = document.createElement('td');
+                td.style.padding = '0';
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.step = 'any';
+                input.value = '0';          // default zero (can be deleted)
+                // NO placeholder attribute – removed as requested
+                td.appendChild(input);
+                tr.appendChild(td);
+            }
+            return tr;
+        }
+
+        function attachTotalUpdater(tbody, totalRowIndex, columnCount) {
+            function updateTotal() {
+                const rows = Array.from(tbody.children);
+                const totalRow = rows[totalRowIndex];
+                if (!totalRow) return;
+
+                for (let col = 1; col <= columnCount; col++) {
+                    let sum = 0;
+                    rows.forEach((row, idx) => {
+                        if (idx === totalRowIndex) return;
+                        const cell = row.children[col];
+                        if (cell) {
+                            const input = cell.querySelector('input');
+                            if (input) {
+                                const val = parseFloat(input.value) || 0;
+                                sum += val;
+                            }
+                        }
+                    });
+                    const totalCell = totalRow.children[col];
+                    if (totalCell) {
+                        totalCell.textContent = sum;
+                    }
+                }
+            }
+
+            updateTotal();
+
+            const rows = Array.from(tbody.children);
+            rows.forEach((row, idx) => {
+                if (idx === totalRowIndex) return;
+                Array.from(row.querySelectorAll('input')).forEach(input => {
+                    input.addEventListener('input', updateTotal);
+                    input.addEventListener('change', updateTotal);
+                });
+            });
+        }
+
+        // ---------- build table one (5 cols) ----------
+        const tbodyOne = document.getElementById('tbodyOne');
+        // rows: normal, normal, farm, normal, total
+        tbodyOne.appendChild(createDataRow('S-101', 4));
+        tbodyOne.appendChild(createDataRow('S-102', 4));
+        tbodyOne.appendChild(createDataRow('🏠 FARM', 4, 'farm-row'));
+        tbodyOne.appendChild(createDataRow('S-103', 4));
+
+        const totalRow = document.createElement('tr');
+        totalRow.classList.add('total-row');
+        const tdPidTotal = document.createElement('td');
+        tdPidTotal.textContent = '📊 TOTAL';
+        totalRow.appendChild(tdPidTotal);
+        for (let i = 0; i < 4; i++) {
+            const td = document.createElement('td');
+            td.textContent = '0';
+            totalRow.appendChild(td);
+        }
+        tbodyOne.appendChild(totalRow);
+        attachTotalUpdater(tbodyOne, 4, 4);
+
+        // ---------- build table two (4 cols) ----------
+        const tbodyTwo = document.getElementById('tbodyTwo');
+        tbodyTwo.appendChild(createDataRow('S-201', 3));
+        tbodyTwo.appendChild(createDataRow('S-202', 3));
+        tbodyTwo.appendChild(createDataRow('🏠 FARM', 3, 'farm-row'));
+        tbodyTwo.appendChild(createDataRow('S-203', 3));
+
+        const totalRow2 = document.createElement('tr');
+        totalRow2.classList.add('total-row');
+        const tdPidTotal2 = document.createElement('td');
+        tdPidTotal2.textContent = '📊 TOTAL';
+        totalRow2.appendChild(tdPidTotal2);
+        for (let i = 0; i < 3; i++) {
+            const td = document.createElement('td');
+            td.textContent = '0';
+            totalRow2.appendChild(td);
+        }
+        tbodyTwo.appendChild(totalRow2);
+        attachTotalUpdater(tbodyTwo, 4, 3);
+
+        // ---------- slide toggle ----------
+        const wrapper = document.getElementById('sliderWrapper');
+        const toggleBtn = document.getElementById('toggleBtn');
+        let secondVisible = false;
+        toggleBtn.addEventListener('click', () => {
+            secondVisible = !secondVisible;
+            wrapper.style.transform = secondVisible ? 'translateX(-50%)' : 'translateX(0%)';
+        });
+        wrapper.style.transform = 'translateX(0%)';
+
+        // ---------- COLLECT FUNCTION: { rowIndex, feedType, value } ----------
+        function getAllInputsExcludingTotal() {
+            const result = [];
+
+            // feedType mapping based on column header (case-sensitive)
+            const feedTypeMap = {
+                'Gesta': 1,
+                'Lacta': 2,
+                'Booster': 3,
+                'Prestart': 4,
+                'Starter': 5,
+                'Grower': 6,
+                'Finisher': 7
+            };
+
+            // process both tables
+            const tables = document.querySelectorAll('.data-table');
+            tables.forEach(table => {
+                const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+
+                rows.forEach((row, rowIdx) => {
+                    // skip total rows
+                    if (row.classList.contains('total-row')) return;
+
+                    // get all input cells (skip first column = PID)
+                    const inputCells = row.querySelectorAll('td:not(:first-child) input[type="number"]');
+                    inputCells.forEach((input, colIdx) => {
+                        // column name from headers[colIdx+1] because headers[0] is PID
+                        const columnName = headers[colIdx + 1]; 
+                        const feedType = feedTypeMap[columnName];
+                        // only if feedType exists (should always)
+                        if (feedType !== undefined) {
+                            result.push({
+                                rowIndex: rowIdx,
+                                feedType: feedType,
+                                value: input.value  // keep as string, but could be parsed
+                            });
+                        }
+                    });
+                });
+            });
+
+            return result;
+        }
+
+        // demo button
+        const collectBtn = document.getElementById('collectInputsBtn');
+        const snapshotDiv = document.getElementById('inputSnapshot');
+        collectBtn.addEventListener('click', () => {
+            const data = getAllInputsExcludingTotal();
+            snapshotDiv.textContent = JSON.stringify(data, null, 2);
+        });
+    })();
+</script>
+</body>
+</html>
