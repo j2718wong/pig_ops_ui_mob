@@ -126,10 +126,15 @@ export function PigFarm(_navigation){
             thisObj.managerPigProd.setDataPigProdList(data.pig_production);
         }
         else{
+            const callback_success = function(data){
+                thisObj.managerPigProd.setDataPigProdList(data);
+                navigation.showHomeDashBoard();
+            };
             
             const pig_prod_type = PIG_PROD_TYPE.ALL;
             thisObj.managerPigProd.requestPigProdList(pig_prod_type, 
-                thisObj.managerPigProd.setDataPigProdList);
+                callback_success);
+
         }
         
     }

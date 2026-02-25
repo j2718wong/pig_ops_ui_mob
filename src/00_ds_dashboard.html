@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>farm dashboard · plain header</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* === recycled CSS colors (no new hex) === */
+        :root {
+            --corporate-blue: #1e5aa7;
+            --corporate-blue-dark: #15467d;
+            --corporate-blue-light: #4a8adb;
+            --alert-gold: #ffc107;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --icon-blue: #1e5aa7;
+            --icon-green: #28a745;
+            --icon-orange: #fd7e14;
+            --icon-purple: #6f42c1;
+            --icon-red: #dc3545;
+            --icon-teal: #20c997;
+            --icon-pink: #e83e8c;
+            --icon-indigo: #6610f2;
+            --icon-syringe: #6c757d;
+            --critical-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+
+        body {
+            background: #f2f4f6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--bg-light);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        /* === CUSTOMER BLOCK as main header (plain text, prominent) === */
+        .customer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 1.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--corporate-blue-light);
+        }
+
+        .farm-name {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--corporate-blue-dark);
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+
+        .today-date {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            background: transparent;
+            padding: 0;
+            border: none;
+        }
+
+        /* === mobile grid: 3 rows, 2 columns each — centered content === */
+        .stats-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* centered cell: label above number, both centered */
+        .stat-cell {
+            background: white;
+            border-radius: 18px;
+            padding: 1.2rem 0.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border-left: 5px solid var(--corporate-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 110px;
+        }
+
+        .label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .number {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--corporate-blue);
+            line-height: 1;
+            letter-spacing: -0.5px;
+        }
+
+        /* expecting section (row 4) */
+        .expecting-section {
+            background: white;
+            border-radius: 24px;
+            padding: 1.2rem 1.2rem;
+            margin: 1.2rem 0 1rem 0;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            color: var(--corporate-blue-dark);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .section-title i {
+            color: var(--alert-gold);
+            font-size: 1.2rem;
+        }
+
+        .sow-name-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .pill {
+            background: color-mix(in srgb, var(--corporate-blue-light) 18%, white);
+            border: 1px solid var(--corporate-blue-light);
+            color: var(--corporate-blue-dark);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 550;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        .pill::before {
+            content: "🐷";
+            margin-right: 6px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* harvest table (row 5) */
+        .harvest-section {
+            background: white;
+            border-radius: 24px;
+            padding: 1.2rem 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 240px;
+        }
+
+        th {
+            background-color: var(--corporate-blue);
+            color: var(--text-light);
+            font-weight: 600;
+            padding: 0.7rem 0.8rem;
+            text-align: left;
+        }
+
+        td {
+            padding: 0.7rem 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pid {
+            font-family: 'SF Mono', 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--corporate-blue-dark);
+        }
+
+        .pig-count {
+            background-color: var(--bg-light);
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .color-note {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--corporate-blue-dark);
+            opacity: 0.8;
+            border-top: 1px dashed var(--corporate-blue-light);
+            padding-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- customer block as main header: plain text, prominent, replacing "piglet grid" -->
+        <div class="customer-header">
+            <div class="farm-name">Jackson Farm</div>
+            <div class="today-date">25 Feb 2026</div>
+        </div>
+
+        <!-- grid rows: only label + number, centered -->
+        <div class="stats-grid">
+
+            <!-- row 1: Lacta Piglets | Fattening Pigs -->
+            <div class="grid-row">
+                <div class="stat-cell">
+                    <div class="label">Lacta Piglets</div>
+                    <div class="number">124</div>
+                </div>
+                <div class="stat-cell">
+                    <div class="label">Fattening Pigs</div>
+                    <div class="number">408</div>
+                </div>
+            </div>
+
+            <!-- row 2: Lacta Sow | Gesta Sow -->
+            <div class="grid-row">
+                <div class="stat-cell">
+                    <div class="label">Lacta Sow</div>
+                    <div class="number">18</div>
+                </div>
+                <div class="stat-cell">
+                    <div class="label">Gesta Sow</div>
+                    <div class="number">43</div>
+                </div>
+            </div>
+
+            <!-- row 3: Boars | Gilts -->
+            <div class="grid-row">
+                <div class="stat-cell">
+                    <div class="label">Boars</div>
+                    <div class="number">7</div>
+                </div>
+                <div class="stat-cell">
+                    <div class="label">Gilts</div>
+                    <div class="number">22</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- row 4: Expecting Next 7 days (list) -->
+        <div class="expecting-section">
+            <div class="section-title">
+                <span>⏳</span> Expecting next 7 days
+            </div>
+            <div class="sow-name-pills">
+                <span class="pill">Lala</span>
+                <span class="pill">Fiona</span>
+                <span class="pill">Kurdapya</span>
+                <span class="pill" style="background:#f0f0f0; border-color:var(--border-color); color:#555;">+1 more</span>
+            </div>
+            <div style="font-size:0.8rem; margin-top: 0.5rem; color: var(--corporate-blue);">due: 20–26 Mar</div>
+        </div>
+
+        <!-- row 5: Harvest Next 7 days (table) -->
+        <div class="harvest-section">
+            <div class="section-title">
+                <span>🔪</span> Harvest next 7 days
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PID</th>
+                            <th>Num Pigs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="pid">H-2410</td><td><span class="pig-count">6</span></td></tr>
+                        <tr><td class="pid">H-2411</td><td><span class="pig-count">4</span></td></tr>
+                        <tr><td class="pid">H-2412</td><td><span class="pig-count">8</span></td></tr>
+                        <tr><td class="pid">H-2413</td><td><span class="pig-count">5</span></td></tr>
+                        <tr><td class="pid">H-2414</td><td><span class="pig-count">7</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--icon-syringe); display: flex; justify-content: space-between;">
+                <span>total 30 head</span>
+                <span style="color:var(--corporate-blue);">⬇️ schedule</span>
+            </div>
+        </div>
+
+        <!-- small recycled note -->
+        <div class="color-note">
+            ♻️ colors from corporate palette · stats centered
+        </div>
+    </div>
+</body>
+</html>

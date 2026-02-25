@@ -27,7 +27,7 @@ import {PageAccountDisabled}        from '../a_user_control/page_account_disable
 import {PageUserDisabled}           from '../a_user_control/page_user_disabled.js';
 import {PageAccountUnpaidBill}      from '../a_user_control/page_account_unpaid_bill.js';
 
-
+import {PageHomeDashBoard}          from '../home/page_home_dashboard.js';
 
 
 import {PageSowBoarList}            from '../sow_boar/page_sow_boar_list.js';
@@ -247,9 +247,15 @@ export function Navigation(){
     let elemSubnavSummary       = null;
     
     
+    
+    
     const elemIdContAccountDisabled     = 'container-account-disabled';
     const elemIdContUserDisabled        = 'container-user-disabled';
     const elemIdContAccountBillUnpaid   = 'container-account-bill-unpaid';
+    
+    
+    const elemIdContHomeDashBoard       = 'container-dashboard';
+    
     
     const elemIdContSowBoarList         = 'container-sow-boar-list';
     const elemIdContSowBoarAddEdit      = 'container-sow-boar-add-edit';
@@ -314,6 +320,7 @@ export function Navigation(){
     
     
     
+    let elemNavLeftProductName          = null;
     
     
     
@@ -333,7 +340,10 @@ export function Navigation(){
     let elemMobileNavAccountLists       = null;
     let elemMobileNavAdmin              = null;
     
-        
+    
+    let elemPageContHomeDashBoard       = null;
+    
+    
     let elemPageContAccDisabled         = null;
     let elemPageContUserDisabled        = null;
     let elemPageContBillUnpaid          = null;
@@ -431,15 +441,26 @@ export function Navigation(){
     
     this.pageAccountUnpaidBill  = new PageAccountUnpaidBill({
         navigation:             this,
-        elemIdDivContainer:     elemIdContAccountBillUnpaid
+        elemIdDivContainer:     elemIdContAccountBillUnpaid,
+        uniqueKey:              'acc-unpaid-bill'
     });
+    
+    
+    
+    
+    this.pageHomeDashBoard      = new PageHomeDashBoard({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContHomeDashBoard,
+        uniqueKey:              'home-dashboard'
+    });
+    
     
     
     
     this.pageSowBoarList        = new PageSowBoarList({
         navigation:             this,
         elemIdDivContainer:     elemIdContSowBoarList,
-        uniqueKey:              'sow-boar'
+        uniqueKey:              'sow-boar-list'
     });
     
     
@@ -677,6 +698,10 @@ export function Navigation(){
         this.pageUserDisabled.init();
         this.pageAccountUnpaidBill.init();
         
+        
+        this.pageHomeDashBoard.init();
+        
+        
         this.pageSowBoarList.init();
         this.pageSowBoarAddEdit.init();
         this.pageSowBoarEntry.init();
@@ -746,7 +771,15 @@ export function Navigation(){
     
     
     this._findElements = function(){
-       
+        
+     
+        
+        const elemTopNavContainer       = document.querySelector('.top-nav-container');
+        elemNavLeftProductName          = elemTopNavContainer.querySelector('.nav-left > .product-name');
+        
+        
+        
+        
         elemDesktopNavSettings          = document.getElementById('desktop-nav-settings');
         elemDesktopNavSowBoarGilt       = document.getElementById('desktop-nav-sow-boar-gilt');
         elemDesktopNavProduction        = document.getElementById('desktop-nav-production');
@@ -763,7 +796,10 @@ export function Navigation(){
         elemMobileNavAccountLists       = document.getElementById('mobile-nav-account-lists');
         elemMobileNavAdmin              = document.getElementById('mobile-nav-admin');
 
+        
+        elemPageContHomeDashBoard       = document.getElementById(elemIdContHomeDashBoard);
 
+        
         elemPageContAccDisabled         = document.getElementById(elemIdContAccountDisabled);
         elemPageContUserDisabled        = document.getElementById(elemIdContUserDisabled);
         elemPageContBillUnpaid          = document.getElementById(elemIdContAccountBillUnpaid);
@@ -836,6 +872,10 @@ export function Navigation(){
     
     
     this._bindEventListeners = function(){
+        elemNavLeftProductName.addEventListener('click', function() {
+            thisObj.showHomeDashBoard();
+        });
+        
         
         window.addEventListener('resize', thisObj.updatePigFarmName);
         
@@ -894,6 +934,8 @@ export function Navigation(){
         
         // Request account feed supplier
         this.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.FEED);
+        
+        
     }
     
     
@@ -942,7 +984,7 @@ export function Navigation(){
     this.getPageContainer = function(page_id){
         switch(page_id){
             case PAGE_ID.HOME:{
-                return null;
+                return elemPageContHomeDashBoard;
             }
     
             
@@ -1103,7 +1145,9 @@ export function Navigation(){
                 break;
             }
             
-            
+            default:{
+                return elemPageContHomeDashBoard;
+            }
         }
         
         return null;
@@ -1211,6 +1255,13 @@ export function Navigation(){
                 cur_entry.style.display = 'none';
             }
         }
+    }
+    
+    
+    this.showHomeDashBoard = function(){
+        const next_page = thisObj.getPageContainer(PAGE_ID.HOME);
+        thisObj.showThisPage(next_page);
+        thisObj.pageHomeDashBoard.show();
     }
     
     

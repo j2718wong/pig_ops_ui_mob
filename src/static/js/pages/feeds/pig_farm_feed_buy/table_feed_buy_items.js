@@ -261,8 +261,11 @@ export function TableFeedBuyItems(input_settings){
         const cur_data_entry = parentObj.getDataPigFarmFeedBuy();
         const data_list = cur_data_entry.feed_items;
         
-        for (const cur_entry of feed_items){
-            if (cur_entry.feed_item.hid == data_list){
+        console.log('\n\ncur_data_entry');
+        console.log(cur_data_entry);
+        
+        for (const cur_entry of data_list){
+            if (cur_entry.feed_item.hid == entry_hid){
                 return cur_entry;
             }
         } 

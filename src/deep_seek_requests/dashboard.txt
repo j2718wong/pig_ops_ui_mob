@@ -1,0 +1,104 @@
+1.) Create a homepage dash board such that will show this info,
+
+Recycle these CSS colors:
+
+--corporate-blue: #1e5aa7;
+--corporate-blue-dark: #15467d;
+--corporate-blue-light: #4a8adb;
+--alert-gold: #ffc107;
+--text-light: #ffffff;
+--text-dark: #333333;
+--bg-light: #f8f9fa;
+--border-color: #dee2e6;
+--shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+--icon-blue: #1e5aa7;
+--icon-green: #28a745;
+--icon-orange: #fd7e14;
+--icon-purple: #6f42c1;
+--icon-red: #dc3545;
+--icon-teal: #20c997;
+--icon-pink: #e83e8c;
+--icon-indigo: #6610f2;
+--icon-syringe: #6c757d;
+--critical-color: #dc3545;
+--warning-color: #ffc107;
+--info-color: #17a2b8;
+
+
+A.) When smaller mobile screens
+
+row 1: 
+-Lacta Piglets  (display number) 
+-Fattening Pigs (display number)
+
+row 2:
+- Lacta Sow  (display number)
+- Gesta Sow  (display number)
+
+row 3:
+- Boars (display number)
+- Gilts (display number)
+
+row 4:
+Expecting Next 7 days
+Lala, Fiona, Kurdapya  (list of strings)
+
+
+row 5: Harvest Next 7 days
+- this is a table
+PID     Num Pigs
+
+
+B.) When bigger screens
+
+row 1: 
+-Lacta Piglets  (display number) 
+-Lacta Sow  (display number)
+-Fattening Pigs (display number)
+
+row 2:
+- Gesta Sow  (display number)
+- Gilts (display number)
+
+row 3:
+Expecting Next 7 days
+Lala, Fiona, Kurdapya  (list of strings)
+
+
+row 4: Harvest Next 7 days
+- this is a table
+PID     Num Pigs
+
+
+
+When viewed at smaller screens,
+maybe a grid table, not cards .
+
+row 1(one row only): 
+-Lacta Piglets  (display number) 
+-Fattening Pigs (display number)
+
+row 2(one row only):
+- Lacta Sow  (display number)
+- Gesta Sow  (display number)
+
+row 3(one row only):
+- Boars (display number)
+- Gilts (display number)
+
+
+put a customer block before stats grid
+The customer block constains
+
+right side: Farm Name
+left side: Date today 
+
+Sample:
+
+Jackson Farm          25 Feb 2026
+
+
+
+
+
+
