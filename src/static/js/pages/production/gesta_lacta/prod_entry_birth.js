@@ -105,7 +105,7 @@ export function ProdEntryBirth(input_settings){
     
     let curDataPigProd          = null;
     
-
+    
     
     this.init = function(){
         this.render();
@@ -686,14 +686,30 @@ export function ProdEntryBirth(input_settings){
             navigation.pigFarm.managerPigProd.removeFromProdList(
                     pig_prod_hid, prod_list);
         
-        
+            
+            
+            // Request sow update as the number of birth and output piglets has changed.
+            const sow_hid   = curDataPigProd.sow.hid;
+            const sow_boar_list = navigation.pigFarm.managerSowBoar.dataSowList;
+            
+            const callback_success_sow_update = function(data){
+                navigation.pigFarm.managerSowBoar.replaceInSowBoarList(sow_hid, 
+                    sow_boar_list, data); 
+            };
+            
+            navigation.pigFarm.managerSowBoar.requestSowBoarEntry(sow_hid, 
+                callback_success_sow_update, elemServerErrorMsg);
+            
+            
+            
+            // Update Lactating list
             const callback_success = function(data){
                 // Go Back to Lactating List Page
                 const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
                 navigation._onClickNavProdGestaLacta(null, operation_type);
             };
             
-            // request Lactating List
+            // Request Lactating List
             navigation.pigFarm.managerPigProd.requestPigProdList(
                 PIG_PROD_TYPE.LACTATING, callback_success, elemServerErrorMsg);
         }

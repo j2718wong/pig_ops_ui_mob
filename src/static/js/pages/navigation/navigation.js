@@ -72,6 +72,9 @@ import {PageAccPigOpsAddEdit}       from '../acc_pig_ops/page_acc_pig_ops_add_ed
 
 import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_edit.js';
 
+import {PageUserList}               from '../a_user_control/page_user_list.js';
+
+
 
 function UserControl(_navigation) {
     const thisObj                   = this;
@@ -306,6 +309,8 @@ export function Navigation(){
     
     const elemIdContSupplierAddEdit     = 'container-supplier-add-edit';
     
+    const elemIdContUserList            = 'container-user-list';
+    const elemIdContUserAddEdit         = 'container-user-add-edit';
     
     
     
@@ -379,6 +384,12 @@ export function Navigation(){
     
     
     let elemPageContSupplierAddEdit     = null;
+    
+    
+    let elemPageContUserList            = null;
+    let elemPageContUserAddEdit         = null;
+    
+    
     
     
     this.pageData                   = null;
@@ -647,7 +658,14 @@ export function Navigation(){
         uniqueKey:              'supplier-add-edit'
     });
     
-
+    
+    this.pageUserList           = new PageUserList({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContUserList,
+        uniqueKey:              'user-list'
+    });
+    
+    
     
     this.init = function(){
         
@@ -707,6 +725,9 @@ export function Navigation(){
         
         
         this.pageSupplierAddEdit.init();
+        
+        
+        this.pageUserList.init();
         
         
         this.afterHtmlRender();
@@ -798,6 +819,8 @@ export function Navigation(){
         elemPageContAccPigOpsAddEdit    = document.getElementById(elemIdContAccPigOpsAddEdit);
         
         elemPageContSupplierAddEdit     = document.getElementById(elemIdContSupplierAddEdit);
+    
+        elemPageContUserList            = document.getElementById(elemIdContUserList);
     }
     
     
@@ -1068,6 +1091,18 @@ export function Navigation(){
             case PAGE_ID.SUPPLIER_ADD_EDIT:{
                 return elemPageContSupplierAddEdit;
             }
+            
+            
+            
+            case PAGE_ID.USER_LIST: {
+                return elemPageContUserList;
+                break;
+            }    
+            
+            case PAGE_ID.USER_ADD_EDIT: {
+                break;
+            }
+            
             
         }
         
@@ -1496,7 +1531,8 @@ export function Navigation(){
            
                     
     this._onClickNavUsers = function(is_mobile){
-        console.log('_onClickNavUsers not yet implemented; is_mobile=' + is_mobile);
+        thisObj.showThisPage(elemPageContUserList);
+        thisObj.pageUserList.show();
     }
         
         
@@ -1510,8 +1546,6 @@ export function Navigation(){
         
     this.onClickProdGestatingAdd = function(){
         thisObj.showThisPage(elemPageContProdGestaAdd);
-        
-        
         thisObj.pageProdGestatingAdd.show();
     }
     

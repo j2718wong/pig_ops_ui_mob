@@ -45,7 +45,7 @@ export function PageProdFatteningList(input_settings){
     const DEFAULT_NUM_DAYS_HARVEST_FROM_WEAN    = 100;
     
     
-    // This is needed as ths will be first element to be rendered
+    // This is needed as this will be first element to be rendered
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
     let elemIdNavPrevEntry      = null;

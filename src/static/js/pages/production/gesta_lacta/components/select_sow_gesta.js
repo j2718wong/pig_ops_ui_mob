@@ -72,6 +72,11 @@ export function SelectSowGesta(input_settings){
     let dataSowList             = null;
     
     
+    // It is possible to make new Gestating entry os an already gestated sow.
+    // This means that the previous breeding results to not pregnant.
+    this.isSelectedSowGestating = null;
+    
+    
     this.getHtml = function(){
         
         return `
@@ -251,6 +256,10 @@ export function SelectSowGesta(input_settings){
         
         elemSowStatusShow.style.display = 'none';
         
+        thisObj.isSelectedSowGestating = false;
+        
+        
+        
         for(index = 0; index < dataSowList.length; index++){
             cur_entry = dataSowList[index];
             
@@ -258,7 +267,9 @@ export function SelectSowGesta(input_settings){
             const sow_boar = cur_entry.sow_boar;
 
             
+            // Display warning not pregnant if sow has cur_pig_production; 
             if (sow_boar.hid == sow_hid){
+                
                 if (sow_boar.status_id == SOW_STATUS.GESTATING){
                     if (sow_boar.cur_pig_production){
                         
@@ -270,6 +281,8 @@ export function SelectSowGesta(input_settings){
                         elemSowLastPid.textContent    = pig_production.pig_production.farm_prod_id;  
                         
                         elemSowStatusShow.style.display = 'block';
+                        
+                        thisObj.isSelectedSowGestating = true;
                     }
                 }
                 break;

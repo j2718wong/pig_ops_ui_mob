@@ -12,6 +12,9 @@ export function AccountLists(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
     
+    this.dataUserList           = null;
+    
+    
     this.dataSemenSupplierList  = null;
     this.dataFeedSupplierList   = null;
     this.dataGiltSupplierList   = null;
@@ -28,6 +31,52 @@ export function AccountLists(_navigation){
     this.setPigFarmAccountHid = function(hid){
         accountHid = hid;
     }
+    
+    
+    this.requestDataUserList = function(callback_success, elem_show_error){
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/user/list?ahid=${accountHid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataUserList = response.data;
+                    
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                    
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    
+    
     
     
     

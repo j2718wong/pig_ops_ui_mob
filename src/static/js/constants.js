@@ -82,7 +82,12 @@ const PAGE_ID = {
     
     
     
-    SUPPLIER_ADD_EDIT:      70
+    SUPPLIER_ADD_EDIT:      70,
+    
+    
+    USER_LIST:              100,
+    USER_ADD_EDIT:          101
+    
     
 };
 

@@ -777,9 +777,10 @@ export function PageProdGestatingAdd(input_settings){
         const pig_prod_type = PIG_PROD_TYPE.GESTATING;
         
         const callback_success = function(data){
-            thisObj.show(); 
+            //thisObj.show(); 
             
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavProdGestaLacta(null, 
+                PIG_OPERATION_TYPE.GESTATING);
         };
         
         
@@ -787,6 +788,14 @@ export function PageProdGestatingAdd(input_settings){
         // This will request the whole sow_list
         navigation.pigFarm.managerSowBoar.requestSowBoarList(true, null,
             elemServerErrorMsg);
+        
+        
+        // If selected sow status is currently gestating,
+        // Need to update Not PregnantList.
+        if (componentSelectSow.isSelectedSowGestating){
+            navigation.pigFarm.managerPigProd.requestPigProdNotPregnantList(
+                null, elemServerErrorMsg);
+        }
         
         
         // Request PigProdList

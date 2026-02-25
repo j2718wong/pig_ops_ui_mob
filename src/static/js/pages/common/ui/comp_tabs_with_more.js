@@ -82,7 +82,7 @@ export function ComponentTabsWithMore(input_settings){
     
     
     
-    // This is needed as ths will be first element to be rendered
+    // This is needed as this will be first element to be rendered
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
 
