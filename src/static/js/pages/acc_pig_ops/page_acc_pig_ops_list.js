@@ -251,7 +251,7 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
+                    navigation._onClickNavAccOpsSettings(null);
                 }
         
                 elemNavNextEntry.onclick = function(){
@@ -311,7 +311,7 @@ export function PageAccPigOpsList(input_settings){
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
+                    navigation._onClickNavAccOpsSettings(null);
                 }
                 break;
             }

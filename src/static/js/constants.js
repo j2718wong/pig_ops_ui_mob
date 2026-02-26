@@ -79,8 +79,9 @@ const PAGE_ID = {
     FARM_FEED_BUY_ITEM_ADD_EDIT: 52,
     
     
-    ACC_PIG_OPS_LIST:       60,
-    ACC_PIG_OPS_ADD_EDIT:   61,
+    ACC_OPS_SETTINGS_EDIT:  60,
+    ACC_PIG_OPS_LIST:       61,
+    ACC_PIG_OPS_ADD_EDIT:   62,
     
     
     

@@ -263,10 +263,7 @@ export function PagePigFarmAddEdit(input_settings){
     
     
     this.populateForm = function(){
-        console.log(`navigation.pigFarm.dataPigFarm`);
 
-        console.log(navigation.pigFarm.dataPigFarm);
-        
         const pig_farm = navigation.pigFarm.dataPigFarm;
         
         elemUiName.setValue(pig_farm.pig_farm.name);

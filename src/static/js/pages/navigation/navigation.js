@@ -69,6 +69,7 @@ import {PageProdNotPregnantList}    from '../production/history/page_prod_not_pr
 import {PageProdSalesEntry}         from '../financials/prod_sales/page_prod_sales_entry.js';
 
 
+import {PageAccOpsSettingsEdit}     from '../acc_pig_ops/page_acc_ops_settings_edit.js';
 import {PageAccPigOpsList}          from '../acc_pig_ops/page_acc_pig_ops_list.js';
 import {PageAccPigOpsAddEdit}       from '../acc_pig_ops/page_acc_pig_ops_add_edit.js';
 
@@ -315,7 +316,7 @@ export function Navigation(){
     const elemIdContProdSalesEntry      = 'container-prod-sales-entry';
     
     
-    
+    const elemIdContAccOpsSettingsEdit  = 'container-acc-ops-settings-edit'; 
     const elemIdContAccPigOpsList       = 'container-acc-pig-ops-list';
     const elemIdContAccPigOpsAddEdit    = 'container-acc-pig-ops-add-edit';
     
@@ -381,6 +382,7 @@ export function Navigation(){
     
     let elemPageContFeedBalanceAddEdit  = null;
     
+    let elemPageContAccOpsSettingsEdit  = null;
     let elemPageContAccPigOpsList       = null;
     let elemPageContAccPigOpsAddEdit    = null;
     
@@ -657,6 +659,11 @@ export function Navigation(){
     });
     
     
+    this.pageAccOpsSettingsEdit = new PageAccOpsSettingsEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAccOpsSettingsEdit,
+        uniqueKey:              'acc-ops-settings-edit'
+    });
     
     
     this.pageAccPigOpsList      = new PageAccPigOpsList({
@@ -747,6 +754,7 @@ export function Navigation(){
         this.pageProdSalesEntry.init();
         
         
+        this.pageAccOpsSettingsEdit.init();
         this.pageAccPigOpsList.init();
         this.pageAccPigOpsAddEdit.init();
         
@@ -839,7 +847,7 @@ export function Navigation(){
         elemPageContFeedBalanceAddEdit  = document.getElementById(elemIdContFeedBalanceAddEdit);
         
         
-        
+        elemPageContAccOpsSettingsEdit  = document.getElementById(elemIdContAccOpsSettingsEdit);
         elemPageContAccPigOpsList       = document.getElementById(elemIdContAccPigOpsList);
         elemPageContAccPigOpsAddEdit    = document.getElementById(elemIdContAccPigOpsAddEdit);
         
@@ -1110,7 +1118,9 @@ export function Navigation(){
             
             
             
-            
+            case PAGE_ID.ACC_OPS_SETTINGS_EDIT:{
+                return elemPageContAccOpsSettingsEdit;
+            } 
         
             case PAGE_ID.ACC_PIG_OPS_LIST: {
                 return elemPageContAccPigOpsList;
@@ -1262,11 +1272,6 @@ export function Navigation(){
     }
         
     
-    this._onClickNavAccPigOps = function(is_mobile, operation_type){
-        thisObj.showThisPage(elemPageContAccPigOpsList);
-        thisObj.pageAccPigOpsList.show(operation_type);
-    }
-        
         
     this._onClickNavSowBoar = function(is_mobile, sow_boar_type){
         thisObj.showThisPage(elemPageContSowBoarList);
@@ -1395,7 +1400,18 @@ export function Navigation(){
     }
         
         
-           
+    this._onClickNavAccOpsSettings = function(is_mobile){
+        thisObj.showThisPage(elemPageContAccOpsSettingsEdit);
+        thisObj.pageAccOpsSettingsEdit.beforeShow();
+    }
+    
+        
+    this._onClickNavAccPigOps = function(is_mobile, operation_type){
+        thisObj.showThisPage(elemPageContAccPigOpsList);
+        thisObj.pageAccPigOpsList.show(operation_type);
+    }
+        
+    
                     
     this._onClickNavUsers = function(is_mobile){
         thisObj.showThisPage(elemPageContUserList);

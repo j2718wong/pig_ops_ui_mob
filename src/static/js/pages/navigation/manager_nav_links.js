@@ -350,7 +350,7 @@ export function ManagerNavLinks(_navigation) {
 
 
         elemDesktopNavSettings1.addEventListener('click', function() {
-            navigation._onClickNavOpsSettings(false);
+            navigation._onClickNavAccOpsSettings(false);
         });   
          
         elemDesktopNavSettings2.addEventListener('click', function() {
@@ -480,7 +480,7 @@ export function ManagerNavLinks(_navigation) {
             
             
         elemMobileNavSettings1.addEventListener('click', function() {
-            navigation._onClickNavOpsSettings(true);
+            navigation._onClickNavAccOpsSettings(true);
         });
              
         elemMobileNavSettings2.addEventListener('click', function() {

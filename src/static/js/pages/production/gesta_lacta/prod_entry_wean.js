@@ -522,7 +522,6 @@ export function ProdEntryWean(input_settings){
        
 
         if (curCountPiglets == COUNT_PIGLETS_SEPARATE){
-            console.log('test a');
             elemRdoSeparateCount.dispatchEvent(new Event('change', {bubbles:true}));
         }
         else{
