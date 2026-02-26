@@ -254,46 +254,46 @@ export function ManagerNavLinks(_navigation) {
     
     this._bindEventListeners = function(){
         elemDesktopNavProduction1.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(0, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.GESTATING);
         });
           
         elemDesktopNavProduction2.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(0, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation._onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         });
           
         elemDesktopNavProduction3.addEventListener('click', function() {
-            navigation._onClickNavProdFattening(0);
+            navigation._onClickNavProdFattening(false);
         });
           
         elemDesktopNavProduction4.addEventListener('click', function() {
-            navigation._onClickNavProdHistory(0);
+            navigation._onClickNavProdHistory(false);
         });
           
         elemDesktopNavProduction5.addEventListener('click', function() {
-            navigation._onClickNavProdNotPregnant(0);
+            navigation._onClickNavProdNotPregnant(false);
         });  
         
         
     
 
         elemDesktopNavSowBoarGilt1.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(0, SOW_BOAR_TYPE.SOW);
+            navigation._onClickNavSowBoar(false, SOW_BOAR_TYPE.SOW);
         });
          
         elemDesktopNavSowBoarGilt2.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(0, SOW_BOAR_TYPE.BOAR);
+            navigation._onClickNavSowBoar(false, SOW_BOAR_TYPE.BOAR);
         });
          
         elemDesktopNavSowBoarGilt3.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(0, SOW_BOAR_TYPE.GILT);
+            navigation._onClickNavSowBoar(false, SOW_BOAR_TYPE.GILT);
         });
          
         elemDesktopNavSowBoarGilt4.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(0, SOW_BOAR_TYPE.DISPOSED);
+            navigation._onClickNavSowBoar(false, SOW_BOAR_TYPE.DISPOSED);
         });
          
         elemDesktopNavSowBoarGilt5.addEventListener('click', function() {
-            navigation._onClickNavParentTrace(0);
+            navigation._onClickNavParentTrace(false);
         }); 
 
 
@@ -303,128 +303,128 @@ export function ManagerNavLinks(_navigation) {
         });
           
         elemDesktopNavOperations2.addEventListener('click', function() {
-            navigation._onClickNavReports(0);
+            navigation._onClickNavReports(false);
         });
           
         elemDesktopNavOperations3.addEventListener('click', function() {
-            navigation._onClickNavFeedCalculator(0);
+            navigation._onClickNavFeedCalculator(false);
         });  
 
 
 
         elemDesktopNavFinancials1.addEventListener('click', function() {
-            navigation._onClickNavProdSales(0);
+            navigation._onClickNavProdSales(false);
         });
           
         elemDesktopNavFinancials2.addEventListener('click', function() {
-            navigation._onClickNavFeedsExpenses(0);
+            navigation._onClickNavFeedsExpenses(false);
         });
           
         elemDesktopNavFinancials3.addEventListener('click', function() {
-            navigation._onClickNavNonFeedsExpenses(0);
+            navigation._onClickNavNonFeedsExpenses(false);
         });  
 
 
             
 
         elemDesktopNavAccountLists1.addEventListener('click', function() {
-            navigation._onClickNavStaff(0);
+            navigation._onClickNavStaff(false);
         });
         
         elemDesktopNavAccountLists2.addEventListener('click', function() {
-            navigation._onClickPigBuyers(0);
+            navigation._onClickPigBuyers(false);
         });
         
         elemDesktopNavAccountLists3.addEventListener('click', function() {
-            navigation._onClickFeedSuppliers(0);
+            navigation._onClickFeedSuppliers(false);
         });
         
         elemDesktopNavAccountLists4.addEventListener('click', function() {
-            navigation._onClickSemenSuppliers(0);
+            navigation._onClickSemenSuppliers(false);
         });
         
         elemDesktopNavAccountLists5.addEventListener('click', function() {
-            navigation._onClickGiltSuppliers(0);
+            navigation._onClickGiltSuppliers(false);
         });
 
 
 
         elemDesktopNavSettings1.addEventListener('click', function() {
-            navigation._onClickNavOpsSettings(0);
+            navigation._onClickNavOpsSettings(false);
         });   
          
         elemDesktopNavSettings2.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(0, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.GESTATING);
         }); 
            
         elemDesktopNavSettings3.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(0, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         }); 
            
         elemDesktopNavSettings4.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(0, PIG_OPERATION_TYPE.LACTATING_SOW);
+            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.LACTATING_SOW);
         }); 
            
         elemDesktopNavSettings5.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(0, PIG_OPERATION_TYPE.WEANING_SOW);
+            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.WEANING_SOW);
         });  
          
         elemDesktopNavSettings6.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(0, PIG_OPERATION_TYPE.GILT);
+            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.GILT);
         });    
 
 
 
         elemDesktopNavAdmin1.addEventListener('click', function() {
-            navigation._onClickNavUsers(0);
+            navigation._onClickNavUsers(false);
         });       
         
         elemDesktopNavAdmin2.addEventListener('click', function() {
-            navigation._onClickNavUsersRequest(0);
+            navigation._onClickNavUsersRequest(false);
         });       
 
 
 
         elemMobileNavProduction1.addEventListener('click', function() {
-             navigation._onClickNavProdGestaLacta(1, PIG_OPERATION_TYPE.GESTATING);
+             navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING);
         }); 
           
         elemMobileNavProduction2.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(1, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         }); 
           
         elemMobileNavProduction3.addEventListener('click', function() {
-            navigation._onClickNavProdFattening(1);
+            navigation._onClickNavProdFattening(true);
         }); 
           
         elemMobileNavProduction4.addEventListener('click', function() {
-             navigation._onClickNavProdHistory(1);
+             navigation._onClickNavProdHistory(true);
         }); 
           
         elemMobileNavProduction5.addEventListener('click', function() {
-            navigation._onClickNavProdNotPregnant(1);
+            navigation._onClickNavProdNotPregnant(true);
         });   
 
             
             
         elemMobileNavSowBoarGilt1.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(1, SOW_BOAR_TYPE.SOW);
+            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.SOW);
         });  
         
         elemMobileNavSowBoarGilt2.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(1, SOW_BOAR_TYPE.BOAR);
+            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.BOAR);
         });
           
         elemMobileNavSowBoarGilt3.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(1, SOW_BOAR_TYPE.GILT);
+            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
         });
           
         elemMobileNavSowBoarGilt4.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(1, SOW_BOAR_TYPE.DISPOSED);
+            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.DISPOSED);
         });
           
         elemMobileNavSowBoarGilt5.addEventListener('click', function() {
-            navigation._onClickNavParentTrace(1);
+            navigation._onClickNavParentTrace(true);
         });  
 
 
@@ -434,82 +434,82 @@ export function ManagerNavLinks(_navigation) {
         });  
          
         elemMobileNavOperations2.addEventListener('click', function() {
-            navigation._onClickNavReports(1);
+            navigation._onClickNavReports(true);
         }); 
           
         elemMobileNavOperations3.addEventListener('click', function() {
-            navigation._onClickNavFeedCalculator(1);
+            navigation._onClickNavFeedCalculator(true);
         });   
 
 
 
         elemMobileNavFinancials1.addEventListener('click', function() {
-            navigation._onClickNavProdSales(1);
+            navigation._onClickNavProdSales(true);
         }); 
           
         elemMobileNavFinancials2.addEventListener('click', function() {
-            navigation._onClickNavFeedsExpenses(1);
+            navigation._onClickNavFeedsExpenses(true);
         });  
          
         elemMobileNavFinancials3.addEventListener('click', function() {
-            navigation._onClickNavNonFeedsExpenses(1);
+            navigation._onClickNavNonFeedsExpenses(true);
         });   
             
             
             
         elemMobileNavAccountLists1.addEventListener('click', function() {
-            navigation._onClickNavStaff(1);
+            navigation._onClickNavStaff(true);
         }); 
         
         elemMobileNavAccountLists2.addEventListener('click', function() {
-            navigation._onClickPigBuyers(1);
+            navigation._onClickPigBuyers(true);
         }); 
         
         elemMobileNavAccountLists3.addEventListener('click', function() {
-             navigation._onClickFeedSuppliers(1);
+             navigation._onClickFeedSuppliers(true);
         }); 
         
         elemMobileNavAccountLists4.addEventListener('click', function() {
-             navigation._onClickSemenSuppliers(1);
+             navigation._onClickSemenSuppliers(true);
         }); 
         
         elemMobileNavAccountLists5.addEventListener('click', function() {
-             navigation._onClickGiltSuppliers(1);
+             navigation._onClickGiltSuppliers(true);
         }); 
             
             
             
         elemMobileNavSettings1.addEventListener('click', function() {
-            navigation._onClickNavOpsSettings(1);
+            navigation._onClickNavOpsSettings(true);
         });
              
         elemMobileNavSettings2.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(1, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.GESTATING);
         }); 
             
         elemMobileNavSettings3.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(1, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         });  
            
         elemMobileNavSettings4.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(1, PIG_OPERATION_TYPE.LACTATING_SOW);
+            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.LACTATING_SOW);
         });
              
         elemMobileNavSettings5.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(1, PIG_OPERATION_TYPE.WEANING_SOW);
+            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.WEANING_SOW);
         }); 
             
         elemMobileNavSettings6.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(1, PIG_OPERATION_TYPE.GILT);
+            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.GILT);
         });     
             
             
         elemMobileNavAdmin1.addEventListener('click', function() {
-            navigation._onClickNavUsers(1);
+            navigation._onClickNavUsers(true);
         });   
             
         elemMobileNavAdmin2.addEventListener('click', function() {
-            navigation._onClickNavUsersRequest(1);
+            navigation._onClickNavUsersRequest(true);
         });        
     }
     

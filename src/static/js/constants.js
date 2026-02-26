@@ -29,6 +29,8 @@ const ACC_USER_GROUP = {
 const PAGE_ID = {
     HOME:                   0,
     
+    PIG_FARM_ADD_EDIT:      5,
+    
     
     SOW_BOAR_LIST:          11,
     SOW_BOAR_ADD_EDIT:      12,

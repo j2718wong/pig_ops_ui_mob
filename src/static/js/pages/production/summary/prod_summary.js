@@ -398,7 +398,7 @@ export function ProdSummary(input_settings){
         
         let show_financial = 0;
         
-        // Get user.acc_group_num
+        // Get user.user_group.group_num
 
         const cur_user = navigation.userControl.dataUserAccount.user;
         const user_group_num = cur_user.user_group.group_num;
@@ -719,7 +719,7 @@ export function ProdSummary(input_settings){
         
         let show_financial = 0;
         
-        // Get user.acc_group_num
+        // Get user.user_group.group_num
         /*
         const cur_user = navigation.userControl.dataUserAccount.user;
         const user_group_num = cur_user.user_group.group_num;

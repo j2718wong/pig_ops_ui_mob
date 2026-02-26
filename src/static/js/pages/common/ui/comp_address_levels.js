@@ -76,6 +76,9 @@ export function ComponentAddressLevels(input_settings){
     this.callbackOnChangeLevel3     = null;
     
     
+    let showOptions                 = null;
+    
+    
     // This is a function to request an item count per address level 2
     this.requestItemCountPerAddressLevel2 = null;
     
@@ -90,15 +93,8 @@ export function ComponentAddressLevels(input_settings){
         
         <div class="form-group-check">
             <label class="form-label">Country</label>
-            
-            <div>
-                <b>
-                    <label id="${elemIdCountry}">
-                        Philippines
-                    </label>
-                </b>
-                
-            </div>            
+            <span class="read-only-field" id="${elemIdCountry}">Philippines</span>
+                        
         </div>
         
         
@@ -205,8 +201,9 @@ export function ComponentAddressLevels(input_settings){
     }
     
     
-    this.beforeShow = function(){
+    this.beforeShow = function(options){
         
+        showOptions = options;
         
         const cur_country = navigation.managerAddress.getCurCountry();
         elemCountry.textContent = cur_country.name;
@@ -223,6 +220,14 @@ export function ComponentAddressLevels(input_settings){
         
         elemAddressLevel2.disabled = true;
         elemAddressLevel3.disabled = true;
+    }
+    
+    
+    this.setLocationAddress = function(location){
+        elemCountry.textContent = location.country.name;
+    
+        const address = location.address;
+        
     }
     
     
@@ -276,7 +281,7 @@ export function ComponentAddressLevels(input_settings){
     
     this.onChangeAddressLevel1 = function(){
         commonSelectOptions.setDataAddressLevelList([], elemAddressLevel3, []);
-		elemAddressLevel3.disabled = true;
+        elemAddressLevel3.disabled = true;
         
         const level_1_hid = elemAddressLevel1.value;
         
@@ -295,8 +300,8 @@ export function ComponentAddressLevels(input_settings){
             elemAddressLevel1.disabled = false;
             elemAddressLevel2.disabled = false;
 
-			commonSelectOptions.setDataAddressLevelList(level_2_addresses, 
-					elemAddressLevel2);
+            commonSelectOptions.setDataAddressLevelList(level_2_addresses, 
+                    elemAddressLevel2);
         }
         
         if (thisObj.callbackOnChangeLevel1){

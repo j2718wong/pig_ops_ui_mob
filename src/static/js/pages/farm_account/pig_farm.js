@@ -188,8 +188,7 @@ export function PigFarm(_navigation){
         return true;
     }
  
- 
- 
+    
     this.requestDataAccPigOpsList = function(callback_success, elem_show_error){
         const base_url = window.location.origin;
         let url = `${base_url}/account_pig_ops/list?ahid=${thisObj.getAccountHid()}`;

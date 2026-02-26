@@ -7,13 +7,17 @@
 import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
-        PIG_OPERATION_TYPE}     from '../../constants.js';
+        PAGE_ID,
+        PIG_OPERATION_TYPE,
+        SOW_BOAR_TYPE,
+        ACC_USER_GROUP}         from '../../constants.js';
 
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT}         from '../../utils.js';
+        FORMAT_COMPACT,
+        FORMAT_MONTH_DATE_ONLY} from '../../utils.js';
         
         
         
@@ -120,11 +124,11 @@ export function PageHomeDashBoard(input_settings){
 
             <!-- row 1: Lacta Piglets | Fattening Pigs -->
             <div class="grid-row">
-                <div class="stat-cell">
+                <div class="stat-cell card-lacta-piglets">
                     <div class="label">Lacta Piglets</div>
                     <div class="number" id="${elemIdNumLactaPiglets}">0</div>
                 </div>
-                <div class="stat-cell">
+                <div class="stat-cell card-fattening">
                     <div class="label">Fattening Pigs</div>
                     <div class="number" id="${elemIdNumFatteningPigs}">0</div>
                 </div>
@@ -132,11 +136,11 @@ export function PageHomeDashBoard(input_settings){
 
             <!-- row 2: Lacta Sow | Gesta Sow -->
             <div class="grid-row">
-                <div class="stat-cell">
+                <div class="stat-cell card-lacta-sows">
                     <div class="label">Lacta Sows</div>
                     <div class="number" id="${elemIdNumLactaSows}">0</div>
                 </div>
-                <div class="stat-cell">
+                <div class="stat-cell card-gesta">
                     <div class="label">Gesta Sows</div>
                     <div class="number" id="${elemIdNumGestaSows}">0</div>
                 </div>
@@ -148,7 +152,7 @@ export function PageHomeDashBoard(input_settings){
                     <div class="label">Boars</div>
                     <div class="number" id="${elemIdNumBoars}">0</div>
                 </div>
-                <div class="stat-cell">
+                <div class="stat-cell card-gilts">
                     <div class="label">Gilts</div>
                     <div class="number" id="${elemIdNumGilts}">0</div>
                 </div>
@@ -233,8 +237,34 @@ export function PageHomeDashBoard(input_settings){
     
     this._bindEventListeners = function(){
         
+        elemNumLactaPiglets.addEventListener('click', function() {
+            navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation.pageMobLactatingList.clickLactaPigCount();
+        });
     
-    
+        elemNumFatteningPigs.addEventListener('click', function() {
+            navigation._onClickNavProdFattening(true);
+        });
+        
+        elemNumLactaSows.addEventListener('click', function() {
+            navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation.pageMobLactatingList.clickLactaPigOps();
+        });
+        
+        
+        elemNumGestaSows.addEventListener('click', function() {
+             navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING);
+        }); 
+        
+        
+        elemNumBoars.addEventListener('click', function() {
+            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.BOAR);
+        });
+         
+        
+        elemNumGilts.addEventListener('click', function() {
+            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
+        });
     }
     
     
@@ -327,7 +357,10 @@ export function PageHomeDashBoard(input_settings){
             const diff_msecs    = dt_expected - dtCurrentDate;
             const diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
             
+            
             if (diff_days <= MIN_DAYS_SHOW_EXPECTING){
+                let dt_expected_s = formatDate(dt_expected, FORMAT_MONTH_DATE_ONLY);
+                cur_entry.birth.date_expected_s = dt_expected_s;
                 expecting_sows.push(cur_entry);
             }
         } 
@@ -335,22 +368,39 @@ export function PageHomeDashBoard(input_settings){
         
         if (expecting_sows.length > 0){
             elemExpectingSowsShow.style.display = 'block';
+            elemExpectingSows.innerHTML = '';
             
-            let html = '';
+
             let index = 0;
             for (index = 0; index < expecting_sows.length; index++){
                 const cur_entry = expecting_sows[index];
                 
-                const html_sow = thisObj.getSowBoarReference(cur_entry.sow);
+                let html_sow = thisObj.getSowBoarReference(cur_entry.sow);
                 
-                html += `<span class="pill">${html_sow}</span>`
+                const html = `
+                    ${html_sow}
+                    <span class="">${cur_entry.birth.date_expected_s}</span>
+                `;
+                
+                const pid = cur_entry.pig_production.farm_prod_id;
+                
+                const elem = document.createElement('div');
+                elem.innerHTML = html;
+                elem.classList.add('pill');
+                
+                elem.onclick = function(){
+                    navigation.onClickProdGestatingEntry(pid);
+                };
+                
+                elemExpectingSows.appendChild(elem);
                 
             }
             
             
+            
             //<span class="pill" style="background:#f0f0f0; border-color:var(--border-color); color:#555;">+1 more</span>
             
-            elemExpectingSows.innerHTML = html;
+
             
         }
         else{
@@ -359,7 +409,39 @@ export function PageHomeDashBoard(input_settings){
         
         
         
+        // Get user.user_group.group_num
+
+        const cur_user = navigation.userControl.dataUserAccount.user;
+        const user_group_num = cur_user.user_group.group_num;
+        
+        if (user_group_num == ACC_USER_GROUP.ADMIN || 
+            user_group_num == ACC_USER_GROUP.MANAGEMENT){
+            elemFarmName.onclick = function() {
+                const go_back_page_id = PAGE_ID.HOME;
+                const go_back_page = navigation.getPageContainer(go_back_page_id);
+            
+                const options ={
+                    is_add:                 false,   // false is edit
+                    callback_after_edit:    thisObj.onSuccessEditFarm,
+                    go_back_page:           go_back_page 
+                }
+                navigation.pagePigFarmAddEdit.beforeShow(options);
+                
+                
+                const goto_page_id   = PAGE_ID.PIG_FARM_ADD_EDIT;
+                const page_container = navigation.getPageContainer(goto_page_id);
+                navigation.showThisPage(page_container);
+            };
+        } 
+        
+        
+        
+        
     }
-   
+    
+    
+    this.onSuccessEditFarm = function(){
+        
+    }
     
 }

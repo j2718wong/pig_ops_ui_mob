@@ -30,6 +30,7 @@ import {PageUserDisabled}           from '../a_user_control/page_user_disabled.j
 import {PageAccountUnpaidBill}      from '../a_user_control/page_account_unpaid_bill.js';
 
 import {PageHomeDashBoard}          from '../home/page_home_dashboard.js';
+import {PagePigFarmAddEdit}         from '../pig_farm/page_pig_farm_add_edit.js';
 
 
 import {PageSowBoarList}            from '../sow_boar/page_sow_boar_list.js';
@@ -257,6 +258,7 @@ export function Navigation(){
     
     
     const elemIdContHomeDashBoard       = 'container-dashboard';
+    const elemIdContPigFarmAddEdit      = 'container-pig-farm-add-edit';
     
     
     const elemIdContSowBoarList         = 'container-sow-boar-list';
@@ -329,6 +331,7 @@ export function Navigation(){
     
     
     let elemPageContHomeDashBoard       = null;
+    let elemPageContPigFarmAddEdit      = null;
     
     
     let elemPageContAccDisabled         = null;
@@ -445,6 +448,12 @@ export function Navigation(){
         uniqueKey:              'home-dashboard'
     });
     
+    
+    this.pagePigFarmAddEdit     = new PagePigFarmAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContPigFarmAddEdit,
+        uniqueKey:              'pig-farm-add-edit'
+    });
     
     
     
@@ -692,6 +701,7 @@ export function Navigation(){
         
         
         this.pageHomeDashBoard.init();
+        this.pagePigFarmAddEdit.init();
         
         
         this.pageSowBoarList.init();
@@ -773,6 +783,8 @@ export function Navigation(){
         
         
         elemPageContHomeDashBoard       = document.getElementById(elemIdContHomeDashBoard);
+        elemPageContPigFarmAddEdit      = document.getElementById(elemIdContPigFarmAddEdit);
+        
 
         
         elemPageContAccDisabled         = document.getElementById(elemIdContAccountDisabled);
@@ -963,7 +975,10 @@ export function Navigation(){
             case PAGE_ID.HOME:{
                 return elemPageContHomeDashBoard;
             }
-    
+            
+            case PAGE_ID.PIG_FARM_ADD_EDIT:{
+                return elemPageContPigFarmAddEdit;
+            }
             
             case PAGE_ID.SOW_BOAR_LIST:{
                 return elemPageContSowBoarList;
@@ -1274,6 +1289,9 @@ export function Navigation(){
         if (is_mobile == null){ 
             // If not specified use the last known screen state.
             is_mobile = thisObj.curScreenIsMobile;
+        }
+        else{
+            thisObj.curScreenIsMobile = is_mobile;
         }
         
         

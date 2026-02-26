@@ -443,7 +443,9 @@ ${html_style}
             }
 
             elemNavNextEntry.onclick = function(){
+                console.log('Test 1');
                 navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                console.log('Test 2');
             }
         
         }
@@ -484,7 +486,7 @@ ${html_style}
             }
 
             elemNavNextEntry.onclick = function(){
-                navigation._onClickNavProdFattening(null);
+                navigation._onClickNavProdNotPregnant(null);
             }
         }
              
@@ -1140,6 +1142,16 @@ ${html_style}
             if(cur_entry.pig_production.farm_prod_id == pid){return cur_entry;}
         }
         return null;
+    }
+    
+    
+    this.clickLactaPigOps = function(){
+        elemLactaPigOps.click();
+    }
+    
+    
+    this.clickLactaPigCount = function(){
+        elemLactaPigCount.click();
     }
     
     

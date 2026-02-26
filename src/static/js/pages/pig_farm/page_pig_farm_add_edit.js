@@ -19,16 +19,18 @@ import {CommonSelectOptions}    from '../common/common_select_options.js';
 import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
 import {ComponentAddressLevels} from '../common/ui/comp_address_levels.js'
+import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js'
 
-import {ComponentCommonSupplier}  from './comp_common_supplier.js';
 
 
-export function PageCommonSupplierAddEdit(input_settings){
+export function PagePigFarmAddEdit(input_settings){
     PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     const managerAddress        = navigation.managerAddress;
+    
+    const MAXCHAR_FARM_NAME     = 30;
     
     /*
     Typical settings = {
@@ -42,11 +44,7 @@ export function PageCommonSupplierAddEdit(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
-    // These can be controlled; normally this is for development
-    // purpose any analytics purpose only;
-    let SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_1 = true;
-    let SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_2 = true;
-    let SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_3 = true;
+
         
     
     let elemIdHeaderTitle       = null;
@@ -59,6 +57,9 @@ export function PageCommonSupplierAddEdit(input_settings){
     
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;
+    
+    
+    let elemUiName              = null;
     
     let elemServerErrorMsg      = null;
     let elemBtnCancel           = null;
@@ -84,20 +85,6 @@ export function PageCommonSupplierAddEdit(input_settings){
     });
     
     
-    const compCommonSupplier    = new ComponentCommonSupplier({
-        navigation:             navigation,
-        parentObj:              this,
-        uniqueKey:              `${settings.uniqueKey}-add`,
-        elemDivContainer:       elemDivContainer,
-        
-        titleExpandSection:     'Add New Supplier',
-        htmlExpandSection:      null,
-        labelBtnExpandSave:     'Save New Supplier',
-        
-        labelSelect:            'Select Supplier',
-        helpText:               null
-        
-    });
     
     
     
@@ -120,8 +107,22 @@ export function PageCommonSupplierAddEdit(input_settings){
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         
+        elemUiName              = new UiInputTextWithCounter({
+            uniqueKey:          `${settings.uniqueKey}-name`,
+        
+            className:          'form-group-text',
+            textLabel:          'Name',
+            isRequired:         true,
+            textMaxChars:       MAXCHAR_FARM_NAME,
+            invalidFeedBack:    'Please enter a valid name.',
+            helpText:           null
+        });
+        
+
+        const html_name             = elemUiName.getHtml();
+        
         const html_address_levels   = compAddressLevels.getHtml();
-        const html_supplier_list    = compCommonSupplier.getHtml();
+
         
         
         const html =`
@@ -138,10 +139,12 @@ export function PageCommonSupplierAddEdit(input_settings){
     
     
     <div class="modal-body">
+        ${html_name}
+    
         
         ${html_address_levels}
         
-        ${html_supplier_list}
+
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
@@ -165,8 +168,10 @@ export function PageCommonSupplierAddEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
+        elemUiName.afterHtmlRender();
+        
         compAddressLevels.afterHtmlRender();
-        compCommonSupplier.afterHtmlRender();
+
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -207,6 +212,8 @@ export function PageCommonSupplierAddEdit(input_settings){
    
     this._resetForm = function(){
         // Clear previous Form values and validation classes
+        elemUiName.reset();
+        
         compAddressLevels.reset();
 
         
@@ -234,33 +241,14 @@ export function PageCommonSupplierAddEdit(input_settings){
         
         
         // Set title
-        let title = '';
+        let title = 'Edit Pig Farm';
         
-        switch(showOptions.supplier_type){
-            case SUPPLIER_TYPE.FEED: {
-                title = 'Add Feed Supplier';
-                break;
-            }
-            
-            case SUPPLIER_TYPE.SEMEN: {
-                title = 'Add Semen Supplier';
-                break;
-            }
-            
-            case SUPPLIER_TYPE.GILT: {
-                title = 'Add Gilt Supplier';
-                break;
-            }
-        }
+        
         
         elemHeaderTitle.textContent  = title;
         
-        compCommonSupplier.setSupplierType(showOptions.supplier_type);
-        
-        
-        // Hide Supplier List
-        compCommonSupplier.hide();
-        
+
+        thisObj.populateForm();
         
         // Update Close and cancel button on click
         
@@ -274,134 +262,34 @@ export function PageCommonSupplierAddEdit(input_settings){
     }
     
     
-    this.getSupplierCountPerAddressLevel1 =  function(){
-        if (SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_1 == false){return;}
+    this.populateForm = function(){
+        console.log(`navigation.pigFarm.dataPigFarm`);
+
+        console.log(navigation.pigFarm.dataPigFarm);
         
+        const pig_farm = navigation.pigFarm.dataPigFarm;
         
+        elemUiName.setValue(pig_farm.pig_farm.name);
     }
     
-    
-    this.filterBySupplierType = function(supplier_list){
-        const filtered = [];
-        
-        for (const cur_entry of  supplier_list){
-            
-            switch(showOptions.supplier_type){
-                case SUPPLIER_TYPE.FEED: {
-                    if (cur_entry.supplier.is_fs > 0){
-                        filtered.push(cur_entry);
-                    }
-                    break;
-                }
-                
-                case SUPPLIER_TYPE.SEMEN: {
-                    if (cur_entry.supplier.is_ss > 0){
-                        filtered.push(cur_entry);
-                    }
-                    break;
-                }
-                
-                case SUPPLIER_TYPE.GILT: {
-                    if (cur_entry.supplier.is_gs > 0){
-                        filtered.push(cur_entry);
-                    }
-                    break;
-                }
-            }
-        }
-        
-        return filtered;
-    }
     
     
     this.onChangeAddressLevel1 = function(level_1_hid){
-        // Hide Supplier List
-        compCommonSupplier.hide();
     }
     
     
     this.onChangeAddressLevel2 = function(level_2_hid){
-        // Get suppliers at addressLevel
         curAddressLevel2 = compAddressLevels.curAddressLevel2;
-        
-        compCommonSupplier.show();
-        
-        
-        if ('list_supplier' in curAddressLevel2){
-            // set all suppliers in addressLevel2
-            compCommonSupplier.setDataSupplierListLevel2(curAddressLevel2.list_supplier);
-            
-                
-            // Set compCommonSupplier dropdown.
-            const filtered = thisObj.filterBySupplierType(
-                    curAddressLevel2.list_supplier); 
-            
-            compCommonSupplier.setDataSupplier(filtered);
-                    
-        }
-        else{
-            const callback_success = function(data){
-                // set all suppliers in addressLevel2
-                compCommonSupplier.setDataSupplierListLevel2(data);
-            
-                    
-                // Set compCommonSupplier dropdown.
-                const filtered = thisObj.filterBySupplierType(
-                        curAddressLevel2.list_supplier); 
-                compCommonSupplier.setDataSupplier(filtered);
-                
-            };
-            
-            managerAddress.requestDataSupplier(curAddressLevel2, callback_success);
-        }
-        
-        
     }
     
     
     this.onChangeAddressLevel3 = function(level_3_hid){
-        // Get suppliers at addressLevel3
-        
-        console.log(' supplier_add_edit onChangeAddressLevel3');
-        
-        
-        // Filter which of the suppliers in curAddressLevel2 are in level_3_hid
-        const filtered_level_2 = [];
-        const list_supplier = curAddressLevel2.list_supplier;
-        
-        for (const cur_entry of  list_supplier){
-            if (cur_entry.location.address.level_3 == level_3_hid){
-                filtered_level_2.push(cur_entry);
-            }
-        }
-        
-        
-        const filtered  = thisObj.filterBySupplierType(filtered_level_2); 
-        
-        
-        // The filtered supplier_by type should be shown in the 
-        // compCommonSupplier dropdown.
-        compCommonSupplier.setDataSupplier(filtered);
-        
+       
     }
     
     
-    this.onSuccessAddSupplier = function(supplier_hid){
-        const callback_success = function(data){
-            // set all suppliers in addressLevel2
-            compCommonSupplier.setDataSupplierListLevel2(data);
-        
-            
-            // Set compCommonSupplier dropdown.
-            const filtered = thisObj.filterBySupplierType(
-                    curAddressLevel2.list_supplier); 
-            compCommonSupplier.setDataSupplier(filtered, supplier_hid);
-            
-        };
-        
-        
-        // Set suppliers to address Level2
-        managerAddress.requestDataSupplier(curAddressLevel2, callback_success);
+    this.onSuccessAddPigFarm = function(pig_farm_hid){
+       
         
         
     }
@@ -417,16 +305,21 @@ export function PageCommonSupplierAddEdit(input_settings){
         let validation      = 0;
         
 
-        let input_supplier_hid      = compCommonSupplier.getValue();
+        let input_name      = elemUiName.getValue();
         
         
-        input_elem          = compCommonSupplier.getElemSelect();
+        input_elem          = elemUiName.getElemText();
         
-        if (input_supplier_hid == '0' || input_supplier_hid == '-1'){
+        
+        if (input_name.length == 0){
             validation = -1;
         }
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
+        
+        
+        let address_hids = compAddressLevels.getAddressHids();
+        
         
         
         // Final check before sending request
@@ -435,32 +328,45 @@ export function PageCommonSupplierAddEdit(input_settings){
         }
         
         
+        
         const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
 
         
         // send post request
         const post_data = {
-            'uhid':             user_hid
+            'uhid':             user_hid,
+            'name':             input_name,
+            
         };
         
-        switch(showOptions.supplier_type){
-            case SUPPLIER_TYPE.FEED: {
-                post_data.feed_supplier_hid = input_supplier_hid;
-                break;
+        if (address_hids){
+            if (address_hids.level_1_hid != '0' || address_hids.level_1_hid != '-1'){
+                post_data.level_1_hid = address_hids.level_1_hid;
             }
             
-            case SUPPLIER_TYPE.SEMEN: {
-                post_data.semen_supplier_hid = input_supplier_hid;
-                break;
+            if (address_hids.level_2_hid != '0' || address_hids.level_2_hid != '-1'){
+                post_data.level_2_hid = address_hids.level_2_hid;
             }
             
-            case SUPPLIER_TYPE.GILT: {
-                
-                break;
+            if (address_hids.level_3_hid != '0' || address_hids.level_3_hid != '-1'){
+                post_data.level_3_hid = address_hids.level_3_hid;
             }
         }
         
+        
+        let url;
+
+        
+        if (showOptions.is_add){
+            url = `${base_url}/pig_farm/add`
+        }
+        else{
+            const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+            post_data.pig_farm_hid = pig_farm_hid;
+            
+            url = `${base_url}/pig_farm/update`
+        }
         
         
         $.ajax({
@@ -468,7 +374,7 @@ export function PageCommonSupplierAddEdit(input_settings){
             contentType: "application/json",
             dataType: 'json',
             timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: `${base_url}/account/selection/add`,
+            url: url,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -478,7 +384,9 @@ export function PageCommonSupplierAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    thisObj.onSuccessAddEntryAccountSelection(input_supplier_hid);
+                    // This will return the data pig farm
+                    navigation.pigFarm.setDataPigFarm(response.data);
+                    navigation.showThisPage(showOptions.go_back_page);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(
@@ -494,20 +402,6 @@ export function PageCommonSupplierAddEdit(input_settings){
                 navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
-    }
-    
-    
-    this.onSuccessAddEntryAccountSelection = function(supplier_hid){
-        const callback_success = function(){
-            if (thisObj.callbackOnSuccessAdd){
-                navigation.showThisPage(showOptions.go_back_page);
-                thisObj.callbackOnSuccessAdd(supplier_hid);
-            }
-        };
-        
-        // Update account supplier list
-        navigation.pigFarm.accountLists.requestDataSupplier(showOptions.supplier_type, 
-            callback_success, elemServerErrorMsg)
     }
     
     
