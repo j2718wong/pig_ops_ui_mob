@@ -4467,7 +4467,29 @@ input[type=number] {
 
 
 /*********************FEED_BALANCE_INPUT_ALL*****************************/
- .data-table tr:nth-child(even):not(.farm-row):not(.total-row) {
+ .slider-frame {
+    width: 100%;
+    overflow: hidden;
+    background: var(--blue-border);
+    box-shadow: var(--shadow);
+}
+
+.slider-wrapper {
+    display: flex;
+    width: 200%;
+    transition: transform 0.3s ease-out;
+    transform: translateX(0%);
+    will-change: transform;
+}
+
+.slide-panel {
+    width: 50%;
+    padding: 4px 4px 4px 4px;
+    background-color: var(--white);
+}
+
+
+.data-table tr:nth-child(even):not(.farm-row):not(.total-row) {
     background-color: var(--row-even);
 }
 .data-table tr:hover:not(.farm-row):not(.total-row) {
@@ -4498,7 +4520,7 @@ input[type=number] {
     outline: none;
     -moz-appearance: textfield;
     background: transparent;
-    font-size: 13px;
+    font-size: 16px;
     font-family: inherit;
     text-align: center;
     min-height: 40px;

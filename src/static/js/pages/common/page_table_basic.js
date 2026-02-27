@@ -164,7 +164,7 @@ export function PageTableBasic(){
 
         let html_header = `
         <h2>
-            <span class="nav-title blue" id="${elemIdTableEntryCount}">8</span>
+            <span class="nav-title blue" id="${elemIdTableEntryCount}"></span>
             <span class="nav-title blue" id="${elemIdTableTitle}">${settings.tableTitle}</span>
         </h2>
         `;
@@ -205,7 +205,7 @@ export function PageTableBasic(){
         let html_controls_bar = `
         <div class="controls-bar" id="${elemIdControlsBar}">
             <div class="entry-count" id="${elemIdTableRowCount}">
-                12 Entries
+                0 Entries
             </div>
             
             <div class="pagination-controls" id="${elemIdTablePagination}">
@@ -213,7 +213,7 @@ export function PageTableBasic(){
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <span class="page-indicator">
-                    <span id="${elemIdTableCurPage}">1</span> / <span id="${elemIdTableTotalPages}">3</span>
+                    <span id="${elemIdTableCurPage}">1</span> / <span id="${elemIdTableTotalPages}">0</span>
                 </span>
                 <button class="pagination-btn" id="${elemIdTableNextPage}">
                     <i class="fas fa-chevron-right"></i>

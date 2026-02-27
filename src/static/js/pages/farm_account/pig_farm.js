@@ -424,6 +424,55 @@ export function PigFarm(_navigation){
     }
     
     
+    /**
+     *  date_since - can be null or YYYY-MM-DD date string
+     * 
+     * */
+    this.requestDataPigFarmFeedBalance = function(date_since, callback_success,
+        elem_show_error){
+        
+        const pig_farm_hid = thisObj.getPigFarmHid();
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/feed_balance/list?pig_farm_hid=${pig_farm_hid}`;
+        if (date_since) {
+            url += `&date_since=${date_since}`
+        }
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+ 
     
     
 }

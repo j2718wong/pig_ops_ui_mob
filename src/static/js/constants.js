@@ -59,7 +59,7 @@ const PAGE_ID = {
     PROD_PIG_OPS_EDIT:      39,
     
     PROD_FEED_ADD_EDIT:     40,   
-    FEED_BALANCE_ADD_EDIT:  41,  
+    PROD_FEED_BAL_ADD_EDIT: 41,  
     
     PROD_HARVEST_ADD_EDIT:  42,
     
@@ -72,11 +72,12 @@ const PAGE_ID = {
     PROD_SALES_ENTRY:       49,
     
     
+    ALL_FEED_BAL_LIST:      50,
+    ALL_FEED_BAL_ADD_EDIT:  51,
     
-    
-    FARM_FEED_BUY_LIST:     50,
-    FARM_FEED_BUY_ADD_EDIT: 51,
-    FARM_FEED_BUY_ITEM_ADD_EDIT: 52,
+    FARM_FEED_BUY_LIST:     55,
+    FARM_FEED_BUY_ADD_EDIT: 56,
+    FARM_FEED_BUY_ITEM_ADD_EDIT: 57,
     
     
     ACC_OPS_SETTINGS_EDIT:  60,

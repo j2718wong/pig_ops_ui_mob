@@ -405,7 +405,7 @@ export function TableFeedBalance(input_settings){
         navigation.pageFeedBalanceAddEdit.beforeShow(dataPigProd, options);
         
         
-        const goto_page_id   = PAGE_ID.FEED_BALANCE_ADD_EDIT;
+        const goto_page_id   = PAGE_ID.PROD_FEED_BAL_ADD_EDIT;
         const page_container = navigation.getPageContainer(goto_page_id);
         navigation.showThisPage(page_container);
     }
@@ -434,7 +434,7 @@ export function TableFeedBalance(input_settings){
             navigation.pageFeedBalanceAddEdit.beforeShow(dataPigProd, options);
             
             
-            const goto_page_id   = PAGE_ID.FEED_BALANCE_ADD_EDIT;
+            const goto_page_id   = PAGE_ID.PROD_FEED_BAL_ADD_EDIT;
             const page_container = navigation.getPageContainer(goto_page_id);
             navigation.showThisPage(page_container);
         }

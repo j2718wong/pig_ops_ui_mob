@@ -66,6 +66,9 @@ import {PageProdHistoryList}        from '../production/history/page_prod_histor
 import {PageProdNotPregnantList}    from '../production/history/page_prod_not_pregnant_list.js';
 
 
+import {PageAllFeedBalanceList}     from '../feeds/feed_balance/page_all_feed_balance_list.js';
+import {PageAllFeedBalanceAddEdit}  from '../feeds/feed_balance/page_all_feed_balance_add_edit.js';
+
 import {PageProdSalesEntry}         from '../financials/prod_sales/page_prod_sales_entry.js';
 
 
@@ -301,7 +304,8 @@ export function Navigation(){
     
     const elemIdContProdNotPregnantList = 'container-prod-not-pregnant-list';
     
-    const elemIdContAllFeedBalanceInput = 'container-all-feed-bal-add-edit';
+    const elemIdContAllFeedBalList      = 'container-all-feed-bal-list';
+    const elemIdContAllFeedBalAddEdit   = 'container-all-feed-bal-add-edit';
     
     
     
@@ -309,7 +313,7 @@ export function Navigation(){
     const elemIdContFarmFeedBuyAddEdit  = 'container-farm-feed-buy-add-edit';
     const elemIdContFeedBuyItemAddEdit  = 'container-farm-feed-buy-item-add-edit';
     
-    const elemIdContFeedBalanceAddEdit  = 'container-feed-balance-add-edit';
+    const elemIdContProdFeedBalAddEdit  = 'container-feed-balance-add-edit';
     
     
     const elemIdContProdSalesList       = 'container-prod-sales-list';
@@ -366,11 +370,14 @@ export function Navigation(){
     let elemPageContProdFeedAddEdit     = null;
     let elemPageContProdHarvestAddEdit  = null;
     
+    let elemPageContProdFeedBalAddEdit  = null;
+    
     let elemPageContProdHistoryList     = null;
     let elemPageContProdHistoryEntry    = null;
     let elemPageContProdNotPregnantList = null;
     
-    let elemPageContAllFeedBalanceInput = null;
+    let elemPageContAllFeedBalList      = null;
+    let elemPageContAllFeedBalAddEdit   = null;
     
     
     let elemPageContProdSalesList       = null;
@@ -380,7 +387,7 @@ export function Navigation(){
     let elemPageContFarmFeedBuyAddEdit  = null;
     let elemPageContFeedBuyItemAddEdit  = null;
     
-    let elemPageContFeedBalanceAddEdit  = null;
+    
     
     let elemPageContAccOpsSettingsEdit  = null;
     let elemPageContAccPigOpsList       = null;
@@ -610,7 +617,7 @@ export function Navigation(){
     
     this.pageFeedBalanceAddEdit = new PageFeedBalanceAddEdit({
         navigation:             this,
-        elemIdDivContainer:     elemIdContFeedBalanceAddEdit,
+        elemIdDivContainer:     elemIdContProdFeedBalAddEdit,
         uniqueKey:              'feed-balance-add-edit'
     });
     
@@ -641,6 +648,22 @@ export function Navigation(){
         elemIdDivContainer:     elemIdContProdNotPregnantList,
         uniqueKey:              'prod-not-pregnant'
     });
+    
+    
+    this.pageAllFeedBalanceList = new PageAllFeedBalanceList({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAllFeedBalList,
+        uniqueKey:              'all-feed-balance-list'
+    });
+    
+    
+    this.pageAllFeedBalanceAddEdit = new PageAllFeedBalanceAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAllFeedBalAddEdit,
+        uniqueKey:              'all-feed-balance-add-edit'
+    
+    });
+    
     
     
     this.pageProdSalesList    = new PageProdHistoryList({
@@ -750,6 +773,11 @@ export function Navigation(){
         this.pageProdHistoryEntry.init();
         this.pageNotPregnantList.init();
         
+        
+        this.pageAllFeedBalanceList.init();
+        this.pageAllFeedBalanceAddEdit.init();
+        
+        
         this.pageProdSalesList.init();
         this.pageProdSalesEntry.init();
         
@@ -826,13 +854,16 @@ export function Navigation(){
         elemPageContProdFeedAddEdit     = document.getElementById(elemIdContProdFeedAddEdit);
         elemPageContProdHarvestAddEdit  = document.getElementById(elemIdContProdHarvestAddEdit);
         
+        elemPageContProdFeedBalAddEdit  = document.getElementById(elemIdContProdFeedBalAddEdit);
         
         elemPageContProdHistoryList     = document.getElementById(elemIdContProdHistoryList);
         elemPageContProdHistoryEntry    = document.getElementById(elemIdContProdHistoryEntry);
         
         elemPageContProdNotPregnantList = document.getElementById(elemIdContProdNotPregnantList);
         
-        elemPageContAllFeedBalanceInput = document.getElementById(elemIdContAllFeedBalanceInput);
+        
+        elemPageContAllFeedBalList      = document.getElementById(elemIdContAllFeedBalList);
+        elemPageContAllFeedBalAddEdit   = document.getElementById(elemIdContAllFeedBalAddEdit);
         
         
         elemPageContProdSalesList       = document.getElementById(elemIdContProdSalesList);
@@ -844,7 +875,6 @@ export function Navigation(){
         elemPageContFarmFeedBuyAddEdit  = document.getElementById(elemIdContFarmFeedBuyAddEdit);
         elemPageContFeedBuyItemAddEdit  = document.getElementById(elemIdContFeedBuyItemAddEdit);
         
-        elemPageContFeedBalanceAddEdit  = document.getElementById(elemIdContFeedBalanceAddEdit);
         
         
         elemPageContAccOpsSettingsEdit  = document.getElementById(elemIdContAccOpsSettingsEdit);
@@ -1069,8 +1099,8 @@ export function Navigation(){
                 return elemPageContProdFeedAddEdit;
             }
             
-            case PAGE_ID.FEED_BALANCE_ADD_EDIT: {
-                return elemPageContFeedBalanceAddEdit;
+            case PAGE_ID.PROD_FEED_BAL_ADD_EDIT: {
+                return elemPageContProdFeedBalAddEdit;
             }
             
             
@@ -1088,10 +1118,20 @@ export function Navigation(){
             }
             
             case PAGE_ID.PROD_NOT_PREGNANT_LIST: {
-                return elemIdContProdNotPregnantList;
+                return elemPageContProdNotPregnantList;
             }
             
             
+            case PAGE_ID.ALL_FEED_BAL_LIST: {
+                return elemPageContAllFeedBalList;
+            }
+            
+            case PAGE_ID.ALL_FEED_BAL_ADD_EDIT: {
+                return elemPageContAllFeedBalAddEdit;
+            }
+            
+                
+             
             case PAGE_ID.PROD_SALES_LIST: {
                 return elemPageContProdSalesList;
                 break;
@@ -1335,8 +1375,9 @@ export function Navigation(){
     }
     
         
-    this._onClickNavProdFeeds = function(is_mobile){
-        console.log('_onClickNavProdFeeds not yet implemented; is_mobile=' + is_mobile);
+    this._onClickNavFeedBalance = function(is_mobile){
+        thisObj.showThisPage(elemPageContAllFeedBalList);
+        thisObj.pageAllFeedBalanceList.beforeShow();
     }
         
            

@@ -299,7 +299,7 @@ export function ManagerNavLinks(_navigation) {
 
 
         elemDesktopNavOperations1.addEventListener('click', function() {
-            
+            navigation._onClickNavFeedBalance(false);
         });
           
         elemDesktopNavOperations2.addEventListener('click', function() {
@@ -430,7 +430,7 @@ export function ManagerNavLinks(_navigation) {
 
             
         elemMobileNavOperations1.addEventListener('click', function() {
-            
+            navigation._onClickNavFeedBalance(true);
         });  
          
         elemMobileNavOperations2.addEventListener('click', function() {

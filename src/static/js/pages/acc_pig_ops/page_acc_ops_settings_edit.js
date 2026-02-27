@@ -411,7 +411,7 @@ export function PageAccOpsSettingsEdit(input_settings){
         
         
         const checkedRadioBirth = elemDivContainer.querySelector('input[name="dateBirth"]:checked');
-        let value = checkedRadioMating.value;
+        value = checkedRadioMating.value;
         
         let day_1_on_date_of_birth = 0;
         
