@@ -34,6 +34,7 @@ import {getSowBoarReference}        from '../../common/common_app.js';
 
 
 export function PageAllFeedBalanceAddEdit(input_settings){
+    PageViewPigFarmPage.call(this);
     
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;
@@ -75,6 +76,9 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     let elemIdTableBodyOne      = null;
     let elemIdTableBodyTwo      = null;
     
+    let elemIdChkIncGestaShow   = null;
+    let elemIdChkIncGestating   = null;
+    
     let elemIdServerErrorMsg    = null;
     
     let elemIdBtnCancel         = null;
@@ -88,6 +92,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     let elemTableBodyOne        = null;
     let elemTableBodyTwo        = null;
     
+    let elemChkIncGestaShow     = null;
+    let elemChkIncGestating     = null;
     
     let elemServerErrorMsg      = null;
     
@@ -140,7 +146,9 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         
         elemIdTableBodyOne      = `${settings.uniqueKey}-tbody1`;
         elemIdTableBodyTwo      = `${settings.uniqueKey}-tbody2`;
-
+        
+        elemIdChkIncGestaShow   = `${settings.uniqueKey}-inc-gesta-show`;
+        elemIdChkIncGestating   = `${settings.uniqueKey}-inc-gestating`;
         
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
@@ -197,21 +205,22 @@ export function PageAllFeedBalanceAddEdit(input_settings){
                                 <tbody id="${elemIdTableBodyOne}"></tbody>
                             </table>
                         </div>
+                        
                         <!-- SECOND DIV (4 columns) : PID Starter Grower Finisher -->
                         <div class="slide-panel">
-                            <table class="data-table second-table" id="tableTwo">
+                            <table class="data-table" id="tableTwo">
                                 <colgroup>
-                                    <col style="width:25%">
-                                    <col style="width:25%">
-                                    <col style="width:25%">
-                                    <col style="width:25%">
+                                    <col style="width:36%">
+                                    <col style="width:21%">
+                                    <col style="width:21%">
+                                    <col style="width:22%">
                                 </colgroup>
                                 <thead>
                                     <tr>
                                         <th>PID</th>
-                                        <th>Starter</th>
-                                        <th>Grower</th>
-                                        <th>Finisher</th>
+                                        <th style="padding-left:0; text-align:center;">Starter</th>
+                                        <th style="padding-left:0; text-align:center;">Grower</th>
+                                        <th style="padding-left:0; text-align:center;">Finisher</th>
                                     </tr>
                                 </thead>
                                 <tbody id="${elemIdTableBodyTwo}"></tbody>
@@ -221,8 +230,18 @@ export function PageAllFeedBalanceAddEdit(input_settings){
                 </div>
                 
             </div>
-        </div>
+            
+            <div id="${elemIdChkIncGestaShow}" class="checkbox-group" style="margin-bottom:8px;">
+                <input type="checkbox" id="${elemIdChkIncGestating}">
+                <label for="${elemIdChkIncGestating}" class="checkbox-label">
+                    Include Gestating Sows
+                </label>
+            </div>
 
+            
+        </div>
+        
+        
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
         <!-- Footer Buttons -->
@@ -232,7 +251,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             </button>
             
             <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-                <i class="fas fa-save me-2"></i>Save Changes
+                <i class="fas fa-save me-2"></i>Save
             </button>
         </div>
     </div>
@@ -262,6 +281,9 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         elemTableBodyOne        = elemDivContainer.querySelector('#'+elemIdTableBodyOne);
         elemTableBodyTwo        = elemDivContainer.querySelector('#'+elemIdTableBodyTwo);
         
+        elemChkIncGestaShow     = elemDivContainer.querySelector('#'+elemIdChkIncGestaShow);
+        elemChkIncGestating     = elemDivContainer.querySelector('#'+elemIdChkIncGestating);
+        
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         
         elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
@@ -281,7 +303,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         const toggleBtn = elemDivContainer.querySelector('#toggleBtn');
         
         
-        toggleBtn.addEventListener('click', () => {
+        toggleBtn.addEventListener('click', function() {
             secondVisible = !secondVisible;
             wrapper.style.transform = secondVisible ? 'translateX(-50%)' : 'translateX(0%)';
         });
@@ -289,10 +311,21 @@ export function PageAllFeedBalanceAddEdit(input_settings){
 
         
         
-         elemBtnSave.addEventListener('click', function() {
+        elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
         });
         
+        
+        elemChkIncGestating.addEventListener('change', function(event) {
+            elemTableBodyOne.innerHTML = '';
+            elemTableBodyTwo.innerHTML = '';
+                
+            if (event.currentTarget.checked) {
+                thisObj.populateFeedInputTablesNew(true);
+            } else {
+                thisObj.populateFeedInputTablesNew(false);
+            }
+        });
         
     }
     
@@ -323,9 +356,15 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             html    = `<i class="fas fa-edit me-2"></i>Edit Feed Balance`;
         }
         elemHeaderTitle.innerHTML = html;
-        
-        this.populateForm();
-        
+
+
+
+        if (showOptions.is_add){
+            this.populateFeedInputTablesNew();
+        }
+        else{
+            this.populateForm();
+        }
         
        
         // Update Close and cancel button on click
@@ -338,6 +377,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             navigation.showThisPage(showOptions.go_back_page);
         };
     }
+    
     
     
     
@@ -359,7 +399,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         if (rowClass) tr.classList.add(rowClass);
 
         const tdPid = document.createElement('td');
-        tdPid.textContent = pid;
+        tdPid.innerHTML = pid;
         tr.appendChild(tdPid);
 
         for (let i = 0; i < inputCount; i++) {
@@ -418,8 +458,6 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     
     this.populateFeedInputTables = function(){
         
-        console.log(curDataFeedBalance);
-        
         const feed_balance = curDataFeedBalance.feed_balance;
         
         let farm_balance = null;
@@ -427,8 +465,9 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         
         for (const cur_entry of feed_balance){
             if (cur_entry.pig_prod){
-                const pig_production = cur_entry.pig_prod.pig_production;
-                const pid = pig_production.farm_prod_id;
+                console.log(cur_entry);
+                
+                const pid = thisObj.getHtmlPidSowLoveBoar(cur_entry.pig_prod);
                 
                 const num_gesta     = (cur_entry.num_gestating)? cur_entry.num_gestating: '';
                 const num_lacta     = (cur_entry.num_lactating)? cur_entry.num_lactating: '';
@@ -463,8 +502,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             
             const pid = 'Farm';
             
-            elemTableBodyOne.appendChild(createDataRow(pid, 4, [num_gesta, num_lacta, num_booster, num_prestarter]));
-            elemTableBodyTwo.appendChild(createDataRow(pid, 3, [num_starter, num_grower, num_finisher]), 'farm-row');
+            elemTableBodyOne.appendChild(createDataRow(pid, 4, [num_gesta, num_lacta, num_booster, num_prestarter], 'farm-row'));
+            elemTableBodyTwo.appendChild(createDataRow(pid, 3, [num_starter, num_grower, num_finisher], 'farm-row'));
         }
         
         
@@ -474,7 +513,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         const totalRowOne = document.createElement('tr');
         totalRowOne.classList.add('total-row');
         const tdPidTotalOne = document.createElement('td');
-        tdPidTotalOne.textContent = 'TOTAL';
+        tdPidTotalOne.textContent = '📊 TOTAL';
         totalRowOne.appendChild(tdPidTotalOne);
         for (let i = 0; i < 4; i++) {
             const td = document.createElement('td');
@@ -502,8 +541,92 @@ export function PageAllFeedBalanceAddEdit(input_settings){
 
         // Attach updater (total row index = 4, 4 input columns)
         attachTotalUpdater(elemTableBodyTwo, feed_balance.length, 3);
-        
-        
+
     } 
+
+
+    this.populateFeedInputTablesNew = function(inc_gestating){
+        
+        
+        let pig_prod_list = navigation.pigFarm.managerPigProd.dataFatteningList;
+        for (const cur_entry of pig_prod_list){
+            const pid = thisObj.getHtmlPidSowLoveBoar(cur_entry);
+
+            elemTableBodyOne.appendChild(createDataRow(pid, 4, ['', '', '', '']));
+            elemTableBodyTwo.appendChild(createDataRow(pid, 3, ['', '', '']));
+        }  
+        
+        
+        pig_prod_list = navigation.pigFarm.managerPigProd.dataLactatingList;
+        for (const cur_entry of pig_prod_list){
+            const pid = thisObj.getHtmlPidSowLoveBoar(cur_entry);
+
+            elemTableBodyOne.appendChild(createDataRow(pid, 4, ['', '', '', '']));
+            elemTableBodyTwo.appendChild(createDataRow(pid, 3, ['', '', '']));
+        }
+        
+        
+        if (inc_gestating){
+            pig_prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
+            for (const cur_entry of pig_prod_list){
+                const pid = thisObj.getHtmlPidSowLoveBoar(cur_entry);
+
+                elemTableBodyOne.appendChild(createDataRow(pid, 4, ['', '', '', '']));
+                elemTableBodyTwo.appendChild(createDataRow(pid, 3, ['', '', '']));
+            }
+        } 
+               
+        
+        let row_count = navigation.pigFarm.managerPigProd.dataFatteningList.length;
+        row_count += navigation.pigFarm.managerPigProd.dataLactatingList.length;
+        
+        if (inc_gestating){
+            row_count += navigation.pigFarm.managerPigProd.dataGestatingList.length;
+        }
+        
+            
+        const pid = 'Farm';
+        
+        elemTableBodyOne.appendChild(createDataRow(pid, 4, ['', '','', ''], 'farm-row'));
+        elemTableBodyTwo.appendChild(createDataRow(pid, 3, ['', '', ''], 'farm-row'));
+        
+        row_count += 1;
+        
+        
+        // Total row 
+        const totalRowOne = document.createElement('tr');
+        totalRowOne.classList.add('total-row');
+        const tdPidTotalOne = document.createElement('td');
+        tdPidTotalOne.textContent = '📊 TOTAL';
+        totalRowOne.appendChild(tdPidTotalOne);
+        for (let i = 0; i < 4; i++) {
+            const td = document.createElement('td');
+            td.textContent = '0';
+            totalRowOne.appendChild(td);
+        }
+        elemTableBodyOne.appendChild(totalRowOne);
+
+
+        // Attach updater (total row index = 4, 4 input columns)
+        attachTotalUpdater(elemTableBodyOne, row_count, 4);
+        
+        
+        const totalRowTwo = document.createElement('tr');
+        totalRowTwo.classList.add('total-row');
+        const tdPidTotalTwo = document.createElement('td');
+        tdPidTotalTwo.textContent = '📊 TOTAL';
+        totalRowTwo.appendChild(tdPidTotalTwo);
+        for (let i = 0; i < 3; i++) {
+            const td = document.createElement('td');
+            td.textContent = '0';
+            totalRowTwo.appendChild(td);
+        }
+        elemTableBodyTwo.appendChild(totalRowTwo);
+
+        // Attach updater (total row index = 4, 4 input columns)
+        attachTotalUpdater(elemTableBodyTwo, row_count, 3);
+
+    } 
+
 
 } 

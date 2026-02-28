@@ -416,11 +416,11 @@ export function PagePfFeedBuyAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
-            navigation.showThisPage(showOptions.go_back_page);
+            navigation._onClickNavFeedsExpenses();
         };
         
         elemBtnCancel.onclick = function() {
-            navigation.showThisPage(showOptions.go_back_page);
+            navigation._onClickNavFeedsExpenses();
         };
         
     }
@@ -512,6 +512,16 @@ export function PagePfFeedBuyAddEdit(input_settings){
         validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
+        
+        
+        
+        input_elem = componentSupplier.getElemSelect();
+        
+        if (input_supplier_hid == 0 || input_supplier_hid == -1){
+            validation          = -1
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
         
         
         let other_cost   = null;

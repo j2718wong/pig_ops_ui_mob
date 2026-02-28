@@ -215,6 +215,11 @@ export function TablePigFarmFeedBuy(input_settings){
             total_cost += cur_item.feed_item.total_cost;
         }
         
+        if (cur_entry.pf_feed_buy.other_cost){
+            total_cost += cur_entry.pf_feed_buy.other_cost;
+        }
+        
+        
         const s_total_cost = thisObj.moneyFormatter.format(total_cost);
         
         const html = `

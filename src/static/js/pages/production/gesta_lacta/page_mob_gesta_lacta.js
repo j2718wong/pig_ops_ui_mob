@@ -486,7 +486,7 @@ ${html_style}
             }
 
             elemNavNextEntry.onclick = function(){
-                navigation._onClickNavProdNotPregnant(null);
+                navigation._onClickNavProdFattening(null);
             }
         }
              
