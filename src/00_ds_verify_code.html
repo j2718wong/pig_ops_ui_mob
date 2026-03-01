@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Verify Email - SuperPig</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            /* Corporate Blues */
+            --corporate-blue: #1e3a8a;
+            --corporate-blue-company: #1877F0;
+            --corporate-blue-dark: #15467d;
+            --corporate-blue-light: #4a8adb;
+            --corporate-blue-border: #dbeafe;
+            --corporate-bg: #e0f2fe;
+            
+            --blue-deep: #0a2f6c;
+            --blue-medium: #1e4d8f;
+            --blue-soft: #e6f0ff;
+            --blue-border: #b8d1f0;
+            
+            /* Status Colors */
+            --alert-gold: #ffc107;
+            --critical-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            
+            --alert-red: #ef4444;
+            --alert-glow: rgba(239, 68, 68, 0.7);
+            --green-complete: #10b981;
+            
+            /* Text Colors */
+            --text-light: #ffffff;
+            --text-dark: #1f2937;
+            
+            /* Background & Grays */
+            --bg-light: #f8fafc;
+            --body-default-bg: #f5f7fa;
+            --light-gray: #f8fafc;
+            --medium-gray: #e2e8f0;
+            --neutral-gray: #6b7280;
+            --dark-gray: #64748b;
+            
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            
+            /* Icon Colors (for potential use) */
+            --icon-blue: #1e5aa7;
+            --icon-green: #28a745;
+            --icon-orange: #fd7e14;
+            --icon-purple: #6f42c1;
+            --icon-red: #dc3545;
+            --icon-teal: #20c997;
+            --icon-pink: #e83e8c;
+            --icon-indigo: #6610f2;
+            --icon-syringe: #6c757d;
+            
+            /* Production Colors */
+            --gestating-color: #693FE9;
+            --lactating-piglets-color: #2394EF;
+            --lactating-sow-color: #e83e8c;
+            --weaning-color: #07A4C4;
+            --gilt-color: #2ecc71;
+            --fattening-color: #fd7e14;
+            
+            /* Row States */
+            --row-even: #eff7ff;
+            --row-odd: #ffffff;
+            --row-hover: #e0f2fe;
+            --clickable-highlight: #1e40af;
+            
+            /* Special Rows */
+            --farm-row-bg: #fef7e6;
+            --farm-row-border: #f5cba0;
+            --total-row-bg: #d1ecf1;
+            --total-row-border: #bee5eb;
+            
+            --white: #ffffff;
+            
+            /* Warning & Success Backgrounds */
+            --warning-bg: #fef3c7;
+            --warning-border: #f59e0b;
+            --success-bg: #d1fae5;
+            --success-border: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, var(--corporate-blue) 0%, var(--blue-deep) 100%);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        html {
+            height: -webkit-fill-available;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+        }
+
+        .verify-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 24px 20px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.4s ease-out;
+            border: 1px solid var(--corporate-blue-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verify-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--corporate-blue), var(--corporate-blue-company), var(--corporate-blue-light));
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo and Product Section */
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--corporate-blue-border);
+        }
+
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--corporate-blue-company), var(--corporate-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--white);
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(24, 119, 240, 0.3);
+            border: 2px solid var(--white);
+        }
+
+        .product-name {
+            font-size: 28px;
+            font-weight: 800;
+            white-space: nowrap;
+            color: var(--corporate-blue);
+            letter-spacing: -0.5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--neutral-gray);
+            font-size: 15px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .email-highlight {
+            color: var(--white);
+            font-weight: 600;
+            background: var(--corporate-blue-company);
+            padding: 6px 16px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 14px;
+            word-break: break-all;
+            border: 1px solid var(--corporate-blue-border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Code Input Styles */
+        .code-input-container {
+            margin-bottom: 24px;
+        }
+
+        .code-input-container label {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--corporate-blue-dark);
+            font-weight: 600;
+            font-size: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .code-input-wrapper {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .code-input {
+            width: calc(16.666% - 7px);
+            min-width: 45px;
+            max-width: 52px;
+            height: 56px;
+            border: 2px solid var(--corporate-blue-border);
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--corporate-blue-dark);
+            background: var(--row-odd);
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+            appearance: none;
+            padding: 0;
+        }
+
+        /* Remove spinner buttons completely */
+        .code-input::-webkit-outer-spin-button,
+        .code-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+            display: none;
+        }
+
+        /* Firefox specific */
+        .code-input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--corporate-blue-company);
+            background: var(--white);
+            box-shadow: 0 0 0 3px var(--blue-soft);
+            transform: scale(1.02);
+        }
+
+        .code-input.error {
+            border-color: var(--danger-red);
+            background: var(--warning-bg);
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        /* Timer Section */
+        .timer-section {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 18px 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .timer-label {
+            color: var(--dark-gray);
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timer-display {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--corporate-blue);
+            font-family: 'Courier New', monospace;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .timer-display.expiring {
+            color: var(--danger-red);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Resend Section */
+        .resend-section {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 8px 0;
+        }
+
+        .resend-btn {
+            background: none;
+            border: 1px solid var(--corporate-blue-border);
+            color: var(--corporate-blue-company);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 14px 24px;
+            border-radius: 30px;
+            transition: all 0.2s ease;
+            width: 100%;
+            max-width: 220px;
+            margin: 0 auto;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .resend-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--blue-soft);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .resend-btn:active::before:not(:disabled) {
+            width: 200px;
+            height: 200px;
+        }
+
+        .resend-btn:hover:not(:disabled) {
+            background: var(--blue-soft);
+            border-color: var(--corporate-blue-company);
+        }
+
+        .resend-btn:disabled {
+            color: var(--neutral-gray);
+            border-color: var(--medium-gray);
+            cursor: not-allowed;
+            background: none;
+            opacity: 0.7;
+        }
+
+        /* Verify Button */
+        .verify-btn {
+            width: 100%;
+            padding: 18px 20px;
+            background: linear-gradient(135deg, var(--corporate-blue) 0%, var(--corporate-blue-dark) 100%);
+            color: var(--white);
+            border: none;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 16px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            box-shadow: var(--shadow);
+            letter-spacing: 0.3px;
+            -webkit-appearance: none;
+            appearance: none;
+            border: 1px solid var(--corporate-blue-border);
+        }
+
+        .verify-btn:active:not(:disabled) {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(30, 58, 138, 0.4);
+        }
+
+        .verify-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            background: var(--neutral-gray);
+        }
+
+        /* Message Styles */
+        .message {
+            text-align: center;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            margin-top: 8px;
+            word-break: break-word;
+        }
+
+        .message.success {
+            background: var(--success-bg);
+            color: var(--success-green);
+            border: 1px solid var(--success-border);
+            display: block;
+        }
+
+        .message.error {
+            background: var(--warning-bg);
+            color: var(--danger-red);
+            border: 1px solid var(--danger-red);
+            display: block;
+        }
+
+        /* Back Link */
+        .back-link {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .back-link a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 12px 20px;
+            display: inline-block;
+            transition: opacity 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+            opacity: 0.9;
+        }
+
+        .back-link a:active {
+            opacity: 0.7;
+        }
+
+        /* Mobile Keyboard Optimization */
+        @media (max-width: 380px) {
+            .code-input {
+                min-width: 42px;
+                height: 50px;
+                font-size: 22px;
+            }
+            
+            .verify-card {
+                padding: 20px 16px;
+            }
+            
+            .timer-display {
+                font-size: 36px;
+            }
+            
+            .product-name {
+                font-size: 24px;
+            }
+            
+            .company-logo {
+                width: 42px;
+                height: 42px;
+                font-size: 28px;
+            }
+        }
+
+        /* Landscape Mode Optimization */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                align-items: flex-start;
+                padding: 12px;
+            }
+            
+            .verify-card {
+                padding: 16px;
+            }
+            
+            .code-input {
+                height: 48px;
+            }
+            
+            .verify-btn {
+                padding: 14px;
+            }
+            
+            .logo-section {
+                margin-bottom: 16px;
+                padding-bottom: 12px;
+            }
+        }
+
+        /* High Resolution Screens */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .verify-card {
+                border-width: 0.5px;
+            }
+        }
+
+        /* Prevent zoom on input focus for iOS */
+        @supports (-webkit-touch-callout: none) {
+            .code-input, .verify-btn, .resend-btn {
+                font-size: 16px;
+            }
+            
+            /* Additional iOS spinner removal */
+            .code-input {
+                -webkit-appearance: none;
+                appearance: none;
+            }
+        }
+        
+        /* Hide number input spinners for all browsers */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+            display: none;
+        }
+        
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        /* Hover effects */
+        .code-input:hover:not(:focus) {
+            border-color: var(--corporate-blue-light);
+            background: var(--row-even);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="verify-card">
+            <!-- Logo and Product Section at the top with J logo -->
+            <div class="logo-section">
+                <div class="company-logo">J</div>
+                <div class="product-name">SuperPig</div>
+            </div>
+
+            <div class="header">
+                <h2>Verify Your Email</h2>
+                <p>We've sent a verification code to</p>
+                <span class="email-highlight">john.doe@superpig.farm</span>
+            </div>
+
+            <div class="code-input-container">
+                <label>Enter 6-digit code</label>
+                <div class="code-input-wrapper">
+                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code1" autofocus>
+                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code2">
+                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code3">
+                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code4">
+                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code5">
+                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code6">
+                </div>
+            </div>
+
+            <div class="timer-section">
+                <div class="timer-label">Code expires in</div>
+                <div class="timer-display" id="timer">05:00</div>
+            </div>
+
+            <div class="resend-section">
+                <button class="resend-btn" id="resendBtn" disabled>
+                    Send code again
+                </button>
+            </div>
+
+            <button class="verify-btn" id="verifyBtn">
+                Verify Email
+            </button>
+
+            <div class="message" id="message"></div>
+        </div>
+
+        <div class="back-link">
+            <a href="#" id="backLink">← Back to login</a>
+        </div>
+    </div>
+
+    <script>
+        class SuperPigVerifyEmail {
+            constructor() {
+                this.timeLeft = 300; // 5 minutes in seconds
+                this.timerInterval = null;
+                this.verificationCode = '123456'; // Demo code
+                
+                this.initializeElements();
+                this.attachEventListeners();
+                this.startTimer();
+                
+                // Handle viewport height for mobile browsers
+                this.setViewportHeight();
+                window.addEventListener('resize', () => this.setViewportHeight());
+            }
+
+            initializeElements() {
+                this.codeInputs = document.querySelectorAll('.code-input');
+                this.timerDisplay = document.getElementById('timer');
+                this.resendBtn = document.getElementById('resendBtn');
+                this.verifyBtn = document.getElementById('verifyBtn');
+                this.messageDiv = document.getElementById('message');
+                this.backLink = document.getElementById('backLink');
+                
+                // Add touch event handling
+                this.addTouchHandling();
+            }
+
+            setViewportHeight() {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            }
+
+            addTouchHandling() {
+                // Prevent double-tap zoom on buttons
+                const buttons = [this.verifyBtn, this.resendBtn, this.backLink];
+                buttons.forEach(btn => {
+                    btn.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                    }, { passive: false });
+                });
+            }
+
+            attachEventListeners() {
+                // Code input handling with mobile optimization
+                this.codeInputs.forEach((input, index) => {
+                    // Handle input
+                    input.addEventListener('input', (e) => this.handleInput(e, index));
+                    
+                    // Handle keydown for backspace
+                    input.addEventListener('keydown', (e) => this.handleKeyDown(e, index));
+                    
+                    // Handle paste
+                    input.addEventListener('paste', (e) => this.handlePaste(e));
+                    
+                    // Handle focus
+                    input.addEventListener('focus', (e) => this.handleFocus(e));
+                    
+                    // Handle blur
+                    input.addEventListener('blur', (e) => this.handleBlur(e));
+                    
+                    // Prevent wheel/scroll events from changing the number
+                    input.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+                    
+                    // Prevent arrow key up/down from changing the number
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                            e.preventDefault();
+                        }
+                    });
+                    
+                    // Handle touch events for mobile
+                    input.addEventListener('touchstart', () => {
+                        input.classList.add('touch-active');
+                    });
+                    
+                    input.addEventListener('touchend', () => {
+                        input.classList.remove('touch-active');
+                    });
+                });
+
+                // Verify button
+                this.verifyBtn.addEventListener('click', () => this.handleVerification());
+                this.verifyBtn.addEventListener('touchstart', () => this.preventDoubleTap);
+
+                // Resend button
+                this.resendBtn.addEventListener('click', () => this.resendCode());
+                
+                // Back link
+                this.backLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.handleBack();
+                });
+            }
+
+            handleInput(e, index) {
+                const input = e.target;
+                let value = input.value;
+
+                // Only allow single digit
+                if (value.length > 1) {
+                    value = value.charAt(value.length - 1);
+                }
+                
+                // Only allow numbers
+                value = value.replace(/[^0-9]/g, '');
+                input.value = value;
+
+                if (value) {
+                    // Remove error styling
+                    input.classList.remove('error');
+                    
+                    // Move to next input
+                    if (index < this.codeInputs.length - 1) {
+                        this.codeInputs[index + 1].focus();
+                    } else {
+                        // Auto-submit when last digit is entered
+                        this.checkAutoSubmit();
+                    }
+                }
+            }
+
+            handleKeyDown(e, index) {
+                // Prevent arrow key up/down from changing value
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    return;
+                }
+                
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    // Move to previous input on backspace
+                    this.codeInputs[index - 1].focus();
+                }
+                
+                // Handle enter key
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.handleVerification();
+                }
+            }
+
+            handleFocus(e) {
+                e.target.select();
+                
+                // Scroll into view with offset for mobile keyboards
+                setTimeout(() => {
+                    e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+
+            handleBlur(e) {
+                // Optional: Add validation on blur
+            }
+
+            handlePaste(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text');
+                const numbers = pastedData.replace(/[^0-9]/g, '').split('').slice(0, 6);
+
+                numbers.forEach((num, index) => {
+                    if (index < this.codeInputs.length) {
+                        this.codeInputs[index].value = num;
+                    }
+                });
+
+                // Focus on next empty input or last input
+                const filledCount = numbers.length;
+                if (filledCount < this.codeInputs.length) {
+                    this.codeInputs[filledCount].focus();
+                } else {
+                    this.codeInputs[this.codeInputs.length - 1].focus();
+                    this.checkAutoSubmit();
+                }
+            }
+
+            preventDoubleTap(e) {
+                e.preventDefault();
+            }
+
+            checkAutoSubmit() {
+                const allFilled = Array.from(this.codeInputs).every(input => input.value.length === 1);
+                if (allFilled) {
+                    // Small delay to ensure last digit is registered
+                    setTimeout(() => this.handleVerification(), 100);
+                }
+            }
+
+            startTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+                
+                this.timerInterval = setInterval(() => {
+                    if (this.timeLeft > 0) {
+                        this.timeLeft--;
+                        this.updateTimerDisplay();
+                    } else {
+                        this.handleTimerExpiry();
+                    }
+                }, 1000);
+            }
+
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                this.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                // Add warning class when less than 1 minute remaining
+                if (this.timeLeft <= 60) {
+                    this.timerDisplay.classList.add('expiring');
+                }
+            }
+
+            handleTimerExpiry() {
+                clearInterval(this.timerInterval);
+                this.timerDisplay.textContent = '00:00';
+                this.resendBtn.disabled = false;
+                this.showMessage('Code expired. Please request a new one.', 'error');
+            }
+
+            resendCode() {
+                this.showMessage('Sending new code...', 'success');
+                
+                // Disable resend button immediately
+                this.resendBtn.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // Reset timer
+                    this.timeLeft = 300;
+                    this.timerDisplay.classList.remove('expiring');
+                    this.startTimer();
+                    
+                    // Clear inputs
+                    this.codeInputs.forEach(input => {
+                        input.value = '';
+                        input.classList.remove('error');
+                    });
+                    
+                    // Focus first input
+                    this.codeInputs[0].focus();
+                    
+                    this.showMessage('New verification code sent!', 'success');
+                    
+                    // In production, you would:
+                    // 1. Call your API to resend code
+                    // 2. Update verificationCode with new value from backend
+                    console.log('New code sent - in production, API would be called');
+                }, 1500);
+            }
+
+            handleVerification() {
+                // Hide any existing messages
+                this.messageDiv.style.display = 'none';
+                
+                const enteredCode = Array.from(this.codeInputs).map(input => input.value).join('');
+                
+                // Validation
+                if (enteredCode.length < 6) {
+                    this.showMessage('Please enter the complete 6-digit code', 'error');
+                    this.codeInputs.forEach(input => {
+                        if (!input.value) input.classList.add('error');
+                    });
+                    return;
+                }
+
+                // Show loading state
+                this.verifyBtn.disabled = true;
+                this.verifyBtn.textContent = 'Verifying...';
+
+                // Simulate API verification
+                setTimeout(() => {
+                    if (enteredCode === this.verificationCode) {
+                        this.showMessage('✓ Email verified successfully!', 'success');
+                        this.codeInputs.forEach(input => input.classList.remove('error'));
+                        
+                        // Simulate redirect
+                        setTimeout(() => {
+                            this.verifyBtn.textContent = 'Verified!';
+                            // In production: window.location.href = '/dashboard';
+                            alert('Welcome to SuperPig! Redirecting to dashboard...');
+                        }, 1500);
+                    } else {
+                        this.showMessage('✗ Invalid code. Please try again.', 'error');
+                        this.codeInputs.forEach(input => {
+                            input.classList.add('error');
+                            input.value = '';
+                        });
+                        this.codeInputs[0].focus();
+                        this.verifyBtn.disabled = false;
+                        this.verifyBtn.textContent = 'Verify Email';
+                    }
+                }, 1500);
+            }
+
+            handleBack() {
+                // Show confirmation on mobile
+                if (window.innerWidth <= 768) {
+                    if (confirm('Leave verification?')) {
+                        // In production: navigate back
+                        alert('Returning to login...');
+                    }
+                } else {
+                    // In production: navigate back
+                    alert('Returning to login...');
+                }
+            }
+
+            showMessage(text, type) {
+                this.messageDiv.textContent = text;
+                this.messageDiv.className = `message ${type}`;
+                
+                // Auto hide success messages after 4 seconds
+                if (type === 'success') {
+                    setTimeout(() => {
+                        if (this.messageDiv.classList.contains('success')) {
+                            this.messageDiv.style.display = 'none';
+                        }
+                    }, 4000);
+                }
+            }
+        }
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            const verifyPage = new SuperPigVerifyEmail();
+            
+            // Handle orientation change
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    verifyPage.setViewportHeight();
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

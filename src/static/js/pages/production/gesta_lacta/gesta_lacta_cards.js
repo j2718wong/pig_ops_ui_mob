@@ -233,7 +233,7 @@ export function GestaLactaCards(input_settings){
                 
                 <!-- Dates side by side -->
                 <div class="dates-container">
-                    <div class="date-item" style="width:45%;">
+                    <div class="date-item" style="width:50%;">
                         <div class="date-label">
                             ${label_date_important}
                             ${html_due_soon}

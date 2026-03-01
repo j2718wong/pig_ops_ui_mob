@@ -27,9 +27,18 @@ const ACC_USER_GROUP = {
 
 
 const PAGE_ID = {
-    HOME:                   0,
+    NOT_LOGGED_IN:          0,
+    SIGNUP_OR_LOGIN:        1,
+    USER_EMAIL_VERIFY:      2,
+    USER_WAIT_ACCOUNT_ACCESS: 3,
     
-    PIG_FARM_ADD_EDIT:      5,
+    CREATE_OR_JOIN_ACCOUNT: 4,
+    ACCOUNT_CREATE_EDIT:    5,
+    
+    
+    HOME:                   9,
+    
+    PIG_FARM_ADD_EDIT:      10,
     
     
     SOW_BOAR_LIST:          11,

@@ -232,7 +232,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         
         <!-- Footer Buttons -->
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" data-bs-dismiss="modal" style="margin-right:10px;">
+            <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
                 <i class="fas fa-times me-2"></i>Cancel
             </button>
             <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
@@ -610,8 +610,12 @@ export function PagePfFeedBuyAddEdit(input_settings){
                     }
                     
                     else{
-                        // TODO
-                        // Request PigFarm FeedBuy, replace in the list
+                        const callback_success = function(){
+                            navigation._onClickNavFeedsExpenses();
+                        };
+                        
+                        navigation.pigFarm.requestDataPigFarmFeedBuyList(
+                            callback_success, elemServerErrorMsg);
                     }
                 }
                 else{

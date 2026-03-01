@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>SuperPig · Create or join</title>
+    <style>
+        /* ----- reset & base (mobile first) ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--body-default-bg, #f5f7fa);
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 1rem;
+            margin: 0;
+        }
+
+        /* all recycled CSS variables (exactly as provided) */
+        :root {
+            --corporate-blue: #1e3a8a;
+            --corporate-blue-company: #1877F0;
+            --corporate-blue-dark: #15467d;
+            --corporate-blue-light: #4a8adb;
+            --corporate-blue-border: #dbeafe;
+            --corporate-bg: #e0f2fe;
+
+            --blue-deep: #0a2f6c;
+            --blue-medium: #1e4d8f;
+            --blue-soft: #e6f0ff;
+            --blue-border: #b8d1f0;
+
+            --alert-gold: #ffc107;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+            --icon-blue: #1e5aa7;
+            --icon-green: #28a745;
+            --icon-orange: #fd7e14;
+            --icon-purple: #6f42c1;
+            --icon-red: #dc3545;
+            --icon-teal: #20c997;
+            --icon-pink: #e83e8c;
+            --icon-indigo: #6610f2;
+            --icon-syringe: #6c757d;
+
+            --critical-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --text-dark-alt: #1f2937;
+            --text-light-alt: #f9fafb;
+
+            --light-gray: #f8fafc;
+            --medium-gray: #e2e8f0;
+            --neutral-gray: #6b7280;
+            --dark-gray: #64748b;
+
+            --warning-bg: #fef3c7;
+            --warning-border: #f59e0b;
+            --success-bg: #d1fae5;
+            --success-border: #10b981;
+
+            --alert-red: #ef4444;
+            --alert-glow: rgba(239, 68, 68, 0.7);
+            --green-complete: #10b981;
+
+            --gestating-color: #693FE9;
+            --lactating-piglets-color: #2394EF;
+            --lactating-sow-color: #e83e8c;
+            --weaning-color: #07A4C4;
+            --gilt-color: #2ecc71;
+            --fattening-color: #fd7e14;
+
+            --row-even: #eff7ff;
+            --row-odd: #ffffff;
+            --row-hover: #e0f2fe;
+            --clickable-highlight: #1e40af;
+
+            --white: #ffffff;
+            --body-default-bg: #f5f7fa;
+
+            --farm-row-bg: #fef7e6;
+            --farm-row-border: #f5cba0;
+            --total-row-bg: #d1ecf1;
+            --total-row-border: #bee5eb;
+        }
+
+        /* ----- main card container (mobile width) ----- */
+        .mobile-container {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            background-color: var(--white);
+            border-radius: 2rem 2rem 2rem 2rem;
+            box-shadow: var(--shadow), 0 10px 25px -8px var(--corporate-blue-light);
+            overflow: hidden;
+            border: 1px solid var(--blue-border);
+        }
+
+        /* ----- product & logo section (exact given html/css) ----- */
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            background: linear-gradient(98deg, var(--white) 0%, var(--blue-soft) 100%);
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
+            border-bottom: 2px solid var(--corporate-blue-border);
+        }
+
+        .company-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--corporate-blue-company);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+            line-height: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-name {
+            font-size: 22px;
+            font-weight: 700;
+            white-space: nowrap;
+            color: var(--corporate-blue-dark);
+            letter-spacing: -0.3px;
+        }
+
+        /* ----- body content ----- */
+        .content {
+            padding: 1.5rem 1.2rem 2rem 1.2rem;
+        }
+
+        /* option cards */
+        .option-card {
+            background: var(--light-gray);
+            border: 2px solid var(--blue-border);
+            border-radius: 1.8rem;
+            padding: 1.2rem 1.2rem 1.2rem 1.2rem;
+            margin-bottom: 1.4rem;
+            transition: all 0.15s;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .option-card:active {
+            background: var(--blue-soft);
+            border-color: var(--corporate-blue-company);
+            transform: scale(0.99);
+        }
+
+        .option-card.selected {
+            border-color: var(--corporate-blue);
+            background: var(--corporate-bg);
+            border-width: 2px;
+            box-shadow: 0 0 0 3px var(--corporate-blue-border);
+        }
+
+        .option-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--blue-deep);
+            margin-bottom: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.3rem 0.5rem;
+        }
+
+        .create-badge, .join-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.9rem;
+            border-radius: 40px;
+            background: var(--icon-teal);
+            color: white;
+            letter-spacing: 0.3px;
+        }
+
+        .join-badge {
+            background: var(--icon-orange);
+        }
+
+        .option-sub {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-dark-alt);
+            margin-bottom: 0.75rem;
+            padding-left: 0.2rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 0.75rem 0 0.2rem 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.45rem;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.2rem;
+            height: 1.2rem;
+            background: var(--success-green);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            line-height: 1.2rem;
+        }
+
+        .staff-notice {
+            background: var(--warning-bg);
+            border-left: 6px solid var(--warning-orange);
+            padding: 0.9rem 1rem;
+            border-radius: 1.2rem;
+            margin: 1rem 0 1.2rem 0;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-area {
+            background: var(--bg-light);
+            padding: 1.2rem 1rem 1.2rem 1rem;
+            border-radius: 1.8rem;
+            border: 1px solid var(--medium-gray);
+            margin: 1.2rem 0 1.5rem 0;
+        }
+
+        .code-label {
+            font-weight: 600;
+            color: var(--corporate-blue-dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 1rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            border: 2px solid var(--blue-border);
+            border-radius: 60px;
+            padding: 0.1rem 0.1rem 0.1rem 1.3rem;
+            transition: 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--corporate-blue-company);
+            box-shadow: 0 0 0 3px var(--corporate-blue-border);
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            padding: 0.85rem 0.2rem 0.85rem 0;
+            font-size: 1rem;
+            background: transparent;
+            outline: none;
+            color: var(--text-dark);
+            width: 100%;
+            min-width: 0;
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--neutral-gray);
+            font-size: 0.9rem;
+        }
+
+        .code-hint {
+            background: var(--icon-green);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            margin-right: 0.2rem;
+        }
+
+        /* continue button */
+        .continue-btn {
+            width: 100%;
+            border: none;
+            background: var(--corporate-blue);
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: 2px solid var(--corporate-blue-dark);
+            box-shadow: 0 6px 12px -6px var(--blue-deep);
+            transition: 0.15s;
+            margin-top: 0.8rem;
+            cursor: pointer;
+        }
+
+        .continue-btn:active:not(:disabled) {
+            background: var(--corporate-blue-dark);
+            transform: scale(0.97);
+            box-shadow: none;
+        }
+
+        .continue-btn:disabled {
+            opacity: 0.5;
+            filter: grayscale(0.4);
+            cursor: not-allowed;
+            background: var(--neutral-gray);
+            border-color: var(--dark-gray);
+        }
+
+        .reset-link {
+            text-align: center;
+            margin-top: 1.2rem;
+        }
+
+        .reset-link button {
+            background: none;
+            border: none;
+            color: var(--icon-purple);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: underline dotted;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .tiny-note {
+            margin-top: 1.5rem;
+            font-size: 0.7rem;
+            color: var(--neutral-gray);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.3rem;
+            border-top: 1px dashed var(--medium-gray);
+            padding-top: 1rem;
+        }
+
+        /* recycled colors decoration */
+        .bg-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 10px;
+            background: var(--icon-pink);
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container" id="app">
+        <!-- product & logo section exactly as requested -->
+        <div class="logo-row">
+            <div class="company-logo">J</div>
+            <div class="product-name">SuperPig</div>
+        </div>
+
+        <div class="content">
+            <!-- two clickable options -->
+            <!-- option 1: create (owner/manager) -->
+            <div class="option-card" :class="{ selected: selected === 'create' }" @click="selectOption('create')">
+                <div class="option-title">
+                    🐖 Create a Pig Farm Account
+                    <span class="create-badge">admin</span>
+                </div>
+                <div class="option-sub">Are you the owner or manager of a pig farm?</div>
+                <ul class="feature-list">
+                    <li>You will be an account admin.</li>
+                    <li>You can grant access to other users who wish to access your PigFarm account.</li>
+                    <li>Full access to your data.</li>
+                </ul>
+                <div style="font-size:0.85rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
+                    👆 Click to Continue
+                </div>
+            </div>
+
+            <!-- option 2: join (staff) -->
+            <div class="option-card" :class="{ selected: selected === 'join' }" @click="selectOption('join')">
+                <div class="option-title">
+                    🧑‍🌾 Join a Pig Farm Account
+                    <span class="join-badge">needs approval</span>
+                </div>
+                <div class="option-sub">You work as staff on the pig farm. The PigFarm account admins need to approve your access.</div>
+                <ul class="feature-list">
+                    <li>You may have limited access to the PigFarm account data.</li>
+                </ul>
+                <!-- subtle extra badge recycled -->
+                <span style="background:var(--warning-bg); color:var(--warning-orange); border-radius:20px; padding:0.2rem 0.9rem; font-size:0.7rem; margin-top:0.3rem; display:inline-block;">⏳ pending approval</span>
+            </div>
+
+            <!-- conditional staff code input (only visible when join selected) -->
+            <div class="code-area" v-if="selected === 'join'">
+                <div class="code-label">
+                    <span class="bg-dot" style="background:var(--icon-orange);"></span>
+                    Enter Account Code
+                </div>
+                <div class="input-wrapper">
+                    <input type="text" placeholder="e.g. PIG-2X9F" v-model="accountCode" maxlength="12" autocomplete="off">
+                    <span class="code-hint">required</span>
+                </div>
+                <p style="font-size:0.75rem; margin-top:0.7rem; color:var(--dark-gray);">
+                    <span style="color:var(--icon-indigo);">🔐</span> Ask the farm admin for the code
+                </p>
+            </div>
+
+            <!-- extra info for create (no code needed) -->
+            <div class="staff-notice" v-if="selected === 'create'">
+                <span style="font-size:1.6rem;">👑</span>
+                <span><strong style="color:var(--corporate-blue-dark);">No account code required</strong> — you'll set up your farm after clicking continue.</span>
+            </div>
+
+            <!-- continue button (text depends on selection) -->
+            <button class="continue-btn" :disabled="!canContinue" @click="handleContinue">
+                <span v-if="selected === 'create'">Create account →</span>
+                <span v-else-if="selected === 'join'">Request to join →</span>
+                <span v-else>↴ Select an option</span>
+            </button>
+
+            <!-- small reset (like a subtle link) -->
+            <div class="reset-link">
+                <button @click="resetAll">✕ reset choice</button>
+            </div>
+
+            <!-- tiny footer with recycled colors mention (optional) -->
+            <div class="tiny-note">
+                <span class="bg-dot" style="background:var(--icon-teal);"></span>
+                <span style="color:var(--dark-gray);">recycled: 40+ corporate colors</span>
+                <span class="bg-dot" style="background:var(--alert-gold);"></span>
+                <span class="bg-dot" style="background:var(--icon-purple);"></span>
+                <span class="bg-dot" style="background:var(--success-green);"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vue 2 (lightweight) -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                selected: null,      // 'create' or 'join'
+                accountCode: ''
+            },
+            computed: {
+                canContinue: function() {
+                    if (this.selected === 'create') return true;
+                    if (this.selected === 'join') {
+                        return this.accountCode && this.accountCode.trim().length >= 4;
+                    }
+                    return false;
+                }
+            },
+            methods: {
+                selectOption: function(opt) {
+                    this.selected = opt;
+                    // when switching from join to create, optionally clear code (makes sense)
+                    if (opt === 'create') {
+                        this.accountCode = '';   // code only relevant for join
+                    }
+                },
+                resetAll: function() {
+                    this.selected = null;
+                    this.accountCode = '';
+                },
+                handleContinue: function() {
+                    if (!this.canContinue) return;
+
+                    if (this.selected === 'create') {
+                        alert('✅ Create farm flow: go to onboarding (admin wizard)');
+                        // in real app: location.href = '/create-farm'
+                    } else if (this.selected === 'join') {
+                        alert(`⏳ Join request with code: ${this.accountCode.toUpperCase()} (pending admin approval)`);
+                        // location.href = '/request-join?code=' + encodeURIComponent(this.accountCode)
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- ensure everything is extra mobile friendly -->
+    <style>
+        /* touch optimizations */
+        .option-card, .continue-btn, .reset-link button {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .option-card {
+            user-select: none;
+        }
+        /* even smaller screens (<=360) */
+        @media (max-width: 360px) {
+            .product-name { font-size: 20px; }
+            .option-title { font-size: 1.1rem; }
+            .content { padding: 1.2rem 1rem; }
+        }
+    </style>
+</body>
+</html>

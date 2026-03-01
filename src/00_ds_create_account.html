@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>SuperPig · inline edit account</title>
+  <style>
+    /* reset & base */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--body-default-bg, #f5f7fa);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      margin: 0;
+    }
+
+    .account-page {
+      max-width: 480px;
+      width: 100%;
+      background-color: var(--white, #ffffff);
+      border-radius: 2rem 2rem 1.5rem 1.5rem;
+      box-shadow: var(--shadow, 0 8px 24px rgba(0,0,0,0.05));
+      overflow: hidden;
+      border: 1px solid var(--blue-border, #b8d1f0);
+    }
+
+    .content {
+      padding: 1.8rem 1.5rem 2.2rem;
+    }
+
+    /* ---------- color palette (recycled) ---------- */
+    :root {
+      --corporate-blue: #1e3a8a;
+      --corporate-blue-company: #1877F0;
+      --corporate-blue-dark: #15467d;
+      --corporate-blue-light: #4a8adb;
+      --corporate-blue-border: #dbeafe;
+      --corporate-bg: #e0f2fe;
+      --blue-deep: #0a2f6c;
+      --blue-medium: #1e4d8f;
+      --blue-soft: #e6f0ff;
+      --blue-border: #b8d1f0;
+      --alert-gold: #ffc107;
+      --text-light: #ffffff;
+      --text-dark: #333333;
+      --bg-light: #f8f9fa;
+      --border-color: #dee2e6;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --icon-blue: #1e5aa7;
+      --icon-green: #28a745;
+      --icon-orange: #fd7e14;
+      --icon-purple: #6f42c1;
+      --icon-red: #dc3545;
+      --icon-teal: #20c997;
+      --icon-pink: #e83e8c;
+      --icon-indigo: #6610f2;
+      --icon-syringe: #6c757d;
+      --critical-color: #dc3545;
+      --warning-color: #ffc107;
+      --info-color: #17a2b8;
+      --success-green: #10b981;
+      --warning-orange: #f59e0b;
+      --danger-red: #ef4444;
+      --neutral-gray: #6b7280;
+      --light-gray: #f8fafc;
+      --medium-gray: #e2e8f0;
+      --dark-gray: #64748b;
+      --warning-bg: #fef3c7;
+      --warning-border: #f59e0b;
+      --success-bg: #d1fae5;
+      --success-border: #10b981;
+      --alert-red: #ef4444;
+      --alert-glow: rgba(239, 68, 68, 0.7);
+      --green-complete: #10b981;
+      --gestating-color: #693FE9;
+      --lactating-piglets-color: #2394EF;
+      --lactating-sow-color: #e83e8c;
+      --weaning-color: #07A4C4;
+      --gilt-color: #2ecc71;
+      --fattening-color: #fd7e14;
+      --row-even: #eff7ff;
+      --row-odd: #ffffff;
+      --row-hover: #e0f2fe;
+      --clickable-highlight: #1e40af;
+      --white: #ffffff;
+      --body-default-bg: #f5f7fa;
+      --farm-row-bg: #fef7e6;
+      --farm-row-border: #f5cba0;
+      --total-row-bg: #d1ecf1;
+      --total-row-border: #bee5eb;
+    }
+
+    /* ---------- logo + product row ---------- */
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2.25rem;
+    }
+
+    .company-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--corporate-blue-company, #1877F0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--text-light, white);
+      flex-shrink: 0;
+      line-height: 1;
+      box-shadow: 0 2px 8px rgba(24, 119, 240, 0.25);
+    }
+
+    .product-name {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+      color: var(--blue-deep, #0a2f6c);
+    }
+
+    /* ---------- section label ---------- */
+    .section-label {
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--dark-gray, #64748b);
+      margin-bottom: 0.6rem;
+    }
+
+    .hidden-section {
+      display: none !important;
+    }
+
+    .visible-section {
+      display: block;
+      animation: fadeSlide 0.25s ease;
+    }
+
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- forms / inputs / buttons ---------- */
+    .input-field {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      font-size: 1.06rem;
+      border: 1.5px solid var(--blue-border, #b8d1f0);
+      border-radius: 40px;
+      background-color: var(--white);
+      outline: none;
+      transition: border 0.15s, box-shadow 0.15s;
+      margin-bottom: 1.3rem;
+      color: var(--text-dark);
+      -webkit-appearance: none;
+    }
+
+    .input-field:focus {
+      border-color: var(--corporate-blue-company, #1877F0);
+      box-shadow: 0 0 0 4px var(--blue-soft, #e6f0ff);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      background-color: var(--corporate-blue-company, #1877F0);
+      border: none;
+      border-radius: 40px;
+      padding: 1rem 1.5rem;
+      font-size: 1.16rem;
+      font-weight: 600;
+      color: white;
+      box-shadow: var(--shadow);
+      transition: background-color 0.15s, transform 0.1s;
+      cursor: pointer;
+      border: 1px solid var(--blue-deep);
+      touch-action: manipulation;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+      background-color: var(--corporate-blue-dark, #15467d);
+    }
+
+    .btn-secondary {
+      background-color: white;
+      color: var(--blue-deep);
+      border: 2px solid var(--corporate-blue-light, #4a8adb);
+      box-shadow: none;
+      font-weight: 600;
+    }
+
+    .btn-secondary:active {
+      background-color: var(--blue-soft);
+      transform: scale(0.98);
+    }
+
+    /* ---------- PLAIN TEXT ACCOUNT DISPLAY (no background, no radius) ---------- */
+    .account-plain {
+      margin: 0 0 1.8rem 0;            /* spacing like a block */
+      font-family: inherit;
+    }
+
+    .account-name-text {
+      font-size: 2rem;                 /* large, prominent */
+      font-weight: 700;
+      color: var(--blue-deep, #0a2f6c);
+      line-height: 1.2;
+      cursor: pointer;
+      display: inline-block;            /* fit content */
+      border: none;
+      background: none;
+      padding: 0.1rem 0;
+      margin: 0 0 0.2rem 0;
+      transition: color 0.1s;
+      border-bottom: 2px solid transparent; /* reserve space for edit hint */
+    }
+
+    .account-name-text:hover {
+      color: var(--corporate-blue-company);
+      border-bottom: 2px solid var(--blue-border);
+    }
+
+    /* inline input (edit mode) – exactly the same visual style as read-only text */
+    .account-name-input {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--blue-deep, #0a2f6c);
+      background: none;
+      border: none;
+      outline: none;
+      padding: 0.1rem 0;
+      margin: 0 0 0.2rem 0;
+      width: 100%;
+      font-family: inherit;
+      border-bottom: 2px solid var(--corporate-blue-company); /* subtle edit indicator */
+    }
+
+    .account-name-input::placeholder {
+      color: var(--neutral-gray);
+      font-weight: 400;
+      opacity: 0.6;
+    }
+
+    .account-code {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--dark-gray, #64748b);
+      letter-spacing: 0.3px;
+      margin-top: 0.1rem;
+    }
+
+    /* farm section styles */
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--blue-border), transparent);
+      margin: 2rem 0 1.8rem;
+    }
+
+    /* farm feedback cards (unchanged) */
+    .farm-feedback-area {
+      margin-top: 1.5rem;
+      min-height: 2rem;
+    }
+
+    /* info note */
+    .info-note {
+      background: var(--light-gray);
+      border-radius: 24px;
+      padding: 0.8rem 1rem;
+      color: var(--neutral-gray);
+      font-size: 0.9rem;
+      margin: 0.5rem 0 1.2rem;
+      border: 1px dashed var(--blue-border);
+    }
+    .info-note span { color: var(--icon-purple); font-weight: 500; }
+
+    @media (max-width: 380px) {
+      .content { padding: 1.5rem 1.2rem; }
+      .product-name { font-size: 24px; }
+      .company-logo { width: 44px; height: 44px; font-size: 36px; }
+      .account-name-text { font-size: 1.8rem; }
+      .account-name-input { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="account-page">
+    <div class="content">
+      <!-- 1.) Product and Logo -->
+      <div class="logo-row">
+        <div class="company-logo">J</div>
+        <div class="product-name">SuperPig</div>
+      </div>
+
+      <div class="section-label">CREATE OR JOIN AN ACCOUNT</div>
+
+      <!-- ========== ACCOUNT SECTION ========== -->
+      <div id="accountCreationZone">
+        <!-- INPUT + BUTTON (visible when no account) -->
+        <div id="accountInputGroup">
+          <input type="text" id="accountNameInput" class="input-field" placeholder="e.g., Oak Valley Farm" autocomplete="off" value="Sunrise Pigs">
+          <button class="btn" id="createAccountBtn">Create account</button>
+          <div class="info-note"><span>ⓘ</span> Enter name → then click to edit inline</div>
+        </div>
+
+        <!-- PLAIN TEXT ACCOUNT DISPLAY (hidden until account created) 
+             no background, no radius, code below name -->
+        <div id="accountPlainGroup" class="hidden-section">
+          <div class="account-plain">
+            <!-- editable account name (read-only text by default) -->
+            <div id="accountNameDisplay" class="account-name-text">Farm Name</div>
+            <!-- inline input for editing (hidden by default) -->
+            <input type="text" id="accountNameEditInput" class="account-name-input hidden-section" value="" placeholder="Account name">
+
+            <!-- account code (always plain text below) -->
+            <div id="accountCodeDisplay" class="account-code">CODE-0000</div>
+          </div>
+          <!-- no extra background, no card, exactly as requested -->
+        </div>
+      </div>
+
+      <!-- ========== FARM SECTION ========== -->
+      <div id="farmSection" class="hidden-section">
+        <div class="divider"></div>
+        <div style="margin-top: 0.2rem;">
+          <div class="section-label">🏡 ADD FARM</div>
+          <input type="text" id="farmNameInput" class="input-field" placeholder="e.g., North pasture" value="">
+          <button class="btn btn-secondary" id="createFarmBtn">+ Create farm</button>
+          <!-- farm list feedback -->
+          <div id="farmFeedback" class="farm-feedback-area"></div>
+        </div>
+      </div>
+
+      <!-- global message area -->
+      <div id="globalMessage" style="margin-top: 1.2rem;"></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- DOM elements ----------
+      const accountNameInput = document.getElementById('accountNameInput');
+      const createAccountBtn = document.getElementById('createAccountBtn');
+      const accountInputGroup = document.getElementById('accountInputGroup');
+      const accountPlainGroup = document.getElementById('accountPlainGroup');
+      const accountNameDisplay = document.getElementById('accountNameDisplay');     // read-only text
+      const accountNameEditInput = document.getElementById('accountNameEditInput'); // hidden input
+      const accountCodeDisplay = document.getElementById('accountCodeDisplay');
+
+      const farmSection = document.getElementById('farmSection');
+      const farmNameInput = document.getElementById('farmNameInput');
+      const createFarmBtn = document.getElementById('createFarmBtn');
+      const farmFeedback = document.getElementById('farmFeedback');
+      const globalMessage = document.getElementById('globalMessage');
+
+      // ---------- state ----------
+      let currentAccount = null;               // { name, code }
+      let farms = [];
+
+      // ---------- helpers ----------
+      function showMessage(text, isSuccess = true) {
+        globalMessage.innerHTML = ''; 
+        const msgDiv = document.createElement('div');
+        msgDiv.style.padding = '0.8rem 1rem';
+        msgDiv.style.borderRadius = '40px';
+        msgDiv.style.marginTop = '0.5rem';
+        msgDiv.style.fontWeight = '500';
+        msgDiv.style.fontSize = '0.95rem';
+        msgDiv.style.border = '1px solid';
+        if (isSuccess) {
+          msgDiv.style.backgroundColor = 'var(--success-bg, #d1fae5)';
+          msgDiv.style.color = 'var(--blue-deep, #0a2f6c)';
+          msgDiv.style.borderColor = 'var(--success-border, #10b981)';
+        } else {
+          msgDiv.style.backgroundColor = 'var(--warning-bg, #fef3c7)';
+          msgDiv.style.color = 'var(--dark-gray)';
+          msgDiv.style.borderColor = 'var(--warning-border, #f59e0b)';
+        }
+        msgDiv.innerText = text;
+        globalMessage.appendChild(msgDiv);
+        setTimeout(() => {
+          if (globalMessage.contains(msgDiv)) msgDiv.remove();
+        }, 3200);
+      }
+
+      // simulate backend code generation
+      function generateAccountCode(accountName) {
+        const clean = accountName.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 4) || 'PIG';
+        const randomPart = Math.floor(1000 + Math.random() * 9000);
+        return `${clean}-${randomPart}`;
+      }
+
+      // simulate saving to database (returns promise)
+      function saveAccountNameToDatabase(newName) {
+        return new Promise((resolve) => {
+          // mimic network delay
+          setTimeout(() => {
+            console.log(`💾 Saved to DB: account name changed to "${newName}"`);
+            resolve(true);
+          }, 400);
+        });
+      }
+
+      // render farms
+      function renderFarms() {
+        if (!currentAccount) {
+          farmFeedback.innerHTML = '';
+          return;
+        }
+        if (farms.length === 0) {
+          farmFeedback.innerHTML = `<div style="padding:0.9rem; background:var(--blue-soft); border-radius:40px; color:var(--dark-gray); text-align:center; border:1px dashed var(--blue-border);">🌱 No farms yet — create one above</div>`;
+          return;
+        }
+
+        let html = '<div style="display: flex; flex-direction: column; gap: 0.6rem;">';
+        farms.forEach((farm) => {
+          const bgColor = 'var(--farm-row-bg, #fef7e6)';
+          const borderColor = 'var(--farm-row-border, #f5cba0)';
+          html += `<div style="display:flex; align-items:center; justify-content:space-between; background:${bgColor}; padding:0.7rem 1rem; border-radius:40px; border:1px solid ${borderColor};">
+            <span style="font-weight:500; color:var(--blue-deep);">🚜 ${farm}</span>
+            <span style="background:var(--blue-soft); padding:0.2rem 0.8rem; border-radius:30px; font-size:0.75rem; color:var(--blue-medium);">farm</span>
+          </div>`;
+        });
+        html += '</div>';
+        farmFeedback.innerHTML = html;
+      }
+
+      // switch to plain display mode (after creation or after edit)
+      function showAccountPlain(accountName, accountCode) {
+        accountInputGroup.classList.add('hidden-section');
+        accountPlainGroup.classList.remove('hidden-section');
+        accountNameDisplay.innerText = accountName;
+        accountNameDisplay.classList.remove('hidden-section');
+        accountNameEditInput.classList.add('hidden-section');
+        accountCodeDisplay.innerText = accountCode;
+      }
+
+      // hide farm section if no account
+      function toggleFarmSection() {
+        if (currentAccount) {
+          farmSection.classList.remove('hidden-section');
+          farmSection.classList.add('visible-section');
+        } else {
+          farmSection.classList.add('hidden-section');
+          farmSection.classList.remove('visible-section');
+        }
+      }
+
+      // reset farms for new account
+      function resetFarms() {
+        farms = [];
+        renderFarms();
+        farmNameInput.value = '';
+      }
+
+      // ---------- edit flow: click on name turns into input ----------
+      accountNameDisplay.addEventListener('click', (e) => {
+        if (!currentAccount) return; // safety
+        // switch to edit mode
+        const currentName = currentAccount.name;
+        accountNameEditInput.value = currentName;
+        accountNameDisplay.classList.add('hidden-section');
+        accountNameEditInput.classList.remove('hidden-section');
+        accountNameEditInput.focus();
+      });
+
+      // function to exit edit mode (called on blur and possibly enter)
+      async function exitEditAndSave() {
+        if (!currentAccount) return;
+        if (accountNameEditInput.classList.contains('hidden-section')) return; // already not editing
+
+        const newName = accountNameEditInput.value.trim();
+        if (newName === '') {
+          // revert without saving, show message
+          showMessage('Account name cannot be empty — reverted', false);
+          // revert to old name
+          accountNameEditInput.value = currentAccount.name;
+        } else if (newName !== currentAccount.name) {
+          // save to database (simulate)
+          try {
+            showMessage(`Saving "${newName}"...`, true);
+            await saveAccountNameToDatabase(newName);
+            // update state
+            currentAccount.name = newName;
+            // code stays the same (or you could regenerate? we keep original)
+            // but spec doesn't mention code change, so we keep original code
+            showMessage(`Account name updated to "${newName}"`, true);
+          } catch (err) {
+            showMessage('Save failed, try again', false);
+            // revert input to old name
+            accountNameEditInput.value = currentAccount.name;
+          }
+        }
+
+        // always switch back to read-only display (even if same or empty we revert display)
+        accountNameDisplay.innerText = currentAccount.name;   // ensure fresh
+        accountNameDisplay.classList.remove('hidden-section');
+        accountNameEditInput.classList.add('hidden-section');
+      }
+
+      // blur event
+      accountNameEditInput.addEventListener('blur', exitEditAndSave);
+
+      // pressing Enter also saves and blurs
+      accountNameEditInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          accountNameEditInput.blur();  // triggers blur -> exitEditAndSave
+        }
+      });
+
+      // ---------- CREATE ACCOUNT ----------
+      createAccountBtn.addEventListener('click', function() {
+        const rawName = accountNameInput.value.trim();
+        if (rawName === '') {
+          showMessage('❌ Please enter an account name', false);
+          return;
+        }
+
+        const accountCode = generateAccountCode(rawName);
+        currentAccount = { name: rawName, code: accountCode };
+
+        // show plain display (no background/card)
+        showAccountPlain(rawName, accountCode);
+
+        // reset farms & show farm section
+        resetFarms();
+        toggleFarmSection();
+
+        showMessage(`✅ Account created · code ${accountCode}`, true);
+      });
+
+      // ---------- CREATE FARM ----------
+      createFarmBtn.addEventListener('click', function() {
+        if (!currentAccount) {
+          showMessage('Create an account first', false);
+          return;
+        }
+
+        const farmName = farmNameInput.value.trim();
+        if (farmName === '') {
+          showMessage('🌾 Please enter a farm name', false);
+          return;
+        }
+
+        farms.push(farmName);
+        renderFarms();
+        farmNameInput.value = '';
+        showMessage(`Farm “${farmName}” added`, true);
+      });
+
+      farmNameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          createFarmBtn.click();
+        }
+      });
+
+      // initial state: input visible, plain hidden, farm hidden
+      accountInputGroup.classList.remove('hidden-section');
+      accountPlainGroup.classList.add('hidden-section');
+      toggleFarmSection();          // currentAccount = null -> hidden
+      renderFarms();
+    })();
+  </script>
+</body>
+</html>
