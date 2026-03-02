@@ -5,11 +5,13 @@
 'use strict';
 
 import {APPLICATION,
+        SOCIAL_MEDIA,
         PAGE_ID}                    from '../../constants.js';
 
 
 
-import {PagePigUserSignUpOrLogin}   from './page_user_signup_or_login.js';
+import {PageUserSignUpOrLogin}      from './page_user_signup_or_login.js';
+import {PageCreateOrJoinAccount}    from './page_create_or_join_account.js';
 
 
 // This is used for signup or login
@@ -19,21 +21,36 @@ export function ManagerLogin(){
     
     
     const elemIdContSignupOrLogin       = 'container-signup';
+    const elemIdContCreateOrJoinAcc     = 'container-create-or-join-acc';
+    const elemIdContAddFarm             = 'container-add_farm';
     
     
     let elemPageContSignupOrLogin       = null;
+    let elemPageContCreateOrJoinAcc     = null;
+    let elemPageContAddFarm             = null;
     
     
     
-    this.pageSignUpOrLogin      = new  PagePigUserSignUpOrLogin({
-        parentObj:              this
-        elemIdDivContainer:     elemIdContSowBoarList,
-        uniqueKey:              'login-or-signup'
+    this.pageUserSignUpOrLogin      = new PageUserSignUpOrLogin({
+        parentObj:                  this,
+        elemIdDivContainer:         elemIdContSignupOrLogin,
+        uniqueKey:                  'login-or-signup'
+    });
+    
+    
+    this.pageCreateOrJoinAccount    = new PageCreateOrJoinAccount({
+            parentObj:              this,
+            elemIdDivContainer:     elemIdContCreateOrJoinAcc,
+            uniqueKey:              'create-or-join-acc'
     });
     
     
     
+    
     this.init = function(){
+        this.pageUserSignUpOrLogin.init();
+        this.pageCreateOrJoinAccount.init();
+        
         this.render();
         this.afterHtmlRender();
 
@@ -46,8 +63,6 @@ export function ManagerLogin(){
     
     
     this.afterHtmlRender = function(){
-        this.pageSignUpOrLogin.afterHtmlRender();
-        
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -58,6 +73,8 @@ export function ManagerLogin(){
     this._findElements = function(){
         
         elemPageContSignupOrLogin       = document.getElementById(elemIdContSignupOrLogin);
+        elemPageContCreateOrJoinAcc     = document.getElementById(elemIdContCreateOrJoinAcc);
+        elemPageContAddFarm             = document.getElementById(elemIdContAddFarm);
     }
     
     
@@ -89,7 +106,13 @@ export function ManagerLogin(){
 
         }
         
-        this.pageSignUpOrLogin.beforeShow(options);
+        
+        
+        const goto_page_id   = PAGE_ID.SIGNUP_OR_LOGIN;
+        const page_container = this.getPageContainer(goto_page_id);
+            
+        this.showThisPage(page_container);
+        this.pageUserSignUpOrLogin.beforeShow(options);
       
         
     }
@@ -103,7 +126,7 @@ export function ManagerLogin(){
             
             
             case PAGE_ID.SIGNUP_OR_LOGIN: {
-                break;
+                return elemPageContSignupOrLogin;
             } 
                   
             case PAGE_ID.USER_EMAIL_VERIFY: {
@@ -115,11 +138,11 @@ export function ManagerLogin(){
             }
             
             case PAGE_ID.CREATE_OR_JOIN_ACCOUNT: {
-                break;
+                return elemPageContCreateOrJoinAcc;
             }
             
-            case PAGE_ID.ACCOUNT_CREATE_EDIT: {
-                break;
+            case PAGE_ID.ADD_FARM: {
+                return elemPageContAddFarm;
             }    
             
             
@@ -134,7 +157,7 @@ export function ManagerLogin(){
         for (const cur_entry of hidden_containers){
             
             if (cur_entry == page_container){
-                cur_entry.style.display = 'block';
+                cur_entry.style.display = 'flex';
             }
             else{
                 cur_entry.style.display = 'none';

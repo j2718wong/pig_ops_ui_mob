@@ -240,16 +240,17 @@ export function PageMobGestaLacta(input_settings){
             <!-- PigProd Lacta Table -->
             <table class="data-table table-gesta-lacta" id="${elemIdTablePigOps}">
                 <colgroup>
-                    <col style="width: 13%;">
-                    <col style="width: 24%;">
+                    <col style="width: 37%;">
                     <col style="width: 30%;">
                     <col style="width: 33%;">
                 </colgroup>
   
                 <thead>
                     <tr>
-                        <th>PID</th>
-                        <th>Sow</th>
+                        <th>
+                            <div>PID, Sow</div> 
+                            <div><span class="love-icon">❤️</span> Boar</div>
+                        </th>
                         <th>Wean</th>
                         <th>Operation</th>
                     </tr>
@@ -262,16 +263,17 @@ export function PageMobGestaLacta(input_settings){
             
             <table class="data-table table-gesta-lacta" id="${elemIdTablePigCount}">
                 <colgroup>
-                    <col style="width: 15%;">
-                    <col style="width: 20%;">
+                    <col style="width: 35%;">
                     <col style="width: 15%;">
                     <col style="width: 22%;">
                 </colgroup>
   
                 <thead>
                     <tr>
-                        <th>PID</th>
-                        <th>Sow</th>
+                        <th>
+                            <div>PID, Sow</div> 
+                            <div><span class="love-icon">❤️</span> Boar</div>
+                        </th>
                         <th>Num<br>Pigs</th>
                         <th>Dead at<br>Birth</th>
                         <th>Dead after<br>Birth</th>
@@ -289,16 +291,17 @@ export function PageMobGestaLacta(input_settings){
             <!-- PogProd Gesta Table -->
             <table class="data-table table-gesta-lacta">
                 <colgroup>
-                    <col style="width: 13%;">
-                    <col style="width: 24%;">
+                    <col style="width: 37%;">
                     <col style="width: 33%;">
                     <col style="width: 30%;">
                 </colgroup>
   
                 <thead>
                     <tr>
-                        <th>PID</th>
-                        <th>Sow</th>
+                        <th>
+                            <div>PID, Sow</div> 
+                            <div><span class="love-icon">❤️</span> Boar</div>
+                        </th>
                         <th>Expected</th>
                         <th>Operation</th>
                     </tr>
@@ -728,7 +731,9 @@ ${html_style}
         
         data_sow = cur_entry.sow;
         sow_reference = getSowBoarReference(data_sow);
-    
+        
+        const html_pid_sow = thisObj.getHtmlPidSowLoveBoar(cur_entry);
+        
         
         // Set important date; 
         // gesta: expected date of birth 
@@ -800,7 +805,6 @@ ${html_style}
         
         if (pending_operation){
 
-            
             dt_target   = new Date(pending_operation.pig_prod_pig_ops.date_target);
             dt_target_s  = formatDate(dt_target, FORMAT_COMPACT);
             operation_name = pending_operation.account_pig_ops.name;
@@ -827,8 +831,7 @@ ${html_style}
         
         const html = `
         <tr>
-            <td>${pid}</td>
-            <td class="sow-name" style="margin-left:0; padding-left:0;">${sow_reference}</td>
+            <td>${html_pid_sow}</td>
             <td class="date">${s_date_important}</td>
             <td class="operation" style="margin-left:0; padding-left:0;">
                 ${s_operation}
@@ -851,7 +854,7 @@ ${html_style}
             switch(index){
                 
                 
-                case 1: {
+                case 0: {
                     cur_td.onclick = function (){
                         navigation.pageSowBoarList.gotoSowBoarEntryPage(null, 
                             data_sow.hid);
@@ -859,9 +862,8 @@ ${html_style}
                     break;
                 }
                 
-                case 0:
-                case 2:
-                case 3: {
+                case 1:
+                case 2: {
                     cur_td.onclick = function (){
                         if (settings.isGesta){
                             navigation.onClickProdGestatingEntry(pid);
@@ -912,15 +914,14 @@ ${html_style}
         let s_num_dead_after_birth = '';
         
         
-
-        
         let index = 0;
             
         pid = cur_entry.pig_production.farm_prod_id;
         
         data_sow = cur_entry.sow;
         sow_reference = getSowBoarReference(data_sow);
-    
+        
+        const html_pid_sow = thisObj.getHtmlPidSowLoveBoar(cur_entry);
     
         s_num_dead_at_birth = '';
         
@@ -931,15 +932,16 @@ ${html_style}
             s_num_dead_at_birth = `${cur_entry.birth.num_dead_at_birth}`;
         }
         
-        
+        if (cur_entry.pig_production.dead_after_birth){
+            s_num_dead_after_birth = `${cur_entry.pig_production.dead_after_birth}`;
+        }
         
        const html = `
         <tr>
-            <td>${pid}</td>
-            <td class="sow-name" style="margin-left:0; padding-left:0;">${sow_reference}</td>
-            <td>${cur_entry.pig_production.cur_pig_count}</td>
-            <td>${s_num_dead_at_birth}</td>
-            <td></td>
+            <td>${html_pid_sow}</td>
+            <td style="text-align:center;">${cur_entry.pig_production.cur_pig_count}</td>
+            <td style="text-align:center;">${s_num_dead_at_birth}</td>
+            <td style="text-align:center;">${s_num_dead_after_birth}</td>
         </tr>
         `;
             
@@ -965,7 +967,8 @@ ${html_style}
                     break;
                 }
                 
-                case 1: {
+                case 1:
+                case 2: {
                     cur_td.onclick = function (){
                         navigation.pageSowBoarList.gotoSowBoarEntryPage(null, 
                             data_sow.hid);

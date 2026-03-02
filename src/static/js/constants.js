@@ -16,6 +16,13 @@ const APPLICATION = {
 };
 
 
+const SOCIAL_MEDIA = {
+    GOOGLE:     1,
+    FACEBOOK:   2,
+    TIKTOK:     3
+};
+
+
 const ACC_USER_GROUP = {
     ADMIN:                  1,     
     MANAGEMENT:             2,
@@ -33,7 +40,7 @@ const PAGE_ID = {
     USER_WAIT_ACCOUNT_ACCESS: 3,
     
     CREATE_OR_JOIN_ACCOUNT: 4,
-    ACCOUNT_CREATE_EDIT:    5,
+    ADD_FARM:               5,
     
     
     HOME:                   9,
@@ -236,6 +243,7 @@ const REQUEST_ERROR_NUM ={
 
 export {
     APPLICATION,
+    SOCIAL_MEDIA,
     ACC_USER_GROUP,
     
     PAGE_ID,

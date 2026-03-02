@@ -16,7 +16,7 @@ import {APPLICATION,
 
 
 
-export function PagePigUserSignUp(input_settings){
+export function PageAddFarm(input_settings){
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -63,67 +63,72 @@ export function PagePigUserSignUp(input_settings){
     
     this.render = function(){
         
-        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
-        elemIdBtnClose          = `${settings.uniqueKey}-close`;
-        
-        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
-        
-        elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
-        elemIdBtnSave           = `${settings.uniqueKey}-save`;
-        
-        
-        elemUiName              = new UiInputTextWithCounter({
-            uniqueKey:          `${settings.uniqueKey}-name`,
-        
-            className:          'form-group-text',
-            textLabel:          'Name',
-            isRequired:         true,
-            textMaxChars:       MAXCHAR_FARM_NAME,
-            invalidFeedBack:    'Please enter a valid name.',
-            helpText:           null
-        });
-        
-
-        const html_name             = elemUiName.getHtml();
-        
-        const html_address_levels   = compAddressLevels.getHtml();
-
         
         
         const html =`
 
         
-<div class="form-container">
-
-    <div class="modal-header">
-        <h5 class="modal-title">
-            <i class="fas fa-plus me-2"></i><span id="${elemIdHeaderTitle}">Add Semen Supplier</span>
-        </h5>
-        <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
+<div class="signup-card">
+    <!-- 1.) PRODUCT & LOGO: centered -->
+    <div class="product-row">
+        <div class="company-logo">J</div>
+        <div class="product-name">SuperPig</div>
     </div>
-    
-    
-    <div class="modal-body">
-        ${html_name}
-    
-        
-        ${html_address_levels}
-        
 
+
+    <div class="option-title">Add Pig Farm to Account</div>
+
+    <!-- ========== ACCOUNT SECTION ========== -->
+    <div>
+        <div id="accountPlainGroup">
+            <div class="account-plain">
+                <!-- editable account name (read-only text by default) -->
+                <div id="accountNameDisplay" class="account-name-text">Farm Name</div>
+            
+                <!-- inline input for editing (hidden by default) -->
+                <input type="text" id="accountNameEditInput" class="account-name-input hidden-section" value="" placeholder="Account name">
+
+                <!-- account code (always plain text below) -->
+                <div id="accountCodeDisplay" class="account-code">CODE-0000</div>
+            </div>
+          
+        </div>
+    </div>
+
+
+    <!-- ========== FARM SECTION ========== -->
+    <div id="farmSection" class="hidden-section">
+        <div class="divider"></div>
         
-        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
-        
-        <!-- Footer Buttons -->
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
-                <i class="fas fa-times me-2"></i>Cancel
-            </button>
-            <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-                <i class="fas fa-save me-2"></i>Save
-            </button>
+        <div style="margin-top: 0.2rem;">
+            <div class="section-label">🏡 ADD FARM</div>
+            
+            <input type="text" id="farmNameInput" class="input-field" placeholder="e.g., North pasture" value="">
+            <button class="btn btn-secondary" id="createFarmBtn">+ Create farm</button>
+          
+            <!-- farm list feedback -->
+            <div id="farmFeedback" class="farm-feedback-area"></div>
+        </div>
+    </div>
+
+
+    <!-- FOOTER (Option 1: Simple Legal) added exactly as recommended -->
+    <div class="legal-footer">
+        <div class="footer-links">
+            <a href="#">Terms</a>
+            <span class="dot">•</span>
+            <a href="#">Privacy</a>
+            <span class="dot">•</span>
+            <a href="#">Contact</a>
+        </div>
+      
+        <div class="copyright">
+            © 2026 J SysDev. All rights reserved.
         </div>
     </div>
 </div>
+
+
 
         `;
         

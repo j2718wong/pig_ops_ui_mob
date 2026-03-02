@@ -6,23 +6,18 @@
 
 
 import {APPLICATION,
-        PAGE_ID,
-        SOW_STATUS,
-        PIG_PROD_TYPE,
-        PIG_OPERATION_TYPE,
-        SUPPLIER_TYPE}          from '../../constants.js';
+        SOCIAL_MEDIA,
+        PAGE_ID}                from '../../constants.js';
 
 
 
 
 
-export function PagePigUserSignUp(input_settings){
+
+export function PageCreateOrJoinAccount(input_settings){
     
     const thisObj               = this;
-    const navigation            = input_settings.navigation;
-
-    
-    const MAXCHAR_FARM_NAME     = 30;
+    const parentObj             = input_settings.parentObj;
     
     /*
     Typical settings = {
@@ -36,24 +31,22 @@ export function PagePigUserSignUp(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
-
-        
     
-    let elemIdHeaderTitle       = null;
-    let elemIdBtnClose          = null;
-    
-    let elemIdServerErrorMsg    = null;
-    let elemIdBtnCancel         = null;
-    let elemIdBtnSave           = null;
-    
-    
-    let elemHeaderTitle         = null;
-    let elemBtnClose            = null;
-    
-    
+    let elemCreateAccount       = null;
+    let elemAccountName         = null;      
+    let elemInvalidAccNameShow  = null;
 
     
-
+    let elemJoinAccount         = null;
+    let elemAccountCode         = null;
+    let elemInvalidAccCodeShow  = null;
+    let elemInvalidAccCodeMsg   = null;
+    
+    
+    
+    let curDataUser             = null;
+    
+    
     
     this.init = function(){
         this.render();
@@ -63,64 +56,107 @@ export function PagePigUserSignUp(input_settings){
     
     this.render = function(){
         
-        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
-        elemIdBtnClose          = `${settings.uniqueKey}-close`;
-        
-        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
-        
-        elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
-        elemIdBtnSave           = `${settings.uniqueKey}-save`;
-        
-        
-        elemUiName              = new UiInputTextWithCounter({
-            uniqueKey:          `${settings.uniqueKey}-name`,
-        
-            className:          'form-group-text',
-            textLabel:          'Name',
-            isRequired:         true,
-            textMaxChars:       MAXCHAR_FARM_NAME,
-            invalidFeedBack:    'Please enter a valid name.',
-            helpText:           null
-        });
-        
-
-        const html_name             = elemUiName.getHtml();
-        
-        const html_address_levels   = compAddressLevels.getHtml();
-
         
         
         const html =`
 
         
-<div class="form-container">
-
-    <div class="modal-header">
-        <h5 class="modal-title">
-            <i class="fas fa-plus me-2"></i><span id="${elemIdHeaderTitle}">Add Semen Supplier</span>
-        </h5>
-        <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
+<div class="signup-card">
+    <!-- 1.) PRODUCT & LOGO: centered -->
+    <div class="product-row">
+        <div class="company-logo">J</div>
+        <div class="product-name">SuperPig</div>
     </div>
-    
-    
-    <div class="modal-body">
-        ${html_name}
-    
+
+
+    <!-- two clickable options -->
+    <!-- option 1: create (owner/manager) -->
+    <div class="option-card" id="create-account">
+        <div class="option-title">
+            🐖 Create a Pig Farm Account
+            <span class="create-badge">Admin</span>
+        </div>
+        <div class="option-sub">Are you the owner or manager of a pig farm?</div>
+        <ul class="feature-list">
+            <li>You will be an account admin.</li>
+            <li>You can grant access to other users who wish to access your PigFarm account.</li>
+            <li>Manage multiple pig farms under one account.</li>
+            <li>Full access to your data.</li>
+        </ul>
         
-        ${html_address_levels}
+        <div class="code-area">
+            <div class="code-label">
+                Create Farm Account Name
+            </div>
+            <div class="input-wrapper">
+                <input id="account-name" type="text" maxlength="50" autocomplete="off">
+            </div>
+            
+            <div id="invalid-account-name-show" class="invalid-feedback" style="display:none;">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span>Please enter valid name.</span> 
+            </div>
+        </div>
         
+        <div style="font-size:0.85rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
+            👆 Click to Continue
+        </div>
+    </div>
+
+    <!-- option 2: join (staff) -->
+    <div class="option-card" id="join-account">
+        <div class="option-title">
+            🧑‍🌾 Join a Pig Farm Account
+            <span class="join-badge">Needs Approval</span>
+        </div>
+        <div class="option-sub">You work as staff on the pig farm. Or you want to joint the Farm Account</div>
+        <ul class="feature-list">
+            <li>The PigFarm account admins need to approve your access.</li>
+            <li>You may have limited access to the PigFarm account data based on approved role.</li>
+        </ul>
+        
+        
+        <div class="code-area">
+            <div class="code-label">
+                Enter Account Code
+            </div>
+            <div class="input-wrapper">
+                <input id="account-code" type="text" maxlength="12" autocomplete="off">
+            </div>
+            <div id="invalid-account-code-show" class="invalid-feedback" style="display:none;">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span id="invalid-account-code-msg">Please enter valid code.</span> 
+            </div>
+            
+            <p style="font-size:0.75rem; margin-top:0.7rem; color:var(--dark-gray);">
+                <span style="color:var(--icon-indigo);">🔐</span> Ask your farm admins for the code.
+            </p>
+        </div>
 
         
-        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
-        <!-- Footer Buttons -->
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
-                <i class="fas fa-times me-2"></i>Cancel
-            </button>
-            <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-                <i class="fas fa-save me-2"></i>Save
-            </button>
+        <!-- subtle extra badge recycled -->
+        <div style="font-size:0.85rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
+            👆 Click to Continue
+        </div>
+    </div>
+
+    
+    
+    
+
+    <!-- FOOTER (Option 1: Simple Legal) added exactly as recommended -->
+    <div class="legal-footer">
+        <div class="footer-links">
+            <a href="#">Terms</a>
+            <span class="dot">•</span>
+            <a href="#">Privacy</a>
+            <span class="dot">•</span>
+            <a href="#">Contact</a>
+        </div>
+      
+        <div class="copyright">
+            © 2026 J SysDev. All rights reserved.
         </div>
     </div>
 </div>
@@ -141,9 +177,17 @@ export function PagePigUserSignUp(input_settings){
     
     
     this._findElements = function(){
-        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
-
-        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
+        elemCreateAccount       = elemDivContainer.querySelector('#create-account');
+        elemAccountName         = elemDivContainer.querySelector('#account-name');
+        elemInvalidAccNameShow  = elemDivContainer.querySelector('#invalid-account-name-show');
+        
+        
+        elemJoinAccount         = elemDivContainer.querySelector('#join-account');
+        elemAccountCode         = elemDivContainer.querySelector('#account-code');
+        elemInvalidAccCodeShow  = elemDivContainer.querySelector('#invalid-account-code-show');
+        elemInvalidAccCodeMsg   = elemDivContainer.querySelector('#invalid-account-code-msg');
+        
+        
     }
     
     
@@ -154,11 +198,15 @@ export function PagePigUserSignUp(input_settings){
     
     this._bindEventListeners = function(){
         
-
-        elemBtnSave.addEventListener('click', function() {
-            thisObj.onClickSaveButton();
+        
+        elemCreateAccount.addEventListener('click', function() {
+            thisObj.onClickCreateAccount();
         });
         
+        elemJoinAccount.addEventListener('click', function() {
+            thisObj.onClickJoinAccount();
+        });
+
         
     }
     
@@ -167,13 +215,25 @@ export function PagePigUserSignUp(input_settings){
     
    
     this._resetForm = function(){
-       
+        elemInvalidAccNameShow.style.display = 'none';
+        
+        const html = `
+            <i class="fas fa-triangle-exclamation"></i>
+            <span>Please enter valid name.</span> 
+        `;
+        
+        elemInvalidAccNameShow.innerHTML = html;
         
     }
     
     
-    this.beforeShow = function(options){
-       
+    this.beforeShow = function(data_user, options){
+        this._resetForm();
+        
+        curDataUser = data_user;
+        
+        console.log('create or join');
+        console.log(curDataUser);
     }
     
     
@@ -184,73 +244,33 @@ export function PagePigUserSignUp(input_settings){
     
     
         
-    this.onClickSaveButton = function(){
-        let input_elem;
-        let validation      = 0;
+    this.onClickCreateAccount = function(){
         
-
-        let input_name      = elemUiName.getValue();
+        let input_acc_code     = elemAccountCode.value;
         
-        
-        input_elem          = elemUiName.getElemText();
-        
-        
-        if (input_name.length == 0){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        let address_hids = compAddressLevels.getAddressHids();
-        
-        
-        
-        // Final check before sending request
-        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+        if (input_acc_code.length == 0){
+            elemInvalidAccCodeShow.style.display = 'block';
             return;
         }
         
         
         
-        const user_hid      = navigation.userControl.getUserHid();
+        
+        
+        const user_hid      = curDataUser.hid;
         const base_url      = window.location.origin;
 
         
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'name':             input_name,
+            'name':             input_acc_name
             
         };
         
-        if (address_hids){
-            if (address_hids.level_1_hid != '0' || address_hids.level_1_hid != '-1'){
-                post_data.level_1_hid = address_hids.level_1_hid;
-            }
-            
-            if (address_hids.level_2_hid != '0' || address_hids.level_2_hid != '-1'){
-                post_data.level_2_hid = address_hids.level_2_hid;
-            }
-            
-            if (address_hids.level_3_hid != '0' || address_hids.level_3_hid != '-1'){
-                post_data.level_3_hid = address_hids.level_3_hid;
-            }
-        }
+      
         
-        
-        let url;
-
-        
-        if (showOptions.is_add){
-            url = `${base_url}/pig_farm/add`
-        }
-        else{
-            const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
-            post_data.pig_farm_hid = pig_farm_hid;
-            
-            url = `${base_url}/pig_farm/update`
-        }
+        let url = `${base_url}/account/register`
         
         
         $.ajax({
@@ -268,13 +288,22 @@ export function PagePigUserSignUp(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    // This will return the data pig farm
-                    navigation.pigFarm.setDataPigFarm(response.data);
-                    navigation.showThisPage(showOptions.go_back_page);
+                
                 }
                 else{
-                    navigation.serverError.receivedErrorMessage(
-                        response, elemServerErrorMsg);
+                    let error_code = response.result.code;
+                    let error_desc = response.result.desc;
+                    
+                    let html = `<span>${error_code}</span>`;
+                    
+                    if (error_desc && error_desc.length > 0){
+                        html += `<br><span>${error_desc}</span>`;
+                    }
+                    
+
+                    elemInvalidAccNameShow.style.display = 'block';
+                    elemInvalidAccNameShow.innerHTML = html;  
+                    
                 }
             },
   
@@ -288,5 +317,74 @@ export function PagePigUserSignUp(input_settings){
         });
     }
     
+    
+    this.onClickJoinAccount = function(){
+        let input_acc_name     = elemAccountName.value;
+        
+        if (input_acc_name.length == 0){
+            elemInvalidAccNameShow.style.display = 'block';
+            return;
+        }
+        
+
+        const user_hid      = curDataUser.hid;
+        const base_url      = window.location.origin;
+
+        
+        // send post request
+        const post_data = {
+            'uhid':             user_hid,
+            'name':             input_acc_name
+            
+        };
+        
+      
+        
+        let url = `${base_url}/account/register`
+        
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                
+                }
+                else{
+                    let error_code = response.result.code;
+                    let error_desc = response.result.desc;
+                    
+                    let html = `<span>${error_code}</span>`;
+                    
+                    if (error_desc && error_desc.length > 0){
+                        html += `<br><span>${error_desc}</span>`;
+                    }
+                    
+
+                    elemInvalidAccNameShow.style.display = 'block';
+                    elemInvalidAccNameShow.innerHTML = html;  
+                    
+                }
+            },
+  
+            complete: function(){
+                // TODO unsay buhaton
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
     
 }   
