@@ -12,6 +12,8 @@ import {APPLICATION,
 
 import {PageUserSignUpOrLogin}      from './page_user_signup_or_login.js';
 import {PageCreateOrJoinAccount}    from './page_create_or_join_account.js';
+import {PageAddFarm}                from './page_add_farm.js';
+
 
 
 // This is used for signup or login
@@ -22,7 +24,7 @@ export function ManagerLogin(){
     
     const elemIdContSignupOrLogin       = 'container-signup';
     const elemIdContCreateOrJoinAcc     = 'container-create-or-join-acc';
-    const elemIdContAddFarm             = 'container-add_farm';
+    const elemIdContAddFarm             = 'container-add-farm';
     
     
     let elemPageContSignupOrLogin       = null;
@@ -39,9 +41,16 @@ export function ManagerLogin(){
     
     
     this.pageCreateOrJoinAccount    = new PageCreateOrJoinAccount({
-            parentObj:              this,
-            elemIdDivContainer:     elemIdContCreateOrJoinAcc,
-            uniqueKey:              'create-or-join-acc'
+        parentObj:                  this,
+        elemIdDivContainer:         elemIdContCreateOrJoinAcc,
+        uniqueKey:                  'create-or-join-acc'
+    });
+    
+    
+    this.pageAddFarm                = new PageAddFarm({
+        parentObj:                  this,
+        elemIdDivContainer:         elemIdContAddFarm,
+        uniqueKey:                  'acc-add-farm'
     });
     
     
@@ -50,6 +59,7 @@ export function ManagerLogin(){
     this.init = function(){
         this.pageUserSignUpOrLogin.init();
         this.pageCreateOrJoinAccount.init();
+        this.pageAddFarm.init();
         
         this.render();
         this.afterHtmlRender();

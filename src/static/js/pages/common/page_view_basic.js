@@ -307,7 +307,7 @@ export function PageViewPigFarmPage(){
             }
             
             case 'AI_X':{
-                boar_name = insemination.ai.semen_supplier.semen.name;
+                boar_name = `<span class="sow-boar-name">${insemination.ai.semen_supplier.semen.name}</span>`;
                 break;
             }
             

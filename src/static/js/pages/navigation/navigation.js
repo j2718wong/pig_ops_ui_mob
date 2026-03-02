@@ -196,7 +196,8 @@ function UserControl(_navigation) {
 
     this.getCurrentFarm = function(){
         const account_farms = thisObj.dataUserAccount.account.pig_farms;
-
+        
+        
         for (const cur_entry of account_farms){
             if (cur_entry.pig_farm.hid == userCurrentFarmHid){
                 return cur_entry;

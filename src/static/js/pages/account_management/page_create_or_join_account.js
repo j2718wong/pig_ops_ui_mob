@@ -246,15 +246,12 @@ export function PageCreateOrJoinAccount(input_settings){
         
     this.onClickCreateAccount = function(){
         
-        let input_acc_code     = elemAccountCode.value;
+        let input_acc_name     = elemAccountName.value;
         
-        if (input_acc_code.length == 0){
-            elemInvalidAccCodeShow.style.display = 'block';
+        if (input_acc_name.length == 0){
+            elemInvalidAccNameShow.style.display = 'block';
             return;
         }
-        
-        
-        
         
         
         const user_hid      = curDataUser.hid;
@@ -288,7 +285,20 @@ export function PageCreateOrJoinAccount(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                
+                    
+                    
+                    
+                    const data_user_account = response.user_account;
+                    
+                    console.log(`data_user_account`);
+                    console.log(data_user_account);
+                    
+                    
+                    const goto_page_id   = PAGE_ID.ADD_FARM;
+                    const page_container = parentObj.getPageContainer(goto_page_id);
+                        
+                    parentObj.showThisPage(page_container);
+                    parentObj.pageAddFarm.beforeShow(data_user_account);
                 }
                 else{
                     let error_code = response.result.code;
@@ -319,10 +329,10 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     this.onClickJoinAccount = function(){
-        let input_acc_name     = elemAccountName.value;
+        let input_acc_code     = elemAccountCode.value;
         
-        if (input_acc_name.length == 0){
-            elemInvalidAccNameShow.style.display = 'block';
+        if (input_acc_code.length == 0){
+            elemInvalidAccCodeShow.style.display = 'block';
             return;
         }
         

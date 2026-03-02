@@ -37,22 +37,14 @@ export function PageAddFarm(input_settings){
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
 
-        
     
-    let elemIdHeaderTitle       = null;
-    let elemIdBtnClose          = null;
-    
-    let elemIdServerErrorMsg    = null;
-    let elemIdBtnCancel         = null;
-    let elemIdBtnSave           = null;
-    
-    
-    let elemHeaderTitle         = null;
-    let elemBtnClose            = null;
-    
-    
+    let elemAccountNameDisplay  = null;  
+    let elemAccountNameEditInput= null;
+    let elemInvalidAccNameShow  = null;
 
-    
+    let elemAccountCodeDisplay  = null;  
+
+    let dataUserAccount         = null;
 
     
     this.init = function(){
@@ -76,34 +68,42 @@ export function PageAddFarm(input_settings){
     </div>
 
 
-    <div class="option-title">Add Pig Farm to Account</div>
-
+    
     <!-- ========== ACCOUNT SECTION ========== -->
     <div>
         <div id="accountPlainGroup">
             <div class="account-plain">
                 <!-- editable account name (read-only text by default) -->
-                <div id="accountNameDisplay" class="account-name-text">Farm Name</div>
+                <div id="accountNameDisplay" class="account-name-text"></div>
             
                 <!-- inline input for editing (hidden by default) -->
                 <input type="text" id="accountNameEditInput" class="account-name-input hidden-section" value="" placeholder="Account name">
 
+                <div id="invalid-acc-name-show" class="invalid-feedback" style="display:none;">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span id="invalid-acc-name-msg">Invalid. Minimum 8 characters</span> 
+                </div>
+
                 <!-- account code (always plain text below) -->
-                <div id="accountCodeDisplay" class="account-code">CODE-0000</div>
+                <div id="accountCodeDisplay" class="account-code">Account Code: 0000</div>
             </div>
           
         </div>
     </div>
-
+    
+    
 
     <!-- ========== FARM SECTION ========== -->
-    <div id="farmSection" class="hidden-section">
+    <div id="farmSection">
+        <div class="option-title" style="justify-content:center;">Add Pig Farm to Account</div>
+
         <div class="divider"></div>
         
         <div style="margin-top: 0.2rem;">
-            <div class="section-label">🏡 ADD FARM</div>
+            <div class="section-label">🏡 Enter Farm Name </div>
             
             <input type="text" id="farmNameInput" class="input-field" placeholder="e.g., North pasture" value="">
+            <div class="field-help">Name your first farm — you can add more later</div>
             <button class="btn btn-secondary" id="createFarmBtn">+ Create farm</button>
           
             <!-- farm list feedback -->
@@ -146,9 +146,11 @@ export function PageAddFarm(input_settings){
     
     
     this._findElements = function(){
-        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
-
-        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
+        elemAccountNameDisplay      = elemDivContainer.querySelector('#accountNameDisplay');
+        elemAccountNameEditInput    = elemDivContainer.querySelector('#accountNameEditInput');
+        elemInvalidAccNameShow      = elemDivContainer.querySelector('#invalid-acc-name-show');
+        
+        elemAccountCodeDisplay      = elemDivContainer.querySelector('#accountCodeDisplay');
     }
     
     
@@ -159,11 +161,28 @@ export function PageAddFarm(input_settings){
     
     this._bindEventListeners = function(){
         
-
+        /*
         elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
         });
+        */
         
+        elemAccountNameDisplay.addEventListener('click', function(event){
+            if (!dataUserAccount) return; // safety
+            
+            // switch to edit mode
+            const data_account  = dataUserAccount.account;
+            const account_name  = data_account.account.account_name;
+            
+            elemAccountNameEditInput.value = account_name;
+            elemAccountNameDisplay.classList.add('hidden-section');
+            
+            elemAccountNameEditInput.classList.remove('hidden-section');
+            elemAccountNameEditInput.focus();
+        });
+        
+        
+         elemAccountNameEditInput.addEventListener('blur', thisObj.exitEditAccAndSave);
         
     }
     
@@ -177,8 +196,24 @@ export function PageAddFarm(input_settings){
     }
     
     
-    this.beforeShow = function(options){
-       
+    this.beforeShow = function(data_user_account){
+        dataUserAccount     = data_user_account;
+        
+        console.log('before show dataUserAccount');
+        console.log(dataUserAccount);
+        
+        
+        thisObj.refreshAccountName();
+    }
+    
+    
+    this.refreshAccountName =  function(){
+        const account_name  = dataUserAccount.account.account.account_name;
+        const account_hid   = dataUserAccount.account.account.hid;
+            
+        elemAccountNameDisplay.textContent = account_name;
+        elemAccountNameEditInput.value = account_name;
+        elemAccountCodeDisplay.textContent = `Account Code: ${account_hid}`;
     }
     
     
@@ -187,9 +222,114 @@ export function PageAddFarm(input_settings){
     }
     
     
+    this.exitEditAccAndSave = function(){
+        if (!dataUserAccount) return;
+        
+        // already not editing
+        if (elemAccountNameEditInput.classList.contains('hidden-section')) return; 
+
+        const newName = elemAccountNameEditInput.value.trim();
+        if (newName.length < 8) {
+            
+            elemInvalidAccNameShow.style.display = 'block';
+            return;
+        }
+        
+        
+        if (newName !== dataUserAccount.account.account.account_name) {
+            // save to database (simulate)
+            console.log('to save to database');
+            thisObj.onSaveAccountName(newName);
+        }
+        
+        
+        const account_name  = dataUserAccount.account.account.account_name;
+        
+
+        // always switch back to read-only display (even if same or empty we revert display)
+        elemAccountNameDisplay.innerText = account_name;   // ensure fresh
+        elemAccountNameDisplay.classList.remove('hidden-section');
+        elemAccountNameEditInput.classList.add('hidden-section');
+
+    }
     
         
-    this.onClickSaveButton = function(){
+    this.onSaveAccountName = function(new_acc_name){
+        
+        
+        const user_hid      = dataUserAccount.user.user.hid;
+        const base_url      = window.location.origin;
+
+        
+        // send post request
+        const post_data = {
+            'uhid':             user_hid,
+            'name':             new_acc_name
+            
+        };
+        
+        
+        let url = `${base_url}/account/update`
+        
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    dataUserAccount.account.account = response.account;
+                    
+                    console.log('after saved');
+                    console.log(dataUserAccount);
+        
+                    
+                    
+                    thisObj.refreshAccountName();
+                    
+                    elemInvalidAccNameShow.style.display = 'none';
+                }
+                else{
+                    let error_code = response.result.code;
+                    let error_desc = response.result.desc;
+                    
+                    let html = `<span>${error_code}</span>`;
+                    
+                    if (error_desc && error_desc.length > 0){
+                        html += `<br><span>${error_desc}</span>`;
+                    }
+                    
+
+                    elemInvalidAccNameShow.style.display = 'block';
+                    elemInvalidAccNameShow.innerHTML = html;  
+                    
+                }
+            },
+  
+            complete: function(){
+                // TODO unsay buhaton
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    
+        
+        
+    this.onClickCreateFarm = function(){
         let input_elem;
         let validation      = 0;
         

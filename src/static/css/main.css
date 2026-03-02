@@ -132,6 +132,7 @@ body {
     font-weight: bold;
     color: white;
     flex-shrink: 0;
+    font-family:system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .product-name {
@@ -938,10 +939,10 @@ p {
 
     
     .company-logo {
-        width: 35px;
-        height: 35px;
+        width: 40px;
+        height: 40px;
         font-size: 42px;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: font-family:system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
     .main-content {

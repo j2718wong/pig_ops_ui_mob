@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>SuperPig · inline edit account</title>
+  <title>SuperPig · inline edit + farm help</title>
   <style>
     /* reset & base */
     * {
@@ -165,7 +165,7 @@
       background-color: var(--white);
       outline: none;
       transition: border 0.15s, box-shadow 0.15s;
-      margin-bottom: 1.3rem;
+      margin-bottom: 0.5rem; /* reduced to make room for help text */
       color: var(--text-dark);
       -webkit-appearance: none;
     }
@@ -173,6 +173,22 @@
     .input-field:focus {
       border-color: var(--corporate-blue-company, #1877F0);
       box-shadow: 0 0 0 4px var(--blue-soft, #e6f0ff);
+    }
+
+    /* help text under farm input */
+    .field-help {
+      font-size: 0.85rem;
+      color: var(--dark-gray, #64748b);
+      margin: 0 0 1.2rem 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .field-help::before {
+      content: "ⓘ";
+      font-weight: 600;
+      color: var(--icon-purple, #6f42c1);
     }
 
     .btn {
@@ -214,23 +230,23 @@
 
     /* ---------- PLAIN TEXT ACCOUNT DISPLAY (no background, no radius) ---------- */
     .account-plain {
-      margin: 0 0 1.8rem 0;            /* spacing like a block */
+      margin: 0 0 1.8rem 0;
       font-family: inherit;
     }
 
     .account-name-text {
-      font-size: 2rem;                 /* large, prominent */
+      font-size: 2rem;
       font-weight: 700;
       color: var(--blue-deep, #0a2f6c);
       line-height: 1.2;
       cursor: pointer;
-      display: inline-block;            /* fit content */
+      display: inline-block;
       border: none;
       background: none;
       padding: 0.1rem 0;
       margin: 0 0 0.2rem 0;
       transition: color 0.1s;
-      border-bottom: 2px solid transparent; /* reserve space for edit hint */
+      border-bottom: 2px solid transparent;
     }
 
     .account-name-text:hover {
@@ -238,7 +254,6 @@
       border-bottom: 2px solid var(--blue-border);
     }
 
-    /* inline input (edit mode) – exactly the same visual style as read-only text */
     .account-name-input {
       font-size: 2rem;
       font-weight: 700;
@@ -250,7 +265,7 @@
       margin: 0 0 0.2rem 0;
       width: 100%;
       font-family: inherit;
-      border-bottom: 2px solid var(--corporate-blue-company); /* subtle edit indicator */
+      border-bottom: 2px solid var(--corporate-blue-company);
     }
 
     .account-name-input::placeholder {
@@ -267,20 +282,20 @@
       margin-top: 0.1rem;
     }
 
-    /* farm section styles */
+    /* divider */
     .divider {
       height: 2px;
       background: linear-gradient(90deg, transparent, var(--blue-border), transparent);
       margin: 2rem 0 1.8rem;
     }
 
-    /* farm feedback cards (unchanged) */
+    /* farm feedback cards */
     .farm-feedback-area {
       margin-top: 1.5rem;
       min-height: 2rem;
     }
 
-    /* info note */
+    /* info note (reused) */
     .info-note {
       background: var(--light-gray);
       border-radius: 24px;
@@ -321,19 +336,13 @@
           <div class="info-note"><span>ⓘ</span> Enter name → then click to edit inline</div>
         </div>
 
-        <!-- PLAIN TEXT ACCOUNT DISPLAY (hidden until account created) 
-             no background, no radius, code below name -->
+        <!-- PLAIN TEXT ACCOUNT DISPLAY (hidden until account created) -->
         <div id="accountPlainGroup" class="hidden-section">
           <div class="account-plain">
-            <!-- editable account name (read-only text by default) -->
             <div id="accountNameDisplay" class="account-name-text">Farm Name</div>
-            <!-- inline input for editing (hidden by default) -->
             <input type="text" id="accountNameEditInput" class="account-name-input hidden-section" value="" placeholder="Account name">
-
-            <!-- account code (always plain text below) -->
             <div id="accountCodeDisplay" class="account-code">CODE-0000</div>
           </div>
-          <!-- no extra background, no card, exactly as requested -->
         </div>
       </div>
 
@@ -342,8 +351,13 @@
         <div class="divider"></div>
         <div style="margin-top: 0.2rem;">
           <div class="section-label">🏡 ADD FARM</div>
+          
+          <!-- Farm input with help text directly below (as requested) -->
           <input type="text" id="farmNameInput" class="input-field" placeholder="e.g., North pasture" value="">
+          <div class="field-help">Name your first farm — you can add more later</div>
+
           <button class="btn btn-secondary" id="createFarmBtn">+ Create farm</button>
+
           <!-- farm list feedback -->
           <div id="farmFeedback" class="farm-feedback-area"></div>
         </div>
@@ -361,8 +375,8 @@
       const createAccountBtn = document.getElementById('createAccountBtn');
       const accountInputGroup = document.getElementById('accountInputGroup');
       const accountPlainGroup = document.getElementById('accountPlainGroup');
-      const accountNameDisplay = document.getElementById('accountNameDisplay');     // read-only text
-      const accountNameEditInput = document.getElementById('accountNameEditInput'); // hidden input
+      const accountNameDisplay = document.getElementById('accountNameDisplay');
+      const accountNameEditInput = document.getElementById('accountNameEditInput');
       const accountCodeDisplay = document.getElementById('accountCodeDisplay');
 
       const farmSection = document.getElementById('farmSection');
@@ -401,17 +415,14 @@
         }, 3200);
       }
 
-      // simulate backend code generation
       function generateAccountCode(accountName) {
         const clean = accountName.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 4) || 'PIG';
         const randomPart = Math.floor(1000 + Math.random() * 9000);
         return `${clean}-${randomPart}`;
       }
 
-      // simulate saving to database (returns promise)
       function saveAccountNameToDatabase(newName) {
         return new Promise((resolve) => {
-          // mimic network delay
           setTimeout(() => {
             console.log(`💾 Saved to DB: account name changed to "${newName}"`);
             resolve(true);
@@ -419,7 +430,6 @@
         });
       }
 
-      // render farms
       function renderFarms() {
         if (!currentAccount) {
           farmFeedback.innerHTML = '';
@@ -443,7 +453,6 @@
         farmFeedback.innerHTML = html;
       }
 
-      // switch to plain display mode (after creation or after edit)
       function showAccountPlain(accountName, accountCode) {
         accountInputGroup.classList.add('hidden-section');
         accountPlainGroup.classList.remove('hidden-section');
@@ -453,7 +462,6 @@
         accountCodeDisplay.innerText = accountCode;
       }
 
-      // hide farm section if no account
       function toggleFarmSection() {
         if (currentAccount) {
           farmSection.classList.remove('hidden-section');
@@ -464,17 +472,15 @@
         }
       }
 
-      // reset farms for new account
       function resetFarms() {
         farms = [];
         renderFarms();
         farmNameInput.value = '';
       }
 
-      // ---------- edit flow: click on name turns into input ----------
+      // ---------- edit flow ----------
       accountNameDisplay.addEventListener('click', (e) => {
-        if (!currentAccount) return; // safety
-        // switch to edit mode
+        if (!currentAccount) return;
         const currentName = currentAccount.name;
         accountNameEditInput.value = currentName;
         accountNameDisplay.classList.add('hidden-section');
@@ -482,48 +488,36 @@
         accountNameEditInput.focus();
       });
 
-      // function to exit edit mode (called on blur and possibly enter)
       async function exitEditAndSave() {
         if (!currentAccount) return;
-        if (accountNameEditInput.classList.contains('hidden-section')) return; // already not editing
+        if (accountNameEditInput.classList.contains('hidden-section')) return;
 
         const newName = accountNameEditInput.value.trim();
         if (newName === '') {
-          // revert without saving, show message
           showMessage('Account name cannot be empty — reverted', false);
-          // revert to old name
           accountNameEditInput.value = currentAccount.name;
         } else if (newName !== currentAccount.name) {
-          // save to database (simulate)
           try {
             showMessage(`Saving "${newName}"...`, true);
             await saveAccountNameToDatabase(newName);
-            // update state
             currentAccount.name = newName;
-            // code stays the same (or you could regenerate? we keep original)
-            // but spec doesn't mention code change, so we keep original code
             showMessage(`Account name updated to "${newName}"`, true);
           } catch (err) {
             showMessage('Save failed, try again', false);
-            // revert input to old name
             accountNameEditInput.value = currentAccount.name;
           }
         }
 
-        // always switch back to read-only display (even if same or empty we revert display)
-        accountNameDisplay.innerText = currentAccount.name;   // ensure fresh
+        accountNameDisplay.innerText = currentAccount.name;
         accountNameDisplay.classList.remove('hidden-section');
         accountNameEditInput.classList.add('hidden-section');
       }
 
-      // blur event
       accountNameEditInput.addEventListener('blur', exitEditAndSave);
-
-      // pressing Enter also saves and blurs
       accountNameEditInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          accountNameEditInput.blur();  // triggers blur -> exitEditAndSave
+          accountNameEditInput.blur();
         }
       });
 
@@ -538,10 +532,7 @@
         const accountCode = generateAccountCode(rawName);
         currentAccount = { name: rawName, code: accountCode };
 
-        // show plain display (no background/card)
         showAccountPlain(rawName, accountCode);
-
-        // reset farms & show farm section
         resetFarms();
         toggleFarmSection();
 
@@ -574,10 +565,10 @@
         }
       });
 
-      // initial state: input visible, plain hidden, farm hidden
+      // initial state
       accountInputGroup.classList.remove('hidden-section');
       accountPlainGroup.classList.add('hidden-section');
-      toggleFarmSection();          // currentAccount = null -> hidden
+      toggleFarmSection();
       renderFarms();
     })();
   </script>
