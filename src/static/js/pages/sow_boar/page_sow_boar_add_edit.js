@@ -249,14 +249,14 @@ export function PageSowBoarAddEdit(input_settings){
             uniqueKey:           `${settings.uniqueKey}-parent-sow`,
         
             labelSelect:         'Select Parent Sow',
-            helpText:            'This can be None if you dont know.'
+            helpText:            'Skip if you dont know.'
         });
         
         elemUiParentBoar        = new UiSelectWithEntryCount({
             uniqueKey:           `${settings.uniqueKey}-parent-boar`,
         
             labelSelect:         'Select Parent Boar',
-            helpText:            'This can be None if you dont know.'
+            helpText:            'Skip if you dont know.'
         });
         
         
@@ -550,8 +550,8 @@ export function PageSowBoarAddEdit(input_settings){
         // TODO: how to add disposed boars
         
         const elem_select = elemUiParentBoar.getElemSelect();
-        const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
-        thisObj.commonSelectOptions.setDataBoarList(filtered, elem_select, special_options);
+        //const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
+        thisObj.commonSelectOptions.setDataBoarList(filtered, elem_select);
         elemUiParentBoar.setEntryCount(filtered);
     }
     

@@ -94,11 +94,16 @@ export function UiSelectWithEntryCount(input_settings){
     
     
     this.setEntryCount = function(data){
-        if (data.length == 1){
-            elemEntryCount.textContent = ` (${data.length} Entry)`;
+        if (data){
+            if (data.length == 1){
+                elemEntryCount.textContent = ` (${data.length} Entry)`;
+            }
+            else{
+                elemEntryCount.textContent = ` (${data.length} Entries)`;
+            }
         }
         else{
-            elemEntryCount.textContent = ` (${data.length} Entries)`;
+            elemEntryCount.textContent = ` (0 Entries)`;
         }
     }
     

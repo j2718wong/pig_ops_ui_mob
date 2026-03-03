@@ -339,6 +339,10 @@ export function PageUserSignUpOrLogin(input_settings){
     
     
     this.onClickUseTiktok = function(){
+        
+
+    
+    
     }
     
     
@@ -395,46 +399,65 @@ export function PageUserSignUpOrLogin(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     
-                    console.log(`response`);
-                    console.log(response);
-
                     const data_user_account = response.user_account;
-                    const account_hid = data_user_account.account.account.hid; 
                     
-                    if (account_hid == null){
-                        // User has no account;
-                        const goto_page_id   = PAGE_ID.CREATE_OR_JOIN_ACCOUNT;
-                        const page_container = parentObj.getPageContainer(goto_page_id);
-                            
-                        parentObj.showThisPage(page_container);
-                        parentObj.pageCreateOrJoinAccount.beforeShow(data_user_account);
-      
+                    let account_hid         = null;
+                    let user_req_join_acc   = null;
+                    
+                    
+                    if (data_user_account.account && data_user_account.account.account){
+                        account_hid = data_user_account.account.account.hid;
                     }
                     
-                    else{
-                        // User has already an account;
-                        console.log('user has account_hid = ' + account_hid);
-                        if (data_user_account.account.pig_farms){
-                            if (data_user_account.account.pig_farms.length > 0){
-                                const user_hid      = data_user_account.user.user.hid;
-                                
-                                // This is temporary; should href via tokens
-                                window.location.href = `/?u=${user_hid}`;
-                            }
-                        }
-                        else{
-                            // User has already an account but no pig_farm(s);
-                            // It is implied that the user must have choosen 
-                            // to be n farm owner or manager
-                            
-                            const goto_page_id   = PAGE_ID.ADD_FARM;
+                    if (data_user_account.user && data_user_account.user.user_request){
+                        user_req_join_acc = data_user_account.user.user_request;
+                    }
+                    
+                    
+                    if (user_req_join_acc == null) {
+                    
+                        if (account_hid == null){
+                            // User has no account;
+                            const goto_page_id   = PAGE_ID.CREATE_OR_JOIN_ACCOUNT;
                             const page_container = parentObj.getPageContainer(goto_page_id);
                                 
                             parentObj.showThisPage(page_container);
-                            parentObj.pageAddFarm.beforeShow(data_user_account);
+                            parentObj.pageCreateOrJoinAccount.beforeShow(data_user_account);
+
+                        }
+                        
+                        else{
+                            // User has already an account;
+                            console.log('user has account_hid = ' + account_hid);
+                            if (data_user_account.account.pig_farms){
+                                if (data_user_account.account.pig_farms.length > 0){
+                                    const user_hid      = data_user_account.user.user.hid;
+                                    
+                                    // This is temporary; should href via tokens
+                                    window.location.href = `/?u=${user_hid}`;
+                                }
+                            }
+                            else{
+                                // User has already an account but no pig_farm(s);
+                                // It is implied that the user must have choosen 
+                                // to be n farm owner or manager
+                                
+                                const goto_page_id   = PAGE_ID.ADD_FARM;
+                                const page_container = parentObj.getPageContainer(goto_page_id);
+                                    
+                                parentObj.showThisPage(page_container);
+                                parentObj.pageAddFarm.beforeShow(data_user_account);
+                            }
                         }
                     }
                     
+                    else{
+                        const goto_page_id   = PAGE_ID.REQ_JOIN_ACC_SENT;
+                        const page_container = parentObj.getPageContainer(goto_page_id);
+                            
+                        parentObj.showThisPage(page_container);
+                        parentObj.pageReqJoinAccountSent.beforeShow(data_user_account);
+                    }
                     
                 }
                 else{

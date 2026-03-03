@@ -168,7 +168,7 @@ export function PageHomeDashBoard(input_settings){
         </div>
 
         <!-- row 5: Harvest Next 7 days (table) -->
-        <div class="harvest-section">
+        <div class="harvest-section" style="display:none;">
             <div class="section-title">
                 <span>🔪</span> Harvest next 7 days
             </div>

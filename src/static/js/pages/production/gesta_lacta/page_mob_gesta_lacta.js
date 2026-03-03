@@ -227,9 +227,9 @@ export function PageMobGestaLacta(input_settings){
                 <!-- Animal Filter Buttons - Centered, no gaps -->
                 <div class="animal-filter">
                     <div class="filter-buttons sow">
-                        <button class="filter-button active" id="${elemIdLactaPigOps}">PigOps</button>
-                        <button class="filter-button" id="${elemIdLactaPigCount}">Pig Count</button>
-                        <button class="filter-button" id="${elemIdLactaFeeds}">Feeds</button>
+                        <button class="filter-button active" id="${elemIdLactaPigOps}" style="min-width:120px;">PigOps</button>
+                        <button class="filter-button" id="${elemIdLactaPigCount}" style="min-width:120px;">Pig Count</button>
+                        <!--<button class="filter-button" id="${elemIdLactaFeeds}">Feeds</button>-->
                     </div>
                 </div>
                 
@@ -690,25 +690,20 @@ ${html_style}
             }
         }
         else{
+            const html = `
+                <tr>
+                    <td colspan="3"><div>No Entries</div></td>
+                </tr>
+            `;
             
             const elem_row = document.createElement('tr');
-            const html = thisObj.getHtmlTableRowEmpty();
             elem_row.innerHTML = html;
             
             elemPigProdTableBody.appendChild(elem_row);
         }
     }
     
-    
-    this.getHtmlTableRowEmpty = function(){
-        const html = `
-            <tr>
-                <td colspan="3"><div>No Entries</div></td>
-            </tr>
-        `;
-        return html;
-    }
-    
+
     
     // The Gesta and Lacta tables have very similar structures.
     // It only differs at the 3rd column. 
@@ -917,9 +912,23 @@ ${html_style}
         
         let pig_prod_list = dataPigProdList;
         
-
-        for (const cur_entry of pig_prod_list){
-            const elem_row = thisObj.getElemTableRowPigCount(cur_entry)
+        
+        if (pig_prod_list.length > 0){
+            for (const cur_entry of pig_prod_list){
+                const elem_row = thisObj.getElemTableRowPigCount(cur_entry)
+                elemPigCountTableBody.appendChild(elem_row);
+            }
+        }
+        else{
+            const html = `
+                <tr>
+                    <td colspan="4"><div>No Entries</div></td>
+                </tr>
+            `;
+            
+            const elem_row = document.createElement('tr');
+            elem_row.innerHTML = html;
+            
             elemPigCountTableBody.appendChild(elem_row);
         }
     }

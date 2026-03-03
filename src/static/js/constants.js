@@ -41,6 +41,7 @@ const PAGE_ID = {
     
     CREATE_OR_JOIN_ACCOUNT: 4,
     ADD_FARM:               5,
+    REQ_JOIN_ACC_SENT:      6,
     
     
     HOME:                   9,

@@ -44,7 +44,7 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     
-    let curDataUser             = null;
+    let curDataUserAccount             = null;
     
     
     
@@ -71,7 +71,7 @@ export function PageCreateOrJoinAccount(input_settings){
 
     <!-- two clickable options -->
     <!-- option 1: create (owner/manager) -->
-    <div class="option-card" id="create-account">
+    <div class="option-card">
         <div class="option-title">
             🐖 Create a Pig Farm Account
             <span class="create-badge">Admin</span>
@@ -98,13 +98,13 @@ export function PageCreateOrJoinAccount(input_settings){
             </div>
         </div>
         
-        <div style="font-size:0.85rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
+        <div id="create-account" style="font-size:0.85rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
             👆 Click to Continue
         </div>
     </div>
 
     <!-- option 2: join (staff) -->
-    <div class="option-card" id="join-account">
+    <div class="option-card">
         <div class="option-title">
             🧑‍🌾 Join a Pig Farm Account
             <span class="join-badge">Needs Approval</span>
@@ -136,7 +136,7 @@ export function PageCreateOrJoinAccount(input_settings){
         
         
         <!-- subtle extra badge recycled -->
-        <div style="font-size:0.85rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
+        <div id="join-account" style="font-size:0.85rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
             👆 Click to Continue
         </div>
     </div>
@@ -230,10 +230,10 @@ export function PageCreateOrJoinAccount(input_settings){
     this.beforeShow = function(data_user, options){
         this._resetForm();
         
-        curDataUser = data_user;
+        curDataUserAccount = data_user;
         
         console.log('create or join');
-        console.log(curDataUser);
+        console.log(curDataUserAccount);
     }
     
     
@@ -254,7 +254,7 @@ export function PageCreateOrJoinAccount(input_settings){
         }
         
         
-        const user_hid      = curDataUser.hid;
+        const user_hid      = curDataUserAccount.hid;
         const base_url      = window.location.origin;
 
         
@@ -337,38 +337,49 @@ export function PageCreateOrJoinAccount(input_settings){
         }
         
 
-        const user_hid      = curDataUser.hid;
+        const user_hid      = curDataUserAccount.user.user.hid;
         const base_url      = window.location.origin;
 
         
+        console.log(`curDataUserAccount`);
+        console.log(curDataUserAccount);
+        
         // send post request
         const post_data = {
-            'uhid':             user_hid,
-            'code':             input_acc_code
+            'uhid':         user_hid,
+            'ahid':         input_acc_code
             
         };
         
       
         
-        let url = `${base_url}/account/register`
+        let url = `${base_url}/user_request/join_account?uhid=${user_hid}&ahid=${input_acc_code}`;
         
         
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             contentType: "application/json",
             dataType: 'json',
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
   
-            data: JSON.stringify(post_data),
   
             beforeSend: function(){
             },
   
             success: function(response){
                 if (response.result.num == 0){
-                
+                    
+                    console.log('after join');
+                    console.log(response);
+                    
+                    const goto_page_id   = PAGE_ID.REQ_JOIN_ACC_SENT;
+                    const page_container = parentObj.getPageContainer(goto_page_id);
+                        
+                    parentObj.showThisPage(page_container);
+                    parentObj.pageReqJoinAccountSent.beforeShow();
+
                 }
                 else{
                     let error_code = response.result.code;
@@ -381,8 +392,8 @@ export function PageCreateOrJoinAccount(input_settings){
                     }
                     
 
-                    elemInvalidAccNameShow.style.display = 'block';
-                    elemInvalidAccNameShow.innerHTML = html;  
+                    elemInvalidAccCodeShow.style.display = 'block';
+                    elemInvalidAccCodeShow.innerHTML = html;  
                     
                 }
             },
@@ -392,7 +403,7 @@ export function PageCreateOrJoinAccount(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+                
             }
         });
     }

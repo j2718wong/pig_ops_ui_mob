@@ -13,7 +13,7 @@ import {APPLICATION,
 import {PageUserSignUpOrLogin}      from './page_user_signup_or_login.js';
 import {PageCreateOrJoinAccount}    from './page_create_or_join_account.js';
 import {PageAddFarm}                from './page_add_farm.js';
-
+import {PageRequestJoinAccountSent} from './page_request_join_account_sent.js';
 
 
 // This is used for signup or login
@@ -25,12 +25,13 @@ export function ManagerLogin(){
     const elemIdContSignupOrLogin       = 'container-signup';
     const elemIdContCreateOrJoinAcc     = 'container-create-or-join-acc';
     const elemIdContAddFarm             = 'container-add-farm';
+    const elemIdContReqJoinAccSent      = 'container-req-join-acc-sent';
     
     
     let elemPageContSignupOrLogin       = null;
     let elemPageContCreateOrJoinAcc     = null;
     let elemPageContAddFarm             = null;
-    
+    let elemPageContReqJoinAccSent      = null;
     
     
     this.pageUserSignUpOrLogin      = new PageUserSignUpOrLogin({
@@ -54,12 +55,18 @@ export function ManagerLogin(){
     });
     
     
+    this.pageReqJoinAccountSent     = new PageRequestJoinAccountSent({
+        parentObj:                  this,
+        elemIdDivContainer:         elemIdContReqJoinAccSent,
+        uniqueKey:                  'req-join-acc-sent'
+    });
     
     
     this.init = function(){
         this.pageUserSignUpOrLogin.init();
         this.pageCreateOrJoinAccount.init();
         this.pageAddFarm.init();
+        this.pageReqJoinAccountSent.init();
         
         this.render();
         this.afterHtmlRender();
@@ -85,6 +92,7 @@ export function ManagerLogin(){
         elemPageContSignupOrLogin       = document.getElementById(elemIdContSignupOrLogin);
         elemPageContCreateOrJoinAcc     = document.getElementById(elemIdContCreateOrJoinAcc);
         elemPageContAddFarm             = document.getElementById(elemIdContAddFarm);
+        elemPageContReqJoinAccSent      = document.getElementById(elemIdContReqJoinAccSent);
     }
     
     
@@ -155,6 +163,9 @@ export function ManagerLogin(){
                 return elemPageContAddFarm;
             }    
             
+            case PAGE_ID.REQ_JOIN_ACC_SENT:{
+                return elemPageContReqJoinAccSent;
+            }
             
         }
     }
