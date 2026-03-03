@@ -224,9 +224,29 @@ export function ComponentAddressLevels(input_settings){
     
     
     this.setLocationAddress = function(location){
+        console.log('setLocationAddress');
+        console.log(location)
+        
+        const country_hid = location.country.hid;
         elemCountry.textContent = location.country.name;
     
+    
         const address = location.address;
+        
+        let level_1_hid = null;
+        let level_2_hid = null;
+        
+        if (location.address.level_1.hid){
+            level_1_hid = location.address.level_1.hid;
+            
+            // Get address_level_1
+            const address_level_1 = navigation.managerAddress.getAddressLevel1(level_1_hid);
+            
+            
+            elemAddressLevel1.value = level_1_hid;
+        }
+        
+        
         
     }
     

@@ -388,7 +388,7 @@ export function PageAddFarm(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    // This is temporary
+                    // This is temporary; should href via tokens
                     window.location.href = `/?u=${user_hid}`;
                 }
                 else{

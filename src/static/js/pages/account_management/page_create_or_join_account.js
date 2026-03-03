@@ -344,7 +344,7 @@ export function PageCreateOrJoinAccount(input_settings){
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'name':             input_acc_name
+            'code':             input_acc_code
             
         };
         

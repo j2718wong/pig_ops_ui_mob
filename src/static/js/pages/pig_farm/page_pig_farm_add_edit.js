@@ -282,6 +282,10 @@ export function PagePigFarmAddEdit(input_settings){
         const pig_farm = navigation.pigFarm.dataPigFarm;
         
         elemUiName.setValue(pig_farm.pig_farm.name);
+        
+        
+        compAddressLevels.setLocationAddress(pig_farm.location);
+        
     }
     
     

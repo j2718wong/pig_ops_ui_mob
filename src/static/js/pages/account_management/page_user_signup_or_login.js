@@ -326,6 +326,15 @@ export function PageUserSignUpOrLogin(input_settings){
     
     
     this.onClickUseFacebook = function(){
+        // temporary
+        const data = {
+            social_media_id:    SOCIAL_MEDIA.FACEBOOK,
+            email:              'dwong@gmail.com',
+            name_first:         'David',
+            name_last:          'Wong'
+        };
+        
+        thisObj.afterSuccessSocialMediaLogin(data);
     }
     
     
@@ -406,7 +415,12 @@ export function PageUserSignUpOrLogin(input_settings){
                         // User has already an account;
                         console.log('user has account_hid = ' + account_hid);
                         if (data_user_account.account.pig_farms){
-                            // User has already an account and has pig_farms;
+                            if (data_user_account.account.pig_farms.length > 0){
+                                const user_hid      = data_user_account.user.user.hid;
+                                
+                                // This is temporary; should href via tokens
+                                window.location.href = `/?u=${user_hid}`;
+                            }
                         }
                         else{
                             // User has already an account but no pig_farm(s);
