@@ -50,6 +50,8 @@ export function PagePigFarmAddEdit(input_settings){
     let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
     
+    let elemIdWarningBox        = null;
+    
     let elemIdServerErrorMsg    = null;
     let elemIdBtnCancel         = null;
     let elemIdBtnSave           = null;
@@ -58,6 +60,7 @@ export function PagePigFarmAddEdit(input_settings){
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;
     
+    let elemWarningBox          = null;
     
     let elemUiName              = null;
     
@@ -101,6 +104,8 @@ export function PagePigFarmAddEdit(input_settings){
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
+        elemIdWarningBox        = `${settings.uniqueKey}-warning-box`;
+        
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
         elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
@@ -118,6 +123,8 @@ export function PagePigFarmAddEdit(input_settings){
             helpText:           null
         });
         
+
+
 
         const html_name             = elemUiName.getHtml();
         
@@ -140,6 +147,12 @@ export function PagePigFarmAddEdit(input_settings){
     
     <div class="modal-body">
         ${html_name}
+    
+        
+        <div class="warning-box" id="${elemIdWarningBox}">
+            Please set you Pig Farm address so that the suppliers can be filtered
+            based from your address.
+        </div>
     
         
         ${html_address_levels}
@@ -182,6 +195,8 @@ export function PagePigFarmAddEdit(input_settings){
     this._findElements = function(){
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
+            
+        elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
             
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);

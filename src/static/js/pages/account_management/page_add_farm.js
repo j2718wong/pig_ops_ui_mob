@@ -43,6 +43,12 @@ export function PageAddFarm(input_settings){
     let elemInvalidAccNameShow  = null;
 
     let elemAccountCodeDisplay  = null;  
+    
+    let elemFarmName            = null;           
+    let elemInvalidFarmNameShow = null;
+    let elemInvalidFarmNameMsg  = null;
+    
+    let elemBtnSave             = null;
 
     let dataUserAccount         = null;
 
@@ -103,11 +109,15 @@ export function PageAddFarm(input_settings){
             <div class="section-label">🏡 Enter Farm Name </div>
             
             <input type="text" id="farmNameInput" class="input-field" placeholder="e.g., North pasture" value="">
+            
+            <div id="invalid-farm-name-show" class="invalid-feedback" style="display:none;">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span id="invalid-farm-name-msg">Invalid. Minimum 8 characters</span> 
+            </div>
+            
             <div class="field-help">Name your first farm — you can add more later</div>
             <button class="btn btn-secondary" id="createFarmBtn">+ Create farm</button>
           
-            <!-- farm list feedback -->
-            <div id="farmFeedback" class="farm-feedback-area"></div>
         </div>
     </div>
 
@@ -151,6 +161,15 @@ export function PageAddFarm(input_settings){
         elemInvalidAccNameShow      = elemDivContainer.querySelector('#invalid-acc-name-show');
         
         elemAccountCodeDisplay      = elemDivContainer.querySelector('#accountCodeDisplay');
+        
+        
+        elemFarmName                = elemDivContainer.querySelector('#farmNameInput');
+        elemInvalidFarmNameShow     = elemDivContainer.querySelector('#invalid-farm-name-show');
+        elemInvalidFarmNameMsg      = elemDivContainer.querySelector('#invalid-farm-name-msg');
+        
+        elemBtnSave                 = elemDivContainer.querySelector('#createFarmBtn');
+        
+        
     }
     
     
@@ -160,12 +179,6 @@ export function PageAddFarm(input_settings){
     
     
     this._bindEventListeners = function(){
-        
-        /*
-        elemBtnSave.addEventListener('click', function() {
-            thisObj.onClickSaveButton();
-        });
-        */
         
         elemAccountNameDisplay.addEventListener('click', function(event){
             if (!dataUserAccount) return; // safety
@@ -182,7 +195,10 @@ export function PageAddFarm(input_settings){
         });
         
         
-         elemAccountNameEditInput.addEventListener('blur', thisObj.exitEditAccAndSave);
+        elemAccountNameEditInput.addEventListener('blur', thisObj.exitEditAccAndSave);
+    
+        elemBtnSave.addEventListener('click', thisObj.onClickCreateFarm);
+        
         
     }
     
@@ -289,11 +305,6 @@ export function PageAddFarm(input_settings){
                 if (response.result.num == 0){
                     dataUserAccount.account.account = response.account;
                     
-                    console.log('after saved');
-                    console.log(dataUserAccount);
-        
-                    
-                    
                     thisObj.refreshAccountName();
                     
                     elemInvalidAccNameShow.style.display = 'none';
@@ -320,7 +331,7 @@ export function PageAddFarm(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+                
             }
         });
     }
@@ -334,70 +345,34 @@ export function PageAddFarm(input_settings){
         let validation      = 0;
         
 
-        let input_name      = elemUiName.getValue();
-        
-        
-        input_elem          = elemUiName.getElemText();
-        
-        
-        if (input_name.length == 0){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        let address_hids = compAddressLevels.getAddressHids();
+        let input_name      = elemFarmName.value.trim();
         
         
         
-        // Final check before sending request
-        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+        if (input_name.length < 0){
+            elemInvalidFarmNameShow.style.display = 'block';
             return;
         }
         
+
         
         
-        const user_hid      = navigation.userControl.getUserHid();
+        const user_hid      = dataUserAccount.user.user.hid;
         const base_url      = window.location.origin;
+
 
         
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'name':             input_name,
+            'name':             input_name
             
         };
         
-        if (address_hids){
-            if (address_hids.level_1_hid != '0' || address_hids.level_1_hid != '-1'){
-                post_data.level_1_hid = address_hids.level_1_hid;
-            }
-            
-            if (address_hids.level_2_hid != '0' || address_hids.level_2_hid != '-1'){
-                post_data.level_2_hid = address_hids.level_2_hid;
-            }
-            
-            if (address_hids.level_3_hid != '0' || address_hids.level_3_hid != '-1'){
-                post_data.level_3_hid = address_hids.level_3_hid;
-            }
-        }
         
-        
-        let url;
+        let url = `${base_url}/pig_farm/add`
 
-        
-        if (showOptions.is_add){
-            url = `${base_url}/pig_farm/add`
-        }
-        else{
-            const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
-            post_data.pig_farm_hid = pig_farm_hid;
-            
-            url = `${base_url}/pig_farm/update`
-        }
-        
-        
+
         $.ajax({
             type: 'POST',
             contentType: "application/json",
@@ -413,13 +388,22 @@ export function PageAddFarm(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    // This will return the data pig farm
-                    navigation.pigFarm.setDataPigFarm(response.data);
-                    navigation.showThisPage(showOptions.go_back_page);
+                    // This is temporary
+                    window.location.href = `/?u=${user_hid}`;
                 }
                 else{
-                    navigation.serverError.receivedErrorMessage(
-                        response, elemServerErrorMsg);
+                    let error_code = response.result.code;
+                    let error_desc = response.result.desc;
+                    
+                    let html = `<span>${error_code}</span>`;
+                    
+                    if (error_desc && error_desc.length > 0){
+                        html += `<br><span>${error_desc}</span>`;
+                    }
+                    
+
+                    elemInvalidFarmNameShow.style.display = 'block';
+                    elemInvalidFarmNameMsg.innerHTML = html;  
                 }
             },
   
@@ -428,10 +412,14 @@ export function PageAddFarm(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+               
             }
         });
     }
     
+    
+    this.requestPageDashBoard = function(){
+        
+    }
     
 }   

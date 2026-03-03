@@ -3117,6 +3117,11 @@ textarea.form-control {
     background: linear-gradient(135deg, #06b6d4, #0891b2);
 }
 
+.lactating {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+}
+
+
 /* PID, Sow Name, AI Indicator in one line */
 .header-top-row {
     display: flex;

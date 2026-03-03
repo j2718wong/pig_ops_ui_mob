@@ -520,34 +520,49 @@ export function PageParentTrace(input_settings){
         elemTableBody.innerHTML = '';
         
         
-        for (const cur_entry of table_data) {
+        if (table_data.length > 0) {
+        
+            for (const cur_entry of table_data) {
+                const html_row = `
+                <tr>
+                    <td><span>${cur_entry.sow_boar_name}</span></td>
+                    <td>${cur_entry.parent_sow_name}</td>
+                    <td>${cur_entry.parent_boar_name}</td>
+                </tr>
+                `;
+                
+                const elem_row = document.createElement('tr');
+                elem_row.innerHTML = html_row;
+                
+                const elem_tds = elem_row.querySelectorAll('td'); 
+            
+                let index = 0
+                for (const cur_td of elem_tds){
+                    if (index == 0){
+                        cur_td.onclick = function(){
+                            thisObj.onClickSowBoarName(cur_entry.sow_boar_hid);
+                        }
+                    }
+                    
+                    index += 1;
+                }    
+                
+                
+                elemTableBody.appendChild(elem_row);
+
+            }
+        }
+        
+        else{
             const html_row = `
             <tr>
-                <td><span>${cur_entry.sow_boar_name}</span></td>
-                <td>${cur_entry.parent_sow_name}</td>
-                <td>${cur_entry.parent_boar_name}</td>
+                <td colspan="3">No Entries</td>
             </tr>
             `;
             
             const elem_row = document.createElement('tr');
             elem_row.innerHTML = html_row;
-            
-            const elem_tds = elem_row.querySelectorAll('td'); 
-        
-            let index = 0
-            for (const cur_td of elem_tds){
-                if (index == 0){
-                    cur_td.onclick = function(){
-                        thisObj.onClickSowBoarName(cur_entry.sow_boar_hid);
-                    }
-                }
-                
-                index += 1;
-            }    
-            
-            
             elemTableBody.appendChild(elem_row);
-
         }
    
     }

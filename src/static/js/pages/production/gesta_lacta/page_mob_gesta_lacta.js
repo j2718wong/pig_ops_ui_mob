@@ -681,11 +681,32 @@ ${html_style}
             pig_prod_list = dataPigProdList;
         }
         
+        
+        if (pig_prod_list.length > 0) {
 
-        for (const cur_entry of pig_prod_list){
-            const elem_row = thisObj.getElemTableRowGestaLacta(cur_entry)
+            for (const cur_entry of pig_prod_list){
+                const elem_row = thisObj.getElemTableRowGestaLacta(cur_entry)
+                elemPigProdTableBody.appendChild(elem_row);
+            }
+        }
+        else{
+            
+            const elem_row = document.createElement('tr');
+            const html = thisObj.getHtmlTableRowEmpty();
+            elem_row.innerHTML = html;
+            
             elemPigProdTableBody.appendChild(elem_row);
         }
+    }
+    
+    
+    this.getHtmlTableRowEmpty = function(){
+        const html = `
+            <tr>
+                <td colspan="3"><div>No Entries</div></td>
+            </tr>
+        `;
+        return html;
     }
     
     
