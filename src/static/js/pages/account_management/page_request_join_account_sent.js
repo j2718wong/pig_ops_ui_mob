@@ -74,7 +74,7 @@ export function PageRequestJoinAccountSent(input_settings){
         
     <!-- status chip with alert-gold / warning color -->
     <div class="status-chip">
-        Your request to join Pig Farm Account has been sent
+        Your request to join a Pig Farm Account has been sent
     </div>
 
     <div class="option-card">

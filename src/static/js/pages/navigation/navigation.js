@@ -53,7 +53,7 @@ import {PageProdLactatingEntry}     from '../production/gesta_lacta/page_prod_la
 import {PageProdFatteningList}      from '../production/fattening/page_prod_fattening_list.js'
 import {PageProdFatteningEntry}     from '../production/fattening/page_prod_fattening_entry.js'
 
-import {TablePigFarmFeedBuy}        from '../feeds/pig_farm_feed_buy/table_pig_farm_feed_buy.js';
+import {PagePigFarmFeedBuyList}     from '../feeds/pig_farm_feed_buy/page_pig_farm_feed_buy_list.js';
 import {PagePfFeedBuyAddEdit}       from '../feeds/pig_farm_feed_buy/page_pf_feed_buy_add_edit.js';
 import {PagePfBuyItemAddEdit}       from '../feeds/pig_farm_feed_buy/page_pf_feed_buy_item_add_edit.js';
 
@@ -80,6 +80,7 @@ import {PageAccPigOpsAddEdit}       from '../acc_pig_ops/page_acc_pig_ops_add_ed
 import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_edit.js';
 
 import {PageUserList}               from '../a_user_control/page_user_list.js';
+import {PageJoinAccReqList}         from '../a_user_control/page_join_acc_req_list.js';
 
 
 
@@ -330,7 +331,7 @@ export function Navigation(){
     
     const elemIdContUserList            = 'container-user-list';
     const elemIdContUserAddEdit         = 'container-user-add-edit';
-    
+    const elemIdContJoinAccReqList      = 'container-join-acc-req-list';
     
     
     let elemNavLeftProductName          = null;
@@ -400,17 +401,19 @@ export function Navigation(){
     
     let elemPageContUserList            = null;
     let elemPageContUserAddEdit         = null;
+    let elemPageContJoinAccReqList      = null;
+
     
     
     
     
-    this.pageData                   = null;
+    this.pageData               = null;
     
     
-    this.dataCompanyApp             = null;
+    this.dataCompanyApp         = null;
    
     
-    this.curScreenIsMobile          = null;
+    this.curScreenIsMobile      = null;
     
     
     this.managerNavLinks        = new ManagerNavLinks(this);
@@ -588,7 +591,7 @@ export function Navigation(){
     
     
     
-    this.pagePigFarmFeedBuyList = new TablePigFarmFeedBuy({
+    this.pagePigFarmFeedBuyList = new PagePigFarmFeedBuyList({
         navigation:             this,
         elemIdDivContainer:     elemIdContFarmFeedBuyList,
         uniqueKey:              'farm-feed-buy-list'
@@ -718,6 +721,13 @@ export function Navigation(){
     });
     
     
+    this.pageJoinAccReqList     = new PageJoinAccReqList({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContJoinAccReqList,
+        uniqueKey:              'user-request-list'
+    });
+    
+    
     
     this.init = function(){
         this.managerNavLinks.init();
@@ -792,6 +802,7 @@ export function Navigation(){
         
         
         this.pageUserList.init();
+        this.pageJoinAccReqList.init();
         
         
         this.afterHtmlRender();
@@ -885,6 +896,7 @@ export function Navigation(){
         elemPageContSupplierAddEdit     = document.getElementById(elemIdContSupplierAddEdit);
     
         elemPageContUserList            = document.getElementById(elemIdContUserList);
+        elemPageContJoinAccReqList      = document.getElementById(elemIdContJoinAccReqList);
     }
     
     
@@ -1188,6 +1200,13 @@ export function Navigation(){
                 break;
             }
             
+            
+            case PAGE_ID.JOIN_ACC_REQ_LIST: {
+                return elemPageContJoinAccReqList;
+                break;
+            }
+            
+            
             default:{
                 return elemPageContHomeDashBoard;
             }
@@ -1457,14 +1476,13 @@ export function Navigation(){
                     
     this._onClickNavUsers = function(is_mobile){
         thisObj.showThisPage(elemPageContUserList);
-        thisObj.pageUserList.show();
+        thisObj.pageUserList.beforeShow();
     }
         
         
     this._onClickNavUsersRequest = function(is_mobile){
-        console.log('_onClickNavUsersRequest not yet implemented; is_mobile=' + is_mobile);
-    
-    
+        thisObj.showThisPage(elemPageContJoinAccReqList);
+        thisObj.pageJoinAccReqList.beforeShow();
     }
         
         

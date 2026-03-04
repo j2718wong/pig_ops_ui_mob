@@ -1,4 +1,4 @@
-// February 23, 2026
+// March 4, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -19,12 +19,13 @@ import {formatDate,
         FORMAT_COMPACT,
         sortList}               from '../../utils.js';
 
+
 import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
 
 
 
 
-export function PageUserList(input_settings){
+export function PageJoinAccReqList(input_settings){
     PageTableBasic.call(this);
     
     const thisObj               = this;
@@ -52,7 +53,7 @@ export function PageUserList(input_settings){
     let elemIdPageInfo          = null;
     let elemIdTableBody         = null;
     
-    
+
     let elemPageInfo            = null;
     let elemTableBody           = null;
     
@@ -86,11 +87,10 @@ export function PageUserList(input_settings){
     
     
     this.render = function(){
-        
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
            elemDivContainer:    elemDivContainer,
-           pageTitle:           'User List'
+           pageTitle:           'Request Join Account'
         });
         
         elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
@@ -106,15 +106,16 @@ export function PageUserList(input_settings){
     ${html_nav}
     
     <!-- Mobile Info Box -->
-    <!--
     <div class="mobile-info-box">
         <div class="info-text" id="${elemIdPageInfo}">
+            This is the list of users who wish to join to your Pig Farm Account.
         </div>
     </div>
-    -->
+    
     
     ${html_table}
 
+    
     
 </div>
         `;
@@ -126,7 +127,6 @@ export function PageUserList(input_settings){
     this.afterHtmlRenderThis = function(){
         componentNavLeftRight.afterHtmlRender();
         
-        
         this._findElementsThis();
         this._processAfterHtmlRenderThis();
         this._bindEventListenersThis();
@@ -134,21 +134,22 @@ export function PageUserList(input_settings){
     
     
     this._findElementsThis = function(){
-       
-        elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
         
+        elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
+
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
+
     }
     
     
     this._processAfterHtmlRenderThis = function(){
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavUsersRequest();
+            navigation._onClickNavUsers();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation._onClickNavUsersRequest();
+            navigation._onClickNavUsers();
         };
         
         
@@ -177,26 +178,16 @@ export function PageUserList(input_settings){
     
     
     this.beforeShow = function(){
-        dataUserList  = navigation.pigFarm.accountLists.dataUserList;
+        
+        const callback_success = function(data){
+            thisObj.renderTable(data);
+        };
+        
+        // Request UserRequest List
+        navigation.pigFarm.accountLists.requestDataJoinAccReqList(
+            callback_success, null);
 
-        if (dataUserList == null){
-        
-            const callback_success = function(data){
-                dataUserList  = navigation.pigFarm.accountLists.dataUserList;
-                thisObj.renderTable(dataUserList);
-            };
-            
-            // Request User List
-            navigation.pigFarm.accountLists.requestDataUserList(
-                callback_success, null);
-        
-        }
-        else{
-            dataUserList  = navigation.pigFarm.accountLists.dataUserList;
-            thisObj.renderTable(dataUserList);
-        }
-        
-        
+
     }
     
 
@@ -223,14 +214,14 @@ export function PageUserList(input_settings){
         
         <table class="data-table" id="">
             <colgroup>
-                <col style="width: 50%;">
-                <col style="width: 50%;">
+                <col style="width: 75%;">
+                <col style="width: 25%;">
             </colgroup>
 
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Group</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             
@@ -257,13 +248,18 @@ export function PageUserList(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        let user_name = `${cur_entry.user.name_first} ${cur_entry.user.name_last}`;
+        let html_user   = `
+            <div>${cur_entry.requesting_user.name_first} ${cur_entry.requesting_user.name_last}</div>
+            <div>${cur_entry.requesting_user.email}</div>
+        `;
         
+        let dt_request  = new Date(cur_entry.user_req.dt_entry);
+        let s_dt_request= formatDate(dt_request, FORMAT_COMPACT) 
         
         const html = `
             <tr>
-                <td>${user_name}</td>
-                <td>${cur_entry.user_group.name}</td>
+                <td>${html_user}</td>
+                <td>${s_dt_request}</td>
             </tr>
         `;
         

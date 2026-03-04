@@ -418,7 +418,16 @@ export function PageProdHistoryList(input_settings){
         });
         
         
-        if (settings.isProdSalesHistory){}
+        if (settings.isProdSalesHistory){
+            // Set up listeners for navigation arrows
+            elemNavPrevEntry.onclick = function(){
+                navigation._onClickNavFeedsExpenses();
+            }
+
+            elemNavNextEntry.onclick = function(){
+                navigation._onClickNavFeedsExpenses();
+            }
+        }
         else{
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){

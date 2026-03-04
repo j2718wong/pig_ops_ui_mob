@@ -13,6 +13,8 @@ import {APPLICATION,
         PIG_PROD_TYPE}              from '../../constants.js';
 
 
+import {ComponentNavLeftRight}      from '../common/ui/comp_nav_left_right.js';
+
 import {ComponentPlusMinusInput}    from '../common/ui/comp_plus_minus_input.js';
 
 import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
@@ -46,8 +48,9 @@ export function PageAccOpsSettingsEdit(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
     
-    let elemIdNavPrevEntry      = null;
-    let elemIdNavNextEntry      = null;
+    
+    let componentNavLeftRight   = null;
+    
     
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
@@ -58,8 +61,6 @@ export function PageAccOpsSettingsEdit(input_settings){
     
     let elemIdWeightUnit        = null;
     
-    let elemNavPrevEntry        = null;
-    let elemNavNextEntry        = null;
     
     
     let elemDateMatingDay0      = null;
@@ -92,8 +93,13 @@ export function PageAccOpsSettingsEdit(input_settings){
     
     
     this.getHtml = function(){
-        elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
-        elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
+
+        componentNavLeftRight   = new ComponentNavLeftRight({
+           uniqueKey:           settings.uniqueKey,
+           elemDivContainer:    elemDivContainer,
+           pageTitle:           'Pig Ops Settings'
+        });
+        
         
         
         componentNumDaysWean    = new ComponentPlusMinusInput({
@@ -142,8 +148,10 @@ export function PageAccOpsSettingsEdit(input_settings){
         
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
+
         
-        
+        const html_nav          = componentNavLeftRight.getHtml();
+
         const html_days_wean    = componentNumDaysWean.getHtml();
         const html_harvest      = componentNumDaysHarvest.getHtml();
         const html_harvest_2    = componentNumDaysHarvest2.getHtml();
@@ -154,18 +162,7 @@ export function PageAccOpsSettingsEdit(input_settings){
         
     <div class="mobile-container">
         
-        <div class="nav-left-right">
-            <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
-                    
-            <span>
-                <span class="nav-title blue"></span>
-                <span class="nav-title blue">Pig Ops Settings</span>
-            </span>
-            
-            <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
-                
-        </div>
-        
+        ${html_nav}
         
         
         <div class="modal-body">
@@ -250,6 +247,7 @@ export function PageAccOpsSettingsEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
+        componentNavLeftRight.afterHtmlRender();
         componentNumDaysWean.afterHtmlRender();
         componentNumDaysHarvest.afterHtmlRender();
         componentNumDaysHarvest2.afterHtmlRender();
@@ -261,9 +259,6 @@ export function PageAccOpsSettingsEdit(input_settings){
     
     
     this._findElements = function(){
-        elemNavPrevEntry        = elemDivContainer.querySelector('#'+elemIdNavPrevEntry);
-        elemNavNextEntry        = elemDivContainer.querySelector('#'+elemIdNavNextEntry);
-        
         
         elemDateMatingDay0      = elemDivContainer.querySelector('#DateMatingDay0');
         elemDateMatingDay1      = elemDivContainer.querySelector('#DateMatingDay1');
@@ -280,7 +275,17 @@ export function PageAccOpsSettingsEdit(input_settings){
     
     
     this._processAfterHtmlRender = function(){
+        componentNavLeftRight.callbackNavLeft = function(){
+            navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
+        };
         
+          
+        componentNavLeftRight.callbackNavRight = function(){
+            navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
+        };
+        
+        
+        componentNavLeftRight.bindEventListeners();
     }
     
     
@@ -309,24 +314,12 @@ export function PageAccOpsSettingsEdit(input_settings){
         thisObj._resetForm();
         
         thisObj.populateForm();
-        
-        // Set up listeners for navigation arrows
-        elemNavPrevEntry.onclick = function(){
-            navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
-        }
-
-        elemNavNextEntry.onclick = function(){
-            navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
-        }
-        
-        
     }
     
     
     this.populateForm = function(){
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
-        
-        console.log(acc_settings_ops)
+
         
         if (acc_settings_ops.day_1_on_date_of_insem == 0){
             elemDateMatingDay0.checked = true;
