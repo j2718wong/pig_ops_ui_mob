@@ -31,6 +31,7 @@ export function PageCreateOrJoinAccount(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
+    let elemUserName            = null;
     
     let elemCreateAccount       = null;
     let elemAccountName         = null;      
@@ -44,7 +45,7 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     
-    let curDataUserAccount             = null;
+    let curDataUserAccount      = null;
     
     
     
@@ -68,6 +69,7 @@ export function PageCreateOrJoinAccount(input_settings){
         <div class="product-name">SuperPig</div>
     </div>
 
+    <div style="margin-bottom:0.5rem; font-weight:600;">Hello <span id="user-name">hi</span>, please choose</div>
 
     <!-- two clickable options -->
     <!-- option 1: create (owner/manager) -->
@@ -109,7 +111,7 @@ export function PageCreateOrJoinAccount(input_settings){
             🧑‍🌾 Join a Pig Farm Account
             <span class="join-badge">Needs Approval</span>
         </div>
-        <div class="option-sub">You work as staff on the pig farm. Or you want to joint the Farm Account</div>
+        <div class="option-sub">You work as staff on a pig farm. Or you want to join a Farm Account.</div>
         <ul class="feature-list">
             <li>The PigFarm account admins need to approve your access.</li>
             <li>You may have limited access to the PigFarm account data based on approved role.</li>
@@ -177,6 +179,8 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     this._findElements = function(){
+        elemUserName            = elemDivContainer.querySelector('#user-name')
+        
         elemCreateAccount       = elemDivContainer.querySelector('#create-account');
         elemAccountName         = elemDivContainer.querySelector('#account-name');
         elemInvalidAccNameShow  = elemDivContainer.querySelector('#invalid-account-name-show');
@@ -231,14 +235,29 @@ export function PageCreateOrJoinAccount(input_settings){
         this._resetForm();
         
         curDataUserAccount = data_user;
-        
-        console.log('create or join');
-        console.log(curDataUserAccount);
+        this.populateForm();
     }
     
     
     this.populateForm = function(){
-
+        const user = curDataUserAccount.user.user;
+        
+        let user_name = '';
+        
+        if (user.name && user.name.length >0){
+            user_name = user.name;
+        }
+        else {
+            if (user.name_first && user.name_first.length >0){
+                user_name = user.name_first
+            }
+            
+            if (user.name_last && user.name_last.length >0){
+                user_name += ' ' + user.name_last
+            }
+        }
+        
+        elemUserName.textContent = user_name;
     }
     
     
