@@ -20,6 +20,7 @@ import {formatDate,
         FORMAT_COMPACT,
         sortList}               from '../../../utils.js';
 
+import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
 
 import {getSowBoarReference}    from '../../common/common_app.js';
 
@@ -46,25 +47,13 @@ export function PageProdNotPregnantList(input_settings){
     // This is needed as this will be first element to be rendered
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
-    let elemIdNavPrevEntry      = null;
-    let elemIdNavNextEntry      = null;
-
-    let elemIdPageTitle         = null;
-    let elemIdPageHeaderAlarm   = null;
-    let elemIdEntryCount        = null;
-    let elemIdPageInfo          = null;
+    let componentNavLeftRight   = null;
     
+    let elemIdPageInfo          = null;
     let elemIdTableBody         = null;
     
 
-    let elemNavPrevEntry        = null;
-    let elemNavNextEntry        = null;
-
-    let elemPageTitle           = null;
-    let elemPageHeaderAlarm     = null;
-    let elemEntryCount          = null;
     let elemPageInfo            = null;
-
     let elemTableBody           = null;
     
     
@@ -100,15 +89,18 @@ export function PageProdNotPregnantList(input_settings){
     
     
     this.render = function(){
-        elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
-        elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
         
-        elemIdPageTitle         = `${settings.uniqueKey}-page-title-list`;
-        elemIdPageHeaderAlarm   = `${settings.uniqueKey}-page-title-alarm`;
-        elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
-        elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
+        componentNavLeftRight   = new ComponentNavLeftRight({
+           uniqueKey:           settings.uniqueKey,
+           elemDivContainer:    elemDivContainer,
+           pageTitle:           'Not Pregnant'
+        });
         
-           
+        
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
+        
+        
+        const html_nav          = componentNavLeftRight.getHtml();   
         const html_table        = thisObj.getHtml();
            
 
@@ -116,17 +108,7 @@ export function PageProdNotPregnantList(input_settings){
         const html = `
 
 <div class="mobile-container">
-    <div class="nav-left-right">
-        <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
-            
-        <span>
-            <span class="nav-title blue" id="${elemIdEntryCount}"></span>
-            <span class="nav-title blue" id="${elemIdPageTitle}" style="margin-right:8px;">Not Pregnant</span>
-        </span>
-        
-        <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
-            
-    </div>
+    ${html_nav}
     
     <!-- Mobile Info Box -->
     <!--
@@ -138,8 +120,6 @@ export function PageProdNotPregnantList(input_settings){
     
     ${html_table}
 
-    
-    
 </div>
         `;
         
@@ -148,6 +128,9 @@ export function PageProdNotPregnantList(input_settings){
     
     
     this.afterHtmlRenderThis = function(){
+        componentNavLeftRight.afterHtmlRender();
+        
+        
         this._findElementsThis();
         this._processAfterHtmlRenderThis();
         this._bindEventListenersThis();
@@ -155,47 +138,32 @@ export function PageProdNotPregnantList(input_settings){
     
     
     this._findElementsThis = function(){
-        elemNavPrevEntry        = elemDivContainer.querySelector('#'+elemIdNavPrevEntry);
-        elemNavNextEntry        = elemDivContainer.querySelector('#'+elemIdNavNextEntry);
-        
-        elemPageTitle           = elemDivContainer.querySelector('#'+elemIdPageTitle);
-        elemPageHeaderAlarm     = elemDivContainer.querySelector('#'+elemIdPageHeaderAlarm);
-        elemEntryCount          = elemDivContainer.querySelector('#'+elemIdEntryCount);
         elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
         
         
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
-
     }
     
     
     this._processAfterHtmlRenderThis = function(){
         
-        this.handleWindowResize();
-    
+        componentNavLeftRight.callbackNavLeft = function(){
+            navigation._onClickNavProdHistory();
+        };
         
+          
+        componentNavLeftRight.callbackNavRight = function(){
+            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+        };
+        
+        
+        componentNavLeftRight.bindEventListeners();
     }
     
     
     this._bindEventListenersThis = function(){
         
-        elemPageTitle.addEventListener('click', function() {
-
-        });
-        
-     
-
-        
-        // Set up listeners for navigation arrows
-        elemNavPrevEntry.onclick = function(){
-            navigation._onClickNavProdHistory();
-        }
-
-        elemNavNextEntry.onclick = function(){
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
-        }
-        
-             
+       
     }
     
     

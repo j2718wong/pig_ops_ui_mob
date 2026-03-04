@@ -32,11 +32,6 @@ import {formatDate,
 
 
 
-import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
-
-import {ModelSowBoar}           from '../../models/model_sow_boar.js'
-
-
 
 
 export function PageBoarExtMateAddEdit(input_settings){
@@ -558,41 +553,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         let is_duplicate = 0;
         
         
-        if (ev.checkValidity()) {
-            switch(input_field){
-                
-                case 'date_medvac': {
-                    input_elem      = elemDateMate;
-                    input_val       = input_elem.value;
-                    
-                    console.log('Test 1');
-                    
-                    // Already validated by bootstrap
-                    if (input_val.length > 0){
-                        validation = 0;
-                    }
-                    
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-            
-            }
-            
-            
-        } else {
-            ev.classList.remove('is-valid');
-            ev.classList.add('is-invalid');
-        }
-
+        
     }
     
     

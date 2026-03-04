@@ -33,15 +33,6 @@ import {APPLICATION,
 
 
 
-import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
-
-import {ModelSowBoar}           from '../../models/model_sow_boar.js'
-
-
-
-
-
-
 
 
 export function PageSowBoarAddEdit(input_settings){
@@ -170,8 +161,7 @@ export function PageSowBoarAddEdit(input_settings){
 
     let showOptions             = null;
     
-    
-    let sowBoarEntry            = new ModelSowBoar();
+
     
     
     // This is an explicit computation during show;
@@ -917,128 +907,7 @@ export function PageSowBoarAddEdit(input_settings){
         let is_duplicate = 0;
         
         
-        if (ev.checkValidity()) {
-            switch(input_field){
-            
-                case 'name': {
-                    input_elem      = elemName;
-                    input_val       = input_elem.value.trim();
-                    cur_field       = sowBoarEntry.fieldSowBoarName;
-                    
-                    
-                    cur_field.newValue = input_val; 
-                    validation = cur_field.validateChange();
-                    
-                    // Additional validation to prevent duplicate 
-                    if (validation == FIELD_VALIDATION_OK){
-                        if (input_val.length > 0){
-                            if (showOptions.is_add){ 
-                                const cur_sow_boar = thisObj._getSowBoar(input_val, null);
-                                
-                                if (cur_sow_boar != null){
-                                    is_duplicate = 1;
-                                    validation = -1;
-                                }
-                            
-                            } 
-                            
-                            else {
-                                // edit
-                                const exclude_hid = thisObj.curDataSowBoar.hid;
-                                const cur_sow_boar = thisObj._getSowBoar(input_val, null, exclude_hid);
-                                
-                                if (cur_sow_boar != null){
-                                    is_duplicate = 1;
-                                    validation = -1;
-                                }
-                            }
-                        }
-                    }
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                        elemNameInv.style.display = 'none';
-                    } else{
-                        if (is_duplicate > 0){
-                            elemNameInv.textContent = 'Duplicate entry.';
-                        }
-                        else{
-                            elemNameInv.textContent = 'Please enter a valid name.';
-                        }
-                        elemNameInv.style.display = 'block';
-                        
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-                case 'number': {
-                    input_elem  = elemNumber;
-                    input_val   = input_elem.value;
-                    cur_field   = sowBoarEntry.fieldSowBoarNumber;
-                    
-                    
-                    cur_field.newValue = input_val;
-                    validation = cur_field.validateChange();
-                    
-                    // Additional validation to prevent duplicate 
-                    if (validation == FIELD_VALIDATION_OK){
-                        if (input_val.length > 0){
-                            if (showOptions.is_add){ 
-                                const cur_sow_boar = thisObj._getSowBoar(null, input_val);
-                    
-                                if (cur_sow_boar != null){
-                                    is_duplicate = 1;
-                                    validation = -1;
-                                }
-                            
-                            } else{
-                                // edit
-                                const exclude_hid = thisObj.curDataSowBoar.hid;
-                                const cur_sow_boar = thisObj._getSowBoar(input_val, null, exclude_hid);
-                                
-                                if (cur_sow_boar != null){
-                                    is_duplicate = 1;
-                                    validation = -1;
-                                }
-                            }
-                        }
-                    }
-                    
-                    
-                    
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                        elemNumberInv.style.display = 'none';
-                    } else{
-                        if (is_duplicate > 0){
-                            elemNumberInv.textContent = 'Duplicate entry.';
-                        }
-                        else{
-                            elemNumberInv.textContent = 'Please enter a valid number.';
-                        }
-                        elemNumberInv.style.display = 'block';
-                        
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-                               
-            }
-            
-            
-        } else {
-            ev.classList.remove('is-valid');
-            ev.classList.add('is-invalid');
-        }
-
+       
     }
     
     

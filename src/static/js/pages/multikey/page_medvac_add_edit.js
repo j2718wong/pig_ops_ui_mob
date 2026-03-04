@@ -40,13 +40,6 @@ import {formatDate,
 
 
 
-import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
-
-import {ModelSowBoar}           from '../../models/model_sow_boar.js'
-
-
-
-
 export function PageMedVacAddEdit(input_settings){
     PageWithMultiBreadCrumbs.call(this, input_settings);
     

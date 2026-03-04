@@ -30,10 +30,6 @@ import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
 
-import {ModelPigProduction}     from '../../../models/model_pig_production.js'
-
-import {FIELD_VALIDATION_OK}    from '../../../models/model_basic.js'
-
 
 
 export function PageProdGestatingAdd(input_settings){
@@ -106,10 +102,6 @@ export function PageProdGestatingAdd(input_settings){
     
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
-    
-    
-    
-    let newEntry                = new ModelPigProduction();
     
     
     
@@ -516,43 +508,7 @@ export function PageProdGestatingAdd(input_settings){
         let cur_field   = null;
         let validation  = null;
         
-        
-        if (ev.checkValidity()) {
-            switch(input_field){
-            
-                
-                
-                case 'other_cost': {
-                    input_elem  = elemOtherCost;
-                    input_val   = input_elem.value;
-                    cur_field   = newEntry.fieldInsemCost;
-                    
-                    
-                    cur_field.newValue = input_val;
-                    validation = cur_field.validateChange();
-                    if (validation == FIELD_VALIDATION_OK) {
-                        ev.classList.remove('is-invalid');
-                        ev.classList.add('is-valid');
-                    } else{
-                        ev.classList.remove('is-valid');
-                        ev.classList.add('is-invalid');
-                    }
-                    
-                    break;
-                }
-                
-                
-                
-                
-               
-               
-            }
-            
-            
-        } else {
-            ev.classList.remove('is-valid');
-            ev.classList.add('is-invalid');
-        }
+
 
     }
     

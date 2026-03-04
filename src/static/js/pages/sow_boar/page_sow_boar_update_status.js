@@ -28,12 +28,6 @@ import {formatDate,
 
 
 
-import {FIELD_VALIDATION_OK}    from '../../models/model_basic.js'
-
-
-
-
-
 export function PageSowBoarUpdateStatus(input_settings){
     
     const thisObj               = this;

@@ -1360,20 +1360,20 @@ export function Navigation(){
         }
         
         
-        if (is_mobile){
-            if (operation_type == PIG_OPERATION_TYPE.GESTATING){
-                thisObj.showThisPage(elemPageContProdGestaList);
-                thisObj.pageMobGestatingList.show();
-                return;
-            }
-            
-            if ((operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS) || 
-                (operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
-                thisObj.showThisPage(elemPageContProdLactaList);
-                thisObj.pageMobLactatingList.show();
-                return;
-            }
+        
+        if (operation_type == PIG_OPERATION_TYPE.GESTATING){
+            thisObj.showThisPage(elemPageContProdGestaList);
+            thisObj.pageMobGestatingList.show();
+            return;
         }
+        
+        if ((operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS) || 
+            (operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
+            thisObj.showThisPage(elemPageContProdLactaList);
+            thisObj.pageMobLactatingList.show();
+            return;
+        }
+        
     }
     
     
