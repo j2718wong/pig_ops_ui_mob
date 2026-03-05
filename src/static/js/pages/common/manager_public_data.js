@@ -35,9 +35,16 @@ export function ManagerPublicData(_navigation){
         const url = `${base_url}/lookup/feed_type/list`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -80,9 +87,16 @@ export function ManagerPublicData(_navigation){
         const url = `${base_url}/feed_brand/list?country_hid=${country_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -126,9 +140,16 @@ export function ManagerPublicData(_navigation){
         const url = `${base_url}/medvac_brand/list?country_hid=${country_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -169,9 +190,16 @@ export function ManagerPublicData(_navigation){
         const url = `${base_url}/medvac_type/list`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -212,9 +240,16 @@ export function ManagerPublicData(_navigation){
         const url = `${base_url}/semen_sup_semen/list?semen_supplier_hid=${supplier_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -249,9 +284,16 @@ export function ManagerPublicData(_navigation){
         const url = `${base_url}/lookup/harvest_type/list`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -283,10 +325,6 @@ export function ManagerPublicData(_navigation){
             }
         });
     }
-    
-    
-    
-    
 }
 
 

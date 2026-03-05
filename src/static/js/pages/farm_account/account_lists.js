@@ -39,9 +39,16 @@ export function AccountLists(_navigation){
         const url = `${base_url}/user/list?ahid=${accountHid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -80,10 +87,16 @@ export function AccountLists(_navigation){
         const base_url = window.location.origin;
         const url = `${base_url}/user_request/list?ahid=${accountHid}`;
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -116,7 +129,6 @@ export function AccountLists(_navigation){
     }
     
   
-    
     this.requestDataSupplier = function(supplier_type, callback_success, elem_show_error){
         let param = '';
         
@@ -141,10 +153,16 @@ export function AccountLists(_navigation){
         const base_url = window.location.origin;
         const url = `${base_url}/supplier/list?ahid=${accountHid}&country_id&${param}=1`;
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -199,9 +217,16 @@ export function AccountLists(_navigation){
         const url = `${base_url}/account_medvac/list?ahid=${accountHid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -240,9 +265,16 @@ export function AccountLists(_navigation){
         const url = `${base_url}/account_pig_buyer/list?ahid=${accountHid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,

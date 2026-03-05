@@ -234,11 +234,19 @@ export function ComponentAccPigBuyer(input_settings){
         const elemServerErrorMsg = thisObj.getElemServerErrorMsg();
         
         // Note: boar_customer and account_pig_buyer shares same table
+
+        
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: `${base_url}/account_pig_buyer/add`,
             async: true,

@@ -194,10 +194,16 @@ export function PigFarm(_navigation){
         let url = `${base_url}/account_pig_ops/list?ahid=${thisObj.getAccountHid()}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -239,10 +245,16 @@ export function PigFarm(_navigation){
         let url = `${base_url}/pig_farm_staff/list?pfhid=${thisObj.getPigFarmHid()}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -282,10 +294,16 @@ export function PigFarm(_navigation){
         let url = `${base_url}/pf_feed_buy/list?pfhid=${thisObj.getPigFarmHid()}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -331,10 +349,16 @@ export function PigFarm(_navigation){
         let url = `${base_url}/pf_feed_buy_item/list?pf_feed_buy_hid=${pf_feed_buy_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -384,9 +408,17 @@ export function PigFarm(_navigation){
             url = `${base_url}/pig_medvac/list?pig_prod_hid=${pig_prod_hid}`;
         }
         
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -439,9 +471,17 @@ export function PigFarm(_navigation){
             url += `&date_since=${date_since}`
         }
         
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,

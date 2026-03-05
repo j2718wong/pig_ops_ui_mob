@@ -100,9 +100,16 @@ export function ManagerSowBoar(input_settings){
         url += '&inc_user_audit=0';
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -149,10 +156,16 @@ export function ManagerSowBoar(input_settings){
         const url = `${base_url}/sow_boar/entry/${sow_boar_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -200,9 +213,16 @@ export function ManagerSowBoar(input_settings){
         const url = `${base_url}/sow_boar/data_ver_num?sow_boar_hid=${sow_boar_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -246,9 +266,16 @@ export function ManagerSowBoar(input_settings){
         const url = `${base_url}/sow_boar/data_details?sow_boar_hid=${sow_boar_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -296,9 +323,16 @@ export function ManagerSowBoar(input_settings){
         const url = `${base_url}/pig_prod_notes/list?sow_boar_hid=${sow_boar_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -354,9 +388,16 @@ export function ManagerSowBoar(input_settings){
         let url = `${base_url}/pig_farm/piglets_output?pfhid=${pig_farm_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,

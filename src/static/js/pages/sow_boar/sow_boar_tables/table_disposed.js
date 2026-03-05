@@ -233,9 +233,16 @@ export function SowBoarTableDisposed(input_settings){
         const url = `${base_url}/sow_boar/list?pfhid=${cur_pig_farm_hid}&is_disposed=1&inc_user_audit=1`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,

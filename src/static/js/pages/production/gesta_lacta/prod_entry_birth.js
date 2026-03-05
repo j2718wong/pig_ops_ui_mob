@@ -609,10 +609,17 @@ export function ProdEntryBirth(input_settings){
         
         // TODO: check if there is a change in the data
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,

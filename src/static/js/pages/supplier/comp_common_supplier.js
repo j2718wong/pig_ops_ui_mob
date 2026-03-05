@@ -391,11 +391,17 @@ export function ComponentCommonSupplier(input_settings){
         // Element where to display server error message in this component
         const elemServerErrorMsg = thisObj.getElemServerErrorMsg();
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,

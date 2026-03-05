@@ -791,12 +791,17 @@ export function ProdEntryMating(input_settings){
         // TODO: check if there is a change in the data
         
         
-        
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: `${base_url}/pig_prod/update_insem`,
             async: true,

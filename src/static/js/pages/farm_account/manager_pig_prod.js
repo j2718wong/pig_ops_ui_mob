@@ -113,9 +113,16 @@ export function ManagerPigProd(input_settings){
         const url = `${base_url}/pig_prod/list?pfhid=${cur_pig_farm_hid}&pig_prod_type=${pig_prod_type}&is_mob_view=${is_mob_view}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -188,9 +195,16 @@ export function ManagerPigProd(input_settings){
         const url = `${base_url}/pig_prod/not_pregnant?pfhid=${cur_pig_farm_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -234,10 +248,16 @@ export function ManagerPigProd(input_settings){
         const url = `${base_url}/pig_prod/entry/${pig_prod_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -283,10 +303,16 @@ export function ManagerPigProd(input_settings){
         const url = `${base_url}/pig_prod_pig_ops/entry/${pig_prod_pig_ops_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -348,9 +374,16 @@ export function ManagerPigProd(input_settings){
         const url = `${base_url}/pig_prod/data_details?pig_prod_hid=${pig_prod_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -396,9 +429,16 @@ export function ManagerPigProd(input_settings){
         const url = `${base_url}/pig_prod_feed/list?pig_prod_hid=${pig_prod_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -447,9 +487,16 @@ export function ManagerPigProd(input_settings){
         const url = `${base_url}/pig_prod_notes/list?pig_prod_hid=${pig_prod_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -510,10 +557,16 @@ export function ManagerPigProd(input_settings){
         let url = `${base_url}/feed_balance/list?pig_prod_hid=${pig_prod_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -557,10 +610,16 @@ export function ManagerPigProd(input_settings){
         let url = `${base_url}/prod_harvest/list?pig_prod_hid=${pig_prod_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
         
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,

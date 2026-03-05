@@ -445,9 +445,16 @@ export function PageParentTrace(input_settings){
         }
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             url: url,
             timeout: APPLICATION.REQUEST_TIMEOUT,
             async: true,

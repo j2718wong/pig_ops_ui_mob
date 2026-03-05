@@ -124,9 +124,16 @@ export function ManagerAddress(_navigation){
         const url = `${base_url}/address/level_1/list?country_hid=${country_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -170,9 +177,16 @@ export function ManagerAddress(_navigation){
         const url = `${base_url}/address/level_2/list?level_1_hid=${level_1_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -217,9 +231,16 @@ export function ManagerAddress(_navigation){
         const url = `${base_url}/address/level_3/list?level_2_hid=${level_2_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -263,9 +284,16 @@ export function ManagerAddress(_navigation){
         const url = `${base_url}/supplier/list?level_2_hid=${level_2_hid}`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -327,9 +355,16 @@ export function ManagerAddress(_navigation){
         const url = `${base_url}/supplier/list?ahid=${accountHid}&country_id&${param}=1`;
         
         
+        const bearer_token = localStorage.getItem('access_token');
+        
         $.ajax({
             type: 'GET',
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,

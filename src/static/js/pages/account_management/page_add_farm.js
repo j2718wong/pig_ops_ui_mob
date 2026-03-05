@@ -288,10 +288,17 @@ export function PageAddFarm(input_settings){
         let url = `${base_url}/account/update`
         
         
+        const bearer_token = localStorage.getItem('access_token');
+
         $.ajax({
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
@@ -373,10 +380,17 @@ export function PageAddFarm(input_settings){
         let url = `${base_url}/pig_farm/add`
 
 
+        const bearer_token = localStorage.getItem('access_token');
+
         $.ajax({
             type: 'POST',
             contentType: "application/json",
             dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,

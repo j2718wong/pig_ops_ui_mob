@@ -114,7 +114,7 @@ function UserControl(_navigation) {
     
     
     this.dataUserAccount            = null;
-    
+    this.userInitials               = null;
     
     
     this.init = function(){
@@ -183,16 +183,41 @@ function UserControl(_navigation) {
                             
         const user_fullname = user.name_first + ' ' + user.name_last;
         
+        this.userInitials   = user_initials;
+        
+        //this.updateUserAvatar();
+        
+        
         elemDesktopUserAvatarInitials.innerHTML = user_initials;
         elemMobileUserAvatarInitials.innerHTML  = user_initials;
         elemDesktopUserAvatarInitialsL.innerHTML= user_initials;
         elemMobileUserAvatarInitialsL.innerHTML = user_initials;
         
-        
         elemDesktopUserFullName.innerHTML       = user_fullname;
         elemMobileUserFullName.innerHTML        = user_fullname;
         
         
+    }
+    
+    
+    this.updateUserAvatar = function() {
+        
+        const userPicture       = localStorage.getItem('user_picture');
+
+        
+        if (userPicture) {
+            // User has picture - show image
+            elemDesktopUserAvatarInitials.innerHTML = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`; 
+            elemMobileUserAvatarInitials.innerHTML  = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            elemDesktopUserAvatarInitialsL.innerHTML= `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            elemMobileUserAvatarInitialsL.innerHTML = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        
+        } else {
+            // No picture - show initials
+            elemDesktopUserAvatarInitials.innerHTML = `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
+            elemMobileUserAvatarInitials.innerHTML  = `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
+            elemDesktopUserAvatarInitialsL.innerHTML= `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
+        }
     }
     
     
@@ -761,7 +786,7 @@ export function Navigation(){
             this.requestPigFarmData(bearer_token);
         }
         else{
-            window.location.href('/login');
+            window.location.href = '/login';
         }
     }
     
