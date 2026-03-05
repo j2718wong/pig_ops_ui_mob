@@ -42,6 +42,9 @@ export function PageHomeDashBoard(input_settings){
     // This is needed as this will be first element to be rendered
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
+    
+    let elemDashboard           = null;
+    
     let elemIdFarmName          = null;
     let elemIdTodayDate         = null;
                                 
@@ -211,6 +214,7 @@ export function PageHomeDashBoard(input_settings){
     
     
     this._findElements = function(){
+        elemDashboard           = elemDivContainer.querySelector('.dashboard');
         
         elemFarmName            = elemDivContainer.querySelector('#'+elemIdFarmName);        
         elemTodayDate           = elemDivContainer.querySelector('#'+elemIdTodayDate);       
@@ -435,6 +439,14 @@ export function PageHomeDashBoard(input_settings){
         } 
         
         
+        // Force a reflow to recalculate height
+        setTimeout(function() {
+            // Force a reflow
+            elemDashboard.style.overflow = 'hidden';
+            elemDashboard.offsetHeight; // Force reflow
+            elemDashboard.style.overflow = 'auto';
+            
+        }, 100);
         
         
     }

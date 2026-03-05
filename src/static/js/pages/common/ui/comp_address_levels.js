@@ -229,25 +229,82 @@ export function ComponentAddressLevels(input_settings){
         
         const country_hid = location.country.hid;
         elemCountry.textContent = location.country.name;
-    
-    
+
         const address = location.address;
         
-        let level_1_hid = null;
-        let level_2_hid = null;
-        
-        if (location.address.level_1.hid){
-            level_1_hid = location.address.level_1.hid;
+        if (address.level_1 && address.level_1.hid){
+            const level_1_hid = address.level_1.hid;
             
-            // Get address_level_1
-            const address_level_1 = navigation.managerAddress.getAddressLevel1(level_1_hid);
-            
-            
+            // Set the level 1 select element
             elemAddressLevel1.value = level_1_hid;
+            
+            // Get address_level_1 from managerAddress
+            this.curAddressLevel1 = navigation.managerAddress.getAddressLevel1(level_1_hid);
+            
+            if (this.curAddressLevel1) {
+                // Check if level 2 data is already loaded
+                let level_2_addresses = navigation.managerAddress.getLevel2Addresses(
+                                            this.curAddressLevel1);
+                
+                if (level_2_addresses) {
+                    // Level 2 data is already loaded, set the level 2 select
+                    this._setAddressLevel2(location);
+                } else {
+                    // Need to load level 2 data first
+                    this.requestDataAddressLevel2(this.curAddressLevel1, function() {
+                        thisObj._setAddressLevel2(location);
+                    });
+                }
+            }
         }
+    }
+    
+    
+    this._setAddressLevel2 = function(location) {
+        const address = location.address;
         
+        if (address.level_2 && address.level_2.hid) {
+            const level_2_hid = address.level_2.hid;
+            
+            // Set the level 2 select element
+            elemAddressLevel2.value = level_2_hid;
+            
+            // Get level_2 from curAddressLevel1
+            this.curAddressLevel2 = navigation.managerAddress.getAddressLevel2(
+                                        this.curAddressLevel1, level_2_hid);
+            
+            if (this.curAddressLevel2) {
+                // Check if level 3 data is already loaded
+                let level_3_addresses = navigation.managerAddress.getLevel3Addresses(
+                                            this.curAddressLevel2);
+                
+                if (level_3_addresses) {
+                    // Level 3 data is already loaded, set the level 3 select
+                    this._setAddressLevel3(location);
+                } else {
+                    // Need to load level 3 data first
+                    this.requestDataAddressLevel3(this.curAddressLevel2, function() {
+                        thisObj._setAddressLevel3(location);
+                    });
+                }
+            }
+        }
+    }
+    
+    
+    this._setAddressLevel3 = function(location) {
+        const address = location.address;
         
-        
+        if (address.level_3 && address.level_3.hid) {
+            const level_3_hid = address.level_3.hid;
+            
+            // Set the level 3 select element
+            elemAddressLevel3.value = level_3_hid;
+            
+            // Get level_3 from curAddressLevel2
+            this.curAddressLevel3 = navigation.managerAddress.getAddressLevel3(
+                                        this.curAddressLevel2, level_3_hid);
+        }
     }
     
     
@@ -272,7 +329,7 @@ export function ComponentAddressLevels(input_settings){
     }
     
     
-    this.requestDataAddressLevel2 = function(address_level_1){ 
+    this.requestDataAddressLevel2 = function(address_level_1, custom_callback){ 
         elemServerErrorMsg.style.display = 'none';
                 
         elemAddressLevel1   .disabled = true;
@@ -291,6 +348,11 @@ export function ComponentAddressLevels(input_settings){
                 elemAddressLevel2   .disabled = false;
         
                 commonSelectOptions.setDataAddressLevelList(data, elemAddressLevel2);
+            }
+            
+            // Call the custom callback if provided
+            if (custom_callback) {
+                custom_callback(data);
             }
         };
         
@@ -382,7 +444,7 @@ export function ComponentAddressLevels(input_settings){
     }
     
     
-    this.requestDataAddressLevel3 = function(address_level_2){
+    this.requestDataAddressLevel3 = function(address_level_2, custom_callback){
         elemServerErrorMsg.style.display = 'none';
                 
         elemAddressLevel1.disabled = true;
@@ -396,6 +458,11 @@ export function ComponentAddressLevels(input_settings){
             elemAddressLevel3.disabled = false;
             
             commonSelectOptions.setDataAddressLevelList(data, elemAddressLevel3);
+            
+            // Call the custom callback if provided
+            if (custom_callback) {
+                custom_callback(data);
+            }
         };
 
         managerAddress.requestDataAddressLevel3(address_level_2, 

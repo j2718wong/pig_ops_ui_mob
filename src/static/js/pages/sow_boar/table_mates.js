@@ -183,7 +183,6 @@ export function TableMates(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        //let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.hid}");`;
 
         const dt_mate = new Date(cur_entry.date_mate);
         

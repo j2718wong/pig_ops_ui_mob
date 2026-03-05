@@ -179,8 +179,6 @@ export function TableGiltOps(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        //let s_click = `gNavigation.pageSowBoarEntry.tableSowBoarNotes.onClickRowEntry("${cur_entry.hid}");`;
-        
         const pig_ops_hid   = cur_entry.pig_prod_pig_ops.hid;
         const dt_target     = new Date(cur_entry.pig_prod_pig_ops.date_target);
         

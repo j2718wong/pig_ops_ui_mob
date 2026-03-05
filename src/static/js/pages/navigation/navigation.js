@@ -171,6 +171,9 @@ function UserControl(_navigation) {
     this.setDataUserAccount = function(data){
         this.dataUserAccount= data;
         
+        console.log('this.dataUserAccount');
+        console.log(data);
+        
 
         const user          = this.dataUserAccount.user.user;
         const user_pig_farms= this.dataUserAccount.user.pig_farms; 
@@ -188,6 +191,7 @@ function UserControl(_navigation) {
         //this.updateUserAvatar();
         
         
+        // Set User Initial
         elemDesktopUserAvatarInitials.innerHTML = user_initials;
         elemMobileUserAvatarInitials.innerHTML  = user_initials;
         elemDesktopUserAvatarInitialsL.innerHTML= user_initials;
@@ -197,6 +201,10 @@ function UserControl(_navigation) {
         elemMobileUserFullName.innerHTML        = user_fullname;
         
         
+        // Set Usergroup Name
+        const usergroup_name    = this.dataUserAccount.user.user_group.name;
+        elemDesktopUserRole.textContent         = usergroup_name;
+        elemMobileUserRole.textContent          = usergroup_name;
     }
     
     
