@@ -36,7 +36,7 @@ export function PageUserSignUpOrLogin(input_settings){
     let elemUseFacebook         = null;
     let elemUseTiktok           = null;
     
-
+    let elemLoginOrSignUpLink   = null;
 
     let showOptions             = null;
 
@@ -165,6 +165,8 @@ export function PageUserSignUpOrLogin(input_settings){
         elemUseGoogle           = elemDivContainer.querySelector('#social-btn-google'); 
         elemUseFacebook         = elemDivContainer.querySelector('#social-btn-facebook');
         elemUseTiktok           = elemDivContainer.querySelector('#social-btn-tiktok');
+        
+        elemLoginOrSignUpLink   = elemDivContainer.querySelector('.login-full-link');
     
     }
     
@@ -482,12 +484,16 @@ export function PageUserSignUpOrLogin(input_settings){
             elemTermsText.style.display         = 'none';
             elemBtnSignUpOrLogin.textContent    = 'Continue';
             elemContinueUsingSocial.textContent = 'Or login using:';    
+        
+            elemLoginOrSignUpLink.innerHTML     = '<span>Create Account</span>';
         }
         else{
             elemIntroText.textContent           = 'Sign up to continue';
             elemTermsText.style.display         = 'block';
             elemBtnSignUpOrLogin.textContent    = 'Sign up';
             elemContinueUsingSocial.textContent = 'Or continue with:';
+            
+            elemLoginOrSignUpLink.innerHTML     = 'Already have an account? <span>Log in</span>';
         }
     }
     

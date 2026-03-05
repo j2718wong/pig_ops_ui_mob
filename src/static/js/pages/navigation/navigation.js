@@ -4,7 +4,8 @@
 
 'use strict';
 
-import {PIG_OPERATION_TYPE,
+import {APPLICATION,
+        PIG_OPERATION_TYPE,
         PAGE_ID,
         SOW_BOAR_TYPE,
         PIG_PROD_TYPE,
@@ -93,12 +94,14 @@ function UserControl(_navigation) {
     let elemDesktopUserAvatarInitialsL  = null;
     let elemDesktopUserFullName         = null;
     let elemDesktopUserRole             = null;
+    let elemDesktopUserLogout           = null;
+    
     
     let elemMobileUserAvatarInitials    = null;
     let elemMobileUserAvatarInitialsL   = null;
     let elemMobileUserFullName          = null;
     let elemMobileUserRole              = null;
-    
+    let elemMobileUserLogout            = null;
     
     
     let userCurrentFarmHid          = null;
@@ -133,11 +136,15 @@ function UserControl(_navigation) {
         elemDesktopUserFullName         = document.getElementById('desktop-user-full-name');
         elemDesktopUserRole             = document.getElementById('desktop-user-role');
         
+        elemDesktopUserLogout           = document.getElementById('desktop-user-logout');
+        
         
         elemMobileUserAvatarInitials    = document.getElementById('mobile-user-initials');
         elemMobileUserAvatarInitialsL   = document.getElementById('mobile-user-initials-large');
         elemMobileUserFullName          = document.getElementById('mobile-user-full-name');
         elemMobileUserRole              = document.getElementById('mobile-user-role');
+        
+        elemMobileUserLogout            = document.getElementById('mobile-user-logout');
         
     }
     
@@ -149,6 +156,14 @@ function UserControl(_navigation) {
     
     
     this._bindEventListeners = function(){
+        elemDesktopUserLogout.addEventListener('click', function() {
+            thisObj.userLogout();
+        });
+        
+        
+        elemMobileUserLogout.addEventListener('click', function() {
+            thisObj.userLogout();
+        });
         
     }
     
@@ -242,6 +257,14 @@ function UserControl(_navigation) {
         
     }
     
+    
+    this.userLogout = function(){
+        // Clear all items from localStorage
+        localStorage.clear();
+            
+        // Optional: Redirect to login page
+        window.location.href = '/login';
+    }
 
 }
 
@@ -730,7 +753,67 @@ export function Navigation(){
     
     
     this.init = function(){
-        this.managerNavLinks.init();
+        
+        // Check if there is a access_token stored
+        const bearer_token = localStorage.getItem('access_token');
+        
+        if (bearer_token){
+            this.requestPigFarmData(bearer_token);
+        }
+        else{
+            window.location.href('/login');
+        }
+    }
+    
+    
+    this.requestPigFarmData = function(bearer_token){
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_farm/data`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.initComponents();
+                    thisObj.afterHtmlRender();
+                    
+                    thisObj.setPageData(response.data);
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
+    
+    
+    this.initComponents = function(){
+            this.managerNavLinks.init();
         
         this.userControl.init();
         
@@ -803,10 +886,6 @@ export function Navigation(){
         
         this.pageUserList.init();
         this.pageJoinAccReqList.init();
-        
-        
-        this.afterHtmlRender();
-        
     }
     
     
