@@ -363,21 +363,27 @@ export function PageCreateOrJoinAccount(input_settings){
         console.log(`curDataUserAccount`);
         console.log(curDataUserAccount);
         
+        
+        const bearer_token  = localStorage.getItem('access_token');
+        
         // send post request
         const post_data = {
-            'uhid':         user_hid,
             'ahid':         input_acc_code
-            
         };
         
       
         
-        let url = `${base_url}/user_request/join_account?uhid=${user_hid}&ahid=${input_acc_code}`;
+        let url = `${base_url}/user_request/join_account?ahid=${input_acc_code}`;
         
         
         $.ajax({
             type: 'GET',
             contentType: "application/json",
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
             dataType: 'json',
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
@@ -397,7 +403,7 @@ export function PageCreateOrJoinAccount(input_settings){
                     const page_container = parentObj.getPageContainer(goto_page_id);
                         
                     parentObj.showThisPage(page_container);
-                    parentObj.pageReqJoinAccountSent.beforeShow();
+                    parentObj.pageReqJoinAccountSent.beforeShow(curDataUserAccount);
 
                 }
                 else{

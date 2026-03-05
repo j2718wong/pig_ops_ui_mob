@@ -333,6 +333,8 @@ export function PageUserSignUpOrLogin(input_settings){
             
             // Store token for future API calls
             localStorage.setItem('access_token', data.bearer_token);
+            localStorage.setItem('user_picture', data.user_picture);
+            
             
             
             thisObj.handlePostLoginFlow(data.user_account)
@@ -609,6 +611,33 @@ export function PageUserSignUpOrLogin(input_settings){
     }
     
     
+    async function loadHomePageWithToken() {
+        const token = localStorage.getItem('access_token');
+        
+        try {
+            const response = await fetch('/', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const html = await response.text();
+                document.open();
+                document.write(html);
+                document.close();
+                // Update URL without reload
+                history.pushState({}, '', '/');
+            } else {
+                // Handle error (redirect to login)
+                window.location.href = '/login';
+            }
+        } catch (error) {
+            console.error('Failed to load homepage:', error);
+        }
+    }
+    
+    
     // Handle post-login flow (extracted from afterSuccessSocialMediaLogin)
     this.handlePostLoginFlow = function(data_user_account) {
         let account_hid         = null;
@@ -639,18 +668,24 @@ export function PageUserSignUpOrLogin(input_settings){
             else{
                 // User has already an account;
                 console.log('user has account_hid = ' + account_hid);
+                
+                let account_has_farms = 0;
+                
                 if (data_user_account.account.pig_farms){
                     if (data_user_account.account.pig_farms.length > 0){
-                        const user_hid      = data_user_account.user.user.hid;
-                        
-                        // This is temporary; should href via tokens
-                        window.location.href = `/?u=${user_hid}`;
+                        account_has_farms = 1;
                     }
                 }
-                else{
+                
+                
+                if (account_has_farms > 0){
+                    loadHomePageWithToken();
+                    return;
+                }
+                else {
                     // User has already an account but no pig_farm(s);
                     // It is implied that the user must have chosen 
-                    // to be n farm owner or manager
+                    // to be a farm owner or manager
                     
                     const goto_page_id   = PAGE_ID.ADD_FARM;
                     const page_container = parentObj.getPageContainer(goto_page_id);
@@ -659,6 +694,8 @@ export function PageUserSignUpOrLogin(input_settings){
                     parentObj.pageAddFarm.beforeShow(data_user_account);
                 }
             }
+            
+            return;
         }
         
         else{
