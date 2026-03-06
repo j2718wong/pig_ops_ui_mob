@@ -274,7 +274,7 @@ export function PageSowBoarList(input_settings){
         elemIdPageTitle         = `${settings.uniqueKey}-page-title-list`;
         elemIdPageHeaderAlarm   = `${settings.uniqueKey}-page-title-alarm`;
         elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
-        elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         
         elemIdSearchInput       = `${settings.uniqueKey}-search-input`;
         elemIdAddEntryBtn       = `${settings.uniqueKey}-add-entry-btn`;

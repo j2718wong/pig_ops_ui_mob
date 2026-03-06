@@ -105,7 +105,7 @@ export function PageProdFatteningList(input_settings){
         elemIdPageTitle         = `${settings.uniqueKey}-page-title-list`;
         elemIdPageHeaderAlarm   = `${settings.uniqueKey}-page-title-alarm`;
         elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
-        elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         
            
         const html_table        = thisObj.getHtml();

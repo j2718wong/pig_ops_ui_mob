@@ -86,7 +86,7 @@ import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_e
 
 import {PageUserList}               from '../a_user_control/page_user_list.js';
 import {PageJoinAccReqList}         from '../a_user_control/page_join_acc_req_list.js';
-
+import {PageJoinAccReqApprove}      from '../a_user_control/page_join_acc_req_approve.js';
 
 
 function UserControl(_navigation) {
@@ -225,14 +225,11 @@ function UserControl(_navigation) {
         if (userPicture) {
             // User has picture - show image
             elemDesktopUserAvatarInitials.innerHTML = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`; 
-            //elemMobileUserAvatarInitials.innerHTML  = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
             elemDesktopUserAvatarInitialsL.innerHTML= `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-            //elemMobileUserAvatarInitialsL.innerHTML = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-        
+            
         } else {
             // No picture - show initials
             elemDesktopUserAvatarInitials.innerHTML = `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
-            //elemMobileUserAvatarInitials.innerHTML  = `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
             elemDesktopUserAvatarInitialsL.innerHTML= `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
         }
     }
@@ -418,6 +415,7 @@ export function Navigation(){
     const elemIdContUserList            = 'container-user-list';
     const elemIdContUserAddEdit         = 'container-user-add-edit';
     const elemIdContJoinAccReqList      = 'container-join-acc-req-list';
+    const elemIdContJoinAccReqApprove   = 'container-join-acc-req-approve';
     
     
     let elemNavLeftProductName          = null;
@@ -491,7 +489,7 @@ export function Navigation(){
     let elemPageContUserList            = null;
     let elemPageContUserAddEdit         = null;
     let elemPageContJoinAccReqList      = null;
-
+    let elemPageContJoinAccReqApprove      = null;
     
     
     
@@ -833,6 +831,14 @@ export function Navigation(){
     });
     
     
+    this.pageJoinAccReqApprove  = new PageJoinAccReqApprove({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContJoinAccReqApprove,
+        uniqueKey:              'user-request-approve'
+    });
+    
+    
+    
     
     this.init = function(){
         
@@ -972,6 +978,7 @@ export function Navigation(){
         
         this.pageUserList.init();
         this.pageJoinAccReqList.init();
+        this.pageJoinAccReqApprove.init();
     }
     
     
@@ -1064,6 +1071,7 @@ export function Navigation(){
     
         elemPageContUserList            = document.getElementById(elemIdContUserList);
         elemPageContJoinAccReqList      = document.getElementById(elemIdContJoinAccReqList);
+        elemPageContJoinAccReqApprove      = document.getElementById(elemIdContJoinAccReqApprove);
     }
     
     
@@ -1379,8 +1387,12 @@ export function Navigation(){
             
             case PAGE_ID.JOIN_ACC_REQ_LIST: {
                 return elemPageContJoinAccReqList;
-                break;
             }
+            
+            case PAGE_ID.JOIN_ACC_REQ_APPROVE:{
+                return elemPageContJoinAccReqApprove;
+            }
+            
             
             
             default:{

@@ -189,7 +189,7 @@ export function PageMobGestaLacta(input_settings){
         elemIdPageTitle         = `${settings.uniqueKey}-page-title-list`;
         elemIdPageHeaderAlarm   = `${settings.uniqueKey}-page-title-alarm`;
         elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
-        elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         
         elemIdPigProdList       = `${settings.uniqueKey}-card-list`;
         elemIdProdCardsContainer= `${settings.uniqueKey}-mobile-list-container`;

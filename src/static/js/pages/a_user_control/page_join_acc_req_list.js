@@ -64,6 +64,8 @@ export function PageJoinAccReqList(input_settings){
     let dtCurrentDate           = null;
 
 
+    let dataRequestJoinAccList  = null;
+
 
     
     this.init = function(){
@@ -180,14 +182,13 @@ export function PageJoinAccReqList(input_settings){
     this.beforeShow = function(){
         
         const callback_success = function(data){
-            thisObj.renderTable(data);
+            dataRequestJoinAccList = data;
+            thisObj.renderTable(dataRequestJoinAccList);
         };
         
         // Request UserRequest List
         navigation.pigFarm.accountLists.requestDataJoinAccReqList(
             callback_success, null);
-
-
     }
     
 
@@ -273,7 +274,7 @@ export function PageJoinAccReqList(input_settings){
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
         
-
+        
         
         // Attach onclick listeners to td
         
@@ -285,7 +286,7 @@ export function PageJoinAccReqList(input_settings){
 
             if (index == 0 || index == 1) {
                 cur_td.onclick = function(){
-                   
+                    thisObj.onClickRowEntry(cur_entry.user_req.hid);
                 }
             }
             
@@ -326,10 +327,39 @@ export function PageJoinAccReqList(input_settings){
     }
     
     
-    
-    
-    this.onClickPageHeaderTitle = function(){
+    this.getEntry = function(entry_hid){
         
+        const data_list = dataRequestJoinAccList;
+        
+        for (const cur_entry of data_list){
+            if (cur_entry.user_req.hid == entry_hid){
+                return cur_entry;
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    
+    this.onClickRowEntry = function(entry_hid){
+        const row_entry = thisObj.getEntry(entry_hid);
+
+        if (row_entry){
+            const go_back_page = navigation.currentPage;
+        
+            const options ={
+                is_add:                 false,   // false is edit
+                callback_after_edit:    thisObj.onSuccessEditEntry,
+                go_back_page:           go_back_page
+            }
+            navigation.pageJoinAccReqApprove.beforeShow(options, row_entry);
+            
+            
+            const goto_page_id   = PAGE_ID.JOIN_ACC_REQ_APPROVE;
+            const page_container = navigation.getPageContainer(goto_page_id);
+            navigation.showThisPage(page_container);
+        }
         
     }
     

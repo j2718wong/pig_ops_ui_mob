@@ -421,8 +421,7 @@ export function PageHomeDashBoard(input_settings){
         if (user_group_num == ACC_USER_GROUP.ADMIN || 
             user_group_num == ACC_USER_GROUP.MANAGEMENT){
             elemFarmName.onclick = function() {
-                const go_back_page_id = PAGE_ID.HOME;
-                const go_back_page = navigation.getPageContainer(go_back_page_id);
+                const go_back_page = navigation.currentPage;
             
                 const options ={
                     is_add:                 false,   // false is edit

@@ -107,7 +107,7 @@ export function PageAccPigOpsList(input_settings){
         
         elemIdPageTitle         = `${settings.uniqueKey}-page-title`;
         elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
-        elemIdPageInfo          = `${settings.uniqueKey}-page-info-list`;
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         
         
         const html_table        = thisObj.getHtml();
