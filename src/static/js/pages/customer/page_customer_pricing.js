@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
+import {PageViewBasic}          from '../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
@@ -13,24 +13,15 @@ import {APPLICATION,
         PIG_OPERATION_TYPE,
         SUPPLIER_TYPE}          from '../../constants.js';
 
-import {CommonSelectOptions}    from '../common/common_select_options.js';
-
-
-import {addValidationClassToElem} from '../common/ui/ui_utils.js';
-
-import {ComponentAddressLevels} from '../common/ui/comp_address_levels.js'
-import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js'
 
 
 
 export function PageCustomerPricing(input_settings){
-    PageViewPigFarmPage.call(this);
+    PageViewBasic.call(this);
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
-    const managerAddress        = navigation.managerAddress;
     
-    const MAXCHAR_FARM_NAME     = 30;
     
     /*
     Typical settings = {
@@ -76,9 +67,6 @@ export function PageCustomerPricing(input_settings){
         
     
 
-        const html_name             = elemUiName.getHtml();
-        
-        const html_address_levels   = compAddressLevels.getHtml();
 
         
         
@@ -89,7 +77,7 @@ export function PageCustomerPricing(input_settings){
 
     <div class="modal-header">
         <h5 class="modal-title">
-            <i class="fas fa-plus me-2"></i><span id="${elemIdHeaderTitle}">After Free Trial</span>
+            <span id="${elemIdHeaderTitle}">After Free Trial</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
@@ -97,21 +85,11 @@ export function PageCustomerPricing(input_settings){
     
     <div class="modal-body">
         <div class="customer-container">
-            <!-- simple badge (no background) -->
             
-            <!--
-            <div class="badge-simple">✦ free trial completed</div>
-
-            <h1>Continue with SuperPig</h1>
-            <div class="subhead">
-                Your 30‑day trial ended. Billing is straightforward — only for breeding stock.
-            </div>
-            -->
-
             <!-- plain list: two main policy points (cards removed) -->
             <ul class="plain-list">
                 <li><strong>All your users keep access</strong> — If SuperPig helps your operation, every user (owner, manager, staff) continues seamlessly.</li>
-                <li><strong>Every 30 days we count</strong> your active <span class="highlight">sows, gilts, and boars</span> across all farms. <strong>Fattening pigs are never charged</strong>.</li>
+                <li><strong>Every 30 days we count</strong> your active <span class="highlight">sows, gilts, and boars</span> across all your farms. <strong>Fattening pigs are never charged</strong>.</li>
             </ul>
 
             <!-- PRICING TABLE (only card-like element) -->
@@ -120,7 +98,7 @@ export function PageCustomerPricing(input_settings){
                     <h4>🐖 Current Pricing</h4>
                 </div>
 
-                <table>
+                <table class="data-pricing">
                     <thead>
                         <tr>
                             <th>Country</th>
@@ -179,9 +157,6 @@ export function PageCustomerPricing(input_settings){
     
     
     this.afterHtmlRender = function(){
-        elemUiName.afterHtmlRender();
-        
-        compAddressLevels.afterHtmlRender();
 
         
         this._findElements();
@@ -193,30 +168,21 @@ export function PageCustomerPricing(input_settings){
     this._findElements = function(){
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
-            
-        elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
-            
-        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
-        elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
-        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
+
     }
     
     
     this._processAfterHtmlRender = function(){
-        compAddressLevels.callbackOnChangeLevel1 = this.onChangeAddressLevel1;
-        compAddressLevels.callbackOnChangeLevel2 = this.onChangeAddressLevel2;
-        compAddressLevels.callbackOnChangeLevel3 = this.onChangeAddressLevel3;
+
     }
     
     
     this._bindEventListeners = function(){
-        
-
-        elemBtnSave.addEventListener('click', function() {
-            thisObj.onClickSaveButton();
+        elemBtnClose.addEventListener('click', function(event) {
+            event.preventDefault();
+            navigation.showThisPage(showOptions.go_back_page);
         });
-        
-        
+
     }
     
     
@@ -225,9 +191,6 @@ export function PageCustomerPricing(input_settings){
    
     this._resetForm = function(){
         // Clear previous Form values and validation classes
-        elemUiName.reset();
-        
-        compAddressLevels.reset();
 
         
     }
@@ -253,177 +216,20 @@ export function PageCustomerPricing(input_settings){
         showOptions = options;
         
         
-        // Set title
-        let title = 'Edit Pig Farm';
-        
-        
-        
-        elemHeaderTitle.textContent  = title;
-        
-
+       
         thisObj.populateForm();
         
-        // Update Close and cancel button on click
         
-        elemBtnClose.onclick = function() {
-            navigation.showThisPage(showOptions.go_back_page);
-        };
+                
         
-        elemBtnCancel.onclick = function() {
-            navigation.showThisPage(showOptions.go_back_page);
-        };
     }
     
     
     this.populateForm = function(){
 
-        const pig_farm = navigation.pigFarm.dataPigFarm;
-        
-        elemUiName.setValue(pig_farm.pig_farm.name);
-        
-        
-        compAddressLevels.setLocationAddress(pig_farm.location);
         
     }
     
-    
-    
-    this.onChangeAddressLevel1 = function(level_1_hid){
-    }
-    
-    
-    this.onChangeAddressLevel2 = function(level_2_hid){
-        curAddressLevel2 = compAddressLevels.curAddressLevel2;
-    }
-    
-    
-    this.onChangeAddressLevel3 = function(level_3_hid){
-       
-    }
-    
-    
-    this.onSuccessAddPigFarm = function(pig_farm_hid){
-       
         
-        
-    }
-    
-    
-    this.getAddressHids = function(){
-        return compAddressLevels.getAddressHids();
-    }
-    
-        
-    this.onClickSaveButton = function(){
-        let input_elem;
-        let validation      = 0;
-        
-
-        let input_name      = elemUiName.getValue();
-        
-        
-        input_elem          = elemUiName.getElemText();
-        
-        
-        if (input_name.length == 0){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        let address_hids = compAddressLevels.getAddressHids();
-        
-        
-        
-        // Final check before sending request
-        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
-            return;
-        }
-        
-        
-        
-        const user_hid      = navigation.userControl.getUserHid();
-        const base_url      = window.location.origin;
-
-        
-        // send post request
-        const post_data = {
-            'uhid':             user_hid,
-            'name':             input_name,
-            
-        };
-        
-        if (address_hids){
-            if (address_hids.level_1_hid != '0' || address_hids.level_1_hid != '-1'){
-                post_data.level_1_hid = address_hids.level_1_hid;
-            }
-            
-            if (address_hids.level_2_hid != '0' || address_hids.level_2_hid != '-1'){
-                post_data.level_2_hid = address_hids.level_2_hid;
-            }
-            
-            if (address_hids.level_3_hid != '0' || address_hids.level_3_hid != '-1'){
-                post_data.level_3_hid = address_hids.level_3_hid;
-            }
-        }
-        
-        
-        let url;
-
-        
-        if (showOptions.is_add){
-            url = `${base_url}/pig_farm/add`
-        }
-        else{
-            const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
-            post_data.pig_farm_hid = pig_farm_hid;
-            
-            url = `${base_url}/pig_farm/update`
-        }
-        
-        
-        const bearer_token = localStorage.getItem('access_token');
-        
-        $.ajax({
-            type: 'POST',
-            contentType: "application/json",
-            dataType: 'json',
-            
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
-            
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            data: JSON.stringify(post_data),
-  
-            beforeSend: function(){
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    // This will return the data pig farm
-                    navigation.pigFarm.setDataPigFarm(response.data);
-                    navigation.showThisPage(showOptions.go_back_page);
-                }
-                else{
-                    navigation.serverError.receivedErrorMessage(
-                        response, elemServerErrorMsg);
-                }
-            },
-  
-            complete: function(){
-                // TODO unsay buhaton
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
-    }
-    
     
 }   

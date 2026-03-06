@@ -8,6 +8,7 @@ import {PageViewBasic}              from '../common/page_view_basic.js';
 import {PageTableBasic}             from '../common/page_table_basic.js';
 
 import {APPLICATION,
+        ACC_USER_GROUP,
         PAGE_ID,
         SOW_STATUS,
         PIG_PROD_TYPE,
@@ -235,14 +236,6 @@ export function PageMyAccount(input_settings){
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
-        elemIdInfoBox           = `${settings.uniqueKey}-info-box`;
-        
-        
-        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
-        
-        elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
-        elemIdBtnSave           = `${settings.uniqueKey}-save`;
-        
         
         const html_table_farm   =  pigFarmTable.getHtml();
     
@@ -286,7 +279,7 @@ export function PageMyAccount(input_settings){
             <div class="free-trial-container">
                 <div class="free-trial-expiry-text">Your 90 days free trial will expire on</div>
                 <div id="freeTrialExpiry" class="free-trial-expiry-date">02 June 2026</div> 
-                <a href="#" id="freeTrialLearnMoreLink" class="free-trial-link">What happens after free trial?</a>
+                <a href="#" id="freeTrialLearnMore" class="free-trial-link">What happens after free trial?</a>
             </div>
         </div>
         
@@ -335,7 +328,7 @@ export function PageMyAccount(input_settings){
         // New elements for free trial
         elemFreeTrialSection    = elemDivContainer.querySelector('#freeTrialSection');
         elemFreeTrialExpiry     = elemDivContainer.querySelector('#freeTrialExpiry');
-        elemFreeTrialLink       = elemDivContainer.querySelector('#freeTrialLearnMoreLink');
+        elemFreeTrialLink       = elemDivContainer.querySelector('#freeTrialLearnMore');
         
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
         
@@ -355,15 +348,25 @@ export function PageMyAccount(input_settings){
         elemAccountNameDisplay.addEventListener('click', function(event){
             if (!dataUserAccount) return; // safety
             
+            const data_user     = dataUserAccount.user;
+            
             // switch to edit mode
             const data_account  = dataUserAccount.account;
-            const account_name  = data_account.name;
+            const account_name  = data_account.account.name;
             
-            elemAccountNameEditInput.value = account_name;
-            elemAccountNameDisplay.classList.add('hidden-section');
             
-            elemAccountNameEditInput.classList.remove('hidden-section');
-            elemAccountNameEditInput.focus();
+            
+            // Only account admins can change account name
+            // Get user.user_group.group_num
+            const user_group_num = data_user.user_group.group_num;
+            
+            if (user_group_num == ACC_USER_GROUP.ADMIN) {
+                elemAccountNameEditInput.value = account_name;
+                elemAccountNameDisplay.classList.add('hidden-section');
+                
+                elemAccountNameEditInput.classList.remove('hidden-section');
+                elemAccountNameEditInput.focus();
+            }
         });
         
         
@@ -373,7 +376,22 @@ export function PageMyAccount(input_settings){
         if (elemFreeTrialLink) {
             elemFreeTrialLink.addEventListener('click', function(event) {
                 event.preventDefault();
-                //thisObj.openFreeTrialInfoPage();
+                
+                
+                let go_back_page    = navigation.currentPage;
+                if (go_back_page == null){
+                    go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
+                } 
+                
+                const options ={
+                    go_back_page:   go_back_page,
+                };
+                
+                const next_page = navigation.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
+                navigation.showThisPage(next_page);
+                navigation.pageCustomerPricing.beforeShow(options);
+                    
+                    
             });
         }
     
@@ -394,12 +412,10 @@ export function PageMyAccount(input_settings){
     this.show = function(options){
         thisObj._resetForm();
         
-        console.log('navigation.pigFarm.dataPigFarmAccount');
-        console.log(navigation.pigFarm.dataPigFarmAccount);
         
         
         
-        dataUserAccount  = navigation.userControl.dataUserAccount.account;
+        dataUserAccount  = navigation.userControl.dataUserAccount;
         
         console.log('dataUserAccount');
         console.log(dataUserAccount);
@@ -432,8 +448,8 @@ export function PageMyAccount(input_settings){
     this.refreshAccountName =  function(){
         
         
-        const account_name  = dataUserAccount.account.name;
-        const account_hid   = dataUserAccount.account.hid;
+        const account_name  = dataUserAccount.account.account.name;
+        const account_hid   = dataUserAccount.account.account.hid;
             
         elemAccountNameDisplay.textContent = account_name;
         elemAccountNameEditInput.value = account_name;
@@ -444,10 +460,10 @@ export function PageMyAccount(input_settings){
     this.populateForm = function(){
         this.refreshAccountName();
         
-        if (dataUserAccount.account.date_trial_end){
+        if (dataUserAccount.account.account.date_trial_end){
             elemFreeTrialSection.classList.remove('hidden-section');
             
-            const dt_expiry     = new Date(dataUserAccount.account.date_trial_end);
+            const dt_expiry     = new Date(dataUserAccount.account.account.date_trial_end);
             const s_dt_expiry   = formatDate(dt_expiry, FORMAT_COMPACT) 
             
             elemFreeTrialExpiry.textContent = s_dt_expiry; 
@@ -458,7 +474,7 @@ export function PageMyAccount(input_settings){
         }
         
         
-        const data_farm_list =  dataUserAccount.pig_farms;
+        const data_farm_list =  dataUserAccount.account.pig_farms;
         pigFarmTable.setDataEntryList(data_farm_list);
         pigFarmTable.renderTable(data_farm_list);
     }

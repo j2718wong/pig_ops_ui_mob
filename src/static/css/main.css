@@ -90,6 +90,7 @@ body {
     color: var(--text-dark);
     line-height: 1.6;
     overflow: hidden; 
+    min-height: 100vh;
 }
 
 /* Top Navigation Container */
@@ -565,8 +566,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding-bottom: 20px;
-    border-bottom: 2px solid var(--corporate-blue);
-    margin-bottom: 20px;
+    border-bottom: 3px solid var(--corporate-blue-light);
 }
 
 .mobile-logo-container {
@@ -579,9 +579,9 @@ body {
     font-size: 22px;
     color: var(--corporate-blue);
     font-weight: 700;
-    margin: 15px 0;
+    padding-top: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 3px solid var(--corporate-blue-light);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -705,6 +705,35 @@ p {
     margin: 0 auto;
     height:100%;
 }
+
+
+
+
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* or a fixed height like 90vh */
+    max-height: 100vh; /* Prevents it from exceeding viewport height */
+}
+
+.modal-body {
+    flex: 1 1 auto; /* Takes available space */
+    overflow-y: auto; /* Enables vertical scrolling */
+    max-height: 100%; /* Ensures it respects container height */
+    
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4590,11 +4619,7 @@ input[type=number] {
     text-decoration: underline;
 }
 
-.free-trial-link::after {
-    content: "→";
-    margin-left: 0.3rem;
-    transition: transform 0.2s ease;
-}
+
 
 .free-trial-link:hover::after {
     transform: translateX(3px);
@@ -4637,4 +4662,187 @@ input[type=number] {
 }
 /**************************************************************************/
 
+
+
+/***************CUSTOMER PRICING PAGE*******************/
+
+/* ------ global plain list (no backgrounds, no borders, no radius) ------ */
+.plain-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.plain-list li {
+    padding: 5px 0;            
+    border-bottom: 1px solid #dde5ed;   /* very light separation */
+    font-size: 1.18rem;          /* large mobile-friendly text */
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+.plain-list li:last-child {
+    border-bottom: none;
+}
+
+.plain-list strong {
+    color: var(--blue-deep);
+    font-weight: 600;
+}
+
+/* subtle highlight for breeding terms – barely there */
+.highlight {
+    background: #eaf1f9;        /* super soft */
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    color: var(--blue-deep);
+    white-space: nowrap;
+}
+
+/* ------ PRICING TABLE (the only element with a light card border) ------ */
+.pricing-wrap {
+    background: var(--white);
+    border: 2px solid var(--blue-deep);
+    border-radius: 28px;
+    padding: 12px 12px;
+    margin: 0;
+    box-shadow: none;
+}
+
+.pricing-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pricing-header h4 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--blue-deep);
+}
+
+
+.data-pricing {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.2rem;          /* bigger for readability */
+    margin: 15px 0 10px;
+}
+
+.data-pricing th {
+    text-align: left;
+    font-weight: 500;
+    color: var(--dark-gray);
+    padding-bottom: 12px;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--blue-border);
+}
+
+.data-pricing td {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--blue-border);
+    font-weight: 500;
+    color: var(--text-dark);
+}
+.data-pricing tr:last-child td { border-bottom: none; }
+
+.value-number {
+    font-weight: 700;
+    color: var(--success-green);
+    font-size: 1.5rem;
+}
+
+.table-note {
+    font-size: 1rem;
+    color: var(--neutral-gray);
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--blue-border);
+    background: transparent;
+    line-height: 1.5;
+}
+
+/* ------ reminder block – now a plain list (no badges, no background) ------ */
+.reminder-list {
+    list-style: none;
+    margin: 16px 0 24px;
+    padding: 0;
+}
+
+.reminder-list li {
+    padding: 14px 0;
+    border-bottom: 1px solid #dde5ed;
+    font-size: 1.18rem;
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+.reminder-list li:last-child {
+    border-bottom: none;
+}
+
+/* ------ unpaid section – flat, border only, no background ------ */
+.unpaid-flat {
+    margin: 28px 0 18px;
+    border-top: 2px solid #cbd5e1;
+    border-bottom: 2px solid #cbd5e1;
+    padding: 16px 0;
+}
+
+.unpaid-flat h4 {
+    color: var(--danger-red);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+}
+
+.unpaid-flat ul {
+    padding-left: 5px;
+    padding-right: 5px;
+    list-style: none;
+}
+
+.unpaid-flat li {
+    padding: 14px 0;
+    border-bottom: 1px solid #e2eaf2;
+    font-size: 1.18rem;
+    color: var(--text-dark);
+}
+.unpaid-flat li:last-child {
+    border-bottom: none;
+}
+
+.access-flat {
+    margin-top: 18px;
+    font-size: 1.1rem;
+    color: var(--blue-medium);
+    border-left: 4px solid var(--blue-deep);
+    padding-left: 16px;
+    background: transparent;
+    border-radius: 0;
+}
+
+/* role line – plain */
+.role-flat {
+    margin: 26px 0 16px;
+    font-size: 1.18rem;
+    color: var(--text-dark);
+    padding-top: 10px;
+}
+
+.footer-note {
+    margin-top: 26px;
+    color: var(--dark-gray);
+    font-size: 0.95rem;
+    text-align: center;
+    border-top: 1px solid #dee7ef;
+    padding-top: 20px;
+}
+
+/**************************************************************************/
 

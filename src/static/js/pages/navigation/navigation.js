@@ -28,7 +28,7 @@ import {PigFarm}                    from '../farm_account/pig_farm.js';
 
 
 import {PageMyAccount}              from '../customer/page_my_account.js';
-
+import {PageCustomerPricing}        from '../customer/page_customer_pricing.js';
 
 import {PageAccountDisabled}        from '../a_user_control/page_account_disabled.js';
 import {PageUserDisabled}           from '../a_user_control/page_user_disabled.js';
@@ -107,17 +107,7 @@ function UserControl(_navigation) {
     let elemDesktopBillHistory          = null;
     let elemDesktopUserLogout           = null;
     
-    
-    let elemMobileUserAvatarInitials    = null;
-    let elemMobileUserAvatarInitialsL   = null;
-    let elemMobileUserFullName          = null;
-    let elemMobileUserRole              = null;
-    
-    let elemMobileMyAccount             = null;
-    let elemMobileBillNew               = null;
-    let elemMobileBillHistory           = null;
-    let elemMobileUserLogout            = null;
-    
+
     
     let userCurrentFarmHid          = null;
     let userCurrentLanguage         = null;
@@ -158,17 +148,7 @@ function UserControl(_navigation) {
         elemDesktopBillHistory          = document.getElementById('desktop-bill-history');
         elemDesktopUserLogout           = document.getElementById('desktop-user-logout');
         
-        
-        elemMobileUserAvatarInitials    = document.getElementById('mobile-user-initials');
-        elemMobileUserAvatarInitialsL   = document.getElementById('mobile-user-initials-large');
-        elemMobileUserFullName          = document.getElementById('mobile-user-full-name');
-        elemMobileUserRole              = document.getElementById('mobile-user-role');
-        
-        elemMobileMyAccount             = document.getElementById('mobile-my-account');
-        elemMobileBillNew               = document.getElementById('mobile-bill-new');
-        elemMobileBillHistory           = document.getElementById('mobile-bill-history');
-        elemMobileUserLogout            = document.getElementById('mobile-user-logout');
-        
+
     }
     
     
@@ -184,32 +164,17 @@ function UserControl(_navigation) {
         });
         
         
-        elemMobileMyAccount.addEventListener('click', function() {
-            thisObj.onClickMyAccount();
-        });
-        
-        
-        
-        
-        
         elemDesktopUserLogout.addEventListener('click', function() {
             thisObj.userLogout();
         });
-        
-        
-        elemMobileUserLogout.addEventListener('click', function() {
-            thisObj.userLogout();
-        });
-        
+
     }
     
     
     this.setDataUserAccount = function(data){
         this.dataUserAccount= data;
         
-        console.log('this.dataUserAccount');
-        console.log(data);
-        
+
 
         const user          = this.dataUserAccount.user.user;
         const user_pig_farms= this.dataUserAccount.user.pig_farms; 
@@ -229,18 +194,14 @@ function UserControl(_navigation) {
         
         // Set User Initial
         elemDesktopUserAvatarInitials.innerHTML = user_initials;
-        elemMobileUserAvatarInitials.innerHTML  = user_initials;
         elemDesktopUserAvatarInitialsL.innerHTML= user_initials;
-        elemMobileUserAvatarInitialsL.innerHTML = user_initials;
-        
         elemDesktopUserFullName.innerHTML       = user_fullname;
-        elemMobileUserFullName.innerHTML        = user_fullname;
+
         
         
         // Set Usergroup Name
         const usergroup_name    = this.dataUserAccount.user.user_group.name;
         elemDesktopUserRole.textContent         = usergroup_name;
-        elemMobileUserRole.textContent          = usergroup_name;
         
         
         // Remove menus per user role
@@ -252,9 +213,6 @@ function UserControl(_navigation) {
         if (group_num == ACC_USER_GROUP.FARM_STAFF || group_num == ACC_USER_GROUP.OPERATIONS){
             elemDesktopBillNew.remove();    
             elemDesktopBillHistory.remove();
-            
-            elemMobileBillNew.remove();    
-            elemMobileBillHistory.remove();
         }
     }
     
@@ -267,14 +225,14 @@ function UserControl(_navigation) {
         if (userPicture) {
             // User has picture - show image
             elemDesktopUserAvatarInitials.innerHTML = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`; 
-            elemMobileUserAvatarInitials.innerHTML  = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            //elemMobileUserAvatarInitials.innerHTML  = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
             elemDesktopUserAvatarInitialsL.innerHTML= `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-            elemMobileUserAvatarInitialsL.innerHTML = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            //elemMobileUserAvatarInitialsL.innerHTML = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
         
         } else {
             // No picture - show initials
             elemDesktopUserAvatarInitials.innerHTML = `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
-            elemMobileUserAvatarInitials.innerHTML  = `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
+            //elemMobileUserAvatarInitials.innerHTML  = `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
             elemDesktopUserAvatarInitialsL.innerHTML= `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
         }
     }
@@ -383,6 +341,7 @@ export function Navigation(){
     
     
     const elemIdContMyAccount           = 'container-my-account';
+    const elemIdContCustomerPricing     = 'container-customer-pricing';
     
     
     const elemIdContAccountDisabled     = 'container-account-disabled';
@@ -465,7 +424,7 @@ export function Navigation(){
     
     
     let elemPageContMyAccount           = null;
-    
+    let elemPageContCustomerPricing     = null;
     
     let elemPageContHomeDashBoard       = null;
     let elemPageContPigFarmAddEdit      = null;
@@ -571,6 +530,12 @@ export function Navigation(){
         elemIdDivContainer:     elemIdContMyAccount
     });
     
+    
+    this.pageCustomerPricing    = new PageCustomerPricing({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContCustomerPricing,
+        uniqueKey:              'customer-pricing'
+    });
     
     
     
@@ -937,6 +902,8 @@ export function Navigation(){
         this.moreModal.init();
         
         this.pageMyAccount.init();
+        this.pageCustomerPricing.init();
+        
         
         this.pageAccountDisabled.init();
         this.pageUserDisabled.init();
@@ -1027,6 +994,7 @@ export function Navigation(){
         
 
         elemPageContMyAccount           = document.getElementById(elemIdContMyAccount);
+        elemPageContCustomerPricing     = document.getElementById(elemIdContCustomerPricing)
         
         
         elemPageContHomeDashBoard       = document.getElementById(elemIdContHomeDashBoard);
@@ -1227,6 +1195,7 @@ export function Navigation(){
             }
             
             case PAGE_ID.CUSTOMER_PRICING: {
+                return elemPageContCustomerPricing;
                 break;
             } 
             
