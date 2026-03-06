@@ -4,7 +4,8 @@
 
 'use strict';
 
-import {PIG_OPERATION_TYPE,
+import {ACC_USER_GROUP,
+        PIG_OPERATION_TYPE,
         PAGE_ID,
         SOW_BOAR_TYPE,
         PIG_PROD_TYPE,
@@ -302,6 +303,7 @@ export function ManagerNavLinks(_navigation) {
             navigation._onClickNavFeedBalance(false);
         });
           
+        /*
         elemDesktopNavOperations2.addEventListener('click', function() {
             navigation._onClickNavReports(false);
         });
@@ -309,7 +311,7 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavOperations3.addEventListener('click', function() {
             navigation._onClickNavFeedCalculator(false);
         });  
-
+        */
 
 
         elemDesktopNavFinancials1.addEventListener('click', function() {
@@ -433,6 +435,7 @@ export function ManagerNavLinks(_navigation) {
             navigation._onClickNavFeedBalance(true);
         });  
          
+        /*
         elemMobileNavOperations2.addEventListener('click', function() {
             navigation._onClickNavReports(true);
         }); 
@@ -440,7 +443,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavOperations3.addEventListener('click', function() {
             navigation._onClickNavFeedCalculator(true);
         });   
-
+        */
 
 
         elemMobileNavFinancials1.addEventListener('click', function() {
@@ -513,5 +516,21 @@ export function ManagerNavLinks(_navigation) {
         });        
     }
     
+    
+    this.removeMenusForNonAdminAndManagement = function(){
+        
+        
+        const group_num = navigation.userControl.dataUserAccount.user.user_group.group_num;
+        
+        if (group_num == ACC_USER_GROUP.FARM_STAFF || group_num == ACC_USER_GROUP.OPERATIONS){
+            elemDesktopNavFinancials.remove();
+            elemDesktopNavAdmin.remove();
+            
+            elemMobileNavFinancials.remove();
+            elemMobileNavAdmin.remove();
+        }
+        
+    
+    }
     
 }

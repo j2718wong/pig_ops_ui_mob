@@ -185,7 +185,7 @@ export function PageAddFarm(input_settings){
             
             // switch to edit mode
             const data_account  = dataUserAccount.account;
-            const account_name  = data_account.account.account_name;
+            const account_name  = data_account.account.name;
             
             elemAccountNameEditInput.value = account_name;
             elemAccountNameDisplay.classList.add('hidden-section');
@@ -219,12 +219,12 @@ export function PageAddFarm(input_settings){
         console.log(dataUserAccount);
         
         
-        thisObj.refreshAccountName();
+        this.populateForm();
     }
     
     
     this.refreshAccountName =  function(){
-        const account_name  = dataUserAccount.account.account.account_name;
+        const account_name  = dataUserAccount.account.account.name;
         const account_hid   = dataUserAccount.account.account.hid;
             
         elemAccountNameDisplay.textContent = account_name;
@@ -234,7 +234,7 @@ export function PageAddFarm(input_settings){
     
     
     this.populateForm = function(){
-
+        this.refreshAccountName();
     }
     
     
@@ -252,14 +252,14 @@ export function PageAddFarm(input_settings){
         }
         
         
-        if (newName !== dataUserAccount.account.account.account_name) {
+        if (newName !== dataUserAccount.account.account.name) {
             // save to database (simulate)
             console.log('to save to database');
             thisObj.onSaveAccountName(newName);
         }
         
         
-        const account_name  = dataUserAccount.account.account.account_name;
+        const account_name  = dataUserAccount.account.account.name;
         
 
         // always switch back to read-only display (even if same or empty we revert display)

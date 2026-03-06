@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>Pig+ · final simple view</title>
+    <style>
+        /* === recycled variables — kept for consistency, but design is ultra clean === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --corporate-blue: #1e3a8a; --corporate-blue-company: #1877F0;
+            --corporate-blue-dark: #15467d; --corporate-blue-light: #4a8adb;
+            --corporate-blue-border: #dbeafe; --corporate-bg: #e0f2fe;
+            --blue-deep: #0a2f6c; --blue-medium: #1e4d8f; --blue-soft: #e6f0ff;
+            --blue-border: #b8d1f0; --alert-gold: #ffc107;
+            --text-light: #ffffff; --text-dark: #222222;  /* high contrast */
+            --bg-light: #f8f9fa; --border-color: #dee2e6;
+            --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            --icon-blue: #1e5aa7; --icon-green: #28a745; --icon-orange: #fd7e14;
+            --icon-purple: #6f42c1; --icon-red: #dc3545; --icon-teal: #20c997;
+            --icon-pink: #e83e8c; --icon-indigo: #6610f2; --icon-syringe: #6c757d;
+            --critical-color: #dc3545; --warning-color: #ffc107; --info-color: #17a2b8;
+            --success-green: #10b981; --warning-orange: #f59e0b; --danger-red: #ef4444;
+            --text-dark-alt: #1f2937; --text-light-alt: #f9fafb;
+            --light-gray: #f8fafc; --medium-gray: #e2e8f0; --neutral-gray: #3a4a5a;
+            --dark-gray: #2c3e4e; --warning-bg: #fef3c7; --warning-border: #f59e0b;
+            --success-bg: #d1fae5; --success-border: #10b981; --alert-red: #ef4444;
+            --alert-glow: rgba(239, 68, 68, 0.7); --green-complete: #10b981;
+            --gestating-color: #693FE9; --lactating-piglets-color: #2394EF;
+            --lactating-sow-color: #e83e8c; --weaning-color: #07A4C4;
+            --gilt-color: #2ecc71; --fattening-color: #fd7e14;
+            --row-even: #eff7ff; --row-odd: #ffffff; --row-hover: #e0f2fe;
+            --clickable-highlight: #1e40af; --white: #ffffff;
+            --body-default-bg: #f5f7fa; --farm-row-bg: #fef7e6;
+            --farm-row-border: #f5cba0; --total-row-bg: #d1ecf1;
+            --total-row-border: #bee5eb;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        /* main container – clean, spacious, good contrast */
+        .customer-container {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            background: var(--white);
+        }
+
+        /* badge – minimal, just a subtle overline */
+        .badge-simple {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--blue-deep);
+            margin-bottom: 16px;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid var(--blue-medium);
+            display: inline-block;
+            padding-bottom: 4px;
+        }
+
+        h1 {
+            font-size: 2.1rem;        /* big and clear */
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--blue-deep);
+            margin-bottom: 8px;
+        }
+
+        .subhead {
+            font-size: 1.2rem;
+            color: var(--neutral-gray);
+            font-weight: 400;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        /* ------ global plain list (no backgrounds, no borders, no radius) ------ */
+        .plain-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .plain-list li {
+            padding: 5px 0;            
+            border-bottom: 1px solid #dde5ed;   /* very light separation */
+            font-size: 1.18rem;          /* large mobile-friendly text */
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .plain-list li:last-child {
+            border-bottom: none;
+        }
+
+        .plain-list strong {
+            color: var(--blue-deep);
+            font-weight: 600;
+        }
+
+        /* subtle highlight for breeding terms – barely there */
+        .highlight {
+            background: #eaf1f9;        /* super soft */
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            color: var(--blue-deep);
+            white-space: nowrap;
+        }
+
+        /* ------ PRICING TABLE (the only element with a light card border) ------ */
+        .pricing-wrap {
+            background: var(--white);
+            border: 2px solid var(--blue-deep);
+            border-radius: 28px;
+            padding: 22px 18px;
+            margin: 28px 0 20px;
+            box-shadow: none;
+        }
+
+        .pricing-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pricing-header h4 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--blue-deep);
+        }
+
+        .country-selector {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 1.1rem;
+            color: var(--blue-medium);
+            border: none;
+            background: transparent;
+        }
+
+        .country-selector select {
+            border: 1px solid var(--blue-border);
+            background: white;
+            font-weight: 600;
+            color: var(--blue-deep);
+            font-size: 1.1rem;
+            padding: 8px 12px;
+            border-radius: 40px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1.2rem;          /* bigger for readability */
+            margin: 15px 0 10px;
+        }
+
+        th {
+            text-align: left;
+            font-weight: 500;
+            color: var(--dark-gray);
+            padding-bottom: 12px;
+            font-size: 1rem;
+            border-bottom: 1px solid var(--blue-border);
+        }
+
+        td {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--blue-border);
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        tr:last-child td { border-bottom: none; }
+
+        .value-number {
+            font-weight: 700;
+            color: var(--success-green);
+            font-size: 1.5rem;
+        }
+
+        .table-note {
+            font-size: 1rem;
+            color: var(--neutral-gray);
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--blue-border);
+            background: transparent;
+            line-height: 1.5;
+        }
+
+        /* ------ reminder block – now a plain list (no badges, no background) ------ */
+        .reminder-list {
+            list-style: none;
+            margin: 16px 0 24px;
+            padding: 0;
+        }
+
+        .reminder-list li {
+            padding: 14px 0;
+            border-bottom: 1px solid #dde5ed;
+            font-size: 1.18rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .reminder-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* ------ unpaid section – flat, border only, no background ------ */
+        .unpaid-flat {
+            margin: 28px 0 18px;
+            border-top: 2px solid #cbd5e1;
+            border-bottom: 2px solid #cbd5e1;
+            padding: 16px 0;
+        }
+
+        .unpaid-flat h4 {
+            color: var(--danger-red);
+            font-weight: 600;
+            font-size: 1.35rem;
+            margin-bottom: 12px;
+        }
+
+        .unpaid-flat ul {
+            list-style: none;
+        }
+
+        .unpaid-flat li {
+            padding: 14px 0;
+            border-bottom: 1px solid #e2eaf2;
+            font-size: 1.18rem;
+            color: var(--text-dark);
+        }
+        .unpaid-flat li:last-child {
+            border-bottom: none;
+        }
+
+        .access-flat {
+            margin-top: 18px;
+            font-size: 1.1rem;
+            color: var(--blue-medium);
+            border-left: 4px solid var(--blue-deep);
+            padding-left: 16px;
+            background: transparent;
+            border-radius: 0;
+        }
+
+        /* role line – plain */
+        .role-flat {
+            margin: 26px 0 16px;
+            font-size: 1.18rem;
+            color: var(--text-dark);
+            padding-top: 10px;
+        }
+
+        .footer-note {
+            margin-top: 26px;
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+            text-align: center;
+            border-top: 1px solid #dee7ef;
+            padding-top: 20px;
+        }
+
+        /* no extra decorations */
+        button, input, select { font-family: inherit; }
+    </style>
+</head>
+<body>
+    <div class="customer-container">
+        <!-- simple badge (no background) -->
+        <div class="badge-simple">✦ free trial completed</div>
+
+        <h1>Continue with SuperPig</h1>
+        <div class="subhead">
+            Your 30‑day trial ended. Billing is straightforward — only for breeding stock.
+        </div>
+
+        <!-- plain list: two main policy points (cards removed) -->
+        <ul class="plain-list">
+            <li><strong>All your users keep access</strong> — If SuperPig helps your operation, every user (owner, manager, staff) continues seamlessly.</li>
+            <li><strong>Every 30 days we count</strong> your active <span class="highlight">sows, gilts, and boars</span> across all farms. <strong>Fattening pigs are never charged</strong>.</li>
+        </ul>
+
+        <!-- PRICING TABLE (only card-like element) -->
+        <div class="pricing-wrap">
+            <div class="pricing-header">
+                <h4>🐖 Current Pricing</h4>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Country</th>
+                        <th>Currency</th>
+                        <th>Per head</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="countryName">Philippines</td>
+                        <td id="currencyCode">PHP</td>
+                        <td id="ratePerHead" class="value-number">200.0</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+
+        <!-- billing & notifications – as plain list, no pills, no background, no radius -->
+        <ul class="reminder-list">
+            <li><strong>Bills are sent by email</strong> — to account admins only. You can also add farm managers to receive them.</li>
+            <li><strong>In-app notice</strong> — visible for admins and managers (not shown to operations users).</li>
+            <li><strong>15 days to pay</strong> — grace period after each invoice.</li>
+        </ul>
+
+        <!-- if unpaid – flat with border, but still no background color -->
+        <div class="unpaid-flat">
+            <h4>⚠️ If bill is not paid after 15 days</h4>
+            <ul>
+                <li>All users lose access to farm data — only the payment verification page remains available.</li>
+                <li>Full access is restored immediately once payment is verified. Your data is never deleted.</li>
+            </ul>
+            <div class="access-flat">
+                🔐 Your records stay safe — a single verified payment reopens everything.
+            </div>
+        </div>
+
+        <!-- role visibility – simple line -->
+        <div class="role-flat">
+            📋 <strong>Billing visibility:</strong> Only admins and managers see payment reminders. Operators (workers) see only production.
+        </div>
+
+        <!-- demo hint (very light) -->
+        <div class="footer-note">
+            ⚡ Prices are based on your account’s country. 
+        </div>
+    </div>
+
+    <!-- small script for demo (country change) -->
+    <script>
+        (function() {
+            const rates = {
+                PH: { country: "Philippines", currency: "PHP", rate: "200.0" },
+                TH: { country: "Thailand", currency: "THB", rate: "145.0" },
+                VN: { country: "Vietnam", currency: "VND", rate: "38000" },
+                ID: { country: "Indonesia", currency: "IDR", rate: "58000" }
+            };
+            const sel = document.getElementById('countrySelect');
+            const cName = document.getElementById('countryName');
+            const curr = document.getElementById('currencyCode');
+            const rate = document.getElementById('ratePerHead');
+
+            function update() {
+                const data = rates[sel.value] || rates.PH;
+                cName.textContent = data.country;
+                curr.textContent = data.currency;
+                rate.textContent = data.rate;
+            }
+            //sel.addEventListener('change', update);
+            update();
+        })();
+    </script>
+</body>
+</html>

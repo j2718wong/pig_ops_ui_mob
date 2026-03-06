@@ -5,6 +5,7 @@
 'use strict';
 
 import {APPLICATION,
+        ACC_USER_GROUP,
         PIG_OPERATION_TYPE,
         PAGE_ID,
         SOW_BOAR_TYPE,
@@ -24,6 +25,9 @@ import {ManagerPublicData}          from '../common/manager_public_data.js';
 import {ManagerRequest}             from '../common/manager_request.js';
 
 import {PigFarm}                    from '../farm_account/pig_farm.js';
+
+
+import {PageMyAccount}              from '../customer/page_my_account.js';
 
 
 import {PageAccountDisabled}        from '../a_user_control/page_account_disabled.js';
@@ -90,10 +94,17 @@ function UserControl(_navigation) {
     const navigation                = _navigation;
     
     
+    let elemDesktopUserControl          = null;
+    let elemDesktopUserDropdown         = null;
+    
     let elemDesktopUserAvatarInitials   = null;
     let elemDesktopUserAvatarInitialsL  = null;
     let elemDesktopUserFullName         = null;
     let elemDesktopUserRole             = null;
+    
+    let elemDesktopMyAccount            = null;
+    let elemDesktopBillNew              = null;
+    let elemDesktopBillHistory          = null;
     let elemDesktopUserLogout           = null;
     
     
@@ -101,6 +112,10 @@ function UserControl(_navigation) {
     let elemMobileUserAvatarInitialsL   = null;
     let elemMobileUserFullName          = null;
     let elemMobileUserRole              = null;
+    
+    let elemMobileMyAccount             = null;
+    let elemMobileBillNew               = null;
+    let elemMobileBillHistory           = null;
     let elemMobileUserLogout            = null;
     
     
@@ -130,12 +145,17 @@ function UserControl(_navigation) {
     
     
     this._findElements  = function(){
+        elemDesktopUserControl          = document.getElementById('userControl');
+        elemDesktopUserDropdown         = document.getElementById('userDropdown');
         
         elemDesktopUserAvatarInitials   = document.getElementById('desktop-user-initials');
         elemDesktopUserAvatarInitialsL  = document.getElementById('desktop-user-initials-large');
         elemDesktopUserFullName         = document.getElementById('desktop-user-full-name');
         elemDesktopUserRole             = document.getElementById('desktop-user-role');
         
+        elemDesktopMyAccount            = document.getElementById('desktop-my-account');
+        elemDesktopBillNew              = document.getElementById('desktop-bill-new');
+        elemDesktopBillHistory          = document.getElementById('desktop-bill-history');
         elemDesktopUserLogout           = document.getElementById('desktop-user-logout');
         
         
@@ -144,6 +164,9 @@ function UserControl(_navigation) {
         elemMobileUserFullName          = document.getElementById('mobile-user-full-name');
         elemMobileUserRole              = document.getElementById('mobile-user-role');
         
+        elemMobileMyAccount             = document.getElementById('mobile-my-account');
+        elemMobileBillNew               = document.getElementById('mobile-bill-new');
+        elemMobileBillHistory           = document.getElementById('mobile-bill-history');
         elemMobileUserLogout            = document.getElementById('mobile-user-logout');
         
     }
@@ -156,6 +179,19 @@ function UserControl(_navigation) {
     
     
     this._bindEventListeners = function(){
+        elemDesktopMyAccount.addEventListener('click', function() {
+            thisObj.onClickMyAccount();
+        });
+        
+        
+        elemMobileMyAccount.addEventListener('click', function() {
+            thisObj.onClickMyAccount();
+        });
+        
+        
+        
+        
+        
         elemDesktopUserLogout.addEventListener('click', function() {
             thisObj.userLogout();
         });
@@ -205,6 +241,21 @@ function UserControl(_navigation) {
         const usergroup_name    = this.dataUserAccount.user.user_group.name;
         elemDesktopUserRole.textContent         = usergroup_name;
         elemMobileUserRole.textContent          = usergroup_name;
+        
+        
+        // Remove menus per user role
+        navigation.managerNavLinks.removeMenusForNonAdminAndManagement();
+        
+        
+        const group_num = thisObj.dataUserAccount.user.user_group.group_num;
+        
+        if (group_num == ACC_USER_GROUP.FARM_STAFF || group_num == ACC_USER_GROUP.OPERATIONS){
+            elemDesktopBillNew.remove();    
+            elemDesktopBillHistory.remove();
+            
+            elemMobileBillNew.remove();    
+            elemMobileBillHistory.remove();
+        }
     }
     
     
@@ -291,6 +342,25 @@ function UserControl(_navigation) {
     }
     
     
+    
+    this.onClickMyAccount = function(){
+        let go_back_page    = navigation.currentPage;
+        if (go_back_page == null){
+            go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
+        } 
+        
+        const options ={
+            go_back_page:   go_back_page,
+        };
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.MY_ACCOUNT);
+        navigation.showThisPage(next_page);
+        navigation.pageMyAccount.show(options);
+        
+        elemDesktopUserDropdown.classList.remove('active');
+    }
+    
+    
     this.userLogout = function(){
         // Clear all items from localStorage
         localStorage.clear();
@@ -312,6 +382,7 @@ export function Navigation(){
     let elemSubnavSummary       = null;
     
     
+    const elemIdContMyAccount           = 'container-my-account';
     
     
     const elemIdContAccountDisabled     = 'container-account-disabled';
@@ -393,6 +464,9 @@ export function Navigation(){
     let elemNavLeftProductName          = null;
     
     
+    let elemPageContMyAccount           = null;
+    
+    
     let elemPageContHomeDashBoard       = null;
     let elemPageContPigFarmAddEdit      = null;
     
@@ -472,6 +546,9 @@ export function Navigation(){
     this.curScreenIsMobile      = null;
     
     
+    this.currentPage            = null;
+    
+    
     this.managerNavLinks        = new ManagerNavLinks(this);
     
     this.userControl            = new UserControl(this);
@@ -486,6 +563,13 @@ export function Navigation(){
     this.managerAddress         = new ManagerAddress(this);
     this.managerPublicData      = new ManagerPublicData(this)
     this.pigFarm                = new PigFarm(this);
+    
+    
+    
+    this.pageMyAccount          = new PageMyAccount({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContMyAccount
+    });
     
     
     
@@ -846,11 +930,13 @@ export function Navigation(){
     
     
     this.initComponents = function(){
-            this.managerNavLinks.init();
+        this.managerNavLinks.init();
         
         this.userControl.init();
         
         this.moreModal.init();
+        
+        this.pageMyAccount.init();
         
         this.pageAccountDisabled.init();
         this.pageUserDisabled.init();
@@ -940,6 +1026,7 @@ export function Navigation(){
         elemNavLeftProductName          = elemTopNavContainer.querySelector('.nav-left > .product-name');
         
 
+        elemPageContMyAccount           = document.getElementById(elemIdContMyAccount);
         
         
         elemPageContHomeDashBoard       = document.getElementById(elemIdContHomeDashBoard);
@@ -1135,6 +1222,14 @@ export function Navigation(){
     
     this.getPageContainer = function(page_id){
         switch(page_id){
+            case PAGE_ID.MY_ACCOUNT: {
+                return elemPageContMyAccount;
+            }
+            
+            case PAGE_ID.CUSTOMER_PRICING: {
+                break;
+            } 
+            
             case PAGE_ID.HOME:{
                 return elemPageContHomeDashBoard;
             }
@@ -1332,7 +1427,7 @@ export function Navigation(){
     this.showThisPage = function(page_container){
         // All navigation menus will use this
         // Be sure the body back ground color is reset to default
-        document.body.style.backgroundColor = '#f5f7fa';
+        //document.body.style.backgroundColor = '#f5f7fa';
         
         const hidden_containers = document.getElementsByClassName("hidden-container");
         
@@ -1357,6 +1452,8 @@ export function Navigation(){
             // Except
             elemPageContAccDisabled.style.display = 'block';
             
+            thisObj.currentPage = elemPageContAccDisabled;
+            
             return;
         }
         
@@ -1370,6 +1467,8 @@ export function Navigation(){
             
             // Except
             elemPageContUserDisabled.style.display = 'block';
+            
+            thisObj.currentPage = elemPageContUserDisabled;
             
             return;
         }
@@ -1405,6 +1504,9 @@ export function Navigation(){
                     // Except
                     elemPageContBillUnpaid.style.display = 'block';
                 
+                
+                    thisObj.currentPage = elemPageContBillUnpaid;
+                    
                     return;
                 
                 }
@@ -1424,6 +1526,8 @@ export function Navigation(){
             
             if (cur_entry == page_container){
                 cur_entry.style.display = 'block';
+                
+                thisObj.currentPage = cur_entry;
             }
             else{
                 cur_entry.style.display = 'none';

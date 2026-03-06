@@ -1,0 +1,45 @@
+Create a HTML for this customer page below.
+This will be put inside a container. 
+Should be optimized for mibile view.
+Improve the wordings.
+The pricing table can change by country of the account.
+
+
+
+
+After your free trial
+
+
+1.) If you find this App helpful in your pig production data management,
+you and other users connected to your account can continue to use this app.
+
+2.) Every 30 days, we will charge your account by number of active
+sows, gilts and boars in your account. We will sum up per farm under the account.
+No charge for fattening.
+
+3.) Below is the current pricing table. 
+
+Country      Currency  Per Head  
+Philippines  PHP       200.0
+
+
+4.) We will send the bill and payment options to the emails of the account admins only.
+It is possible to set that the bills will also be received to Farm Managers.
+
+5.) A notification in the App will also be visible to Admins and managers
+but not to Operations users.
+
+6.) There is a 15 days grace period to settle your Bill.
+
+
+If current Bill not paid
+
+1.) You and other users connected to your account cannot access your data
+with only the payment verification page available.
+
+2.) Access can only be restored after payment has been verified.
+
+
+
+
+

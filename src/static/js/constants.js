@@ -43,20 +43,26 @@ const PAGE_ID = {
     ADD_FARM:               5,
     REQ_JOIN_ACC_SENT:      6,
     
+    MY_ACCOUNT:             7,
+    CUSTOMER_PRICING:       8,
+    
     
     HOME:                   9,
     
-    PIG_FARM_ADD_EDIT:      10,
+    BILL_HISTORY_LIST:      18,
+    BILL_CURRENT:           19,
+    
+    PIG_FARM_ADD_EDIT:      20,
     
     
-    SOW_BOAR_LIST:          11,
-    SOW_BOAR_ADD_EDIT:      12,
-    SOW_BOAR_ENTRY:         13,
-    SOW_BOAR_DISPOSED:      14,
+    SOW_BOAR_LIST:          21,
+    SOW_BOAR_ADD_EDIT:      22,
+    SOW_BOAR_ENTRY:         23,
+    SOW_BOAR_DISPOSED:      24,
     
-    MEDVAC_ADD_EDIT:        18,
-    HEALTH_ADD_EDIT:        19,
-    NOTES_ADD_EDIT:         20,
+    MEDVAC_ADD_EDIT:        25,
+    HEALTH_ADD_EDIT:        26,
+    NOTES_ADD_EDIT:         27,
     
     BOAR_EXT_MATE_ADD_EDIT: 29,
     TRACE_PARENTS:          30,
