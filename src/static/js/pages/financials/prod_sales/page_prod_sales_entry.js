@@ -148,8 +148,6 @@ export function PageProdSalesEntry(input_settings){
             showOptions = options;
         }
         
-        console.log(`sales entry showOptions`);
-        console.log(showOptions);
         
         this.populateHeader(dataPigProd, showOptions);
         

@@ -383,10 +383,6 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     
     this.populateForm = function(){
         
-        console.log(`data_feed_balance`);
-        console.log(curDataFeedBalance);
-        
-        
         elemUiDateBalance.setDate(curDataFeedBalance.date_balance);
         
         thisObj.populateFeedInputTables();
@@ -465,8 +461,6 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         
         for (const cur_entry of feed_balance){
             if (cur_entry.pig_prod){
-                console.log(cur_entry);
-                
                 const pid = thisObj.getHtmlPidSowLoveBoar(cur_entry.pig_prod);
                 
                 const num_gesta     = (cur_entry.num_gestating)? cur_entry.num_gestating: '';

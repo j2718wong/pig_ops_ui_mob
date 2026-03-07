@@ -12,8 +12,9 @@ import {APPLICATION,
 
 import {ComponentBreadCrumbs}   from '../common/ui/comp_breadcrumb.js';
 
-import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
-import {UiInputCheckBox}        from '../common/ui/input_checkbox.js';
+
+import {CommonSelectOptions}    from '../common/common_select_options.js';
+import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';
 
 import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
 
@@ -72,9 +73,14 @@ export function PageJoinAccReqApprove(input_settings){
     let elemUserName            = null;
     
     
+    let elemUiPigFarms          = null;
+    
     let elemServerErrorMsg      = null;
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
+    
+    
+    let commonSelectOptions     = new CommonSelectOptions();
     
     
     let dataJoinAccRequest      = null;
@@ -97,6 +103,15 @@ export function PageJoinAccReqApprove(input_settings){
         componentBreadcrumb     = new ComponentBreadCrumbs(settingsBreadcrumb);
         
         
+        elemUiPigFarms          = new UiSelectWithEntryCount({
+            uniqueKey:           `${settings.uniqueKey}-parent-sow`,
+        
+            labelSelect:         'Assign to Pig Farm',
+            helpText:            null
+        });
+        
+        
+        
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
@@ -111,6 +126,8 @@ export function PageJoinAccReqApprove(input_settings){
     
         
         const html_breadcrumb   = componentBreadcrumb.getHtml();
+        
+        const html_pig_farms    = elemUiPigFarms.getHtml();
         
         
         
@@ -146,7 +163,7 @@ export function PageJoinAccReqApprove(input_settings){
 
             <div class="radio-group">
                 <div class="radio-option" data-option="admin">
-                    <input type="radio" name="user-role" id="admin" class="radio-input">
+                    <input type="radio" name="user-role" id="admin" class="radio-input" value="admin">
                     <div class="radio-text">
                         <div class="radio-title">Admin</div>
                         <div class="radio-description">
@@ -161,7 +178,7 @@ export function PageJoinAccReqApprove(input_settings){
                 </div>
                 
                 <div class="radio-option" data-option="manager">
-                    <input type="radio" name="user-role" id="manager" class="radio-input">
+                    <input type="radio" name="user-role" id="manager" class="radio-input" value="manager">
                     <div class="radio-text">
                         <div class="radio-title">Farm Manager</div>
                         <div class="radio-description">
@@ -173,7 +190,7 @@ export function PageJoinAccReqApprove(input_settings){
                 </div>
                 
                 <div class="radio-option" data-option="operations">
-                    <input type="radio" name="user-role" id="operations" class="radio-input">
+                    <input type="radio" name="user-role" id="operations" class="radio-input" value="operations">
                     <div class="radio-text">
                         <div class="radio-title">Operations Staff</div>
                         <div class="radio-description">
@@ -188,6 +205,9 @@ export function PageJoinAccReqApprove(input_settings){
             </div>
         
         </div>
+        
+        
+        ${html_pig_farms}
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
     
@@ -213,6 +233,7 @@ export function PageJoinAccReqApprove(input_settings){
     
     this.afterHtmlRender = function(){
         componentBreadcrumb.afterHtmlRender();
+        elemUiPigFarms.afterHtmlRender();
         
               
         this._findElements();
@@ -231,8 +252,8 @@ export function PageJoinAccReqApprove(input_settings){
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         
-        elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
-        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
+        elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel); // This is mapped to reject request
+        elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);   // This is mapped to approve request
     }
     
     
@@ -244,11 +265,33 @@ export function PageJoinAccReqApprove(input_settings){
     this._bindEventListeners = function(){
         
         elemBtnSave.addEventListener('click', function() {
-            thisObj.onClickSaveButton();
+            // Approve request
+            thisObj.onApproveOrReject(1);
         });
 
+        // Add event listeners for radio options
+        this._bindRadioOptionClickEvents();
     }
-    
+
+    // New method to bind click events to radio options
+    this._bindRadioOptionClickEvents = function() {
+        const radioOptions = elemDivContainer.querySelectorAll('.radio-option');
+        
+        radioOptions.forEach(function(option) {
+            option.addEventListener('click', function(event) {
+                // Find the radio input within this option
+                const radioInput = this.querySelector('input[type="radio"]');
+                if (radioInput) {
+                    // Check the radio button
+                    radioInput.checked = true;
+                    
+                    // Optional: Trigger any change event if needed
+                    const changeEvent = new Event('change', { bubbles: true });
+                    radioInput.dispatchEvent(changeEvent);
+                }
+            });
+        });
+    }
     
     this._resetForm = function(){
         elemServerErrorMsg.style.display = 'none';
@@ -286,13 +329,35 @@ export function PageJoinAccReqApprove(input_settings){
         };
         
         elemBtnCancel.onclick = function() {
-            navigation.showThisPage(showOptions.go_back_page);
+            // Reject request
+            thisObj.onApproveOrReject(0);
         };
     }
     
     
     this.populateForm = function(){
+        console.log('dataJoinAccRequest');
         console.log(dataJoinAccRequest);
+        
+        // Hide this first;
+        // If the account has only one farm, no need to show this.
+        //elemUiPigFarms.hide()
+        
+        
+        const account   = navigation.userControl.dataUserAccount.account;
+        const pig_farms = account.pig_farms;
+        
+        console.log(pig_farms);
+        
+        const elem_select = elemUiPigFarms.getElemSelect();
+        
+        commonSelectOptions.setDataAccPigFarmList(pig_farms, elem_select);
+        elemUiPigFarms.setEntryCount(pig_farms);
+        
+        if (pig_farms.length >= 1){
+            elem_select.selectedIndex = 1;
+        }
+        
         
         const user = dataJoinAccRequest.requesting_user;
         
@@ -306,9 +371,11 @@ export function PageJoinAccReqApprove(input_settings){
         
         elemUserName.textContent  = user_name;
         
-        
-        
-        
+        // Optional: Pre-select a default radio option if needed
+        // const defaultRadio = elemDivContainer.querySelector('input[value="operations"]');
+        // if (defaultRadio) {
+        //     defaultRadio.checked = true;
+        // }
     }
     
     
@@ -333,17 +400,40 @@ export function PageJoinAccReqApprove(input_settings){
     
     
     
-    this.onClickSaveButton = function(){
+    this.onApproveOrReject = function(is_approved){
         let input_elem      = null;
         let validation      = 0;
         
         
-        const checkedRadio = elemDivContainer.querySelector('input[name="user-role"]:checked');
+        let user_group_num  = 3;
         
         
-        console.log('checkedRadio.value =' +checkedRadio.value);
+        if (is_approved > 0){
+            const checkedRadio  = elemDivContainer.querySelector('input[name="user-role"]:checked');
+            
+            // Check if a radio button is selected
+            if (!checkedRadio) {
+                // Show error message
+                elemServerErrorMsg.textContent = 'Please select a user role';
+                elemServerErrorMsg.style.display = 'block';
+                return;
+            }
+            
+            const userRole      = checkedRadio.value;
+            
+
+            
+            switch (userRole){
+                case 'admin':       {user_group_num  = 1; break;}
+                case 'manager':     {user_group_num  = 2; break;}
+                case 'operations':  {user_group_num  = 3; break;}
+                default:{user_group_num  = 3; break;}
+            }        
+        }
+    
         
-        return ;
+        const elem_select       = elemUiPigFarms.getElemSelect();
+        let input_pig_farm_hid  = elem_select.value;
         
         
         // Final check before sending request
@@ -361,27 +451,19 @@ export function PageJoinAccReqApprove(input_settings){
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'operation_type':   operationType,
-            'num_days_since':   num_days,
-            'is_medvac':        is_medvac? 1 : 0,
-            'name':             input_name,
-            'description':      input_description
+            'user_req_hid':     dataJoinAccRequest.user_req.hid,
+            'group_num':        user_group_num,
+            'is_approved':      is_approved
         };
         
-        if (showOptions.is_add == true){}
-        else {
-            post_data.account_pig_ops_hid = curDataAccPigOps.acc_pig_ops.hid;
+        if (input_pig_farm_hid != '0' || input_pig_farm_hid != '-1'){
+            post_data.pig_farm_hid = input_pig_farm_hid;
         }
-
         
-        let url;
         
-        if (showOptions.is_add == true){
-            url = `${base_url}/account_pig_ops/add`;
-        }
-        else{
-            url = `${base_url}/account_pig_ops/update`;
-        }
+        
+        
+        let url = `${base_url}/user_request/approve_join_acc`;
         
         
         const bearer_token = localStorage.getItem('access_token');
@@ -406,32 +488,8 @@ export function PageJoinAccReqApprove(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    if (showOptions.is_add == true){
-                        const callback_success = function(){
-                            navigation.showThisPage(showOptions.go_back_page);
-                            navigation.pageAccPigOpsList.show();
-                            
-                            // This should request pig production since acc_pig_ops is added
-                            
-                        };
-                        
-                        navigation.pigFarm.requestDataAccPigOpsList(
-                            callback_success, elemServerErrorMsg);
-
-                        return;
-                    }
-                    
-                    else{
-                        const callback_success = function(){
-                            navigation.showThisPage(showOptions.go_back_page);
-                            navigation.pageAccPigOpsList.show();
-                        };
-                        
-                        navigation.pigFarm.requestDataAccPigOpsList(
-                            callback_success, elemServerErrorMsg);
-
-                        return;
-                    }
+                    navigation.showThisPage(showOptions.go_back_page);
+                    navigation.pageJoinAccReqList.beforeShow();
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

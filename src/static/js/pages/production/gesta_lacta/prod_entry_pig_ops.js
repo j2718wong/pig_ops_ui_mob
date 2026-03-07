@@ -754,8 +754,6 @@ ${html_style}
     
     this.onSuccessEditPigOps = function(){
         // redraw table
-        console.log('prod_entry.onSuccessEditPigOps');
-        
         // Go back to 
         // page_prod_gestating_entry if gestating
         // page_prod_lactating_entry if lactating

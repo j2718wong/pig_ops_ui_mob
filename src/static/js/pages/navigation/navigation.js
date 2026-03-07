@@ -73,6 +73,9 @@ import {PageProdNotPregnantList}    from '../production/history/page_prod_not_pr
 
 import {PageAllFeedBalanceList}     from '../feeds/feed_balance/page_all_feed_balance_list.js';
 import {PageAllFeedBalanceAddEdit}  from '../feeds/feed_balance/page_all_feed_balance_add_edit.js';
+import {PageProdPigDeadList}        from '../production/history/page_prod_pig_dead_list.js';
+
+
 
 import {PageProdSalesEntry}         from '../financials/prod_sales/page_prod_sales_entry.js';
 
@@ -401,6 +404,12 @@ export function Navigation(){
     const elemIdContProdFeedBalAddEdit  = 'container-feed-balance-add-edit';
     
     
+    const elemIdContPigDeadList         = 'container-dead-pig-list';
+    const elemIdContPigDeadAddEdit      = 'container-dead-pig-add-edit';
+    
+    
+    
+    
     const elemIdContProdSalesList       = 'container-prod-sales-list';
     const elemIdContProdSalesEntry      = 'container-prod-sales-entry';
     
@@ -470,6 +479,10 @@ export function Navigation(){
     let elemPageContAllFeedBalAddEdit   = null;
     
     
+    let elemPageContPigDeadList         = null;
+    let elemPageContPigDeadAddEdit      = null;
+    
+    
     let elemPageContProdSalesList       = null;
     let elemPageContProdSalesEntry      = null;
     
@@ -490,7 +503,7 @@ export function Navigation(){
     let elemPageContUserList            = null;
     let elemPageContUserAddEdit         = null;
     let elemPageContJoinAccReqList      = null;
-    let elemPageContJoinAccReqApprove      = null;
+    let elemPageContJoinAccReqApprove   = null;
     
     
     
@@ -773,6 +786,13 @@ export function Navigation(){
     });
     
     
+    this.pagePigDeadList        = new PageProdPigDeadList({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContPigDeadList,
+        uniqueKey:              'pig-dead-list'
+    });
+    
+    
     
     this.pageProdSalesList    = new PageProdHistoryList({
         navigation:             this,
@@ -855,6 +875,8 @@ export function Navigation(){
     }
     
     
+    
+    // This is first request if there is a token saved in client browser
     this.requestPigFarmData = function(bearer_token){
         const base_url = window.location.origin;
         let url = `${base_url}/pig_farm/data`;
@@ -896,8 +918,9 @@ export function Navigation(){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
+                if (jqXHR.status === 401) {
+                    window.location.href = '/login';
+                }
             }
         });
     }
@@ -965,6 +988,7 @@ export function Navigation(){
         
         this.pageAllFeedBalanceList.init();
         this.pageAllFeedBalanceAddEdit.init();
+        this.pagePigDeadList.init();
         
         
         this.pageProdSalesList.init();
@@ -1057,7 +1081,8 @@ export function Navigation(){
         
         elemPageContAllFeedBalList      = document.getElementById(elemIdContAllFeedBalList);
         elemPageContAllFeedBalAddEdit   = document.getElementById(elemIdContAllFeedBalAddEdit);
-        
+        elemPageContPigDeadList         = document.getElementById(elemIdContPigDeadList);
+        elemPageContPigDeadAddEdit      = document.getElementById(elemIdContPigDeadAddEdit);
         
         elemPageContProdSalesList       = document.getElementById(elemIdContProdSalesList);
         elemPageContProdSalesEntry      = document.getElementById(elemIdContProdSalesEntry);
@@ -1327,6 +1352,17 @@ export function Navigation(){
             case PAGE_ID.ALL_FEED_BAL_ADD_EDIT: {
                 return elemPageContAllFeedBalAddEdit;
             }
+            
+            
+            case PAGE_ID.DEAD_PIG_LIST: {
+                return;
+            }
+            
+            case PAGE_ID.DEAD_PIG_ADD_EDIT: {
+                return;
+            }
+    
+            
             
                 
              
@@ -1598,7 +1634,12 @@ export function Navigation(){
         thisObj.pageAllFeedBalanceList.beforeShow();
     }
         
-           
+    
+    this._onClickNavPigDead = function(is_mobile){
+        thisObj.showThisPage(elemPageContPigDeadList);
+        thisObj.pagePigDeadList.beforeShow();
+    }
+    
         
     this._onClickNavReports = function(is_mobile){
         console.log('_onClickNavReports not yet implemented; is_mobile=' + is_mobile);

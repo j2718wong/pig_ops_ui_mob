@@ -224,9 +224,6 @@ export function ComponentAddressLevels(input_settings){
     
     
     this.setLocationAddress = function(location){
-        console.log('setLocationAddress');
-        console.log(location)
-        
         const country_hid = location.country.hid;
         elemCountry.textContent = location.country.name;
 

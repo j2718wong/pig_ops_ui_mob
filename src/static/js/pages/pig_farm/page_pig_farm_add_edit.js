@@ -283,6 +283,15 @@ export function PagePigFarmAddEdit(input_settings){
         
         elemUiName.setValue(pig_farm.pig_farm.name);
         
+        if (pig_farm.location.address){
+            if (pig_farm.location.address.level_1.hid){
+                elemWarningBox.style.display = 'none';
+            }
+            else{
+                elemWarningBox.style.display = 'block';
+            }
+        }
+        
         
         compAddressLevels.setLocationAddress(pig_farm.location);
         

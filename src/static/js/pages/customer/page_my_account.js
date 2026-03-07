@@ -417,11 +417,6 @@ export function PageMyAccount(input_settings){
         
         dataUserAccount  = navigation.userControl.dataUserAccount;
         
-        console.log('dataUserAccount');
-        console.log(dataUserAccount);
-        
-        
-        
         
         /*
         Typical options
@@ -478,25 +473,6 @@ export function PageMyAccount(input_settings){
         pigFarmTable.setDataEntryList(data_farm_list);
         pigFarmTable.renderTable(data_farm_list);
     }
-    
-    
-    
-    // Method to open free trial information page
-    this.openFreeTrialInfoPage = function() {
-        // TODO: Implement navigation to free trial information page
-        // This could open a modal, navigate to another page, or open an external link
-        console.log("Opening free trial information page");
-        
-        // Example: Open a modal with information
-        // navigation.showModal('free-trial-info');
-        
-        // Or navigate to another page
-        // navigation.showThisPage(PAGE_ID.FREE_TRIAL_INFO);
-        
-        // Or open external link
-        // window.open('https://example.com/free-trial-info', '_blank');
-    }
-    
     
     
     this.onClickAddFarm = function(){

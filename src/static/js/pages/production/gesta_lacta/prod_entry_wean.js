@@ -491,11 +491,6 @@ export function ProdEntryWean(input_settings){
     
     
     this.populateForm = function(){
-        
-        
-        console.log('wqean populateForm');
-        console.log(curDataPigProd);
-        
         // Set Date Wean
         const weaning       = curDataPigProd.weaning;
         const date_weaning  = weaning.date_weaning;

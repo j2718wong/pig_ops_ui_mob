@@ -215,10 +215,6 @@ export function PageAddFarm(input_settings){
     this.beforeShow = function(data_user_account){
         dataUserAccount     = data_user_account;
         
-        console.log('before show dataUserAccount');
-        console.log(dataUserAccount);
-        
-        
         this.populateForm();
     }
     
@@ -253,8 +249,6 @@ export function PageAddFarm(input_settings){
         
         
         if (newName !== dataUserAccount.account.account.name) {
-            // save to database (simulate)
-            console.log('to save to database');
             thisObj.onSaveAccountName(newName);
         }
         
@@ -271,8 +265,6 @@ export function PageAddFarm(input_settings){
     
         
     this.onSaveAccountName = function(new_acc_name){
-        
-        
         const user_hid      = dataUserAccount.user.user.hid;
         const base_url      = window.location.origin;
 
@@ -281,7 +273,6 @@ export function PageAddFarm(input_settings){
         const post_data = {
             'uhid':             user_hid,
             'name':             new_acc_name
-            
         };
         
         
