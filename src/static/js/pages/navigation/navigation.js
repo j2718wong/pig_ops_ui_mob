@@ -419,7 +419,8 @@ export function Navigation(){
     
     
     let elemNavLeftProductName          = null;
-    
+    let elemDesktopPigFarmName          = null;
+    let elemMobilePigFarmName           = null;
     
     let elemPageContMyAccount           = null;
     let elemPageContCustomerPricing     = null;
@@ -882,6 +883,8 @@ export function Navigation(){
                     thisObj.afterHtmlRender();
                     
                     thisObj.setPageData(response.data);
+                    
+                    
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(
@@ -999,6 +1002,10 @@ export function Navigation(){
         const elemTopNavContainer       = document.querySelector('.top-nav-container');
         elemNavLeftProductName          = elemTopNavContainer.querySelector('.nav-left > .product-name');
         
+        elemDesktopPigFarmName          = document.getElementById('pigFarmName');
+        elemMobilePigFarmName           = document.getElementById('mobilePigFarmName');
+        
+        
 
         elemPageContMyAccount           = document.getElementById(elemIdContMyAccount);
         elemPageContCustomerPricing     = document.getElementById(elemIdContCustomerPricing)
@@ -1092,6 +1099,11 @@ export function Navigation(){
         });
         
         
+        elemDesktopPigFarmName.addEventListener('click', function() {
+            thisObj.showHomeDashBoard();
+        });
+        
+        
         window.addEventListener('resize', thisObj.updatePigFarmName);
         
         const mobileNavLinks = document.querySelectorAll('.mobile-menu-title');
@@ -1178,21 +1190,10 @@ export function Navigation(){
     this.updatePigFarmName = function() {
         // Set Farm name
         const cur_user_farm = thisObj.userControl.getCurrentFarm();
-        
-        
         const pig_farm_name = cur_user_farm.pig_farm.name;
         
-        
-        const pigFarmName = document.getElementById('pigFarmName');
-        const mobilePigFarmName = document.getElementById('mobilePigFarmName');
-        
-        pigFarmName.textContent = pig_farm_name;
-        
-        
-        // Keep mobile version consistent
-        if (mobilePigFarmName) {
-            mobilePigFarmName.textContent = pig_farm_name;
-        }
+        elemDesktopPigFarmName.textContent = pig_farm_name;
+        elemMobilePigFarmName.textContent = pig_farm_name;
     }
     
     

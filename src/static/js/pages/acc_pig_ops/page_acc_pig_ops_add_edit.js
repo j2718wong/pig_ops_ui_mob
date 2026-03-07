@@ -192,20 +192,20 @@ export function PageAccPigOpsAddEdit(input_settings){
             
             ${html_is_medvac}
             
+            
+            <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+        
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
+                    <i class="fas fa-save me-2"></i>Save
+                </button>
+            </div>
+
         </div>
-        
-        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
-        
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
-                <i class="fas fa-times me-2"></i>Cancel
-            </button>
-            <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-                <i class="fas fa-save me-2"></i>Save
-            </button>
-        </div>
-        
-    
+
     </div>
 
         `;

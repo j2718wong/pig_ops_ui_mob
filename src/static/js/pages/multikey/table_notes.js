@@ -79,6 +79,9 @@ export function TableNotes(input_settings){
     let dataPigProd             = null;
     
     
+    let dataNotesList           = null;
+    
+    
     this.init = function(){
         
         const settings_table ={
@@ -124,13 +127,16 @@ export function TableNotes(input_settings){
                 
                 if (dataSowBoar.data_details){
                     if ('list_notes' in dataSowBoar.data_details){
-                        thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
-                        thisObj.renderTable(dataSowBoar.data_details.list_notes);
+                        dataNotesList = dataSowBoar.data_details.list_notes;
+                        
+                        thisObj.setDataEntryList(dataNotesList);
+                        thisObj.renderTable(dataNotesList);
                     } else{
                         const callback_success = function(){
-                            // Set table entry list; This will set also the entry count;
-                            thisObj.setDataEntryList(dataSowBoar.data_details.list_notes);
-                            thisObj.renderTable(dataSowBoar.data_details.list_notes);
+                            dataNotesList = dataSowBoar.data_details.list_notes;
+                            
+                            thisObj.setDataEntryList(dataNotesList);
+                            thisObj.renderTable(dataNotesList);
                         };
                         
                         navigation.pigFarm.managerSowBoar.requestNotesList(
@@ -138,8 +144,10 @@ export function TableNotes(input_settings){
                     }
                 }
                 else{
-                    thisObj.setDataEntryList([]);
-                    thisObj.renderTable([]);
+                    dataNotesList = [];
+                    
+                    thisObj.setDataEntryList(dataNotesList);
+                    thisObj.renderTable(dataNotesList);
                 }
                 
                 // no add entry if already disposed
@@ -159,13 +167,16 @@ export function TableNotes(input_settings){
                 dataPigProd     = data_entry;
                 
                 if ('list_notes' in dataPigProd.data_details){
-                    thisObj.setDataEntryList(dataPigProd.data_details.list_notes);
-                    thisObj.renderTable(dataPigProd.data_details.list_notes);
+                    dataNotesList = dataPigProd.data_details.list_notes;
+                    
+                    thisObj.setDataEntryList(dataNotesList);
+                    thisObj.renderTable(dataNotesList);
                 } else{
                     const callback_success = function(){
-                        // Set table entry list; This will set also the entry count;
-                        thisObj.setDataEntryList(dataPigProd.data_details.list_notes);
-                        thisObj.renderTable(dataPigProd.data_details.list_notes);
+                        dataNotesList = dataPigProd.data_details.list_notes;
+                        
+                        thisObj.setDataEntryList(dataNotesList);
+                        thisObj.renderTable(dataNotesList);
                     };
                     
                     navigation.pigFarm.managerPigProd.requestNotesList(
@@ -343,6 +354,26 @@ export function TableNotes(input_settings){
     this.onUserChangeLanguage = function(){
         
        
+    }
+    
+    
+    this.searchEntries = function(key){
+        
+        if (key == '') {return dataNotesList;}
+        
+        const filtered_entries  = [];
+        
+        for (const cur_entry of dataNotesList){
+            const u_notes = cur_entry.prod_notes.notes.toUpperCase();
+            
+            if (u_notes.includes(key)){
+                filtered_entries.push(cur_entry);
+                continue;
+            }
+            
+        }
+        
+        return filtered_entries;
     }
     
     

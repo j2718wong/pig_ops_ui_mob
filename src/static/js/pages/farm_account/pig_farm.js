@@ -129,6 +129,8 @@ export function PigFarm(_navigation){
             const callback_success = function(data){
                 thisObj.managerPigProd.setDataPigProdList(data);
                 navigation.showHomeDashBoard();
+                
+                console.log('dashboard shown');
             };
             
             const pig_prod_type = PIG_PROD_TYPE.ALL;

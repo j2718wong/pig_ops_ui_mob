@@ -551,7 +551,7 @@ export function PageSowBoarAddEdit(input_settings){
     }
     
         
-    this._getSowBoar = function(name, number, exclude_hid){
+    this.getSowBoar = function(name, number, exclude_hid){
         // Note: SowBoar name or number can be null; but not both null;
         // SowBoar number can also contain non numeric characters
         let upper_name  = null;
@@ -955,7 +955,7 @@ export function PageSowBoarAddEdit(input_settings){
         if (validation == 0){
             if (input_name > 0){
                 if (showOptions.is_add){ 
-                    const cur_sow_boar = thisObj._getSowBoar(input_name, null);
+                    const cur_sow_boar = thisObj.getSowBoar(input_name, null);
         
                     if (cur_sow_boar != null){
                         is_duplicate = 1;
@@ -965,7 +965,7 @@ export function PageSowBoarAddEdit(input_settings){
                 } else{
                     // edit
                     const exclude_hid = thisObj.curDataSowBoar.hid;
-                    const cur_sow_boar = thisObj._getSowBoar(input_name, null, exclude_hid);
+                    const cur_sow_boar = thisObj.getSowBoar(input_name, null, exclude_hid);
                     
                     if (cur_sow_boar != null){
                         is_duplicate = 1;
@@ -998,7 +998,7 @@ export function PageSowBoarAddEdit(input_settings){
         if (validation == 0){
             if (input_number.length > 0){
                 if (showOptions.isAdd) {
-                    const cur_sow_boar = thisObj._getSowBoar(null, input_number);
+                    const cur_sow_boar = thisObj.getSowBoar(null, input_number);
         
                     if (cur_sow_boar != null){
                         is_duplicate = 1;
@@ -1008,7 +1008,7 @@ export function PageSowBoarAddEdit(input_settings){
                 else{
                     // edit
                     const exclude_hid = thisObj.curDataSowBoar.hid;
-                    const cur_sow_boar = thisObj._getSowBoar(input_number, null, exclude_hid);
+                    const cur_sow_boar = thisObj.getSowBoar(input_number, null, exclude_hid);
                     
                     if (cur_sow_boar != null){
                         is_duplicate = 1;

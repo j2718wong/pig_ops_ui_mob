@@ -160,46 +160,7 @@ export function PageProdEntryCommon(input_settings){
         }
 
 
-        .radio-group {
-            margin-bottom: 15px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            padding: 12px;
-            border: 1px solid var(--corporate-border);
-            border-radius: 8px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .radio-option.selected {
-            border-color: var(--corporate-light-blue);
-            background-color: rgba(59, 130, 246, 0.05);
-        }
-
-        .radio-input {
-            margin-right: 12px;
-            margin-top: 3px;
-        }
-
-        .radio-text {
-            flex-grow: 1;
-        }
-
-        .radio-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--text-dark);
-        }
-
-        .radio-description {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
+        
         /* Dynamic Field Sections */
         .dynamic-section {
             margin-top: 15px;

@@ -36,11 +36,8 @@ export function PageJoinAccReqApprove(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
     
+
     
-    const MAXCHAR_PIG_OPS_NAME  = 20;
-    
-    
-    // The settingsBreadcrumb.items is temporary; need to update dynamically
     const settingsBreadcrumb = {
         uniqueKey:              `${settings.uniqueKey}-breadcrumbs`,
         navigation:             navigation,
@@ -60,6 +57,8 @@ export function PageJoinAccReqApprove(input_settings){
     let elemIdBtnClose          = null;
     
     let elemIdPageInfo          = null;
+    
+    let elemIdUserName          = null;
 
     let elemIdServerErrorMsg    = null;
     let elemIdBtnCancel         = null;
@@ -69,12 +68,16 @@ export function PageJoinAccReqApprove(input_settings){
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;
     
+    
+    let elemUserName            = null;
+    
+    
     let elemServerErrorMsg      = null;
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
     
     
-    let curDataAccPigOps        = null;
+    let dataJoinAccRequest      = null;
     
         
         
@@ -99,7 +102,7 @@ export function PageJoinAccReqApprove(input_settings){
         
         elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         
-        
+        elemIdUserName          = `${settings.uniqueKey}-user-name`;
         
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
@@ -112,44 +115,95 @@ export function PageJoinAccReqApprove(input_settings){
         
         
         const html =`
-    <div class="form-container">
-        ${html_breadcrumb}
+<div class="form-container">
+    ${html_breadcrumb}
+    
+    <div class="modal-header">
+        <h5 class="modal-title">
+            <span id="${elemIdHeaderTitle}">Approve Join Request</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
+    </div>
+    
+    <div class="modal-body">
         
-        <div class="modal-header">
-            <h5 class="modal-title">
-                <span id="${elemIdHeaderTitle}">Approve Join Request</span>
-            </h5>
-            <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
+        <!-- Mobile Info Box -->
+        <div class="mobile-info-box" style="margin-bottom:10px;">
+            <div class="info-text" id="${elemIdPageInfo}">
+                This user requested to join your pig farm account. 
+                You may approve or reject this request. You need to assign
+                a role for this user.
+            </div>
+        </div>
+            
+        <div class="form-group-check">
+            <label class="form-label">Requesting User</label>
+            <span class="read-only-field" id="${elemIdUserName}"></span>
         </div>
         
-        <div class="modal-body">
-            
-            <!-- Mobile Info Box -->
-            <div class="mobile-info-box" style="margin-bottom:10px;">
-                <div class="info-text" id="${elemIdPageInfo}">
-                    This user requested to join your pig farm account. 
-                    You may approve or reject this request. You need to assign
-                    the role for this user.
+        <div class="form-group-number">
+            <label class="form-label">Select User Role</label>
+
+            <div class="radio-group">
+                <div class="radio-option" data-option="admin">
+                    <input type="radio" name="user-role" id="admin" class="radio-input">
+                    <div class="radio-text">
+                        <div class="radio-title">Admin</div>
+                        <div class="radio-description">
+                            <ul>
+                                <li>Has full data access</li>
+                                <li>Receives bills</li>
+                                <li>Can approve join request</li>
+                                <li>Can delete non-admin users</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="radio-option" data-option="manager">
+                    <input type="radio" name="user-role" id="manager" class="radio-input">
+                    <div class="radio-text">
+                        <div class="radio-title">Farm Manager</div>
+                        <div class="radio-description">
+                            <ul>
+                                <li>Has full data access</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="radio-option" data-option="operations">
+                    <input type="radio" name="user-role" id="operations" class="radio-input">
+                    <div class="radio-text">
+                        <div class="radio-title">Operations Staff</div>
+                        <div class="radio-description">
+                            <ul>
+                                <li>Limited data access</li>
+                                <li>No access to Financials</li>
+                                <li>No access to Admin tasks</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-                
-            
-            
+        
         </div>
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
-        
+    
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
-                <i class="fas fa-times me-2"></i>Cancel
+                <i class="fas fa-times me-2"></i>Reject
             </button>
             <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-                <i class="fas fa-save me-2"></i>Save
+                <i class="fas fa-save me-2"></i>Approve
             </button>
         </div>
-        
     
+        
     </div>
+    
+</div>
 
         `;
         
@@ -173,6 +227,7 @@ export function PageJoinAccReqApprove(input_settings){
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         
         
+        elemUserName            = elemDivContainer.querySelector('#'+elemIdUserName);
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         
@@ -202,7 +257,7 @@ export function PageJoinAccReqApprove(input_settings){
     
     
     // Reset add form
-    this.beforeShow = function(options, data_acc_request){
+    this.beforeShow = function(options, data_join_acc_request){
         
         /** Typical options
          options ={
@@ -218,7 +273,10 @@ export function PageJoinAccReqApprove(input_settings){
         
         showOptions = options;
         
+        dataJoinAccRequest = data_join_acc_request;
         
+        
+        thisObj.populateForm();
         
         
         // Update Close and cancel button on click
@@ -233,7 +291,23 @@ export function PageJoinAccReqApprove(input_settings){
     }
     
     
-    this.populateForm = function(data_acc_pig_ops){
+    this.populateForm = function(){
+        console.log(dataJoinAccRequest);
+        
+        const user = dataJoinAccRequest.requesting_user;
+        
+        let user_name = '';
+        if (user.name){
+            user_name = user.name;
+        }
+        else{
+            user_name = `${user.name_first} ${user.name_last}`;
+        }
+        
+        elemUserName.textContent  = user_name;
+        
+        
+        
         
     }
     
@@ -264,44 +338,12 @@ export function PageJoinAccReqApprove(input_settings){
         let validation      = 0;
         
         
-        let input_name      = elemUiName.getValue().trim();
-        let input_description= elemUiDescription.getValue().trim();
-        let input_num_days  = elemDayNumber.value;
-        
-
-        input_elem          = elemUiName.getElemText();
-        if (input_name.length == 0){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
+        const checkedRadio = elemDivContainer.querySelector('input[name="user-role"]:checked');
         
         
-        input_elem          = elemUiDescription.getElemText();
-        if (input_description.length == 0){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
+        console.log('checkedRadio.value =' +checkedRadio.value);
         
-        
-        
-        
-        input_elem          = elemDayNumber;
-        
-        let num_days = null;
-        try{
-            num_days = parseInt(input_num_days);
-        }catch(error){
-            validation = -1
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
-        
-        
-        
-        
-        const is_medvac   = elemUiIsMedVac.getElemCheckBox().checked;
+        return ;
         
         
         // Final check before sending request

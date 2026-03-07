@@ -86,10 +86,10 @@
 }
 
 body {
-    background-color: var(--body-default-bg);
+    background-color: white;
     color: var(--text-dark);
     line-height: 1.6;
-    overflow: hidden; 
+    overflow: auto; 
     min-height: 100vh;
 }
 
@@ -668,8 +668,8 @@ body {
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
-    overflow-y: auto;
-    /*overflow:hidden;*/
+    overflow-y: visible;
+    min-height: calc(100vh - 100px); /* Ensure it takes height */
 }
 
 .content-card {
@@ -719,6 +719,7 @@ p {
 
 .modal-body {
     flex: 1 1 auto; /* Takes available space */
+    overflow-x: hidden; 
     overflow-y: auto; /* Enables vertical scrolling */
     max-height: 100%; /* Ensures it respects container height */
     
@@ -746,7 +747,6 @@ p {
     background-color: var(--corporate-blue-dark);
     color: white;
     padding: 40px 20px;
-    margin-top: 50px;
 }
 
 .footer-content {
@@ -1958,6 +1958,55 @@ p {
         
 
 
+
+.radio-group {
+    margin-bottom: 15px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 2px solid var(--gestating-color);
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.radio-option.selected {
+    border-color: var(--gestating-color);
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.radio-input {
+    margin-right: 12px;
+    margin-top: 3px;
+}
+
+.radio-text {
+    flex-grow: 1;
+}
+
+.radio-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-dark);
+}
+
+.radio-description {
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.radio-description > ul {
+    margin-bottom:0;
+    padding-left: 0;
+}
+
+
+
+
 /* Mobile-specific styles with touch optimization */
 @media (max-width: 576px) {
     .custom-modal {
@@ -2267,14 +2316,6 @@ p {
     color: #718096;
 }
 
-.footer {
-    text-align: center;
-    margin-top: 30px;
-    color: #718096;
-    font-size: 0.9rem;
-    padding: 15px;
-    border-top: 1px solid #e2e8f0;
-}
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
@@ -4192,10 +4233,9 @@ input[type=number] {
     background-color: var(--bg-light);
     padding: 0.5rem 1rem;
     min-height: 500px;
-    max-height: 600px;
-    overflow-y:auto;
+    overflow-y:visible;
     
-    height: 100%;
+    height: auto;
     box-sizing: border-box;
 }
 
