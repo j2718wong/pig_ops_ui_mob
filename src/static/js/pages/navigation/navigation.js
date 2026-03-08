@@ -73,7 +73,8 @@ import {PageProdNotPregnantList}    from '../production/history/page_prod_not_pr
 
 import {PageAllFeedBalanceList}     from '../feeds/feed_balance/page_all_feed_balance_list.js';
 import {PageAllFeedBalanceAddEdit}  from '../feeds/feed_balance/page_all_feed_balance_add_edit.js';
-import {PageProdPigDeadList}        from '../production/history/page_prod_pig_dead_list.js';
+import {PageProdPigDeadList}        from '../production/pig_dead/page_prod_pig_dead_list.js';
+import {PagePigDeadAddEdit}         from '../production/pig_dead/page_pig_dead_add_edit.js';
 
 
 
@@ -217,6 +218,10 @@ function UserControl(_navigation) {
             elemDesktopBillNew.remove();    
             elemDesktopBillHistory.remove();
         }
+
+
+        // Hide this first
+        this.hideNewBillAvailable();
     }
     
     
@@ -299,6 +304,19 @@ function UserControl(_navigation) {
         
     }
     
+    
+    this.hideNewBillAvailable = function(){
+        if (elemDesktopBillNew){
+            elemDesktopBillNew.style.display = 'none';
+        }
+    }
+    
+    
+    this.hideShowBillAvailable = function(){
+        if (elemDesktopBillNew){
+            elemDesktopBillNew.style.display = 'block';
+        }
+    }
     
     
     this.onClickMyAccount = function(){
@@ -404,8 +422,8 @@ export function Navigation(){
     const elemIdContProdFeedBalAddEdit  = 'container-feed-balance-add-edit';
     
     
-    const elemIdContPigDeadList         = 'container-dead-pig-list';
-    const elemIdContPigDeadAddEdit      = 'container-dead-pig-add-edit';
+    const elemIdContPigDeadList         = 'container-pig-dead-list';
+    const elemIdContPigDeadAddEdit      = 'container-pig-dead-add-edit';
     
     
     
@@ -793,6 +811,13 @@ export function Navigation(){
     });
     
     
+    this.pagePigDeadAddEdit     = new PagePigDeadAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContPigDeadAddEdit,
+        uniqueKey:              'pig-dead-add-edit'
+    });
+    
+    
     
     this.pageProdSalesList    = new PageProdHistoryList({
         navigation:             this,
@@ -989,6 +1014,7 @@ export function Navigation(){
         this.pageAllFeedBalanceList.init();
         this.pageAllFeedBalanceAddEdit.init();
         this.pagePigDeadList.init();
+        this.pagePigDeadAddEdit.init();
         
         
         this.pageProdSalesList.init();
@@ -1354,15 +1380,15 @@ export function Navigation(){
             }
             
             
-            case PAGE_ID.DEAD_PIG_LIST: {
-                return;
+            case PAGE_ID.PIG_DEAD_LIST: {
+                return elemPageContPigDeadList;
             }
             
-            case PAGE_ID.DEAD_PIG_ADD_EDIT: {
-                return;
+            case PAGE_ID.PIG_DEAD_ADD_EDIT: {
+                return elemPageContPigDeadAddEdit;
             }
     
-            
+               
             
                 
              

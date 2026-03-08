@@ -126,6 +126,9 @@ export function ManagerLogin(){
         elemPageContTermsOfService      = document.getElementById(elemIdContTermsOfService);
         elemPageContPrivacyPolicy       = document.getElementById(elemIdContPrivacyPolicy);
         
+        
+        
+        
     }
     
     

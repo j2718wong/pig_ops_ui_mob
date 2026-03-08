@@ -1428,7 +1428,7 @@ p {
 
 .data-table td {
     padding: 5px 4px;
-    font-size: 15px;
+    font-size: 14px;
     vertical-align: middle;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3115,7 +3115,7 @@ textarea.form-control {
 
 .sow-boar-name{
     font-weight: 600;
-    font-size: 16px;
+    font-size: 15px;
     cursor:pointer;
 }
 

@@ -73,6 +73,7 @@ export function PageProdPigDeadList(input_settings){
         
         thisObj.setSettingsTable({
             uniqueKey:      settings.uniqueKey,
+            noHeader:       true,
             itemsPerPage:   20
         });
         
@@ -156,6 +157,9 @@ export function PageProdPigDeadList(input_settings){
         
         
         componentNavLeftRight.bindEventListeners();
+        
+        
+        thisObj.setOnClickAddEntry(thisObj.onClickAddEntry);
     }
     
     
@@ -182,16 +186,15 @@ export function PageProdPigDeadList(input_settings){
     
     
     this.beforeShow = function(){
-        /*
-        dataPigDeadList  = navigation.pigFarm.managerPigProd.dataPigDeadList;
+        const callback_success = function(data){
+            dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+            thisObj.renderTable(dataPigDeadList);
+        };
 
    
-             // Request ProdNotPregnant List
-            navigation.pigFarm.managerPigProd.requestPigProdNotPregnantList(
-                callback_success, null);
-        */
-        
-        
+        // Request ProdPigDead List
+        navigation.pigFarm.managerPigProd.requestProdPigDeadList(
+            callback_success, null);
         
     }
     
@@ -221,8 +224,8 @@ export function PageProdPigDeadList(input_settings){
         <table class="data-table table-prod-hist" id="">
             <colgroup>
                 <col style="width: 33%;">
-                <col style="width: 25%;">
-                <col style="width: 42%;">
+                <col style="width: 27%;">
+                <col style="width: 40%;">
                
             </colgroup>
 
@@ -260,49 +263,57 @@ export function PageProdPigDeadList(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
+        console.log('cur_entry pig dead');
+        console.log(cur_entry);
         
-        let pid = cur_entry.pig_production.farm_prod_id;
         
-        const insemination = cur_entry.insemination; 
+        // PID, Sow ❤ Boar column
+        const html_pid_sow  = farmPage.getHtmlPidSowLoveBoar(cur_entry.production);
         
-        const data_sow = cur_entry.sow;
-        const sow_name = getSowBoarReference(data_sow);
+        const dt_dead   = new Date(cur_entry.pig_dead.date_dead);
         
-
         
-        let boar_name = '';
-        switch (insemination.insem_type){
-            case 'B':{
-                boar_name = getSowBoarReference(insemination.boar);
-                break;
+        // Count how many days since birth
+        const date_actual_birth = cur_entry.production.birth.date_actual;
+        
+        let html_date_dead = `${cur_entry.pig_dead.date_dead}`;
+        if (date_actual_birth){
+            const dt_birth = new Date(date_actual_birth);
+            
+            let diff_msecs    = dt_dead - dt_birth;
+            let diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
+            
+            const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+            
+            // Adjust Day 1 on date of birth if needed
+            if (acc_settings_ops){
+                if (acc_settings_ops.day_1_on_date_of_birth > 0){
+                    diff_days += 1;
+                }
             }
             
-            case 'AI_X':{
-                boar_name = insemination.ai.semen_supplier.semen.name;
-                break;
-            }
-            
-            case 'AI_N':{
-                const internal_boar = insemination.ai.internal_boar;
-                
-                boar_name = getSowBoarReference(internal_boar);
-                boar_name += '(via AI)';
-                
-                break;
-            }
-            
+            html_date_dead += ` <span class="nowrap">(Day ${diff_days})</span>`;  
         }
-            
         
-        const dt_insem  = new Date(insemination.insem_date);
-        const s_dt_insem = formatDate(dt_insem, FORMAT_COMPACT);
+        
+        let notes = '';
+        if (cur_entry.pig_dead.notes){
+            notes = cur_entry.pig_dead.notes;
+        }
+        
+        // Dead Type + comments
+        const s_desc = `
+            <span class="dead-type"><b>${cur_entry.pig_dead.dead_type}</b></span>
+            <span class="notes">${notes}</span>
+        `;
+        
+        
         
         const html = `
             <tr>
-                <td>${pid}</td>
-                <td>${sow_name}</td>
-                <td>${boar_name}</td>
-                <td>${s_dt_insem}</td>
+                <td>${html_pid_sow}</td>
+                <td>${html_date_dead}</td>
+                <td>${s_desc}</td>
             </tr>
         `;
         
@@ -316,7 +327,7 @@ export function PageProdPigDeadList(input_settings){
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
         
-        let pid = cur_entry.pig_production.farm_prod_id;
+        let pid = cur_entry.production.pig_production.farm_prod_id;
         
          
 
@@ -493,6 +504,55 @@ export function PageProdPigDeadList(input_settings){
     }
     
     
+    this.onClickAddEntry = function(){
+        const go_back_page_id = PAGE_ID.PIG_DEAD_LIST;
+        
+        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        
+        
+        const options ={
+            is_add:                 true,   // false is edit
+            callback_after_add:     thisObj.onSuccessAddEntry,
+            go_back_page:           go_back_page   
+        }
+        
+        navigation.pagePigDeadAddEdit.beforeShow(options);
+        const page_container = navigation.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
+        navigation.showThisPage(page_container);
+        
+        
+    }
+    
+    
+    this.onSuccessAddEntry = function(){
+        
+    }
+    
+    
+    this.onSuccessEditEntry = function(){
+        
+    }
+    
+    
+    this.onClickRowEntry = function(entry_hid){
+        const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
+        
+        const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
+        const go_back_page = navigation.getPageContainer(go_back_page_id);
+    
+        const options ={
+            operation_type:         curAccPigOpsType,
+            is_add:                 false,   // false is edit
+            callback_after_edit:    thisObj.onSuccessEditEntry,
+            go_back_page:           go_back_page 
+        }
+        navigation.pageAccPigOpsAddEdit.beforeShow(options, data_acc_pig_ops);
+        
+        
+        const goto_page_id   = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
+        const page_container = navigation.getPageContainer(goto_page_id);
+        navigation.showThisPage(page_container);
+    }
   
     
     

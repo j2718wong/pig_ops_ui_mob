@@ -102,8 +102,8 @@ const PAGE_ID = {
     
     ALL_FEED_BAL_LIST:      50,
     ALL_FEED_BAL_ADD_EDIT:  51,
-    DEAD_PIG_LIST:          52,
-    DEAD_PIG_ADD_EDIT:      53,
+    PIG_DEAD_LIST:          52,
+    PIG_DEAD_ADD_EDIT:      53,
     
     FARM_FEED_BUY_LIST:     55,
     FARM_FEED_BUY_ADD_EDIT: 56,
