@@ -42,12 +42,17 @@ const PAGE_ID = {
     CREATE_OR_JOIN_ACCOUNT: 4,
     ADD_FARM:               5,
     REQ_JOIN_ACC_SENT:      6,
+    TERMS_OF_SERVICE:       7,
+    PRIVACY_POLICY:         8,
+    CONTACT_US:             9,
     
-    MY_ACCOUNT:             7,
-    CUSTOMER_PRICING:       8,
     
     
-    HOME:                   9,
+    MY_ACCOUNT:             10,
+    CUSTOMER_PRICING:       11,
+    
+    
+    HOME:                   12,
     
     BILL_HISTORY_LIST:      18,
     BILL_CURRENT:           19,

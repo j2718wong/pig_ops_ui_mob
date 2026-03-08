@@ -22,6 +22,8 @@ export function PageUserSignUpOrLogin(input_settings){
 
     let elemIntroText           = null;
     let elemTermsText           = null;
+    let elemTermsOfService      = null;
+    let elemPrivacyPolicy       = null;
     
     let elemEmail               = null;
     let elemEmailInvalidShow    = null; 
@@ -76,7 +78,8 @@ export function PageUserSignUpOrLogin(input_settings){
     </div>
 
     <div class="terms-text">
-        By Signing up, I accept the <a href="#">J SysDev Terms of Service</a> and acknowledge the <a href="#">Privacy Policy</a>.
+        By Signing up, I accept the <a href="#" id="terms-of-service">J SysDev Terms of Service</a> 
+        and acknowledge the <a href="#" id="privacy-policy">Privacy Policy</a>.
     </div>
 
     <button class="signup-btn">Sign up</button>
@@ -116,20 +119,7 @@ export function PageUserSignUpOrLogin(input_settings){
         </a>
     </div>
     
-    <!-- FOOTER (Option 1: Simple Legal) added exactly as recommended -->
-    <div class="legal-footer">
-        <div class="footer-links">
-            <a href="#">Terms</a>
-            <span class="dot">•</span>
-            <a href="#">Privacy</a>
-            <span class="dot">•</span>
-            <a href="#">Contact</a>
-        </div>
-      
-        <div class="copyright">
-            © 2026 J SysDev. All rights reserved.
-        </div>
-    </div>
+    
     
 </div>
     `;
@@ -152,6 +142,8 @@ export function PageUserSignUpOrLogin(input_settings){
         
         elemIntroText           = elemDivContainer.querySelector('.intro-text');
         elemTermsText           = elemDivContainer.querySelector('.terms-text');
+        elemTermsOfService      = elemDivContainer.querySelector('#terms-of-service');
+        elemPrivacyPolicy       = elemDivContainer.querySelector('#privacy-policy');
         
         elemEmail               = elemDivContainer.querySelector('#email');
         elemEmailInvalidShow    = elemDivContainer.querySelector('#invalid-email-show');
@@ -186,6 +178,54 @@ export function PageUserSignUpOrLogin(input_settings){
             
             thisObj.onClickSignUpOrLogin();
         });
+        
+        
+        elemTermsOfService.addEventListener('click', function(event) {
+            const go_back_page_id = PAGE_ID.SIGNUP_OR_LOGIN;
+            const go_back_page  = parentObj.getPageContainer(go_back_page_id);
+            
+            const options ={
+                go_back_page: go_back_page
+            };
+            parentObj.pageTermsOfService.beforeShow(options);
+            
+            
+            const next_page_id  = PAGE_ID.TERMS_OF_SERVICE;
+            const next_page     = parentObj.getPageContainer(next_page_id);
+            
+            parentObj.showThisPage(next_page);
+            
+        });
+        
+        
+        elemPrivacyPolicy.addEventListener('click', function(event) {
+            const go_back_page_id = PAGE_ID.SIGNUP_OR_LOGIN;
+            const go_back_page  = parentObj.getPageContainer(go_back_page_id);
+            
+            const options ={
+                go_back_page: go_back_page
+            };
+            parentObj.pagePrivacyPolicy.beforeShow(options);
+            
+            
+            const next_page_id  = PAGE_ID.PRIVACY_POLICY;
+            const next_page     = parentObj.getPageContainer(next_page_id);
+            
+            parentObj.showThisPage(next_page);
+            
+        });
+        
+        
+        
+        elemLoginOrSignUpLink.addEventListener('click', function(event) {
+            if (showOptions.is_login){
+                window.location.href = '/signup';
+            }
+            else{
+                window.location.href = '/login';
+            }
+        });
+        
         
         elemUseGoogle.addEventListener('click', function(event) {
             event.preventDefault();

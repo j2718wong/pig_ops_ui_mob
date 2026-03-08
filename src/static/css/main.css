@@ -4883,3 +4883,23 @@ input[type=number] {
 
 /**************************************************************************/
 
+.permission-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.permission-list li {
+  padding: 0.6rem 0 0.6rem 1.5rem;
+  position: relative;
+}
+
+.permission-list li::before {
+  content: "•";
+  color: #3b82f6;
+  font-weight: bold;
+  font-size: 1.2rem;
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+}

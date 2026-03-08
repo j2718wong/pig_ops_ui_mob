@@ -108,24 +108,7 @@ export function PageRequestJoinAccountSent(input_settings){
     </div>
     
 
-    
-    
-    
 
-    <!-- FOOTER (Option 1: Simple Legal) added exactly as recommended -->
-    <div class="legal-footer">
-        <div class="footer-links">
-            <a href="#">Terms</a>
-            <span class="dot">•</span>
-            <a href="#">Privacy</a>
-            <span class="dot">•</span>
-            <a href="#">Contact</a>
-        </div>
-      
-        <div class="copyright">
-            © 2026 J SysDev. All rights reserved.
-        </div>
-    </div>
 </div>
 
         `;

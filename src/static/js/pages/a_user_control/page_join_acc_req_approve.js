@@ -167,10 +167,11 @@ export function PageJoinAccReqApprove(input_settings){
                     <div class="radio-text">
                         <div class="radio-title">Admin</div>
                         <div class="radio-description">
-                            <ul>
+                            <ul class = "permission-list">
                                 <li>Has full data access</li>
                                 <li>Receives bills</li>
                                 <li>Can approve join request</li>
+                                <li>Can add more pig farms</li>
                                 <li>Can delete non-admin users</li>
                             </ul>
                         </div>

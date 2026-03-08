@@ -472,7 +472,97 @@ export function PageMyAccount(input_settings){
         const data_farm_list =  dataUserAccount.account.pig_farms;
         pigFarmTable.setDataEntryList(data_farm_list);
         pigFarmTable.renderTable(data_farm_list);
+        
+        
+        // Show/Hide AddTextLink based on user role
+        const data_user     = dataUserAccount.user;
+            
+            
+        // Only account admins can add farms
+        // Get user.user_group.group_num
+        const user_group_num = data_user.user_group.group_num;
+        
+        if (user_group_num == ACC_USER_GROUP.ADMIN) {
+            pigFarmTable.addTextLinkShow();
+        }
+        else{
+            pigFarmTable.addTextLinkHide();
+        }
+        
     }
+    
+    
+    this.onSaveAccountName = function(new_acc_name){
+        const user_hid      = dataUserAccount.user.user.hid;
+        const base_url      = window.location.origin;
+
+        
+        // send post request
+        const post_data = {
+            'uhid':             user_hid,
+            'name':             new_acc_name
+        };
+        
+        
+        let url = `${base_url}/account/update`
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    dataUserAccount.account.account = response.account;
+                    
+                    thisObj.refreshAccountName();
+                    
+                    elemInvalidAccNameShow.style.display = 'none';
+                }
+                else{
+                    let error_code = response.result.code;
+                    let error_desc = response.result.desc;
+                    
+                    let html = `<span>${error_code}</span>`;
+                    
+                    if (error_desc && error_desc.length > 0){
+                        html += `<br><span>${error_desc}</span>`;
+                    }
+                    
+
+                    elemInvalidAccNameShow.style.display = 'block';
+                    elemInvalidAccNameShow.innerHTML = html;  
+                    
+                }
+            },
+  
+            complete: function(){
+                // TODO unsay buhaton
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                
+            }
+        });
+    }
+    
+    
     
     
     this.onClickAddFarm = function(){

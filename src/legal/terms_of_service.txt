@@ -1,0 +1,103 @@
+JSysDev Customer Agreement
+
+Effective starting: October 7, 2025
+
+This is an agreement between JSysDev and Customer. "Customer" means the person or company who accepts this agreement and uses the SuperPig application.
+
+If you are accepting this agreement for your employer or another company, you promise that you have the full legal authority to bind them to this agreement.
+
+By registering for an account, you confirm that you agree to this agreement. If you do not agree, do not register.
+
+1. The SuperPig Application
+
+SuperPig is a web application that helps manage pig production. This includes managing data for breeding stocks, breeding, fattening, harvesting, and all other related aspects.
+
+2. Using SuperPig
+
+2.1. Your Right to Use It. During your active subscription, JSysDev gives you a non-exclusive, worldwide right to use SuperPig for your internal business purposes, following the instructions and rules provided within the application.
+
+2.2. Rules You Must Follow. You must not, and you must not allow others to:
+
+    Sell, rent, or share access to SuperPig with anyone who is not an authorized user.
+
+    Use SuperPig to build a similar or competing product.
+
+    Try to copy, reverse engineer, or steal the source code.
+
+    Interfere with the application or try to get around its usage limits.
+
+    Remove any copyright or other notices from the application.
+
+    Use the application in any way that is illegal or violates someone else's rights.
+    
+User Accounts
+
+3.1. Your Responsibility. You may let your employees and staff use SuperPig. You are responsible for everything they do in the application.
+
+3.2. Login Details. You must keep your username and password confidential. You must tell JSysDev immediately if you think someone has accessed your account without permission.
+
+3.3. Age Requirement. You must be at least 16 years old to use SuperPig.
+
+4. Your Data
+
+4.1. Your Data is Yours. All the information you enter into SuperPig (your "Customer Data") belongs to you. JSysDev will only use it to provide and improve the SuperPig service for you.
+
+4.2. Data Security. JSysDev uses appropriate security measures to protect your data from unauthorized access. You can export and retrieve your data from the application at any time, as described in the application's help section.
+
+5. Billing and Payment
+
+5.1. Free Trial. When you sign up, you get a 90-day free trial. No payment is required during this time.
+
+5.2. Subscription Fees. After your 90-day free trial ends, your account will be charged automatically every 30 days. The fee is based on a per-head rate for your breeding stocks.
+
+5.3. Country-Based Pricing. The per-head rate depends on the country where your pig farm is located. The exact price for your country will be shown to you before you are charged.
+
+5.4. Payment Method. If you pay by credit card, you allow JSysDev to automatically charge that card for your subscription fees every 30 days.
+
+5.5. Taxes. All fees are exclusive of taxes. You are responsible for paying any taxes, like sales tax or VAT, that apply to your subscription.
+
+5.6. No Refunds. All subscription fees are non-refundable, except as explained in the "Money-Back Guarantee" section below.
+
+5.7. Money-Back Guarantee. If you are not happy with SuperPig, you can cancel within the first 30 days of your first paid subscription for a full refund. After that, fees are non-refundable.
+
+5.8. Suspension for Non-Payment. If your payment is overdue, JSysDev may suspend your access to SuperPig after giving you 10 days' written notice.
+
+6. Our Commitment to You
+
+6.1. Performance Warranty. JSysDev promises that SuperPig will work as described in the application's documentation.
+
+6.2. What We Don't Promise. Other than the promise above, the application is provided "AS IS." We do not promise it will be error-free or uninterrupted. We are not liable for problems caused by the internet or other systems outside our control.
+
+7. Term and Termination
+
+7.1. Agreement Term. This agreement starts when you accept it and continues until your subscription ends or the agreement is terminated.
+
+7.2. Cancelling by You. You can cancel your subscription at any time through your account settings. You will not receive a refund for any period already paid for.
+
+7.3. Termination for Cause. Either party can end this agreement if the other party breaks a key part of the agreement (like not paying) and doesn't fix it within 30 days of being notified. If you end the agreement for our uncured breach, we will refund any pre-paid fees for the unused part of your subscription.
+
+7.4. What Happens When You Cancel. When your subscription ends, your right to use SuperPig stops immediately. We will delete your data in accordance with our standard procedures.
+
+8. Ownership
+
+You own all your data. JSysDev owns the SuperPig application, its code, and its technology. Neither party gets any rights to the other's property under this agreement, except for the right to use SuperPig as described.
+
+9. Limitation of Liability
+
+9.1. No Indirect Damages. Neither party will be liable for any indirect, special, or consequential damages (like lost profits or loss of data), even if advised of the possibility.
+
+9.2. Cap on Liability. Our total liability to you for any claim related to this agreement will not exceed the total amount you paid us for SuperPig in the 12 months before the claim.
+
+10. General Legal Terms
+
+10.1. Changes to this Agreement. We may update this agreement from time to time. If we make significant changes, we will notify you at least 30 days in advance by email or through the application. If you don't agree to the changes, you can cancel your subscription before they take effect.
+
+10.2. Governing Law. This agreement is governed by the laws of the State of California, without regard to its conflict of laws principles. Both parties agree to the exclusive jurisdiction of the courts in San Francisco, California.
+
+10.3. Notices. Legal notices must be in writing. We will send notices to you via email or through the application. You can send legal notices to us at: [Insert JSysDev's official mailing address here].
+
+10.4. Entire Agreement. This agreement is the entire agreement between you and JSysDev regarding SuperPig and supersedes all prior discussions.
+
+10.5. Independent Contractors. JSysDev and Customer are independent contractors. This agreement does not create a partnership, joint venture, or agency relationship.
+
+10.6. Force Majeure. Neither party is liable for delays or failures caused by events beyond its reasonable control, such as natural disasters, war, or widespread internet outages.
