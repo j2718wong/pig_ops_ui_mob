@@ -1129,7 +1129,7 @@ export function Navigation(){
     
         elemPageContUserList            = document.getElementById(elemIdContUserList);
         elemPageContJoinAccReqList      = document.getElementById(elemIdContJoinAccReqList);
-        elemPageContJoinAccReqApprove      = document.getElementById(elemIdContJoinAccReqApprove);
+        elemPageContJoinAccReqApprove   = document.getElementById(elemIdContJoinAccReqApprove);
     }
     
     
