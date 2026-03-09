@@ -30,6 +30,7 @@ export function PagePigDeadAddEdit(input_settings){
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
+    const INVALID_MSG_NUM_INPUT = 'Please enter a valid number.';
     
     /*
     Typical settings = {
@@ -41,8 +42,7 @@ export function PagePigDeadAddEdit(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
     
-    
-    const MAXCHAR_PIG_OPS_NAME  = 20;
+
     
     
     // The settingsBreadcrumb.items is temporary; need to update dynamically
@@ -296,7 +296,13 @@ export function PagePigDeadAddEdit(input_settings){
         elemHeaderTitle.innerHTML = html;
         
         
+        // Populate Dead Type
         componentDeadType.beforeShow();
+        
+        
+        // Populate current production
+        thisObj.populateCurrentProduction();
+        
         
         
         // Populate form if edit
@@ -314,6 +320,33 @@ export function PagePigDeadAddEdit(input_settings){
         elemBtnCancel.onclick = function() {
             navigation.showThisPage(showOptions.go_back_page);
         };
+    }
+    
+    
+    this.populateCurrentProduction = function(){
+        let prod_list = [];
+        
+        const prod_lactating = navigation.pigFarm.managerPigProd.dataLactatingList;
+        const prod_fattening = navigation.pigFarm.managerPigProd.dataFatteningList;    
+        
+        if (prod_lactating){
+            if (prod_lactating.length > 0){
+                prod_list = prod_list.concat(prod_lactating);
+            }
+        }
+        
+        if (prod_fattening){
+            if (prod_fattening.length > 0){
+                prod_list = prod_list.concat(prod_fattening);
+            }
+        }
+        
+        const elem_select = elemUiCurrentProduction.getElemSelect();
+        
+        elemUiCurrentProduction.setEntryCount(prod_list);
+        thisObj.commonSelectOptions.setDataPigProdList(prod_list, elem_select); 
+        
+        
     }
     
     
@@ -358,44 +391,64 @@ export function PagePigDeadAddEdit(input_settings){
         let validation      = 0;
         
         
-        let input_name      = elemUiName.getValue().trim();
-        let input_description= elemUiNotes.getValue().trim();
-        let input_num_days  = elemDayNumber.value;
+        let input_date_dead         = elemUiDateDead.getValue();
+        let input_prod_hid          = elemUiCurrentProduction.getValue();
+        let input_num_dead          = componentNumDead.getValue();
+        let input_dead_type_hid     = componentDeadType.getValue();
+        let input_notes             = elemUiNotes.getValue().trim();
         
-
-        input_elem          = elemUiName.getElemText();
-        if (input_name.length == 0){
-            validation = -1;
+        
+        
+        input_elem          = elemUiDateDead.getElemText();
+        
+        // Convert date to YYYY-MM-DD format
+        const dt_dead       = new Date(input_date_dead);
+        if (isNaN(dt_dead.getTime())){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
         }
+        
+        const dt_dead_s   = dt_dead.toLocaleDateString('en-CA');
+        validation          = 0
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
         
         
-        input_elem          = elemUiNotes.getElemText();
-        if (input_description.length == 0){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        
-        
-        input_elem          = elemDayNumber;
-        
-        let num_days = null;
-        try{
-            num_days = parseInt(input_num_days);
-        }catch(error){
-            validation = -1
+        // Validate pig_prod
+        input_elem          = elemUiCurrentProduction.getElemSelect;
+        if (input_prod_hid == '0' || input_prod_hid == '-1'){
+            validation      = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
         
         
         
+        // Validate number counts
+        let number_dead = 0;
         
-        const is_medvac   = elemUiIsMedVac.getElemCheckBox().checked;
+        input_elem          = componentNumDead.getElemText();
+        
+        try{
+            number_dead = parseInt(input_num_dead)
+        }catch (error){
+            componentNumDead.setTextInvalid(INVALID_MSG_NUM_INPUT);
+            validation = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        
+        // Validate pig_prod
+        input_elem          = componentDeadType.getElemSelect;
+        if (input_dead_type_hid == '0' || input_dead_type_hid == '-1'){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
         
         
         // Final check before sending request
@@ -413,26 +466,33 @@ export function PagePigDeadAddEdit(input_settings){
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'operation_type':   operationType,
-            'num_days_since':   num_days,
-            'is_medvac':        is_medvac? 1 : 0,
-            'name':             input_name,
-            'description':      input_description
+            'pig_prod_hid':     input_prod_hid,
+            'pig_dead_type_hid':input_dead_type_hid,
+            
+            'date_dead':        dt_dead_s,
+            'num_pigs_dead':    input_num_dead
         };
+        
+        if (input_notes.length > 0){
+            post_data.notes = input_notes;
+        }
+        
+        
+        
         
         if (showOptions.is_add == true){}
         else {
-            post_data.account_pig_ops_hid = curDataAccPigOps.acc_pig_ops.hid;
+            
         }
 
         
         let url;
         
         if (showOptions.is_add == true){
-            url = `${base_url}/account_pig_ops/add`;
+            url = `${base_url}/prod_pig_dead/add`;
         }
         else{
-            url = `${base_url}/account_pig_ops/update`;
+            url = `${base_url}/prod_pig_dead/update`;
         }
         
         
@@ -458,32 +518,8 @@ export function PagePigDeadAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    if (showOptions.is_add == true){
-                        const callback_success = function(){
-                            navigation.showThisPage(showOptions.go_back_page);
-                            navigation.pageAccPigOpsList.show();
-                            
-                            // This should request pig production since acc_pig_ops is added
-                            
-                        };
-                        
-                        navigation.pigFarm.requestDataAccPigOpsList(
-                            callback_success, elemServerErrorMsg);
-
-                        return;
-                    }
-                    
-                    else{
-                        const callback_success = function(){
-                            navigation.showThisPage(showOptions.go_back_page);
-                            navigation.pageAccPigOpsList.show();
-                        };
-                        
-                        navigation.pigFarm.requestDataAccPigOpsList(
-                            callback_success, elemServerErrorMsg);
-
-                        return;
-                    }
+                    navigation.showThisPage(showOptions.go_back_page);
+                    navigation.pagePigDeadList.beforeShow();
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

@@ -68,8 +68,6 @@ export function ProdEntryBirth(input_settings){
     
     const elemDivContainer      = settings.elemDivContainer;
     
-    let elemIdContentContainer  = null;
-    
     let elemIdWarningBox        = null;
     let elemIdCannotUpdate      = null;
     
@@ -88,9 +86,7 @@ export function ProdEntryBirth(input_settings){
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
     
-    
-    
-    let elemContentContainer    = null;
+
     
     let elemWarningBox          = null;
     let elemCannotUpdate        = null;
@@ -120,8 +116,6 @@ export function ProdEntryBirth(input_settings){
     
     
     this.getHtml = function(){
-        
-        elemIdContentContainer  = `${settings.uniqueKey}-content`;
                 
         elemIdWarningBox        = `${settings.uniqueKey}-warning-box`;
         elemIdCannotUpdate      = `${settings.uniqueKey}-cannot-update`;
@@ -213,7 +207,7 @@ export function ProdEntryBirth(input_settings){
         const html_staff        = componentStaff.getHtml();
         
         const html = `
-<div class="modal-body" id="${elemIdContentContainer}">
+<div class="modal-body">
     <h2 class="tab-title">
         Birth Information
     </h2>
@@ -289,8 +283,6 @@ export function ProdEntryBirth(input_settings){
     
     
     this._findElements = function(){
-        elemContentContainer    = elemDivContainer.querySelector('#'+elemIdContentContainer);
-        
         elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
         elemCannotUpdate        = elemDivContainer.querySelector('#'+elemIdCannotUpdate);
         

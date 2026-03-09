@@ -1,28 +1,39 @@
 #!/usr/bin/env python3
-# build.py - SuperPig UI Builder with Progress Indicators
+# build.py - SuperPig UI Builder with Versioned Outputs and Manifest
 
 import subprocess
 import sys
 import os
 import time
+import json
+import hashlib
+import shutil
 from pathlib import Path
 import threading
 
 # Configuration
+ENABLE_VERSIONING = os.getenv("ENABLE_VERSIONING", "false").lower() == "true"
+# Or force versioning with --version flag
+
 ENTRY_POINTS = {
     'login': {
         'path': "src/static/js/app.js",
-        'output': "static/js/bundle.min.js",
+        'output_base': "static/js/bundle.min.js",
+        'output_name': "bundle",
+        'bundle_key': 'login',
         'name': 'Login Bundle'
     },
     'core': {
         'path': "src/static/js/app_core.js",
-        'output': "static/js/bundle.core.min.js",
+        'output_base': "static/js/bundle.core.min.js",
+        'output_name': "bundle.core",
+        'bundle_key': 'core',
         'name': 'Core Navigation Bundle'
     }
 }
 
 class BuildProgress:
+    # ... (keep the existing BuildProgress class exactly as is)
     def __init__(self, bundle_name=""):
         self.bundle_name = bundle_name
         self.start_time = None
@@ -106,35 +117,50 @@ def count_files():
     js_files = list(Path("src/static/js").rglob("*.js"))
     return len(js_files)
 
-def build_entry_point(entry_config):
-    """Build a single entry point"""
+def calculate_file_hash(filepath):
+    """Calculate MD5 hash of a file"""
+    hash_md5 = hashlib.md5()
+    with open(filepath, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()[:8]  # First 8 chars
+
+def build_entry_point(entry_config, enable_versioning=False):
+    """Build a single entry point with optional versioning"""
     entry_point = entry_config['path']
-    output_file = entry_config['output']
+    output_base = entry_config['output_base']
+    output_name = entry_config['output_name']
+    bundle_key = entry_config['bundle_key']
     bundle_name = entry_config['name']
     
     print(f"\n📝 Building: {bundle_name}")
     print(f"   Entry: {entry_point}")
-    print(f"   Output: {output_file}")
+    print(f"   Base Output: {output_base}")
+    if enable_versioning:
+        print(f"   Versioning: Enabled")
     print("-" * 50)
     
     # Check if entry point exists
     if not os.path.exists(entry_point):
         print(f"❌ Error: Entry point not found: {entry_point}")
-        return False
+        return None
     
     # Start progress indicator
     progress = BuildProgress(bundle_name)
     progress.start()
     
     # Ensure output directory exists
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    os.makedirs(os.path.dirname(output_base), exist_ok=True)
+    
+    # Build to a temporary file first
+    temp_file = f"static/js/{output_name}.temp.js"
     
     # Build command
     cmd = [
         "npx", "esbuild", entry_point,
         "--bundle",
         "--minify",
-        f"--outfile={output_file}"
+        f"--outfile={temp_file}"
     ]
     
     # Add source map in development
@@ -160,74 +186,143 @@ def build_entry_point(entry_config):
         # Wait for process to complete
         stdout, stderr = process.communicate()
         
-        # Stop progress indicator
-        success = process.returncode == 0
-        progress.stop(success, output_file)
-        
-        if success:
-            # Show bundle size if file exists
-            if os.path.exists(output_file):
-                size = os.path.getsize(output_file)
-                print(f"      📦 Final size: {progress._format_size(size)}")
-            
-            # Show warnings if any
-            if stderr:
-                warnings = [line for line in stderr.split('\n') 
-                          if line.strip() and "warning" in line.lower()]
-                if warnings:
-                    print(f"\n   ⚠️  Warnings:")
-                    for warning in warnings[:3]:  # Show first 3 warnings
-                        print(f"      {warning.strip()}")
-                    if len(warnings) > 3:
-                        print(f"      ... and {len(warnings) - 3} more warnings")
-            
-            return True
-        else:
+        if process.returncode != 0:
+            progress.stop(False)
             print(f"\n   ❌ Build failed with errors:")
-            # Show last few lines of error
             error_lines = stderr.strip().split('\n')
-            for line in error_lines[-5:]:  # Show last 5 lines
+            for line in error_lines[-5:]:
                 if line.strip():
                     print(f"      {line.strip()}")
-            return False
+            return None
+        
+        # Check if temp file was created
+        if not os.path.exists(temp_file):
+            progress.stop(False)
+            print(f"\n   ❌ Build failed: Output file not created")
+            return None
+        
+        # Determine final output filename
+        if enable_versioning:
+            # Calculate hash and create versioned filename
+            file_hash = calculate_file_hash(temp_file)
+            versioned_file = f"static/js/{output_name}.{file_hash}.min.js"
+            shutil.move(temp_file, versioned_file)
+            final_file = versioned_file
+            bundle_filename = f"{output_name}.{file_hash}.min.js"
+            print(f"   🔖 Hash: {file_hash}")
+        else:
+            # Use base filename
+            if os.path.exists(output_base):
+                os.remove(output_base)
+            shutil.move(temp_file, output_base)
+            final_file = output_base
+            bundle_filename = os.path.basename(output_base)
+        
+        # Stop progress indicator
+        progress.stop(True, final_file)
+        
+        # Show bundle size
+        if os.path.exists(final_file):
+            size = os.path.getsize(final_file)
+            print(f"      📦 Final size: {progress._format_size(size)}")
+        
+        # Show warnings if any
+        if stderr:
+            warnings = [line for line in stderr.split('\n') 
+                      if line.strip() and "warning" in line.lower()]
+            if warnings:
+                print(f"\n   ⚠️  Warnings:")
+                for warning in warnings[:3]:
+                    print(f"      {warning.strip()}")
+                if len(warnings) > 3:
+                    print(f"      ... and {len(warnings) - 3} more warnings")
+        
+        # Return bundle info for manifest
+        return {
+            'key': bundle_key,
+            'filename': bundle_filename,
+            'path': final_file,
+            'size': os.path.getsize(final_file),
+            'hash': file_hash if enable_versioning else None
+        }
             
     except Exception as e:
         progress.stop(False)
         print(f"\n   ❌ Error: {e}")
-        return False
+        return None
 
-def run_all_builds():
-    """Run all configured builds"""
+def save_manifest(bundle_infos, enable_versioning=False):
+    """Save manifest JSON file"""
+    manifest = {}
+    
+    for info in bundle_infos:
+        if info:
+            manifest[info['key']] = info['filename']
+    
+    # Also add a version file with timestamp
+    manifest['version'] = {
+        'build_time': time.strftime('%Y-%m-%d %H:%M:%S'),
+        'versioning_enabled': enable_versioning
+    }
+    
+    # Save main manifest
+    manifest_path = 'static/js/manifest.json'
+    with open(manifest_path, 'w') as f:
+        json.dump(manifest, f, indent=2)
+    
+    # Also save a simple text file with just the version
+    if enable_versioning:
+        version_txt_path = 'static/js/version.txt'
+        with open(version_txt_path, 'w') as f:
+            f.write(str(int(time.time())))
+    
+    print(f"\n📝 Manifest saved: {manifest_path}")
+    if enable_versioning:
+        print(f"   Version info included")
+
+def run_all_builds(enable_versioning=False):
+    """Run all configured builds with optional versioning"""
     print("📊 Found JavaScript files to process")
     
     # Show what will be built
     print("\n📋 Build Plan:")
     for key, config in ENTRY_POINTS.items():
-        print(f"   • {config['name']}: {config['path']} → {config['output']}")
+        version_msg = " (versioned)" if enable_versioning else ""
+        print(f"   • {config['name']}{version_msg}: {config['path']}")
     
     print("\n" + "=" * 60)
     
-    # Track overall success
-    all_successful = True
+    # Track build results
+    bundle_infos = []
     build_times = {}
+    all_successful = True
     
     # Build each entry point
     for key, config in ENTRY_POINTS.items():
         start_time = time.time()
-        success = build_entry_point(config)
+        bundle_info = build_entry_point(config, enable_versioning)
         build_time = time.time() - start_time
         
-        build_times[config['name']] = {
-            'success': success,
-            'time': build_time
-        }
-        
-        if not success:
+        if bundle_info:
+            bundle_infos.append(bundle_info)
+            build_times[config['name']] = {
+                'success': True,
+                'time': build_time
+            }
+        else:
             all_successful = False
+            build_times[config['name']] = {
+                'success': False,
+                'time': build_time
+            }
         
         # Small pause between builds
         if key != list(ENTRY_POINTS.keys())[-1]:
             print("\n" + "─" * 40)
+    
+    # Save manifest if we have any successful builds
+    if bundle_infos and all_successful:
+        save_manifest(bundle_infos, enable_versioning)
     
     # Print summary
     print("\n" + "=" * 60)
@@ -238,18 +333,44 @@ def run_all_builds():
     
     return all_successful
 
+def clean_old_bundles():
+    """Clean up old versioned bundle files"""
+    print("\n🧹 Cleaning old bundle files...")
+    
+    js_dir = Path("static/js")
+    if not js_dir.exists():
+        return
+    
+    # Keep only the most recent versioned files
+    # This is optional - you might want to keep all for rollback
+    pattern = "bundle*.min.js"
+    versioned_files = list(js_dir.glob("bundle.*.min.js"))
+    
+    # Group by bundle type
+    bundles = {}
+    for f in versioned_files:
+        name_parts = f.name.split('.')
+        if len(name_parts) >= 3:
+            bundle_type = name_parts[0] + '.' + name_parts[1]  # "bundle.core" or "bundle"
+            bundles.setdefault(bundle_type, []).append(f)
+    
+    # Keep only the 3 most recent for each bundle type
+    for bundle_type, files in bundles.items():
+        if len(files) > 3:
+            files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            for old_file in files[3:]:
+                old_file.unlink()
+                print(f"   Removed old: {old_file.name}")
+
 def watch_mode():
     """Run in watch mode - simplified version"""
-    print("\n👀 Watch mode enabled")
-    print("   Note: Watch mode builds both bundles once")
-    print("   For continuous watching, use: npx esbuild directly")
+    print("\n👀 Watch mode enabled (without versioning)")
     print("-" * 50)
     
-    # Just do one build
-    success = run_all_builds()
+    success = run_all_builds(enable_versioning=False)
     
     if success:
-        print("\n✅ Initial build complete. For continuous watching, consider:")
+        print("\n✅ Initial build complete. For continuous watching, use:")
         print("   npx esbuild src/static/js/app.js --bundle --watch --outfile=static/js/bundle.min.js")
         print("   npx esbuild src/static/js/app_core.js --bundle --watch --outfile=static/js/bundle.core.min.js")
 
@@ -257,7 +378,6 @@ def quick_scan():
     """Quick scan to estimate build time"""
     print("🔍 Quick scan...")
     
-    # Find largest files (might be bottlenecks)
     js_files = []
     for path in Path("src/static/js").rglob("*.js"):
         size = path.stat().st_size
@@ -272,50 +392,54 @@ def quick_scan():
             size_kb = size / 1024
             print(f"   {size_kb:6.1f}KB  {rel_path}")
     
-    # Estimate build time (rough approximation)
-    total_size = sum(size for size, _ in js_files) / (1024 * 1024)  # MB
-    estimated_time = total_size * 0.5  # Rough estimate: 0.5s per MB
-    
+    total_size = sum(size for size, _ in js_files) / (1024 * 1024)
     print(f"\n📈 Total JS: {total_size:.1f}MB")
-    print(f"⏱️  Estimated build time: {estimated_time:.1f}s")
-    
-    if total_size > 5:
-        print("\n💡 Tip: Your bundle is large. Consider:")
-        print("   - Code splitting")
-        print("   - Lazy loading")
-        print("   - Removing unused imports")
 
 def main():
-    print("🐷 SuperPig UI Builder")
-    print("=" * 50)
+    print("🐷 SuperPig UI Builder with Versioning")
+    print("=" * 60)
     
     # Parse arguments
+    enable_versioning = ENABLE_VERSIONING
+    
     if len(sys.argv) > 1:
-        if sys.argv[1] in ["--watch", "-w"]:
+        if sys.argv[1] in ["--version", "-v"]:
+            enable_versioning = True
+        elif sys.argv[1] in ["--watch", "-w"]:
             watch_mode()
             return
         elif sys.argv[1] in ["--scan", "-s"]:
             quick_scan()
             return
+        elif sys.argv[1] in ["--clean"]:
+            clean_old_bundles()
+            return
         elif sys.argv[1] in ["--build-login"]:
             # Build just login
-            success = build_entry_point(ENTRY_POINTS['login'])
-            sys.exit(0 if success else 1)
+            bundle_info = build_entry_point(ENTRY_POINTS['login'], enable_versioning)
+            if bundle_info:
+                save_manifest([bundle_info], enable_versioning)
+            sys.exit(0 if bundle_info else 1)
         elif sys.argv[1] in ["--build-core"]:
             # Build just core
-            success = build_entry_point(ENTRY_POINTS['core'])
-            sys.exit(0 if success else 1)
+            bundle_info = build_entry_point(ENTRY_POINTS['core'], enable_versioning)
+            if bundle_info:
+                save_manifest([bundle_info], enable_versioning)
+            sys.exit(0 if bundle_info else 1)
         elif sys.argv[1] in ["--help", "-h"]:
             print("Usage: python build.py [options]")
             print("Options:")
-            print("  --watch, -w        Watch for changes (simple mode)")
+            print("  --version, -v     Enable versioned outputs (hash in filename)")
+            print("  --watch, -w        Build once (simplified watch)")
             print("  --scan, -s         Scan and analyze files")
+            print("  --clean            Clean old versioned bundle files")
             print("  --build-login      Build only login bundle")
             print("  --build-core       Build only core bundle")
             print("  --help, -h         Show this help")
             print("\nEnvironment:")
-            print("  SUPERPIG_ENV=development    Enable source maps")
-            print("  ANALYZE=1                   Generate build analysis")
+            print("  ENABLE_VERSIONING=true    Enable versioned outputs")
+            print("  SUPERPIG_ENV=development  Enable source maps")
+            print("  ANALYZE=1                 Generate build analysis")
             return
     
     # Check dependencies
@@ -328,16 +452,26 @@ def main():
     
     # Run all builds
     start_time = time.time()
-    success = run_all_builds()
+    success = run_all_builds(enable_versioning)
     total_time = time.time() - start_time
     
     if success:
         print(f"\n✨ All builds completed in {total_time:.1f}s")
-        print("\n💡 Tips:")
-        print("   • Use --watch for development")
-        print("   • Use --scan to analyze file sizes")
-        print("   • Use --build-login or --build-core for single builds")
-        print("   • Set SUPERPIG_ENV=development for source maps")
+        
+        if enable_versioning:
+            print("\n📦 Versioned files created:")
+            js_dir = Path("static/js")
+            for pattern in ["bundle.*.min.js"]:
+                for f in js_dir.glob(pattern):
+                    if f.name.count('.') >= 3:  # Versioned files have extra hash part
+                        size = f.stat().st_size / 1024
+                        print(f"   • {f.name} ({size:.1f}KB)")
+            
+            print("\n💡 To use in templates:")
+            print("   Read static/js/manifest.json to get current filenames")
+        else:
+            print("\n💡 Tip: Use --version flag for cache-busting filenames")
+        
         sys.exit(0)
     else:
         print("\n❌ Some builds failed")

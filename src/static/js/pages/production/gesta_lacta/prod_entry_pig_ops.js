@@ -697,7 +697,7 @@ ${html_style}
                 const checkmark = document.createElement('div');
                 
                 const html_check_mark = `
-                <img src="static/images/box_check.png" 
+                <img src="static_m/images/box_check.png" 
                     alt="Checkmark" 
                     data-bs-toggle="tooltip" 
                     data-bs-placement="top" 

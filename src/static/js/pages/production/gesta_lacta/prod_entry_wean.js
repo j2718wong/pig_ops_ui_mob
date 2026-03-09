@@ -59,8 +59,7 @@ export function ProdEntryWean(input_settings){
     const settings              = input_settings;
     
     const elemDivContainer      = settings.elemDivContainer;
-    
-    let elemIdContentContainer  = null;
+
     
     let elemIdWarningBox        = null;
     let elemIdSow               = null;
@@ -88,9 +87,6 @@ export function ProdEntryWean(input_settings){
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
     
-    
-    
-    let elemContentContainer    = null;
     
     let elemWarningBox          = null;
     let elemSow                 = null;
@@ -132,9 +128,6 @@ export function ProdEntryWean(input_settings){
     
     
     this.getHtml = function(){
-        
-        elemIdContentContainer  = `${settings.uniqueKey}-content`;
-                
         elemIdWarningBox        = `${settings.uniqueKey}-cannot-update`;
         
         elemIdSow               = `${settings.uniqueKey}-sow`;
@@ -230,7 +223,7 @@ export function ProdEntryWean(input_settings){
 
         
         const html = `
-<div class="modal-body" id="${elemIdContentContainer}">
+<div class="modal-body">
     <h2 class="tab-title">
         Weaning Information
     </h2>
@@ -354,8 +347,6 @@ export function ProdEntryWean(input_settings){
     
     
     this._findElements = function(){
-        elemContentContainer    = elemDivContainer.querySelector('#'+elemIdContentContainer);
-        
         elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
         elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);
         elemDaysSinceBirth      = elemDivContainer.querySelector('#'+elemIdDaysSinceBirth);

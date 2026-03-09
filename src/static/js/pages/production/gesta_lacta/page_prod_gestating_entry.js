@@ -15,6 +15,8 @@ import {PAGE_ID,
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
 import {ProdEntryMating}        from './prod_entry_mating.js'
+import {ProdEntryUpdateGestaStatus} from './prod_entry_gesta_status.js'
+
 
 
 
@@ -44,11 +46,13 @@ export function PageProdGestatingEntry(input_settings){
     this.TAB_GESTA_PIGOPS       = 1;
     this.TAB_GESTA_BIRTH        = 2;
     this.TAB_GESTA_MATING       = 3;
+    this.TAB_GESTA_STATUS       = 4;       
     
     
     let elemIdTabGestaPigOps    = `prod-gesta-pigops`;
     let elemIdTabGestaBirth     = `prod-gesta-birth`;
     let elemIdTabGestaMating    = `prod-gesta-mating`;
+    let elemIdTabGestaStatus    = `prod-gesta-status`;
         
     
     let tabsProdGesta = [
@@ -65,7 +69,13 @@ export function PageProdGestatingEntry(input_settings){
         {
             data_tab_id:    elemIdTabGestaMating,
             label:          'Mating'
+        },
+        
+        {
+            data_tab_id:    elemIdTabGestaStatus,
+            label:          'Status'
         }
+
     ];
     
     
@@ -73,6 +83,7 @@ export function PageProdGestatingEntry(input_settings){
     let elemTabGestaPigOps          = null;
     let elemTabGestaBirth           = null;
     let elemTabGestaMating          = null;
+    let elemTabGestaStatus          = null;
                                         
     
     
@@ -106,6 +117,7 @@ export function PageProdGestatingEntry(input_settings){
         elemTabGestaPigOps      = elemDivContainer.querySelector('#'+elemIdTabGestaPigOps);
         elemTabGestaBirth       = elemDivContainer.querySelector('#'+elemIdTabGestaBirth);
         elemTabGestaMating      = elemDivContainer.querySelector('#'+elemIdTabGestaMating);
+        elemTabGestaStatus      = elemDivContainer.querySelector('#'+elemIdTabGestaStatus);
     }
     
     
@@ -136,6 +148,15 @@ export function PageProdGestatingEntry(input_settings){
         });
         this.prodEntryBirth.init();
         
+        
+        
+        this.prodEntryGestaStatus = new ProdEntryUpdateGestaStatus({
+            navigation:         navigation,
+            parentObj:          this,
+            uniqueKey:          'pig-prod-gesta-status',
+            elemDivContainer:   elemTabGestaStatus
+        });
+        this.prodEntryGestaStatus.init();
         
         
         this.componentTabsWithMore.beforeShowTab = this.beforeShowTab;
@@ -187,6 +208,12 @@ export function PageProdGestatingEntry(input_settings){
             }
             
             
+            case thisObj.TAB_GESTA_STATUS:{
+                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaMating);
+                break;
+            }
+            
+            
             default:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabGestaPigOps)
                 break;
@@ -220,8 +247,8 @@ export function PageProdGestatingEntry(input_settings){
                 break;
             }
             
-            case elemIdTabGestaMating:{
-                // Set Insemination tab
+            case elemIdTabGestaStatus:{
+                // Set Gesta Status Tab
                 const options_insem ={
                     is_read_only:   false
                 }

@@ -801,4 +801,66 @@ export function ManagerPigProd(input_settings){
             }
         }
     }
+
+
+    /** 
+     * Updating the PigProdList is an expensive process. It will refresh all this
+     * list. Bacause updating a prod status from gesta to lacta or 
+     * lacta to fattening should update two lists. And all the details of the
+     * pig_prod that were previously requested will be lost and need to be 
+     * requested again.
+     * 
+     * this.dataGestatingList
+     * this.dataLactatingList
+     * this.dataFatteningList
+     * 
+     * 2026-03-10 Notes:
+     * - There is a future plan for realtime updates; 
+     * 
+     * - As of this date this is implemented via a request of data version numbers. 
+     * This request is light weight - will just return version numbers. 
+     * The requested version numbers should be compared with the current 
+     * saved ones. If the requested version number 
+     * is higher than the current version number, it should request data.
+     * */
+    this.checkIfToUpdateDataPigProdList = function(callback_success, elem_show_error){
+        let new_ver_num_pig_prod = null;
+        
+        const callback_success_pig_prod_list = function(data){
+            // Need to update this version_num.
+            parentObj.dataVerNum.pig_prod = new_ver_num_pig_prod;
+            if (callback_success){
+                callback_success();
+            }
+        };
+        
+        
+        const callback_success_ver_num = function(data){
+            const data_ver_num = data.data_ver_num;
+                
+            /*
+            parentObj.dataVerNum = {
+                sow:                    data_ver_num.sow,
+                boar:                   data_ver_num.boar,
+                pig_prod:               data_ver_num.pig_prod,
+                staff:                  data_ver_num.staff,
+                feed_buy:               data_ver_num.feed_buy,
+                not_pregnant:           data_ver_num.not_pregnant
+            };
+            */
+            
+            if (parentObj.dataVerNum.pig_prod != data_ver_num.pig_prod){
+                new_ver_num_pig_prod = data_ver_num.pig_prod;
+                
+                const pig_prod_type  = PIG_PROD_TYPE.ALL;
+                thisObj.requestPigProdList(pig_prod_type, 
+                    callback_success_pig_prod_list, elem_show_error);
+            }   
+        };
+        
+        parentObj.requestPigFarmDataVerNum(callback_success_ver_num, 
+            elem_show_error);
+        
+    }
+
 }

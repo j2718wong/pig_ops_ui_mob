@@ -24,8 +24,16 @@ export function PigFarm(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
     
-    
     this.accountLists           = new AccountLists(_navigation);
+    
+    this.dataVerNum             = {
+        sow:                    0,
+        boar:                   0,
+        pig_prod:               0,
+        staff:                  0,
+        feed_buy:               0,
+        not_pregnant:           0
+    };
     
     
     this.dataPigFarm            = null;
@@ -36,6 +44,8 @@ export function PigFarm(_navigation){
     this.dataStaffList          = null;
     
     this.dataFarmFeedBuyList    = null;
+    
+    
     
     
     this.managerSowBoar         = new ManagerSowBoar({
@@ -126,12 +136,33 @@ export function PigFarm(_navigation){
             thisObj.managerPigProd.setDataPigProdList(data.pig_production);
         }
         else{
+            // Set pig_farm.dataVerNum 
+            const callback_set_pig_farm_data_ver_num = function(data){
+                const data_ver_num = data.data_ver_num;
+                
+                thisObj.dataVerNum = {
+                    sow:                    data_ver_num.sow,
+                    boar:                   data_ver_num.boar,
+                    pig_prod:               data_ver_num.pig_prod,
+                    staff:                  data_ver_num.staff,
+                    feed_buy:               data_ver_num.feed_buy,
+                    not_pregnant:           data_ver_num.not_pregnant
+                };
+                
+                console.log('\n\npig_farm.dataVerNum');
+                console.log(thisObj.dataVerNum);
+                
+                navigation.showHomeDashBoard();
+            }
+            
+            
             const callback_success = function(data){
                 thisObj.managerPigProd.setDataPigProdList(data);
-                navigation.showHomeDashBoard();
                 
-                console.log('dashboard shown');
+                thisObj.requestPigFarmDataVerNum(
+                    callback_set_pig_farm_data_ver_num);
             };
+            
             
             const pig_prod_type = PIG_PROD_TYPE.ALL;
             thisObj.managerPigProd.requestPigProdList(pig_prod_type, 
@@ -188,6 +219,54 @@ export function PigFarm(_navigation){
         }
         
         return true;
+    }
+ 
+ 
+    this.requestPigFarmDataVerNum = function(callback_success, elem_show_error){
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_farm/data_ver_num?pfhid=${thisObj.getPigFarmHid()}`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
     }
  
     

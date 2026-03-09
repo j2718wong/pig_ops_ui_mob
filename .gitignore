@@ -16,6 +16,8 @@ static/js/bundle*.js
 static/js/*.min.js
 static/js/*.map
 static/js/dist/
+static/js/manifest.json
+static/js/version.txt
 
 
 # Environment

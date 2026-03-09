@@ -406,7 +406,6 @@ export function CommonSelectOptions(){
     
     
     
-    
     this.setDataAccPigBuyerList = function(data, select_elem){
         
         let select_data = [];
@@ -450,5 +449,48 @@ export function CommonSelectOptions(){
         
         replaceSelectOptions(select_elem, select_data);
     }
+    
+    
+    this.setDataPigProdList = function(data, select_elem){
+        
+        let select_data = [];
+        if (data.length == 0){
+            select_data.push({value:"-1", text:"No Entries"});
+            replaceSelectOptions(select_elem, select_data);
+            return;
+        }
+        
+        
+        select_data = [];
+        select_data.push({value:"0", text:"Please Select"});
+        
+        
+        
+        for (const cur_entry of data){
+            let s_prod = `${cur_entry.pig_production.farm_prod_id}`;
+            
+            let sow_name = null;
+            if (cur_entry.sow.name){
+                sow_name = cur_entry.sow.name;
+            }
+            else{
+                sow_name = cur_entry.sow.number;
+            }
+            
+            if (sow_name){
+                s_prod += `, ${sow_name}`;
+            }
+            
+            
+            
+            select_data.push({value: cur_entry.pig_production.hid, 
+                text: s_prod});
+        }
+        
+        replaceSelectOptions(select_elem, select_data);
+    }
+    
+    
+    
     
 }

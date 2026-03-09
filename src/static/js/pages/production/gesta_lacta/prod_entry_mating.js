@@ -49,9 +49,6 @@ export function ProdEntryMating(input_settings){
 
     const MAXCHAR_INSEM_NOTES   = 160;
     
-    
-    let elemIdContentContainer  = null;
-        
     let elemIdCannotUpdate      = null;
     
     let elemIdSow               = null;
@@ -79,8 +76,6 @@ export function ProdEntryMating(input_settings){
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
     
-    
-    let elemContentContainer    = null;
     
     let elemCannotUpdate        = null;
     
@@ -123,9 +118,6 @@ export function ProdEntryMating(input_settings){
     
     
     this.getHtml = function(){
-        
-        elemContentContainer    = `${settings.uniqueKey}-content`;
-        
         elemIdCannotUpdate      = `${settings.uniqueKey}-cannot-update`;
         
         elemIdSow               = `${settings.uniqueKey}-sow`;
@@ -236,7 +228,7 @@ export function ProdEntryMating(input_settings){
         
         
         const html = `
-<div class="modal-body" id="${elemIdContentContainer}">
+<div class="modal-body">
     <h2 class="tab-title">
         Mating Information
     </h2>
@@ -357,9 +349,6 @@ export function ProdEntryMating(input_settings){
     
     
     this._findElements = function(){
-        
-        elemContentContainer    = elemDivContainer.querySelector('#'+elemIdContentContainer);
-        
         elemCannotUpdate        = elemDivContainer.querySelector('#'+elemIdCannotUpdate);
         
         elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);

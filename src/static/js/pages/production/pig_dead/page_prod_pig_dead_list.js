@@ -263,9 +263,6 @@ export function PageProdPigDeadList(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        console.log('cur_entry pig dead');
-        console.log(cur_entry);
-        
         
         // PID, Sow ❤ Boar column
         const html_pid_sow  = farmPage.getHtmlPidSowLoveBoar(cur_entry.production);
