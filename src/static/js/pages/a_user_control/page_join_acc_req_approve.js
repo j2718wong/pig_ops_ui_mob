@@ -337,8 +337,6 @@ export function PageJoinAccReqApprove(input_settings){
     
     
     this.populateForm = function(){
-        console.log('dataJoinAccRequest');
-        console.log(dataJoinAccRequest);
         
         // Hide this first;
         // If the account has only one farm, no need to show this.
@@ -348,7 +346,6 @@ export function PageJoinAccReqApprove(input_settings){
         const account   = navigation.userControl.dataUserAccount.account;
         const pig_farms = account.pig_farms;
         
-        console.log(pig_farms);
         
         const elem_select = elemUiPigFarms.getElemSelect();
         

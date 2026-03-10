@@ -1183,9 +1183,18 @@ ${html_style}
          
     this.onClickSowBoarEntry = function(sow_boar_hid, pig_prod_id, tab_id, sow_boar_type){
         if (sow_boar_hid == null){
+            
             // Go back to this page
             const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
             navigation.showThisPage(page_container);
+            
+            if (sow_boar_type){
+                const options= {
+                    sow_boar_type: sow_boar_type
+                };
+                navigation.pageSowBoarList.show(options);
+            }
+            
             return;
         }
     

@@ -497,6 +497,7 @@ export function PageSowBoarEntry(input_settings){
             showOptions = options;
         }
         
+
         
         // Set Entry Title
         let s_title = '';
@@ -565,6 +566,7 @@ export function PageSowBoarEntry(input_settings){
         
         let sow_boar_name   = getSowBoarReference(data_sow_boar.sow_boar);
         let prod_link = '';
+        
         
         // Append SOW Status so that no ambiguity
         
@@ -682,11 +684,26 @@ export function PageSowBoarEntry(input_settings){
         
         // Set left-right arrow navigation
         elemNavPrevEntry.onclick = function(){
-            navigation.pageSowBoarList.onClickSowBoarEntry(showOptions.prev_sow_boar_hid);
+            const prev_sow_boar_hid = showOptions.prev_sow_boar_hid;
+            
+            if (prev_sow_boar_hid){
+                navigation.pageSowBoarList.onClickSowBoarEntry(prev_sow_boar_hid);
+            } else{
+                navigation.pageSowBoarList.onClickSowBoarEntry(null, null, null,
+                    showOptions.sow_boar_type);
+            }
         }
         
         elemNavNextEntry.onclick = function(){
-            navigation.pageSowBoarList.onClickSowBoarEntry(showOptions.next_sow_boar_hid);
+            const next_sow_boar_hid = showOptions.next_sow_boar_hid;
+            
+            if (next_sow_boar_hid){
+                navigation.pageSowBoarList.onClickSowBoarEntry(next_sow_boar_hid);
+            }
+            else{
+                navigation.pageSowBoarList.onClickSowBoarEntry(null, null, null,
+                    showOptions.sow_boar_type)
+            }
         }
         
         

@@ -361,10 +361,8 @@ export function PageCommonSupplierAddEdit(input_settings){
     
     this.onChangeAddressLevel3 = function(level_3_hid){
         // Get suppliers at addressLevel3
-        
-        console.log(' supplier_add_edit onChangeAddressLevel3');
-        
-        
+
+
         // Filter which of the suppliers in curAddressLevel2 are in level_3_hid
         const filtered_level_2 = [];
         const list_supplier = curAddressLevel2.list_supplier;

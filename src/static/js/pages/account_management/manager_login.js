@@ -142,8 +142,6 @@ export function ManagerLogin(){
     this.onPageLoad = function(){
         const url_path = window.location.pathname;
         
-        console.log('url_path = ' + url_path);
-        
         let options;
         
         if (url_path == '/signup'){

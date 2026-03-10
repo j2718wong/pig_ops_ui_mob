@@ -288,13 +288,8 @@ export function PageCreateOrJoinAccount(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     
-                    
-                    
                     const data_user_account = response.user_account;
-                    
-                    console.log(`data_user_account`);
-                    console.log(data_user_account);
-                    
+
                     
                     const goto_page_id   = PAGE_ID.ADD_FARM;
                     const page_container = parentObj.getPageContainer(goto_page_id);
@@ -342,11 +337,6 @@ export function PageCreateOrJoinAccount(input_settings){
         const user_hid      = curDataUserAccount.user.user.hid;
         const base_url      = window.location.origin;
 
-        
-        console.log(`curDataUserAccount`);
-        console.log(curDataUserAccount);
-        
-        
         const bearer_token  = localStorage.getItem('access_token');
         
         // send post request
@@ -378,9 +368,6 @@ export function PageCreateOrJoinAccount(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    
-                    console.log('after join');
-                    console.log(response);
                     
                     const goto_page_id   = PAGE_ID.REQ_JOIN_ACC_SENT;
                     const page_container = parentObj.getPageContainer(goto_page_id);
