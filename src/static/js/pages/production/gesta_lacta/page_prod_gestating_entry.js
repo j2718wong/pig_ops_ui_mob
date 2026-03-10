@@ -209,7 +209,7 @@ export function PageProdGestatingEntry(input_settings){
             
             
             case thisObj.TAB_GESTA_STATUS:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabGestaMating);
+                thisObj.componentTabsWithMore.switchTab(prodEntryGestaStatus);
                 break;
             }
             
@@ -228,10 +228,11 @@ export function PageProdGestatingEntry(input_settings){
         switch(tabId) {
             case elemIdTabGestaPigOps:{
                 // Set PigProdOps tab
-                const options_pig_prod_ops ={
+                const options = {
                     show_gesta:   true
-                }
-                thisObj.prodEntryPigOps.show(dataPigProd, options_pig_prod_ops);
+                };
+                
+                thisObj.prodEntryPigOps.show(dataPigProd, options);
             
                 curTab = thisObj.TAB_GESTA_PIGOPS;
                 break;
@@ -239,9 +240,10 @@ export function PageProdGestatingEntry(input_settings){
             
             case elemIdTabGestaBirth:{
                 // Set Birth tab
-                const options_birth ={
-                }
-                thisObj.prodEntryBirth.beforeShow(dataPigProd, options_birth);
+                const options ={
+                };
+                
+                thisObj.prodEntryBirth.beforeShow(dataPigProd, options);
                 
                 curTab = thisObj.TAB_GESTA_BIRTH;
                 break;
@@ -249,12 +251,12 @@ export function PageProdGestatingEntry(input_settings){
             
             case elemIdTabGestaStatus:{
                 // Set Gesta Status Tab
-                const options_insem ={
-                    is_read_only:   false
-                }
-                thisObj.prodEntryMating.beforeShow(dataPigProd, options_insem);
+                const options ={
+                };
+
+                thisObj.prodEntryGestaStatus.beforeShow(dataPigProd, options);
                 
-                curTab = thisObj.TAB_GESTA_MATING;
+                curTab = thisObj.TAB_GESTA_STATUS;
                 break;
             }
             

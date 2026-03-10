@@ -631,9 +631,6 @@ export function ProdEntryBirth(input_settings){
                     const callback_success = function(){ 
                         thisObj.onSuccessUpdateBirth();
                         
-                        if (thisObj.callBackOnSuccessUpdate){
-                            thisObj.callBackOnSuccessUpdate();
-                        }
                     };
                     
                     navigation.pigFarm.requestDataPigFarmStaffList(

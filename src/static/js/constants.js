@@ -177,7 +177,11 @@ const PROD_STATUS = {
     GROWING:            6,
     COMBINED:           7,
     HARVESTED:          8,
-    CLOSED:             9
+    CLOSED:             9,
+    NO_LIVE_PIGLETS:    10,
+    
+    DELETE:            99
+    
 };
 
 

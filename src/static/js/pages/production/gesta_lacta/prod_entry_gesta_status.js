@@ -196,6 +196,7 @@ export function ProdEntryUpdateGestaStatus(input_settings){
     
     this.afterHtmlRender = function(){
         elemUiDateStatus.afterHtmlRender();
+        elemUiNotes.afterHtmlRender();
         
         
         this._findElements();
@@ -234,7 +235,7 @@ export function ProdEntryUpdateGestaStatus(input_settings){
           
         elemUiDateStatus.reset();
         
-        
+        elemUiNotes.reset();
         
         elemServerErrorMsg.style.display = 'none';
     }
@@ -244,8 +245,7 @@ export function ProdEntryUpdateGestaStatus(input_settings){
         thisObj._resetForm();
         
         
-        
-        
+        curDataPigProd = data_pig_prod;
         
     }
     
@@ -332,17 +332,17 @@ export function ProdEntryUpdateGestaStatus(input_settings){
         
         switch(value){
             case 'Delete':{
-                prod_status_id = SOW_STATUS.DELETE;
+                prod_status_id = PROD_STATUS.DELETE;
                 break;
             }
             
             case 'NotPregnant':{
-                prod_status_id = SOW_STATUS.SOLD;
+                prod_status_id = PROD_STATUS.NOT_PREGNANT;
                 break;
             }
             
             case 'NoLive':{
-                prod_status_id = SOW_STATUS.DEAD;
+                prod_status_id = PROD_STATUS.NO_LIVE_PIGLETS;
                 break;
             }
             
@@ -373,6 +373,7 @@ export function ProdEntryUpdateGestaStatus(input_settings){
         const post_data = {
             'uhid':             user_hid,
             'pig_prod_hid':     curDataPigProd.pig_production.hid,
+            'date_status':      dt_status_s,
             'prod_status_id':   prod_status_id,
             'notes':            input_notes
         };
@@ -407,17 +408,17 @@ export function ProdEntryUpdateGestaStatus(input_settings){
                     // updated; otherwise it will not show up in staff  dropdown.
                     // Request pigFarm stafflist first
                     
-                    const callback_success = function(){ 
-                        thisObj.onSuccessUpdateBirth();
-                        
-                        if (thisObj.callBackOnSuccessUpdate){
-                            thisObj.callBackOnSuccessUpdate();
-                        }
+                    // Update Gestating list
+                    const callback_success = function(data){
+                        // Go Back to Gestating List Page
+                        const operation_type = PIG_OPERATION_TYPE.GESTATING;
+                        navigation._onClickNavProdGestaLacta(null, operation_type);
                     };
                     
-                    navigation.pigFarm.requestDataPigFarmStaffList(
-                        callback_success, elemServerErrorMsg);
-                    
+                    // Request Gestating List
+                    navigation.pigFarm.managerPigProd.requestPigProdList(
+                        PIG_PROD_TYPE.GESTATING, callback_success, elemServerErrorMsg);
+
                 } 
                 else{
                     navigation.serverError.receivedErrorMessage(
