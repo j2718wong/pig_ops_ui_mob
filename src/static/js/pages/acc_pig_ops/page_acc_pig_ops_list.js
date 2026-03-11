@@ -471,14 +471,16 @@ export function PageAccPigOpsList(input_settings){
                     const buttons_gesta = elemPageInfo.querySelectorAll('.gestating'); 
                     for(const cur_entry of buttons_gesta){
                         cur_entry.onclick = function(){
-                            navigation._onClickNavProdGestaLacta(null, 1);
+                            navigation._onClickNavProdGestaLacta(null, 
+                                PIG_OPERATION_TYPE.GESTATING);
                         };
                     } 
                     
                     const buttons_lacta = elemPageInfo.querySelectorAll('.lactating'); 
                     for(const cur_entry of buttons_lacta){
                         cur_entry.onclick = function(){
-                            navigation._onClickNavProdGestaLacta(null, 2);
+                            navigation._onClickNavProdGestaLacta(null, 
+                                PIG_OPERATION_TYPE.LACTATING_PIGLETS);
                         };
                     } 
                     

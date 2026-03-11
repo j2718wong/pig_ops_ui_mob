@@ -255,7 +255,7 @@ export function ManagerNavLinks(_navigation) {
     
     this._bindEventListeners = function(){
         elemDesktopNavProduction1.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.GESTATING, true);
         });
           
         elemDesktopNavProduction2.addEventListener('click', function() {
@@ -395,7 +395,7 @@ export function ManagerNavLinks(_navigation) {
 
 
         elemMobileNavProduction1.addEventListener('click', function() {
-             navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING);
+             navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING, true);
         }); 
           
         elemMobileNavProduction2.addEventListener('click', function() {

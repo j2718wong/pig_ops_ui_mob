@@ -926,6 +926,14 @@ export function Navigation(){
   
             success: function(response){
                 if (response.result.num == 0){
+                    console.log('response');
+                    console.log(response);
+                    
+                    if (response.data.user_account == null){
+                        window.location.href = '/login';
+                        return;
+                    }
+                    
                     thisObj.initComponents();
                     thisObj.afterHtmlRender();
                     
@@ -1609,7 +1617,8 @@ export function Navigation(){
     }
     
     
-    this._onClickNavProdGestaLacta = function(is_mobile, operation_type){
+    this._onClickNavProdGestaLacta = function(is_mobile, operation_type, 
+            check_data_updates){
         
         if (is_mobile == null){ 
             // If not specified use the last known screen state.
@@ -1622,8 +1631,21 @@ export function Navigation(){
         
         
         if (operation_type == PIG_OPERATION_TYPE.GESTATING){
-            thisObj.showThisPage(elemPageContProdGestaList);
-            thisObj.pageMobGestatingList.show();
+            if (check_data_updates){
+                const callback_success = function(){
+                    thisObj.showThisPage(elemPageContProdGestaList);
+                    thisObj.pageMobGestatingList.show();
+                };
+                
+                thisObj.pigFarm.managerPigProd.checkIfToUpdateDataPigProdList(
+                    callback_success); 
+            }
+            
+            else{
+                thisObj.showThisPage(elemPageContProdGestaList);
+                thisObj.pageMobGestatingList.show();
+            }
+            
             return;
         }
         

@@ -371,7 +371,7 @@ ${html_style}
                 
             </div>
             
-            <div class="sow-boar-controls" id="${elemIdSowControls}">
+            <div class="sow-boar-controls" id="${elemIdSowControls}" style="display:none;">
                 <div class="checkbox-group" style="padding:6px; margin-top:0; margin-bottom:4px;">
                     <input type="checkbox" id="${elemIdIncludeDisposed}">
                     <label for="${elemIdIncludeDisposed}" class="checkbox-label">

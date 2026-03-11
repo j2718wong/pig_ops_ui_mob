@@ -121,7 +121,7 @@ export function PageCustomerPricing(input_settings){
             <ul class="reminder-list">
                 <li><strong>Bills are sent by email</strong> — to account admins only. You can also add farm managers to receive them.</li>
                 <li><strong>In-app notice</strong> — visible for admins and managers (not shown to operations users).</li>
-                <li><strong>15 days to pay</strong> — grace period after each invoice.</li>
+                <li><strong>15 days to pay</strong> — grace period after each invoice. We will send payment options and instructions how to pay.</li>
             </ul>
 
             <!-- if unpaid – flat with border, but still no background color -->

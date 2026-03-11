@@ -249,6 +249,17 @@ export function PageProdGestatingEntry(input_settings){
                 break;
             }
             
+            case elemIdTabGestaMating:{
+                // Set Mating tab
+                const options ={
+                };
+                
+                thisObj.prodEntryMating.beforeShow(dataPigProd, options);
+                
+                curTab = thisObj.TAB_GESTA_BIRTH;
+                break;
+            }
+            
             case elemIdTabGestaStatus:{
                 // Set Gesta Status Tab
                 const options ={

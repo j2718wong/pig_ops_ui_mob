@@ -223,8 +223,8 @@ export function PageUserList(input_settings){
         
         <table class="data-table" id="">
             <colgroup>
-                <col style="width: 50%;">
-                <col style="width: 50%;">
+                <col style="width: 70%;">
+                <col style="width: 40%;">
             </colgroup>
 
             <thead>
@@ -258,11 +258,16 @@ export function PageUserList(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         let user_name = `${cur_entry.user.name_first} ${cur_entry.user.name_last}`;
+        let user_email = cur_entry.user.email;
+        let html_user = `
+            <div>${user_name}</div>
+            <div style="color:blue;">${user_email}</div>
+        `;
         
         
         const html = `
             <tr>
-                <td>${user_name}</td>
+                <td>${html_user}</td>
                 <td>${cur_entry.user_group.name}</td>
             </tr>
         `;
@@ -324,6 +329,20 @@ export function PageUserList(input_settings){
         
         const filtered = [];
         for (const cur_entry of data_pig_prod_list){
+            let user_name = `${cur_entry.user.name_first} ${cur_entry.user.name_last}`;
+            let user_email = cur_entry.user.email.toUpperCase();
+            
+            user_name = user_name.toUpperCase();
+            
+            if (user_name.includes(key)){
+                filtered.push(cur_entry)
+                continue;
+            }
+            
+            if (user_email.includes(key)){
+                filtered.push(cur_entry)
+                continue;
+            }
             
         }
         return filtered;

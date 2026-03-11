@@ -78,6 +78,9 @@ export function PageMobGestaLacta(input_settings){
     let elemIdTablePigOps       = null;
     let elemIdTablePigCount     = null;
     
+    let elemIdDateToday         = null;
+    
+    
     let elemIdProdTableContainer= null;
     let elemIdPigProdTableBody  = null;
     let elemIdPigCountTableBody = null;
@@ -107,6 +110,7 @@ export function PageMobGestaLacta(input_settings){
     let elemTablePigOps         = null;
     let elemTablePigCount       = null;
     
+    let elemDateToday           = null;
     
     
     let elemProdTableContainer  = null;
@@ -204,6 +208,9 @@ export function PageMobGestaLacta(input_settings){
         elemIdTablePigCount     = `${settings.uniqueKey}-table-pig-count`;
         
         
+        elemIdDateToday         = `${settings.uniqueKey}-date-today`;
+        
+        
         elemIdProdTableContainer= `${settings.uniqueKey}-mobile-pig-prod-table`;
         elemIdPigProdTableBody  = `${settings.uniqueKey}-mobile-pig-prod-tbody`;
         elemIdPigCountTableBody = `${settings.uniqueKey}-mobile-pig-count-tbody`;
@@ -235,6 +242,7 @@ export function PageMobGestaLacta(input_settings){
                 
             </div>
             
+            <div>Today <span id = "${elemIdDateToday}" style="color:blue; font-weight:600;"></span></div>
             
             
             <!-- PigProd Lacta Table -->
@@ -289,11 +297,13 @@ export function PageMobGestaLacta(input_settings){
         else{
             html_prod_tables = `
             <!-- PogProd Gesta Table -->
+            <div>Today <span id = "${elemIdDateToday}" style="color:blue; font-weight:600;"></span></div>
+            
             <table class="data-table table-gesta-lacta">
                 <colgroup>
                     <col style="width: 37%;">
-                    <col style="width: 33%;">
                     <col style="width: 30%;">
+                    <col style="width: 33%;">
                 </colgroup>
   
                 <thead>
@@ -362,7 +372,8 @@ ${html_style}
         <!-- Card Container -->
         <div class="card-container-pig-prod" id="${elemIdProdCardsContainer}" style="display:none;"></div>
         
-        <div id="${elemIdProdTableContainer}" >
+        <div id="${elemIdProdTableContainer}">
+            
             ${html_prod_tables}
         </div>
     </div>
@@ -404,6 +415,8 @@ ${html_style}
         
         elemTablePigOps         = elemDivContainer.querySelector('#'+elemIdTablePigOps);
         elemTablePigCount       = elemDivContainer.querySelector('#'+elemIdTablePigCount);
+        
+        elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
         
         elemProdTableContainer  = elemDivContainer.querySelector('#'+elemIdProdTableContainer);
         elemPigProdTableBody    = elemDivContainer.querySelector('#'+elemIdPigProdTableBody);
@@ -564,6 +577,10 @@ ${html_style}
     this.show = function(){
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
+        
+        const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
+        
+        elemDateToday.textContent = s_dt_current;
         
         
         if (settings.isGesta){
