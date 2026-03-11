@@ -804,8 +804,8 @@ export function ManagerPigProd(input_settings){
 
 
     /** 
-     * Updating the PigProdList is an expensive process. It will refresh all this
-     * list. Bacause updating a prod status from gesta to lacta or 
+     * Updating the PigProdList is an expensive process. It will refresh all 
+     * these list. Bacause updating a prod status from gesta to lacta or 
      * lacta to fattening should update two lists. And all the details of the
      * pig_prod that were previously requested will be lost and need to be 
      * requested again.
@@ -818,7 +818,7 @@ export function ManagerPigProd(input_settings){
      * - There is a future plan for realtime updates; 
      * 
      * - As of this date this is implemented via a request of data version numbers. 
-     * This request is light weight - will just return version numbers. 
+     * This request is light weight - will just return business object version numbers. 
      * The requested version numbers should be compared with the current 
      * saved ones. If the requested version number 
      * is higher than the current version number, it should request data.
@@ -836,21 +836,93 @@ export function ManagerPigProd(input_settings){
         
         
         const callback_success_ver_num = function(data){
-            const data_ver_num = data.data_ver_num;
-                
+            const data_ver_num_sow          = data[0];
+            const data_ver_num_boar         = data[1];
+            const data_ver_num_pig_prod     = data[2];
+            const data_ver_num_staff        = data[3];
+            const data_ver_num_feed_buy     = data[4];
+            const data_ver_num_not_pregnant = data[5];
+            
             /*
             parentObj.dataVerNum = {
-                sow:                    data_ver_num.sow,
-                boar:                   data_ver_num.boar,
-                pig_prod:               data_ver_num.pig_prod,
-                staff:                  data_ver_num.staff,
-                feed_buy:               data_ver_num.feed_buy,
-                not_pregnant:           data_ver_num.not_pregnant
+                sow:                    data_ver_num_sow,
+                boar:                   data_ver_num_boar,
+                pig_prod:               data_ver_num_pig_prod,
+                staff:                  data_ver_num_staff,
+                feed_buy:               data_ver_num_feed_buy,
+                not_pregnant:           data_ver_num_not_pregnant
             };
             */
             
-            if (parentObj.dataVerNum.pig_prod != data_ver_num.pig_prod){
-                new_ver_num_pig_prod = data_ver_num.pig_prod;
+            
+            /**
+             * The data change for other business objects can also be detecetd 
+             * from this data. These business objects will also be updated
+             * but will not be chained to the pig_production refresh data 
+             * callbacks. 
+             * 
+             * */
+            
+            if (parentObj.dataVerNum.sow != data_ver_num_sow){
+                // This should update navigation.pigFarm.managerSowBoar.dataSowList
+                // and navigation.pigFarm.managerSowBoar.dataGiltList.
+                const callback_success_sow = function(){
+                    parentObj.dataVerNum.sow = data_ver_num_sow;
+                };
+                
+                parentObject.managerSowBoar.requestSowBoarList(true,
+                    callback_success_sow, elem_show_error);
+            }
+            
+            
+            if (parentObj.dataVerNum.boar != data_ver_num_boar){
+                const callback_success_boar = function(){
+                    parentObj.dataVerNum.boar = data_ver_num_boar;
+                };
+                
+                // This should update navigation.pigFarm.managerSowBoar.dataBoarList
+                parentObject.managerSowBoar.requestSowBoarList(false,
+                    callback_success_boar, elem_show_error);
+            }
+
+
+            if (parentObj.dataVerNum.staff != data_ver_num_staff){
+                // This should update navigation.pigFarm.dataStaffList
+                const callback_success_staff = function(){
+                    parentObj.dataVerNum.staff = data_ver_num_staff;
+                };
+                
+                parentObject.requestDataPigFarmStaffList(
+                    callback_success_staff, elem_show_error);
+            }
+            
+            
+            if (parentObj.dataVerNum.feed_buy != data_ver_num_feed_buy){
+                // This should update navigation.pigFarm.dataFarmFeedBuyList
+                const callback_success_feed_buy = function(){
+                    parentObj.dataVerNum.feed_buy = data_ver_num_feed_buy;
+                };
+                
+                parentObject.requestDataPigFarmFeedBuyList(
+                    callback_success_feed_buy, elem_show_error);
+            }
+            
+            
+            if (parentObj.dataVerNum.not_pregnant != data_ver_num_not_pregnant){
+                // This should update navigation.pigFarm.managerPigProd.dataNotPregnantList
+                const callback_success_not_pregnant = function(){
+                    parentObj.dataVerNum.not_pregnant = data_ver_num_not_pregnant;
+                };
+
+                thisObj.requestPigProdNotPregnantList(
+                    callback_success_not_pregnant, elem_show_error
+                );
+            }
+            
+            
+            // Refresh pig_production
+            if (parentObj.dataVerNum.pig_prod != data_ver_num_pig_prod){
+                new_ver_num_pig_prod = data_ver_num_pig_prod;
                 
                 const pig_prod_type  = PIG_PROD_TYPE.ALL;
                 thisObj.requestPigProdList(pig_prod_type, 
@@ -859,7 +931,7 @@ export function ManagerPigProd(input_settings){
             else{
                 // No data change;
                 callback_success();
-            }  
+            } 
         };
         
         parentObj.requestPigFarmDataVerNum(callback_success_ver_num, 

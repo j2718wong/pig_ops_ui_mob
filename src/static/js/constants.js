@@ -248,6 +248,17 @@ const HARVEST_TYPE = {
 };
 
 
+const DATA_VER_NUM_INDEX_PIG_FARM = {
+    SOW:                    0,
+    BOAR:                   1,
+    PIG_PROD:               2,
+    STAFF:                  3,
+    FEED_BUY:               4,
+    NOT_PREGNANT:           5
+};
+
+
+
 const REQUEST_ERROR_NUM ={
     ERROR_DATABASE_ERROR:                       1,
     ERROR_SERVER_ERROR:                         2,  
@@ -281,6 +292,7 @@ export {
     FEED_TYPE_NAME,
     HARVEST_TYPE,
     
+    DATA_VER_NUM_INDEX_PIG_FARM,
     
     REQUEST_ERROR_NUM
 };

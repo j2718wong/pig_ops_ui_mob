@@ -138,15 +138,14 @@ export function PigFarm(_navigation){
         else{
             // Set pig_farm.dataVerNum 
             const callback_set_pig_farm_data_ver_num = function(data){
-                const data_ver_num = data.data_ver_num;
                 
                 thisObj.dataVerNum = {
-                    sow:                    data_ver_num.sow,
-                    boar:                   data_ver_num.boar,
-                    pig_prod:               data_ver_num.pig_prod,
-                    staff:                  data_ver_num.staff,
-                    feed_buy:               data_ver_num.feed_buy,
-                    not_pregnant:           data_ver_num.not_pregnant
+                    sow:                    data[0],
+                    boar:                   data[1],
+                    pig_prod:               data[2],
+                    staff:                  data[3],
+                    feed_buy:               data[4],
+                    not_pregnant:           data[5]
                 };
                 
                 console.log('\n\npig_farm.dataVerNum');
@@ -224,7 +223,7 @@ export function PigFarm(_navigation){
  
     this.requestPigFarmDataVerNum = function(callback_success, elem_show_error){
         const base_url = window.location.origin;
-        let url = `${base_url}/pig_farm/data_ver_num?pfhid=${thisObj.getPigFarmHid()}`;
+        let url = `${base_url}/pig_farm/data_ver_num?pfhid=${thisObj.getPigFarmHid()}&r=1`;
         
         
         const bearer_token = localStorage.getItem('access_token');
