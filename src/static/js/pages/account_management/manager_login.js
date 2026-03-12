@@ -40,6 +40,8 @@ export function ManagerLogin(){
     let elemPageContTermsOfService      = null;
     let elemPageContPrivacyPolicy       = null;
     
+    let elemCopyRightYear               = null;
+    
     
     this.pageUserSignUpOrLogin      = new PageUserSignUpOrLogin({
         parentObj:                  this,
@@ -126,7 +128,7 @@ export function ManagerLogin(){
         elemPageContTermsOfService      = document.getElementById(elemIdContTermsOfService);
         elemPageContPrivacyPolicy       = document.getElementById(elemIdContPrivacyPolicy);
         
-        
+        elemCopyRightYear               = document.getElementById('copyright-year');
         
         
     }
@@ -158,6 +160,10 @@ export function ManagerLogin(){
 
         }
         
+        
+        // Set CopyRight Year
+        const currentYear = new Date().getFullYear();
+        elemCopyRightYear.textContent = currentYear;
         
         
         const goto_page_id   = PAGE_ID.SIGNUP_OR_LOGIN;

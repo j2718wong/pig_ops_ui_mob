@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>PigFarm · Feedback</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* === EXACT CSS PROVIDED (recycled) === */
+        :root {
+            --corporate-blue: #1e3a8a; /*#1e5aa7; */
+            --corporate-blue-company: #1877F0;
+            --corporate-blue-dark: #15467d;
+            --corporate-blue-light: #4a8adb;
+            --corporate-blue-border: #dbeafe;
+            --corporate-bg: #e0f2fe;
+            
+            --blue-deep: #0a2f6c;    /* primary corporate */
+            --blue-medium: #1e4d8f;
+            --blue-soft: #e6f0ff;
+            --blue-border: #b8d1f0;
+            
+            
+            --alert-gold: #ffc107;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            
+            --icon-blue: #1e5aa7;
+            --icon-green: #28a745;
+            --icon-orange: #fd7e14;
+            --icon-purple: #6f42c1;
+            --icon-red: #dc3545;
+            --icon-teal: #20c997;
+            --icon-pink: #e83e8c;
+            --icon-indigo: #6610f2;
+            --icon-syringe: #6c757d;
+            
+            --critical-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            
+            --text-light: #f9fafb;
+            --text-dark: #1f2937;
+            
+            --light-gray: #f8fafc;
+            --medium-gray: #e2e8f0;
+            --neutral-gray: #6b7280;
+            --dark-gray: #64748b;
+            
+            --warning-bg: #fef3c7;
+            --warning-border: #f59e0b;
+            --success-bg: #d1fae5;
+            --success-border: #10b981;
+            
+            --alert-red: #ef4444;
+            --alert-glow: rgba(239, 68, 68, 0.7);
+            --green-complete: #10b981;
+
+            --gestating-color:  #693FE9;
+            --lactating-piglets-color:  #2394EF;
+            --lactating-sow-color:  #e83e8c;
+            --weaning-color: #07A4C4;
+            --gilt-color: #2ecc71;
+            --fattening-color: #fd7e14;
+            
+            --row-even: #eff7ff;
+            --row-odd: #ffffff;
+            --row-hover: #e0f2fe;
+            --clickable-highlight: #1e40af;
+            
+            --white: #ffffff;
+            
+            --body-default-bg: #f5f7fa; 
+            
+            --farm-row-bg: #fef7e6;
+            --farm-row-border: #f5cba0;
+            --total-row-bg: #d1ecf1;
+            --total-row-border: #bee5eb;
+        }
+
+        /* base reset / typography using corporate palette */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--body-default-bg, #f5f7fa);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* main feedback container — mobile first */
+        .feedback-card {
+            max-width: 780px;
+            width: 100%;
+            background-color: var(--white);
+            border-radius: 1.25rem;
+            box-shadow: var(--shadow), 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--blue-border);
+            overflow: hidden;
+        }
+
+        /* header with back button */
+        .feedback-header {
+            background: linear-gradient(145deg, var(--corporate-blue) 0%, var(--blue-deep) 100%);
+            padding: 1.5rem 1.5rem 1.2rem 1.5rem;
+            color: var(--text-light);
+            border-bottom: 4px solid var(--alert-gold);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .feedback-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+
+        .feedback-header h1 i {
+            color: var(--alert-gold);
+            font-size: 1.8rem;
+        }
+
+        .feedback-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            border-left: 3px solid var(--success-green);
+            padding-left: 1rem;
+            margin-left: 3.2rem;
+        }
+
+        /* story / intro section - plain text styling */
+        .farm-story {
+            padding: 1.8rem 1.5rem 1.2rem 1.5rem;
+            background-color: var(--white);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .farm-story p {
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+
+        /* plain text - no background, just different weight/color */
+        .farm-highlight {
+            font-weight: 600;
+            color: var(--corporate-blue);
+            font-size: 1.1rem;
+        }
+
+        .farm-story .aim-box {
+            background-color: transparent;
+            border-left: 4px solid var(--success-green);
+            padding: 1rem 0 1rem 1.2rem;
+            margin: 1.2rem 0;
+            color: var(--text-dark);
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        .farm-story .aim-box i {
+            color: var(--icon-green);
+            margin-right: 0.4rem;
+        }
+
+        /* plain text for features note - no background or radius */
+        .features-note {
+            display: inline-block;
+            margin: 0.5rem 0 0.2rem 0;
+            font-style: italic;
+            color: var(--neutral-gray);
+            border-left: 2px solid var(--icon-purple);
+            padding-left: 1rem;
+        }
+
+        .features-note i {
+            color: var(--icon-purple);
+            margin-right: 0.4rem;
+        }
+
+        /* comment counter section */
+        .counter-section {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--row-even);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--blue-border);
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .comment-counter {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1rem;
+            color: var(--blue-deep);
+            font-weight: 500;
+        }
+
+        .counter-badge {
+            background-color: var(--corporate-blue);
+            color: white;
+            padding: 0.3rem 0.9rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .counter-badge i {
+            color: var(--alert-gold);
+            font-size: 0.9rem;
+        }
+
+        .view-link {
+            color: var(--corporate-blue);
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--white);
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            border: 1px solid var(--blue-border);
+        }
+
+        .view-link i {
+            font-size: 0.8rem;
+        }
+
+        /* feedback form area */
+        .feedback-form-section {
+            padding: 1.5rem 1.5rem 2rem 1.5rem;
+        }
+
+        .feedback-form-section h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--blue-deep);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feedback-form-section h2 i {
+            color: var(--icon-syringe);
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .instruction {
+            color: var(--neutral-gray);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            border-bottom: 1px solid var(--medium-gray);
+            padding-bottom: 0.6rem;
+            font-size: 0.95rem;
+        }
+
+        /* input group */
+        .comment-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-field label {
+            font-weight: 600;
+            color: var(--corporate-blue-dark);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-field label i {
+            color: var(--icon-teal);
+        }
+
+        /* Input box */
+        .input-box {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            font-size: 1rem;
+            font-family: inherit;
+            border: 2px solid var(--blue-border);
+            border-radius: 1rem;
+            background-color: var(--light-gray);
+            transition: all 0.2s ease;
+            color: var(--text-dark);
+            resize: vertical;
+            min-height: 130px;
+            line-height: 1.5;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .input-box:focus {
+            outline: none;
+            border-color: var(--corporate-blue);
+            background-color: var(--white);
+            box-shadow: 0 0 0 3px var(--corporate-blue-border);
+        }
+
+        /* Submit button */
+        .submit-btn {
+            background-color: var(--corporate-blue);
+            border: none;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0.9rem 1.8rem;
+            border-radius: 3rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            width: 100%;
+            max-width: 300px;
+            box-shadow: var(--shadow);
+            transition: all 0.15s ease;
+            border: 1px solid var(--corporate-blue-dark);
+            letter-spacing: 0.3px;
+            margin: 0.5rem auto 0 auto;
+        }
+
+        .submit-btn i {
+            font-size: 1.2rem;
+            color: var(--alert-gold);
+        }
+
+        .submit-btn:hover {
+            background-color: var(--corporate-blue-dark);
+            transform: scale(1.02);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* feedback footer */
+        .feedback-footer {
+            background-color: var(--row-even);
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--corporate-blue-border);
+            font-size: 0.9rem;
+            color: var(--neutral-gray);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8rem;
+        }
+
+        /* mobile optimizations */
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .feedback-card {
+                border-radius: 1rem;
+            }
+            
+            .feedback-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .feedback-header p {
+                margin-left: 0;
+                font-size: 0.9rem;
+            }
+            
+            .header-top {
+                gap: 0.7rem;
+            }
+            
+            .back-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+            
+            .farm-story {
+                padding: 1.2rem 1rem;
+            }
+            
+            .counter-section {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .feedback-form-section {
+                padding: 1.2rem 1rem;
+            }
+            
+            .submit-btn {
+                max-width: 100%;
+                font-size: 1.1rem;
+                padding: 0.8rem 1.5rem;
+            }
+            
+            .feedback-footer {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* tablet adjustments */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .feedback-header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .feedback-header p {
+                margin-left: 3rem;
+            }
+            
+            .submit-btn {
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="feedback-card">
+    <!-- header with back button (user logged in) -->
+    <div class="feedback-header">
+        <div class="header-top">
+            <a href="#" class="back-btn" onclick="history.back(); return false;" title="Go back">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>
+                <i class="fas fa-comment-dots"></i> Feedback Us
+            </h1>
+        </div>
+        <p>from pig keepers, to pig keepers <i class="fas fa-piggy" style="color:var(--icon-teal); margin-left:6px;"></i></p>
+    </div>
+
+    <!-- story area - plain text with original wording -->
+    <div class="farm-story">
+        <p>
+            <span class="farm-highlight">🐖 Yes we also have pig farm.</span> Just a small one. 
+            Just like you, we also faced same problems dealing with numbers and data 
+            generated in pig farming and how to improve yields. And we are also tired of 
+            forgetting those vaccinations, incomplete preparation on pig birth aside from 
+            the usual getting dirty work in the pig farm.
+        </p>
+        <p>
+            <i class="fas fa-solid fa-code-branch" style="color: var(--icon-blue);"></i> 
+            So we created this app to help us and share with others too.
+        </p>
+
+        <!-- aim box - plain background removed, only left border -->
+        <div class="aim-box">
+            <i class="fas fa-bullseye"></i> 
+            <strong>We aim to help a little on your farm.</strong> We will be happy on any suggestions 
+            about the app, any bug finds, or customized feature according to your needs.
+        </div>
+
+        <!-- features note - plain text, no background or radius -->
+        <div class="features-note">
+            <i class="fas fa-tasks"></i> 
+            The features available on the app, are the things that we need in our farm.
+            You may have different sets of operations and business process.
+        </div>
+
+        <p style="font-weight: 600; margin: 1.2rem 0 0.2rem 0; color: var(--blue-deep);">
+            <i class="fas fa-pen"></i> Please leave a comment below and we will address those.
+        </p>
+    </div>
+
+    <!-- Comment counter section (simulated DB count) -->
+    <div class="counter-section">
+        <div class="comment-counter">
+            <i class="fas fa-comments" style="color: var(--icon-blue);"></i>
+            <span>Community feedback</span>
+            <span class="counter-badge">
+                <i class="fas fa-message"></i> 24
+            </span>
+        </div>
+        <a href="#" class="view-link" onclick="alert('View all comments - would connect to database'); return false;">
+            View all <i class="fas fa-chevron-right"></i>
+        </a>
+    </div>
+
+    <!-- FORM SECTION with input box and submit button -->
+    <div class="feedback-form-section">
+        <h2>
+            <i class="fas fa-solid fa-message"></i> 
+            Leave your feedback
+        </h2>
+        <div class="instruction">
+            <i class="fas fa-lightbulb" style="color: var(--alert-gold);"></i> 
+            suggestions · bugs · custom feature requests
+        </div>
+
+        <div class="comment-group">
+            <!-- Input box -->
+            <div class="input-field">
+                <label><i class="fas fa-piggy-bank"></i> Your comment</label>
+                <textarea class="input-box" placeholder="Type your feedback here..."></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button class="submit-btn" onclick="alert('Feedback submitted! (Would save to database)');">
+                <i class="fas fa-paper-plane"></i> Submit Feedback
+            </button>
+        </div>
+
+        <!-- subtle note about response time -->
+        <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--dark-gray); text-align: center;">
+            <i class="fas fa-clock" style="color: var(--warning-orange);"></i> 
+            We check feedback daily — expect a response within 2-3 days
+        </p>
+    </div>
+
+    <!-- footer with farm flavour -->
+    <div class="feedback-footer">
+        <span><i class="fas fa-solid fa-vial" style="color: var(--icon-syringe);"></i> vaccination reminders · birth alerts · yield data</span>
+        <span class="pig-icon"><i class="fas fa-solid fa-paw"></i> from our sty to yours</span>
+    </div>
+</div>
+
+<!-- hidden note about logged-in state (for demo purposes) -->
+<div style="margin-top: 1rem; font-size: 0.8rem; color: var(--neutral-gray); text-align: center; max-width: 780px;">
+    <i class="fas fa-user-check" style="color: var(--success-green);"></i> 
+    You're logged in as Demo Farmer · <a href="#" style="color: var(--corporate-blue);">Back to dashboard</a>
+</div>
+
+<script>
+    // Simple function to simulate counter update (would connect to DB in real app)
+    document.addEventListener('DOMContentLoaded', function() {
+        // This would be replaced with actual database count
+        console.log('Feedback page loaded - comment counter would fetch from DB');
+    });
+</script>
+
+</body>
+</html>

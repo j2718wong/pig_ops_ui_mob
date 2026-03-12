@@ -1,4 +1,4 @@
-// December 23, 2025
+// March 12, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -16,7 +16,7 @@ import {APPLICATION,
 
 
 
-export function PageCustomerPricing(input_settings){
+export function PageCustomerFeedback(input_settings){
     PageViewBasic.call(this);
     
     const thisObj               = this;

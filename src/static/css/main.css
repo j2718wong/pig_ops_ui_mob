@@ -4245,6 +4245,12 @@ input[type=number] {
 }
 
 /* === CUSTOMER BLOCK as main header (plain text, prominent) === */
+.customer-container {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
 .customer-header {
     display: flex;
     justify-content: space-between;
@@ -4752,7 +4758,7 @@ input[type=number] {
     border: 2px solid var(--blue-deep);
     border-radius: 28px;
     padding: 12px 12px;
-    margin: 0;
+    margin-top: 10px;
     box-shadow: none;
 }
 

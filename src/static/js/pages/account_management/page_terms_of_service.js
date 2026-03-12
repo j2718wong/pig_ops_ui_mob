@@ -290,7 +290,7 @@ ${hmtl_style}
         <div class="section-head"><span class="section-number">2</span> Using SuperPig</div>
         <div class="subsection">
             <div class="subhead"><span class="subnum">2.1</span> Your right to use it</div>
-            <p>During your active subscription, JSysDev grants you a non‑exclusive, worldwide right to use SuperPig for your internal farm business, following the instructions inside the app.</p>
+            <p>During your active subscription, JSysDev grants you a non‑exclusive, worldwide right to use SuperPig for your pig farm business, following the instructions inside the app.</p>
         </div>
         <div class="subsection">
             <div class="subhead"><span class="subnum">2.2</span> Rules you must follow</div>
@@ -342,15 +342,15 @@ ${hmtl_style}
 
         <div class="subsection">
             <div class="subhead"><span class="subnum">5.1</span> Free trial</div>
-            <p>90‑day free trial after signup. No payment during this period.</p>
+            <p>90‑day free trial after signup. No payment during this period. No payment options details will be asked. Just use the app and check if it is useful.</p>
         </div>
         <div class="subsection">
             <div class="subhead"><span class="subnum">5.2</span> Subscription fees</div>
-            <p>After the trial, your account is charged every 30 days. The fee is based on a <strong>per‑head rate for your breeding stocks</strong>.</p>
+            <p>After the trial, we will start sending your account first bill and charged your account every 30 days. The fee is based on a <strong>per‑head rate for your breeding stocks (sows, boars and gilts). Fattening pigs no charge </strong>.</p>
         </div>
         <div class="subsection">
             <div class="subhead"><span class="subnum">5.3</span> Country‑based pricing</div>
-            <p>The per‑head rate depends on the country where your pig farm is located. Exact price shown before charge.</p>
+            <p>The per‑head rate depends on the country where your pig farm is located. Exact price will be shown after you set your country of where the pig farm is located.</p>
         </div>
 
         <!-- 5.4 PAYMENT METHODS – modified as requested: mailed every billing cycle -->
@@ -361,7 +361,8 @@ ${hmtl_style}
                 <strong>5.4.1 Credit card</strong> – If you pay by credit card, you authorise JSysDev to automatically charge that card every 30 days.
             </div>
             <div class="payment-method-row">
-                <strong>5.4.2 Other payment methods</strong> – If you use a payment method other than credit card (cash, cheque, bank transfer), JSysDev will <strong>mail you a physical payment slip or invoice at the beginning of every billing cycle</strong>. Payment must be made using the method and by the due date specified on that document.
+                <strong>5.4.2 Other payment methods</strong> – If you use a payment method other than credit card (other electronic payment methods), JSysDev will 
+                <strong>mail you a payment instructions of every billing cycle</strong>. Payment must be made using the method and by the due date specified on that document.
             </div>
         </div>
 

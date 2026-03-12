@@ -9,6 +9,97 @@ import {APPLICATION,
         PAGE_ID}                from '../../constants.js';
 
 
+async function getLocationWithFallback() {
+    const services = [
+        // Service 1: ipapi.co (your primary)
+        async () => {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            
+            try {
+                const res = await fetch('https://ipapi.co/json/', { 
+                    signal: controller.signal 
+                });
+                clearTimeout(timeoutId);
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    return {
+                        login_country_code: data.country_code,
+                        login_country_name: data.country_name,
+                        login_city: data.city,
+                        login_region: data.region
+                    };
+                }
+            } catch (e) {
+                console.warn('ipapi.co failed:', e);
+            }
+            return null;
+        },
+        
+        // Service 2: ip-api.com (no API key needed)
+        async () => {
+            try {
+                const res = await fetch('http://ip-api.com/json/?fields=status,country,countryCode,city,region');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'success') {
+                        return {
+                            login_country_code: data.countryCode,
+                            login_country_name: data.country,
+                            login_city: data.city,
+                            login_region: data.region
+                        };
+                    }
+                }
+            } catch (e) {
+                console.warn('ip-api.com failed:', e);
+            }
+            return null;
+        },
+        
+        // Service 3: ipwhois.io
+        async () => {
+            try {
+                const res = await fetch('https://ipwhois.app/json/');
+                if (res.ok) {
+                    const data = await res.json();
+                    return {
+                        login_country_code: data.country_code,
+                        login_country_name: data.country,
+                        login_city: data.city,
+                        login_region: data.region
+                    };
+                }
+            } catch (e) {
+                console.warn('ipwhois.io failed:', e);
+            }
+            return null;
+        }
+    ];
+    
+    // Try each service in order until one succeeds
+    for (const service of services) {
+        const result = await service();
+        if (result) {
+            console.log('Location data obtained from fallback service');
+            return result;
+        }
+    }
+    
+    // All services failed - return nulls
+    console.warn('All location services failed');
+    return {
+        login_country_code: null,
+        login_country_name: null,
+        login_city: null,
+        login_region: null
+    };
+}
+
+
+
+
 // This is used for signup or login
 export function PageUserSignUpOrLogin(input_settings){
     
@@ -339,14 +430,17 @@ export function PageUserSignUpOrLogin(input_settings){
             const originalText = elemUseGoogle.querySelector('span').textContent;
             elemUseGoogle.querySelector('span').textContent = 'Processing...';
             
-            
             // Viewport dimensions (visible page area)
             const viewport_width    = window.innerWidth;
             const viewport_height   = window.innerHeight;
             
             
+            // Initialize location data with null values
+            let locationData = await getLocationWithFallback();
             
-            // Send the credential token to backend
+            
+            
+            // Send the credential token to backend with location data
             // The thisObj.afterSuccessSocialMediaLogin action is done together
             // with this request to minimize data traffic.
             const backendResponse = await fetch(`${API_BASE_URL}/api/auth/google`, {
@@ -355,35 +449,34 @@ export function PageUserSignUpOrLogin(input_settings){
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    token:          response.credential,
-                    viewport_width: viewport_width,
-                    viewport_height: viewport_height
+                    token:                  response.credential,
+                    viewport_width:         viewport_width,
+                    viewport_height:        viewport_height,
+                
+                    login_country_code:     locationData.login_country_code,
+                    login_country_name:     locationData.login_country_name,
+                    login_city:             locationData.login_city,
+                    login_region:           locationData.login_region
                 })
             });
-
 
             if (!backendResponse.ok) {
                 const errorData = await backendResponse.json().catch(() => ({}));
                 throw new Error(errorData.detail || 'Authentication failed');
             }
 
-
             const data = await backendResponse.json();
             console.log("Backend response received:", data);
-            
-            
             
             // Store token for future API calls
             localStorage.setItem('access_token', data.bearer_token);
             localStorage.setItem('user_picture', data.user_picture);
             
-            
-            
             thisObj.handlePostLoginFlow(data.user_account)
             
         } catch (error) {
             console.error('Google authentication error:', error);
-            this.showError('Failed to authenticate with Google. Please try again.');
+            thisObj.showError('Failed to authenticate with Google. Please try again.');
         } finally {
             // Reset Google button
             isGoogleLoginInProgress = false;
@@ -753,6 +846,9 @@ export function PageUserSignUpOrLogin(input_settings){
         }
     }
     
+
+    
+    
     
     this.onClickUseGoogle = function(){
         // This is now handled by initiateGoogleLogin()
@@ -803,17 +899,25 @@ export function PageUserSignUpOrLogin(input_settings){
         
         
         const base_url      = window.location.origin;
-        let url = base_url + '/user/login_social';
+        let url = base_url + 'in_login_social_media_id';
         
         
         // send post request
         const post_data = {
-            'social_media_id':  data.social_media_id,
-            'email':            data.email,
-            'name_first':       data.name_first,
-            'name_last':        data.name_last,
-            'viewport_width':   viewport_width,
-            'viewport_height':  viewport_height
+            'login_social_media_id':  data.social_media_id,
+            
+            'email':                data.email,
+            'name_first':           data.name_first,
+            'name_last':            data.name_last,
+            
+            'viewport_width':       viewport_width,
+            'viewport_height':      viewport_height,
+            
+            
+            'login_country_code':   null,
+            'login_country_name':   null,
+            'login_city':           null,
+            'login_region':         null
         };
         
         

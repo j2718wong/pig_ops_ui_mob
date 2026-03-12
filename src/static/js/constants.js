@@ -44,8 +44,6 @@ const PAGE_ID = {
     REQ_JOIN_ACC_SENT:      6,
     TERMS_OF_SERVICE:       7,
     PRIVACY_POLICY:         8,
-    CONTACT_US:             9,
-    
     
     
     MY_ACCOUNT:             10,
@@ -53,6 +51,8 @@ const PAGE_ID = {
     
     
     HOME:                   12,
+    FEEDBACK_US:            13,
+    
     
     BILL_HISTORY_LIST:      18,
     BILL_CURRENT:           19,

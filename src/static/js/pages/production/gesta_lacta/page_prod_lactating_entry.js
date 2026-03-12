@@ -56,11 +56,10 @@ export function PageProdLactatingEntry(input_settings){
     this.TAB_LACTA_MEDVAC       = 4;
     
     this.TAB_LACTA_HEALTH       = 5;
-    this.TAB_LACTA_PIG_DEAD     = 6;
-    this.TAB_LACTA_FEED_SUMMARY = 7;
-    this.TAB_LACTA_PROD_FEED     = 8;
-    this.TAB_LACTA_NOTES        = 9;
-    this.TAB_LACTA_MATING       = 10;
+    this.TAB_LACTA_FEED_SUMMARY = 6;
+    this.TAB_LACTA_PROD_FEED    = 7;
+    this.TAB_LACTA_NOTES        = 8;
+    this.TAB_LACTA_MATING       = 9;
     
     
     
@@ -71,9 +70,8 @@ export function PageProdLactatingEntry(input_settings){
     let elemIdTabLactaMedVac        = `prod-lacta-medvac`;
     
     let elemIdTabLactaHealth        = `prod-lacta-health`;
-    let elemIdTabLactaPigDead       = `prod-lacta-pig-dead`;
     let elemIdTabLactaFeedSummary   = `prod-lacta-feed-summary`;
-    let elemIdTabLactaProdFeed       = `prod-lacta-feed-add`;
+    let elemIdTabLactaProdFeed      = `prod-lacta-feed-add`;
     let elemIdTabLactaNotes         = `prod-lacta-notes`;
     let elemIdTabLactaMating        = `prod-lacta-mating`;
     let elemIdTabLactaExtra         = `prod-lacta-extra`;
@@ -107,11 +105,6 @@ export function PageProdLactatingEntry(input_settings){
         },
         
         {
-            data_tab_id:    elemIdTabLactaPigDead,
-            label:          'Pig Dead'
-        },
-        
-        {
             data_tab_id:    elemIdTabLactaFeedSummary,
             label:          'Feed Summary'
         },
@@ -141,9 +134,8 @@ export function PageProdLactatingEntry(input_settings){
     let elemTabLactaMedVac          = null;
                                         
     let elemTabLactaHealth          = null;
-    let elemTabLactaPigDead         = null;
     let elemTabLactaFeedSummary     = null;
-    let elemTabLactaProdFeed         = null;
+    let elemTabLactaProdFeed        = null;
     let elemTabLactaNotes           = null;
     let elemTabLactaMating          = null;
     
@@ -183,12 +175,10 @@ export function PageProdLactatingEntry(input_settings){
         elemTabLactaMedVac          = elemDivContainer.querySelector('#'+elemIdTabLactaMedVac);
                                                                                                     
         elemTabLactaHealth          = elemDivContainer.querySelector('#'+elemIdTabLactaHealth);
-        elemTabLactaPigDead         = elemDivContainer.querySelector('#'+elemIdTabLactaPigDead);
         elemTabLactaFeedSummary     = elemDivContainer.querySelector('#'+elemIdTabLactaFeedSummary);
         elemTabLactaProdFeed        = elemDivContainer.querySelector('#'+elemIdTabLactaProdFeed);
         elemTabLactaNotes           = elemDivContainer.querySelector('#'+elemIdTabLactaNotes);
         elemTabLactaMating          = elemDivContainer.querySelector('#'+elemIdTabLactaMating);
-        
     }
     
     
@@ -268,13 +258,7 @@ export function PageProdLactatingEntry(input_settings){
         });
         this.tablePigProdHealth.init();
         
-        
-        
-    
-    
-    
-        
-    
+            
         this.prodEntryMating     = new ProdEntryMating({
             navigation:         navigation,
             parentObj:          this,
@@ -362,11 +346,6 @@ export function PageProdLactatingEntry(input_settings){
             }
             
             
-            case thisObj.TAB_LACTA_PIG_DEAD:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabLactaPigDead);
-                break;
-            }
-            
             case thisObj.TAB_LACTA_FEED_SUMMARY:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabLactaFeedSummary);
                 break;
@@ -450,10 +429,6 @@ export function PageProdLactatingEntry(input_settings){
                 break;
             }
             
-            case elemIdTabLactaPigDead:{
-                curTabLacta = thisObj.TAB_LACTA_PIG_DEAD;
-                break;
-            }
             
             case elemIdTabLactaFeedSummary:{
                 thisObj.prodSummary.beforeShow(dataPigProd);

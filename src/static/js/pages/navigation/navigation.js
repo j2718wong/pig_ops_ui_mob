@@ -370,6 +370,8 @@ export function Navigation(){
     const elemIdContHomeDashBoard       = 'container-dashboard';
     const elemIdContPigFarmAddEdit      = 'container-pig-farm-add-edit';
     
+    const elemIdContFeedBackUs          = 'container-feedback-us';
+    
     
     const elemIdContSowBoarList         = 'container-sow-boar-list';
     const elemIdContSowBoarAddEdit      = 'container-sow-boar-add-edit';
@@ -445,6 +447,9 @@ export function Navigation(){
     const elemIdContJoinAccReqApprove   = 'container-join-acc-req-approve';
     
     
+    
+    
+    
     let elemNavLeftProductName          = null;
     let elemDesktopPigFarmName          = null;
     let elemMobilePigFarmName           = null;
@@ -454,6 +459,9 @@ export function Navigation(){
     
     let elemPageContHomeDashBoard       = null;
     let elemPageContPigFarmAddEdit      = null;
+    
+    let elemPageContFeedBackUs          = null;
+    
     
     
     let elemPageContAccDisabled         = null;
@@ -1072,6 +1080,7 @@ export function Navigation(){
         elemPageContHomeDashBoard       = document.getElementById(elemIdContHomeDashBoard);
         elemPageContPigFarmAddEdit      = document.getElementById(elemIdContPigFarmAddEdit);
         
+        elemPageContFeedBackUs          = document.getElementById(elemIdContFeedBackUs);
 
         
         elemPageContAccDisabled         = document.getElementById(elemIdContAccountDisabled);
@@ -1138,6 +1147,8 @@ export function Navigation(){
         elemPageContUserList            = document.getElementById(elemIdContUserList);
         elemPageContJoinAccReqList      = document.getElementById(elemIdContJoinAccReqList);
         elemPageContJoinAccReqApprove   = document.getElementById(elemIdContJoinAccReqApprove);
+        
+        
     }
     
     
@@ -1264,12 +1275,19 @@ export function Navigation(){
             
             case PAGE_ID.CUSTOMER_PRICING: {
                 return elemPageContCustomerPricing;
-                break;
             } 
             
-            case PAGE_ID.HOME:{
+            case PAGE_ID.HOME: {
                 return elemPageContHomeDashBoard;
             }
+            
+            
+            case PAGE_ID.FEEDBACK_US: {
+                return elemPageContFeedBackUs;
+            }
+            
+            
+            
             
             case PAGE_ID.PIG_FARM_ADD_EDIT:{
                 return elemPageContPigFarmAddEdit;
