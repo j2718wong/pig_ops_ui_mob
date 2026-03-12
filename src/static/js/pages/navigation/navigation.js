@@ -14,6 +14,8 @@ import {APPLICATION,
 
 
 import {ManagerNavLinks}            from './manager_nav_links.js';
+import {ManagerPublicSections}      from './manager_public_sections.js';
+
 
 import {ServerError}                from '../common/server_error.js';
 import {ToastAlert}                 from '../common/toast_alert.js';
@@ -29,6 +31,8 @@ import {PigFarm}                    from '../farm_account/pig_farm.js';
 
 import {PageMyAccount}              from '../customer/page_my_account.js';
 import {PageCustomerPricing}        from '../customer/page_customer_pricing.js';
+
+import {PageCustomerFeedback}       from '../customer/page_customer_feedback.js';
 
 import {PageAccountDisabled}        from '../a_user_control/page_account_disabled.js';
 import {PageUserDisabled}           from '../a_user_control/page_user_disabled.js';
@@ -222,6 +226,9 @@ function UserControl(_navigation) {
 
         // Hide this first
         this.hideNewBillAvailable();
+        
+        // TODO this
+        elemDesktopBillHistory.style.display ='none';
     }
     
     
@@ -358,6 +365,8 @@ export function Navigation(){
     let elemSubnavSummary       = null;
     
     
+    
+    
     const elemIdContMyAccount           = 'container-my-account';
     const elemIdContCustomerPricing     = 'container-customer-pricing';
     
@@ -445,6 +454,10 @@ export function Navigation(){
     const elemIdContUserAddEdit         = 'container-user-add-edit';
     const elemIdContJoinAccReqList      = 'container-join-acc-req-list';
     const elemIdContJoinAccReqApprove   = 'container-join-acc-req-approve';
+    
+    
+    const elemPageLoading               = document.getElementById('loading-page');
+    const elemPageMainContent           = document.getElementById('main-content');
     
     
     
@@ -537,9 +550,7 @@ export function Navigation(){
     this.pageData               = null;
     
     
-    this.dataCompanyApp         = null;
-   
-    
+
     this.curScreenIsMobile      = null;
     
     
@@ -547,6 +558,7 @@ export function Navigation(){
     
     
     this.managerNavLinks        = new ManagerNavLinks(this);
+    this.managerPublicSections  = new ManagerPublicSections(this);
     
     this.userControl            = new UserControl(this);
     
@@ -575,6 +587,12 @@ export function Navigation(){
         uniqueKey:              'customer-pricing'
     });
     
+    
+    this.pageCustomerFeedback   = new PageCustomerFeedback({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContFeedBackUs,
+        uniqueKey:              'customer-feedback'
+    });
     
     
     this.pageAccountDisabled    = new PageAccountDisabled({
@@ -934,20 +952,36 @@ export function Navigation(){
   
             success: function(response){
                 if (response.result.num == 0){
-                    console.log('response');
-                    console.log(response);
-                    
+
                     if (response.data.user_account == null){
                         window.location.href = '/login';
                         return;
                     }
+                    
+                    
+                    const user_account = response.data.user_account;
+                    if (user_account.account == null){
+                        window.location.href = '/login';
+                        return;
+                    }
+                    
+                    
+                    console.log('user_account');
+                    console.log(user_account);
+                    
                     
                     thisObj.initComponents();
                     thisObj.afterHtmlRender();
                     
                     thisObj.setPageData(response.data);
                     
-                    
+                    // Hide loading page and show content
+                    elemPageLoading.classList.add('fade-out');
+                    setTimeout(() => {
+                        elemPageLoading.style.display = 'none';
+                        //appContent.style.display = 'block';
+                    }, 300); // Match fade-out transition time
+                                
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(
@@ -969,6 +1003,7 @@ export function Navigation(){
     
     this.initComponents = function(){
         this.managerNavLinks.init();
+        this.managerPublicSections.init();
         
         this.userControl.init();
         
@@ -976,7 +1011,7 @@ export function Navigation(){
         
         this.pageMyAccount.init();
         this.pageCustomerPricing.init();
-        
+        this.pageCustomerFeedback.init();
         
         this.pageAccountDisabled.init();
         this.pageUserDisabled.init();
@@ -1208,7 +1243,9 @@ export function Navigation(){
     this.setPageData = function(data){
         this.pageData = data;
         
-        this.setDataCompanyApp(data.application);
+        this.managerPublicSections.setDataCompanyApp(data.application);
+        
+        
         this.setDataUserAccount(data.user_account);
         
         const user_current_farm = this.userControl.getCurrentFarm();
@@ -1236,16 +1273,7 @@ export function Navigation(){
     }
     
     
-    this.setDataCompanyApp = function(data){
-        this.dataCompanyApp = data;
-        
-        const elems = document.getElementsByClassName('product-name');
-
-        
-        for (let i = 0; i < elems.length; i++) {
-            elems[i].innerHTML = thisObj.dataCompanyApp.product_name;
-        }
-    }
+    
     
     
     this.setDataUserAccount = function(data){
@@ -1598,6 +1626,11 @@ export function Navigation(){
                 cur_entry.style.display = 'block';
                 
                 thisObj.currentPage = cur_entry;
+                
+                // Update public sections. 
+                if (cur_entry == elemPageContHomeDashBoard){
+                    thisObj.managerPublicSections.beforeShow();
+                }
             }
             else{
                 cur_entry.style.display = 'none';

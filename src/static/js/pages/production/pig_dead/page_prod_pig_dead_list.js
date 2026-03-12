@@ -74,7 +74,7 @@ export function PageProdPigDeadList(input_settings){
         thisObj.setSettingsTable({
             uniqueKey:      settings.uniqueKey,
             noHeader:       true,
-            itemsPerPage:   20
+            itemsPerPage:   10
         });
         
         
