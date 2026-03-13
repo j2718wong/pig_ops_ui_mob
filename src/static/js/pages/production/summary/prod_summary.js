@@ -469,6 +469,8 @@ export function ProdSummary(input_settings){
         const feeds_bought  = prod_entry_feeds.bought;
         const feeds_balance = prod_entry_feeds.balance;
         
+        console.log('populateFeedSummary');
+        console.log(curDataEntry);
         
         let s_date_balance = '';
         if (feeds_balance.date_balance){
@@ -650,6 +652,21 @@ export function ProdSummary(input_settings){
     }
     
     
+    this.shouldShowCostColumn = function(){
+        // Check screen width
+        const isLargeScreen = window.innerWidth >= 768;
+        
+        // Check user permissions (if needed)
+        const cur_user = navigation.userControl.dataUserAccount.user;
+        const user_group_num = cur_user.user_group.group_num;
+        const hasPermission = user_group_num == ACC_USER_GROUP.ADMIN || 
+                              user_group_num == ACC_USER_GROUP.MANAGEMENT;
+        
+        // Return true only if both conditions are met
+        return isLargeScreen && hasPermission;
+    }
+        
+    
         
     this.show = function(options){
         
@@ -661,12 +678,6 @@ export function ProdSummary(input_settings){
         dtCurrentDate.setHours(0, 0, 0, 0);
         
         showOptions = options;
-        
-        
-        
-        
-        
-        
         
     }
     

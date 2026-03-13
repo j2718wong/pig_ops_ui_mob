@@ -13,13 +13,16 @@ import {APPLICATION,
         SUPPLIER_TYPE}          from '../../constants.js';
 
 
+import {getLocationWithFallback} from './page_user_signup_or_login.js';
+
+
 
 
 
 export function PageAddFarm(input_settings){
     
     const thisObj               = this;
-    const navigation            = input_settings.navigation;
+    const parentObj             = input_settings.parentObj;
 
     
     const MAXCHAR_FARM_NAME     = 30;
@@ -36,6 +39,7 @@ export function PageAddFarm(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
+    let elemIdServerErrorMsg    = null;
 
     
     let elemAccountNameDisplay  = null;  
@@ -48,9 +52,32 @@ export function PageAddFarm(input_settings){
     let elemInvalidFarmNameShow = null;
     let elemInvalidFarmNameMsg  = null;
     
+    // Country selection elements
+    let elemCountryReadOnlyValue        = null;
+    let elemDifferentCountryLink        = null;
+    let elemDifferentCountryContainer   = null;
+    let elemCountryDropdown             = null;
+    let elemCountrySelect               = null;
+    
+    let elemServerErrorMsg      = null;
     let elemBtnSave             = null;
 
+
     let dataUserAccount         = null;
+    
+    // Store location data
+    let userLocation            = null;
+    let selectedCountryHid      = null;
+    let selectedCountryCode     = null;
+    let selectedCountryName     = null;
+    
+    let countryList             = null;
+    
+    // Country found in list flag
+    let countryFoundInList      = false;
+    let geoLocationCountryName  = null;
+    let geoLocationCountryCode  = null;
+
 
     
     this.init = function(){
@@ -60,6 +87,8 @@ export function PageAddFarm(input_settings){
     
     
     this.render = function(){
+        
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
         
         
@@ -116,6 +145,41 @@ export function PageAddFarm(input_settings){
             </div>
             
             <div class="field-help">Name your first farm — you can add more later</div>
+            
+            <!-- Country selection section - minimalist design -->
+            <div id="countryContainer" class="country-container">
+                
+                <!-- Farm Country display - just the name, prominent -->
+                <div class="farm-country-row">
+                    <span class="farm-country-label">Farm Country</span>
+                    <span id="countryReadOnlyValue" class="farm-country-value"></span>
+                </div>
+                
+                <!-- Different country link -->
+                <div id="differentCountryContainer" class = "different-country-container">
+                    <button id="differentCountryLink" type="button" class="different-country-btn">
+                        Different country?
+                    </button>
+                </div>
+                
+                <!-- Dropdown for country selection (initially hidden) -->
+                <div id="countryDropdown" class="hidden-section" style="margin: 0.5rem 0 1rem 0;">
+                    <select id="countrySelect" class="input-field" style="appearance: auto; padding-right: 2rem; margin-bottom: 0.5rem;">
+                        <option value="">Select a country</option>
+                    </select>
+                </div>
+                
+                <!-- Important note - plain with left border only -->
+                <div class="country-note">
+                    The country where your farm is located should be accurate 
+                    since we connect potential pig buyers near your farm. 
+                    The country is fixed and cannot be changed after creation. 
+                    Farm location details can be updated later.
+                </div>
+            </div>
+                        
+            <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+            
             <button class="btn btn-secondary" id="createFarmBtn">+ Create farm</button>
           
         </div>
@@ -148,14 +212,20 @@ export function PageAddFarm(input_settings){
         
         elemAccountCodeDisplay      = elemDivContainer.querySelector('#accountCodeDisplay');
         
-        
         elemFarmName                = elemDivContainer.querySelector('#farmNameInput');
         elemInvalidFarmNameShow     = elemDivContainer.querySelector('#invalid-farm-name-show');
         elemInvalidFarmNameMsg      = elemDivContainer.querySelector('#invalid-farm-name-msg');
         
+        // Country elements
+        elemCountryReadOnlyValue    = elemDivContainer.querySelector('#countryReadOnlyValue');
+        elemDifferentCountryLink    = elemDivContainer.querySelector('#differentCountryLink');
+        elemDifferentCountryContainer = elemDivContainer.querySelector('#differentCountryContainer');
+        elemCountryDropdown         = elemDivContainer.querySelector('#countryDropdown');
+        elemCountrySelect           = elemDivContainer.querySelector('#countrySelect');
+        
+        elemServerErrorMsg          = elemDivContainer.querySelector('#' + elemIdServerErrorMsg);
+        
         elemBtnSave                 = elemDivContainer.querySelector('#createFarmBtn');
-        
-        
     }
     
     
@@ -165,7 +235,7 @@ export function PageAddFarm(input_settings){
     
     
     this._bindEventListeners = function(){
-        
+    
         elemAccountNameDisplay.addEventListener('click', function(event){
             if (!dataUserAccount) return; // safety
             
@@ -182,16 +252,45 @@ export function PageAddFarm(input_settings){
         
         
         elemAccountNameEditInput.addEventListener('blur', thisObj.exitEditAccAndSave);
-    
+        
+        // Different country link click
+        elemDifferentCountryLink.addEventListener('click', function() {
+            // Hide the link
+            elemDifferentCountryContainer.classList.add('hidden-section');
+            // Show the dropdown
+            elemCountryDropdown.classList.remove('hidden-section');
+            // Focus on dropdown
+            elemCountrySelect.focus();
+        });
+        
+        
+        elemCountrySelect.addEventListener('change', function() {
+            selectedCountryHid = this.value;
+            
+            
+            // Update read-only display with selected country name
+            if (selectedCountryHid && countryList) {
+                for (let i = 0; i < countryList.length; i++) {
+                    if (countryList[i].hid === selectedCountryHid) {
+                        selectedCountryName = countryList[i].name;
+                        elemCountryReadOnlyValue.textContent = countryList[i].name;
+                        break;
+                    }
+                }
+            }
+            
+            // Hide dropdown and show link again after selection
+            if (selectedCountryHid) {
+                elemCountryDropdown.classList.add('hidden-section');
+                elemDifferentCountryContainer.classList.remove('hidden-section');
+            }
+        });
+
         elemBtnSave.addEventListener('click', thisObj.onClickCreateFarm);
-        
-        
     }
+
+
     
-    
-    
-    
-   
     this._resetForm = function(){
        
         
@@ -202,7 +301,127 @@ export function PageAddFarm(input_settings){
         dataUserAccount     = data_user_account;
         
         this.populateForm();
+        
+        // Get country list from parent
+        countryList = parentObj.dataAddressCountryList;
+        
+        if (countryList == null) {
+            const callback_success = function(data) {
+                countryList = data;
+                thisObj.populateCountryDropdown();
+                
+                // After getting country list, detect location
+                thisObj.detectUserLocation();
+            };
+            
+            const elem_show_error = elemServerErrorMsg;
+            parentObj.requestDataActiveCountryList(callback_success, 
+                elem_show_error);
+            
+        } else {
+            // Country list already exists
+            this.populateCountryDropdown();
+            
+            // Detect location
+            this.detectUserLocation();
+        }
     }
+    
+    
+    this.populateCountryDropdown = function() {
+        if (!elemCountrySelect || !countryList) return;
+        
+        // Clear existing options except first
+        while (elemCountrySelect.options.length > 1) {
+            elemCountrySelect.remove(1);
+        }
+        
+        // Add countries from list
+        for (let i = 0; i < countryList.length; i++) {
+            const country = countryList[i];
+            const option = document.createElement('option');
+            option.value = country.hid;
+            option.textContent = country.name;
+            
+            // If this country matches geo location, pre-select it
+            if (geoLocationCountryCode) {
+                if (country.country_code === geoLocationCountryCode) {
+                    option.selected = true;
+                    
+                    selectedCountryHid = country.id;
+                    selectedCountryName = country.name;
+                    elemCountryReadOnlyValue.textContent = country.name;
+                    countryFoundInList = true;
+                }
+            }
+            
+            elemCountrySelect.appendChild(option);
+        }
+    };
+    
+    
+    this.detectUserLocation = async function() {
+        try {
+            // Detect user location
+            userLocation = await getLocationWithFallback();
+            
+            geoLocationCountryName = userLocation.login_country_name;
+            geoLocationCountryCode = userLocation.login_country_code;
+            
+            // Check if country code exists in our list
+            let matchingCountry = null;
+            
+            if (countryList && geoLocationCountryCode) {
+                for (let i = 0; i < countryList.length; i++) {
+                    if (countryList[i].country_code === geoLocationCountryCode) {
+                        matchingCountry = countryList[i];
+                        break;
+                    }
+                }
+            }
+            
+            if (matchingCountry) {
+                // Country found in list
+                countryFoundInList = true;
+                selectedCountryHid = matchingCountry.id;
+                selectedCountryName = matchingCountry.name;
+                elemCountryReadOnlyValue.textContent = matchingCountry.name;
+                
+                // Show different country link
+                elemDifferentCountryContainer.classList.remove('hidden-section');
+                elemCountryDropdown.classList.add('hidden-section');
+                
+                // Also update dropdown selection
+                if (elemCountrySelect) {
+                    for (let i = 0; i < elemCountrySelect.options.length; i++) {
+                        if (elemCountrySelect.options[i].value == matchingCountry.id) {
+                            elemCountrySelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                
+            } else {
+                // Country not in list
+                countryFoundInList  = false;
+                selectedCountryHid  = null;
+                selectedCountryCode = geoLocationCountryCode;
+                selectedCountryName = geoLocationCountryName;
+                
+                elemCountryReadOnlyValue.textContent = geoLocationCountryName || 'Unknown';
+                
+                // Show dropdown for selection
+                elemDifferentCountryContainer.classList.add('hidden-section');
+                elemCountryDropdown.classList.remove('hidden-section');
+            }
+            
+        } catch (error) {
+            console.error('Error detecting location:', error);
+            elemCountryReadOnlyValue.textContent = 'Select country';
+            elemDifferentCountryContainer.classList.add('hidden-section');
+            elemCountryDropdown.classList.remove('hidden-section');
+        }
+    };
     
     
     this.refreshAccountName =  function(){
@@ -321,9 +540,6 @@ export function PageAddFarm(input_settings){
     }
     
     
-    
-        
-        
     this.onClickCreateFarm = function(){
         let input_elem;
         let validation      = 0;
@@ -331,14 +547,11 @@ export function PageAddFarm(input_settings){
 
         let input_name      = elemFarmName.value.trim();
         
-        
-        
-        if (input_name.length < 0){
+        if (input_name.length < 8) {
             elemInvalidFarmNameShow.style.display = 'block';
+            elemInvalidFarmNameMsg.innerHTML = 'Farm name should be at least 8 characters long.';
             return;
         }
-        
-
         
         
         const user_hid      = dataUserAccount.user.user.hid;
@@ -346,15 +559,23 @@ export function PageAddFarm(input_settings){
 
 
         
-        // send post request
+        // send post request with country
         const post_data = {
             'uhid':             user_hid,
             'name':             input_name
-            
         };
         
+        // Add country_hid only if selected from list
+        if (selectedCountryHid) {
+            post_data.country_hid = selectedCountryHid;
+        }
+        else{
+            post_data.new_country_code = selectedCountryCode;
+            post_data.new_country_name = selectedCountryName;
+        }
         
-        let url = `${base_url}/pig_farm/add`
+
+        let url = `${base_url}/pig_farm/add`;
 
 
         const bearer_token = localStorage.getItem('access_token');
@@ -375,6 +596,9 @@ export function PageAddFarm(input_settings){
             data: JSON.stringify(post_data),
   
             beforeSend: function(){
+                // Disable button to prevent double submission
+                elemBtnSave.disabled = true;
+                elemBtnSave.textContent = 'Creating...';
             },
   
             success: function(response){
@@ -394,7 +618,11 @@ export function PageAddFarm(input_settings){
                     
 
                     elemInvalidFarmNameShow.style.display = 'block';
-                    elemInvalidFarmNameMsg.innerHTML = html;  
+                    elemInvalidFarmNameMsg.innerHTML = html;
+                    
+                    // Re-enable button
+                    elemBtnSave.disabled = false;
+                    elemBtnSave.textContent = '+ Create farm';
                 }
             },
   
@@ -403,14 +631,16 @@ export function PageAddFarm(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-               
+                elemInvalidFarmNameShow.style.display = 'block';
+                elemInvalidFarmNameMsg.innerHTML = 'Error creating farm. Please try again.';
+                
+                // Re-enable button
+                elemBtnSave.disabled = false;
+                elemBtnSave.textContent = '+ Create farm';
             }
         });
     }
     
+
     
-    this.requestPageDashBoard = function(){
-        
-    }
-    
-}   
+}

@@ -9,7 +9,11 @@ import {APPLICATION,
         PAGE_ID}                from '../../constants.js';
 
 
-async function getLocationWithFallback() {
+import {LoadingAnimation}       from './loading_animation.js';
+
+
+
+export async function getLocationWithFallback() {
     const services = [
         // Service 1: ipapi.co (your primary)
         async () => {
@@ -133,6 +137,11 @@ export function PageUserSignUpOrLogin(input_settings){
 
     let showOptions             = null;
 
+
+
+    let loadingAnimation        = null;
+
+
     // Google Sign-In configuration
     const GOOGLE_CLIENT_ID = "466858490005-irmhmqrbnmtkmah0baa27sgorivueu6g.apps.googleusercontent.com"; // Replace with your actual client ID
     const API_BASE_URL = window.location.origin;
@@ -145,6 +154,18 @@ export function PageUserSignUpOrLogin(input_settings){
         this.render();
         this.afterHtmlRender();
         this.loadGoogleScript();
+        
+        this.initLoadingAnimation();
+    }
+    
+    
+    this.initLoadingAnimation = function() {
+        loadingAnimation = new LoadingAnimation('google-login-loading', {
+            size: '50px',
+            color: '#4285f4', // Google blue
+            message: 'Authenticating with Google...',
+            type: 'spinner'
+        });
     }
     
     
@@ -430,6 +451,11 @@ export function PageUserSignUpOrLogin(input_settings){
             const originalText = elemUseGoogle.querySelector('span').textContent;
             elemUseGoogle.querySelector('span').textContent = 'Processing...';
             
+            
+            // SHOW LOADING ANIMATION HERE
+            loadingAnimation.show('Verifying credentials...');
+            
+            
             // Viewport dimensions (visible page area)
             const viewport_width    = window.innerWidth;
             const viewport_height   = window.innerHeight;
@@ -472,9 +498,16 @@ export function PageUserSignUpOrLogin(input_settings){
             localStorage.setItem('access_token', data.bearer_token);
             localStorage.setItem('user_picture', data.user_picture);
             
+            
+            // HIDE LOADING ANIMATION before post-login flow
+            loadingAnimation.hide();
+            
             thisObj.handlePostLoginFlow(data.user_account)
             
         } catch (error) {
+            // Hide loading and show error
+            loadingAnimation.hide();
+            
             console.error('Google authentication error:', error);
             thisObj.showError('Failed to authenticate with Google. Please try again.');
         } finally {
@@ -708,6 +741,10 @@ export function PageUserSignUpOrLogin(input_settings){
         };
         
         
+        // SHOW LOADING ANIMATION
+        loadingAnimation.show(showOptions.is_login ? 'Logging in...' : 'Creating account...');
+        
+        
         $.ajax({
             type: 'POST',
             contentType: "application/json",
@@ -726,11 +763,19 @@ export function PageUserSignUpOrLogin(input_settings){
                     if (showOptions.is_login){
                         // Handle email login success
                         const data_user_account = response.user_account;
+                        
+                        // HIDE LOADING ANIMATION
+                        loadingAnimation.hide();
+                    
                         thisObj.handlePostLoginFlow(data_user_account);
                     }
                     else{
                         // Handle email signup success
                         const data_user_account = response.user_account;
+                        
+                        // HIDE LOADING ANIMATION
+                        loadingAnimation.hide();
+                        
                         thisObj.handlePostLoginFlow(data_user_account);
                     }
                 }

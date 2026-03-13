@@ -1908,7 +1908,7 @@ p {
 /* Centered modal header with no border */
 .custom-modal .modal-header {
     border-bottom: none;
-    padding: 10px 30px 20px 30px;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1928,11 +1928,11 @@ p {
     overflow-y: auto;
 }
 
-/* Menu item styling - no background on hover for touch */
+
 .more-menu-item {
     display: flex;
     align-items: center;
-    padding: 24px 0;
+    padding: 5px 0;
     cursor: pointer;
     transition: all 0.2s ease;
     text-decoration: none;

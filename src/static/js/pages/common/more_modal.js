@@ -37,10 +37,10 @@ export function MoreModal(_navigation){
     let elemMoreItem3           = null;
     let elemMoreItem4           = null;
     let elemMoreItem5           = null;
-	let elemMoreItem6           = null;
-	let elemMoreItem7           = null;
-	
-	
+    let elemMoreItem6           = null;
+    let elemMoreItem7           = null;
+    
+    
     
     let moreItems               = [];
     
@@ -75,17 +75,17 @@ export function MoreModal(_navigation){
         <div class="modal fade custom-modal" id="${elemIdMoreModal}" tabindex="-1" aria-labelledby="moreModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <!-- Centered Modal Header with no border -->
+                    
                     <div class="modal-header" >
                         <h5 class="modal-title" id="${elemIdMoreModalTitle}">More</h5>
                     </div>
                     
-                    <!-- Modal Body with menu items and tab content -->
-                    <div class="modal-body">
-                        <!-- Menu Items List -->
+                    
+                    <div class="modal-body" style="padding-top:0;">
+                        
                         <div id="menuItems">
                             <div class="more-menu-item" id="${elemIdMoreItem0}">
-                                <div class="more-menu-text">Item 0</div>
+                                <div class="menu-text">Item 0</div>
                             </div>
                             
                             <div class="more-menu-item" id="${elemIdMoreItem1}">
@@ -107,15 +107,15 @@ export function MoreModal(_navigation){
                             <div class="more-menu-item" id="${elemIdMoreItem5}">
                                 <div class="menu-text">Item 5</div>
                             </div>
-							
-							<div class="more-menu-item" id="${elemIdMoreItem6}">
+                            
+                            <div class="more-menu-item" id="${elemIdMoreItem6}">
                                 <div class="menu-text">Item 6</div>
                             </div>
-							
-							<div class="more-menu-item" id="${elemIdMoreItem7}">
+                            
+                            <div class="more-menu-item" id="${elemIdMoreItem7}">
                                 <div class="menu-text">Item 7</div>
                             </div>
-							
+                            
                         </div>
                     </div>
                 </div>
@@ -144,9 +144,9 @@ export function MoreModal(_navigation){
         elemMoreItem3           = document.getElementById(elemIdMoreItem3);
         elemMoreItem4           = document.getElementById(elemIdMoreItem4);
         elemMoreItem5           = document.getElementById(elemIdMoreItem5);
-		elemMoreItem6           = document.getElementById(elemIdMoreItem6);
-		elemMoreItem7           = document.getElementById(elemIdMoreItem7);
-	}
+        elemMoreItem6           = document.getElementById(elemIdMoreItem6);
+        elemMoreItem7           = document.getElementById(elemIdMoreItem7);
+    }
     
     
     this._processAfterHtmlRender = function(){
@@ -156,8 +156,8 @@ export function MoreModal(_navigation){
         moreItems.push(elemMoreItem3);
         moreItems.push(elemMoreItem4);
         moreItems.push(elemMoreItem5);
-		moreItems.push(elemMoreItem6);
-		moreItems.push(elemMoreItem7);
+        moreItems.push(elemMoreItem6);
+        moreItems.push(elemMoreItem7);
         
         moreModal   = bootstrap.Modal.getOrCreateInstance(elemMoreModal);
     }

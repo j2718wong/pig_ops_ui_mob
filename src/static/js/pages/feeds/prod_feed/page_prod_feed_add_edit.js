@@ -467,6 +467,8 @@ export function PageProdFeedAddEdit(input_settings){
         
         elemUiDateAdd.reset();
         componentFeedsInput.reset();
+        
+        elemSelectFeedBuy.classList.remove('is-valid', 'is-invalid');
        
         elemServerErrorMsg.style.display = 'none';
     }
@@ -1000,7 +1002,8 @@ export function PageProdFeedAddEdit(input_settings){
         
         
         
-        let input_date_add   = elemUiDateAdd.getValue().trim();
+        let input_date_add      = elemUiDateAdd.getValue().trim();
+        let input_feed_buy_hid  = elemSelectFeedBuy.value;
         
         
         input_elem          = elemUiDateAdd.getElemText();
@@ -1035,10 +1038,15 @@ export function PageProdFeedAddEdit(input_settings){
         }
         
         
-        const pf_feed_buy_hid = selectedPigFarmFeedBuy.pf_feed_buy.hid;
+        
+        input_elem          = elemSelectFeedBuy;
+        if(input_feed_buy_hid == '0' || input_feed_buy_hid == '-1'){
+            validation      = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
         
         
- 
         
         // Final check before sending request
         if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
@@ -1056,7 +1064,7 @@ export function PageProdFeedAddEdit(input_settings){
             'uhid':             user_hid,
             
             'date_add':         dt_add_s,
-            'pig_farm_feed_buy_hid':  pf_feed_buy_hid
+            'pig_farm_feed_buy_hid':  input_feed_buy_hid
             
         };
         

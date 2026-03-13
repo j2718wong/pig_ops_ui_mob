@@ -86,7 +86,7 @@ export function ManagerLogin(){
     
     
     
-    
+    this.dataAddressCountryList     = null;
     
     
     this.currentPage                = null;
@@ -239,6 +239,56 @@ export function ManagerLogin(){
     }
     
     
+    this.requestDataActiveCountryList = function(callback_success,
+            elem_show_error){
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/country/list`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataAddressCountryList = response.data;
+                    
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+    }
     
 }
 

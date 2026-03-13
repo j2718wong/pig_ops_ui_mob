@@ -47,6 +47,18 @@ export function PageHomeDashBoard(input_settings){
     
     let elemIdFarmName          = null;
     let elemIdTodayDate         = null;
+                     
+    
+    let elemIdCardLactaPiglets  = null;
+    let elemIdCardFatteningPigs = null;
+                                            
+    let elemIdCardLactaSows     = null;         
+    let elemIdCardGestaSows     = null;         
+                                            
+    let elemIdCardBoars         = null;         
+    let elemIdCardGilts         = null;         
+                     
+                     
                                 
     let elemIdNumLactaPiglets   = null;
     let elemIdNumFatteningPigs  = null;
@@ -64,6 +76,19 @@ export function PageHomeDashBoard(input_settings){
     
     let elemFarmName            = null;
     let elemTodayDate           = null;
+    
+    
+    let elemCardLactaPiglets    = null;
+    let elemCardFatteningPigs   = null;
+                                            
+    let elemCardLactaSows       = null;         
+    let elemCardGestaSows       = null;         
+                                            
+    let elemCardBoars           = null;         
+    let elemCardGilts           = null;         
+    
+    
+    
                               
     let elemNumLactaPiglets     = null;
     let elemNumFatteningPigs    = null;
@@ -101,6 +126,17 @@ export function PageHomeDashBoard(input_settings){
         elemIdFarmName          = `${settings.uniqueKey}-farm-name`;
         elemIdTodayDate         = `${settings.uniqueKey}-today-date`;
         
+        
+        elemIdCardLactaPiglets  = `${settings.uniqueKey}-card-lacta-piglets`;
+        elemIdCardFatteningPigs = `${settings.uniqueKey}-card-fattening-pigs`;
+                                                        
+        elemIdCardLactaSows     = `${settings.uniqueKey}-card-lacta-sows`;
+        elemIdCardGestaSows     = `${settings.uniqueKey}-card-gesta-sows`;
+                                                        
+        elemIdCardBoars         = `${settings.uniqueKey}-card-boars`;
+        elemIdCardGilts         = `${settings.uniqueKey}-card-gilts`;
+        
+        
         elemIdNumLactaPiglets   = `${settings.uniqueKey}-lacta-piglets`;
         elemIdNumFatteningPigs  = `${settings.uniqueKey}-fattening-pigs`;
         
@@ -127,11 +163,11 @@ export function PageHomeDashBoard(input_settings){
 
             <!-- row 1: Lacta Piglets | Fattening Pigs -->
             <div class="grid-row">
-                <div class="stat-cell card-lacta-piglets">
+                <div class="stat-cell card-lacta-piglets" id="${elemIdCardLactaPiglets}">
                     <div class="label">Lacta Piglets</div>
                     <div class="number" id="${elemIdNumLactaPiglets}">0</div>
                 </div>
-                <div class="stat-cell card-fattening">
+                <div class="stat-cell card-fattening" id="${elemIdCardFatteningPigs}">
                     <div class="label">Fattening Pigs</div>
                     <div class="number" id="${elemIdNumFatteningPigs}">0</div>
                 </div>
@@ -139,11 +175,11 @@ export function PageHomeDashBoard(input_settings){
 
             <!-- row 2: Lacta Sow | Gesta Sow -->
             <div class="grid-row">
-                <div class="stat-cell card-lacta-sows">
+                <div class="stat-cell card-lacta-sows" id="${elemIdCardLactaSows}">
                     <div class="label">Lacta Sows</div>
                     <div class="number" id="${elemIdNumLactaSows}">0</div>
                 </div>
-                <div class="stat-cell card-gesta">
+                <div class="stat-cell card-gesta" id="${elemIdCardGestaSows}">
                     <div class="label">Gesta Sows</div>
                     <div class="number" id="${elemIdNumGestaSows}">0</div>
                 </div>
@@ -151,11 +187,11 @@ export function PageHomeDashBoard(input_settings){
 
             <!-- row 3: Boars | Gilts -->
             <div class="grid-row">
-                <div class="stat-cell">
+                <div class="stat-cell" id="${elemIdCardBoars}">
                     <div class="label">Boars</div>
                     <div class="number" id="${elemIdNumBoars}">0</div>
                 </div>
-                <div class="stat-cell card-gilts">
+                <div class="stat-cell card-gilts" id="${elemIdCardGilts}">
                     <div class="label">Gilts</div>
                     <div class="number" id="${elemIdNumGilts}">0</div>
                 </div>
@@ -218,6 +254,17 @@ export function PageHomeDashBoard(input_settings){
         
         elemFarmName            = elemDivContainer.querySelector('#'+elemIdFarmName);        
         elemTodayDate           = elemDivContainer.querySelector('#'+elemIdTodayDate);       
+        
+               
+        elemCardLactaPiglets    = elemDivContainer.querySelector('#'+elemIdCardLactaPiglets); 
+        elemCardFatteningPigs   = elemDivContainer.querySelector('#'+elemIdCardFatteningPigs);
+                                                                                             
+        elemCardLactaSows       = elemDivContainer.querySelector('#'+elemIdCardLactaSows);    
+        elemCardGestaSows       = elemDivContainer.querySelector('#'+elemIdCardGestaSows);        
+                                                                                             
+        elemCardBoars           = elemDivContainer.querySelector('#'+elemIdCardBoars);            
+        elemCardGilts           = elemDivContainer.querySelector('#'+elemIdCardGilts);        
+               
                                                                                          
         elemNumLactaPiglets     = elemDivContainer.querySelector('#'+elemIdNumLactaPiglets); 
         elemNumFatteningPigs    = elemDivContainer.querySelector('#'+elemIdNumFatteningPigs);
@@ -241,32 +288,33 @@ export function PageHomeDashBoard(input_settings){
     
     this._bindEventListeners = function(){
         
-        elemNumLactaPiglets.addEventListener('click', function() {
+        elemCardLactaPiglets.addEventListener('click', function() {
             navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             navigation.pageMobLactatingList.clickLactaPigCount();
         });
     
-        elemNumFatteningPigs.addEventListener('click', function() {
+        elemCardFatteningPigs.addEventListener('click', function() {
             navigation._onClickNavProdFattening(true);
         });
         
-        elemNumLactaSows.addEventListener('click', function() {
+        
+        
+        elemCardLactaSows.addEventListener('click', function() {
             navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             navigation.pageMobLactatingList.clickLactaPigOps();
         });
         
-        
-        elemNumGestaSows.addEventListener('click', function() {
+        elemCardGestaSows.addEventListener('click', function() {
              navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING);
         }); 
         
         
-        elemNumBoars.addEventListener('click', function() {
+        
+        elemCardBoars.addEventListener('click', function() {
             navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.BOAR);
         });
-         
-        
-        elemNumGilts.addEventListener('click', function() {
+
+        elemCardGilts.addEventListener('click', function() {
             navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
         });
     }

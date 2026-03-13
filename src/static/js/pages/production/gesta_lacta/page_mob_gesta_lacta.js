@@ -10,7 +10,8 @@ import {APPLICATION,
         PAGE_ID,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
-        PROD_STATUS}            from '../../../constants.js';
+        PROD_STATUS,
+        SOW_BOAR_TYPE}          from '../../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -890,9 +891,26 @@ ${html_style}
                 
                 
                 case 0: {
-                    cur_td.onclick = function (){
-                        navigation.pageSowBoarList.gotoSowBoarEntryPage(null, 
-                            data_sow.hid);
+                    cur_td.onclick = function (event) {
+                        const clickedElement = event.target;
+                        
+                        // Check if the clicked element is within the first div of the td
+                        // (assuming the first div contains the sow name)
+                        const firstDiv = cur_td.querySelector('div:first-child');
+                        const isInFirstDiv = firstDiv && firstDiv.contains(clickedElement);
+                        
+                        if (isInFirstDiv && clickedElement.classList.contains('sow-boar-name')) {
+                            // Clicked on the sow name in the first div - navigate to sow entry
+                            navigation.pageSowBoarList.gotoSowBoarEntryPage(null, data_sow.hid);
+                            event.stopPropagation();
+                        } else {
+                            // Clicked anywhere else - navigate to production entry
+                            if (settings.isGesta) {
+                                navigation.onClickProdGestatingEntry(pid);
+                            } else {
+                                navigation.onClickProdLactatingEntry(pid);
+                            }
+                        }
                     };
                     break;
                 }
@@ -1018,9 +1036,12 @@ ${html_style}
                 
                 case 1:
                 case 2: {
+                    const tab_id_sow_ouput = navigation.pageSowBoarEntry.elemIdTabOutput;
+                    
+                    
                     cur_td.onclick = function (){
                         navigation.pageSowBoarList.gotoSowBoarEntryPage(null, 
-                            data_sow.hid);
+                            data_sow.hid, SOW_BOAR_TYPE.SOW, tab_id_sow_ouput);
                     };
                     break;
                 }
