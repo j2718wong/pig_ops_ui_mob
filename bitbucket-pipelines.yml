@@ -18,7 +18,7 @@ pipelines:
       - step:
           name: 🚀 Deploy to Server
           script:
-            - apt-get update && apt-get install -y openssh-client base64
+            - apt-get update && apt-get install -y openssh-client coreutils
             
             # Create .ssh directory
             - mkdir -p ~/.ssh
