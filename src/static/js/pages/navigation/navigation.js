@@ -965,9 +965,7 @@ export function Navigation(){
                         return;
                     }
                     
-                    
-                    console.log('user_account');
-                    console.log(user_account);
+                
                     
                     
                     thisObj.initComponents();

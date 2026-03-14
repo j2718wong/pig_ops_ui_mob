@@ -148,8 +148,6 @@ export function PigFarm(_navigation){
                     not_pregnant:           data[5]
                 };
                 
-                console.log('\n\npig_farm.dataVerNum');
-                console.log(thisObj.dataVerNum);
                 
                 navigation.showHomeDashBoard();
             }

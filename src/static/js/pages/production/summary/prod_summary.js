@@ -469,8 +469,6 @@ export function ProdSummary(input_settings){
         const feeds_bought  = prod_entry_feeds.bought;
         const feeds_balance = prod_entry_feeds.balance;
         
-        console.log('populateFeedSummary');
-        console.log(curDataEntry);
         
         let s_date_balance = '';
         if (feeds_balance.date_balance){
