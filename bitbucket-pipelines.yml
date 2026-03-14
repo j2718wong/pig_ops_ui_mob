@@ -12,25 +12,30 @@ pipelines:
             - npm ci || npm install
             - python3 build.py
             - python3 build.py -v
-            - ls -la static/
           artifacts:
             - static/**
       
       - step:
           name: 🚀 Deploy to Server
           script:
-            # Install SSH client
-            - apt-get update && apt-get install -y openssh-client
+            - apt-get update && apt-get install -y openssh-client base64
             
-            # Setup SSH using workspace variable
+            # Create .ssh directory
             - mkdir -p ~/.ssh
-            - echo "$DIGITAL_OCEAN_PO_PKEY" > ~/.ssh/id_rsa
+            
+            # Decode the base64-encoded private key
+            - echo "$DIGITAL_OCEAN_PO_PKEY" | base64 -d > ~/.ssh/id_rsa
+            
+            # Set correct permissions
             - chmod 600 ~/.ssh/id_rsa
+            
+            # Add server to known hosts
             - ssh-keyscan -H $DIGITAL_OCEAN_PO_SERVER_IP >> ~/.ssh/known_hosts
             
-            # Deploy using workspace variables
+            # Verify the key format (debug - remove after working)
+            - file ~/.ssh/id_rsa
+            - head -n 2 ~/.ssh/id_rsa
+            
+            # Deploy
             - echo "Deploying to $DIGITAL_OCEAN_PO_SERVER_USER@$DIGITAL_OCEAN_PO_SERVER_IP:$DIGITAL_OCEAN_PO_DEPLOY_PATH"
             - scp -r -o StrictHostKeyChecking=no static/* $DIGITAL_OCEAN_PO_SERVER_USER@$DIGITAL_OCEAN_PO_SERVER_IP:$DIGITAL_OCEAN_PO_DEPLOY_PATH
-            
-            # Optional: Verify deployment
-            - ssh $DIGITAL_OCEAN_PO_SERVER_USER@$DIGITAL_OCEAN_PO_SERVER_IP "ls -la $DIGITAL_OCEAN_PO_DEPLOY_PATH"
