@@ -68,10 +68,7 @@ export function HarvestCard(input_settings){
         const harvest_type_hid   = prod_harvest.harvest_type_hid;
         
         switch (harvest_type_hid){
-            case HARVEST_TYPE.PIGLETS_SALE:{
-                break;
-            }
-            
+            case HARVEST_TYPE.PIGLETS_SALE:
             case HARVEST_TYPE.LIVE_PIGS_SALE:
             case HARVEST_TYPE.SLAUGHTER_PIGS_SALE: {
                 return thisObj.getHtmlSaleLiveOrSlaughterPigs(data_harvest);

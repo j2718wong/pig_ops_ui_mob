@@ -107,19 +107,15 @@ export function ProdHarvestList(input_settings){
         elemIdCardContainer     = `${settings.uniqueKey}-card-container`;
         elemIdNoEntries         = `${settings.uniqueKey}-no-entries`;
         
-        const html_style        = this._writeInlineStyle();
-        
-        
+
         
         const html = `
-    <div class="modal-body" id="">
+    <div class="mobile-container" id="">
         
         <h2>
             <span class="nav-title blue">Production Harvest</span>
         </h2>
         
-    
-        ${html_style}
         
         <div class="mobile-controls" id="${elemIdSearchAddControl}">
             <div class="search-container">
@@ -200,7 +196,7 @@ export function ProdHarvestList(input_settings){
             elemSearchAddControl.style.display = 'none';
         }
         else{
-            elemSearchAddControl.style.display = 'block';
+            elemSearchAddControl.style.display = 'flex';
         }
         
         

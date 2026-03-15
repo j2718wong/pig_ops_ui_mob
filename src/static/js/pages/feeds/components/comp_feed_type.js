@@ -9,6 +9,9 @@ import {UiSelectWithEntryCount} from '../../common/ui/select_with_entry_count.js
 import {CommonSelectOptions}    from '../../common/common_select_options.js';
 
 
+import {DEFAULT_UNIT_WEIGHT}    from '../../../constants.js';
+
+
 export function ComponentFeedType(input_settings){
     /*
     Typical settings
@@ -23,18 +26,7 @@ export function ComponentFeedType(input_settings){
     }
     */
     
-    
-    // These are manually hashed feed_type.id
-    const DEFAULT_UNIT_WEIGHT = {
-        "Q92W83":  50,
-        "EKQY8R":  50,
-        "0KP5K7":  1,
-        "1K7D9J":  25,
-        "08DZKQ":  50,
-        "M9ZN9G":  50,
-        "M8BE8P":  50
-    };
-    
+
 
     
     UiSelectWithEntryCount.call(this, input_settings);

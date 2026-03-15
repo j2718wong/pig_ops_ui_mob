@@ -301,7 +301,7 @@ export function PageViewPigFarmPage(){
     }
     
     
-    this.getHtmlPidSowLoveBoar = function(data_pig_prod){
+    this.getHtmlPidSowLoveBoar = function(data_pig_prod, exclude_boar_name){
         const pig_production = data_pig_prod.pig_production;
         
         // PID, Sow ❤ Boar column
@@ -329,9 +329,14 @@ export function PageViewPigFarmPage(){
             }
         }
         
+        
+        let html_boar_name = `<div><span class="love-icon">❤️</span> ${boar_name}</div>`;
+        if (exclude_boar_name){html_boar_name = '';}
+        
         return `
             <div>${s_pid}, ${sow_name} </div>
-            <div><span class="love-icon">❤️</span> ${boar_name}</div>`;
+            ${html_boar_name}
+        `;
         
         
     }

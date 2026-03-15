@@ -246,16 +246,29 @@ const FEED_TYPE_NAME = {
 };
 
 
+// These are manually hashed feed_type.id
+const DEFAULT_UNIT_WEIGHT = {
+    "3QLG0EDV":  50,
+    "N5EP4LPW":  50,
+    "W9L96L0N":  1,
+    "0GL8JLMY":  25,
+    "X0E23RNP":  50,
+    "34RDPRBJ":  50,
+    "GNEB2L1X":  50
+};
+
+
+// These are manually hashed harvest_type.id
 const HARVEST_TYPE = {
-    PIGLETS_SALE:           "Q92W83",
-    LIVE_PIGS_SALE:         "EKQY8R",
-    SLAUGHTER_PIGS_SALE:    "0KP5K7",
-    GILT_SALE:              "1K7D9J",
-    BOAR_SALE:              "08DZKQ",
-    INTERNAL_GILT_BOAR:     "M9ZN9G", 
-    BOAR_MATE_PAYMENT:      "M8BE8P",
-    INTERNAL_CONSUMPTION:   "NKNG81",
-    INTERNAL_SALE:          "18XJK5"
+    PIGLETS_SALE:           "3QLG0EDV",
+    LIVE_PIGS_SALE:         "N5EP4LPW",
+    SLAUGHTER_PIGS_SALE:    "W9L96L0N",
+    GILT_SALE:              "0GL8JLMY",
+    BOAR_SALE:              "X0E23RNP",
+    INTERNAL_GILT_BOAR:     "34RDPRBJ", 
+    BOAR_MATE_PAYMENT:      "GNEB2L1X",
+    INTERNAL_CONSUMPTION:   "3NRWBRM2",
+    INTERNAL_SALE:          "GPE78RNX"
 };
 
 
@@ -302,6 +315,7 @@ export {
     MULTIKEY_OBJ_TYPE,
     FEED_TYPE,
     FEED_TYPE_NAME,
+    DEFAULT_UNIT_WEIGHT,
     HARVEST_TYPE,
     
     DATA_VER_NUM_INDEX_PIG_FARM,
