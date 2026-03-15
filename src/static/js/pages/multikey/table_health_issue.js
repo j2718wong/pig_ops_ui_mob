@@ -36,9 +36,13 @@ TableHealthIssue are used in different objects
 export function TableHealthIssue(input_settings){
     PageTableBasic.call(this);
     
+    const TAG                   = 'TableHealthIssue';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj;
+    this.setNavigation(navigation);
+    
     
     /*
     Typical input_settings

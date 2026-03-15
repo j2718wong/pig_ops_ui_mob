@@ -4,7 +4,8 @@
 
 'use strict';
 
-import {ACC_USER_GROUP,
+import {APPLICATION,
+        ACC_USER_GROUP,
         PAGE_ID}              from '../../constants.js';
         
 
@@ -45,14 +46,10 @@ export function ManagerNavHistory(_navigation) {
     
     
     this.onClickBackBtn = function(is_mobile){
-        console.log('\n\n\nNavHistory List On clicking Back browser button');
-        console.log(this.navHistoryToString());
         
         
         if (navHistoryList.length > 0){
             const last_nav = navHistoryList[0];
-            console.log('\n\nlast_nav');
-            console.log(last_nav);
             
             if (last_nav.renderPageFunc){
                 navigation.showThisPage(last_nav.pageContainer);
@@ -63,6 +60,12 @@ export function ManagerNavHistory(_navigation) {
             // Remove head 
             thisObj.popHead();
             
+        }
+        
+        
+        if (APPLICATION.DEBUG_NAV_HISTORY){
+            console.log('\n\n\nNavHistory List AFTER clicking Back browser button');
+            console.log(this.navHistoryToString());
         }
         
     }
@@ -108,6 +111,24 @@ export function ManagerNavHistory(_navigation) {
     // Will remove entry at index 0
     this.popHead = function(){
         navHistoryList.shift();
+    }
+    
+    
+    // Will remove head of navHistoryList if the head_entry.pageContainer 
+    // is the page_container.
+    this.removeFromNavHistoryHead = function(page_container){
+        if (page_container){}
+        else{return;}
+        
+        if (navHistoryList.length == 0){return;}
+        
+        const last_navigation = navHistoryList[0];
+        
+        if (last_navigation.pageContainer == page_container){
+            thisObj.popHead();
+            return; 
+        }
+
     }
     
     

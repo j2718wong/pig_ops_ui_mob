@@ -84,6 +84,10 @@ export function ManagerPublicSections(_navigation) {
             
             let go_back_page = navigation.currentPage;
             
+            // Push currentPage to NavHistory
+            navigation.pushCurrentPageToNavHistory();
+        
+            
             if (go_back_page == null){
                 go_back_page_id = PAGE_ID.HOME;
                 go_back_page = navigation.getPageContainer(go_back_page_id);
@@ -98,7 +102,7 @@ export function ManagerPublicSections(_navigation) {
             const next_page = navigation.getPageContainer(nex_page_id);
             
             navigation.showThisPage(next_page);
-            navigation.pageCustomerFeedback.beforeShow(options);
+            navigation.pageCustomerFeedback.show(options);
             
             
         });

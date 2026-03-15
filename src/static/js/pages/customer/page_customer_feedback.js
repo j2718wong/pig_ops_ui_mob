@@ -21,9 +21,11 @@ import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 export function PageCustomerFeedback(input_settings){
     PageViewBasic.call(this);
     
+    const TAG                   = 'PageCustomerFeedback';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
-    
+    this.setNavigation(navigation);
     
     /*
     Typical settings = {
@@ -583,8 +585,6 @@ export function PageCustomerFeedback(input_settings){
     
     
     this.afterHtmlRender = function(){
-
-        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -610,6 +610,12 @@ export function PageCustomerFeedback(input_settings){
     this._bindEventListeners = function(){
         elemBtnBack.addEventListener('click', function(event) {
             event.preventDefault();
+            
+            // Remove NavHistoryHead if same with go_back_page
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                showOptions.go_back_page);
+            
+            
             navigation.showThisPage(showOptions.go_back_page);
         });
         
@@ -642,7 +648,17 @@ export function PageCustomerFeedback(input_settings){
     }
     
     
-    this.beforeShow = function(options){
+    this.renderPage = function(page_data){
+        thisObj.show(page_data.options);
+    }
+    
+    
+    this.show = function(options){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = {options: options};
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
         thisObj._resetForm();
@@ -781,6 +797,11 @@ export function PageCustomerFeedback(input_settings){
                         document.body.removeChild(successOverlay);
                         
                         if (showOptions && showOptions.go_back_page) {
+                            
+                            // Remove NavHistoryHead if same with go_back_page
+                            navigation.managerNavHistory.removeFromNavHistoryHead(
+                                showOptions.go_back_page);
+                                            
                             navigation.showThisPage(showOptions.go_back_page);
                         } else {
                             history.back();

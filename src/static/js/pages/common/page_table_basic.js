@@ -4,6 +4,7 @@
 
 'use strict';
 
+import {PageViewBasic}          from '../common/page_view_basic.js';
 
 import {APPLICATION}            from '../../constants.js';
 
@@ -13,6 +14,7 @@ import {createPaginationManager} from '../../utils.js';
 
 
 export function PageTableBasic(){
+    PageViewBasic.call(this);
     
     const thisObj               = this;
     

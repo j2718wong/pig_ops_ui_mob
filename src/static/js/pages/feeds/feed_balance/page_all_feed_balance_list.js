@@ -20,6 +20,9 @@ import {formatDate,
         FORMAT_COMPACT,
         FORMAT_COMPACT_NO_SPACE} from '../../../utils.js';
 
+import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
+
+
 
 /*
 
@@ -28,8 +31,11 @@ import {formatDate,
 export function PageAllFeedBalanceList(input_settings){
     PageTableBasic.call(this);
     
+    const TAG                   = 'PageAllFeedBalanceList';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
     
     
     /*
@@ -45,9 +51,15 @@ export function PageAllFeedBalanceList(input_settings){
     
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
 
+    let componentNavLeftRight   = null;
+    
+    let elemIdPageInfo          = null;
+
     let elemIdTableBody         = null;
 
     
+    let elemPageInfo            = null;
+
     let elemTableBody           = null;
     
 
@@ -69,6 +81,7 @@ export function PageAllFeedBalanceList(input_settings){
         
         thisObj.setSettingsTable({
             noSearchAdd:    true,
+            noHeader:       true,
             uniqueKey:      settings.uniqueKey,
             tableTitle:     'Feed Balance List',
             
@@ -78,20 +91,90 @@ export function PageAllFeedBalanceList(input_settings){
             }
         });
         
-        const html = thisObj.getHtml();
-        elemDivContainer.innerHTML = html;
         
+        this.render();
+        this.afterHtmlRender();
         
-        thisObj.afterHtmlRender();  // This will call the parent method 
-        thisObj.afterHtmlRenderThis();
+        this.afterHtmlRenderThis();
 
     }
     
     
+    this.render = function(){
+        componentNavLeftRight   = new ComponentNavLeftRight({
+           uniqueKey:           settings.uniqueKey,
+           elemDivContainer:    elemDivContainer,
+           pageTitle:           'Feed Balance List'
+        });
+        
+        
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
+        
+        
+        const html_nav          = componentNavLeftRight.getHtml();   
+        const html_table        = thisObj.getHtml();
+           
+
+           
+        const html = `
+
+<div class="mobile-container">
+    ${html_nav}
+    
+    <!-- Mobile Info Box -->
+    <!--
+    <div class="mobile-info-box">
+        <div class="info-text" id="${elemIdPageInfo}">
+        </div>
+    </div>
+    -->
+    
+    ${html_table}
+
+</div>
+        `;
+        
+        elemDivContainer.innerHTML = html;
+    }
+    
+    
     this.afterHtmlRenderThis = function(){
-        elemTableBody           = document.getElementById(elemIdTableBody);
+        componentNavLeftRight.afterHtmlRender();
+        
+        
+        this._findElementsThis();
+        this._processAfterHtmlRenderThis();
+        this._bindEventListenersThis();
         
     }
+    
+    
+    this._findElementsThis = function(){
+        elemTableBody           = document.getElementById(elemIdTableBody);
+    }
+    
+    
+    this._processAfterHtmlRenderThis = function(){
+        
+        componentNavLeftRight.callbackNavLeft = function(){
+            navigation._onClickNavPigDead();
+        };
+        
+          
+        componentNavLeftRight.callbackNavRight = function(){
+            navigation._onClickNavPigDead();
+        };
+        
+        
+        componentNavLeftRight.bindEventListeners();
+    }
+    
+    
+    this._bindEventListenersThis = function(){
+        
+       
+    }
+
     
     
     this._writeInlineStyle = function(){

@@ -448,6 +448,10 @@ export function PageMyAccount(input_settings){
         
         
         elemBtnClose.onclick = function(){
+            // Remove NavHistoryHead if same with go_back_page
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                showOptions.go_back_page);
+            
             navigation.showThisPage(showOptions.go_back_page);
         };
         

@@ -28,8 +28,12 @@ import {getSowBoarReference}    from '../../common/common_app.js';
 export function PageProdPigDeadList(input_settings){
     PageTableBasic.call(this);
     
+    const TAG                   = 'PageProdPigDeadList';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
+    
     
     /*
     Typical input_settings
@@ -147,12 +151,12 @@ export function PageProdPigDeadList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavProdHistory();
+            navigation._onClickNavFeedBalance();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation._onClickNavFeedBalance();
         };
         
         

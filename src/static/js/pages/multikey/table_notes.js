@@ -37,6 +37,8 @@ Table Notes are used in different objects
 export function TableNotes(input_settings){
     PageTableBasic.call(this);
     
+    const TAG                   = 'TableNotes';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj;
