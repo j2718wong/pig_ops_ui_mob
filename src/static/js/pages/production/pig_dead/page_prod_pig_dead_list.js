@@ -189,7 +189,7 @@ export function PageProdPigDeadList(input_settings){
     }
     
     
-    this.renderPage = function(){
+    this.renderPage = function(page_data){
         thisObj.show();
     }
     
@@ -519,22 +519,26 @@ export function PageProdPigDeadList(input_settings){
     
     
     this.onClickAddEntry = function(){
+        // Show Container
+        const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
+        
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        navigation.showThisPage(next_page);
+        
+        
+        // Show Page
         const go_back_page_id = PAGE_ID.PIG_DEAD_LIST;
-        
         const go_back_page = navigation.getPageContainer(go_back_page_id);
-        
         
         const options ={
             is_add:                 true,   // false is edit
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         }
-        
-        navigation.pagePigDeadAddEdit.beforeShow(options);
-        const page_container = navigation.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
-        navigation.showThisPage(page_container);
-        
-        
+        navigation.pagePigDeadAddEdit.show(options);
     }
     
     

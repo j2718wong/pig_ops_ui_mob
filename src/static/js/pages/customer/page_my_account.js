@@ -394,10 +394,6 @@ export function PageMyAccount(input_settings){
                 navigation.showThisPage(next_page);
                 
                 
-                // Replace navigation.curPageNavigated
-                navigation.curPageNavigated.pageContainer   = next_page;
-                
-                
                 const options ={
                     go_back_page:   go_back_page,
                 };

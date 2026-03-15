@@ -177,6 +177,27 @@ export function ManagerNavHistory(_navigation) {
     }
     
     
+    // Will remove from head until the given page container is found;
+    // If not found, nothing is removed.
+    this.removeFromHeadUntilThisPage = function(page_container){
+        let is_found = 0; // is page_container found
+        
+        let index  = 0;
+        for(const cur_entry of navHistoryList){
+            if (cur_entry.pageContainer == page_container){
+                is_found = 1;
+                break;
+            }
+            
+            index += 1;
+        }
+        
+        if (is_found > 0){
+            navHistoryList.splice(0, index+1);
+        }
+    }
+    
+    
     this.navHistoryToString = function(){
         let s = '';
         

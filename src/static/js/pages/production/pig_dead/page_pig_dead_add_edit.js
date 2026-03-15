@@ -27,8 +27,12 @@ import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 export function PagePigDeadAddEdit(input_settings){
     PageViewPigFarmPage.call(this);
     
+    const TAG                   = 'PagePigDeadAddEdit';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
+    
     
     const INVALID_MSG_NUM_INPUT = 'Please enter a valid number.';
     
@@ -277,8 +281,18 @@ export function PagePigDeadAddEdit(input_settings){
     }
     
     
+    this.renderPage = function(page_data){
+        thisObj.show(page_data.options);
+    }
+    
+    
     // Reset add form
-    this.beforeShow = function(options){
+    this.show = function(options){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = {options:options};
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
         thisObj._resetForm();
@@ -314,11 +328,35 @@ export function PagePigDeadAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
+            // Remove NavHistoryHead if same with go_back_page
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                showOptions.go_back_page);
+            
+            
+            // This will not redraw the previous page; only shwo container
             navigation.showThisPage(showOptions.go_back_page);
+            
+            if (APPLICATION.DEBUG_NAV_HISTORY){
+                console.log('\n\nBack to Pig Dead List ')
+                thisObj.debugNavHistory(TAG);
+            }
         };
         
         elemBtnCancel.onclick = function() {
+            // Remove NavHistoryHead if same with go_back_page
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                showOptions.go_back_page);
+            
+            
+            // This will not redraw the previous page; only shwo container
             navigation.showThisPage(showOptions.go_back_page);
+
+            
+            if (APPLICATION.DEBUG_NAV_HISTORY){
+                console.log('\n\nBack to Pig Dead List ')
+                thisObj.debugNavHistory(TAG);
+            }
+
         };
     }
     
@@ -518,8 +556,11 @@ export function PagePigDeadAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    navigation.managerNavHistory.removeFromNavHistoryHead(
+                        showOptions.go_back_page);
+                    
                     navigation.showThisPage(showOptions.go_back_page);
-                    navigation.pagePigDeadList.beforeShow();
+                    navigation.pagePigDeadList.show();
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

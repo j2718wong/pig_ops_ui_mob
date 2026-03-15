@@ -1771,6 +1771,10 @@ export function Navigation(){
                 // Update public sections. 
                 if (cur_entry == elemPageContHomeDashBoard){
                     thisObj.managerPublicSections.beforeShow();
+                    
+                    // Clear History if current page is dashboard
+                    thisObj.managerNavHistory.clearHistory();
+                    
                 }
             }
             else{

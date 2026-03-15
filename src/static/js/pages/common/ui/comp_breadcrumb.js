@@ -114,7 +114,15 @@ export function ComponentBreadCrumbs(input_settings){
                 const item_index    = parseInt(str_index);
                 const breadcrumb_item = breadcrumbItems[item_index];
 
-                const next_page = navigation.getPageContainer(breadcrumb_item.gotoPageId);
+                const next_page = navigation.getPageContainer(
+                                        breadcrumb_item.gotoPageId);
+                
+                
+                // Remove navigation history entries from head until next_page.
+                navigation.managerNavHistory.removeFromHeadUntilThisPage(
+                    next_page);
+                
+                
                 navigation.showThisPage(next_page);
                 
                 if (breadcrumb_item.callbackOnClick){

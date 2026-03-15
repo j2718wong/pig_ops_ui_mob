@@ -394,7 +394,18 @@ export function PageAllFeedBalanceList(input_settings){
     
     
     this.onClickAddEntry = function(){
+        // Show Container
+        const goto_page_id   = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
+        const next_page = navigation.getPageContainer(goto_page_id);
         
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        navigation.showThisPage(next_page);
+        
+        
+        // Show Page
         const go_back_page_id = PAGE_ID.ALL_FEED_BAL_LIST;
         const go_back_page = navigation.getPageContainer(go_back_page_id);
         
@@ -405,10 +416,6 @@ export function PageAllFeedBalanceList(input_settings){
         };
         navigation.pageAllFeedBalanceAddEdit.beforeShow(options);
         
-
-        const goto_page_id   = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
-        const page_container = navigation.getPageContainer(goto_page_id);
-        navigation.showThisPage(page_container);
     }
     
     
