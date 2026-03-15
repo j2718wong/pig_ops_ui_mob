@@ -38,8 +38,12 @@ import {APPLICATION,
 export function PageSowBoarAddEdit(input_settings){
     PageSowBoarWithBreadCrumbs.call(this, input_settings);
     
+    const TAG                   = 'PageSowBoarAddEdit';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
+    
     
     const MAXCHAR_SOW_BOAR_NAME     = 20;
     const MAXCHAR_SOW_BOAR_NUMBER   = 10;
@@ -664,7 +668,12 @@ export function PageSowBoarAddEdit(input_settings){
     }
     
     
-    this.beforeShow = function(options, data_sow_boar){
+    this.renderPage = function(page_data){
+        thisObj.show(page_data.option, page_data.data_sow_boar); 
+    }
+    
+    
+    this.show = function(options, data_sow_boar){
         /*
         Typical options
         options ={
@@ -679,6 +688,20 @@ export function PageSowBoarAddEdit(input_settings){
         data_sow_boar is only provided if sow_boar edit, options.is_add = false
         
         */
+        
+        
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = {
+            options:        options,
+            data_sow_boar:  data_sow_boar
+        };
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
+        
+        
         thisObj._resetForm();
         
         
@@ -687,6 +710,8 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         showOptions = options;
+        
+
         
         let html;
 
@@ -811,10 +836,20 @@ export function PageSowBoarAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
+            // Remove NavHistoryHead if same with go_back_page
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                showOptions.go_back_page);
+            
+            
             navigation.showThisPage(showOptions.go_back_page);
         };
         
         elemBtnCancel.onclick = function() {
+            // Remove NavHistoryHead if same with go_back_page
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                showOptions.go_back_page);
+            
+            
             navigation.showThisPage(showOptions.go_back_page);
         };
         
@@ -887,12 +922,6 @@ export function PageSowBoarAddEdit(input_settings){
             }, 100);
         }
         
-    }
-    
-    
-    this.show = function(){
-        thisObj._resetForm();
-
     }
     
       
@@ -1206,6 +1235,11 @@ export function PageSowBoarAddEdit(input_settings){
                                 
                                 const callback_success = function(){
                                     navigation.pageSowBoarList.show(null);
+                                    
+                                    navigation.managerNavHistory.removeFromNavHistoryHead(
+                                        showOptions.go_back_page);
+                    
+                                    
                                     navigation.showThisPage(showOptions.go_back_page);
                                 };
                                 
@@ -1249,7 +1283,7 @@ export function PageSowBoarAddEdit(input_settings){
                         // 1.) replace this data only.
                         thisObj.curDataSowBoar.sow_boar = response.sow_boar;
                         
-                        navigation.pageSowBoarEntry.beforeShow(thisObj.curDataSowBoar);
+                        navigation.pageSowBoarEntry.show(thisObj.curDataSowBoar);
                         navigation.showThisPage(showOptions.go_back_page);
                     }
                     

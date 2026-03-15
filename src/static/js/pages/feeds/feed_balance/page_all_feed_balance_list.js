@@ -197,7 +197,7 @@ export function PageAllFeedBalanceList(input_settings){
         thisObj.debugNavHistory(TAG);
         
         // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = null;;
+        navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         

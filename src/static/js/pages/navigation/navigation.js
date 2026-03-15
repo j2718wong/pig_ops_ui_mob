@@ -1398,10 +1398,16 @@ export function Navigation(){
             const next_page_nav_menu_group = thisObj.getNavigationMenuGroup(next_page);
             
             if (cur_page_nav_menu_group && next_page_nav_menu_group) {
+                // Swiping on menu to menu or list to list
                 if (cur_page_nav_menu_group == next_page_nav_menu_group){
                     return;
                 }
             }
+        }
+        
+        // Swiping on same page container
+        if (cur_page_navigated.pageContainer == next_page){
+            return;
         }
         
         
@@ -1798,7 +1804,14 @@ export function Navigation(){
     
         
     this._onClickNavSowBoar = function(is_mobile, sow_boar_type){
-        thisObj.showThisPage(elemPageContSowBoarList);
+        const next_page = elemPageContSowBoarList;
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        thisObj.pushCurrentPageToNavHistory(next_page);
+        
+        
+        thisObj.showThisPage(next_page);
         
         const options= {
             sow_boar_type: sow_boar_type
@@ -1878,7 +1891,7 @@ export function Navigation(){
         
         // Push currentPage to NavHistory;
         // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
+        thisObj.pushCurrentPageToNavHistory(next_page);
          
 
         thisObj.showThisPage(next_page);
@@ -1891,7 +1904,7 @@ export function Navigation(){
         
         // Push currentPage to NavHistory;
         // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
+        thisObj.pushCurrentPageToNavHistory(next_page);
         
         
         thisObj.showThisPage(next_page);

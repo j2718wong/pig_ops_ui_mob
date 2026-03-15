@@ -43,8 +43,12 @@ import {TableGiltOps}           from './table_gilt_ops.js'
 export function PageSowBoarEntry(input_settings){
     PageViewPigFarmPage.call(this);
     
+    const TAG                   = 'PageSowBoarEntry';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
+    
     
     /*
     Typical settings = {
@@ -486,7 +490,23 @@ export function PageSowBoarEntry(input_settings){
     };
     
     
-    this.beforeShow = function(data_sow_boar, options){
+    this.renderPage = function(page_data){
+        thisObj.show(page_data.data_sow_boar, page_data.options);
+    }
+    
+    
+    this.show = function(data_sow_boar, options){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = {
+            data_sow_boar:  data_sow_boar,
+            options:        options
+        };
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
+        
         dataSowBoar = data_sow_boar;
 
         componentTabsWithMore.curData = data_sow_boar;
@@ -497,7 +517,8 @@ export function PageSowBoarEntry(input_settings){
             showOptions = options;
         }
         
-
+        
+        
         
         // Set Entry Title
         let s_title = '';
@@ -652,18 +673,26 @@ export function PageSowBoarEntry(input_settings){
         // Clicking on the SowBoar Name should open the SowBoar edit page
         if (showOptions.sow_boar_type != SOW_BOAR_TYPE.DISPOSED){
             elemEntryName.onclick = function(){
+                // Show Container
+                const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+                
+                // Push currentPage to NavHistory; 
+                // Will also compare current page and  next_page NAV_MENU_GROUP.
+                navigation.pushCurrentPageToNavHistory(next_page);
+                
+                navigation.showThisPage(next_page);
+                
+                
+                // Show Page
                 const options_sow_boar ={
                     is_add:         false,
                     sow_boar_type:  showOptions.sow_boar_type,
                     go_back_page:   elemDivContainer   // Go back to this page
-                }
+                };
 
-                
-                navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar, dataSowBoar);
-                navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(thisObj.onSuccessUpdateStatus);
-                
-                const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-                navigation.showThisPage(next_page)
+                navigation.pageSowBoarAddEdit.show(options_sow_boar, dataSowBoar);
+                navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(
+                    thisObj.onSuccessUpdateStatus);
             }
         } 
         else{
@@ -674,7 +703,7 @@ export function PageSowBoarEntry(input_settings){
                 };
 
                 
-                navigation.pageSowBoarDisposed.beforeShow(dataSowBoar, options_disposed);
+                navigation.pageSowBoarDisposed.show(dataSowBoar, options_disposed);
                 
                 const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_DISPOSED);
                 navigation.showThisPage(next_page)

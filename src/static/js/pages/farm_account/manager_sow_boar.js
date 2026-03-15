@@ -263,7 +263,7 @@ export function ManagerSowBoar(input_settings){
         const sow_boar_hid = data_sow_boar.sow_boar.hid;
         
         const base_url = window.location.origin;
-        const url = `${base_url}/sow_boar/data_details?sow_boar_hid=${sow_boar_hid}`;
+        const url = `${base_url}/sow_boar/data_details/${sow_boar_hid}`;
         
         
         const bearer_token = localStorage.getItem('access_token');

@@ -145,6 +145,18 @@ export function SelectSowGesta(input_settings){
             // Should open SowBoarAddEdit page.
             // after success add or cancel/close should go back to this page
             
+            // Show Container
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+            
+            // Push currentPage to NavHistory; 
+            // Will also compare current page and  next_page NAV_MENU_GROUP.
+            navigation.pushCurrentPageToNavHistory(next_page);
+            
+            navigation.showThisPage(next_page);
+            
+            
+            
+            // Show Page
             const options_sow_boar ={
                 is_add:         true,
                 sow_boar_type:  SOW_BOAR_TYPE.SOW, 
@@ -161,11 +173,10 @@ export function SelectSowGesta(input_settings){
                 elemSelect.value = new_sow_boar_hid;
             };
             
-            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            navigation.pageSowBoarAddEdit.show(options_sow_boar);
             navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback_success;
             
-            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-            navigation.showThisPage(next_page)
+            
         });
         
         

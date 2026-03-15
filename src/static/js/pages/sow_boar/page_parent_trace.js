@@ -590,17 +590,23 @@ export function PageParentTrace(input_settings){
         if (data_sow_boar == null){return;}
         
         
+        // Show Container
+        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+        
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        navigation.showThisPage(next_page);
+        
+        
+        // Show Page
         const options = {
             is_add:         false,
             sow_boar_type:  sow_boar_type,
             go_back_page:   elemDivContainer   // Go back to this page
         };
         
-        
-        navigation.pageSowBoarAddEdit.beforeShow(options, data_sow_boar);
-        //navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(thisObj.onSuccessUpdateStatus);
-        
-        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-        navigation.showThisPage(next_page)
+        navigation.pageSowBoarAddEdit.show(options, data_sow_boar);
     } 
 }   

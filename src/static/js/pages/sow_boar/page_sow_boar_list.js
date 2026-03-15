@@ -39,9 +39,12 @@ import {SowBoarTableDisposed}       from './sow_boar_tables/table_disposed.js'
 export function PageSowBoarList(input_settings){
     PageViewPigFarmPage.call(this);
     
+    const TAG                   = 'PageSowBoarList';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
-
+    this.setNavigation(navigation);
+    
     
     this.TABLE_ROW_PER_PAGE     = 10;
     
@@ -587,7 +590,13 @@ ${html_style}
     }
     
     
+    this.renderPage = function(page_data){
+        thisObj.show(page_data.options);
+    }
+    
+    
     this.show = function(options){
+        
         dataSowList     = navigation.pigFarm.managerSowBoar.dataSowList;
         dataBoarList    = navigation.pigFarm.managerSowBoar.dataBoarList;
         dataGiltList    = navigation.pigFarm.managerSowBoar.dataGiltList;
@@ -597,6 +606,14 @@ ${html_style}
         
         // show the last showOptions if there is no options
         if (options == null){options = showOptions;}
+        
+        
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = {options:options};
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
         
         
         // Request requestFarmPigletsOutput 
@@ -811,6 +828,18 @@ ${html_style}
         
         // Need to set click listener
         elemAddEntryBtn.onclick = function(){
+            // Show Container
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+            
+            // Push currentPage to NavHistory; 
+            // Will also compare current page and  next_page NAV_MENU_GROUP.
+            navigation.pushCurrentPageToNavHistory(next_page);
+        
+            navigation.showThisPage(next_page);
+            
+            
+            
+            // Show Page
             const options_sow_boar ={
                 is_add:         true,   // false is edit
                 sow_boar_type:  showOptions.sow_boar_type, 
@@ -841,13 +870,11 @@ ${html_style}
                 }
             };
             
-            
+
             navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
-            navigation.pageSowBoarAddEdit.beforeShow(options_sow_boar);
+            navigation.pageSowBoarAddEdit.show(options_sow_boar);
+
             
-            
-            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-            navigation.showThisPage(next_page)
         };
         
         
@@ -1185,8 +1212,13 @@ ${html_style}
         if (sow_boar_hid == null){
             
             // Go back to this page
-            const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
-            navigation.showThisPage(page_container);
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+            
+            // Remove NavHistoryHead if same with go_back_page
+            navigation.managerNavHistory.removeFromNavHistoryHead(next_page);
+            
+            
+            navigation.showThisPage(next_page);
             
             if (sow_boar_type){
                 const options= {
@@ -1250,7 +1282,18 @@ ${html_style}
             cur_entry = sow_boar_list[index];
             
             if (cur_entry.sow_boar.hid == sow_boar_hid){
+                // Show Container
+                const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                
+                // Push currentPage to NavHistory; 
+                // Will also compare current page and  next_page NAV_MENU_GROUP.
+                navigation.pushCurrentPageToNavHistory(next_page);
+                
+                
+                navigation.showThisPage(next_page);
+                
         
+                // Show Page
                 if ((index-1) >=0){
                     prev_entry = sow_boar_list[index-1];
                     prev_sow_boar_hid = prev_entry.sow_boar.hid;
@@ -1274,9 +1317,7 @@ ${html_style}
                     options.tab_id = tab_id;
                 }
                 
-                navigation.pageSowBoarEntry.beforeShow(cur_entry, options);
-                const page_container = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
-                navigation.showThisPage(page_container);
+                navigation.pageSowBoarEntry.show(cur_entry, options);
                 return;
             }
 
