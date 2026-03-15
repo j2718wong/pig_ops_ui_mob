@@ -84,24 +84,27 @@ export function ManagerPublicSections(_navigation) {
             
             let go_back_page = navigation.currentPage;
             
-            // Push currentPage to NavHistory
-            navigation.pushCurrentPageToNavHistory();
-        
-            
             if (go_back_page == null){
                 go_back_page_id = PAGE_ID.HOME;
                 go_back_page = navigation.getPageContainer(go_back_page_id);
             }
 
             
-            const options = {
-                go_back_page:   go_back_page
-            };
-            
             const nex_page_id = PAGE_ID.FEEDBACK_US;
             const next_page = navigation.getPageContainer(nex_page_id);
             
+            
+            // Push currentPage to NavHistory; 
+            // Will also compare current page and  next_page NAV_MENU_GROUP.
+            navigation.pushCurrentPageToNavHistory(next_page);
+                
+            
             navigation.showThisPage(next_page);
+            
+            
+            const options = {
+                go_back_page:   go_back_page
+            };
             navigation.pageCustomerFeedback.show(options);
             
             

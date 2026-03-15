@@ -188,29 +188,24 @@ export function PageAllFeedBalanceList(input_settings){
     }
     
     
-    this.beforeShow = function(){
+    this.renderPage = function(){
+        thisObj.show();
+    }
+    
+    
+    this.show = function(){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = null;;
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
         const callback_success = function(data){
             thisObj.renderTable(data);
         };
         
         navigation.pigFarm.requestDataPigFarmFeedBalance(null, callback_success);
-        
-        
-        
-    }
-    
-        
-    this.show = function(options){
-        
-        // show the last showOptions if there is no options
-        if (options == null){options = showOptions;}
-        
-        // So that not to instantiate in every table redraw
-        dtCurrentDate = new Date();
-        dtCurrentDate.setHours(0, 0, 0, 0);
-        
-        showOptions = options;
-        
     }
     
      

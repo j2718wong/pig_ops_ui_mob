@@ -189,7 +189,20 @@ export function PageProdPigDeadList(input_settings){
     }
     
     
-    this.beforeShow = function(){
+    this.renderPage = function(){
+        thisObj.show();
+    }
+    
+    
+    
+    this.show = function(){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = null;;
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
         const callback_success = function(data){
             dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
             thisObj.renderTable(dataPigDeadList);

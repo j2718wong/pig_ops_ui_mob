@@ -5,6 +5,7 @@
 'use strict';
 
 import {APPLICATION,
+        NAV_MENU_GROUP,
         ACC_USER_GROUP,
         PIG_OPERATION_TYPE,
         PAGE_ID,
@@ -327,21 +328,26 @@ function UserControl(_navigation) {
     
     
     this.onClickMyAccount = function(){
-        // Push currentPage to NavHistory
-        navigation.pushCurrentPageToNavHistory();
-        
-        
         let go_back_page    = navigation.curPageNavigated.pageContainer;
         if (go_back_page == null){
             go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
         } 
         
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.MY_ACCOUNT);
+        
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        
+        
         const options ={
             go_back_page:   go_back_page,
         };
-        
-        const next_page = navigation.getPageContainer(PAGE_ID.MY_ACCOUNT);
-        navigation.showThisPage(next_page);
         navigation.pageMyAccount.show(options);
         
         elemDesktopUserDropdown.classList.remove('active');
@@ -465,8 +471,6 @@ export function Navigation(){
     
     
     
-    
-    
     let elemNavLeftProductName          = null;
     let elemDesktopPigFarmName          = null;
     let elemMobilePigFarmName           = null;
@@ -483,7 +487,7 @@ export function Navigation(){
     
     let elemPageContAccountDisabled     = null;
     let elemPageContUserDisabled        = null;
-    let elemPageContAccountBillUnpaid          = null;
+    let elemPageContAccountBillUnpaid   = null;
         
     let elemPageContSowBoarList         = null;
     let elemPageContSowBoarAddEdit      = null;
@@ -547,6 +551,16 @@ export function Navigation(){
     let elemPageContUserAddEdit         = null;
     let elemPageContJoinAccReqList      = null;
     let elemPageContJoinAccReqApprove   = null;
+    
+    
+    let CONTAINER_GROUP_PRODUCTION      = null;
+    let CONTAINER_GROUP_SOW_BOAR_GILT   = null;
+    let CONTAINER_GROUP_OPERATIONS      = null;
+    let CONTAINER_GROUP_FINANCIALS      = null;
+    let CONTAINER_GROUP_ACCOUNT_LISTS   = null;
+    let CONTAINER_GROUP_SETTINGS        = null;
+    let CONTAINER_GROUP_ADMIN           = null;
+    
     
     
 
@@ -1127,9 +1141,9 @@ export function Navigation(){
         elemPageContFeedBackUs          = document.getElementById(elemIdContFeedBackUs);
 
         
-        elemPageContAccountDisabled         = document.getElementById(elemIdContAccountDisabled);
+        elemPageContAccountDisabled     = document.getElementById(elemIdContAccountDisabled);
         elemPageContUserDisabled        = document.getElementById(elemIdContUserDisabled);
-        elemPageContAccountBillUnpaid          = document.getElementById(elemIdContAccountBillUnpaid);
+        elemPageContAccountBillUnpaid   = document.getElementById(elemIdContAccountBillUnpaid);
         
                 
         elemPageContSowBoarList         = document.getElementById(elemIdContSowBoarList);
@@ -1192,6 +1206,48 @@ export function Navigation(){
         elemPageContJoinAccReqList      = document.getElementById(elemIdContJoinAccReqList);
         elemPageContJoinAccReqApprove   = document.getElementById(elemIdContJoinAccReqApprove);
         
+        
+        CONTAINER_GROUP_PRODUCTION      = [
+            elemPageContProdGestaList,
+            elemPageContProdLactaList,
+            elemPageContFatteningList,
+            elemPageContProdHistoryList,
+            elemPageContProdNotPregnantList
+        ]; 
+        
+        
+        CONTAINER_GROUP_SOW_BOAR_GILT   = [
+            elemPageContSowBoarList,
+            elemPageContSowBoarDisposed,
+            elemPageContParentTrace
+        ];
+        
+        
+        CONTAINER_GROUP_OPERATIONS      = [
+            elemPageContAllFeedBalList,
+            elemPageContPigDeadList
+        ];
+        
+        
+        CONTAINER_GROUP_FINANCIALS      = [
+            elemPageContProdSalesList,
+            elemPageContFarmFeedBuyList
+        ];
+        
+        
+        CONTAINER_GROUP_ACCOUNT_LISTS   = [];
+        
+        
+        CONTAINER_GROUP_SETTINGS        = [
+            elemPageContAccOpsSettingsEdit,
+            elemPageContAccPigOpsList
+        ];
+        
+        
+        CONTAINER_GROUP_ADMIN           = [
+            elemPageContUserList,
+            elemPageContJoinAccReqList
+        ];
         
     }
     
@@ -1328,11 +1384,28 @@ export function Navigation(){
         elemMobilePigFarmName.textContent = pig_farm_name;
     }
     
-    
-    this.pushCurrentPageToNavHistory = function() {
-        // Push Current navigation.curPageNavigated to navHistoryList
+
+    // Will compare current page menu group and next_page menu group.
+    // If not same, will push current page to navHistoryList
+    // If same will not push.
+    this.pushCurrentPageToNavHistory = function(next_page) {
         const cur_page_navigated = thisObj.curPageNavigated;
         
+        
+        if (next_page){
+            const cur_page = cur_page_navigated.pageContainer; 
+            const cur_page_nav_menu_group  = thisObj.getNavigationMenuGroup(cur_page);
+            const next_page_nav_menu_group = thisObj.getNavigationMenuGroup(next_page);
+            
+            if (cur_page_nav_menu_group && next_page_nav_menu_group) {
+                if (cur_page_nav_menu_group == next_page_nav_menu_group){
+                    return;
+                }
+            }
+        }
+        
+        
+        // Push Current navigation.curPageNavigated to navHistoryList
         thisObj.managerNavHistory.pushCurrentPage(
             cur_page_navigated.pageContainer,
             cur_page_navigated.pageData,
@@ -1797,14 +1870,28 @@ export function Navigation(){
     
         
     this._onClickNavFeedBalance = function(is_mobile){
-        thisObj.showThisPage(elemPageContAllFeedBalList);
-        thisObj.pageAllFeedBalanceList.beforeShow();
+        const next_page = elemPageContAllFeedBalList;
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+         
+
+        thisObj.showThisPage(next_page);
+        thisObj.pageAllFeedBalanceList.show();
     }
         
     
     this._onClickNavPigDead = function(is_mobile){
-        thisObj.showThisPage(elemPageContPigDeadList);
-        thisObj.pagePigDeadList.beforeShow();
+        const next_page = elemPageContPigDeadList;
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        thisObj.showThisPage(next_page);
+        thisObj.pagePigDeadList.show();
     }
     
         
@@ -2155,6 +2242,46 @@ export function Navigation(){
             case elemPageContJoinAccReqApprove      :{return "elemPageContJoinAccReqApprove ";}
             
             default:{return null;}
+        }
+        
+        return null;
+    }
+    
+    
+    // Will return NAV_MENU_GROUP from a  given page container.
+    // Pages that show up on NavLink click in the same group should have same 
+    // NAV_MENU_GROUP.
+    
+    // Example ['Sows', 'Boars', 'Gilts', 'Disposed', 'Parent Trace'] belongs to
+    // NAV_MENU_GROUP.SOW_BOAR_GILT;
+    this.getNavigationMenuGroup = function(page_container){
+        
+        if (CONTAINER_GROUP_PRODUCTION.includes(page_container)){
+            return NAV_MENU_GROUP.PRODUCTION;
+        }
+        
+        if (CONTAINER_GROUP_SOW_BOAR_GILT.includes(page_container)){
+            return NAV_MENU_GROUP.SOW_BOAR_GILT;
+        }
+        
+        if (CONTAINER_GROUP_OPERATIONS.includes(page_container)){
+            return NAV_MENU_GROUP.OPERATIONS;
+        }
+        
+        if (CONTAINER_GROUP_FINANCIALS.includes(page_container)){
+            return NAV_MENU_GROUP.FINANCIALS;
+        }
+        
+        if (CONTAINER_GROUP_ACCOUNT_LISTS.includes(page_container)){
+            return NAV_MENU_GROUP.ACCOUNT_LISTS;
+        }
+        
+        if (CONTAINER_GROUP_SETTINGS.includes(page_container)){
+            return NAV_MENU_GROUP.SETTINGS;
+        }
+        
+        if (CONTAINER_GROUP_ADMIN.includes(page_container)){
+            return NAV_MENU_GROUP.ADMIN;
         }
         
         return null;

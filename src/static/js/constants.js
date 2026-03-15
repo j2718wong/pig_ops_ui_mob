@@ -33,6 +33,15 @@ const ACC_USER_GROUP = {
 };
 
 
+const NAV_MENU_GROUP = {
+    PRODUCTION:             1,
+    SOW_BOAR_GILT:          2,
+    OPERATIONS:             3,
+    FINANCIALS:             4,
+    ACCOUNT_LISTS:          5,
+    SETTINGS:               6,
+    ADMIN:                  7
+};
 
 
 const PAGE_ID = {
@@ -278,6 +287,7 @@ export {
     SOCIAL_MEDIA,
     ACC_USER_GROUP,
     
+    NAV_MENU_GROUP,
     PAGE_ID,
     
     SOW_BOAR_TYPE,

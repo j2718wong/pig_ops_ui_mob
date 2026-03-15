@@ -379,20 +379,18 @@ export function PageMyAccount(input_settings){
             elemFreeTrialLink.addEventListener('click', function(event) {
                 event.preventDefault();
                 
-                // Push currentPage to NavHistory
-                navigation.pushCurrentPageToNavHistory();
-        
-                
                 let go_back_page    = navigation.curPageNavigated.pageContainer;
                 if (go_back_page == null){
                     go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
                 } 
                 
-                const options ={
-                    go_back_page:   go_back_page,
-                };
-                
                 const next_page = navigation.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
+                
+                // Push currentPage to NavHistory; 
+                // Will also compare current page and  next_page NAV_MENU_GROUP.
+                navigation.pushCurrentPageToNavHistory(next_page);
+                
+                
                 navigation.showThisPage(next_page);
                 
                 
@@ -400,6 +398,9 @@ export function PageMyAccount(input_settings){
                 navigation.curPageNavigated.pageContainer   = next_page;
                 
                 
+                const options ={
+                    go_back_page:   go_back_page,
+                };
                 navigation.pageCustomerPricing.show(options);
                 
             });

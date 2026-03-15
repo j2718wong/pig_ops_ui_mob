@@ -20,16 +20,20 @@ export function ManagerNavHistory(_navigation) {
      * This should be an array of 
      * {
      *      pageContainer:    <elemContainer>, // Hidden Page container
+     * 
+     *      navMenuGroup:   int, // Navigation menu group of the page.
+     *                      
+     * 
      *      pageData: {},   // data to be rendered on the page if there is any.
      *                      // Because some pages may initiate a request
      *                      // on beforeShow or show method.
      *                      // This can be null;
      * 
      *      renderPageFunc: function // reference to a function to render the 
-     *                             // page and should receive the pageData.  
-     *                              // This maybe a new function to call page.show
-     *                              // or beforeShow methods with the pageData 
-     *                              // as input. This cannot be null.  
+     *                      // page and should receive the pageData.  
+     *                      // This maybe a new function to call page.show
+     *                      // or beforeShow methods with the pageData 
+     *                      // as input. This cannot be null.  
      * }
      * 
      * */
@@ -73,8 +77,11 @@ export function ManagerNavHistory(_navigation) {
     
     // Will push current page to navHistory list;
     this.pushCurrentPage = function(page_container, page_data, render_func){
+        const nav_menu_group = navigation.getNavigationMenuGroup(page_container);
+        
         const cur_entry = {
             pageContainer:  page_container,
+            navMenuGroup:   nav_menu_group,
             pageData:       page_data,
             renderPageFunc: render_func
         };
@@ -86,14 +93,52 @@ export function ManagerNavHistory(_navigation) {
         }
         
         
-        // Check if the last page_container is stack is same with the input page_container
+        // Check if the last_navigation.pageContainer in stack is same 
+        // with the input page_container
         const last_navigation = navHistoryList[0];
         if (last_navigation.pageContainer == page_container){
             // Only replace the pageData
             last_navigation.pageData = page_data;
             return; // No need to push to stack
         }
-         
+        
+        
+        // Check if the last_navigation.navMenuGroup is same with the 
+        // with the input menu_group.
+        // If same menu_group, it means a left - right navigation.
+        // The Back Navigation should go back to one level up, not in
+        // left - right navigation.
+        //
+        // If same menu_group, the head should be remove from the navHistoryList 
+        // and push the cur_entry into the navHistoryList stack.
+        // 
+        // TODO this
+        
+        // Check if the last_navigation.navMenuGroup is same with the input menu_group
+        if (last_navigation.navMenuGroup && nav_menu_group) {
+            if (last_navigation.navMenuGroup == nav_menu_group) {
+                // SAME GROUP = left-right navigation (swipe between lists or entries)
+                // Back should go UP one level, not through each swipe
+                
+                // Remove the current head (the page we're replacing)
+                thisObj.popHead();
+                
+                // Now push the new entry as the current page
+                if (navHistoryList.length < MAX_NAV_HISTORY) {
+                    navHistoryList.unshift(cur_entry);
+                } else {
+                    navHistoryList.pop();
+                    navHistoryList.unshift(cur_entry);
+                }
+                
+                if (APPLICATION.DEBUG_NAV_HISTORY) {
+                    console.log('Same menu group navigation - replaced head');
+                }
+                
+                return;
+            } 
+        }
+        
         
         
         // Push cur_entry to the head of the list
