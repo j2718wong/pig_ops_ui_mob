@@ -15,7 +15,7 @@ import {APPLICATION,
 
 import {ManagerNavLinks}            from './manager_nav_links.js';
 import {ManagerPublicSections}      from './manager_public_sections.js';
-
+import {ManagerNavHistory}          from './manager_nav_history.js';
 
 import {ServerError}                from '../common/server_error.js';
 import {ToastAlert}                 from '../common/toast_alert.js';
@@ -327,7 +327,11 @@ function UserControl(_navigation) {
     
     
     this.onClickMyAccount = function(){
-        let go_back_page    = navigation.currentPage;
+        // Push currentPage to NavHistory
+        navigation.pushCurrentPageToNavHistory();
+        
+        
+        let go_back_page    = navigation.curPageNavigated.pageContainer;
         if (go_back_page == null){
             go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
         } 
@@ -477,9 +481,9 @@ export function Navigation(){
     
     
     
-    let elemPageContAccDisabled         = null;
+    let elemPageContAccountDisabled     = null;
     let elemPageContUserDisabled        = null;
-    let elemPageContBillUnpaid          = null;
+    let elemPageContAccountBillUnpaid          = null;
         
     let elemPageContSowBoarList         = null;
     let elemPageContSowBoarAddEdit      = null;
@@ -545,20 +549,28 @@ export function Navigation(){
     let elemPageContJoinAccReqApprove   = null;
     
     
-    
-    
-    this.pageData               = null;
-    
-    
 
     this.curScreenIsMobile      = null;
     
     
-    this.currentPage            = null;
+    // This is the current page on screen that can push into 
+    // ManagerNavHistory navHistory stack. 
+    // This should be updated in every page show/beforeShow method.
+    // It is possible that pageContainer is filled up in navigation
+    // and the page data and renderPageFunc is filled up in the actual page.
+    this.curPageNavigated       = {
+        pageContainer:          null,
+        pageData:               null,
+        renderPageFunc:         null
+    };
+    
+    
+    //this.currentPage            = null;
     
     
     this.managerNavLinks        = new ManagerNavLinks(this);
     this.managerPublicSections  = new ManagerPublicSections(this);
+    this.managerNavHistory      = new ManagerNavHistory(this);
     
     this.userControl            = new UserControl(this);
     
@@ -1002,6 +1014,7 @@ export function Navigation(){
     this.initComponents = function(){
         this.managerNavLinks.init();
         this.managerPublicSections.init();
+        this.managerNavHistory.init();
         
         this.userControl.init();
         
@@ -1096,8 +1109,6 @@ export function Navigation(){
     
     this._findElements = function(){
         
-     
-        
         const elemTopNavContainer       = document.querySelector('.top-nav-container');
         elemNavLeftProductName          = elemTopNavContainer.querySelector('.nav-left > .product-name');
         
@@ -1116,9 +1127,9 @@ export function Navigation(){
         elemPageContFeedBackUs          = document.getElementById(elemIdContFeedBackUs);
 
         
-        elemPageContAccDisabled         = document.getElementById(elemIdContAccountDisabled);
+        elemPageContAccountDisabled         = document.getElementById(elemIdContAccountDisabled);
         elemPageContUserDisabled        = document.getElementById(elemIdContUserDisabled);
-        elemPageContBillUnpaid          = document.getElementById(elemIdContAccountBillUnpaid);
+        elemPageContAccountBillUnpaid          = document.getElementById(elemIdContAccountBillUnpaid);
         
                 
         elemPageContSowBoarList         = document.getElementById(elemIdContSowBoarList);
@@ -1191,8 +1202,6 @@ export function Navigation(){
     
         this.pageMobGestatingList.setNavigation(thisObj);
         this.pageMobLactatingList.setNavigation(thisObj);
-
-        
     }
     
     
@@ -1235,11 +1244,28 @@ export function Navigation(){
                 }
             });
         });
+        
+        
+        // Listen for back button only
+        window.addEventListener('popstate', function(event) {
+            console.log('\n\nback pressed', event.state);
+        
+            if (event.state) {
+                // Still in app - handle back navigation
+                thisObj.managerNavHistory.onClickBackBtn();
+                
+                // Re-push state so back works again
+                history.pushState({inApp: true}, '', window.location.href);
+            } else {
+                // No state - user really wants to leave
+                // Let them leave
+            }
+        });
+        
     }
     
     
     this.setPageData = function(data){
-        this.pageData = data;
         
         this.managerPublicSections.setDataCompanyApp(data.application);
         
@@ -1268,6 +1294,16 @@ export function Navigation(){
         this.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.FEED);
         
         
+        
+        
+        // Create initial history entry
+        history.pushState({inApp: true}, '', window.location.href);
+        console.log('\n\n\nCreated initial history entry');
+        
+        
+        // This is the entry point on page load. The first page must be the dashboard.
+        this.curPageNavigated.pageContainer = elemPageContHomeDashBoard;
+        
     }
     
     
@@ -1290,6 +1326,18 @@ export function Navigation(){
         
         elemDesktopPigFarmName.textContent = pig_farm_name;
         elemMobilePigFarmName.textContent = pig_farm_name;
+    }
+    
+    
+    this.pushCurrentPageToNavHistory = function() {
+        // Push Current navigation.curPageNavigated to navHistoryList
+        const cur_page_navigated = thisObj.curPageNavigated;
+        
+        thisObj.managerNavHistory.pushCurrentPage(
+            cur_page_navigated.pageContainer,
+            cur_page_navigated.pageData,
+            cur_page_navigated.renderPageFunc
+        );
     }
     
     
@@ -1546,9 +1594,16 @@ export function Navigation(){
             thisObj.pageAccountDisabled.beforeShow(options);
             
             // Except
-            elemPageContAccDisabled.style.display = 'block';
+            elemPageContAccountDisabled.style.display = 'block';
             
-            thisObj.currentPage = elemPageContAccDisabled;
+            
+            // Replace navigation.curPageNavigated
+            thisObj.curPageNavigated.pageContainer = elemPageContAccountDisabled;
+            
+            
+            // Since the user account is disabled, clear navHistory
+            thisObj.managerNavHistory.clearHistory();
+            
             
             return;
         }
@@ -1564,7 +1619,14 @@ export function Navigation(){
             // Except
             elemPageContUserDisabled.style.display = 'block';
             
-            thisObj.currentPage = elemPageContUserDisabled;
+            
+            // Replace navigation.curPageNavigated
+            thisObj.curPageNavigated.pageContainer = elemPageContUserDisabled;
+            
+            
+            // Since the user is disabled, clear navHistory
+            thisObj.managerNavHistory.clearHistory();
+            
             
             return;
         }
@@ -1598,10 +1660,16 @@ export function Navigation(){
                     thisObj.pageAccountUnpaidBill.beforeShow(options);
                     
                     // Except
-                    elemPageContBillUnpaid.style.display = 'block';
+                    elemPageContAccountBillUnpaid.style.display = 'block';
                 
                 
-                    thisObj.currentPage = elemPageContBillUnpaid;
+                    // Replace navigation.curPageNavigated
+                    thisObj.curPageNavigated.pageContainer = elemPageContAccountBillUnpaid;
+                    
+                    
+                    // Need to pay bill, clear navHistory
+                    thisObj.managerNavHistory.clearHistory();
+                    
                     
                     return;
                 
@@ -1623,7 +1691,9 @@ export function Navigation(){
             if (cur_entry == page_container){
                 cur_entry.style.display = 'block';
                 
-                thisObj.currentPage = cur_entry;
+                
+                thisObj.curPageNavigated.pageContainer = cur_entry;
+                
                 
                 // Update public sections. 
                 if (cur_entry == elemPageContHomeDashBoard){
@@ -1993,5 +2063,100 @@ export function Navigation(){
         }
         
     }
-    
+ 
+ 
+    this.pageContainerToString = function(page_container){
+        switch(page_container) {
+        
+            case elemPageContMyAccount              :{return "PageContMyAccount        ";}
+            case elemPageContCustomerPricing        :{return "PageContCustomerPricing  ";}
+                                                    
+                                                    
+            case elemPageContAccountDisabled        :{return "PageContAccountDisabled  ";}
+            case elemPageContUserDisabled           :{return "PageContUserDisabled     ";}
+            case elemPageContAccountBillUnpaid      :{return "PageContAccountBillUnpaid";}
+                                                    
+                                                    
+            case elemPageContHomeDashBoard          :{return "PageContHomeDashBoard    ";}
+            case elemPageContPigFarmAddEdit         :{return "PageContPigFarmAddEdit   ";}
+                                                    
+            case elemPageContFeedBackUs             :{return "PageContFeedBackUs       ";}
+                                                    
+                                                    
+            case elemPageContSowBoarList            :{return "PageContSowBoarList      ";}
+            case elemPageContSowBoarAddEdit         :{return "PageContSowBoarAddEdit   ";}
+            case elemPageContSowBoarEntry           :{return "PageContSowBoarEntry     ";}
+            case elemPageContSowBoarDisposed        :{return "PageContSowBoarDisposed  ";}
+                                                    
+                                                    
+            case elemPageContMedVacAddEdit          :{return "PageContMedVacAddEdit    ";}
+            case elemPageContHealthAddEdit          :{return "PageContHealthAddEdit    ";}
+            case elemPageContNotesAddEdit           :{return "PageContNotesAddEdit     ";}
+            
+            
+            case elemPageContParentTrace            :{return "PageContNotesAddEdit     ";}
+                
+                
+            case elemPageContProdGestaList          :{return "PageContProdGestaList      ";}
+            case elemPageContProdGestaAdd           :{return "PageContProdGestaAdd       ";}
+            case elemPageContProdGestaEntry         :{return "PageContProdGestaEntry     ";}
+                                                    
+            case elemPageContProdLactaList          :{return "PageContProdLactaList      ";}
+            case elemPageContProdLactaEntry         :{return "PageContProdLactaEntry     ";}
+                                                    
+            case elemPageContFatteningList          :{return "PageContFatteningList      ";}
+            case elemPageContFatteningAdd           :{return "PageContFatteningAdd       ";}
+            case elemPageContFatteningEntry         :{return "PageContFatteningEntry     ";}
+                                                    
+                                                    
+                                                    
+            case elemPageContProdPigOpsEdit         :{return "PageContProdPigOpsEdit     ";}
+            case elemPageContProdFeedAddEdit        :{return "PageContProdFeedAddEdit    ";}
+            case elemPageContProdHarvestAddEdit     :{return "PageContProdHarvestAddEdit ";}
+                                                    
+                                                    
+            case elemPageContProdHistoryList        :{return "PageContProdHistoryList    ";}
+            case elemPageContProdHistoryEntry       :{return "PageContProdHistoryEntry   ";}
+                                                    
+            case elemPageContProdNotPregnantList    :{return "PageContProdNotPregnantList";}
+                                                    
+            case elemPageContAllFeedBalList         :{return "PageContAllFeedBalList     ";}
+            case elemPageContAllFeedBalAddEdit      :{return "PageContAllFeedBalAddEdit  ";}
+            
+            
+            
+            case elemPageContFarmFeedBuyList        :{return "elemPageContFarmFeedBuyList   ";}
+            case elemPageContFarmFeedBuyAddEdit     :{return "elemPageContFarmFeedBuyAddEdit";}
+            case elemPageContFeedBuyItemAddEdit     :{return "elemPageContFeedBuyItemAddEdit";}
+                                                    
+            case elemPageContProdFeedBalAddEdit     :{return "elemPageContProdFeedBalAddEdit";}
+                                                    
+                                                    
+            case elemPageContPigDeadList            :{return "elemPageContPigDeadList       ";}
+            case elemPageContPigDeadAddEdit         :{return "elemPageContPigDeadAddEdit    ";}
+                                                    
+                                                    
+                                                    
+                                                    
+            case elemPageContProdSalesList          :{return "elemPageContProdSalesList     ";}
+            case elemPageContProdSalesEntry         :{return "elemPageContProdSalesEntry    ";}
+                                                    
+                                                    
+            case elemPageContAccOpsSettingsEdit     :{return "elemPageContAccOpsSettingsEdit";}
+            case elemPageContAccPigOpsList          :{return "elemPageContAccPigOpsList     ";}
+            case elemPageContAccPigOpsAddEdit       :{return "elemPageContAccPigOpsAddEdit  ";}
+                                                    
+                                                    
+            case elemPageContSupplierAddEdit        :{return "elemPageContSupplierAddEdit   ";}
+                                                    
+            case elemPageContUserList               :{return "elemPageContUserList          ";}
+            case elemPageContUserAddEdit            :{return "elemPageContUserAddEdit       ";}
+            case elemPageContJoinAccReqList         :{return "elemPageContJoinAccReqList    ";}
+            case elemPageContJoinAccReqApprove      :{return "elemPageContJoinAccReqApprove ";}
+            
+            default:{return null;}
+        }
+        
+        return null;
+    }
 }

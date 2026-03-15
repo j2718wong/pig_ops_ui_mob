@@ -84,9 +84,21 @@ export function PageViewBasic(){
     
     
     this.setNavigation = function(navigation){
-        this.navigation = navigation;
+        thisObj.navigation = navigation;
     }
-
+    
+    
+    this.debugNavHistory = function(TAG){
+        if (APPLICATION.DEBUG_NAV_HISTORY){
+            if (thisObj.navigation){
+                console.log('\n\n\nNavHistory List on showing this ' + TAG);
+                console.log(navigation.managerNavHistory.navHistoryToString());
+            }
+            else{
+                console.log('\n\n\nPageViewBasic.debugNavHistory; navigation NOT SET');
+            }
+        }
+    }
 }
     
     

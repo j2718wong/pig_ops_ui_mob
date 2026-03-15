@@ -31,8 +31,12 @@ import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
 export function PageMyAccount(input_settings){
     PageViewBasic.call(this);
     
+    const TAG                   = 'PageMyAccount';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
+    
       
     /*
     Typical settings = {
@@ -309,8 +313,6 @@ export function PageMyAccount(input_settings){
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
-        
-        
     }
     
     
@@ -377,8 +379,11 @@ export function PageMyAccount(input_settings){
             elemFreeTrialLink.addEventListener('click', function(event) {
                 event.preventDefault();
                 
+                // Push currentPage to NavHistory
+                navigation.pushCurrentPageToNavHistory();
+        
                 
-                let go_back_page    = navigation.currentPage;
+                let go_back_page    = navigation.curPageNavigated.pageContainer;
                 if (go_back_page == null){
                     go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
                 } 
@@ -389,9 +394,14 @@ export function PageMyAccount(input_settings){
                 
                 const next_page = navigation.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
                 navigation.showThisPage(next_page);
-                navigation.pageCustomerPricing.beforeShow(options);
-                    
-                    
+                
+                
+                // Replace navigation.curPageNavigated
+                navigation.curPageNavigated.pageContainer   = next_page;
+                
+                
+                navigation.pageCustomerPricing.show(options);
+                
             });
         }
     
@@ -402,18 +412,26 @@ export function PageMyAccount(input_settings){
     
     this._resetForm = function(){
         // Clear previous Form values and validation classes
-        
-      
-        
         elemServerErrorMsg.style.display = 'none';
     }
     
     
+    this.renderPage = function(page_data){
+        thisObj.show(page_data.options);
+    }
+    
+    
     this.show = function(options){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = {options: options};
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
         thisObj._resetForm();
         
-        
-        
+
         
         dataUserAccount  = navigation.userControl.dataUserAccount;
         
@@ -441,8 +459,6 @@ export function PageMyAccount(input_settings){
     
     
     this.refreshAccountName =  function(){
-        
-        
         const account_name  = dataUserAccount.account.account.name;
         const account_hid   = dataUserAccount.account.account.hid;
             

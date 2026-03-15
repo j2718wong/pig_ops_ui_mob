@@ -25,8 +25,12 @@ import {formatDate,
 export function PageHomeDashBoard(input_settings){
     PageViewPigFarmPage.call(this);
     
+    const TAG                   = 'PageHomeDashBoard';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
+    
     
     /*
     Typical settings = {
@@ -335,7 +339,19 @@ export function PageHomeDashBoard(input_settings){
     }
     
     
+    this.renderPage = function(page_data){
+        thisObj.show();
+    }
+    
+    
     this.show = function(){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = null;
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         

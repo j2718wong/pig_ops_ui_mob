@@ -72,13 +72,6 @@ export function ManagerPublicSections(_navigation) {
         }
         
         
-        if (elemCoreVersionHash){
-            console.log('elemCoreVersionHash is not null');
-        }
-        else{
-            console.log('elemCoreVersionHash is  null')
-
-        }
         
         elemCoreVersionHash.textContent = getVersionFromBundle();
         

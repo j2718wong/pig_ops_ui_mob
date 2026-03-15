@@ -384,6 +384,7 @@ export function TableHealthIssue(input_settings){
         let go_back_page_id = null;
         let data_entry      = null;
         
+        // Calculate go_back_page_id
         switch (settings.healthType) {
             case MULTIKEY_OBJ_TYPE.SOW_BOAR:{
                 data_entry      = dataSowBoar;
@@ -411,6 +412,13 @@ export function TableHealthIssue(input_settings){
         }
         
         
+        // Show Next Page Container
+        const goto_page_id   = PAGE_ID.HEALTH_ADD_EDIT;
+        const page_container = navigation.getPageContainer(goto_page_id);
+        navigation.showThisPage(page_container);
+
+        
+        // Render Page
         const go_back_page = navigation.getPageContainer(go_back_page_id);
         const options ={
             health_type:            settings.healthType,
@@ -419,11 +427,6 @@ export function TableHealthIssue(input_settings){
             go_back_page:           go_back_page
         };
         navigation.pageHealthAddEdit.beforeShow(data_entry, options);
-        
-        
-        const goto_page_id   = PAGE_ID.HEALTH_ADD_EDIT;
-        const page_container = navigation.getPageContainer(goto_page_id);
-        navigation.showThisPage(page_container);
     }
     
     

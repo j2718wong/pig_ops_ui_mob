@@ -144,6 +144,16 @@ export function ManagerLogin(){
     this.onPageLoad = function(){
         const url_path = window.location.pathname;
         
+        // Automatic login if there is a valid token
+        // Check if there is a access_token stored
+        const bearer_token = localStorage.getItem('access_token');
+        if (bearer_token){
+            window.location.href = '/'
+            return;
+        }
+        
+        
+        
         let options;
         
         if (url_path == '/signup'){

@@ -19,8 +19,11 @@ import {APPLICATION,
 export function PageCustomerPricing(input_settings){
     PageViewBasic.call(this);
     
+    const TAG                   = 'PageCustomerPricing';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
     
     
     /*
@@ -197,18 +200,17 @@ export function PageCustomerPricing(input_settings){
     }
     
     
-    this.beforeShow = function(options){
-        /*
+    this.renderPage = function(page_data){
+        thisObj.show(page_data.options);
+    }
+    
+    
+    this.show = function(options){
+        thisObj.debugNavHistory(TAG);
         
-        Typical options 
-        {
-            is_add:         true,
-            supplier_type:  SUPPLIER_TYPE.SEMEN,
-            go_back_page:   settings.pageDivContainer   // Go back to this page
-            callback_on_success_add : function
-        }
-        
-        */
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = {options: options};
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
         thisObj._resetForm();
