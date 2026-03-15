@@ -86,7 +86,8 @@ export function UiInputDatePicker(input_settings){
             <input  type="text" 
                     class="form-control" 
                     id="${elemIdText}" 
-                    ${s_required}>
+                    ${s_required},
+                    readonly>
             
             <div class="invalid-feedback" id="${elemIdTextInv}">${s_invalid} </div>
             <div class="form-text" id="${elemIdTextHelp}">${s_help}</div>

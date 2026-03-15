@@ -92,7 +92,8 @@ export function UiInputDatePickerGesta(input_settings){
             <input  type="text" 
                     class="form-control" 
                     id="${elemIdText}" 
-                    ${s_required}>
+                    ${s_required}
+                    readonly>
             
             <div id="${elemIdGestationPeriod}" style="font-size: 14px; margin-top: 5px;" >Gestation Period: <span id="${elemIdGestationDays}">115</span> Days</div>
             
