@@ -11,6 +11,16 @@ import {APPLICATION,
 
 import {LoadingAnimation}       from './loading_animation.js';
 
+
+// Add this helper function at the top of your module, after the imports
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+
 export async function getLocationWithFallback() {
     const services = [
         // Service 1: ipapi.co (your primary)
@@ -518,7 +528,8 @@ export function PageUserSignUpOrLogin(input_settings){
         }
     }
     
-    // UPDATED: Handle Google credential response with popup closing
+    
+
     this.handleGoogleCredential = async function(response) {
         // Prevent multiple simultaneous calls
         if (isGoogleLoginInProgress) {
@@ -606,9 +617,6 @@ export function PageUserSignUpOrLogin(input_settings){
         }
     }
     
-    // =============================================
-    // FORM METHODS
-    // =============================================
     
     this._resetForm = function(){
         // Reset form if needed
@@ -713,8 +721,23 @@ export function PageUserSignUpOrLogin(input_settings){
         });
     }
     
+    
     async function loadHomePageWithToken() {
-        const token = localStorage.getItem('access_token');
+        // Try to get token from cookie first (new flow)
+        let token = getCookie('access_token');
+        
+        // If not in cookie, try localStorage (old flow)
+        if (!token) {
+            token = localStorage.getItem('access_token');
+        }
+        
+        console.log('Token found:', token ? 'Yes' : 'No');
+        
+        if (!token) {
+            console.log('No token found, redirecting to login');
+            window.location.href = '/login';
+            return;
+        }
         
         try {
             const response = await fetch('/', {
@@ -730,12 +753,16 @@ export function PageUserSignUpOrLogin(input_settings){
                 document.close();
                 history.pushState({}, '', '/');
             } else {
+                console.log('Failed to load homepage, redirecting to login');
                 window.location.href = '/login';
             }
         } catch (error) {
             console.error('Failed to load homepage:', error);
+            window.location.href = '/login';
         }
     }
+    
+    
     
     this.handlePostLoginFlow = function(data_user_account) {
         let account_hid = null;
