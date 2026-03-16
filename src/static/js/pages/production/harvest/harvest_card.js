@@ -124,9 +124,23 @@ export function HarvestCard(input_settings){
               
         const num_pigs      = prod_harvest.num_pigs;
         
+        switch (harvest_type_hid) {
+            case HARVEST_TYPE.PIGLETS_SALE: {
+                harvest_tag         = 'PIGLETS SALE';
+                break;
+            }
+            
+            case HARVEST_TYPE.LIVE_PIGS_SALE: {
+                harvest_tag         = 'LIVE PIGS';
+                break;
+            }
+            
+            default:{break;}
+        }
+        
+        
         
         if (prod_harvest.live_weight && prod_harvest.live_weight.weight){
-            harvest_tag         = 'LIVE PIGS';
             live_weight         = prod_harvest.live_weight.weight;
             live_weight_ave     = prod_harvest.live_weight.average;
             live_weight_unit    = weight_unit; 
