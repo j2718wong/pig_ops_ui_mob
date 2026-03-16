@@ -853,17 +853,17 @@ ${html_style}
             const callback = function(new_sow_boar_hid){
                 switch (showOptions.sow_boar_type){
                     case SOW_BOAR_TYPE.SOW: {
-                        thisObj.renderSowTable(dataSowList);
+                        tableSowAll.renderTable(dataSowList);
                         break;
                     }
             
                     case SOW_BOAR_TYPE.BOAR: {
-                        thisObj.renderBoarTable(dataBoarList);
+                        tableBoar.renderTable(dataBoarList);
                         break;
                     }
             
                     case SOW_BOAR_TYPE.GILT:{
-                        thisObj.renderGiltTable(dataGiltList);
+                        tableGilt.renderTable(dataGiltList);
                         break;
                     }
                     
@@ -1095,12 +1095,12 @@ ${html_style}
                 
                 if (key.length == 0){
                     if (curDataFilter != 'output') {
-                        thisObj.renderSowTable(cur_list);
+                        tableSowAll.renderTable(cur_list);
                     }
                     else{
 
                         cur_list = dataSowList;
-                        thisObj.renderSowOutputTable(cur_list);
+                        tableSowOutput.renderTable(cur_list);
                     }
                     return;
                 }
@@ -1112,7 +1112,7 @@ ${html_style}
                 cur_list = dataBoarList;
                 
                 if (key.length == 0){
-                    thisObj.renderBoarTable(cur_list);
+                    tableBoar.renderTable(cur_list);
                     return;
                 }
                 
@@ -1123,7 +1123,7 @@ ${html_style}
                 cur_list = dataGiltList;
                 
                 if (key.length == 0){
-                    thisObj.renderGiltTable(cur_list);
+                    tableGilt.renderTable(cur_list);
                     return;
                 }
                 
@@ -1170,19 +1170,19 @@ ${html_style}
         switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW:{
                 if (curDataFilter != 'output') {
-                    thisObj.renderSowTable(filtered);
+                    tableSowAll.renderTable(filtered);
                 }
                 else{
-                    thisObj.renderSowOutputTable(filtered);
+                    tableSowOutput.renderTable(filtered);
                 }
                 return;
             }
             case SOW_BOAR_TYPE.BOAR:{
-                thisObj.renderBoarTable(filtered);
+                tableBoar.renderTable(filtered);
                 return;
             }
             case SOW_BOAR_TYPE.GILT:{
-                thisObj.renderGiltTable(filtered);
+                tableGilt.renderTable(filtered);
                 return;
             }
             
