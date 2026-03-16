@@ -1,6 +1,7 @@
 // February 27, 2026
 // Jack Wong
 // j2718wong@gmail.com
+// UPDATED: Fixed Google Sign-In popup closing issue
 
 'use strict';
 
@@ -8,10 +9,7 @@ import {APPLICATION,
         SOCIAL_MEDIA,
         PAGE_ID}                from '../../constants.js';
 
-
 import {LoadingAnimation}       from './loading_animation.js';
-
-
 
 export async function getLocationWithFallback() {
     const services = [
@@ -102,8 +100,6 @@ export async function getLocationWithFallback() {
 }
 
 
-
-
 // This is used for signup or login
 export function PageUserSignUpOrLogin(input_settings){
     
@@ -111,58 +107,56 @@ export function PageUserSignUpOrLogin(input_settings){
     const parentObj             = input_settings.parentObj;
     
     const settings              = input_settings;
-
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
     
-
+    // DOM Elements
     let elemIntroText           = null;
     let elemTermsText           = null;
     let elemTermsOfService      = null;
     let elemPrivacyPolicy       = null;
-    
     let elemEmail               = null;
     let elemEmailInvalidShow    = null; 
     let elemEmailInvalidMsg     = null;
-    
     let elemBtnSignUpOrLogin    = null;
-
     let elemContinueUsingSocial = null;
-    
-    
     let elemUseGoogle           = null;
     let elemUseFacebook         = null;
     let elemUseTiktok           = null;
-    
     let elemLoginOrSignUpLink   = null;
-
     let showOptions             = null;
-
-
-
     let loadingAnimation        = null;
-
-
+    
     // Google Sign-In configuration
-    const GOOGLE_CLIENT_ID = "466858490005-irmhmqrbnmtkmah0baa27sgorivueu6g.apps.googleusercontent.com"; // Replace with your actual client ID
+    const GOOGLE_CLIENT_ID = "466858490005-irmhmqrbnmtkmah0baa27sgorivueu6g.apps.googleusercontent.com";
     const API_BASE_URL = window.location.origin;
+    const REDIRECT_URI = window.location.origin + '/auth/google/callback'; // You'll need to create this endpoint
+    
+    
     
     // Flags to manage Google Sign-In state
-    let isGoogleInitialized = false;
+    let isGoogleInitialized     = false;
     let isGoogleLoginInProgress = false;
+    
+    // Track popup window reference
+    let googlePopupWindow       = null;
+    
+    // =============================================
+    // PUBLIC METHODS
+    // =============================================
     
     this.init = function(){
         this.render();
         this.afterHtmlRender();
         this.loadGoogleScript();
-        
         this.initLoadingAnimation();
+        this.setupMessageListener(); // NEW: Listen for popup messages
     }
     
     
     this.initLoadingAnimation = function() {
         loadingAnimation = new LoadingAnimation('google-login-loading', {
             size: '50px',
-            color: '#4285f4', // Google blue
+            color: '#4285f4',
             message: 'Authenticating with Google...',
             type: 'spinner'
         });
@@ -170,7 +164,6 @@ export function PageUserSignUpOrLogin(input_settings){
     
     
     this.render = function(){
-    
         const html = `
 <div class="signup-card">
     <!-- 1.) PRODUCT & LOGO: centered -->
@@ -195,7 +188,6 @@ export function PageUserSignUpOrLogin(input_settings){
     </div>
 
     <button class="signup-btn">Sign up</button>
-
 
     <!-- 3.) "Or continue with:" + social one per line (actual icons) -->
     <div class="or-section">
@@ -230,20 +222,13 @@ export function PageUserSignUpOrLogin(input_settings){
         Already have an account? <span>Log in</span>
         </a>
     </div>
-    
-    
-    
 </div>
-    `;
-    
-    elemDivContainer.innerHTML = html;
-        
-        
+        `;
+        elemDivContainer.innerHTML = html;
     }
     
     
     this.afterHtmlRender = function(){
-        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -251,46 +236,34 @@ export function PageUserSignUpOrLogin(input_settings){
     
     
     this._findElements = function(){
-        
         elemIntroText           = elemDivContainer.querySelector('.intro-text');
         elemTermsText           = elemDivContainer.querySelector('.terms-text');
         elemTermsOfService      = elemDivContainer.querySelector('#terms-of-service');
         elemPrivacyPolicy       = elemDivContainer.querySelector('#privacy-policy');
-        
         elemEmail               = elemDivContainer.querySelector('#email');
         elemEmailInvalidShow    = elemDivContainer.querySelector('#invalid-email-show');
         elemEmailInvalidMsg     = elemDivContainer.querySelector('#invalid-email-msg');
-        
         elemBtnSignUpOrLogin    = elemDivContainer.querySelector('.signup-btn');
-        
         elemContinueUsingSocial = elemDivContainer.querySelector('#continue-using-social');
-        
-        
         elemUseGoogle           = elemDivContainer.querySelector('#social-btn-google'); 
         elemUseFacebook         = elemDivContainer.querySelector('#social-btn-facebook');
         elemUseTiktok           = elemDivContainer.querySelector('#social-btn-tiktok');
-        
         elemLoginOrSignUpLink   = elemDivContainer.querySelector('.login-full-link');
-    
     }
     
     
     this._processAfterHtmlRender = function(){
-
+        // Any post-render processing
     }
     
     
     this._bindEventListeners = function(){
-        
-
         elemBtnSignUpOrLogin.addEventListener('click', function(event) {
             event.preventDefault();
             event.target.style.transform = 'scale(0.98)';
             setTimeout(() => event.target.style.transform = '', 120);
-            
             thisObj.onClickSignUpOrLogin();
         });
-        
         
         elemTermsOfService.addEventListener('click', function(event) {
             const go_back_page_id = PAGE_ID.SIGNUP_OR_LOGIN;
@@ -301,14 +274,10 @@ export function PageUserSignUpOrLogin(input_settings){
             };
             parentObj.pageTermsOfService.beforeShow(options);
             
-            
             const next_page_id  = PAGE_ID.TERMS_OF_SERVICE;
             const next_page     = parentObj.getPageContainer(next_page_id);
-            
             parentObj.showThisPage(next_page);
-            
         });
-        
         
         elemPrivacyPolicy.addEventListener('click', function(event) {
             const go_back_page_id = PAGE_ID.SIGNUP_OR_LOGIN;
@@ -319,15 +288,10 @@ export function PageUserSignUpOrLogin(input_settings){
             };
             parentObj.pagePrivacyPolicy.beforeShow(options);
             
-            
             const next_page_id  = PAGE_ID.PRIVACY_POLICY;
             const next_page     = parentObj.getPageContainer(next_page_id);
-            
             parentObj.showThisPage(next_page);
-            
         });
-        
-        
         
         elemLoginOrSignUpLink.addEventListener('click', function(event) {
             if (showOptions.is_login){
@@ -339,6 +303,7 @@ export function PageUserSignUpOrLogin(input_settings){
         });
         
         
+        /*
         elemUseGoogle.addEventListener('click', function(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -349,8 +314,27 @@ export function PageUserSignUpOrLogin(input_settings){
             setTimeout(() => btn.style.transform = '', 120);
             
             thisObj.initiateGoogleLogin();
+        }); */
+        
+        
+        // In your page_user_signup_or_login.js, update the Google click handler
+        elemUseGoogle.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            // Visual feedback
+            const btn = event.currentTarget;
+            btn.style.transform = 'scale(0.98)';
+            setTimeout(() => btn.style.transform = '', 120);
+            
+            // Get viewport dimensions
+            const viewport_width = window.innerWidth;
+            const viewport_height = window.innerHeight;
+            
+            // Redirect to Google login endpoint with viewport data
+            window.location.href = `/auth/google/login?viewport_width=${viewport_width}&viewport_height=${viewport_height}`;
         });
-          
+        
           
         elemUseFacebook.addEventListener('click', function(event) {
             event.preventDefault();
@@ -363,7 +347,6 @@ export function PageUserSignUpOrLogin(input_settings){
             thisObj.onClickUseFacebook();
         });
         
-        
         elemUseTiktok.addEventListener('click', function(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -374,11 +357,37 @@ export function PageUserSignUpOrLogin(input_settings){
             
             thisObj.onClickUseTiktok();
         });  
-        
     }
     
     
-    // Load Google Sign-In script dynamically
+    // =============================================
+    // NEW: Setup message listener for Google popup
+    // =============================================
+    this.setupMessageListener = function() {
+        window.addEventListener('message', (event) => {
+            // Verify the origin for security
+            if (event.origin !== 'https://accounts.google.com') {
+                return;
+            }
+            
+            console.log('📨 Message from Google popup:', event.data);
+            
+            // If this is a close message or we detect the popup should close
+            if (event.data === 'close' || event.data?.type === 'credential_returned') {
+                console.log('Closing Google popup');
+                if (googlePopupWindow && !googlePopupWindow.closed) {
+                    googlePopupWindow.close();
+                    googlePopupWindow = null;
+                }
+            }
+        });
+    }
+    
+    
+    // =============================================
+    // GOOGLE SIGN-IN METHODS (REDIRECT MODE)
+    // =============================================
+
     this.loadGoogleScript = function() {
         // Check if script already loaded
         if (document.querySelector('script[src="https://accounts.google.com/gsi/client"]')) {
@@ -397,42 +406,119 @@ export function PageUserSignUpOrLogin(input_settings){
         };
         document.head.appendChild(script);
     }
-    
-    
-    // Initialize Google Sign-In - using ID token flow
+
+
+    // Initialize Google Sign-In with redirect mode
     this.initializeGoogleSignIn = function() {
-        // Prevent multiple initializations
-        if (isGoogleInitialized) {
-            console.log('Google Sign-In already initialized');
-            return;
-        }
-        
         if (window.google && window.google.accounts) {
             try {
-                // Initialize the ID token client
-                window.google.accounts.id.initialize({
+                // Use the newer OAuth2 client for redirect mode
+                window.google.accounts.oauth2.initCodeClient({
                     client_id: GOOGLE_CLIENT_ID,
-                    callback: (response) => thisObj.handleGoogleCredential(response),
-                    auto_select: false,
-                    cancel_on_tap_outside: true,
-                    ux_mode: 'popup'
+                    scope: 'email profile openid',
+                    ux_mode: 'redirect',  // CRITICAL: Use redirect instead of popup
+                    redirect_uri: REDIRECT_URI,
+                    callback: (response) => {
+                        // This won't be called in redirect mode
+                        // The redirect will handle the response
+                        console.log('Redirect callback (should not happen)');
+                    }
                 });
                 
                 isGoogleInitialized = true;
-                console.log('Google Sign-In initialized successfully for ID tokens');
+                console.log('✅ Google Sign-In initialized with REDIRECT mode');
+                console.log('   Redirect URI:', REDIRECT_URI);
                 
             } catch (error) {
-                console.error('Error initializing Google Sign-In:', error);
+                console.error('❌ Error initializing Google Sign-In:', error);
             }
-        } else {
-            console.error('Google Sign-In failed to initialize - library not loaded');
-            // Retry after a short delay
-            setTimeout(() => this.initializeGoogleSignIn(), 500);
+        }
+    }
+
+
+    // Initiate Google login - triggers full-page redirect
+    this.initiateGoogleLogin = function() {
+        if (isGoogleLoginInProgress) {
+            console.log('Login already in progress');
+            return;
+        }
+        
+        if (!isGoogleInitialized) {
+            console.log('Google not initialized, waiting...');
+            setTimeout(() => this.initiateGoogleLogin(), 500);
+            return;
+        }
+        
+        try {
+            console.log('🚀 Redirecting to Google for authentication...');
+            isGoogleLoginInProgress = true;
+            
+            // Store current page to return after login
+            sessionStorage.setItem('pre_login_page', window.location.href);
+            
+            // Trigger the Google redirect
+            window.google.accounts.oauth2.initCodeClient({
+                client_id: GOOGLE_CLIENT_ID,
+                scope: 'email profile openid',
+                ux_mode: 'redirect',
+                redirect_uri: REDIRECT_URI,
+                state: window.location.pathname // Optional: store where to redirect after
+            }).requestCode();
+            
+        } catch (error) {
+            console.error('❌ Error during Google redirect:', error);
+            this.showError('Failed to initiate Google login. Please try again.');
+            isGoogleLoginInProgress = false;
+        }
+    }   
+
+ 
+    // NEW: Simplified login trigger (removed fallback button complexity)
+    this.triggerGoogleLogin = function() {
+        if (!window.google || !window.google.accounts) {
+            console.error('Google Sign-In not available');
+            this.showError('Google Sign-In is not available. Please try again later.');
+            return;
+        }
+        
+        try {
+            console.log('🚀 Opening Google login popup...');
+            
+            // Track the popup window
+            googlePopupWindow = window.open('about:blank', '_blank');
+            
+            // Request Google login
+            window.google.accounts.id.prompt((notification) => {
+                console.log('Google prompt notification:', notification);
+                
+                if (notification.isNotDisplayed()) {
+                    console.log('Prompt not displayed - popup may be blocked');
+                    this.showError('Popup was blocked. Please allow popups for this site.');
+                    isGoogleLoginInProgress = false;
+                }
+                
+                if (notification.getDismissedReason()) {
+                    console.log('Prompt dismissed:', notification.getDismissedReason());
+                    isGoogleLoginInProgress = false;
+                }
+            });
+            
+            // Set a timeout to reset if popup doesn't appear
+            setTimeout(() => {
+                if (googlePopupWindow && googlePopupWindow.closed) {
+                    console.log('Popup was closed without authentication');
+                    isGoogleLoginInProgress = false;
+                }
+            }, 30000); // 30 second timeout
+            
+        } catch (error) {
+            console.error('Error during Google login:', error);
+            this.showError('Failed to open Google login. Please check if popups are blocked.');
+            isGoogleLoginInProgress = false;
         }
     }
     
-    
-    // Handle Google credential response (receives ID token)
+    // UPDATED: Handle Google credential response with popup closing
     this.handleGoogleCredential = async function(response) {
         // Prevent multiple simultaneous calls
         if (isGoogleLoginInProgress) {
@@ -443,46 +529,46 @@ export function PageUserSignUpOrLogin(input_settings){
         isGoogleLoginInProgress = true;
         
         try {
-            console.log("Google ID token received, sending to backend...");
+            console.log("✅ Google ID token received");
             console.log("Token preview:", response.credential.substring(0, 50) + "...");
             
-            // Show loading state on the Google button
+            // Close the popup immediately
+            if (googlePopupWindow && !googlePopupWindow.closed) {
+                googlePopupWindow.close();
+                googlePopupWindow = null;
+                console.log('Popup closed after receiving token');
+            }
+            
+            // Also tell Google to clean up
+            if (window.google?.accounts?.id) {
+                google.accounts.id.cancel();
+            }
+            
+            // Show loading state
             elemUseGoogle.classList.add('loading');
-            const originalText = elemUseGoogle.querySelector('span').textContent;
             elemUseGoogle.querySelector('span').textContent = 'Processing...';
-            
-            
-            // SHOW LOADING ANIMATION HERE
             loadingAnimation.show('Verifying credentials...');
             
-            
-            // Viewport dimensions (visible page area)
-            const viewport_width    = window.innerWidth;
-            const viewport_height   = window.innerHeight;
-            
-            
-            // Initialize location data with null values
+            // Get location and viewport data
+            const viewport_width = window.innerWidth;
+            const viewport_height = window.innerHeight;
             let locationData = await getLocationWithFallback();
             
-            
-            
-            // Send the credential token to backend with location data
-            // The thisObj.afterSuccessSocialMediaLogin action is done together
-            // with this request to minimize data traffic.
+            // Send to backend
             const backendResponse = await fetch(`${API_BASE_URL}/api/auth/google`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include', // Important for cookies
                 body: JSON.stringify({
-                    token:                  response.credential,
-                    viewport_width:         viewport_width,
-                    viewport_height:        viewport_height,
-                
-                    login_country_code:     locationData.login_country_code,
-                    login_country_name:     locationData.login_country_name,
-                    login_city:             locationData.login_city,
-                    login_region:           locationData.login_region
+                    token: response.credential,
+                    viewport_width: viewport_width,
+                    viewport_height: viewport_height,
+                    login_country_code: locationData.login_country_code,
+                    login_country_name: locationData.login_country_name,
+                    login_city: locationData.login_city,
+                    login_region: locationData.login_region
                 })
             });
 
@@ -492,157 +578,44 @@ export function PageUserSignUpOrLogin(input_settings){
             }
 
             const data = await backendResponse.json();
-            console.log("Backend response received:", data);
+            console.log("✅ Backend response received");
             
-            // Store token for future API calls
+            // Store token
             localStorage.setItem('access_token', data.bearer_token);
             localStorage.setItem('user_picture', data.user_picture);
             
-            
-            // HIDE LOADING ANIMATION before post-login flow
+            // Hide loading and proceed
             loadingAnimation.hide();
-            
-            thisObj.handlePostLoginFlow(data.user_account)
+            this.handlePostLoginFlow(data.user_account);
             
         } catch (error) {
-            // Hide loading and show error
+            console.error('❌ Google authentication error:', error);
             loadingAnimation.hide();
-            
-            console.error('Google authentication error:', error);
-            thisObj.showError('Failed to authenticate with Google. Please try again.');
+            this.showError('Failed to authenticate with Google. Please try again.');
         } finally {
-            // Reset Google button
+            // Reset state
             isGoogleLoginInProgress = false;
             elemUseGoogle.classList.remove('loading');
             elemUseGoogle.querySelector('span').textContent = 'Google';
+            
+            // Ensure popup is closed
+            if (googlePopupWindow && !googlePopupWindow.closed) {
+                googlePopupWindow.close();
+                googlePopupWindow = null;
+            }
         }
     }
     
+    // =============================================
+    // FORM METHODS
+    // =============================================
     
-    // Initiate Google login - requests ID token
-    this.initiateGoogleLogin = function() {
-        // Prevent multiple login attempts
-        if (isGoogleLoginInProgress) {
-            console.log('Login already in progress');
-            return;
-        }
-        
-        if (!isGoogleInitialized) {
-            console.log('Google Sign-In not initialized yet, trying to initialize...');
-            this.initializeGoogleSignIn();
-            
-            // Wait a moment for initialization, then try again
-            setTimeout(() => {
-                if (isGoogleInitialized) {
-                    this.triggerGoogleIdPrompt();
-                } else {
-                    this.showError('Google Sign-In is still initializing. Please try again.');
-                }
-            }, 500);
-            return;
-        }
-        
-        this.triggerGoogleIdPrompt();
-    }
-    
-    
-    // Trigger Google ID token prompt
-    this.triggerGoogleIdPrompt = function() {
-        if (!window.google || !window.google.accounts) {
-            console.error('Google Sign-In not available');
-            this.showError('Google Sign-In is not available. Please try again later.');
-            return;
-        }
-        
-        try {
-            console.log('Requesting Google ID token...');
-            
-            // First, try the One Tap prompt
-            window.google.accounts.id.prompt((notification) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    console.log('One Tap not displayed, using button fallback');
-                    // If One Tap doesn't work, use button fallback
-                    this.fallbackGoogleButton();
-                } else if (notification.isDismissedMoment()) {
-                    console.log('One Tap dismissed by user');
-                }
-            });
-            
-            // Also set up a fallback button click after a short delay
-            setTimeout(() => {
-                if (!isGoogleLoginInProgress) {
-                    console.log('Using fallback button click');
-                    this.fallbackGoogleButton();
-                }
-            }, 800);
-            
-        } catch (error) {
-            console.error('Error during Google prompt:', error);
-            this.fallbackGoogleButton();
-        }
-    }
-    
-    
-    // Fallback method using rendered button
-    this.fallbackGoogleButton = function() {
-        try {
-            // Create a temporary container for the button
-            const tempDiv = document.createElement('div');
-            tempDiv.id = 'temp-google-button';
-            tempDiv.style.position = 'absolute';
-            tempDiv.style.left = '-9999px';
-            tempDiv.style.top = '-9999px';
-            document.body.appendChild(tempDiv);
-            
-            // Render Google button that returns ID token
-            window.google.accounts.id.renderButton(tempDiv, {
-                type: 'standard',
-                theme: 'outline',
-                size: 'large',
-                text: 'signin_with',
-                shape: 'rectangular',
-                width: '200'
-            });
-            
-            // Find and click the Google button
-            setTimeout(() => {
-                const googleButton = tempDiv.querySelector('div[role="button"]');
-                if (googleButton) {
-                    console.log('Clicking Google button for ID token');
-                    googleButton.click();
-                } else {
-                    console.error('Google button not found');
-                    this.showError('Could not initialize Google Sign-In button');
-                }
-                
-                // Clean up after a delay
-                setTimeout(() => {
-                    if (tempDiv.parentNode) {
-                        tempDiv.parentNode.removeChild(tempDiv);
-                    }
-                }, 3000);
-            }, 100);
-            
-        } catch (error) {
-            console.error('Fallback Google button failed:', error);
-            this.showError('Failed to open Google Sign-In. Please check if popups are blocked.');
-        }
-    }
-    
-    
-   
     this._resetForm = function(){
-       
-        
+        // Reset form if needed
     }
-    
     
     this.beforeShow = function(options){
-        
         showOptions = options;
-        
-        
-
         elemEmailInvalidShow.style.display = 'none';
     
         if (showOptions.is_login){
@@ -650,7 +623,6 @@ export function PageUserSignUpOrLogin(input_settings){
             elemTermsText.style.display         = 'none';
             elemBtnSignUpOrLogin.textContent    = 'Continue';
             elemContinueUsingSocial.textContent = 'Or login using:';    
-        
             elemLoginOrSignUpLink.innerHTML     = '<span>Create Account</span>';
         }
         else{
@@ -658,22 +630,17 @@ export function PageUserSignUpOrLogin(input_settings){
             elemTermsText.style.display         = 'block';
             elemBtnSignUpOrLogin.textContent    = 'Sign up';
             elemContinueUsingSocial.textContent = 'Or continue with:';
-            
             elemLoginOrSignUpLink.innerHTML     = 'Already have an account? <span>Log in</span>';
         }
     }
     
-    
     this.populateForm = function(){
-
+        // Populate form if needed
     }
     
-    
-    // Helper method to show errors
     this.showError = function(message) {
         console.error('Error:', message);
         
-        // Create a temporary error display
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message';
         errorDiv.textContent = message;
@@ -688,62 +655,37 @@ export function PageUserSignUpOrLogin(input_settings){
             text-align: center;
         `;
         
-        // Insert before the social buttons
         const socialList = elemDivContainer.querySelector('.social-list');
         if (socialList) {
-            // Remove any existing error messages
             const existingErrors = elemDivContainer.querySelectorAll('.error-message');
             existingErrors.forEach(el => el.remove());
             
             socialList.parentNode.insertBefore(errorDiv, socialList);
             
-            // Auto-hide after 5 seconds
             setTimeout(() => {
                 if (errorDiv.parentNode) {
                     errorDiv.remove();
                 }
             }, 5000);
         } else {
-            // Fallback to alert if we can't show the error in the UI
             alert(message);
         }
     }
     
-
-        
     this.onClickSignUpOrLogin = function(){
-        let input_elem;
-        let validation      = 0;
-        
-
-        let input_email     = elemEmail.value;
+        let input_email = elemEmail.value;
         
         if (input_email.length == 0){
             elemEmailInvalidShow.style.display = 'block';
             return;
         }
         
-        const base_url      = window.location.origin;
-
-        let url;
+        const base_url = window.location.origin;
+        let url = showOptions.is_login ? `${base_url}/user/login_email` : `${base_url}/user/register_email`;
         
-        if (showOptions.is_login){
-            url = `${base_url}/user/login_email`;
-        }
-        else{
-            url = `${base_url}/user/register_email`;
-        }
+        const post_data = { 'email': input_email };
         
-        
-        // send post request
-        const post_data = {
-            'email':        input_email
-        };
-        
-        
-        // SHOW LOADING ANIMATION
         loadingAnimation.show(showOptions.is_login ? 'Logging in...' : 'Creating account...');
-        
         
         $.ajax({
             type: 'POST',
@@ -752,48 +694,24 @@ export function PageUserSignUpOrLogin(input_settings){
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
-  
             data: JSON.stringify(post_data),
-  
-            beforeSend: function(){
-            },
   
             success: function(response){
                 if (response.result.num == 0){
-                    if (showOptions.is_login){
-                        // Handle email login success
-                        const data_user_account = response.user_account;
-                        
-                        // HIDE LOADING ANIMATION
-                        loadingAnimation.hide();
-                    
-                        thisObj.handlePostLoginFlow(data_user_account);
-                    }
-                    else{
-                        // Handle email signup success
-                        const data_user_account = response.user_account;
-                        
-                        // HIDE LOADING ANIMATION
-                        loadingAnimation.hide();
-                        
-                        thisObj.handlePostLoginFlow(data_user_account);
-                    }
-                }
-                else{
+                    const data_user_account = response.user_account;
+                    loadingAnimation.hide();
+                    thisObj.handlePostLoginFlow(data_user_account);
+                } else {
                     thisObj.showError(response.result.msg || 'An error occurred');
                 }
             },
   
-            complete: function(){
-                // TODO unsay buhaton
-            },
-  
             error: function(jqXHR, textStatus, errorThrown){
                 thisObj.showError('Server error. Please try again.');
+                loadingAnimation.hide();
             }
         });
     }
-    
     
     async function loadHomePageWithToken() {
         const token = localStorage.getItem('access_token');
@@ -810,10 +728,8 @@ export function PageUserSignUpOrLogin(input_settings){
                 document.open();
                 document.write(html);
                 document.close();
-                // Update URL without reload
                 history.pushState({}, '', '/');
             } else {
-                // Handle error (redirect to login)
                 window.location.href = '/login';
             }
         } catch (error) {
@@ -821,12 +737,9 @@ export function PageUserSignUpOrLogin(input_settings){
         }
     }
     
-    
-    // Handle post-login flow (extracted from afterSuccessSocialMediaLogin)
     this.handlePostLoginFlow = function(data_user_account) {
-        let account_hid         = null;
-        let user_req_join_acc   = null;
-        
+        let account_hid = null;
+        let user_req_join_acc = null;
         
         if (data_user_account.account && data_user_account.account.account){
             account_hid = data_user_account.account.account.hid;
@@ -836,135 +749,84 @@ export function PageUserSignUpOrLogin(input_settings){
             user_req_join_acc = data_user_account.user.user_request;
         }
         
-        
         if (user_req_join_acc == null) {
-        
             if (account_hid == null){
-                // User has no account;
-                const goto_page_id   = PAGE_ID.CREATE_OR_JOIN_ACCOUNT;
+                // User has no account
+                const goto_page_id = PAGE_ID.CREATE_OR_JOIN_ACCOUNT;
                 const page_container = parentObj.getPageContainer(goto_page_id);
-                    
                 parentObj.showThisPage(page_container);
                 parentObj.pageCreateOrJoinAccount.beforeShow(data_user_account);
-
-            }
-            
-            else{
-                // User has already an account;
+            } else {
                 console.log('user has account_hid = ' + account_hid);
                 
                 let account_has_farms = 0;
-                
-                if (data_user_account.account.pig_farms){
-                    if (data_user_account.account.pig_farms.length > 0){
-                        account_has_farms = 1;
-                    }
+                if (data_user_account.account.pig_farms && data_user_account.account.pig_farms.length > 0){
+                    account_has_farms = 1;
                 }
-                
                 
                 if (account_has_farms > 0){
                     loadHomePageWithToken();
                     return;
-                }
-                else {
-                    // User has already an account but no pig_farm(s);
-                    // It is implied that the user must have chosen 
-                    // to be a farm owner or manager
-                    
-                    const goto_page_id   = PAGE_ID.ADD_FARM;
+                } else {
+                    const goto_page_id = PAGE_ID.ADD_FARM;
                     const page_container = parentObj.getPageContainer(goto_page_id);
-                        
                     parentObj.showThisPage(page_container);
                     parentObj.pageAddFarm.beforeShow(data_user_account);
                 }
             }
-            
             return;
-        }
-        
-        else{
-            const goto_page_id   = PAGE_ID.REQ_JOIN_ACC_SENT;
+        } else {
+            const goto_page_id = PAGE_ID.REQ_JOIN_ACC_SENT;
             const page_container = parentObj.getPageContainer(goto_page_id);
-                
             parentObj.showThisPage(page_container);
             parentObj.pageReqJoinAccountSent.beforeShow(data_user_account);
         }
     }
     
-
-    
-    
+    // =============================================
+    // SOCIAL MEDIA METHODS (Facebook, TikTok)
+    // =============================================
     
     this.onClickUseGoogle = function(){
-        // This is now handled by initiateGoogleLogin()
         this.initiateGoogleLogin();
     }
     
-    
     this.onClickUseFacebook = function(){
-        // TODO: Implement Facebook Sign-In
-        // temporary
         const data = {
-            social_media_id:    SOCIAL_MEDIA.FACEBOOK,
-            email:              'dwong@gmail.com',
-            name_first:         'David',
-            name_last:          'Wong'
+            social_media_id: SOCIAL_MEDIA.FACEBOOK,
+            email: 'dwong@gmail.com',
+            name_first: 'David',
+            name_last: 'Wong'
         };
-        
         thisObj.afterSuccessSocialMediaLogin(data);
     }
     
-    
     this.onClickUseTiktok = function(){
-        // TODO: Implement TikTok Sign-In
         console.log('TikTok login clicked - to be implemented');
     }
     
-    
-    
-    
-    // This is called after success Social Media login
-    /**
-     * parameter - data = {
-     *      social_media_id:    1,
-     *      email:              '',
-     *      name_first:         ''
-     *      name_last:          ''
-     * }
-     * 
-     * */
     this.afterSuccessSocialMediaLogin = function(data){
+        const viewport_width = window.innerWidth;
+        const viewport_height = window.innerHeight;
         
-        // Viewport dimensions (visible page area)
-        const viewport_width    = window.innerWidth;
-        const viewport_height   = window.innerHeight;
+        data.viewport_width = viewport_width;
+        data.viewport_height = viewport_height;
         
-        data.viewport_width     = viewport_width;
-        data.viewport_height    = viewport_height;
-        
-        
-        const base_url      = window.location.origin;
+        const base_url = window.location.origin;
         let url = base_url + 'in_login_social_media_id';
         
-        
-        // send post request
         const post_data = {
-            'login_social_media_id':  data.social_media_id,
-            
-            'email':                data.email,
-            'name_first':           data.name_first,
-            'name_last':            data.name_last,
-            
-            'viewport_width':       viewport_width,
-            'viewport_height':      viewport_height,
-            
-            
-            'login_country_code':   null,
-            'login_country_name':   null,
-            'login_city':           null,
-            'login_region':         null
+            'login_social_media_id': data.social_media_id,
+            'email': data.email,
+            'name_first': data.name_first,
+            'name_last': data.name_last,
+            'viewport_width': viewport_width,
+            'viewport_height': viewport_height,
+            'login_country_code': null,
+            'login_country_name': null,
+            'login_city': null,
+            'login_region': null
         };
-        
         
         $.ajax({
             type: 'POST',
@@ -973,26 +835,15 @@ export function PageUserSignUpOrLogin(input_settings){
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
-  
             data: JSON.stringify(post_data),
-  
-            beforeSend: function(){
-            },
   
             success: function(response){
                 if (response.result.num == 0){
-                    
                     const data_user_account = response.user_account;
                     thisObj.handlePostLoginFlow(data_user_account);
-                    
-                }
-                else{
+                } else {
                     thisObj.showError(response.result.msg || 'An error occurred');
                 }
-            },
-  
-            complete: function(){
-                // TODO unsay buhaton
             },
   
             error: function(jqXHR, textStatus, errorThrown){
@@ -1000,6 +851,4 @@ export function PageUserSignUpOrLogin(input_settings){
             }
         });
     }
-    
-    
 }
