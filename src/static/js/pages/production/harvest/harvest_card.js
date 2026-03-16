@@ -103,6 +103,8 @@ export function HarvestCard(input_settings){
         const dt_harvest        = new Date(date_harvest);
         const s_dt_harvest      = formatDate(dt_harvest, FORMAT_COMPACT);
         
+        const harvest_type_hid  = prod_harvest.harvest_type_hid;
+        
         let harvest_tag         = 'SLAUGHTER';
         let live_weight         = 'N/A';
         let live_weight_ave     = 'N/A';
