@@ -663,6 +663,9 @@ export function PageProdHarvestAddEdit(input_settings){
         componentAccPigBuyer.reset();
         elemUiNotes.reset();
         
+        elemLWHeaderWeight.innerHTML  = '&nbsp;';
+        elemSWHeaderWeight.innerHTML  = '&nbsp;';
+        
         elemLWAverageWeight.innerHTML = '&nbsp;';
         elemSWAverageWeight.innerHTML = '&nbsp;';
         

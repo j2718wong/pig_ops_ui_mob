@@ -102,7 +102,7 @@ export function ServerError(_navigation){
         console.log('textStatus')
         console.log(textStatus)
         if (textStatus == 'timeout'){
-            const title = navigation.dataCompanyApp.product_name;
+            const title = navigation.managerPublicSections.dataCompanyApp.product_name;
             const msg = 'Cannot connect to server. Please check your network connection';
             navigation.toastAlert.showToast(title, msg, 'error', false);
         }

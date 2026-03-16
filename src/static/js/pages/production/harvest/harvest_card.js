@@ -327,6 +327,14 @@ export function HarvestCard(input_settings){
         
         let s_gilt_boar         = '';
         
+        if (harvest_type_hid == HARVEST_TYPE.PIGLETS_SALE){
+            harvest_tag         = 'PIGLETS SALE';
+            tag_class           = 'external';
+            
+            s_gilt_boar         = '';
+        }
+        
+        
         if (harvest_type_hid == HARVEST_TYPE.INTERNAL_GILT_BOAR){
             harvest_tag         = 'INTERNAL';
             tag_class           = 'internal';
