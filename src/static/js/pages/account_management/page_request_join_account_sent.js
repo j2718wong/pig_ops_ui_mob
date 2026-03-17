@@ -155,7 +155,7 @@ export function PageRequestJoinAccountSent(input_settings){
     }
     
     
-    this.beforeShow = function(data_user_account, options){
+    this.show = function(data_user_account, options){
         this._resetForm();
         
         

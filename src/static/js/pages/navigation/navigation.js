@@ -357,8 +357,8 @@ function UserControl(_navigation) {
     this.userLogout = function(){
         // Clear all items from localStorage
         localStorage.clear();
-            
-        // Optional: Redirect to login page
+        
+        //     
         window.location.href = '/login';
     }
 
@@ -980,14 +980,24 @@ export function Navigation(){
                 if (response.result.num == 0){
 
                     if (response.data.user_account == null){
+                        // Clear all items from localStorage
+                        localStorage.clear();
+                        
+                        // Redirect to /login
                         window.location.href = '/login';
+                        
                         return;
                     }
                     
                     
                     const user_account = response.data.user_account;
                     if (user_account.account == null){
+                        // Clear all items from localStorage
+                        localStorage.clear();
+                        
+                        // Redirect to /login
                         window.location.href = '/login';
+                        
                         return;
                     }
                     

@@ -519,7 +519,7 @@ ${hmtl_style}
     }
     
     
-    this.beforeShow = function(options){
+    this.show = function(options){
         this._resetForm();
         
        showOptions = options;

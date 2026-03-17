@@ -189,7 +189,7 @@ export function PageUserSignUpOrLogin(input_settings){
     <input type="email" id="email" class="email-input" placeholder="Enter your email" inputmode="email" autocomplete="email">
     <div id="invalid-email-show" class="invalid-feedback" style="display:none;">
         <i class="fas fa-triangle-exclamation"></i>
-        <span id="invalid-email-msg">Please enter an email address</span> 
+        <span id="invalid-email-msg">Please enter a valid email address</span> 
     </div>
 
     <div class="terms-text">
@@ -275,6 +275,7 @@ export function PageUserSignUpOrLogin(input_settings){
             thisObj.onClickSignUpOrLogin();
         });
         
+        
         elemTermsOfService.addEventListener('click', function(event) {
             const go_back_page_id = PAGE_ID.SIGNUP_OR_LOGIN;
             const go_back_page  = parentObj.getPageContainer(go_back_page_id);
@@ -282,7 +283,7 @@ export function PageUserSignUpOrLogin(input_settings){
             const options ={
                 go_back_page: go_back_page
             };
-            parentObj.pageTermsOfService.beforeShow(options);
+            parentObj.pageTermsOfService.show(options);
             
             const next_page_id  = PAGE_ID.TERMS_OF_SERVICE;
             const next_page     = parentObj.getPageContainer(next_page_id);
@@ -296,7 +297,7 @@ export function PageUserSignUpOrLogin(input_settings){
             const options ={
                 go_back_page: go_back_page
             };
-            parentObj.pagePrivacyPolicy.beforeShow(options);
+            parentObj.pagePrivacyPolicy.show(options);
             
             const next_page_id  = PAGE_ID.PRIVACY_POLICY;
             const next_page     = parentObj.getPageContainer(next_page_id);
@@ -311,20 +312,6 @@ export function PageUserSignUpOrLogin(input_settings){
                 window.location.href = '/login';
             }
         });
-        
-        
-        /*
-        elemUseGoogle.addEventListener('click', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            // Visual feedback
-            const btn = event.currentTarget;
-            btn.style.transform = 'scale(0.98)';
-            setTimeout(() => btn.style.transform = '', 120);
-            
-            thisObj.initiateGoogleLogin();
-        }); */
         
         
         // In your page_user_signup_or_login.js, update the Google click handler
@@ -550,20 +537,24 @@ export function PageUserSignUpOrLogin(input_settings){
                 console.log('Popup closed after receiving token');
             }
             
+            
             // Also tell Google to clean up
             if (window.google?.accounts?.id) {
                 google.accounts.id.cancel();
             }
+            
             
             // Show loading state
             elemUseGoogle.classList.add('loading');
             elemUseGoogle.querySelector('span').textContent = 'Processing...';
             loadingAnimation.show('Verifying credentials...');
             
+            
             // Get location and viewport data
-            const viewport_width = window.innerWidth;
-            const viewport_height = window.innerHeight;
-            let locationData = await getLocationWithFallback();
+            const viewport_width    = window.innerWidth;
+            const viewport_height   = window.innerHeight;
+            let locationData        = await getLocationWithFallback();
+            
             
             // Send to backend
             const backendResponse = await fetch(`${API_BASE_URL}/api/auth/google`, {
@@ -573,13 +564,13 @@ export function PageUserSignUpOrLogin(input_settings){
                 },
                 credentials: 'include', // Important for cookies
                 body: JSON.stringify({
-                    token: response.credential,
-                    viewport_width: viewport_width,
-                    viewport_height: viewport_height,
+                    token:              response.credential, // Google token
+                    viewport_width:     viewport_width,
+                    viewport_height:    viewport_height,
                     login_country_code: locationData.login_country_code,
                     login_country_name: locationData.login_country_name,
-                    login_city: locationData.login_city,
-                    login_region: locationData.login_region
+                    login_city:         locationData.login_city,
+                    login_region:       locationData.login_region
                 })
             });
 
@@ -622,7 +613,7 @@ export function PageUserSignUpOrLogin(input_settings){
         // Reset form if needed
     }
     
-    this.beforeShow = function(options){
+    this.show = function(options){
         showOptions = options;
         elemEmailInvalidShow.style.display = 'none';
     
@@ -642,9 +633,11 @@ export function PageUserSignUpOrLogin(input_settings){
         }
     }
     
+    
     this.populateForm = function(){
         // Populate form if needed
     }
+    
     
     this.showError = function(message) {
         console.error('Error:', message);
@@ -680,7 +673,13 @@ export function PageUserSignUpOrLogin(input_settings){
         }
     }
     
-    this.onClickSignUpOrLogin = function(){
+    
+    this.onClickSignUpOrLogin = async function(){
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
         let input_email = elemEmail.value;
         
         if (input_email.length == 0){
@@ -688,12 +687,34 @@ export function PageUserSignUpOrLogin(input_settings){
             return;
         }
         
+        
+        if (isValidEmail(input_email) == false){
+            elemEmailInvalidShow.style.display = 'block';
+            return;
+        }
+    
+    
+        // Get location and viewport data
+        const viewport_width    = window.innerWidth;
+        const viewport_height   = window.innerHeight;
+        let locationData        = await getLocationWithFallback();
+        
+        
+        
         const base_url = window.location.origin;
-        let url = showOptions.is_login ? `${base_url}/user/login_email` : `${base_url}/user/register_email`;
+        let url = `${base_url}/user/register_or_login`;
         
-        const post_data = { 'email': input_email };
+        const post_data = { 
+            email:              input_email, 
+            viewport_width:     viewport_width,
+            viewport_height:    viewport_height,
+            login_country_code: locationData.login_country_code,
+            login_country_name: locationData.login_country_name,
+            login_city:         locationData.login_city,
+            login_region:       locationData.login_region
+        };
         
-        loadingAnimation.show(showOptions.is_login ? 'Logging in...' : 'Creating account...');
+        loadingAnimation.show(showOptions.is_login ? 'Logging in...' : 'Signing you up...');
         
         $.ajax({
             type: 'POST',
@@ -706,9 +727,24 @@ export function PageUserSignUpOrLogin(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const data_user_account = response.user_account;
+                    // Hide loading and proceed
                     loadingAnimation.hide();
-                    thisObj.handlePostLoginFlow(data_user_account);
+                        
+                    if (response.user_unverified){
+                        
+                        const data = response.user_unverified;
+                        data.user_email = input_email;
+                        
+                        const goto_page_id = PAGE_ID.USER_EMAIL_VERIFY;
+                        const page_container = parentObj.getPageContainer(goto_page_id);
+                        parentObj.showThisPage(page_container);
+                        parentObj.pageEmailVerifyCode.show(data);
+                        
+                        return;
+                    }
+                    
+                    
+                    
                 } else {
                     thisObj.showError(response.result.msg || 'An error occurred');
                 }
@@ -782,7 +818,8 @@ export function PageUserSignUpOrLogin(input_settings){
                 const goto_page_id = PAGE_ID.CREATE_OR_JOIN_ACCOUNT;
                 const page_container = parentObj.getPageContainer(goto_page_id);
                 parentObj.showThisPage(page_container);
-                parentObj.pageCreateOrJoinAccount.beforeShow(data_user_account);
+                parentObj.pageCreateOrJoinAccount.show(data_user_account);
+                
             } else {
                 console.log('user has account_hid = ' + account_hid);
                 
@@ -798,7 +835,7 @@ export function PageUserSignUpOrLogin(input_settings){
                     const goto_page_id = PAGE_ID.ADD_FARM;
                     const page_container = parentObj.getPageContainer(goto_page_id);
                     parentObj.showThisPage(page_container);
-                    parentObj.pageAddFarm.beforeShow(data_user_account);
+                    parentObj.pageAddFarm.show(data_user_account);
                 }
             }
             return;
@@ -806,7 +843,7 @@ export function PageUserSignUpOrLogin(input_settings){
             const goto_page_id = PAGE_ID.REQ_JOIN_ACC_SENT;
             const page_container = parentObj.getPageContainer(goto_page_id);
             parentObj.showThisPage(page_container);
-            parentObj.pageReqJoinAccountSent.beforeShow(data_user_account);
+            parentObj.pageReqJoinAccountSent.show(data_user_account);
         }
     }
     
@@ -818,6 +855,7 @@ export function PageUserSignUpOrLogin(input_settings){
         this.initiateGoogleLogin();
     }
     
+    
     this.onClickUseFacebook = function(){
         const data = {
             social_media_id: SOCIAL_MEDIA.FACEBOOK,
@@ -827,6 +865,7 @@ export function PageUserSignUpOrLogin(input_settings){
         };
         thisObj.afterSuccessSocialMediaLogin(data);
     }
+    
     
     this.onClickUseTiktok = function(){
         console.log('TikTok login clicked - to be implemented');
@@ -878,4 +917,7 @@ export function PageUserSignUpOrLogin(input_settings){
             }
         });
     }
+
+
+    
 }

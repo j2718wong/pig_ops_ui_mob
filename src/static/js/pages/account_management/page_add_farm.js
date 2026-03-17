@@ -297,7 +297,7 @@ export function PageAddFarm(input_settings){
     }
     
     
-    this.beforeShow = function(data_user_account){
+    this.show = function(data_user_account){
         dataUserAccount     = data_user_account;
         
         this.populateForm();

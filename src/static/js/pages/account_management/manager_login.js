@@ -11,6 +11,7 @@ import {APPLICATION,
 
 
 import {PageUserSignUpOrLogin}      from './page_user_signup_or_login.js';
+import {PageEmailVerifyCode}        from './page_email_verify_code.js'
 import {PageCreateOrJoinAccount}    from './page_create_or_join_account.js';
 import {PageAddFarm}                from './page_add_farm.js';
 import {PageRequestJoinAccountSent} from './page_request_join_account_sent.js';
@@ -25,6 +26,7 @@ export function ManagerLogin(){
     
     
     const elemIdContSignupOrLogin       = 'container-signup';
+    const elemIdContVerifyEmail         = 'container-verify-code';
     const elemIdContCreateOrJoinAcc     = 'container-create-or-join-acc';
     const elemIdContAddFarm             = 'container-add-farm';
     const elemIdContReqJoinAccSent      = 'container-req-join-acc-sent';
@@ -34,6 +36,7 @@ export function ManagerLogin(){
     
     
     let elemPageContSignupOrLogin       = null;
+    let elemPageContVerifyEmail         = null;
     let elemPageContCreateOrJoinAcc     = null;
     let elemPageContAddFarm             = null;
     let elemPageContReqJoinAccSent      = null;
@@ -50,11 +53,21 @@ export function ManagerLogin(){
     });
     
     
+    this.pageEmailVerifyCode        = new PageEmailVerifyCode({
+        parentObj:                  this,
+        elemIdDivContainer:         elemIdContVerifyEmail,
+        uniqueKey:                  'email-verify-code'
+    });
+    
+    
+    
     this.pageCreateOrJoinAccount    = new PageCreateOrJoinAccount({
         parentObj:                  this,
         elemIdDivContainer:         elemIdContCreateOrJoinAcc,
         uniqueKey:                  'create-or-join-acc'
     });
+    
+    
     
     
     this.pageAddFarm                = new PageAddFarm({
@@ -94,6 +107,7 @@ export function ManagerLogin(){
     
     this.init = function(){
         this.pageUserSignUpOrLogin.init();
+        this.pageEmailVerifyCode.init();
         this.pageCreateOrJoinAccount.init();
         this.pageAddFarm.init();
         this.pageReqJoinAccountSent.init();
@@ -122,6 +136,7 @@ export function ManagerLogin(){
     this._findElements = function(){
         
         elemPageContSignupOrLogin       = document.getElementById(elemIdContSignupOrLogin);
+        elemPageContVerifyEmail         = document.getElementById(elemIdContVerifyEmail);
         elemPageContCreateOrJoinAcc     = document.getElementById(elemIdContCreateOrJoinAcc);
         elemPageContAddFarm             = document.getElementById(elemIdContAddFarm);
         elemPageContReqJoinAccSent      = document.getElementById(elemIdContReqJoinAccSent);
@@ -180,7 +195,7 @@ export function ManagerLogin(){
         const page_container = this.getPageContainer(goto_page_id);
             
         this.showThisPage(page_container);
-        this.pageUserSignUpOrLogin.beforeShow(options);
+        this.pageUserSignUpOrLogin.show(options);
       
         
     }
@@ -192,13 +207,12 @@ export function ManagerLogin(){
                 return null;
             }
             
-            
             case PAGE_ID.SIGNUP_OR_LOGIN: {
                 return elemPageContSignupOrLogin;
             } 
                   
             case PAGE_ID.USER_EMAIL_VERIFY: {
-                break;
+                return elemPageContVerifyEmail;
             }
                   
             case PAGE_ID.USER_WAIT_ACCOUNT_ACCESS:{

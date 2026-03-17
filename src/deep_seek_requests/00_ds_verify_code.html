@@ -110,7 +110,7 @@
             height: -webkit-fill-available;
         }
 
-        .container {
+        .code-verify-container {
             width: 100%;
             max-width: 400px;
             margin: auto;
@@ -184,19 +184,19 @@
         }
 
         /* Header Styles */
-        .header {
+        .code-verify-header {
             text-align: center;
             margin-bottom: 28px;
         }
 
-        .header h2 {
+        .code-verify-header h2 {
             font-size: 22px;
             font-weight: 600;
             color: var(--text-dark);
             margin-bottom: 8px;
         }
 
-        .header p {
+        .code-verify-header p {
             color: var(--neutral-gray);
             font-size: 15px;
             line-height: 1.5;
@@ -217,7 +217,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Code Input Styles */
+        /* Single Code Input Styles */
         .code-input-container {
             margin-bottom: 24px;
         }
@@ -233,35 +233,28 @@
             letter-spacing: 0.5px;
         }
 
-        .code-input-wrapper {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .code-input {
-            width: calc(16.666% - 7px);
-            min-width: 45px;
-            max-width: 52px;
-            height: 56px;
+        .single-code-input {
+            width: 100%;
+            height: 70px;
             border: 2px solid var(--corporate-blue-border);
-            border-radius: 12px;
-            font-size: 24px;
+            border-radius: 16px;
+            font-size: 36px;
             font-weight: 600;
             text-align: center;
+            letter-spacing: 8px;
             color: var(--corporate-blue-dark);
             background: var(--row-odd);
             transition: all 0.2s ease;
             -webkit-appearance: none;
             -moz-appearance: textfield;
             appearance: none;
-            padding: 0;
+            padding: 0 16px;
+            font-family: 'Courier New', monospace;
         }
 
         /* Remove spinner buttons completely */
-        .code-input::-webkit-outer-spin-button,
-        .code-input::-webkit-inner-spin-button {
+        .single-code-input::-webkit-outer-spin-button,
+        .single-code-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
             appearance: none;
             margin: 0;
@@ -269,29 +262,59 @@
         }
 
         /* Firefox specific */
-        .code-input[type=number] {
+        .single-code-input[type=number] {
             -moz-appearance: textfield;
             appearance: textfield;
         }
 
-        .code-input:focus {
+        .single-code-input:focus {
             outline: none;
             border-color: var(--corporate-blue-company);
             background: var(--white);
             box-shadow: 0 0 0 3px var(--blue-soft);
-            transform: scale(1.02);
         }
 
-        .code-input.error {
+        .single-code-input.error {
             border-color: var(--danger-red);
             background: var(--warning-bg);
             animation: shake 0.4s ease-in-out;
+        }
+
+        /* Helper text */
+        .input-helper {
+            text-align: center;
+            margin-top: 8px;
+            color: var(--neutral-gray);
+            font-size: 13px;
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-6px); }
             75% { transform: translateX(6px); }
+        }
+
+        /* Code preview (visual feedback) */
+        .code-preview {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            margin-bottom: 8px;
+        }
+
+        .code-preview-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--medium-gray);
+            transition: all 0.2s ease;
+        }
+
+        .code-preview-dot.filled {
+            background: var(--corporate-blue-company);
+            transform: scale(1.2);
+            box-shadow: 0 2px 4px rgba(24, 119, 240, 0.3);
         }
 
         /* Timer Section */
@@ -474,10 +497,10 @@
 
         /* Mobile Keyboard Optimization */
         @media (max-width: 380px) {
-            .code-input {
-                min-width: 42px;
-                height: 50px;
-                font-size: 22px;
+            .single-code-input {
+                height: 60px;
+                font-size: 32px;
+                letter-spacing: 6px;
             }
             
             .verify-card {
@@ -490,12 +513,6 @@
             
             .product-name {
                 font-size: 24px;
-            }
-            
-            .company-logo {
-                width: 42px;
-                height: 42px;
-                font-size: 28px;
             }
         }
 
@@ -510,8 +527,9 @@
                 padding: 16px;
             }
             
-            .code-input {
-                height: 48px;
+            .single-code-input {
+                height: 56px;
+                font-size: 32px;
             }
             
             .verify-btn {
@@ -533,12 +551,11 @@
 
         /* Prevent zoom on input focus for iOS */
         @supports (-webkit-touch-callout: none) {
-            .code-input, .verify-btn, .resend-btn {
+            .single-code-input, .verify-btn, .resend-btn {
                 font-size: 16px;
             }
             
-            /* Additional iOS spinner removal */
-            .code-input {
+            .single-code-input {
                 -webkit-appearance: none;
                 appearance: none;
             }
@@ -560,14 +577,14 @@
         }
 
         /* Hover effects */
-        .code-input:hover:not(:focus) {
+        .single-code-input:hover:not(:focus) {
             border-color: var(--corporate-blue-light);
             background: var(--row-even);
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="code-vefiry-container">
         <div class="verify-card">
             <!-- Logo and Product Section at the top with J logo -->
             <div class="logo-section">
@@ -575,7 +592,7 @@
                 <div class="product-name">SuperPig</div>
             </div>
 
-            <div class="header">
+            <div class="code-verify-header">
                 <h2>Verify Your Email</h2>
                 <p>We've sent a verification code to</p>
                 <span class="email-highlight">john.doe@superpig.farm</span>
@@ -583,13 +600,26 @@
 
             <div class="code-input-container">
                 <label>Enter 6-digit code</label>
-                <div class="code-input-wrapper">
-                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code1" autofocus>
-                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code2">
-                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code3">
-                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code4">
-                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code5">
-                    <input type="number" class="code-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" id="code6">
+                <input type="text" 
+                       class="single-code-input" 
+                       id="verificationCode"
+                       maxlength="6" 
+                       pattern="[0-9]*" 
+                       inputmode="numeric"
+                       autofocus>
+                
+                <!-- Visual feedback dots -->
+                <div class="code-preview" id="codePreview">
+                    <span class="code-preview-dot"></span>
+                    <span class="code-preview-dot"></span>
+                    <span class="code-preview-dot"></span>
+                    <span class="code-preview-dot"></span>
+                    <span class="code-preview-dot"></span>
+                    <span class="code-preview-dot"></span>
+                </div>
+                
+                <div class="input-helper">
+                    Copy and paste or type the 6-digit code
                 </div>
             </div>
 
@@ -630,10 +660,15 @@
                 // Handle viewport height for mobile browsers
                 this.setViewportHeight();
                 window.addEventListener('resize', () => this.setViewportHeight());
+                
+                // Initialize code preview dots
+                this.updateCodePreview();
             }
 
             initializeElements() {
-                this.codeInputs = document.querySelectorAll('.code-input');
+                this.codeInput = document.getElementById('verificationCode');
+                this.codePreview = document.getElementById('codePreview');
+                this.previewDots = document.querySelectorAll('.code-preview-dot');
                 this.timerDisplay = document.getElementById('timer');
                 this.resendBtn = document.getElementById('resendBtn');
                 this.verifyBtn = document.getElementById('verifyBtn');
@@ -660,47 +695,18 @@
             }
 
             attachEventListeners() {
-                // Code input handling with mobile optimization
-                this.codeInputs.forEach((input, index) => {
-                    // Handle input
-                    input.addEventListener('input', (e) => this.handleInput(e, index));
-                    
-                    // Handle keydown for backspace
-                    input.addEventListener('keydown', (e) => this.handleKeyDown(e, index));
-                    
-                    // Handle paste
-                    input.addEventListener('paste', (e) => this.handlePaste(e));
-                    
-                    // Handle focus
-                    input.addEventListener('focus', (e) => this.handleFocus(e));
-                    
-                    // Handle blur
-                    input.addEventListener('blur', (e) => this.handleBlur(e));
-                    
-                    // Prevent wheel/scroll events from changing the number
-                    input.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
-                    
-                    // Prevent arrow key up/down from changing the number
-                    input.addEventListener('keydown', (e) => {
-                        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                            e.preventDefault();
-                        }
-                    });
-                    
-                    // Handle touch events for mobile
-                    input.addEventListener('touchstart', () => {
-                        input.classList.add('touch-active');
-                    });
-                    
-                    input.addEventListener('touchend', () => {
-                        input.classList.remove('touch-active');
-                    });
-                });
-
+                // Single code input handling
+                this.codeInput.addEventListener('input', (e) => this.handleInput(e));
+                this.codeInput.addEventListener('keydown', (e) => this.handleKeyDown(e));
+                this.codeInput.addEventListener('paste', (e) => this.handlePaste(e));
+                this.codeInput.addEventListener('focus', (e) => this.handleFocus(e));
+                
+                // Prevent wheel/scroll events from changing value
+                this.codeInput.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+                
                 // Verify button
                 this.verifyBtn.addEventListener('click', () => this.handleVerification());
-                this.verifyBtn.addEventListener('touchstart', () => this.preventDoubleTap);
-
+                
                 // Resend button
                 this.resendBtn.addEventListener('click', () => this.resendCode());
                 
@@ -711,43 +717,36 @@
                 });
             }
 
-            handleInput(e, index) {
-                const input = e.target;
-                let value = input.value;
-
-                // Only allow single digit
-                if (value.length > 1) {
-                    value = value.charAt(value.length - 1);
+            handleInput(e) {
+                let value = e.target.value;
+                
+                // Remove any non-digit characters
+                value = value.replace(/[^0-9]/g, '');
+                
+                // Limit to 6 digits
+                if (value.length > 6) {
+                    value = value.slice(0, 6);
                 }
                 
-                // Only allow numbers
-                value = value.replace(/[^0-9]/g, '');
-                input.value = value;
-
-                if (value) {
-                    // Remove error styling
-                    input.classList.remove('error');
-                    
-                    // Move to next input
-                    if (index < this.codeInputs.length - 1) {
-                        this.codeInputs[index + 1].focus();
-                    } else {
-                        // Auto-submit when last digit is entered
-                        this.checkAutoSubmit();
-                    }
+                // Update input value
+                e.target.value = value;
+                
+                // Remove error styling
+                e.target.classList.remove('error');
+                
+                // Update visual preview dots
+                this.updateCodePreview();
+                
+                // Auto-submit when 6 digits are entered
+                if (value.length === 6) {
+                    this.handleVerification();
                 }
             }
 
-            handleKeyDown(e, index) {
+            handleKeyDown(e) {
                 // Prevent arrow key up/down from changing value
                 if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                     e.preventDefault();
-                    return;
-                }
-                
-                if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                    // Move to previous input on backspace
-                    this.codeInputs[index - 1].focus();
                 }
                 
                 // Handle enter key
@@ -766,41 +765,32 @@
                 }, 100);
             }
 
-            handleBlur(e) {
-                // Optional: Add validation on blur
-            }
-
             handlePaste(e) {
                 e.preventDefault();
                 const pastedData = e.clipboardData.getData('text');
-                const numbers = pastedData.replace(/[^0-9]/g, '').split('').slice(0, 6);
-
-                numbers.forEach((num, index) => {
-                    if (index < this.codeInputs.length) {
-                        this.codeInputs[index].value = num;
-                    }
-                });
-
-                // Focus on next empty input or last input
-                const filledCount = numbers.length;
-                if (filledCount < this.codeInputs.length) {
-                    this.codeInputs[filledCount].focus();
-                } else {
-                    this.codeInputs[this.codeInputs.length - 1].focus();
-                    this.checkAutoSubmit();
-                }
-            }
-
-            preventDoubleTap(e) {
-                e.preventDefault();
-            }
-
-            checkAutoSubmit() {
-                const allFilled = Array.from(this.codeInputs).every(input => input.value.length === 1);
-                if (allFilled) {
-                    // Small delay to ensure last digit is registered
+                const numbers = pastedData.replace(/[^0-9]/g, '').slice(0, 6);
+                
+                this.codeInput.value = numbers;
+                this.updateCodePreview();
+                
+                // Auto-submit if we got 6 digits
+                if (numbers.length === 6) {
                     setTimeout(() => this.handleVerification(), 100);
                 }
+            }
+
+            updateCodePreview() {
+                const code = this.codeInput.value;
+                const length = code.length;
+                
+                // Update dots
+                this.previewDots.forEach((dot, index) => {
+                    if (index < length) {
+                        dot.classList.add('filled');
+                    } else {
+                        dot.classList.remove('filled');
+                    }
+                });
             }
 
             startTimer() {
@@ -849,14 +839,13 @@
                     this.timerDisplay.classList.remove('expiring');
                     this.startTimer();
                     
-                    // Clear inputs
-                    this.codeInputs.forEach(input => {
-                        input.value = '';
-                        input.classList.remove('error');
-                    });
+                    // Clear input
+                    this.codeInput.value = '';
+                    this.codeInput.classList.remove('error');
+                    this.updateCodePreview();
                     
-                    // Focus first input
-                    this.codeInputs[0].focus();
+                    // Focus input
+                    this.codeInput.focus();
                     
                     this.showMessage('New verification code sent!', 'success');
                     
@@ -871,14 +860,12 @@
                 // Hide any existing messages
                 this.messageDiv.style.display = 'none';
                 
-                const enteredCode = Array.from(this.codeInputs).map(input => input.value).join('');
+                const enteredCode = this.codeInput.value;
                 
                 // Validation
                 if (enteredCode.length < 6) {
                     this.showMessage('Please enter the complete 6-digit code', 'error');
-                    this.codeInputs.forEach(input => {
-                        if (!input.value) input.classList.add('error');
-                    });
+                    this.codeInput.classList.add('error');
                     return;
                 }
 
@@ -890,7 +877,7 @@
                 setTimeout(() => {
                     if (enteredCode === this.verificationCode) {
                         this.showMessage('✓ Email verified successfully!', 'success');
-                        this.codeInputs.forEach(input => input.classList.remove('error'));
+                        this.codeInput.classList.remove('error');
                         
                         // Simulate redirect
                         setTimeout(() => {
@@ -900,11 +887,10 @@
                         }, 1500);
                     } else {
                         this.showMessage('✗ Invalid code. Please try again.', 'error');
-                        this.codeInputs.forEach(input => {
-                            input.classList.add('error');
-                            input.value = '';
-                        });
-                        this.codeInputs[0].focus();
+                        this.codeInput.classList.add('error');
+                        this.codeInput.value = '';
+                        this.codeInput.focus();
+                        this.updateCodePreview();
                         this.verifyBtn.disabled = false;
                         this.verifyBtn.textContent = 'Verify Email';
                     }

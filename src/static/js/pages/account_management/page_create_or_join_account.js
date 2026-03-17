@@ -162,7 +162,7 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     this._findElements = function(){
-        elemUserName            = elemDivContainer.querySelector('#user-name')
+        elemUserName            = elemDivContainer.querySelector('#user-name');
         
         elemCreateAccount       = elemDivContainer.querySelector('#create-account');
         elemAccountName         = elemDivContainer.querySelector('#account-name');
@@ -214,7 +214,7 @@ export function PageCreateOrJoinAccount(input_settings){
     }
     
     
-    this.beforeShow = function(data_user, options){
+    this.show = function(data_user, options){
         this._resetForm();
         
         curDataUserAccount = data_user;
@@ -302,7 +302,7 @@ export function PageCreateOrJoinAccount(input_settings){
                     const page_container = parentObj.getPageContainer(goto_page_id);
                         
                     parentObj.showThisPage(page_container);
-                    parentObj.pageAddFarm.beforeShow(data_user_account);
+                    parentObj.pageAddFarm.show(data_user_account);
                 }
                 else{
                     let error_code = response.result.code;
@@ -380,7 +380,7 @@ export function PageCreateOrJoinAccount(input_settings){
                     const page_container = parentObj.getPageContainer(goto_page_id);
                         
                     parentObj.showThisPage(page_container);
-                    parentObj.pageReqJoinAccountSent.beforeShow(curDataUserAccount);
+                    parentObj.pageReqJoinAccountSent.show(curDataUserAccount);
 
                 }
                 else{
