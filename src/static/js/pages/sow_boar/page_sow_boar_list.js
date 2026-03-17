@@ -1071,7 +1071,7 @@ ${html_style}
         
         curDataFilter = 'output';
         
-        elemSowControls.style.display = 'block';
+        //elemSowControls.style.display = 'block';
     }
     
    

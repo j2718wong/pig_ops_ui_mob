@@ -31,7 +31,8 @@ export function PageCreateOrJoinAccount(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
-    let elemUserName            = null;
+    let elemGreetings           = null;
+
     
     let elemCreateAccount       = null;
     let elemAccountName         = null;      
@@ -69,7 +70,9 @@ export function PageCreateOrJoinAccount(input_settings){
         <div class="product-name">SuperPig</div>
     </div>
 
-    <div style="margin-bottom:0.5rem; font-weight:600;">Hello <span id="user-name">hi</span>, please choose</div>
+    <div style="margin-bottom:0.5rem; font-weight:600;" id="greetings">
+        Hello, please choose an option
+    </div>
 
     <!-- two clickable options -->
     <!-- option 1: create (owner/manager) -->
@@ -162,8 +165,9 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     this._findElements = function(){
-        elemUserName            = elemDivContainer.querySelector('#user-name');
-        
+        elemGreetings           = elemDivContainer.querySelector('#greetings');
+
+
         elemCreateAccount       = elemDivContainer.querySelector('#create-account');
         elemAccountName         = elemDivContainer.querySelector('#account-name');
         elemInvalidAccNameShow  = elemDivContainer.querySelector('#invalid-account-name-show');
@@ -173,8 +177,6 @@ export function PageCreateOrJoinAccount(input_settings){
         elemAccountCode         = elemDivContainer.querySelector('#account-code');
         elemInvalidAccCodeShow  = elemDivContainer.querySelector('#invalid-account-code-show');
         elemInvalidAccCodeMsg   = elemDivContainer.querySelector('#invalid-account-code-msg');
-        
-        
     }
     
     
@@ -223,24 +225,87 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     this.populateForm = function(){
+        function maskEmail(email) {
+            if (!email || !email.includes('@')) return email;
+            
+            const [localPart, domain] = email.split('@');
+            
+            // Get first 4 characters of local part
+            const firstFour = localPart.substring(0, 4);
+            
+            // Return masked email
+            return `${firstFour}*****@${domain}`;
+        }
+        
+        
+        
         const user = curDataUserAccount.user.user;
         
-        let user_name = '';
+        // Check if user was registered using Facebook or Tiktok
+        // Note if registered via signin with google will have
+        // user.social_media_id = SOCIAL_MEDIA.GOOGLE 
         
-        if (user.name && user.name.length >0){
-            user_name = user.name;
+        let is_registered_via_email = 0;
+        if (user.social_media_id){} 
+        else{
+            is_registered_via_email = 1;
         }
-        else {
-            if (user.name_first && user.name_first.length >0){
-                user_name = user.name_first
+        
+        const masked_user_email = maskEmail(user.email);
+        
+        let html_greetings;
+        // If registered via manual email, there is no user name
+        if (is_registered_via_email > 0){
+            html_greetings = `
+            Hello, you have registered your email ${masked_user_email} to SuperPig.  
+            Please choose an option to continue.
+            `;
+        }
+        else{
+            let user_name = '';
+            
+            if (user.name && user.name.length >0){
+                user_name = user.name;
+            }
+            else {
+                if (user.name_first && user.name_first.length >0){
+                    user_name = user.name_first
+                }
+                
+                if (user.name_last && user.name_last.length >0){
+                    user_name += ' ' + user.name_last
+                }
             }
             
-            if (user.name_last && user.name_last.length >0){
-                user_name += ' ' + user.name_last
+            
+            switch (user.social_media_id){
+                case  SOCIAL_MEDIA.GOOGLE:{
+                    html_greetings = `
+                    Hello <span>${user_name}</span>, you have registered your email ${masked_user_email} to SuperPig.  
+                    Please choose an option to continue.
+                    `;
+                    break;
+                }
+                
+                case  SOCIAL_MEDIA.FACEBOOK:{
+                    html_greetings = `
+                    Hello <span>${user_name}</span>, you have Facebook Account to SuperPig.  
+                    Please choose an option to continue.
+                    `;
+                    break;
+                }
+                
+                case  SOCIAL_MEDIA.FACEBOOK:{
+                    html_greetings = `
+                    Hello <span>${user_name}</span>, you have Tiktok Account to SuperPig.  
+                    Please choose an option to continue.
+                    `;
+                    break;
+                }   
             }
         }
         
-        elemUserName.textContent = user_name;
+        elemGreetings.innerHTML = html_greetings;
     }
     
     
