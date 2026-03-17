@@ -184,7 +184,7 @@ export function SowBoarTableSowGesta(input_settings){
                     parentObj.dtCurrentDate,
                     acc_settings_ops);
                     
-        s_date_important = `${dt_important_s} (Day ${diff_days})`;
+        s_date_important = `${dt_important_s} <span class="nowrap">(Day ${diff_days}</span>)`;
         
         
         

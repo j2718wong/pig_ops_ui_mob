@@ -48,7 +48,7 @@ prepeparation of a weaned sow before next production cycle.`
             'title': 'Gilt Operations',
             
             'info_text':`This list defines the standard care activities for 
-prepeparation of a gilt before first mating.`
+preparation of a gilt before first mating.`
             
         }
         

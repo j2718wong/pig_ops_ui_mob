@@ -249,9 +249,9 @@ export function PageMobGestaLacta(input_settings){
             <!-- PigProd Lacta Table -->
             <table class="data-table table-gesta-lacta" id="${elemIdTablePigOps}">
                 <colgroup>
-                    <col style="width: 37%;">
+                    <col style="width: 34%;">
                     <col style="width: 30%;">
-                    <col style="width: 33%;">
+                    <col style="width: 36%;">
                 </colgroup>
   
                 <thead>
@@ -302,9 +302,9 @@ export function PageMobGestaLacta(input_settings){
             
             <table class="data-table table-gesta-lacta">
                 <colgroup>
-                    <col style="width: 37%;">
+                    <col style="width: 34%;">
                     <col style="width: 30%;">
-                    <col style="width: 33%;">
+                    <col style="width: 36%;">
                 </colgroup>
   
                 <thead>
