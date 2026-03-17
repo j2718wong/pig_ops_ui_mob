@@ -1439,6 +1439,7 @@ p {
 .data-table td {
     padding: 5px 4px;
     font-size: 14px;
+    font-size: 1rem;
     vertical-align: middle;
     overflow: hidden;
     text-overflow: ellipsis;
