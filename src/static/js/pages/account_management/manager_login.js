@@ -10,7 +10,9 @@ import {APPLICATION,
 
 
 
-import {PageUserSignUpOrLogin}      from './page_user_signup_or_login.js';
+import {PageUserSignUpOrLogin,
+        loadHomePageWithToken}      from './page_user_signup_or_login.js';
+
 import {PageEmailVerifyCode}        from './page_email_verify_code.js'
 import {PageCreateOrJoinAccount}    from './page_create_or_join_account.js';
 import {PageAddFarm}                from './page_add_farm.js';
@@ -157,16 +159,56 @@ export function ManagerLogin(){
     
     
     this.onPageLoad = function(){
-        const url_path = window.location.pathname;
+        // Set CopyRight Year
+        const currentYear = new Date().getFullYear();
+        elemCopyRightYear.textContent = currentYear;
         
-        // Automatic login if there is a valid token
-        // Check if there is a access_token stored
         const bearer_token = localStorage.getItem('access_token');
+                        
+        
+        // Check if there is a access_token stored;
         if (bearer_token){
-            window.location.href = '/'
+            console.log('\n\n\nmanagerLogin; has bearer token');
+        
+            
+            const callback_failure = function(){
+                // Clear all items from localStorage
+                localStorage.clear();
+            
+                console.log('\n\n\nonmanagerLogin; failure; to remove token');
+
+
+                const goto_page_id   = PAGE_ID.SIGNUP_OR_LOGIN;
+                const page_container = thisObj.getPageContainer(goto_page_id);
+                    
+                thisObj.showThisPage(page_container);
+                thisObj.pageUserSignUpOrLogin.show({is_login: true});
+                
+                return;
+            };
+            
+            
+            const callback_success = function(data_user_account){
+                if (data_user_account.account){
+                    // Redirect to Dashboard if user has account
+                    window.location.href = '/'
+                    return;
+                }
+                
+                thisObj.handlePostLoginFlow(data_user_account); 
+                return;
+            };
+            
+            
+            // Verify access_token
+            thisObj.requestVerifyToken(callback_success, callback_failure);
+            
             return;
         }
         
+        
+        // No bearer token;
+        const url_path = window.location.pathname;
         
         
         let options;
@@ -175,22 +217,14 @@ export function ManagerLogin(){
             options = {
                 is_login: false
             };
-            
-        
         }
         else{
             options = {
                 is_login: true
             };
-
         }
         
-        
-        // Set CopyRight Year
-        const currentYear = new Date().getFullYear();
-        elemCopyRightYear.textContent = currentYear;
-        
-        
+
         const goto_page_id   = PAGE_ID.SIGNUP_OR_LOGIN;
         const page_container = this.getPageContainer(goto_page_id);
             
@@ -263,6 +297,118 @@ export function ManagerLogin(){
     }
     
     
+    this.handlePostLoginFlow = function(data_user_account) {
+        let account_hid = null;
+        let user_req_join_acc = null;
+        
+        if (data_user_account.account && data_user_account.account.account){
+            account_hid = data_user_account.account.account.hid;
+        }
+        
+        if (data_user_account.user && data_user_account.user.user_request){
+            user_req_join_acc = data_user_account.user.user_request;
+        }
+        
+        if (user_req_join_acc == null) {
+            if (account_hid == null){
+                // User has no account
+                const goto_page_id = PAGE_ID.CREATE_OR_JOIN_ACCOUNT;
+                const page_container = thisObj.getPageContainer(goto_page_id);
+                thisObj.showThisPage(page_container);
+                thisObj.pageCreateOrJoinAccount.show(data_user_account);
+                
+            } else {
+                console.log('user has account_hid = ' + account_hid);
+                
+                let account_has_farms = 0;
+                if (data_user_account.account.pig_farms){
+                    if (data_user_account.account.pig_farms.length > 0){
+                        account_has_farms = 1;
+                    }
+                }
+                
+                if (account_has_farms > 0){
+                    loadHomePageWithToken();
+                    return;
+                } else {
+                    const goto_page_id = PAGE_ID.ADD_FARM;
+                    const page_container = thisObj.getPageContainer(goto_page_id);
+                    thisObj.showThisPage(page_container);
+                    thisObj.pageAddFarm.show(data_user_account);
+                }
+            }
+            return;
+        } else {
+            const goto_page_id = PAGE_ID.REQ_JOIN_ACC_SENT;
+            const page_container = thisObj.getPageContainer(goto_page_id);
+            thisObj.showThisPage(page_container);
+            thisObj.pageReqJoinAccountSent.show(data_user_account);
+        }
+    }
+    
+    
+    this.showError = function(jqXHR, textStatus, errorThrown){
+        
+    }
+    
+    
+    this.requestVerifyToken = function(callback_success, callback_failure, 
+            elem_show_error){
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/user/verify_token`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    if (callback_success){
+                        const data_user_account = response.user_account;
+                        callback_success(data_user_account);
+                    }
+                }
+                else {
+                    if (callback_failure){
+                        callback_failure();
+                    }
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                if (callback_failure){
+                    callback_failure();
+                }
+
+            }
+        });
+    }
+    
+    
+    
+    
     this.requestDataActiveCountryList = function(callback_success,
             elem_show_error){
         
@@ -313,6 +459,8 @@ export function ManagerLogin(){
             }
         });
     }
+    
+    
     
 }
 

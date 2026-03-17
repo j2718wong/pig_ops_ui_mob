@@ -387,12 +387,19 @@ export function PageCreateOrJoinAccount(input_settings){
                     let error_code = response.result.code;
                     let error_desc = response.result.desc;
                     
+                    let html = '';
+                    
+                    if (error_code == 'ERROR_USER_REQUEST_INVALID_ACCOUNT_HASHID'){
+                        html = `<span>Sorry Invalid Account Code</span>`;
+                    }
+                    
+                    /*
                     let html = `<span>${error_code}</span>`;
                     
                     if (error_desc && error_desc.length > 0){
                         html += `<br><span>${error_desc}</span>`;
                     }
-                    
+                    */
 
                     elemInvalidAccCodeShow.style.display = 'block';
                     elemInvalidAccCodeShow.innerHTML = html;  

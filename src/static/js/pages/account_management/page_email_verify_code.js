@@ -12,6 +12,7 @@ import {formatDate,
         FORMAT_COMPACT}         from '../../utils.js';
 
 
+
 export function PageEmailVerifyCode(input_settings){
     
     const thisObj               = this;
@@ -234,12 +235,7 @@ export function PageEmailVerifyCode(input_settings){
 
         /* Timer Section */
         .timer-section {
-            background: var(--bg-light);
-            border-radius: 16px;
-            padding: 18px 16px;
-            margin-bottom: 20px;
             text-align: center;
-            border: 1px solid var(--medium-gray);
         }
 
         .timer-label {
@@ -665,7 +661,7 @@ ${html_style}
         
         // Auto-submit when 6 digits are entered
         if (value.length === 6) {
-            this._handleVerification();
+            this.onClickVerifyEmail();
         }
     }
     
@@ -679,7 +675,7 @@ ${html_style}
         // Handle enter key
         if (e.key === 'Enter') {
             e.preventDefault();
-            this._handleVerification();
+            this.onClickVerifyEmail();
         }
     }
     
@@ -704,7 +700,7 @@ ${html_style}
         
         // Auto-submit if we got 6 digits
         if (numbers.length === 6) {
-            setTimeout(() => this._handleVerification(), 100);
+            setTimeout(() => this.onClickVerifyEmail(), 100);
         }
     }
     
@@ -760,34 +756,55 @@ ${html_style}
     }
     
     
-    this._resendCode = function() {
-        this._showMessage('Sending new code...', 'success');
+    this._resendCode = async function() {
+        
         
         // Disable resend button immediately
         elemResendBtn.disabled = true;
         
-        // Simulate API call - replace with actual API call
-        setTimeout(() => {
-            // Reset timer
-            timeLeft = 300;
-            elemTimer.classList.remove('expiring');
-            this._startTimer();
+
+        const unverified_user_hid = dataUnverifiedUser.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/user/email/verify_code/resend?uvuhid=${unverified_user_hid}`;
+        
+        
+        $.ajax({
+            type: 'GET',
+            contentType: "application/json",
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    // Reset timer
+                    timeLeft = 300;
+                    elemTimer.classList.remove('expiring');
+                    thisObj._startTimer();
+                    
+                    // Clear input
+                    elemVerification.value = '';
+                    elemVerification.classList.remove('error');
+                    thisObj._updateCodePreview('');
+                    
+                    // Focus input
+                    elemVerification.focus();
+                    
+                    thisObj._showMessage('New verification code sent!', 'success');
             
-            // Clear input
-            elemVerification.value = '';
-            elemVerification.classList.remove('error');
-            this._updateCodePreview('');
-            
-            // Focus input
-            elemVerification.focus();
-            
-            this._showMessage('New verification code sent!', 'success');
-            
-            // In production, you would:
-            // 1. Call your API to resend code
-            // 2. Update verificationCode with new value from backend
-            console.log('New code sent - in production, API would be called');
-        }, 1500);
+                } else {
+                    thisObj._showMessage(response.result.code || 'An error occurred');
+                }
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                thisObj._showMessage('Server error. Please try again.');
+                loadingAnimation.hide();
+            }
+        });
+        
     }
     
     
@@ -846,6 +863,9 @@ ${html_style}
                     elemMessage.style.display = 'none';
                 }
             }, 4000);
+        }
+        else{
+            elemMessage.style.display = 'block';
         }
     }
     
@@ -932,20 +952,30 @@ ${html_style}
         }
         
         
-        const user_hid = dataUnverifiedUser.hid;
+        const unverified_user_hid = dataUnverifiedUser.hid;
         
         const base_url      = window.location.origin;
-
-    
+        let url = `${base_url}/user/email/verify_code`;
         
-        let url = `${base_url}/user/email/verify_code?uvuhid=${user_hid}&code=enteredCode`;
+        // Get viewport dimensions
+        const viewport_width  = window.innerWidth;
+        const viewport_height = window.innerHeight;
+            
+        
+        
+        // send post request
+        const post_data = {
+            'uvuhid':           unverified_user_hid,
+            'auth_code':        enteredCode,
+            'viewport_width':   viewport_width,
+            'viewport_height':  viewport_height
+        };
         
         
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             contentType: "application/json",
             dataType: 'json',
-            
             
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
@@ -958,26 +988,65 @@ ${html_style}
   
             success: function(response){
                 if (response.result.num == 0){
-                    dataUserAccount.account.account = response.account;
-                    
-                    thisObj.refreshAccountName();
-                    
-                    elemInvalidAccNameShow.style.display = 'none';
+                    if (response.bearer_token){
+                        if (elemVerification) {
+                            elemVerification.classList.remove('error');
+                        }
+
+                        
+                        // Store token
+                        localStorage.setItem('access_token', response.bearer_token);
+                        
+                        // handle post login
+                        parentObj.handlePostLoginFlow(response.user_account);
+                        return;
+                    }
+                    else{
+                        console.log('\n\nNo bearer_token after user is verified');
+                        
+                    }
                 }
                 else{
-                    let error_code = response.result.code;
-                    let error_desc = response.result.desc;
+                    // The invalid response.result.code can be either one of these
+                    //DECLARE RES_NUM_CANNOT_FIND_VERIFICATION        INT             DEFAULT 1;
+                    //DECLARE RES_NUM_INVALID_CODE                    INT             DEFAULT 2;
+                    //DECLARE RES_NUM_CODE_EXPIRED                    INT             DEFAULT 3;
                     
-                    let html = `<span>${error_code}</span>`;
+                    console.log('response.result.code = ' + response.result.code);
                     
-                    if (error_desc && error_desc.length > 0){
-                        html += `<br><span>${error_desc}</span>`;
+                    switch(response.result.code){
+                        case 'RES_NUM_CANNOT_FIND_VERIFICATION':
+                        case 'RES_NUM_INVALID_CODE':{
+                            thisObj._showMessage('✗ Invalid code. Please try again.', 'error');
+                            if (elemVerification) {
+                                elemVerification.classList.add('error');
+                                //elemVerification.value = '';
+                                elemVerification.focus();
+                                //thisObj._updateCodePreview('');
+                            }
+                            if (elemVerifyBtn) {
+                                elemVerifyBtn.disabled = false;
+                                elemVerifyBtn.textContent = 'Verify Email';
+                            }
+                            break;
+                        }
+                        
+                        case 'RES_NUM_CODE_EXPIRED':{
+                            thisObj._showMessage('✗ Code Expired. Please request code again.', 'error');
+                            if (elemVerification) {
+                                elemVerification.classList.add('error');
+                                //elemVerification.value = '';
+                                elemVerification.focus();
+                                //thisObj._updateCodePreview('');
+                            }
+                            if (elemVerifyBtn) {
+                                elemVerifyBtn.disabled = false;
+                                elemVerifyBtn.textContent = 'Verify Email';
+                            }
+                            
+                            break;
+                        }
                     }
-                    
-
-                    elemInvalidAccNameShow.style.display = 'block';
-                    elemInvalidAccNameShow.innerHTML = html;  
-                    
                 }
             },
   
@@ -991,43 +1060,12 @@ ${html_style}
         });
 
 
-
-        // Simulate API verification - replace with actual API call
-        setTimeout(() => {
-            if (enteredCode === verificationCode) {
-                this._showMessage('✓ Email verified successfully!', 'success');
-                if (elemVerification) {
-                    elemVerification.classList.remove('error');
-                }
-                
-                // Simulate redirect
-                setTimeout(() => {
-                    if (elemVerifyBtn) {
-                        elemVerifyBtn.textContent = 'Verified!';
-                    }
-                    // In production: window.location.href = '/dashboard';
-                    if (parentObj && parentObj.onVerificationSuccess) {
-                        parentObj.onVerificationSuccess();
-                    } else {
-                        alert('Welcome to SuperPig! Redirecting to dashboard...');
-                    }
-                }, 1500);
-            } else {
-                this._showMessage('✗ Invalid code. Please try again.', 'error');
-                if (elemVerification) {
-                    elemVerification.classList.add('error');
-                    elemVerification.value = '';
-                    elemVerification.focus();
-                    this._updateCodePreview('');
-                }
-                if (elemVerifyBtn) {
-                    elemVerifyBtn.disabled = false;
-                    elemVerifyBtn.textContent = 'Verify Email';
-                }
-            }
-        }, 1500);
     }
     
+    
+    this.onReceivedInvalidCode = function(){
+        
+    }
     
     
     

@@ -110,6 +110,49 @@ export async function getLocationWithFallback() {
 }
 
 
+export async function loadHomePageWithToken() {
+    // Try to get token from cookie first (new flow)
+    let token = getCookie('access_token');
+    
+    // If not in cookie, try localStorage (old flow)
+    if (!token) {
+        token = localStorage.getItem('access_token');
+    }
+    
+    console.log('Token found:', token ? 'Yes' : 'No');
+    
+    if (!token) {
+        console.log('No token found, redirecting to login');
+        window.location.href = '/login';
+        return;
+    }
+    
+    try {
+        const response = await fetch('/', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            const html = await response.text();
+            document.open();
+            document.write(html);
+            document.close();
+            history.pushState({}, '', '/');
+        } else {
+            console.log('Failed to load homepage, redirecting to login');
+            window.location.href = '/login';
+        }
+    } catch (error) {
+        console.error('Failed to load homepage:', error);
+        window.location.href = '/login';
+    }
+}
+
+
+
+
 // This is used for signup or login
 export function PageUserSignUpOrLogin(input_settings){
     
@@ -220,10 +263,12 @@ export function PageUserSignUpOrLogin(input_settings){
         </div>
   
         <!-- TikTok -->
+        <!--
         <div id="social-btn-tiktok" class="social-btn tiktok" role="button" tabindex="0" aria-label="Sign up with TikTok">
             <i class="fab fa-tiktok"></i>
             <span>TikTok</span>
         </div>
+        -->
     </div>
 
     <!-- 4.) Already Have an Account? – ENTIRE LINE CLICKABLE (easy mobile tap) -->
@@ -344,16 +389,19 @@ export function PageUserSignUpOrLogin(input_settings){
             thisObj.onClickUseFacebook();
         });
         
-        elemUseTiktok.addEventListener('click', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            const btn = event.currentTarget;
-            btn.style.transform = 'scale(0.98)';
-            setTimeout(() => btn.style.transform = '', 120);
-            
-            thisObj.onClickUseTiktok();
-        });  
+        
+        if (elemUseTiktok){
+            elemUseTiktok.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                const btn = event.currentTarget;
+                btn.style.transform = 'scale(0.98)';
+                setTimeout(() => btn.style.transform = '', 120);
+                
+                thisObj.onClickUseTiktok();
+            });  
+        }
     }
     
     
@@ -588,7 +636,7 @@ export function PageUserSignUpOrLogin(input_settings){
             
             // Hide loading and proceed
             loadingAnimation.hide();
-            this.handlePostLoginFlow(data.user_account);
+            parentObj.handlePostLoginFlow(data.user_account);
             
         } catch (error) {
             console.error('❌ Google authentication error:', error);
@@ -612,6 +660,7 @@ export function PageUserSignUpOrLogin(input_settings){
     this._resetForm = function(){
         // Reset form if needed
     }
+    
     
     this.show = function(options){
         showOptions = options;
@@ -708,6 +757,7 @@ export function PageUserSignUpOrLogin(input_settings){
             email:              input_email, 
             viewport_width:     viewport_width,
             viewport_height:    viewport_height,
+            
             login_country_code: locationData.login_country_code,
             login_country_name: locationData.login_country_name,
             login_city:         locationData.login_city,
@@ -744,6 +794,21 @@ export function PageUserSignUpOrLogin(input_settings){
                     }
                     
                     
+                    // User is already verified here; save token
+                    if (response.bearer_token){
+                        console.log('\n\n\nonClickSignUpOrLogin; User token to be saved in storage');
+                        
+                        // Store token
+                        localStorage.setItem('access_token', response.bearer_token);
+                        const data_user_account = response.user_account;
+                        
+                        parentObj.handlePostLoginFlow(data_user_account);
+                        return;
+                    }
+                    
+                    
+                    
+                    console.log('\n\n\nonClickSignUpOrLogin; no bearer_token');
                     
                 } else {
                     thisObj.showError(response.result.msg || 'An error occurred');
@@ -758,94 +823,7 @@ export function PageUserSignUpOrLogin(input_settings){
     }
     
     
-    async function loadHomePageWithToken() {
-        // Try to get token from cookie first (new flow)
-        let token = getCookie('access_token');
-        
-        // If not in cookie, try localStorage (old flow)
-        if (!token) {
-            token = localStorage.getItem('access_token');
-        }
-        
-        console.log('Token found:', token ? 'Yes' : 'No');
-        
-        if (!token) {
-            console.log('No token found, redirecting to login');
-            window.location.href = '/login';
-            return;
-        }
-        
-        try {
-            const response = await fetch('/', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            
-            if (response.ok) {
-                const html = await response.text();
-                document.open();
-                document.write(html);
-                document.close();
-                history.pushState({}, '', '/');
-            } else {
-                console.log('Failed to load homepage, redirecting to login');
-                window.location.href = '/login';
-            }
-        } catch (error) {
-            console.error('Failed to load homepage:', error);
-            window.location.href = '/login';
-        }
-    }
     
-    
-    
-    this.handlePostLoginFlow = function(data_user_account) {
-        let account_hid = null;
-        let user_req_join_acc = null;
-        
-        if (data_user_account.account && data_user_account.account.account){
-            account_hid = data_user_account.account.account.hid;
-        }
-        
-        if (data_user_account.user && data_user_account.user.user_request){
-            user_req_join_acc = data_user_account.user.user_request;
-        }
-        
-        if (user_req_join_acc == null) {
-            if (account_hid == null){
-                // User has no account
-                const goto_page_id = PAGE_ID.CREATE_OR_JOIN_ACCOUNT;
-                const page_container = parentObj.getPageContainer(goto_page_id);
-                parentObj.showThisPage(page_container);
-                parentObj.pageCreateOrJoinAccount.show(data_user_account);
-                
-            } else {
-                console.log('user has account_hid = ' + account_hid);
-                
-                let account_has_farms = 0;
-                if (data_user_account.account.pig_farms && data_user_account.account.pig_farms.length > 0){
-                    account_has_farms = 1;
-                }
-                
-                if (account_has_farms > 0){
-                    loadHomePageWithToken();
-                    return;
-                } else {
-                    const goto_page_id = PAGE_ID.ADD_FARM;
-                    const page_container = parentObj.getPageContainer(goto_page_id);
-                    parentObj.showThisPage(page_container);
-                    parentObj.pageAddFarm.show(data_user_account);
-                }
-            }
-            return;
-        } else {
-            const goto_page_id = PAGE_ID.REQ_JOIN_ACC_SENT;
-            const page_container = parentObj.getPageContainer(goto_page_id);
-            parentObj.showThisPage(page_container);
-            parentObj.pageReqJoinAccountSent.show(data_user_account);
-        }
-    }
     
     // =============================================
     // SOCIAL MEDIA METHODS (Facebook, TikTok)
@@ -865,7 +843,7 @@ export function PageUserSignUpOrLogin(input_settings){
         };
         thisObj.afterSuccessSocialMediaLogin(data);
     }
-    
+    loadHomePageWithToken
     
     this.onClickUseTiktok = function(){
         console.log('TikTok login clicked - to be implemented');
@@ -906,7 +884,7 @@ export function PageUserSignUpOrLogin(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     const data_user_account = response.user_account;
-                    thisObj.handlePostLoginFlow(data_user_account);
+                    parentObj.handlePostLoginFlow(data_user_account);
                 } else {
                     thisObj.showError(response.result.msg || 'An error occurred');
                 }
