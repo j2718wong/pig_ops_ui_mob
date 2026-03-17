@@ -183,7 +183,8 @@ function UserControl(_navigation) {
     this.setDataUserAccount = function(data){
         this.dataUserAccount= data;
         
-
+        console.log('\n\nnavigation.setDataUserAccount');
+        console.log(data);
 
         const user          = this.dataUserAccount.user.user;
         const user_pig_farms= this.dataUserAccount.user.pig_farms; 
