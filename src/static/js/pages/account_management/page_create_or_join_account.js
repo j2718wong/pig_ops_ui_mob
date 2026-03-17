@@ -103,7 +103,7 @@ export function PageCreateOrJoinAccount(input_settings){
             </div>
         </div>
         
-        <div id="create-account" style="font-size:0.85rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
+        <div id="create-account" style="font-size:1.1rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
             👆 Click to Continue
         </div>
     </div>
