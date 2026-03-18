@@ -764,9 +764,17 @@ ${html_style}
         
 
         const unverified_user_hid = dataUnverifiedUser.hid;
+        const user_hid = dataUnverifiedUser.uhid
         
         const base_url = window.location.origin;
-        let url = `${base_url}/user/email/verify_code/resend?uvuhid=${unverified_user_hid}`;
+        let url;
+        
+        if (unverified_user_hid){
+            url = `${base_url}/user/email/verify_code/resend?uvuhid=${unverified_user_hid}`;
+        }
+        else{
+            url = `${base_url}/user/email/verify_code/resend?uhid=${user_hid}`;
+        }
         
         
         $.ajax({
@@ -953,6 +961,7 @@ ${html_style}
         
         
         const unverified_user_hid = dataUnverifiedUser.hid;
+        const user_hid = dataUnverifiedUser.uhid;
         
         const base_url      = window.location.origin;
         let url = `${base_url}/user/email/verify_code`;
@@ -970,6 +979,13 @@ ${html_style}
             'viewport_width':   viewport_width,
             'viewport_height':  viewport_height
         };
+        
+        if (unverified_user_hid){
+            post_data.uvuhid = unverified_user_hid;
+        }
+        else{
+            post_data.uhid = user_hid;
+        }
         
         
         $.ajax({

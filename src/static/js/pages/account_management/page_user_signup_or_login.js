@@ -729,7 +729,7 @@ export function PageUserSignUpOrLogin(input_settings){
             return emailRegex.test(email);
         }
         
-        let input_email = elemEmail.value;
+        let input_email = elemEmail.value.toLowerCase();
         
         if (input_email.length == 0){
             elemEmailInvalidShow.style.display = 'block';
