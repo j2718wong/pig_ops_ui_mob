@@ -146,7 +146,7 @@ export function PageJoinAccReqList(input_settings){
     
     this._processAfterHtmlRenderThis = function(){
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavUsers();
+            navigation._onClickNavAccessCodes();
         };
         
           

@@ -176,7 +176,7 @@ export function PageUserList(input_settings){
     }
     
     
-    this.beforeShow = function(){
+    this.show = function(){
         dataUserList  = navigation.pigFarm.accountLists.dataUserList;
 
         if (dataUserList == null){
@@ -200,12 +200,6 @@ export function PageUserList(input_settings){
     }
     
 
-    this._writeInlineStyle = function(){
-        const html = ``;
-        return html;
-
-    }
-    
     
     this.getElemTableBody = function(){
         return elemTableBody;
@@ -215,11 +209,10 @@ export function PageUserList(input_settings){
     this.getHtmlTableHeader = function(){
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
         
-        const html_style = this._writeInlineStyle();
-        
+
         
         const html = `
-        ${html_style}
+
         
         <table class="data-table" id="">
             <colgroup>

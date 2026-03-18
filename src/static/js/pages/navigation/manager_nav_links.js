@@ -76,6 +76,7 @@ export function ManagerNavLinks(_navigation) {
 
     let elemDesktopNavAdmin1            = null;
     let elemDesktopNavAdmin2            = null;
+    let elemDesktopNavAdmin3            = null;
 
 
 
@@ -120,6 +121,8 @@ export function ManagerNavLinks(_navigation) {
                                         
     let elemMobileNavAdmin1             = null;
     let elemMobileNavAdmin2             = null;
+    let elemMobileNavAdmin3             = null;
+    
     
     
     this.init = function(){
@@ -199,7 +202,7 @@ export function ManagerNavLinks(_navigation) {
         
         elemDesktopNavAdmin1            = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-1');
         elemDesktopNavAdmin2            = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-2');
-        
+        elemDesktopNavAdmin3            = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-3');
         
         
         elemMobileNavProduction1        = elemMobileNavProduction.querySelector('#mobile-subnav-production-1');
@@ -243,6 +246,8 @@ export function ManagerNavLinks(_navigation) {
             
         elemMobileNavAdmin1             = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-1');
         elemMobileNavAdmin2             = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-2');
+        elemMobileNavAdmin3             = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-3');
+        
         
     }
     
@@ -389,8 +394,12 @@ export function ManagerNavLinks(_navigation) {
         });       
         
         elemDesktopNavAdmin2.addEventListener('click', function() {
-            navigation._onClickNavUsersRequest(false);
+            navigation._onClickNavAccessCodes(false);
         });       
+
+        elemDesktopNavAdmin3.addEventListener('click', function() {
+            navigation._onClickNavUsersRequest(false);
+        });
 
 
 
@@ -522,8 +531,14 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavAdmin1.addEventListener('click', function() {
             navigation._onClickNavUsers(true);
         });   
+        
             
         elemMobileNavAdmin2.addEventListener('click', function() {
+            navigation._onClickNavAccessCodes(true);
+        }); 
+        
+        
+        elemMobileNavAdmin3.addEventListener('click', function() {
             navigation._onClickNavUsersRequest(true);
         });        
     }

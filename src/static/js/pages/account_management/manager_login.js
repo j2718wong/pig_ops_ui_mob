@@ -17,8 +17,7 @@ import {PageEmailVerifyCode}        from './page_email_verify_code.js'
 import {PageCreateOrJoinAccount}    from './page_create_or_join_account.js';
 import {PageAddFarm}                from './page_add_farm.js';
 import {PageRequestJoinAccountSent} from './page_request_join_account_sent.js';
-import {PageTermsOfService}         from './page_terms_of_service.js';
-import {PagePrivacyPolicy}          from './page_privacy_policy.js';
+
 
 
 // This is used for signup or login
@@ -32,8 +31,6 @@ export function ManagerLogin(){
     const elemIdContCreateOrJoinAcc     = 'container-create-or-join-acc';
     const elemIdContAddFarm             = 'container-add-farm';
     const elemIdContReqJoinAccSent      = 'container-req-join-acc-sent';
-    const elemIdContTermsOfService      = 'container-terms-of-service';
-    const elemIdContPrivacyPolicy       = 'container-privacy-policy';
     
     
     
@@ -42,8 +39,8 @@ export function ManagerLogin(){
     let elemPageContCreateOrJoinAcc     = null;
     let elemPageContAddFarm             = null;
     let elemPageContReqJoinAccSent      = null;
-    let elemPageContTermsOfService      = null;
-    let elemPageContPrivacyPolicy       = null;
+
+
     
     let elemCopyRightYear               = null;
     
@@ -86,20 +83,8 @@ export function ManagerLogin(){
     });
     
     
-    this.pageTermsOfService         = new PageTermsOfService({
-        parentObj:                  this,
-        elemIdDivContainer:         elemIdContTermsOfService,
-        uniqueKey:                  'terms-of-service'
-    });
-    
-    
-    this.pagePrivacyPolicy          = new PagePrivacyPolicy({
-        parentObj:                  this,
-        elemIdDivContainer:         elemIdContPrivacyPolicy,
-        uniqueKey:                  'privacy-policy'
-    });
-    
-    
+
+
     
     this.dataAddressCountryList     = null;
     
@@ -113,8 +98,7 @@ export function ManagerLogin(){
         this.pageCreateOrJoinAccount.init();
         this.pageAddFarm.init();
         this.pageReqJoinAccountSent.init();
-        this.pageTermsOfService.init();
-        this.pagePrivacyPolicy.init();
+
         
         this.render();
         this.afterHtmlRender();
@@ -142,8 +126,7 @@ export function ManagerLogin(){
         elemPageContCreateOrJoinAcc     = document.getElementById(elemIdContCreateOrJoinAcc);
         elemPageContAddFarm             = document.getElementById(elemIdContAddFarm);
         elemPageContReqJoinAccSent      = document.getElementById(elemIdContReqJoinAccSent);
-        elemPageContTermsOfService      = document.getElementById(elemIdContTermsOfService);
-        elemPageContPrivacyPolicy       = document.getElementById(elemIdContPrivacyPolicy);
+
         
         elemCopyRightYear               = document.getElementById('copyright-year');
         
@@ -265,15 +248,7 @@ export function ManagerLogin(){
                 return elemPageContReqJoinAccSent;
             }
             
-            case PAGE_ID.TERMS_OF_SERVICE:{
-                return elemPageContTermsOfService;
-            }
-            
-            
-            case PAGE_ID.PRIVACY_POLICY:{
-                return elemPageContPrivacyPolicy;
-            } 
-            
+
             
             
         }

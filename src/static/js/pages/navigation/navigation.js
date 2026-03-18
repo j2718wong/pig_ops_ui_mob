@@ -94,6 +94,7 @@ import {PageAccPigOpsAddEdit}       from '../acc_pig_ops/page_acc_pig_ops_add_ed
 import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_edit.js';
 
 import {PageUserList}               from '../a_user_control/page_user_list.js';
+import {PageAccessCodeList}         from '../a_user_control/page_acc_access_code_list.js';
 import {PageJoinAccReqList}         from '../a_user_control/page_join_acc_req_list.js';
 import {PageJoinAccReqApprove}      from '../a_user_control/page_join_acc_req_approve.js';
 
@@ -463,6 +464,11 @@ export function Navigation(){
     
     const elemIdContUserList            = 'container-user-list';
     const elemIdContUserAddEdit         = 'container-user-add-edit';
+    
+    const elemIdContAccessCodeList     = 'container-access-code-list';
+    const elemIdContAccessCodeAddEdit  = 'container-access-code-add-edit';
+    
+    
     const elemIdContJoinAccReqList      = 'container-join-acc-req-list';
     const elemIdContJoinAccReqApprove   = 'container-join-acc-req-approve';
     
@@ -550,6 +556,10 @@ export function Navigation(){
     
     let elemPageContUserList            = null;
     let elemPageContUserAddEdit         = null;
+    
+    let elemPageContAccessCodeList     = null;
+    let elemPageContAccessCodeAddEdit  = null;
+    
     let elemPageContJoinAccReqList      = null;
     let elemPageContJoinAccReqApprove   = null;
     
@@ -923,6 +933,14 @@ export function Navigation(){
     });
     
     
+    this.pageAccessCodeList     = new PageAccessCodeList({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAccessCodeList,
+        uniqueKey:              'access-code-list'
+    });
+    
+    
+    
     this.pageJoinAccReqList     = new PageJoinAccReqList({
         navigation:             this,
         elemIdDivContainer:     elemIdContJoinAccReqList,
@@ -1117,6 +1135,7 @@ export function Navigation(){
         
         
         this.pageUserList.init();
+        this.pageAccessCodeList.init();
         this.pageJoinAccReqList.init();
         this.pageJoinAccReqApprove.init();
     }
@@ -1214,6 +1233,10 @@ export function Navigation(){
         elemPageContSupplierAddEdit     = document.getElementById(elemIdContSupplierAddEdit);
     
         elemPageContUserList            = document.getElementById(elemIdContUserList);
+        
+        elemPageContAccessCodeList     = document.getElementById(elemIdContAccessCodeList);
+        elemPageContAccessCodeAddEdit  = document.getElementById(elemIdContAccessCodeAddEdit);
+        
         elemPageContJoinAccReqList      = document.getElementById(elemIdContJoinAccReqList);
         elemPageContJoinAccReqApprove   = document.getElementById(elemIdContJoinAccReqApprove);
         
@@ -1257,6 +1280,7 @@ export function Navigation(){
         
         CONTAINER_GROUP_ADMIN           = [
             elemPageContUserList,
+            elemPageContAccessCodeList,
             elemPageContJoinAccReqList
         ];
         
@@ -1636,6 +1660,16 @@ export function Navigation(){
             case PAGE_ID.USER_ADD_EDIT: {
                 break;
             }
+
+            case PAGE_ID.ACCESS_CODE_LIST: {
+                return elemPageContAccessCodeList;
+            }
+            
+            case PAGE_ID.ACCESS_CODE_LIST: {
+                return elemPageContAccessCodeAddEdit;
+            }
+
+               
             
             
             case PAGE_ID.JOIN_ACC_REQ_LIST: {
@@ -1984,7 +2018,7 @@ export function Navigation(){
         
     this._onClickNavAccOpsSettings = function(is_mobile){
         thisObj.showThisPage(elemPageContAccOpsSettingsEdit);
-        thisObj.pageAccOpsSettingsEdit.beforeShow();
+        thisObj.pageAccOpsSettingsEdit.show();
     }
     
         
@@ -1997,7 +2031,13 @@ export function Navigation(){
                     
     this._onClickNavUsers = function(is_mobile){
         thisObj.showThisPage(elemPageContUserList);
-        thisObj.pageUserList.beforeShow();
+        thisObj.pageUserList.show();
+    }
+        
+        
+    this._onClickNavAccessCodes = function(is_mobile){
+        thisObj.showThisPage(elemPageContAccessCodeList);
+        thisObj.pageAccessCodeList.show();
     }
         
         
@@ -2266,6 +2306,9 @@ export function Navigation(){
                                                     
             case elemPageContUserList               :{return "elemPageContUserList          ";}
             case elemPageContUserAddEdit            :{return "elemPageContUserAddEdit       ";}
+            
+            case elemPageContAccessCodeList         :{return "elemPageContAccessCodeList    ";}
+            case elemPageContAccessCodeAddEdit      :{return "elemPageContAccessCodeAddEdit ";}
             case elemPageContJoinAccReqList         :{return "elemPageContJoinAccReqList    ";}
             case elemPageContJoinAccReqApprove      :{return "elemPageContJoinAccReqApprove ";}
             

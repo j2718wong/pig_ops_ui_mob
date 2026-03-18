@@ -192,10 +192,8 @@ export function PageUserSignUpOrLogin(input_settings){
     
     // Track popup window reference
     let googlePopupWindow       = null;
-    
-    // =============================================
-    // PUBLIC METHODS
-    // =============================================
+
+
     
     this.init = function(){
         this.render();
@@ -236,8 +234,8 @@ export function PageUserSignUpOrLogin(input_settings){
     </div>
 
     <div class="terms-text">
-        By Signing up, I accept the <a href="#" id="terms-of-service">J SysDev Terms of Service</a> 
-        and acknowledge the <a href="#" id="privacy-policy">Privacy Policy</a>.
+        By Signing up, I accept the <a href="/terms" id="terms-of-service">J SysDev Terms of Service</a> 
+        and acknowledge the <a href="/privacy" id="privacy-policy">Privacy Policy</a>.
     </div>
 
     <button class="signup-btn">Sign up</button>
@@ -322,31 +320,13 @@ export function PageUserSignUpOrLogin(input_settings){
         
         
         elemTermsOfService.addEventListener('click', function(event) {
-            const go_back_page_id = PAGE_ID.SIGNUP_OR_LOGIN;
-            const go_back_page  = parentObj.getPageContainer(go_back_page_id);
-            
-            const options ={
-                go_back_page: go_back_page
-            };
-            parentObj.pageTermsOfService.show(options);
-            
-            const next_page_id  = PAGE_ID.TERMS_OF_SERVICE;
-            const next_page     = parentObj.getPageContainer(next_page_id);
-            parentObj.showThisPage(next_page);
+            // Will now redirect to /terms
+            window.location.href = '/terms';
         });
         
         elemPrivacyPolicy.addEventListener('click', function(event) {
-            const go_back_page_id = PAGE_ID.SIGNUP_OR_LOGIN;
-            const go_back_page  = parentObj.getPageContainer(go_back_page_id);
-            
-            const options ={
-                go_back_page: go_back_page
-            };
-            parentObj.pagePrivacyPolicy.show(options);
-            
-            const next_page_id  = PAGE_ID.PRIVACY_POLICY;
-            const next_page     = parentObj.getPageContainer(next_page_id);
-            parentObj.showThisPage(next_page);
+            // Will now redirect to /privacy
+            window.location.href = '/privacy';
         });
         
         elemLoginOrSignUpLink.addEventListener('click', function(event) {

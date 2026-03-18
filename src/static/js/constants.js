@@ -133,8 +133,12 @@ const PAGE_ID = {
     USER_LIST:              100,
     USER_ADD_EDIT:          101,
     
-    JOIN_ACC_REQ_LIST:      102,
-    JOIN_ACC_REQ_APPROVE:   103
+    ACCESS_CODE_LIST:       102,
+    ACCESS_CODE_ADD_EDIT:   103,
+    
+    
+    JOIN_ACC_REQ_LIST:      104,
+    JOIN_ACC_REQ_APPROVE:   105
 };
 
 

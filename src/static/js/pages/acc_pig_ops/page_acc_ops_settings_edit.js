@@ -310,7 +310,7 @@ export function PageAccOpsSettingsEdit(input_settings){
     }
     
     
-    this.beforeShow = function(options){
+    this.show = function(options){
         thisObj._resetForm();
         
         thisObj.populateForm();
