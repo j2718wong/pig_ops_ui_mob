@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# build.py - SuperPig UI Builder with Versioned Outputs and Manifest
+# build.py - SuperPig UI Builder with Versioning, Minification, and Cleanup
+# Features: JS bundling, CSS minification, versioning, and automatic cleanup
 
 import subprocess
 import sys
@@ -21,19 +22,30 @@ ENTRY_POINTS = {
         'output_base': "static/js/bundle.min.js",
         'output_name': "bundle",
         'bundle_key': 'login',
-        'name': 'Login Bundle'
+        'name': 'Login Bundle',
+        'type': 'js'
     },
     'core': {
         'path': "src/static/js/app_core.js",
         'output_base': "static/js/bundle.core.min.js",
         'output_name': "bundle.core",
         'bundle_key': 'core',
-        'name': 'Core Navigation Bundle'
+        'name': 'Core Navigation Bundle',
+        'type': 'js'
+    },
+    # Add CSS entry point
+    'main_css': {
+        'path': "src/static/css/main.css",
+        'output_base': "static/css/main.min.css",
+        'output_name': "main",
+        'bundle_key': 'main_css',
+        'name': 'Main Stylesheet',
+        'type': 'css'
     }
 }
 
 class BuildProgress:
-    # ... (keep the existing BuildProgress class exactly as is)
+    """Progress indicator with spinner for builds"""
     def __init__(self, bundle_name=""):
         self.bundle_name = bundle_name
         self.start_time = None
@@ -101,21 +113,26 @@ class BuildProgress:
 def check_dependencies():
     """Check if required dependencies are installed"""
     try:
+        # Check for npx (for JS builds)
         result = subprocess.run(["npx", "--version"], capture_output=True, text=True)
         if result.returncode == 0:
             print(f"✅ npx version: {result.stdout.strip()}")
-            return True
+        else:
+            print("❌ npx not found")
+            return False
     except FileNotFoundError:
-        pass
+        print("❌ npx not installed")
+        return False
     
-    print("❌ Error: npx is not installed. Please install Node.js and npm.")
-    print("   Visit: https://nodejs.org/")
-    return False
-
-def count_files():
-    """Count JavaScript files to be bundled"""
-    js_files = list(Path("src/static/js").rglob("*.js"))
-    return len(js_files)
+    # Check for csscompressor (for CSS builds)
+    try:
+        import csscompressor
+        print(f"✅ csscompressor installed")
+    except ImportError:
+        print("❌ csscompressor not installed. Run: pip install csscompressor")
+        return False
+    
+    return True
 
 def calculate_file_hash(filepath):
     """Calculate MD5 hash of a file"""
@@ -125,8 +142,97 @@ def calculate_file_hash(filepath):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()[:8]  # First 8 chars
 
-def build_entry_point(entry_config, enable_versioning=False):
-    """Build a single entry point with optional versioning"""
+def minify_css(css_content):
+    """Minify CSS using csscompressor"""
+    try:
+        import csscompressor
+        return csscompressor.compress(css_content)
+    except ImportError:
+        print("⚠️  csscompressor not found, skipping CSS minification")
+        return css_content
+
+def build_css_entry(entry_config, enable_versioning=False):
+    """Build CSS entry point with minification and versioning"""
+    entry_point = entry_config['path']
+    output_base = entry_config['output_base']
+    output_name = entry_config['output_name']
+    bundle_key = entry_config['bundle_key']
+    bundle_name = entry_config['name']
+    
+    print(f"\n📝 Building: {bundle_name}")
+    print(f"   Entry: {entry_point}")
+    print(f"   Base Output: {output_base}")
+    if enable_versioning:
+        print(f"   Versioning: Enabled")
+    print("-" * 50)
+    
+    # Check if entry point exists
+    if not os.path.exists(entry_point):
+        print(f"❌ Error: Entry point not found: {entry_point}")
+        return None
+    
+    # Start progress indicator
+    progress = BuildProgress(bundle_name)
+    progress.start()
+    
+    # Ensure output directory exists
+    os.makedirs(os.path.dirname(output_base), exist_ok=True)
+    
+    # Read original CSS
+    with open(entry_point, 'r', encoding='utf-8') as f:
+        css_content = f.read()
+    
+    # Minify CSS
+    minified_css = minify_css(css_content)
+    
+    # Write to temp file first
+    temp_file = f"static/css/{output_name}.temp.css"
+    os.makedirs(os.path.dirname(temp_file), exist_ok=True)
+    
+    with open(temp_file, 'w', encoding='utf-8') as f:
+        f.write(minified_css)
+    
+    # Determine final output filename
+    if enable_versioning:
+        # Calculate hash and create versioned filename
+        file_hash = calculate_file_hash(temp_file)
+        versioned_file = f"static/css/{output_name}.{file_hash}.min.css"
+        shutil.move(temp_file, versioned_file)
+        final_file = versioned_file
+        bundle_filename = f"{output_name}.{file_hash}.min.css"
+        print(f"   🔖 Hash: {file_hash}")
+    else:
+        # Use base filename
+        if os.path.exists(output_base):
+            os.remove(output_base)
+        shutil.move(temp_file, output_base)
+        final_file = output_base
+        bundle_filename = os.path.basename(output_base)
+    
+    # Stop progress indicator
+    progress.stop(True, final_file)
+    
+    # Show bundle size
+    if os.path.exists(final_file):
+        original_size = os.path.getsize(entry_point)
+        new_size = os.path.getsize(final_file)
+        saved = original_size - new_size
+        percent = (saved / original_size) * 100 if original_size > 0 else 0
+        print(f"      📦 Original: {progress._format_size(original_size)}")
+        print(f"      📦 Minified: {progress._format_size(new_size)}")
+        print(f"      💾 Saved: {progress._format_size(saved)} ({percent:.1f}%)")
+    
+    # Return bundle info for manifest
+    return {
+        'key': bundle_key,
+        'filename': bundle_filename,
+        'path': final_file,
+        'size': os.path.getsize(final_file),
+        'hash': file_hash if enable_versioning else None
+    }
+
+def build_js_entry(entry_config, enable_versioning=False):
+    """Build JS entry point with esbuild and versioning"""
     entry_point = entry_config['path']
     output_base = entry_config['output_base']
     output_name = entry_config['output_name']
@@ -251,6 +357,13 @@ def build_entry_point(entry_config, enable_versioning=False):
         print(f"\n   ❌ Error: {e}")
         return None
 
+def build_entry_point(entry_config, enable_versioning=False):
+    """Route to appropriate builder based on type"""
+    if entry_config.get('type') == 'css':
+        return build_css_entry(entry_config, enable_versioning)
+    else:
+        return build_js_entry(entry_config, enable_versioning)
+
 def save_manifest(bundle_infos, enable_versioning=False):
     """Save manifest JSON file"""
     manifest = {}
@@ -270,25 +383,145 @@ def save_manifest(bundle_infos, enable_versioning=False):
     with open(manifest_path, 'w') as f:
         json.dump(manifest, f, indent=2)
     
+    # Also save to CSS directory for convenience
+    css_manifest_path = 'static/css/manifest.json'
+    os.makedirs(os.path.dirname(css_manifest_path), exist_ok=True)
+    with open(css_manifest_path, 'w') as f:
+        json.dump(manifest, f, indent=2)
+    
     # Also save a simple text file with just the version
     if enable_versioning:
         version_txt_path = 'static/js/version.txt'
         with open(version_txt_path, 'w') as f:
             f.write(str(int(time.time())))
     
-    print(f"\n📝 Manifest saved: {manifest_path}")
+    print(f"\n📝 Manifest saved: {manifest_path} and {css_manifest_path}")
     if enable_versioning:
         print(f"   Version info included")
 
+def clean_old_versions(keep_last=2):
+    """
+    Clean up old versioned files, keeping only the most recent 'keep_last' versions
+    Also removes non-versioned min files if versioned ones exist
+    """
+    print(f"\n🧹 Cleaning old versioned files (keeping last {keep_last})...")
+    
+    # Process JS directory
+    js_dir = Path("static/js")
+    if js_dir.exists():
+        # Group files by bundle type (core, main/login)
+        js_bundles = {}
+        for f in js_dir.glob("bundle*.min.js"):
+            # Skip non-versioned min files for now
+            if f.name.count('.') >= 3:  # Has hash pattern
+                # Extract bundle type (core or main)
+                if 'core' in f.name:
+                    bundle_type = 'core'
+                else:
+                    bundle_type = 'main'
+                
+                if bundle_type not in js_bundles:
+                    js_bundles[bundle_type] = []
+                js_bundles[bundle_type].append(f)
+        
+        # Sort and keep only last 'keep_last' for each bundle type
+        for bundle_type, files in js_bundles.items():
+            # Sort by modification time (newest first)
+            files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            
+            # Keep only the newest 'keep_last'
+            if len(files) > keep_last:
+                for old_file in files[keep_last:]:
+                    print(f"   🗑️  Removing old {bundle_type} bundle: {old_file.name}")
+                    old_file.unlink()
+            
+            # Show what's being kept
+            print(f"\n   📌 Keeping {bundle_type} bundles:")
+            for f in files[:keep_last]:
+                size_kb = f.stat().st_size / 1024
+                mtime = time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))
+                print(f"      • {f.name} ({size_kb:.1f}KB) - {mtime}")
+        
+        # Remove non-versioned min files if versioned ones exist
+        for pattern in ["bundle.min.js", "bundle.core.min.js"]:
+            non_versioned = js_dir / pattern
+            if non_versioned.exists():
+                # Check if any versioned file exists for this bundle
+                versioned_exists = False
+                if 'core' in pattern:
+                    versioned_exists = len(list(js_dir.glob("bundle.core.*.min.js"))) > 0
+                else:
+                    versioned_exists = len(list(js_dir.glob("bundle.[0-9a-f]*.min.js"))) - \
+                                      len(list(js_dir.glob("bundle.core.*.min.js"))) > 0
+                
+                if versioned_exists:
+                    print(f"\n   🗑️  Removing non-versioned fallback: {pattern}")
+                    non_versioned.unlink()
+    
+    # Process CSS directory
+    css_dir = Path("static/css")
+    if css_dir.exists():
+        css_files = list(css_dir.glob("main.*.min.css"))
+        if css_files:
+            css_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            if len(css_files) > keep_last:
+                for old_file in css_files[keep_last:]:
+                    print(f"   🗑️  Removing old CSS: {old_file.name}")
+                    old_file.unlink()
+            
+            print(f"\n   📌 Keeping CSS bundles:")
+            for f in css_files[:keep_last]:
+                size_kb = f.stat().st_size / 1024
+                mtime = time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))
+                print(f"      • {f.name} ({size_kb:.1f}KB) - {mtime}")
+    
+    print("\n   ✅ Cleanup complete")
+
+def quick_scan():
+    """Quick scan to estimate build time"""
+    print("🔍 Quick scan...")
+    
+    js_files = []
+    for path in Path("src/static/js").rglob("*.js"):
+        size = path.stat().st_size
+        js_files.append((size, path))
+    
+    js_files.sort(reverse=True)
+    
+    if js_files:
+        print(f"\n📊 Top 5 largest JS files:")
+        for size, path in js_files[:5]:
+            rel_path = path.relative_to("src/static/js")
+            size_kb = size / 1024
+            print(f"   {size_kb:6.1f}KB  {rel_path}")
+    
+    # Also scan CSS
+    css_files = []
+    for path in Path("src/static/css").rglob("*.css"):
+        size = path.stat().st_size
+        css_files.append((size, path))
+    
+    if css_files:
+        print(f"\n📊 CSS files:")
+        for size, path in css_files:
+            rel_path = path.relative_to("src/static/css")
+            size_kb = size / 1024
+            print(f"   {size_kb:6.1f}KB  {rel_path}")
+    
+    total_size = sum(size for size, _ in js_files) / (1024 * 1024)
+    total_size += sum(size for size, _ in css_files) / (1024 * 1024)
+    print(f"\n📈 Total assets: {total_size:.1f}MB")
+
 def run_all_builds(enable_versioning=False):
     """Run all configured builds with optional versioning"""
-    print("📊 Found JavaScript files to process")
+    print("📊 Found files to process")
     
     # Show what will be built
     print("\n📋 Build Plan:")
     for key, config in ENTRY_POINTS.items():
         version_msg = " (versioned)" if enable_versioning else ""
-        print(f"   • {config['name']}{version_msg}: {config['path']}")
+        file_type = config.get('type', 'js').upper()
+        print(f"   • {config['name']}{version_msg}: {config['path']} [{file_type}]")
     
     print("\n" + "=" * 60)
     
@@ -323,6 +556,10 @@ def run_all_builds(enable_versioning=False):
     # Save manifest if we have any successful builds
     if bundle_infos and all_successful:
         save_manifest(bundle_infos, enable_versioning)
+        
+        # Clean up old versions after successful build
+        if enable_versioning:
+            clean_old_versions(keep_last=2)
     
     # Print summary
     print("\n" + "=" * 60)
@@ -332,35 +569,6 @@ def run_all_builds(enable_versioning=False):
         print(f"   {status} {name}: {stats['time']:.1f}s")
     
     return all_successful
-
-def clean_old_bundles():
-    """Clean up old versioned bundle files"""
-    print("\n🧹 Cleaning old bundle files...")
-    
-    js_dir = Path("static/js")
-    if not js_dir.exists():
-        return
-    
-    # Keep only the most recent versioned files
-    # This is optional - you might want to keep all for rollback
-    pattern = "bundle*.min.js"
-    versioned_files = list(js_dir.glob("bundle.*.min.js"))
-    
-    # Group by bundle type
-    bundles = {}
-    for f in versioned_files:
-        name_parts = f.name.split('.')
-        if len(name_parts) >= 3:
-            bundle_type = name_parts[0] + '.' + name_parts[1]  # "bundle.core" or "bundle"
-            bundles.setdefault(bundle_type, []).append(f)
-    
-    # Keep only the 3 most recent for each bundle type
-    for bundle_type, files in bundles.items():
-        if len(files) > 3:
-            files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
-            for old_file in files[3:]:
-                old_file.unlink()
-                print(f"   Removed old: {old_file.name}")
 
 def watch_mode():
     """Run in watch mode - simplified version"""
@@ -373,27 +581,6 @@ def watch_mode():
         print("\n✅ Initial build complete. For continuous watching, use:")
         print("   npx esbuild src/static/js/app.js --bundle --watch --outfile=static/js/bundle.min.js")
         print("   npx esbuild src/static/js/app_core.js --bundle --watch --outfile=static/js/bundle.core.min.js")
-
-def quick_scan():
-    """Quick scan to estimate build time"""
-    print("🔍 Quick scan...")
-    
-    js_files = []
-    for path in Path("src/static/js").rglob("*.js"):
-        size = path.stat().st_size
-        js_files.append((size, path))
-    
-    js_files.sort(reverse=True)
-    
-    if js_files:
-        print(f"\n📊 Top 5 largest files:")
-        for size, path in js_files[:5]:
-            rel_path = path.relative_to("src/static/js")
-            size_kb = size / 1024
-            print(f"   {size_kb:6.1f}KB  {rel_path}")
-    
-    total_size = sum(size for size, _ in js_files) / (1024 * 1024)
-    print(f"\n📈 Total JS: {total_size:.1f}MB")
 
 def main():
     print("🐷 SuperPig UI Builder with Versioning")
@@ -412,17 +599,23 @@ def main():
             quick_scan()
             return
         elif sys.argv[1] in ["--clean"]:
-            clean_old_bundles()
+            clean_old_versions(keep_last=2)
             return
         elif sys.argv[1] in ["--build-login"]:
             # Build just login
-            bundle_info = build_entry_point(ENTRY_POINTS['login'], enable_versioning)
+            bundle_info = build_js_entry(ENTRY_POINTS['login'], enable_versioning)
             if bundle_info:
                 save_manifest([bundle_info], enable_versioning)
             sys.exit(0 if bundle_info else 1)
         elif sys.argv[1] in ["--build-core"]:
             # Build just core
-            bundle_info = build_entry_point(ENTRY_POINTS['core'], enable_versioning)
+            bundle_info = build_js_entry(ENTRY_POINTS['core'], enable_versioning)
+            if bundle_info:
+                save_manifest([bundle_info], enable_versioning)
+            sys.exit(0 if bundle_info else 1)
+        elif sys.argv[1] in ["--build-css"]:
+            # Build just CSS
+            bundle_info = build_css_entry(ENTRY_POINTS['main_css'], enable_versioning)
             if bundle_info:
                 save_manifest([bundle_info], enable_versioning)
             sys.exit(0 if bundle_info else 1)
@@ -432,9 +625,10 @@ def main():
             print("  --version, -v     Enable versioned outputs (hash in filename)")
             print("  --watch, -w        Build once (simplified watch)")
             print("  --scan, -s         Scan and analyze files")
-            print("  --clean            Clean old versioned bundle files")
+            print("  --clean            Clean old versioned files (keeps last 2)")
             print("  --build-login      Build only login bundle")
             print("  --build-core       Build only core bundle")
+            print("  --build-css        Build only CSS")
             print("  --help, -h         Show this help")
             print("\nEnvironment:")
             print("  ENABLE_VERSIONING=true    Enable versioned outputs")
@@ -460,15 +654,25 @@ def main():
         
         if enable_versioning:
             print("\n📦 Versioned files created:")
+            
+            # Show JS bundles
             js_dir = Path("static/js")
             for pattern in ["bundle.*.min.js"]:
                 for f in js_dir.glob(pattern):
-                    if f.name.count('.') >= 3:  # Versioned files have extra hash part
+                    if f.name.count('.') >= 3:
                         size = f.stat().st_size / 1024
                         print(f"   • {f.name} ({size:.1f}KB)")
             
+            # Show CSS bundles
+            css_dir = Path("static/css")
+            for f in css_dir.glob("main.*.min.css"):
+                if f.name.count('.') >= 3:
+                    size = f.stat().st_size / 1024
+                    print(f"   • {f.name} ({size:.1f}KB)")
+            
             print("\n💡 To use in templates:")
-            print("   Read static/js/manifest.json to get current filenames")
+            print("   Read static/js/manifest.json or static/css/manifest.json to get current filenames")
+            print("\n🧹 Cleanup: Old versions automatically removed (kept last 2)")
         else:
             print("\n💡 Tip: Use --version flag for cache-busting filenames")
         
