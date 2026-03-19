@@ -1,7 +1,7 @@
 // February 27, 2026
 // Jack Wong
 // j2718wong@gmail.com
-// UPDATED: Fixed Google Sign-In popup closing issue
+// UPDATED: Added farm owner and farm staff tabs
 
 'use strict';
 
@@ -179,6 +179,23 @@ export function PageUserSignUpOrLogin(input_settings){
     let showOptions             = null;
     let loadingAnimation        = null;
     
+    // Tab elements
+    let elemTabFarmOwner        = null;
+    let elemTabFarmStaff        = null;
+    let elemTabOwnerBtn         = null;
+    let elemTabStaffBtn         = null;
+    let elemFarmOwnerContent    = null;
+    let elemFarmStaffContent    = null;
+    
+    // Staff form elements
+    let elemFirstName           = null;
+    let elemLastName            = null;
+    let elemAccessCode          = null;
+    let elemStaffEmail          = null;
+    let elemStaffEmailInvalidShow = null;
+    let elemStaffEmailInvalidMsg = null;
+    let elemStaffBtnSignUp      = null;
+    
     // Google Sign-In configuration
     const GOOGLE_CLIENT_ID = "466858490005-irmhmqrbnmtkmah0baa27sgorivueu6g.apps.googleusercontent.com";
     const API_BASE_URL = window.location.origin;
@@ -214,67 +231,308 @@ export function PageUserSignUpOrLogin(input_settings){
     }
     
     
+    this._writeInlineStyle  = function(){
+        // write style here
+        return `
+        <style>
+            /* Tab Navigation */
+            .tab-navigation {
+                display: flex;
+                gap: 10px;
+                margin: 20px 0;
+                border-bottom: 2px solid #e0e0e0;
+                padding-bottom: 10px;
+            }
+            
+            .tab-btn {
+                flex: 1;
+                padding: 12px 20px;
+                border: none;
+                background: none;
+                font-size: 16px;
+                font-weight: 600;
+                color: #666;
+                cursor: pointer;
+                border-radius: 8px 8px 0 0;
+                transition: all 0.2s ease;
+                position: relative;
+            }
+            
+            .tab-btn:hover {
+                background-color: #f5f5f5;
+                color: #1877F0;
+            }
+            
+            .tab-btn.active {
+                color: #1877F0;
+            }
+            
+            .tab-btn.active::after {
+                content: '';
+                position: absolute;
+                bottom: -12px;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background-color: #1877F0;
+                border-radius: 3px 3px 0 0;
+            }
+            
+            /* Tab Content */
+            .tab-content {
+                display: none;
+                animation: fadeIn 0.3s ease;
+            }
+            
+            .tab-content.active {
+                display: block;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            /* Improved role description text */
+            .role-description {
+                background-color: #f8f9fa;
+                border-left: 4px solid #e83e8c;
+                padding: 8px 8px;
+                margin: 20px 0;
+                border-radius: 8px;
+                font-size: 1.2rem;
+                line-height: 1.6;
+                color: #2c3e50;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            
+            .role-description.staff{
+                border-left: 4px solid #fd7e14;
+            }
+            
+            .role-description i {
+                color: #1877F0;
+                margin-right: 8px;
+                font-size: 18px;
+            }
+            
+            .role-description strong {
+                color: #1877F0;
+                font-weight: 700;
+            }
+            
+            /* Staff form styles */
+            .staff-form {
+                margin-top: 20px;
+            }
+            
+            .name-row {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            
+            .name-field {
+                flex: 1;
+            }
+            
+            .name-field label {
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 500;
+                color: #2c3e50;
+                font-size: 14px;
+            }
+            
+            .staff-input {
+                width: 100%;
+                padding: 12px 16px;
+                border: 2px solid #e0e0e0;
+                border-radius: 12px;
+                font-size: 1.3rem;
+                transition: all 0.2s ease;
+                background-color: white;
+            }
+            
+            .staff-input:focus {
+                outline: none;
+                border-color: #1877F0;
+                box-shadow: 0 0 0 3px rgba(24, 119, 240, 0.1);
+            }
+            
+            .staff-input.error {
+                border-color: #dc3545;
+            }
+            
+            /* Access code hint */
+            .access-code-hint {
+                display: block;
+                margin-top: 6px;
+                color: #666;
+                font-size: 13px;
+                font-style: italic;
+            }
+            
+            .access-code-hint i {
+                color: #1877F0;
+            }
+            
+            /* Sign up button for staff */
+            .staff-signup-btn {
+                width: 100%;
+                padding: 14px;
+                margin-top: 10px;
+                border: none;
+                border-radius: 40px;
+                font-weight: 600;
+                font-size: 16px;
+                color: white;
+                background: linear-gradient(135deg, #1877F0 0%, #0a4da8 100%);
+                cursor: pointer;
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 12px rgba(24, 119, 240, 0.3);
+            }
+            
+            .staff-signup-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(24, 119, 240, 0.4);
+            }
+            
+            .staff-signup-btn:active {
+                transform: translateY(0);
+            }
+            
+            /* Responsive adjustments */
+            @media (max-width: 480px) {
+                .name-row {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                
+                .role-description {
+                    padding: 8px 8px;
+                    font-size: 1.2rem;
+                }
+            }
+        </style>
+        `;
+    }
+    
+    
     this.render = function(){
+        const html_style = thisObj._writeInlineStyle();
+        
         const html = `
 <div class="signup-card">
+    ${html_style}
+
     <!-- 1.) PRODUCT & LOGO: centered -->
     <div class="product-row">
         <div class="company-logo">J</div>
         <div class="product-name">SuperPig</div>
     </div>
 
-    <!-- 2.) "Sign up to continue" (centered) + email -->
+    <!-- 2.) "Sign up to continue" (centered) -->
     <h1 class="intro-text">Sign up to continue</h1>
 
-    <label class="login-label" for="email">Email</label>
-    <input type="email" id="email" class="email-input" placeholder="Enter your email" inputmode="email" autocomplete="email">
-    <div id="invalid-email-show" class="invalid-feedback" style="display:none;">
-        <i class="fas fa-triangle-exclamation"></i>
-        <span id="invalid-email-msg">Please enter a valid email address</span> 
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+        <button class="tab-btn active" id="tab-owner-btn">
+            <i class="fas fa-user-tie"></i> Farm Owner
+        </button>
+        <button class="tab-btn" id="tab-staff-btn">
+            <i class="fas fa-users"></i> Farm Staff
+        </button>
     </div>
 
-    <div class="terms-text">
-        By Signing up, I accept the <a href="/terms" id="terms-of-service">J SysDev Terms of Service</a> 
-        and acknowledge the <a href="/privacy" id="privacy-policy">Privacy Policy</a>.
-    </div>
-
-    <button class="signup-btn">Sign up</button>
-
-    <!-- 3.) "Or continue with:" + social one per line (actual icons) -->
-    <div class="or-section">
-        <span class="or-line"></span>
-        <span class="login-label" id="continue-using-social">Or continue with</span>
-        <span class="or-line"></span>
-    </div>
-
-    <div class="social-list">
-        <!-- Google -->
-        <div id="social-btn-google" class="social-btn google" role="button" tabindex="0" aria-label="Sign up with Google">
-            <i class="fab fa-google"></i>
-            <span>Google</span>
+    <!-- Farm Owner Tab Content -->
+    <div id="tab-farm-owner" class="tab-content active">
+        <div class="role-description">
+            <i class="fas fa-crown"></i>
+            <strong>Farm Owner or Manager</strong> — You own or manage a pig farm and need full access to manage operations, staff, and financial data.
         </div>
-  
-        <!-- Facebook -->
-        <div id="social-btn-facebook" class="social-btn facebook" role="button" tabindex="0" aria-label="Sign up with Facebook">
-            <i class="fab fa-facebook-f"></i>
-            <span>Facebook</span>
-        </div>
-  
-        <!-- TikTok -->
-        <!--
-        <div id="social-btn-tiktok" class="social-btn tiktok" role="button" tabindex="0" aria-label="Sign up with TikTok">
-            <i class="fab fa-tiktok"></i>
-            <span>TikTok</span>
-        </div>
-        -->
-    </div>
 
-    <!-- 4.) Already Have an Account? – ENTIRE LINE CLICKABLE (easy mobile tap) -->
-    <div class="login-redirect">
-        <a href="#" class="login-full-link">
-        Already have an account? <span>Log in</span>
-        </a>
+        <div class="terms-text" style="margin-bottom:12px;">
+            By Signing up, I accept the <a href="/terms" id="terms-of-service">J SysDev Terms of Service</a> 
+            and acknowledge the <a href="/privacy" id="privacy-policy">Privacy Policy</a>.
+        </div>
+
+
+        <!-- Social Media login will be the default login  -->
+        <div class="social-list">
+            <!-- Google -->
+            <div id="social-btn-google" class="social-btn google" role="button" tabindex="0" aria-label="Sign up with Google">
+                <i class="fab fa-google"></i>
+                <span>Google</span>
+            </div>
+            
+            
+            <!-- Facebook -->
+            
+            <div id="social-btn-facebook" class="social-btn facebook" role="button" tabindex="0" aria-label="Sign up with Facebook" style="display:none;">
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+            </div>
+            
+        </div>
+
+
+        <div class="or-section">
+            <span class="or-line"></span>
+            <span class="login-label" id="continue-using-social">Or continue using your email</span>
+            <span class="or-line"></span>
+        </div>
+
+        <label class="login-label" for="email">Email</label>
+        <input type="email" id="email" class="email-input" placeholder="Enter your email" inputmode="email" autocomplete="email">
+        <div id="invalid-email-show" class="invalid-feedback" style="display:none;">
+            <i class="fas fa-triangle-exclamation"></i>
+            <span id="invalid-email-msg">Please enter a valid email address</span> 
+        </div>
+
+        <button class="signup-btn">Sign up</button>
+
+
+        
+        <!-- 4.) Already Have an Account? – ENTIRE LINE CLICKABLE (easy mobile tap) -->
+        <div class="login-redirect">
+            <a href="#" class="login-full-link">
+            Already have an account? <span>Log in</span>
+            </a>
+        </div>
     </div>
+    
+    <!-- Farm Staff Tab Content -->
+    <div id="tab-farm-staff" class="tab-content">
+        <div class="role-description staff">
+            <i class="fas fa-user-check"></i>
+            <strong>Farm Staff</strong> — You work on a pig farm and need to join an existing farm account. Ask the account admin for the access code.
+        </div>
+        
+        <div class="staff-form">
+            <div class="name-row">
+                <div>
+                    <label for="first-name" class="login-label">First Name</label>
+                    <input type="text" id="first-name" class="staff-input" placeholder="First name" inputmode="text" autocomplete="given-name">
+                </div>
+                <div>
+                    <label for="last-name" class="login-label">Last Name</label>
+                    <input type="text" id="last-name" class="staff-input" placeholder="Last name" inputmode="text" autocomplete="family-name">
+                </div>
+            </div>
+            
+            
+            <label class="login-label" for="access-code" style="margin-top: 20px;">Access Code</label>
+            <input type="text" id="access-code" class="staff-input" placeholder="Enter your access code" inputmode="text" autocomplete="off">
+            
+            <button class="staff-signup-btn" id="staff-signup-btn">
+                Login
+            </button>
+        </div>
+        
+        
+    </div>
+    
 </div>
         `;
         elemDivContainer.innerHTML = html;
@@ -289,6 +547,7 @@ export function PageUserSignUpOrLogin(input_settings){
     
     
     this._findElements = function(){
+        // Existing elements
         elemIntroText           = elemDivContainer.querySelector('.intro-text');
         elemTermsText           = elemDivContainer.querySelector('.terms-text');
         elemTermsOfService      = elemDivContainer.querySelector('#terms-of-service');
@@ -302,6 +561,21 @@ export function PageUserSignUpOrLogin(input_settings){
         elemUseFacebook         = elemDivContainer.querySelector('#social-btn-facebook');
         elemUseTiktok           = elemDivContainer.querySelector('#social-btn-tiktok');
         elemLoginOrSignUpLink   = elemDivContainer.querySelector('.login-full-link');
+        
+        // Tab elements
+        elemTabOwnerBtn         = elemDivContainer.querySelector('#tab-owner-btn');
+        elemTabStaffBtn         = elemDivContainer.querySelector('#tab-staff-btn');
+        elemFarmOwnerContent    = elemDivContainer.querySelector('#tab-farm-owner');
+        elemFarmStaffContent    = elemDivContainer.querySelector('#tab-farm-staff');
+        
+        // Staff form elements
+        elemFirstName           = elemDivContainer.querySelector('#first-name');
+        elemLastName            = elemDivContainer.querySelector('#last-name');
+        elemStaffEmail          = elemDivContainer.querySelector('#staff-email');
+        elemStaffEmailInvalidShow = elemDivContainer.querySelector('#staff-invalid-email-show');
+        elemStaffEmailInvalidMsg = elemDivContainer.querySelector('#staff-invalid-email-msg');
+        elemAccessCode          = elemDivContainer.querySelector('#access-code');
+        elemStaffBtnSignUp      = elemDivContainer.querySelector('#staff-signup-btn');
     }
     
     
@@ -311,6 +585,7 @@ export function PageUserSignUpOrLogin(input_settings){
     
     
     this._bindEventListeners = function(){
+        // Owner tab sign up button
         elemBtnSignUpOrLogin.addEventListener('click', function(event) {
             event.preventDefault();
             event.target.style.transform = 'scale(0.98)';
@@ -318,6 +593,24 @@ export function PageUserSignUpOrLogin(input_settings){
             thisObj.onClickSignUpOrLogin();
         });
         
+        // Staff tab sign up button
+        if (elemStaffBtnSignUp) {
+            elemStaffBtnSignUp.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.target.style.transform = 'scale(0.98)';
+                setTimeout(() => event.target.style.transform = '', 120);
+                thisObj.onClickStaffSignUp();
+            });
+        }
+        
+        // Tab switching
+        elemTabOwnerBtn.addEventListener('click', function() {
+            thisObj.switchTab('owner');
+        });
+        
+        elemTabStaffBtn.addEventListener('click', function() {
+            thisObj.switchTab('staff');
+        });
         
         elemTermsOfService.addEventListener('click', function(event) {
             // Will now redirect to /terms
@@ -382,6 +675,129 @@ export function PageUserSignUpOrLogin(input_settings){
                 thisObj.onClickUseTiktok();
             });  
         }
+    }
+    
+    
+    // Tab switching method
+    this.switchTab = function(tabName) {
+        // Update tab buttons
+        if (tabName === 'owner') {
+            elemTabOwnerBtn.classList.add('active');
+            elemTabStaffBtn.classList.remove('active');
+            elemFarmOwnerContent.classList.add('active');
+            elemFarmStaffContent.classList.remove('active');
+        } else {
+            elemTabOwnerBtn.classList.remove('active');
+            elemTabStaffBtn.classList.add('active');
+            elemFarmOwnerContent.classList.remove('active');
+            elemFarmStaffContent.classList.add('active');
+        }
+    }
+    
+    
+    // Staff sign up handler
+    this.onClickStaffSignUp = async function() {
+        // Validate first name
+        
+        if (!elemFirstName.value || elemFirstName.value.trim().length === 0) {
+            elemFirstName.classList.add('error');
+            setTimeout(() => elemFirstName.classList.remove('error'), 2000);
+            this.showError('Please enter your first name');
+            return;
+        }
+        
+        // Validate last name
+        if (!elemLastName.value || elemLastName.value.trim().length === 0) {
+            elemLastName.classList.add('error');
+            setTimeout(() => elemLastName.classList.remove('error'), 2000);
+            this.showError('Please enter your last name');
+            return;
+        }
+        
+        
+        // Validate access code
+        if (!elemAccessCode.value || elemAccessCode.value.trim().length === 0) {
+            elemAccessCode.classList.add('error');
+            setTimeout(() => elemAccessCode.classList.remove('error'), 2000);
+            this.showError('Please enter your access code');
+            return;
+        }
+        
+        let firstName   = elemFirstName.value.trim();
+        let lastName    = elemLastName.value.trim();
+        let accessCode  = elemAccessCode.value.trim();
+        
+
+        
+        // Get location and viewport data
+        const viewport_width    = window.innerWidth;
+        const viewport_height   = window.innerHeight;
+        let locationData        = await getLocationWithFallback();
+        
+        
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/user/register_or_login`;
+        
+        const post_data = { 
+            access_code_hid:    accessCode,
+            
+            name_last:          lastName,
+            name_first:         firstName,
+            
+            viewport_width:     viewport_width,
+            viewport_height:    viewport_height,
+            
+            login_country_code: locationData.login_country_code,
+            login_country_name: locationData.login_country_name,
+            login_city:         locationData.login_city,
+            login_region:       locationData.login_region
+        };
+        
+        
+        // Show loading
+        loadingAnimation.show('Logging you in ...');
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+            data: JSON.stringify(post_data),
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    // Hide loading and proceed
+                    loadingAnimation.hide();
+                    
+                    // User is already verified here; save token
+                    if (response.bearer_token){
+                        console.log('\n\n\nonClickStaffSignUp; User token to be saved in storage');
+                        
+                        // Store token
+                        localStorage.setItem('access_token', response.bearer_token);
+                        const data_user_account = response.user_account;
+                        
+                        parentObj.handlePostLoginFlow(data_user_account);
+                        return;
+                    }
+                    
+                    
+                    
+                    console.log('\n\n\nonClickStaffSignUp; no bearer_token');
+                    
+                } else {
+                    thisObj.showError(response.result.msg || 'An error occurred');
+                }
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                thisObj.showError('Server error. Please try again.');
+                loadingAnimation.hide();
+            }
+        });
     }
     
     
@@ -645,19 +1061,22 @@ export function PageUserSignUpOrLogin(input_settings){
     this.show = function(options){
         showOptions = options;
         elemEmailInvalidShow.style.display = 'none';
+        
+        // Reset to owner tab by default
+        this.switchTab('owner');
     
         if (showOptions.is_login){
             elemIntroText.textContent           = 'Login';
             elemTermsText.style.display         = 'none';
             elemBtnSignUpOrLogin.textContent    = 'Continue';
-            elemContinueUsingSocial.textContent = 'Or login using:';    
+            elemContinueUsingSocial.textContent = 'Or use your email:';    
             elemLoginOrSignUpLink.innerHTML     = '<span>Create Account</span>';
         }
         else{
             elemIntroText.textContent           = 'Sign up to continue';
             elemTermsText.style.display         = 'block';
             elemBtnSignUpOrLogin.textContent    = 'Sign up';
-            elemContinueUsingSocial.textContent = 'Or continue with:';
+            elemContinueUsingSocial.textContent = 'Or use your email:';
             elemLoginOrSignUpLink.innerHTML     = 'Already have an account? <span>Log in</span>';
         }
     }
@@ -699,6 +1118,37 @@ export function PageUserSignUpOrLogin(input_settings){
             }, 5000);
         } else {
             alert(message);
+        }
+    }
+    
+    
+    this.showSuccess = function(message) {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-message';
+        successDiv.textContent = message;
+        successDiv.style.cssText = `
+            color: #155724;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            background-color: #d4edda;
+            font-size: 14px;
+            text-align: center;
+        `;
+        
+        const socialList = elemDivContainer.querySelector('.social-list');
+        if (socialList) {
+            const existingMessages = elemDivContainer.querySelectorAll('.success-message');
+            existingMessages.forEach(el => el.remove());
+            
+            socialList.parentNode.insertBefore(successDiv, socialList);
+            
+            setTimeout(() => {
+                if (successDiv.parentNode) {
+                    successDiv.remove();
+                }
+            }, 5000);
         }
     }
     
@@ -823,7 +1273,6 @@ export function PageUserSignUpOrLogin(input_settings){
         };
         thisObj.afterSuccessSocialMediaLogin(data);
     }
-    loadHomePageWithToken
     
     this.onClickUseTiktok = function(){
         console.log('TikTok login clicked - to be implemented');

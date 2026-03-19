@@ -299,7 +299,7 @@ export function PageAccessCodeList(input_settings){
             }
             
             if (access_code.used_by_user.name_first){
-                user_name_last = access_code.used_by_user.name_first;
+                user_name_first = access_code.used_by_user.name_first;
             }
 
         }
