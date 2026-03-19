@@ -204,6 +204,34 @@ export function PageEmailVerifyCode(input_settings){
             font-size: 13px;
         }
 
+        /* ✨ Subtle spam folder message */
+        .spam-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 8px 14px;
+            background: #f8f9fa;
+            border-radius: 40px;
+            border: 1px dashed #adb5bd;
+            color: #6c757d;
+            font-size: 13px;
+            font-style: italic;
+            opacity: 0.85;
+            transition: opacity 0.2s ease;
+        }
+
+        .spam-note:hover {
+            opacity: 1;
+            background: #e9ecef;
+        }
+
+        .spam-icon {
+            font-size: 15px;
+            opacity: 0.7;
+        }
+
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-6px); }
@@ -540,6 +568,12 @@ ${html_style}
             
             <div class="input-helper">
                 Copy and paste or type the 6-digit code
+            </div>
+            
+            <!-- ✨ Subtle spam folder message -->
+            <div class="spam-note">
+                <span class="spam-icon">📨</span>
+                <span class="spam-text">Can't find the email? Check your spam folder</span>
             </div>
         </div>
 
