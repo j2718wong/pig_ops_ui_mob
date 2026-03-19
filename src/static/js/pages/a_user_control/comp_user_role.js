@@ -59,7 +59,7 @@ export function ComponentUserRole(input_settings){
                 <div class="radio-option" data-option="manager">
                     <input type="radio" name="user-role" id="manager" class="radio-input" value="manager">
                     <div class="radio-text">
-                        <div class="radio-title">Farm Manager</div>
+                        <div class="radio-title">Management</div>
                         <div class="radio-description">
                             <ul>
                                 <li>Has full data access</li>
@@ -157,6 +157,8 @@ export function ComponentUserRole(input_settings){
             }
         });
         
+        
+        
         // Convert the string value to the corresponding group number
         switch (selectedValue) {
             case 'admin':
@@ -164,10 +166,12 @@ export function ComponentUserRole(input_settings){
             case 'manager':
                 return ACC_USER_GROUP.MANAGEMENT;
             case 'operations':
-                return ACC_USER_GROUP.USER_ROLE;
+                return ACC_USER_GROUP.OPERATIONS;
             default:
                 return null; // No role selected
         }
+        
+        return null;
     }
     
 }

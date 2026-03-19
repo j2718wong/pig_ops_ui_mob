@@ -10,9 +10,7 @@ import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
-        PIG_OPERATION_TYPE,
-        PIG_PROD_TYPE,
-        PROD_STATUS}            from '../../constants.js';
+        ACC_USER_GROUP}         from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -214,6 +212,8 @@ export function PageAccessCodeList(input_settings){
         
         const callback_success = function(data){
             dataAccessCodeList = data;
+            console.log('data');console.log(data);
+            
             thisObj.renderTable(dataAccessCodeList);
         };
 
@@ -288,7 +288,7 @@ export function PageAccessCodeList(input_settings){
     this.getHtmlTableRow = function(cur_entry){
         const access_code   = cur_entry.access_code
         const code          = access_code.hid;
-        const user_group    = access_code.user_group.name;
+        let user_group    = '';
         
         let user_name_last  = '';
         let user_name_first  = '';
@@ -305,6 +305,26 @@ export function PageAccessCodeList(input_settings){
         }
         
         const used_by       = `${user_name_first} ${user_name_last}`;
+        
+        
+        switch (cur_entry.access_code.user_group.number) {
+            case ACC_USER_GROUP.ADMIN:
+                user_group= 'Admin';
+                break;
+                
+            case ACC_USER_GROUP.MANAGEMENT:
+                user_group= 'Management';
+                break;
+                
+            case ACC_USER_GROUP.OPERATIONS:
+                user_group= 'Operations';
+                break;
+
+                
+            default:
+                console.log('Unknown group_num:', group_num);
+        }
+        
         
         
         const html = `
@@ -325,7 +345,6 @@ export function PageAccessCodeList(input_settings){
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
         
-        let pid = cur_entry.production.pig_production.farm_prod_id;
         
          
 

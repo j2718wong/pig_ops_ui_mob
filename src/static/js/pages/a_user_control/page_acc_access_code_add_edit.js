@@ -280,66 +280,15 @@ export function PageAccessCodeAddEdit(input_settings){
         let input_elem      = null;
         let validation      = 0;
         
+        const user_group_num = componentUserRole.getUserRole();
         
-        let input_date_dead         = elemUiDateDead.getValue();
-        let input_prod_hid          = elemUiCurrentProduction.getValue();
-        let input_num_dead          = componentNumDead.getValue();
-        let input_dead_type_hid     = componentDeadType.getValue();
-        let input_notes             = elemUiNotes.getValue().trim();
+        console.log('user_group_num = ' + user_group_num);
         
-        
-        
-        input_elem          = elemUiDateDead.getElemText();
-        
-        // Convert date to YYYY-MM-DD format
-        const dt_dead       = new Date(input_date_dead);
-        if (isNaN(dt_dead.getTime())){
-            validation      = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
+        if (user_group_num){}
+        else{
+            elemServerErrorMsg.textContent = 'Must select a user role';
+            return;
         }
-        
-        const dt_dead_s   = dt_dead.toLocaleDateString('en-CA');
-        validation          = 0
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        // Validate pig_prod
-        input_elem          = elemUiCurrentProduction.getElemSelect;
-        if (input_prod_hid == '0' || input_prod_hid == '-1'){
-            validation      = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
-        
-        
-        
-        // Validate number counts
-        let number_dead = 0;
-        
-        input_elem          = componentNumDead.getElemText();
-        
-        try{
-            number_dead = parseInt(input_num_dead)
-        }catch (error){
-            componentNumDead.setTextInvalid(INVALID_MSG_NUM_INPUT);
-            validation = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
-        
-        
-        
-        // Validate pig_prod
-        input_elem          = componentDeadType.getElemSelect;
-        if (input_dead_type_hid == '0' || input_dead_type_hid == '-1'){
-            validation      = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
-        
-        
         
         // Final check before sending request
         if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
@@ -356,33 +305,18 @@ export function PageAccessCodeAddEdit(input_settings){
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'pig_prod_hid':     input_prod_hid,
-            'pig_dead_type_hid':input_dead_type_hid,
-            
-            'date_dead':        dt_dead_s,
-            'num_pigs_dead':    input_num_dead
+            'group_num':        user_group_num
         };
         
-        if (input_notes.length > 0){
-            post_data.notes = input_notes;
-        }
         
-        
-        
-        
-        if (showOptions.is_add == true){}
-        else {
-            
-        }
-
         
         let url;
         
         if (showOptions.is_add == true){
-            url = `${base_url}/prod_pig_dead/add`;
+            url = `${base_url}/access_code/add`;
         }
         else{
-            url = `${base_url}/prod_pig_dead/update`;
+            url = `${base_url}/access_code/update`;
         }
         
         
@@ -412,7 +346,7 @@ export function PageAccessCodeAddEdit(input_settings){
                         showOptions.go_back_page);
                     
                     navigation.showThisPage(showOptions.go_back_page);
-                    navigation.pagePigDeadList.show();
+                    navigation.pageAccessCodeList.show();
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(
