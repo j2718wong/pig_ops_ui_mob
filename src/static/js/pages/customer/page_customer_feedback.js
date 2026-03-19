@@ -509,7 +509,7 @@ export function PageCustomerFeedback(input_settings){
 
         <div class="farm-story">
             <p>
-                <span class="farm-highlight">🐖 Yes we also have pig farm.</span> Just a small one. 
+                <span class="farm-highlight">🐖 Yes we also have a pig farm.</span> Just a small one. 
                 Just like you, we also faced same problems dealing with numbers and data 
                 generated in pig farming and how to improve yields. 
             </p>

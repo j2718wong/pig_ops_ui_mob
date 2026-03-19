@@ -95,6 +95,7 @@ import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_e
 
 import {PageUserList}               from '../a_user_control/page_user_list.js';
 import {PageAccessCodeList}         from '../a_user_control/page_acc_access_code_list.js';
+import {PageAccessCodeAddEdit}      from '../a_user_control/page_acc_access_code_add_edit.js';
 import {PageJoinAccReqList}         from '../a_user_control/page_join_acc_req_list.js';
 import {PageJoinAccReqApprove}      from '../a_user_control/page_join_acc_req_approve.js';
 
@@ -940,6 +941,12 @@ export function Navigation(){
     });
     
     
+    this.pageAccessCodeAddEdit  = new PageAccessCodeAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     elemIdContAccessCodeAddEdit,
+        uniqueKey:              'access-code-add-edit'
+    });
+    
     
     this.pageJoinAccReqList     = new PageJoinAccReqList({
         navigation:             this,
@@ -1136,6 +1143,7 @@ export function Navigation(){
         
         this.pageUserList.init();
         this.pageAccessCodeList.init();
+        this.pageAccessCodeAddEdit.init();
         this.pageJoinAccReqList.init();
         this.pageJoinAccReqApprove.init();
     }
@@ -1665,7 +1673,7 @@ export function Navigation(){
                 return elemPageContAccessCodeList;
             }
             
-            case PAGE_ID.ACCESS_CODE_LIST: {
+            case PAGE_ID.ACCESS_CODE_ADD_EDIT: {
                 return elemPageContAccessCodeAddEdit;
             }
 

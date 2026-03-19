@@ -111,14 +111,24 @@ export function PageAccessCodeList(input_settings){
 
 <div class="mobile-container">
     ${html_nav}
-    
+
     <!-- Mobile Info Box -->
-    <!--
-    <div class="mobile-info-box">
+    <div class="mobile-info-box" style="margin-bottom:10px;">
         <div class="info-text" id="${elemIdPageInfo}">
+            This is a list of access codes you can give to anyone you wish to share your farm data.
+            This can be used by one person only. When access code code is used,
+            the User will be automatically added to your Account User list.
+            You can revoke any code anytime to disable access.
+            Just share this website and give the access code. 
+            
+            
+            <p style="text-align: center; font-size: 1.1rem; font-weight: 700; margin-top: 1rem; word-break: break-word;">
+                superpig.jsysdev.com
+            </p>
+            
         </div>
     </div>
-    -->
+        
     
     ${html_table}
 
@@ -494,7 +504,7 @@ export function PageAccessCodeList(input_settings){
     
     this.onClickAddEntry = function(){
         // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
+        const next_page = navigation.getPageContainer(PAGE_ID.ACCESS_CODE_ADD_EDIT);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -504,7 +514,7 @@ export function PageAccessCodeList(input_settings){
         
         
         // Show Page
-        const go_back_page_id = PAGE_ID.PIG_DEAD_LIST;
+        const go_back_page_id = PAGE_ID.ACCESS_CODE_LIST;
         const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         const options ={
@@ -512,7 +522,7 @@ export function PageAccessCodeList(input_settings){
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         }
-        navigation.pagePigDeadAddEdit.show(options);
+        navigation.pageAccessCodeAddEdit.show(options);
     }
     
     

@@ -99,6 +99,51 @@ export function PageViewBasic(){
             }
         }
     }
+    
+    
+    this.setClickListenersOnCloseAndCancelButtons = function(options){
+        // Update Close and cancel button on click
+        
+        const TAG           = options.TAG;
+        const elem_close    = options.close;
+        const elem_cancel   = options.cancel;
+        const go_back_page  = options.go_back_page;
+        
+        if (elem_close){
+            elem_close.onclick = function() {
+                // Remove NavHistoryHead if same with go_back_page
+                thisObj.navigation.managerNavHistory.removeFromNavHistoryHead(
+                    go_back_page);
+                
+                
+                // This will not redraw the previous page; only show container
+                thisObj.navigation.showThisPage(go_back_page);
+                
+                if (APPLICATION.DEBUG_NAV_HISTORY){
+                    thisObj.debugNavHistory(TAG);
+                }
+            };
+        }
+        
+        if (elem_cancel){
+            elem_cancel.onclick = function() {
+                // Remove NavHistoryHead if same with go_back_page
+                thisObj.navigation.managerNavHistory.removeFromNavHistoryHead(
+                    go_back_page);
+                
+                
+                // This will not redraw the previous page; only show container
+                thisObj.navigation.showThisPage(go_back_page);
+
+                
+                if (APPLICATION.DEBUG_NAV_HISTORY){
+                    thisObj.debugNavHistory(TAG);
+                }
+
+            };
+        }
+    }
+    
 }
     
     

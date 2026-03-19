@@ -37,13 +37,13 @@ export function UiInputDatePicker(input_settings){
     
     const elemIdText            = `${settings.uniqueKey}-text`;
     const elemIdTextInv         = `${settings.uniqueKey}-text-inv`;
-	const elemIdTextHelp        = `${settings.uniqueKey}-text-help`;
-	
+    const elemIdTextHelp        = `${settings.uniqueKey}-text-help`;
     
-	let elemUiShow              = null;
+    
+    let elemUiShow              = null;
     let elemText                = null;
     let elemTextInv             = null;
-	let elemTextHelp            = null;
+    let elemTextHelp            = null;
     
     
     this.getHtml = function(){
@@ -99,10 +99,10 @@ export function UiInputDatePicker(input_settings){
     
     
     this._findElements = function(){
-        elemUiShow      		= document.getElementById(elemIdUiShow);
+        elemUiShow              = document.getElementById(elemIdUiShow);
         elemText                = document.getElementById(elemIdText);
         elemTextInv             = document.getElementById(elemIdTextInv);
-		elemTextHelp            = document.getElementById(elemIdTextHelp);
+        elemTextHelp            = document.getElementById(elemIdTextHelp);
         
         
         thisObj.elemUiShow      = elemUiShow;
