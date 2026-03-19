@@ -207,6 +207,7 @@ export function PageEmailVerifyCode(input_settings){
         /* ✨ Subtle spam folder message */
         .spam-note {
             display: flex;
+            text-align:center;
             align-items: center;
             justify-content: center;
             gap: 8px;
@@ -215,7 +216,7 @@ export function PageEmailVerifyCode(input_settings){
             background: #f8f9fa;
             border-radius: 40px;
             border: 1px dashed #adb5bd;
-            color: #6c757d;
+            color: var(--text-dark);
             font-size: 13px;
             font-style: italic;
             opacity: 0.85;
@@ -572,8 +573,7 @@ ${html_style}
             
             <!-- ✨ Subtle spam folder message -->
             <div class="spam-note">
-                <span class="spam-icon">📨</span>
-                <span class="spam-text">Can't find the email? Check your spam folder</span>
+                <span class="spam-text">Can't find the email? Check your spam folder — sometimes it hides there!</span>
             </div>
         </div>
 
