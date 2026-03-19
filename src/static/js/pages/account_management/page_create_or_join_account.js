@@ -40,7 +40,7 @@ export function PageCreateOrJoinAccount(input_settings){
 
     
     let elemJoinAccount         = null;
-    let elemAccountCode         = null;
+    let elemAccessCode         = null;
     let elemInvalidAccCodeShow  = null;
     let elemInvalidAccCodeMsg   = null;
     
@@ -103,7 +103,7 @@ export function PageCreateOrJoinAccount(input_settings){
             </div>
         </div>
         
-        <div id="create-account" style="font-size:1.1rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
+        <div id="create-account" style="font-size:1.3rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
             👆 Click to Continue
         </div>
     </div>
@@ -112,18 +112,18 @@ export function PageCreateOrJoinAccount(input_settings){
     <div class="option-card">
         <div class="option-title">
             🧑‍🌾 Join a Pig Farm Account
-            <span class="join-badge">Needs Approval</span>
+            <span class="join-badge">Needs Access Code</span>
         </div>
         <div class="option-sub">You work as staff on a pig farm. Or you want to join a Farm Account.</div>
         <ul class="feature-list">
-            <li>The PigFarm account admins need to approve your access.</li>
+            <li>The PigFarm account admins need to provide you a code.</li>
             <li>You may have limited access to the PigFarm account data based on approved role.</li>
         </ul>
         
         
         <div class="code-area">
             <div class="code-label">
-                Enter Account Code
+                Enter Access Code
             </div>
             <div class="input-wrapper">
                 <input id="account-code" type="text" maxlength="12" autocomplete="off">
@@ -133,7 +133,7 @@ export function PageCreateOrJoinAccount(input_settings){
                 <span id="invalid-account-code-msg">Please enter valid code.</span> 
             </div>
             
-            <p style="font-size:0.75rem; margin-top:0.7rem; color:var(--dark-gray);">
+            <p style="font-size:1.1rem; margin-top:0.7rem; color:var(--dark-gray);">
                 <span style="color:var(--icon-indigo);">🔐</span> Ask your farm admins for the code.
             </p>
         </div>
@@ -141,7 +141,7 @@ export function PageCreateOrJoinAccount(input_settings){
         
         
         <!-- subtle extra badge recycled -->
-        <div id="join-account" style="font-size:0.85rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
+        <div id="join-account" style="font-size:1.3rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
             👆 Click to Continue
         </div>
     </div>
@@ -174,7 +174,7 @@ export function PageCreateOrJoinAccount(input_settings){
         
         
         elemJoinAccount         = elemDivContainer.querySelector('#join-account');
-        elemAccountCode         = elemDivContainer.querySelector('#account-code');
+        elemAccessCode         = elemDivContainer.querySelector('#account-code');
         elemInvalidAccCodeShow  = elemDivContainer.querySelector('#invalid-account-code-show');
         elemInvalidAccCodeMsg   = elemDivContainer.querySelector('#invalid-account-code-msg');
     }
@@ -398,9 +398,9 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     this.onClickJoinAccount = function(){
-        let input_acc_code     = elemAccountCode.value;
+        let input_access_code  = elemAccessCode.value;
         
-        if (input_acc_code.length == 0){
+        if (input_access_code.length == 0){
             elemInvalidAccCodeShow.style.display = 'block';
             return;
         }
@@ -411,14 +411,9 @@ export function PageCreateOrJoinAccount(input_settings){
 
         const bearer_token  = localStorage.getItem('access_token');
         
-        // send post request
-        const post_data = {
-            'ahid':         input_acc_code
-        };
         
-      
         
-        let url = `${base_url}/user_request/join_account?ahid=${input_acc_code}`;
+        let url = `${base_url}/user_request/join_account?code=${input_access_code}`;
         
         
         $.ajax({
@@ -441,30 +436,25 @@ export function PageCreateOrJoinAccount(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     
-                    const goto_page_id   = PAGE_ID.REQ_JOIN_ACC_SENT;
-                    const page_container = parentObj.getPageContainer(goto_page_id);
+                    // User is already verified here; save token
+                    if (response.bearer_token){
+                        console.log('\n\n\nonClickJoinAccount; User token to be saved in storage');
                         
-                    parentObj.showThisPage(page_container);
-                    parentObj.pageReqJoinAccountSent.show(curDataUserAccount);
+                        // Store token
+                        localStorage.setItem('access_token', response.bearer_token);
+                        const data_user_account = response.user_account;
+                        
+                        parentObj.handlePostLoginFlow(data_user_account);
+                        return;
+                    }
 
                 }
                 else{
                     let error_code = response.result.code;
                     let error_desc = response.result.desc;
                     
-                    let html = '';
+                    let html = `<span>Sorry Invalid Access Code</span>`;
                     
-                    if (error_code == 'ERROR_USER_REQUEST_INVALID_ACCOUNT_HASHID'){
-                        html = `<span>Sorry Invalid Account Code</span>`;
-                    }
-                    
-                    /*
-                    let html = `<span>${error_code}</span>`;
-                    
-                    if (error_desc && error_desc.length > 0){
-                        html += `<br><span>${error_desc}</span>`;
-                    }
-                    */
 
                     elemInvalidAccCodeShow.style.display = 'block';
                     elemInvalidAccCodeShow.innerHTML = html;  
