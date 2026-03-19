@@ -397,10 +397,11 @@ export function ManagerNavLinks(_navigation) {
             navigation._onClickNavAccessCodes(false);
         });       
 
+        /*
         elemDesktopNavAdmin3.addEventListener('click', function() {
             navigation._onClickNavUsersRequest(false);
         });
-
+        */
 
 
         elemMobileNavProduction1.addEventListener('click', function() {
@@ -537,10 +538,11 @@ export function ManagerNavLinks(_navigation) {
             navigation._onClickNavAccessCodes(true);
         }); 
         
-        
+        /*
         elemMobileNavAdmin3.addEventListener('click', function() {
             navigation._onClickNavUsersRequest(true);
-        });        
+        });
+        */        
     }
     
     

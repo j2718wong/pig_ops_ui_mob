@@ -143,12 +143,12 @@ export function PageUserList(input_settings){
     
     this._processAfterHtmlRenderThis = function(){
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavUsersRequest();
+            navigation._onClickNavAccessCodes();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation._onClickNavUsersRequest();
+            navigation._onClickNavAccessCodes();
         };
         
         

@@ -96,8 +96,6 @@ import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_e
 import {PageUserList}               from '../a_user_control/page_user_list.js';
 import {PageAccessCodeList}         from '../a_user_control/page_acc_access_code_list.js';
 import {PageAccessCodeAddEdit}      from '../a_user_control/page_acc_access_code_add_edit.js';
-import {PageJoinAccReqList}         from '../a_user_control/page_join_acc_req_list.js';
-import {PageJoinAccReqApprove}      from '../a_user_control/page_join_acc_req_approve.js';
 
 
 function UserControl(_navigation) {
@@ -185,19 +183,21 @@ function UserControl(_navigation) {
     this.setDataUserAccount = function(data){
         this.dataUserAccount= data;
         
-        console.log('\n\nnavigation.setDataUserAccount');
-        console.log(data);
-
+        function capitalizeFirst(str) {
+            if (!str) return str;
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+        
         const user          = this.dataUserAccount.user.user;
         const user_pig_farms= this.dataUserAccount.user.pig_farms; 
         
         userCurrentFarmHid  = user_pig_farms[0]; // default to first pig farm
 
         
-        const user_initials = user.name_first.substring(0,1) + 
-                            user.name_last.substring(0,1);
+        const user_initials = (user.name_first.substring(0,1) + 
+                            user.name_last.substring(0,1)).toUpperCase();
                             
-        const user_fullname = user.name_first + ' ' + user.name_last;
+        const user_fullname = capitalizeFirst(user.name_first) + ' ' + capitalizeFirst(user.name_last);
         
         this.userInitials   = user_initials;
         
@@ -470,9 +470,6 @@ export function Navigation(){
     const elemIdContAccessCodeAddEdit  = 'container-access-code-add-edit';
     
     
-    const elemIdContJoinAccReqList      = 'container-join-acc-req-list';
-    const elemIdContJoinAccReqApprove   = 'container-join-acc-req-approve';
-    
     
     const elemPageLoading               = document.getElementById('loading-page');
     const elemPageMainContent           = document.getElementById('main-content');
@@ -560,9 +557,6 @@ export function Navigation(){
     
     let elemPageContAccessCodeList     = null;
     let elemPageContAccessCodeAddEdit  = null;
-    
-    let elemPageContJoinAccReqList      = null;
-    let elemPageContJoinAccReqApprove   = null;
     
     
     let CONTAINER_GROUP_PRODUCTION      = null;
@@ -948,19 +942,6 @@ export function Navigation(){
     });
     
     
-    this.pageJoinAccReqList     = new PageJoinAccReqList({
-        navigation:             this,
-        elemIdDivContainer:     elemIdContJoinAccReqList,
-        uniqueKey:              'user-request-list'
-    });
-    
-    
-    this.pageJoinAccReqApprove  = new PageJoinAccReqApprove({
-        navigation:             this,
-        elemIdDivContainer:     elemIdContJoinAccReqApprove,
-        uniqueKey:              'user-request-approve'
-    });
-    
     
     
     
@@ -1144,8 +1125,7 @@ export function Navigation(){
         this.pageUserList.init();
         this.pageAccessCodeList.init();
         this.pageAccessCodeAddEdit.init();
-        this.pageJoinAccReqList.init();
-        this.pageJoinAccReqApprove.init();
+        
     }
     
     
@@ -1242,11 +1222,9 @@ export function Navigation(){
     
         elemPageContUserList            = document.getElementById(elemIdContUserList);
         
-        elemPageContAccessCodeList     = document.getElementById(elemIdContAccessCodeList);
-        elemPageContAccessCodeAddEdit  = document.getElementById(elemIdContAccessCodeAddEdit);
+        elemPageContAccessCodeList      = document.getElementById(elemIdContAccessCodeList);
+        elemPageContAccessCodeAddEdit   = document.getElementById(elemIdContAccessCodeAddEdit);
         
-        elemPageContJoinAccReqList      = document.getElementById(elemIdContJoinAccReqList);
-        elemPageContJoinAccReqApprove   = document.getElementById(elemIdContJoinAccReqApprove);
         
         
         CONTAINER_GROUP_PRODUCTION      = [
@@ -1288,8 +1266,7 @@ export function Navigation(){
         
         CONTAINER_GROUP_ADMIN           = [
             elemPageContUserList,
-            elemPageContAccessCodeList,
-            elemPageContJoinAccReqList
+            elemPageContAccessCodeList
         ];
         
     }
@@ -1680,16 +1657,6 @@ export function Navigation(){
                
             
             
-            case PAGE_ID.JOIN_ACC_REQ_LIST: {
-                return elemPageContJoinAccReqList;
-            }
-            
-            case PAGE_ID.JOIN_ACC_REQ_APPROVE:{
-                return elemPageContJoinAccReqApprove;
-            }
-            
-            
-            
             default:{
                 return elemPageContHomeDashBoard;
             }
@@ -2049,12 +2016,6 @@ export function Navigation(){
     }
         
         
-    this._onClickNavUsersRequest = function(is_mobile){
-        thisObj.showThisPage(elemPageContJoinAccReqList);
-        thisObj.pageJoinAccReqList.beforeShow();
-    }
-        
-        
         
     this.onClickProdGestatingAdd = function(){
         thisObj.showThisPage(elemPageContProdGestaAdd);
@@ -2317,8 +2278,6 @@ export function Navigation(){
             
             case elemPageContAccessCodeList         :{return "elemPageContAccessCodeList    ";}
             case elemPageContAccessCodeAddEdit      :{return "elemPageContAccessCodeAddEdit ";}
-            case elemPageContJoinAccReqList         :{return "elemPageContJoinAccReqList    ";}
-            case elemPageContJoinAccReqApprove      :{return "elemPageContJoinAccReqApprove ";}
             
             default:{return null;}
         }

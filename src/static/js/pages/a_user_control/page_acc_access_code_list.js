@@ -124,6 +124,11 @@ export function PageAccessCodeList(input_settings){
                 superpig.jsysdev.com
             </p>
             
+            <div class="warning-box">
+                Most likely you will share this link in Facebook Messenger App.
+                For convenience and not to disrupt communications with your farm staff, 
+                you can open the link in external browser. 
+            </div>
         </div>
     </div>
         
@@ -162,8 +167,8 @@ export function PageAccessCodeList(input_settings){
         };
         
           
-        componentNavLeftRight._onClickNavUsersRequest = function(){
-            navigation._onClickNavFeedBalance();
+        componentNavLeftRight.callbackNavRight = function(){
+            navigation._onClickNavUsers();
         };
         
         
@@ -212,8 +217,6 @@ export function PageAccessCodeList(input_settings){
         
         const callback_success = function(data){
             dataAccessCodeList = data;
-            console.log('data');console.log(data);
-            
             thisObj.renderTable(dataAccessCodeList);
         };
 
