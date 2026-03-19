@@ -114,7 +114,7 @@ export function PageAccessCodeList(input_settings){
     <div class="mobile-info-box" style="margin-bottom:10px;">
         <div class="info-text" id="${elemIdPageInfo}">
             This is a list of access codes you can give to anyone you wish to share your farm data.
-            This can be used by one person only. When access code code is used,
+            This can be used by one person only. When an access code code is used,
             the User will be automatically added to your Account User list.
             You can revoke any code anytime to disable access.
             Just share this website and give the access code. 
