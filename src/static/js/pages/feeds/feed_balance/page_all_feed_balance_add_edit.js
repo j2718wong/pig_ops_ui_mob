@@ -629,7 +629,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     }
     
     
-    this.beforeShow = function(options, data_feed_balance){
+    this.show = function(options, data_feed_balance){
         thisObj._resetForm();
         
         showOptions = options;
@@ -1526,6 +1526,12 @@ export function PageAllFeedBalanceAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    navigation.managerNavHistory.removeFromNavHistoryHead(
+                        showOptions.go_back_page);
+                    
+                    navigation.showThisPage(showOptions.go_back_page);
+                    navigation.pageAllFeedBalanceList.show();
+                
                 }   
                 else{
                     navigation.serverError.receivedErrorMessage(

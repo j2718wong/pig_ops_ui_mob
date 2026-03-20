@@ -414,7 +414,7 @@ export function PageAllFeedBalanceList(input_settings){
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         };
-        navigation.pageAllFeedBalanceAddEdit.beforeShow(options);
+        navigation.pageAllFeedBalanceAddEdit.show(options);
         
     }
     
