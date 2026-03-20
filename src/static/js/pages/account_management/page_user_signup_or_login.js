@@ -197,9 +197,16 @@ export function PageUserSignUpOrLogin(input_settings){
     let elemStaffBtnSignUp      = null;
     
     // Google Sign-In configuration
-    const GOOGLE_CLIENT_ID = "466858490005-irmhmqrbnmtkmah0baa27sgorivueu6g.apps.googleusercontent.com";
+    // This is the first Google Client ID used; working but the problem is cannot
+    // create token for sending email using port 443
+    // This project is from jsysdev.contact@gmail.com, SuperPig project 
+    //const GOOGLE_CLIENT_ID = "466858490005-irmhmqrbnmtkmah0baa27sgorivueu6g.apps.googleusercontent.com";
+    
+    // 2026-03-20: New project created from jsysdev.contact@gmail.com, SuperPig2 project
+    const GOOGLE_CLIENT_ID = "528524387884-cgehid63a3k9813421ajctmf280p2o7c.apps.googleusercontent.com"
+    
     const API_BASE_URL = window.location.origin;
-    const REDIRECT_URI = window.location.origin + '/auth/google/callback'; // You'll need to create this endpoint
+    const REDIRECT_URI = window.location.origin + '/auth/google/callback'; 
     
     
     
