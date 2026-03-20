@@ -300,7 +300,8 @@ export function PageAddFarm(input_settings){
     this.show = function(data_user_account){
         dataUserAccount     = data_user_account;
         
-        this.populateForm();
+        thisObj.populateForm();
+        
         
         // Get country list from parent
         countryList = parentObj.dataAddressCountryList;
@@ -574,6 +575,7 @@ export function PageAddFarm(input_settings){
             post_data.new_country_name = selectedCountryName;
         }
         
+
 
         let url = `${base_url}/pig_farm/add`;
 

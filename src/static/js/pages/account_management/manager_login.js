@@ -152,7 +152,53 @@ export function ManagerLogin(){
         // Check if there is a access_token stored;
         if (bearer_token){
             console.log('\n\n\nmanagerLogin; has bearer token');
-        
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const state     = urlParams.get('state');
+            
+            if (state) {
+            
+                switch (state){
+                    case 'NF':{
+                        // This comes now from /signup?state=NF
+                        
+                        
+                        // No Farm state; but the user has bearer token;
+                        
+                        // This is the case for:
+                        //
+                        // 1.) The user creates an account, but did not 
+                        //  finish creating a pig_farm. And the user refreshes the page.
+                        //  So the User at this time has an  user_id and account_id
+                        //  which are all valid. At this point also the user 
+                        // access_token is already saved in storage.
+                        // The user in this case is cleary a farm owner not staff
+                        // since was able to create account.
+                        //
+                        // In this case the user should go back to the registration 
+                        // page where to input first pig farm. 
+                        
+                        const callback_success = function(data_user_account){
+                            const goto_page_id   = PAGE_ID.ADD_FARM;
+                            const page_container = thisObj.getPageContainer(goto_page_id);
+                                
+                            thisObj.showThisPage(page_container);
+                            thisObj.pageAddFarm.show(data_user_account);
+                            
+                            return;
+                        }
+                        
+                        
+                        thisObj.requestUserAccount(callback_success);
+                        
+                        
+                        break;
+                    }
+                }
+                
+                return;
+            }
+            
             
             const callback_failure = function(){
                 // Clear all items from localStorage
@@ -213,9 +259,11 @@ export function ManagerLogin(){
             
         this.showThisPage(page_container);
         this.pageUserSignUpOrLogin.show(options);
-      
         
     }
+    
+    
+    
     
     
     this.getPageContainer = function(page_id){
@@ -377,6 +425,54 @@ export function ManagerLogin(){
                     callback_failure();
                 }
 
+            }
+        });
+    }
+    
+    
+    this.requestUserAccount = function(callback_success, elem_show_error){
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/user_account`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    if (callback_success){
+                        callback_success(response.user_account);
+                    }
+                }
+                else {
+                   
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                
             }
         });
     }

@@ -1111,6 +1111,7 @@ export function Navigation(){
                     }
                     
                     
+                    // The user has no account or removed from account;
                     const user_account = response.data.user_account;
                     if (user_account.account == null){
                         // Clear all items from localStorage
@@ -1122,7 +1123,40 @@ export function Navigation(){
                         return;
                     }
                     
-                
+                    
+                    
+                    // The data.pig_farm_account is normally  not null.
+                    // This can be null from these cases.
+                    // 
+                    // 1.) The user creates an account, but did not 
+                    //  finish creating a pig_farm. And the user refreshes the page.
+                    //  So the User at this time has an  user_id and account_id
+                    //  which are all valid. At this point also the user 
+                    // access_token is already saved in storage.
+                    // The user in this case is cleary a farm owner not staff
+                    // since was able to create account.
+                    //
+                    // In this case the user should go back to the registration 
+                    // page where to input first pig farm. 
+                    //  
+                    // 2.) The user was previously assigned to a pig_farm now, 
+                    //  but that assignment is revoke or deleted? There is no  
+                    //  business rule for this case. The proper way to remove 
+                    //  a user from account is
+                    //
+                    //      - remove user from pig_farm user list 
+                    //          (the user account will be set to null)
+                    //          The previous assignment of pig_farm to user is not deleted.
+                    //
+                    //      - revoke the access_code of the user (
+                    //          the user account will be set to null
+                    //          and the access token becomes invalid); 
+                    const pig_farm_account = response.data.pig_farm_account;
+                    
+                    if (pig_farm_account == null){
+                        window.location.href = "/login?state=NF";
+                        return;
+                    }
                     
                     
                     thisObj.initComponents();
