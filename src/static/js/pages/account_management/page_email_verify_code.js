@@ -536,7 +536,7 @@ ${html_style}
 <div class="code-verify-container">
     <div class="verify-card">
         <!-- Logo and Product Section at the top with J logo -->
-        <div class="product-row">
+        <div class="product-row" onclick="window.location.href='/';">
             <div class="company-logo">J</div>
             <div class="product-name">SuperPig</div>
         </div>

@@ -65,7 +65,7 @@ export function PageCreateOrJoinAccount(input_settings){
         
 <div class="signup-card">
     <!-- 1.) PRODUCT & LOGO: centered -->
-    <div class="product-row">
+    <div class="product-row" onclick="window.location.href='/';">
         <div class="company-logo">J</div>
         <div class="product-name">SuperPig</div>
     </div>

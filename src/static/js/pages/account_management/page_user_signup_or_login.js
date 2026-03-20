@@ -246,7 +246,7 @@ export function PageUserSignUpOrLogin(input_settings){
             .tab-navigation {
                 display: flex;
                 gap: 10px;
-                margin: 20px 0;
+                margin: 0;
                 border-bottom: 2px solid #e0e0e0;
                 padding-bottom: 10px;
             }
@@ -434,7 +434,7 @@ export function PageUserSignUpOrLogin(input_settings){
     ${html_style}
 
     <!-- 1.) PRODUCT & LOGO: centered -->
-    <div class="product-row">
+    <div class="product-row" onclick="window.location.href='/';">
         <div class="company-logo">J</div>
         <div class="product-name">SuperPig</div>
     </div>
