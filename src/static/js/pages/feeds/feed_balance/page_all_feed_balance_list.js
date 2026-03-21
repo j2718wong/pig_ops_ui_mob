@@ -441,7 +441,7 @@ export function PageAllFeedBalanceList(input_settings){
                 callback_after_edit:    thisObj.onSuccessEditEntry,
                 go_back_page:           go_back_page
             }
-            navigation.pageAllFeedBalanceAddEdit.beforeShow(options, row_entry);
+            navigation.pageAllFeedBalanceAddEdit.show(options, row_entry);
             
             
             const goto_page_id   = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;

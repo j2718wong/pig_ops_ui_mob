@@ -80,6 +80,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     let elemIdTableBodyOne      = null;
     let elemIdTableBodyTwo      = null;
     
+    let elemIdTableBodyCombined = null;
+    
     let elemIdChkIncGestaShow   = null;
     let elemIdChkIncGestating   = null;
     
@@ -97,6 +99,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     
     let elemTableBodyOne        = null;
     let elemTableBodyTwo        = null;
+    
+    let elemTableBodyCombined   = null;
     
     let elemChkIncGestaShow     = null;
     let elemChkIncGestating     = null;
@@ -155,6 +159,9 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         
         elemIdTableBodyOne      = `${settings.uniqueKey}-tbody1`;
         elemIdTableBodyTwo      = `${settings.uniqueKey}-tbody2`;
+        
+        elemIdTableBodyCombined = `${elemIdTableBodyOne}-combined`;
+                
         
         elemIdChkShowBoarName   = `${settings.uniqueKey}-show-boar-name`;
         
@@ -557,6 +564,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         elemTableBodyOne        = elemDivContainer.querySelector('#'+elemIdTableBodyOne);
         elemTableBodyTwo        = elemDivContainer.querySelector('#'+elemIdTableBodyTwo);
         
+        elemTableBodyCombined   = elemDivContainer.querySelector('#'+elemIdTableBodyCombined);
+        
         elemChkIncGestaShow     = elemDivContainer.querySelector('#'+elemIdChkIncGestaShow);
         elemChkIncGestating     = elemDivContainer.querySelector('#'+elemIdChkIncGestating);
         
@@ -637,8 +646,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         elemTableBodyOne.innerHTML = '';
         elemTableBodyTwo.innerHTML = '';
         
-        const spreadsheetTbody = elemDivContainer.querySelector(`#${elemIdTableBodyOne}-combined`);
-        if (spreadsheetTbody) spreadsheetTbody.innerHTML = '';
+        if (elemTableBodyCombined) elemTableBodyCombined.innerHTML = '';
+        
         
         let html;
         if (showOptions.is_add){
@@ -792,74 +801,90 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     
     
     this.populateFeedInputTables = function(){
-        
-        const feed_balance = curDataFeedBalance.feed_balance;
-        
-        let farm_balance = null;
 
+        const feed_balance = curDataFeedBalance.feed_balance;
+        let farm_balance = null;
+        let rowCount = 0;  // ← Track actual rows added
+
+        // Clear spreadsheet table if it exists
+        if (elemTableBodyCombined) {
+            elemTableBodyCombined.innerHTML = '';
+        }
         
         for (const cur_entry of feed_balance){
-            if (cur_entry.pig_prod){
-                // pid is a string: 16, Rosita ❤️ PIC 337 
-                const pid = thisObj.getHtmlPidSowLoveBoar(cur_entry.pig_prod, 
-                        hideBoarName);
+            
+            if (cur_entry.pig_prod && cur_entry.pig_prod.pig_production){
+                const pid = thisObj.getHtmlPidSowLoveBoar(cur_entry.pig_prod, hideBoarName);
+                const pig_prod_hid = cur_entry.pig_prod.pig_production.hid;
                 
-                const pig_prod_hid  = cur_entry.pig_production.hid;
-                
-                const num_gesta     = (cur_entry.num_gestating)? cur_entry.num_gestating: '';
-                const num_lacta     = (cur_entry.num_lactating)? cur_entry.num_lactating: '';
-                const num_booster   = (cur_entry.num_booster)? cur_entry.num_booster: '';
-                const num_prestarter= (cur_entry.num_prestarter)? cur_entry.num_prestarter: '';
-                
-                const num_starter   = (cur_entry.num_starter)? cur_entry.num_starter: '';
-                const num_grower    = (cur_entry.num_grower)? cur_entry.num_grower: '';
-                const num_finisher  = (cur_entry.num_finisher)? cur_entry.num_finisher: '';
-                
+                const num_gesta     = cur_entry.num_gestating || '';
+                const num_lacta     = cur_entry.num_lactating || '';
+                const num_booster   = cur_entry.num_booster || '';
+                const num_prestarter= cur_entry.num_prestarter || '';
+                const num_starter   = cur_entry.num_starter || '';
+                const num_grower    = cur_entry.num_grower || '';
+                const num_finisher  = cur_entry.num_finisher || '';
                 
                 const feed_types_1 = [num_gesta, num_lacta, num_booster, num_prestarter];
+                const feed_types_2 = [num_starter, num_grower, num_finisher];
+                
+                // Mobile tables (working)
                 const elem_tr_1 = createDataRow(pid, 4, feed_types_1, '', pig_prod_hid);
                 elemTableBodyOne.appendChild(elem_tr_1);
                 
-                
-                const feed_types_2 = [num_starter, num_grower, num_finisher];
-                const elem_tr_2 = createDataRow(pid, 3, feed_types_2, '', pig_prod_hid)
+                const elem_tr_2 = createDataRow(pid, 3, feed_types_2, '', pig_prod_hid);
                 elemTableBodyTwo.appendChild(elem_tr_2);
                 
+                // Desktop spreadsheet table
+                if (elemTableBodyCombined) {
+                    const allFeedTypes = [num_gesta, num_lacta, num_booster, num_prestarter, num_starter, num_grower, num_finisher];
+                    const spreadsheetRow = createSpreadsheetRow(pid, allFeedTypes, '', pig_prod_hid);
+                    elemTableBodyCombined.appendChild(spreadsheetRow);
+                }
+                
+                rowCount++;  // ← Count this row
             }
             else{
-                // Process Last
                 farm_balance = cur_entry;
             }
         }  
         
-        
         if (farm_balance){
-            const num_gesta     = (farm_balance.num_gestating)? farm_balance.num_gestating: '';
-            const num_lacta     = (farm_balance.num_lactating)? farm_balance.num_lactating: '';
-            const num_booster   = (farm_balance.num_booster)? farm_balance.num_booster: '';
-            const num_prestarter= (farm_balance.num_prestarter)? farm_balance.num_prestarter: '';
-            
-            const num_starter   = (farm_balance.num_starter)? farm_balance.num_starter: '';
-            const num_grower    = (farm_balance.num_grower)? farm_balance.num_grower: '';
-            const num_finisher  = (farm_balance.num_finisher)? farm_balance.num_finisher: '';
+            const num_gesta     = farm_balance.num_gestating || '';
+            const num_lacta     = farm_balance.num_lactating || '';
+            const num_booster   = farm_balance.num_booster || '';
+            const num_prestarter= farm_balance.num_prestarter || '';
+            const num_starter   = farm_balance.num_starter || '';
+            const num_grower    = farm_balance.num_grower || '';
+            const num_finisher  = farm_balance.num_finisher || '';
             
             const pid = 'Farm';
-            const pig_farm_hid  = navigation.pigFarm.getPigFarmHid();
-            
+            const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
             
             const feed_types_1 = [num_gesta, num_lacta, num_booster, num_prestarter];
+            const feed_types_2 = [num_starter, num_grower, num_finisher];
+            
+            // Mobile tables
             const elem_tr_1 = createDataRow(pid, 4, feed_types_1, 'farm-row', pig_farm_hid);
             elemTableBodyOne.appendChild(elem_tr_1);
             
-            const feed_types_2 = [num_starter, num_grower, num_finisher];
             const elem_tr_2 = createDataRow(pid, 3, feed_types_2, 'farm-row', pig_farm_hid);
             elemTableBodyTwo.appendChild(elem_tr_2);
+            
+            // Desktop spreadsheet table
+            if (elemTableBodyCombined) {
+                const allFeedTypes = [num_gesta, num_lacta, num_booster, num_prestarter, num_starter, num_grower, num_finisher];
+                const spreadsheetRow = createSpreadsheetRow(pid, allFeedTypes, 'farm-row', pig_farm_hid);
+                elemTableBodyCombined.appendChild(spreadsheetRow);
+            }
+            
+            rowCount++;  // ← Count this row
         }
         
+        // Use rowCount instead of feed_balance.length
+        const totalRowIndex = rowCount;  // Total row will be at the end
         
-        
-        
-        // Total row 
+        // For mobile tables
         const totalRowOne = document.createElement('tr');
         totalRowOne.classList.add('total-row');
         const tdPidTotalOne = document.createElement('td');
@@ -871,11 +896,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             totalRowOne.appendChild(td);
         }
         elemTableBodyOne.appendChild(totalRowOne);
-
-
-        // Attach updater (total row index = 4, 4 input columns)
-        attachTotalUpdater(elemTableBodyOne, feed_balance.length, 4);
-        
+        attachTotalUpdater(elemTableBodyOne, totalRowIndex, 4);
         
         const totalRowTwo = document.createElement('tr');
         totalRowTwo.classList.add('total-row');
@@ -888,20 +909,26 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             totalRowTwo.appendChild(td);
         }
         elemTableBodyTwo.appendChild(totalRowTwo);
+        attachTotalUpdater(elemTableBodyTwo, totalRowIndex, 3);
+        
+        // Desktop spreadsheet total row
+        if (elemTableBodyCombined) {
+            addSpreadsheetTotalRow(elemTableBodyCombined, totalRowIndex);
+        }
+    }
 
-        // Attach updater (total row index = 4, 4 input columns)
-        attachTotalUpdater(elemTableBodyTwo, feed_balance.length, 3);
 
-    } 
-
-
-    this.populateFeedInputTablesNew = function(inc_gestating){
+    this.populateFeedInputTablesNew = function(){
+        // Get checkbox state inside the function
+        const inc_gestating = elemChkIncGestating ? elemChkIncGestating.checked : false;
+        
         // Clear tables
         elemTableBodyOne.innerHTML = '';
         elemTableBodyTwo.innerHTML = '';
         
-        const spreadsheetTbody = elemDivContainer.querySelector(`#${elemIdTableBodyOne}-combined`);
-        if (spreadsheetTbody) spreadsheetTbody.innerHTML = '';
+
+        if (elemTableBodyCombined) elemTableBodyCombined.innerHTML = '';
+        
         
         // Helper function to add production entry
         const addProductionEntry = (cur_entry) => {
@@ -913,8 +940,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             elemTableBodyTwo.appendChild(createDataRow(pid, 3, ['', '', ''], '', pig_prod_hid));
             
             // Spreadsheet table
-            if (spreadsheetTbody) {
-                spreadsheetTbody.appendChild(createSpreadsheetRow(pid, 
+            if (elemTableBodyCombined) {
+                elemTableBodyCombined.appendChild(createSpreadsheetRow(pid, 
                     ['', '', '', '', '', '', ''], '', pig_prod_hid));
             }
         };
@@ -939,8 +966,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         elemTableBodyTwo.appendChild(createDataRow(pid, 3, ['', '', ''], 'farm-row', pig_farm_hid));
         
         // Spreadsheet table
-        if (spreadsheetTbody) {
-            spreadsheetTbody.appendChild(createSpreadsheetRow(pid, 
+        if (elemTableBodyCombined) {
+            elemTableBodyCombined.appendChild(createSpreadsheetRow(pid, 
                 ['', '', '', '', '', '', ''], 'farm-row', pig_farm_hid));
         }
         
@@ -957,8 +984,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         addTotalRows(row_count);
         
         // Total row for spreadsheet table
-        if (spreadsheetTbody) {
-            addSpreadsheetTotalRow(spreadsheetTbody, row_count);
+        if (elemTableBodyCombined) {
+            addSpreadsheetTotalRow(elemTableBodyCombined, row_count);
         }
     }
     
@@ -1034,12 +1061,11 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         const result = [];
         
         // Try to get data from spreadsheet table first (if visible)
-        const spreadsheetTbody = elemDivContainer.querySelector(`#${elemIdTableBodyOne}-combined`);
         let rows;
         
-        if (spreadsheetTbody && spreadsheetTbody.children.length > 0 && window.innerWidth >= 1200) {
+        if (elemTableBodyCombined && elemTableBodyCombined.children.length > 0 && window.innerWidth >= 1200) {
             // Use spreadsheet table rows (excluding total row)
-            rows = Array.from(spreadsheetTbody.children).filter(row => !row.classList.contains('total-row'));
+            rows = Array.from(elemTableBodyCombined.children).filter(row => !row.classList.contains('total-row'));
             
             rows.forEach(row => {
                 const hid = row.dataset.hid;
@@ -1294,9 +1320,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         const valuesMap = new Map();
         
         // Try to capture from spreadsheet table first (if visible)
-        const spreadsheetTbody = elemDivContainer.querySelector(`#${elemIdTableBodyOne}-combined`);
-        if (spreadsheetTbody && spreadsheetTbody.children.length > 0 && window.innerWidth >= 1200) {
-            const rows = Array.from(spreadsheetTbody.children).filter(row => !row.classList.contains('total-row'));
+        if (elemTableBodyCombined && elemTableBodyCombined.children.length > 0 && window.innerWidth >= 1200) {
+            const rows = Array.from(elemTableBodyCombined.children).filter(row => !row.classList.contains('total-row'));
             rows.forEach(row => {
                 const hid = row.dataset.hid;
                 if (!hid) return;
@@ -1371,8 +1396,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         elemTableBodyOne.innerHTML = '';
         elemTableBodyTwo.innerHTML = '';
         
-        const spreadsheetTbody = elemDivContainer.querySelector(`#${elemIdTableBodyOne}-combined`);
-        if (spreadsheetTbody) spreadsheetTbody.innerHTML = '';
+        if (elemTableBodyCombined) elemTableBodyCombined.innerHTML = '';
         
         // Helper function to add a production entry to all tables
         const addProductionEntry = (cur_entry) => {
@@ -1389,8 +1413,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
                 [values[4], values[5], values[6]], '', pig_prod_hid));
             
             // Spreadsheet table
-            if (spreadsheetTbody) {
-                spreadsheetTbody.appendChild(createSpreadsheetRow(pid, 
+            if (elemTableBodyCombined) {
+                elemTableBodyCombined.appendChild(createSpreadsheetRow(pid, 
                     [values[0], values[1], values[2], values[3], values[4], values[5], values[6]], 
                     '', pig_prod_hid));
             }
@@ -1421,8 +1445,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             [farmValues[4], farmValues[5], farmValues[6]], 'farm-row', pig_farm_hid));
         
         // Spreadsheet table
-        if (spreadsheetTbody) {
-            spreadsheetTbody.appendChild(createSpreadsheetRow(pid, 
+        if (elemTableBodyCombined) {
+            elemTableBodyCombined.appendChild(createSpreadsheetRow(pid, 
                 [farmValues[0], farmValues[1], farmValues[2], farmValues[3], farmValues[4], farmValues[5], farmValues[6]], 
                 'farm-row', pig_farm_hid));
         }
@@ -1440,8 +1464,8 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         addTotalRows(row_count);
         
         // Total row for spreadsheet table
-        if (spreadsheetTbody) {
-            addSpreadsheetTotalRow(spreadsheetTbody, row_count);
+        if (elemTableBodyCombined) {
+            addSpreadsheetTotalRow(elemTableBodyCombined, row_count);
         }
     }
 
@@ -1490,9 +1514,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             return;
         }
         
-        
-        
-        //console.log(data_feed_balance);
+
         
         const post_data = {
             'date_balance':     dt_balance_s,   
