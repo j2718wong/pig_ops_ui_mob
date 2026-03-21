@@ -5010,3 +5010,29 @@ input[type=number] {
 
 /****************************************************************************/
 
+/** Fix on issues where Save and Cancel buttons near teh Back button. */
+.modal-footer {
+    display: flex;
+    justify-content: flex-start !important;
+    gap: 10px;
+}
+
+/* Optional: Adjust spacing for better mobile touch targets */
+.modal-footer .btn {
+    flex: 0 1 auto;
+    min-width: 80px; /* Ensures buttons have adequate touch target size */
+}
+
+/* Alternative if you want buttons stacked vertically on very small screens */
+@media (max-width: 576px) {
+    .modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .modal-footer .btn {
+        margin: 0 !important;
+        width: 100%;
+    }
+}
+
