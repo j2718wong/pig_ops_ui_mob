@@ -235,7 +235,7 @@ export function PagePigFarmAddEdit(input_settings){
     }
     
     
-    this.beforeShow = function(options){
+    this.show = function(options){
         /*
         
         Typical options 
@@ -366,15 +366,18 @@ export function PagePigFarmAddEdit(input_settings){
         };
         
         if (address_hids){
-            if (address_hids.level_1_hid != '0' || address_hids.level_1_hid != '-1'){
+            if (address_hids.level_1_hid == '0' || address_hids.level_1_hid == '-1'){}
+            else{
                 post_data.level_1_hid = address_hids.level_1_hid;
             }
             
-            if (address_hids.level_2_hid != '0' || address_hids.level_2_hid != '-1'){
+            if (address_hids.level_2_hid == '0' || address_hids.level_2_hid == '-1'){}
+            else{
                 post_data.level_2_hid = address_hids.level_2_hid;
             }
             
-            if (address_hids.level_3_hid != '0' || address_hids.level_3_hid != '-1'){
+            if (address_hids.level_3_hid == '0' || address_hids.level_3_hid == '-1'){}
+            else{
                 post_data.level_3_hid = address_hids.level_3_hid;
             }
         }
@@ -416,9 +419,18 @@ export function PagePigFarmAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    navigation.managerNavHistory.removeFromNavHistoryHead(
+                        showOptions.go_back_page);
+                    
                     // This will return the data pig farm
                     navigation.pigFarm.setDataPigFarm(response.data);
+                    
+                    // Show Container
                     navigation.showThisPage(showOptions.go_back_page);
+                    
+                    
+                    // Show page
+                    navigation.pageHomeDashBoard.show();
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

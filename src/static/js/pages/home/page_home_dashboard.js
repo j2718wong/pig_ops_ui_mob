@@ -485,19 +485,29 @@ export function PageHomeDashBoard(input_settings){
         if (user_group_num == ACC_USER_GROUP.ADMIN || 
             user_group_num == ACC_USER_GROUP.MANAGEMENT){
             elemFarmName.onclick = function() {
-                const go_back_page = navigation.currentPage;
+                // Show Container
+                const next_page_id   = PAGE_ID.PIG_FARM_ADD_EDIT;
+                const next_page = navigation.getPageContainer(next_page_id);
+                
+                // Push currentPage to NavHistory; 
+                // Will also compare current page and  next_page NAV_MENU_GROUP.
+                navigation.pushCurrentPageToNavHistory(next_page);
+                
+                navigation.showThisPage(next_page);
+                
+                
+                // Show Page
+                const go_back_page_id   = PAGE_ID.HOME;
+                const go_back_page = navigation.getPageContainer(go_back_page_id);
+                
             
                 const options ={
                     is_add:                 false,   // false is edit
                     callback_after_edit:    thisObj.onSuccessEditFarm,
                     go_back_page:           go_back_page 
                 }
-                navigation.pagePigFarmAddEdit.beforeShow(options);
+                navigation.pagePigFarmAddEdit.show(options);
                 
-                
-                const goto_page_id   = PAGE_ID.PIG_FARM_ADD_EDIT;
-                const page_container = navigation.getPageContainer(goto_page_id);
-                navigation.showThisPage(page_container);
             };
         } 
         
