@@ -432,12 +432,12 @@ export function PageProdGestatingAdd(input_settings){
         
               
         elemBtnClose.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation.managerNavLinks.onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         });
         
         
         elemBtnCancel.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation.managerNavLinks.onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         });
         
         
@@ -742,7 +742,7 @@ export function PageProdGestatingAdd(input_settings){
         const callback_success = function(data){
             //thisObj.show(); 
             
-            navigation._onClickNavProdGestaLacta(null, 
+            navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
                 PIG_OPERATION_TYPE.GESTATING);
         };
         

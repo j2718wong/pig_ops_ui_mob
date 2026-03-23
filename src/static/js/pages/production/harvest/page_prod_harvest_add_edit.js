@@ -1288,7 +1288,7 @@ export function PageProdHarvestAddEdit(input_settings){
                                 pig_prod_hid, prod_list);
                                     
                         // Goto Fattening List Page
-                        navigation._onClickNavProdFattening();
+                        navigation.managerNavLinks.onClickNavProdFattening();
                     }
                     
                     else{

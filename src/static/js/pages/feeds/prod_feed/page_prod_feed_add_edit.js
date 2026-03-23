@@ -414,7 +414,7 @@ export function PageProdFeedAddEdit(input_settings){
     this._bindEventListeners = function(){
         if (elemLinkAddFeedBuy){
             elemLinkAddFeedBuy.addEventListener('click', function() {
-                navigation._onClickNavFeedsExpenses(null);
+                navigation.managerNavLinks.onClickNavFeedsExpenses(null);
             });
         }
 

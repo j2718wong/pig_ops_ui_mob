@@ -314,17 +314,17 @@ export function PagePfFeedBuyAddEdit(input_settings){
        
         /* This is updated dynamically; not fixed;     
         elemBtnClose.addEventListener('click', function() {
-            navigation._onClickNavFeedsExpenses();
+            navigation.managerNavLinks.onClickNavFeedsExpenses();
         });
         
         
         elemBtnCancel.addEventListener('click', function() {
-            navigation._onClickNavFeedsExpenses();
+            navigation.managerNavLinks.onClickNavFeedsExpenses();
         });
         */
         
         settingsBreadcrumb.items[0].callbackOnClick = function(){
-            navigation._onClickNavFeedsExpenses();
+            navigation.managerNavLinks.onClickNavFeedsExpenses();
         }
         
         
@@ -416,11 +416,11 @@ export function PagePfFeedBuyAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
-            navigation._onClickNavFeedsExpenses();
+            navigation.managerNavLinks.onClickNavFeedsExpenses();
         };
         
         elemBtnCancel.onclick = function() {
-            navigation._onClickNavFeedsExpenses();
+            navigation.managerNavLinks.onClickNavFeedsExpenses();
         };
         
     }
@@ -618,7 +618,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
                     
                     else{
                         const callback_success = function(){
-                            navigation._onClickNavFeedsExpenses();
+                            navigation.managerNavLinks.onClickNavFeedsExpenses();
                         };
                         
                         navigation.pigFarm.requestDataPigFarmFeedBuyList(

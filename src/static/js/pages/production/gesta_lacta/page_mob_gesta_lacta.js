@@ -449,20 +449,22 @@ ${html_style}
 
         
         elemAddEntryBtn.addEventListener('click', function() {
-            navigation.onClickProdGestatingAdd();
+            const next_page = navigation.getPageContainer(PAGE_ID.PROD_GESTA_ADD);
+            
+            navigation.showThisPage(next_page);
+            navigation.pageProdGestatingAdd.show();
         });
         
         
         if (settings.isGesta == true){
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
-                navigation._onClickNavProdNotPregnant(null);
+                navigation.managerNavLinks.onClickNavProdNotPregnant(null);
             }
 
             elemNavNextEntry.onclick = function(){
-                console.log('Test 1');
-                navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
-                console.log('Test 2');
+                navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
+                    PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             }
         
         }
@@ -499,11 +501,12 @@ ${html_style}
             
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
-                navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+                navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
+                    PIG_OPERATION_TYPE.GESTATING);
             }
 
             elemNavNextEntry.onclick = function(){
-                navigation._onClickNavProdFattening(null);
+                navigation.managerNavLinks.onClickNavProdFattening(null);
             }
         }
              

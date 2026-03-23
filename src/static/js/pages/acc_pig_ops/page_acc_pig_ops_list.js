@@ -251,11 +251,11 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavAccOpsSettings(null);
+                    navigation.managerNavLinks.onClickNavAccOpsSettings(null);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
                 }
                 break;
             }
@@ -265,11 +265,11 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
                 }
                 break;
             }
@@ -279,11 +279,11 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.WEANING_SOW);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.WEANING_SOW);
                 }
                 break;
             }
@@ -293,11 +293,11 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
                 }
                 break;
             }
@@ -307,11 +307,11 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.WEANING_SOW);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.WEANING_SOW);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavAccOpsSettings(null);
+                    navigation.managerNavLinks.onClickNavAccOpsSettings(null);
                 }
                 break;
             }
@@ -471,7 +471,7 @@ export function PageAccPigOpsList(input_settings){
                     const buttons_gesta = elemPageInfo.querySelectorAll('.gestating'); 
                     for(const cur_entry of buttons_gesta){
                         cur_entry.onclick = function(){
-                            navigation._onClickNavProdGestaLacta(null, 
+                            navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
                                 PIG_OPERATION_TYPE.GESTATING);
                         };
                     } 
@@ -479,7 +479,7 @@ export function PageAccPigOpsList(input_settings){
                     const buttons_lacta = elemPageInfo.querySelectorAll('.lactating'); 
                     for(const cur_entry of buttons_lacta){
                         cur_entry.onclick = function(){
-                            navigation._onClickNavProdGestaLacta(null, 
+                            navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
                                 PIG_OPERATION_TYPE.LACTATING_PIGLETS);
                         };
                     } 

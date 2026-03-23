@@ -421,21 +421,21 @@ export function PageProdHistoryList(input_settings){
         if (settings.isProdSalesHistory){
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
-                navigation._onClickNavFeedsExpenses();
+                navigation.managerNavLinks.onClickNavFeedsExpenses();
             }
 
             elemNavNextEntry.onclick = function(){
-                navigation._onClickNavFeedsExpenses();
+                navigation.managerNavLinks.onClickNavFeedsExpenses();
             }
         }
         else{
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
-                navigation._onClickNavProdFattening();
+                navigation.managerNavLinks.onClickNavProdFattening();
             }
 
             elemNavNextEntry.onclick = function(){
-                navigation._onClickNavProdNotPregnant();
+                navigation.managerNavLinks.onClickNavProdNotPregnant();
             }
         }
         
@@ -656,7 +656,7 @@ export function PageProdHistoryList(input_settings){
          
     this.onClickProdHistEntry = function(pig_prod_pid, tab_id){
         if (pig_prod_pid == null){
-            navigation._onClickNavProdHistory(null);
+            navigation.managerNavLinks.onClickNavProdHistory(null);
             return;
         }
         

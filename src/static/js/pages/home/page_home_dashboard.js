@@ -293,33 +293,33 @@ export function PageHomeDashBoard(input_settings){
     this._bindEventListeners = function(){
         
         elemCardLactaPiglets.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation.managerNavLinks.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             navigation.pageMobLactatingList.clickLactaPigCount();
         });
     
         elemCardFatteningPigs.addEventListener('click', function() {
-            navigation._onClickNavProdFattening(true);
+            navigation.managerNavLinks.onClickNavProdFattening(true);
         });
         
         
         
         elemCardLactaSows.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation.managerNavLinks.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             navigation.pageMobLactatingList.clickLactaPigOps();
         });
         
         elemCardGestaSows.addEventListener('click', function() {
-             navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING);
+             navigation.managerNavLinks.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING);
         }); 
         
         
         
         elemCardBoars.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.BOAR);
+            navigation.managerNavLinks.onClickNavSowBoar(true, SOW_BOAR_TYPE.BOAR);
         });
 
         elemCardGilts.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
+            navigation.managerNavLinks.onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
         });
     }
     

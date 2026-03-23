@@ -276,12 +276,12 @@ export function PageAccOpsSettingsEdit(input_settings){
     
     this._processAfterHtmlRender = function(){
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
+            navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation._onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
         };
         
         

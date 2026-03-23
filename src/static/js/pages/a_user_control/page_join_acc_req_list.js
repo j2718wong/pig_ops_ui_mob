@@ -146,12 +146,12 @@ export function PageJoinAccReqList(input_settings){
     
     this._processAfterHtmlRenderThis = function(){
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavAccessCodes();
+            navigation.managerNavLinks.onClickNavAccessCodes();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation._onClickNavUsers();
+            navigation.managerNavLinks.onClickNavUsers();
         };
         
         

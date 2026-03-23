@@ -412,7 +412,7 @@ export function ProdEntryUpdateGestaStatus(input_settings){
                     const callback_success = function(data){
                         // Go Back to Gestating List Page
                         const operation_type = PIG_OPERATION_TYPE.GESTATING;
-                        navigation._onClickNavProdGestaLacta(null, operation_type);
+                        navigation.managerNavLinks.onClickNavProdGestaLacta(null, operation_type);
                     };
                     
                     // Request Gestating List

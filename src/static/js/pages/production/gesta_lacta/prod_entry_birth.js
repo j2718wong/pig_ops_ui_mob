@@ -702,7 +702,7 @@ export function ProdEntryBirth(input_settings){
             const callback_success = function(data){
                 // Go Back to Lactating List Page
                 const operation_type = PIG_OPERATION_TYPE.LACTATING_PIGLETS;
-                navigation._onClickNavProdGestaLacta(null, operation_type);
+                navigation.managerNavLinks.onClickNavProdGestaLacta(null, operation_type);
             };
             
             // Request Lactating List

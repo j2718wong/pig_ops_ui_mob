@@ -163,12 +163,12 @@ export function PageAccessCodeList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavUsers();
+            navigation.managerNavLinks.onClickNavUsers();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation._onClickNavUsers();
+            navigation.managerNavLinks.onClickNavUsers();
         };
         
         

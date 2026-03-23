@@ -151,12 +151,12 @@ export function PageBoarExternalMateList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavFeedBalance();
+            navigation.managerNavLinks.onClickNavFeedBalance();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation._onClickNavFeedBalance();
+            navigation.managerNavLinks.onClickNavFeedBalance();
         };
         
         

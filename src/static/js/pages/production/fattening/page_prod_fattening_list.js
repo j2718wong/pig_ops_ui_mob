@@ -187,11 +187,11 @@ export function PageProdFatteningList(input_settings){
         
         // Set up listeners for navigation arrows
         elemNavPrevEntry.onclick = function(){
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation.managerNavLinks.onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         }
 
         elemNavNextEntry.onclick = function(){
-            navigation._onClickNavProdHistory();
+            navigation.managerNavLinks.onClickNavProdHistory();
         }
         
              

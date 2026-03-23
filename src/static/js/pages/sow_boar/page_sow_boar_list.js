@@ -667,11 +667,11 @@ ${html_style}
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.DISPOSED);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.DISPOSED);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.BOAR);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.BOAR);
                 }
                 
 
@@ -705,11 +705,11 @@ ${html_style}
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.SOW);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.SOW);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
                 }
                 
                 
@@ -742,11 +742,11 @@ ${html_style}
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.BOAR);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.BOAR);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.DISPOSED);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.DISPOSED);
                 }
                 
                 
@@ -780,11 +780,11 @@ ${html_style}
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation._onClickNavSowBoar(null, SOW_BOAR_TYPE.SOW);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.SOW);
                 }
                 
                 

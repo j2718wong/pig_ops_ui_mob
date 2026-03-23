@@ -144,12 +144,12 @@ export function PagePigFarmFeedBuyList(input_settings){
     
     this._processAfterHtmlRenderThis = function(){
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavProdSales();
+            navigation.managerNavLinks.onClickNavProdSales();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation._onClickNavProdSales();
+            navigation.managerNavLinks.onClickNavProdSales();
         };
         
         

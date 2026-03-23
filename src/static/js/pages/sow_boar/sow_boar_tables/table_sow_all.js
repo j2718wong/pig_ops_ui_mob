@@ -290,7 +290,7 @@ export function SowBoarTableSowAll(input_settings){
                         } else{
                             // Goto GestaList Page
                             cur_td.onclick = function(){
-                                navigation._onClickNavProdGestaLacta(null, 
+                                navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
                                     PIG_OPERATION_TYPE.GESTATING);
                             };
                         }

@@ -836,7 +836,7 @@ export function PageSowBoarEntry(input_settings){
             showOptions.sow_boar_list.splice(index, 1);
             
             // Go back to sow_boar_list
-            navigation._onClickNavSowBoar(null, showOptions.sow_boar_type);
+            navigation.managerNavLinks.onClickNavSowBoar(null, showOptions.sow_boar_type);
         }
     }
     

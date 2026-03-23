@@ -807,7 +807,7 @@ export function ProdEntryWean(input_settings){
         
             const callback_success = function(data){
                 // Open to Fattening List
-                navigation._onClickNavProdFattening();
+                navigation.managerNavLinks.onClickNavProdFattening();
             };
             
             // Request Fattening List

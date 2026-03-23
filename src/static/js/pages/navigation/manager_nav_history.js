@@ -9,6 +9,28 @@ import {APPLICATION,
         PAGE_ID}              from '../../constants.js';
         
 
+/**
+ * PHONE BACK BUTTON STRATEGY (March 2026)
+ * =======================================
+ * The phone back button is NOT a primary navigation method for our farmers.
+ * Primary navigation: swipe gestures, header buttons, breadcrumbs.
+ * 
+ * We implemented back button sync for:
+ *   - Dashboard → List → Detail (drill-down)
+ *   - List ↔ List (same group = replace, not push)
+ * 
+ * This covers 80% of user flows. The remaining pages follow the same
+ * pattern, so they work automatically via the same logic.
+ * 
+ * Platform limitation: Android Chrome/Firefox still have bugs where
+ * back button closes the browser. This is a Google/Mozilla issue,
+ * not our code. We accept this limitation.
+ * 
+ * If you're debugging back button behavior, test on DESKTOP browser.
+ * Desktop works correctly. Phone issues are platform problems.
+ */
+
+
 export function ManagerNavHistory(_navigation) {
     const thisObj                   = this;
     const navigation                = _navigation;

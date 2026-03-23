@@ -148,12 +148,12 @@ export function PageProdNotPregnantList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation._onClickNavProdHistory();
+            navigation.managerNavLinks.onClickNavProdHistory();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation.managerNavLinks.onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
         };
         
         

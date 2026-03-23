@@ -1179,281 +1179,18 @@ export function Navigation(){
         thisObj.pageHomeDashBoard.show();
     }
     
-      
-    this._onClickNavOpsSettings = function(is_mobile){
-        console.log('_onClickNavOpsSettings not yet implemented; is_mobile=' + is_mobile);
-    }
-        
-    
-        
-    this._onClickNavSowBoar = function(is_mobile, sow_boar_type){
-        const next_page = thisObj.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
-        
-        const options= {
-            sow_boar_type: sow_boar_type
-        };
-        thisObj.pageSowBoarList.show(options);
-    }
-    
-    
-    this._onClickNavParentTrace = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.TRACE_PARENTS);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pageParentTrace.show();
-    }
-    
-    
-    this._onClickNavProdGestaLacta = function(is_mobile, operation_type, 
-            check_data_updates){
-        
-        if (is_mobile == null){ 
-            // If not specified use the last known screen state.
-            is_mobile = thisObj.curScreenIsMobile;
-        }
-        else{
-            thisObj.curScreenIsMobile = is_mobile;
-        }
-        
-        
-        
-        if (operation_type == PIG_OPERATION_TYPE.GESTATING){
-            const next_page = thisObj.getPageContainer(PAGE_ID.PROD_GESTA_LIST);
-            
-            if (check_data_updates){
-                const callback_success = function(){
-                    thisObj.showThisPage(next_page);
-                    thisObj.pageMobGestatingList.show();
-                };
-                
-                thisObj.pigFarm.managerPigProd.checkIfToUpdateDataPigProdList(
-                    callback_success); 
-            }
-            
-            else{
-                thisObj.showThisPage(next_page);
-                thisObj.pageMobGestatingList.show();
-            }
-            
-            return;
-        }
-        
-        if ((operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS) || 
-            (operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
-            
-            const next_page = thisObj.getPageContainer(PAGE_ID.PROD_LACTA_LIST);
-                
-            thisObj.showThisPage(next_page);
-            thisObj.pageMobLactatingList.show();
-            return;
-        }
-        
-    }
-    
-    
-    this._onClickNavProdFattening = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_FATTENING_LIST);
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pageProdFatteningList.show();
-    }
-    
-    
-    this._onClickNavProdHistory = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_HISTORY_LIST);
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pageProdHistoryList.show();
-    }
-    
-    
-    this._onClickNavProdNotPregnant = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_NOT_PREGNANT_LIST);
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pageNotPregnantList.show();
-    }
-    
-        
-    this._onClickNavFeedBalance = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        thisObj.pushCurrentPageToNavHistory(next_page);
-         
 
-        thisObj.showThisPage(next_page);
-        thisObj.pageAllFeedBalanceList.show();
-    }
-        
-    
-    this._onClickNavPigDead = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pagePigDeadList.show();
-    }
-    
-        
-    this._onClickNavReports = function(is_mobile){
-        console.log('_onClickNavReports not yet implemented; is_mobile=' + is_mobile);
-    }
-        
-        
-    this._onClickNavFeedCalculator = function(is_mobile){
-        console.log('_onClickNavFeedCalculator not yet implemented; is_mobile=' + is_mobile);
-    }
-    
-    
-    this._onClickNavProdSales = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_SALES_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pageProdSalesList.show();
-    }
-    
-        
-        
-    this._onClickNavFeedsExpenses = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.FARM_FEED_BUY_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        //thisObj.showThisPage(next_page);
-        thisObj.pagePigFarmFeedBuyList.beforeShow();
-    }
-        
-        
-    this._onClickNavNonFeedsExpenses = function(is_mobile){
-        console.log('_onClickNavNonFeedsExpenses not yet implemented; is_mobile=' + is_mobile);
-    }
-        
-        
-        
-        
-        
-        
-                    
-    this._onClickNavStaff = function(is_mobile){
-        console.log('_onClickNavStaff not yet implemented; is_mobile=' + is_mobile);
-    }
-        
-                
-    this._onClickNavPigBuyers = function(is_mobile){
-        console.log('_onClickNavPigBuyers not yet implemented; is_mobile=' + is_mobile);
-    }
-        
-            
-    this._onClickNavFeedSuppliers = function(is_mobile){
-        console.log('_onClickNavFeedSuppliers not yet implemented; is_mobile=' + is_mobile);
-    }
-        
-        
-    this._onClickNavSemenSuppliers = function(is_mobile){
-        console.log('_onClickNavSemenSuppliers not yet implemented; is_mobile=' + is_mobile);
-    }
-        
-        
-    this._onClickNavGiltSuppliers = function(is_mobile){
-        console.log('_onClickNavGiltSuppliers not yet implemented; is_mobile=' + is_mobile);
-    
-    }
-        
-        
-    this._onClickNavAccOpsSettings = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.ACC_OPS_SETTINGS_EDIT);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pageAccOpsSettingsEdit.show();
-    }
-    
-        
-    this._onClickNavAccPigOps = function(is_mobile, operation_type){
-        const next_page = thisObj.getPageContainer(PAGE_ID.ACC_PIG_OPS_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pageAccPigOpsList.show(operation_type);
-    }
-        
-    
-                    
-    this._onClickNavUsers = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.USER_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pageUserList.show();
-    }
-        
-        
-    this._onClickNavAccessCodes = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.ACCESS_CODE_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
-        thisObj.pageAccessCodeList.show();
-    }
-        
-        
-        
-    this.onClickProdGestatingAdd = function(){
-        thisObj.showThisPage(elemPageContProdGestaAdd);
-        thisObj.pageProdGestatingAdd.show();
-    }
-    
 
     this.onClickProdGestatingEntry = function(pig_prod_pid){
         if (pig_prod_pid == null){
-            thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            thisObj.managerNavLinks.onClickNavProdGestaLacta(null, 
+                PIG_OPERATION_TYPE.GESTATING);
             return;
         }
         
         
-        thisObj.showThisPage(elemPageContProdGestaEntry);
+        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_GESTA_ENTRY);
+        thisObj.showThisPage(next_page);
         
         const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataGestatingList;
         
@@ -1500,12 +1237,14 @@ export function Navigation(){
     
     this.onClickProdLactatingEntry = function(pig_prod_pid, show_options){
         if (pig_prod_pid == null){
-            thisObj._onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            thisObj.managerNavLinks.onClickNavProdGestaLacta(null, 
+                PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             return;
         }
         
 
-        thisObj.showThisPage(elemPageContProdLactaEntry);
+        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_LACTA_ENTRY);
+        thisObj.showThisPage(next_page);
         
         const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataLactatingList;
         
@@ -1558,12 +1297,13 @@ export function Navigation(){
     
     this.onClickProdFatteningEntry = function(pig_prod_pid, show_options){
         if (pig_prod_pid == null){
-            thisObj._onClickNavProdFattening(null);
+            thisObj.managerNavLinks.onClickNavProdFattening(null);
             return;
         }
         
 
-        thisObj.showThisPage(elemPageContFatteningEntry);
+        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_FATTENING_ENTRY);
+        thisObj.showThisPage(next_page);
         
         const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataFatteningList;
         

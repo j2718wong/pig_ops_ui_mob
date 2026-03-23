@@ -260,287 +260,287 @@ export function ManagerNavLinks(_navigation) {
     
     this._bindEventListeners = function(){
         elemDesktopNavProduction1.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.GESTATING, true);
+            thisObj.onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.GESTATING, true);
         });
           
         elemDesktopNavProduction2.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            thisObj.onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         });
           
         elemDesktopNavProduction3.addEventListener('click', function() {
-            navigation._onClickNavProdFattening(false);
+            thisObj.onClickNavProdFattening(false);
         });
           
         elemDesktopNavProduction4.addEventListener('click', function() {
-            navigation._onClickNavProdHistory(false);
+            thisObj.onClickNavProdHistory(false);
         });
           
         elemDesktopNavProduction5.addEventListener('click', function() {
-            navigation._onClickNavProdNotPregnant(false);
+            thisObj.onClickNavProdNotPregnant(false);
         });  
         
         
     
 
         elemDesktopNavSowBoarGilt1.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(false, SOW_BOAR_TYPE.SOW);
+            thisObj.onClickNavSowBoar(false, SOW_BOAR_TYPE.SOW);
         });
          
         elemDesktopNavSowBoarGilt2.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(false, SOW_BOAR_TYPE.BOAR);
+            thisObj.onClickNavSowBoar(false, SOW_BOAR_TYPE.BOAR);
         });
          
         elemDesktopNavSowBoarGilt3.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(false, SOW_BOAR_TYPE.GILT);
+            thisObj.onClickNavSowBoar(false, SOW_BOAR_TYPE.GILT);
         });
          
         elemDesktopNavSowBoarGilt4.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(false, SOW_BOAR_TYPE.DISPOSED);
+            thisObj.onClickNavSowBoar(false, SOW_BOAR_TYPE.DISPOSED);
         });
          
         elemDesktopNavSowBoarGilt5.addEventListener('click', function() {
-            navigation._onClickNavParentTrace(false);
+            thisObj.onClickNavParentTrace(false);
         }); 
 
 
 
         elemDesktopNavOperations1.addEventListener('click', function() {
-            navigation._onClickNavFeedBalance(false);
+            thisObj.onClickNavFeedBalance(false);
         });
         
         
         elemDesktopNavOperations2.addEventListener('click', function() {
-            navigation._onClickNavPigDead(false);
+            thisObj.onClickNavPigDead(false);
         });
         
         
           
         /*
         elemDesktopNavOperations2.addEventListener('click', function() {
-            navigation._onClickNavReports(false);
+            thisObj.onClickNavReports(false);
         });
           
         elemDesktopNavOperations3.addEventListener('click', function() {
-            navigation._onClickNavFeedCalculator(false);
+            thisObj.onClickNavFeedCalculator(false);
         });  
         */
 
 
         elemDesktopNavFinancials1.addEventListener('click', function() {
-            navigation._onClickNavProdSales(false);
+            thisObj.onClickNavProdSales(false);
         });
           
         elemDesktopNavFinancials2.addEventListener('click', function() {
-            navigation._onClickNavFeedsExpenses(false);
+            thisObj.onClickNavFeedsExpenses(false);
         });
           
         elemDesktopNavFinancials3.addEventListener('click', function() {
-            navigation._onClickNavNonFeedsExpenses(false);
+            thisObj.onClickNavNonFeedsExpenses(false);
         });  
 
 
             
 
         elemDesktopNavAccountLists1.addEventListener('click', function() {
-            navigation._onClickNavStaff(false);
+            thisObj.onClickNavStaff(false);
         });
         
         elemDesktopNavAccountLists2.addEventListener('click', function() {
-            navigation._onClickPigBuyers(false);
+            thisObj._onClickPigBuyers(false);
         });
         
         elemDesktopNavAccountLists3.addEventListener('click', function() {
-            navigation._onClickFeedSuppliers(false);
+            thisObj._onClickFeedSuppliers(false);
         });
         
         elemDesktopNavAccountLists4.addEventListener('click', function() {
-            navigation._onClickSemenSuppliers(false);
+            thisObj._onClickSemenSuppliers(false);
         });
         
         elemDesktopNavAccountLists5.addEventListener('click', function() {
-            navigation._onClickGiltSuppliers(false);
+            thisObj._onClickGiltSuppliers(false);
         });
 
 
 
         elemDesktopNavSettings1.addEventListener('click', function() {
-            navigation._onClickNavAccOpsSettings(false);
+            thisObj.onClickNavAccOpsSettings(false);
         });   
          
         elemDesktopNavSettings2.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.GESTATING);
+            thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.GESTATING);
         }); 
            
         elemDesktopNavSettings3.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         }); 
            
         elemDesktopNavSettings4.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.LACTATING_SOW);
+            thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.LACTATING_SOW);
         }); 
            
         elemDesktopNavSettings5.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.WEANING_SOW);
+            thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.WEANING_SOW);
         });  
          
         elemDesktopNavSettings6.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(false, PIG_OPERATION_TYPE.GILT);
+            thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.GILT);
         });    
 
 
 
         elemDesktopNavAdmin1.addEventListener('click', function() {
-            navigation._onClickNavUsers(false);
+            thisObj.onClickNavUsers(false);
         });       
         
         elemDesktopNavAdmin2.addEventListener('click', function() {
-            navigation._onClickNavAccessCodes(false);
+            thisObj.onClickNavAccessCodes(false);
         });       
 
         /*
         elemDesktopNavAdmin3.addEventListener('click', function() {
-            navigation._onClickNavUsersRequest(false);
+            thisObj.onClickNavUsersRequest(false);
         });
         */
 
 
         elemMobileNavProduction1.addEventListener('click', function() {
-             navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING, true);
+             thisObj.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING, true);
         }); 
           
         elemMobileNavProduction2.addEventListener('click', function() {
-            navigation._onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            thisObj.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         }); 
           
         elemMobileNavProduction3.addEventListener('click', function() {
-            navigation._onClickNavProdFattening(true);
+            thisObj.onClickNavProdFattening(true);
         }); 
           
         elemMobileNavProduction4.addEventListener('click', function() {
-             navigation._onClickNavProdHistory(true);
+             thisObj.onClickNavProdHistory(true);
         }); 
           
         elemMobileNavProduction5.addEventListener('click', function() {
-            navigation._onClickNavProdNotPregnant(true);
+            thisObj.onClickNavProdNotPregnant(true);
         });   
 
             
             
         elemMobileNavSowBoarGilt1.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.SOW);
+            thisObj.onClickNavSowBoar(true, SOW_BOAR_TYPE.SOW);
         });  
         
         elemMobileNavSowBoarGilt2.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.BOAR);
+            thisObj.onClickNavSowBoar(true, SOW_BOAR_TYPE.BOAR);
         });
           
         elemMobileNavSowBoarGilt3.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
+            thisObj.onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
         });
           
         elemMobileNavSowBoarGilt4.addEventListener('click', function() {
-            navigation._onClickNavSowBoar(true, SOW_BOAR_TYPE.DISPOSED);
+            thisObj.onClickNavSowBoar(true, SOW_BOAR_TYPE.DISPOSED);
         });
           
         elemMobileNavSowBoarGilt5.addEventListener('click', function() {
-            navigation._onClickNavParentTrace(true);
+            thisObj.onClickNavParentTrace(true);
         });  
 
 
             
         elemMobileNavOperations1.addEventListener('click', function() {
-            navigation._onClickNavFeedBalance(true);
+            thisObj.onClickNavFeedBalance(true);
         });  
         
         elemMobileNavOperations2.addEventListener('click', function() {
-            navigation._onClickNavPigDead(true);
+            thisObj.onClickNavPigDead(true);
         }); 
         
          
         /*
         elemMobileNavOperations2.addEventListener('click', function() {
-            navigation._onClickNavReports(true);
+            thisObj.onClickNavReports(true);
         }); 
           
         elemMobileNavOperations3.addEventListener('click', function() {
-            navigation._onClickNavFeedCalculator(true);
+            thisObj.onClickNavFeedCalculator(true);
         });   
         */
 
 
         elemMobileNavFinancials1.addEventListener('click', function() {
-            navigation._onClickNavProdSales(true);
+            thisObj.onClickNavProdSales(true);
         }); 
           
         elemMobileNavFinancials2.addEventListener('click', function() {
-            navigation._onClickNavFeedsExpenses(true);
+            thisObj.onClickNavFeedsExpenses(true);
         });  
          
         elemMobileNavFinancials3.addEventListener('click', function() {
-            navigation._onClickNavNonFeedsExpenses(true);
+            thisObj.onClickNavNonFeedsExpenses(true);
         });   
             
             
             
         elemMobileNavAccountLists1.addEventListener('click', function() {
-            navigation._onClickNavStaff(true);
+            thisObj.onClickNavStaff(true);
         }); 
         
         elemMobileNavAccountLists2.addEventListener('click', function() {
-            navigation._onClickPigBuyers(true);
+            thisObj._onClickPigBuyers(true);
         }); 
         
         elemMobileNavAccountLists3.addEventListener('click', function() {
-             navigation._onClickFeedSuppliers(true);
+             thisObj._onClickFeedSuppliers(true);
         }); 
         
         elemMobileNavAccountLists4.addEventListener('click', function() {
-             navigation._onClickSemenSuppliers(true);
+             thisObj._onClickSemenSuppliers(true);
         }); 
         
         elemMobileNavAccountLists5.addEventListener('click', function() {
-             navigation._onClickGiltSuppliers(true);
+             thisObj._onClickGiltSuppliers(true);
         }); 
             
             
             
         elemMobileNavSettings1.addEventListener('click', function() {
-            navigation._onClickNavAccOpsSettings(true);
+            thisObj.onClickNavAccOpsSettings(true);
         });
              
         elemMobileNavSettings2.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.GESTATING);
+            thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.GESTATING);
         }); 
             
         elemMobileNavSettings3.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         });  
            
         elemMobileNavSettings4.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.LACTATING_SOW);
+            thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.LACTATING_SOW);
         });
              
         elemMobileNavSettings5.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.WEANING_SOW);
+            thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.WEANING_SOW);
         }); 
             
         elemMobileNavSettings6.addEventListener('click', function() {
-            navigation._onClickNavAccPigOps(true, PIG_OPERATION_TYPE.GILT);
+            thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.GILT);
         });     
             
             
         elemMobileNavAdmin1.addEventListener('click', function() {
-            navigation._onClickNavUsers(true);
+            thisObj.onClickNavUsers(true);
         });   
         
             
         elemMobileNavAdmin2.addEventListener('click', function() {
-            navigation._onClickNavAccessCodes(true);
+            thisObj.onClickNavAccessCodes(true);
         }); 
         
         /*
         elemMobileNavAdmin3.addEventListener('click', function() {
-            navigation._onClickNavUsersRequest(true);
+            thisObj.onClickNavUsersRequest(true);
         });
         */        
     }
@@ -561,5 +561,265 @@ export function ManagerNavLinks(_navigation) {
         
     
     }
+    
+    
+            
+    this.onClickNavSowBoar = function(is_mobile, sow_boar_type){
+        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        
+        const options= {
+            sow_boar_type: sow_boar_type
+        };
+        navigation.pageSowBoarList.show(options);
+    }
+    
+    
+    this.onClickNavParentTrace = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.TRACE_PARENTS);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        //navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pageParentTrace.show();
+    }
+    
+    
+    this.onClickNavProdGestaLacta = function(is_mobile, operation_type, 
+            check_data_updates){
+        
+        if (is_mobile == null){ 
+            // If not specified use the last known screen state.
+            is_mobile = navigation.curScreenIsMobile;
+        }
+        else{
+            navigation.curScreenIsMobile = is_mobile;
+        }
+        
+        
+        
+        if (operation_type == PIG_OPERATION_TYPE.GESTATING){
+            const next_page = navigation.getPageContainer(PAGE_ID.PROD_GESTA_LIST);
+            
+            if (check_data_updates){
+                const callback_success = function(){
+                    navigation.showThisPage(next_page);
+                    navigation.pageMobGestatingList.show();
+                };
+                
+                navigation.pigFarm.managerPigProd.checkIfToUpdateDataPigProdList(
+                    callback_success); 
+            }
+            
+            else{
+                navigation.showThisPage(next_page);
+                navigation.pageMobGestatingList.show();
+            }
+            
+            return;
+        }
+        
+        if ((operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS) || 
+            (operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
+            
+            const next_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_LIST);
+                
+            navigation.showThisPage(next_page);
+            navigation.pageMobLactatingList.show();
+            return;
+        }
+        
+    }
+    
+    
+    this.onClickNavProdFattening = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_LIST);
+        
+        navigation.showThisPage(next_page);
+        navigation.pageProdFatteningList.show();
+    }
+    
+    
+    this.onClickNavProdHistory = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_LIST);
+        
+        navigation.showThisPage(next_page);
+        navigation.pageProdHistoryList.show();
+    }
+    
+    
+    this.onClickNavProdNotPregnant = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.PROD_NOT_PREGNANT_LIST);
+        
+        navigation.showThisPage(next_page);
+        navigation.pageNotPregnantList.show();
+    }
+    
+        
+    this.onClickNavFeedBalance = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+         
+
+        navigation.showThisPage(next_page);
+        navigation.pageAllFeedBalanceList.show();
+    }
+        
+    
+    this.onClickNavPigDead = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pagePigDeadList.show();
+    }
+    
+        
+    this.onClickNavReports = function(is_mobile){
+        console.log('onClickNavReports not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this.onClickNavFeedCalculator = function(is_mobile){
+        console.log('onClickNavFeedCalculator not yet implemented; is_mobile=' + is_mobile);
+    }
+    
+    
+    this.onClickNavProdSales = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.PROD_SALES_LIST);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        //navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pageProdSalesList.show();
+    }
+    
+        
+        
+    this.onClickNavFeedsExpenses = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_LIST);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        //navigation.showThisPage(next_page);
+        navigation.pagePigFarmFeedBuyList.beforeShow();
+    }
+        
+        
+    this.onClickNavNonFeedsExpenses = function(is_mobile){
+        console.log('onClickNavNonFeedsExpenses not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+        
+        
+        
+        
+                    
+    this.onClickNavStaff = function(is_mobile){
+        console.log('onClickNavStaff not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+                
+    this.onClickNavPigBuyers = function(is_mobile){
+        console.log('onClickNavPigBuyers not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+            
+    this.onClickNavFeedSuppliers = function(is_mobile){
+        console.log('onClickNavFeedSuppliers not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this.onClickNavSemenSuppliers = function(is_mobile){
+        console.log('onClickNavSemenSuppliers not yet implemented; is_mobile=' + is_mobile);
+    }
+        
+        
+    this.onClickNavGiltSuppliers = function(is_mobile){
+        console.log('onClickNavGiltSuppliers not yet implemented; is_mobile=' + is_mobile);
+    
+    }
+        
+        
+    this.onClickNavAccOpsSettings = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.ACC_OPS_SETTINGS_EDIT);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        //navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pageAccOpsSettingsEdit.show();
+    }
+    
+        
+    this.onClickNavAccPigOps = function(is_mobile, operation_type){
+        const next_page = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_LIST);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pageAccPigOpsList.show(operation_type);
+    }
+        
+    
+                    
+    this.onClickNavUsers = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.USER_LIST);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        //navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pageUserList.show();
+    }
+        
+        
+    this.onClickNavAccessCodes = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.ACCESS_CODE_LIST);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        //navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pageAccessCodeList.show();
+    }
+        
+        
+
+    
+    
+    
     
 }
