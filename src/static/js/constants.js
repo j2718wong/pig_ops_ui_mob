@@ -80,7 +80,7 @@ const PAGE_ID = {
     HEALTH_ADD_EDIT:        26,
     NOTES_ADD_EDIT:         27,
     
-    BOAR_EXT_MATE_ADD_EDIT: 29,
+    
     TRACE_PARENTS:          30,
     
     
@@ -113,12 +113,18 @@ const PAGE_ID = {
     
     ALL_FEED_BAL_LIST:      50,
     ALL_FEED_BAL_ADD_EDIT:  51,
-    PIG_DEAD_LIST:          52,
-    PIG_DEAD_ADD_EDIT:      53,
     
-    FARM_FEED_BUY_LIST:     55,
-    FARM_FEED_BUY_ADD_EDIT: 56,
-    FARM_FEED_BUY_ITEM_ADD_EDIT: 57,
+    BOAR_EXT_MATE_LIST:     52,
+    BOAR_EXT_MATE_ADD_EDIT: 53,
+    
+    PIG_DEAD_LIST:          54,
+    PIG_DEAD_ADD_EDIT:      55,
+    
+    
+    
+    FARM_FEED_BUY_LIST:     57,
+    FARM_FEED_BUY_ADD_EDIT: 58,
+    FARM_FEED_BUY_ITEM_ADD_EDIT: 59,
     
     
     ACC_OPS_SETTINGS_EDIT:  60,

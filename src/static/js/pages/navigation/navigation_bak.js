@@ -14,14 +14,9 @@ import {APPLICATION,
         SUPPLIER_TYPE}              from '../../constants.js';
 
 
-import {NavPageContainers}          from './nav_page_containers.js';
-
 import {ManagerNavLinks}            from './manager_nav_links.js';
 import {ManagerPublicSections}      from './manager_public_sections.js';
 import {ManagerNavHistory}          from './manager_nav_history.js';
-
-import {UserControl}                from './user_control.js';
-
 
 import {ServerError}                from '../common/server_error.js';
 import {ToastAlert}                 from '../common/toast_alert.js';
@@ -194,12 +189,381 @@ export async function getLocationWithFallback() {
 
 
 
-export function Navigation(){
-    const thisObj               = this;
+
+
+function UserControl(_navigation) {
+    const thisObj                   = this;
+    const navigation                = _navigation;
+    
+    
+    let elemDesktopUserControl          = null;
+    let elemDesktopUserDropdown         = null;
+    
+    let elemDesktopUserAvatarInitials   = null;
+    let elemDesktopUserAvatarInitialsL  = null;
+    let elemDesktopUserFullName         = null;
+    let elemDesktopUserRole             = null;
+    
+    let elemDesktopMyAccount            = null;
+    let elemDesktopBillNew              = null;
+    let elemDesktopBillHistory          = null;
+    let elemDesktopUserLogout           = null;
     
 
     
+    let userCurrentFarmHid          = null;
+    let userCurrentLanguage         = null;
+    
+    
+    let userIsEnabled               = true;
+    let userAccountIsEnabled        = true;
+    let userAccounthasOverdueBill   = false;
+    
+    
+    this.dataUserAccount            = null;
+    this.userInitials               = null;
+    
+    
+    this.init = function(){
+        this.afterHtmlRender();
+    }
+    
+    
+    this.afterHtmlRender = function(){
+        this._findElements();
+        this._processAfterHtmlRender();
+        this._bindEventListeners();
+    }
+    
+    
+    this._findElements  = function(){
+        elemDesktopUserControl          = document.getElementById('userControl');
+        elemDesktopUserDropdown         = document.getElementById('userDropdown');
+        
+        elemDesktopUserAvatarInitials   = document.getElementById('desktop-user-initials');
+        elemDesktopUserAvatarInitialsL  = document.getElementById('desktop-user-initials-large');
+        elemDesktopUserFullName         = document.getElementById('desktop-user-full-name');
+        elemDesktopUserRole             = document.getElementById('desktop-user-role');
+        
+        elemDesktopMyAccount            = document.getElementById('desktop-my-account');
+        elemDesktopBillNew              = document.getElementById('desktop-bill-new');
+        elemDesktopBillHistory          = document.getElementById('desktop-bill-history');
+        elemDesktopUserLogout           = document.getElementById('desktop-user-logout');
+        
+
+    }
+    
+    
+    this._processAfterHtmlRender = function(){
+        
+        
+    }
+    
+    
+    this._bindEventListeners = function(){
+        elemDesktopMyAccount.addEventListener('click', function() {
+            thisObj.onClickMyAccount();
+        });
+        
+        
+        elemDesktopUserLogout.addEventListener('click', function() {
+            thisObj.userLogout();
+        });
+
+    }
+    
+    
+    this.setDataUserAccount = function(data){
+        this.dataUserAccount= data;
+        
+        function capitalizeFirst(str) {
+            if (!str) return str;
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+        
+        const user          = this.dataUserAccount.user.user;
+        const user_pig_farms= this.dataUserAccount.user.pig_farms; 
+        
+        userCurrentFarmHid  = user_pig_farms[0]; // default to first pig farm
+
+        
+        const user_initials = (user.name_first.substring(0,1) + 
+                            user.name_last.substring(0,1)).toUpperCase();
+                            
+        const user_fullname = capitalizeFirst(user.name_first) + ' ' + capitalizeFirst(user.name_last);
+        
+        this.userInitials   = user_initials;
+        
+        //this.updateUserAvatar();
+        
+        
+        // Set User Initial
+        elemDesktopUserAvatarInitials.innerHTML = user_initials;
+        elemDesktopUserAvatarInitialsL.innerHTML= user_initials;
+        elemDesktopUserFullName.innerHTML       = user_fullname;
+
+        
+        
+        // Set Usergroup Name
+        const usergroup_name    = this.dataUserAccount.user.user_group.name;
+        elemDesktopUserRole.textContent         = usergroup_name;
+        
+        
+        // Remove menus per user role
+        navigation.managerNavLinks.removeMenusForNonAdminAndManagement();
+        
+        
+        const group_num = thisObj.dataUserAccount.user.user_group.group_num;
+        
+        if (group_num == ACC_USER_GROUP.FARM_STAFF || group_num == ACC_USER_GROUP.OPERATIONS){
+            elemDesktopBillNew.remove();    
+            elemDesktopBillHistory.remove();
+        }
+
+
+        // Hide this first
+        this.hideNewBillAvailable();
+        
+        // TODO this
+        elemDesktopBillHistory.style.display ='none';
+    }
+    
+    
+    this.updateUserAvatar = function() {
+        
+        const userPicture       = localStorage.getItem('user_picture');
+
+        
+        if (userPicture) {
+            // User has picture - show image
+            elemDesktopUserAvatarInitials.innerHTML = `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`; 
+            elemDesktopUserAvatarInitialsL.innerHTML= `<img src="${userPicture}" alt="${thisObj.userInitials}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            
+        } else {
+            // No picture - show initials
+            elemDesktopUserAvatarInitials.innerHTML = `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
+            elemDesktopUserAvatarInitialsL.innerHTML= `<div style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;">${thisObj.userInitials}</div>`;
+        }
+    }
+    
+    
+    this.getUserHid = function(){
+        if (thisObj.dataUserAccount == null){return null;}
+        
+        return thisObj.dataUserAccount.user.user.hid;
+    }
+    
+    
+    this.getUserAccountHid = function(){
+        if (thisObj.dataUserAccount == null){return null;}
+        
+        return thisObj.dataUserAccount.account.account.hid;
+    }
+
+
+    this.getCurrentFarm = function(){
+        const account_farms = thisObj.dataUserAccount.account.pig_farms;
+        
+        
+        for (const cur_entry of account_farms){
+            if (cur_entry.pig_farm.hid == userCurrentFarmHid){
+                return cur_entry;
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    this.isUserAccountEnabled = function(){
+        return userAccountIsEnabled;
+    }
+    
+    
+    this.isUserEnabled = function(){
+        return userIsEnabled;
+    }
+
+    
+    this.isUserCompanyUser = function(){
+        return false;
+    }
+    
+    
+    this.setUserIsEnabled = function(is_enabled){
+        userIsEnabled = is_enabled;
+    }
+    
+    
+    this.setUserAccountIsEnabled = function(is_enabled){
+        userAccountIsEnabled = is_enabled;
+    }
+    
+    this.getCurrentFarmHid =  function(){
+        return userCurrentFarmHid;
+    }
+    
+    
+    this.getCurrentLanguage = function(){
+        
+    }
+    
+    
+    this.hideNewBillAvailable = function(){
+        if (elemDesktopBillNew){
+            elemDesktopBillNew.style.display = 'none';
+        }
+    }
+    
+    
+    this.hideShowBillAvailable = function(){
+        if (elemDesktopBillNew){
+            elemDesktopBillNew.style.display = 'block';
+        }
+    }
+    
+    
+    this.onClickMyAccount = function(){
+        let go_back_page    = navigation.curPageNavigated.pageContainer;
+        if (go_back_page == null){
+            go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
+        } 
+        
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.MY_ACCOUNT);
+        
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        
+        
+        const options ={
+            go_back_page:   go_back_page,
+        };
+        navigation.pageMyAccount.show(options);
+        
+        elemDesktopUserDropdown.classList.remove('active');
+    }
+    
+    
+    this.userLogout = function(){
+        // Clear all items from localStorage
+        localStorage.clear();
+        
+        //     
+        window.location.href = '/login';
+    }
+
+}
+
+
+
+export function Navigation(){
+    const thisObj               = this;
+    
+    
+    
+    
     let elemSubnavSummary       = null;
+    
+    
+    
+    
+    const elemIdContMyAccount           = 'container-my-account';
+    const elemIdContCustomerPricing     = 'container-customer-pricing';
+    
+    
+    const elemIdContAccountDisabled     = 'container-account-disabled';
+    const elemIdContUserDisabled        = 'container-user-disabled';
+    const elemIdContAccountBillUnpaid   = 'container-account-bill-unpaid';
+    
+    
+    const elemIdContHomeDashBoard       = 'container-dashboard';
+    const elemIdContPigFarmAddEdit      = 'container-pig-farm-add-edit';
+    
+    const elemIdContFeedBackUs          = 'container-feedback-us';
+    
+    
+    const elemIdContSowBoarList         = 'container-sow-boar-list';
+    const elemIdContSowBoarAddEdit      = 'container-sow-boar-add-edit';
+    const elemIdContSowBoarEntry        = 'container-sow-boar-entry';
+    const elemIdContSowBoarDisposed     = 'container-sow-boar-disposed';
+    
+    
+    const elemIdContMedVacAddEdit       = 'container-medvac-add-edit';
+    const elemIdContHealthAddEdit       = 'container-health-add-edit';
+    const elemIdContNotesAddEdit        = 'container-notes-add-edit';
+    
+    
+    const elemIdContParentTrace         = 'container-trace-parents';
+    
+    
+    
+     
+    const elemIdContProdGestaList       = 'container-prod-gesta-list';
+    const elemIdContProdGestaAdd        = 'container-prod-gesta-add';
+    const elemIdContProdGestaEntry      = 'container-prod-gesta-entry';
+    
+    const elemIdContProdLactaList       = 'container-prod-lacta-list';
+    const elemIdContProdLactaEntry      = 'container-prod-lacta-entry';
+    
+    const elemIdContFatteningList       = 'container-fattening-list';
+    const elemIdContFatteningAdd        = 'container-fattening-add';
+    const elemIdContFatteningEntry      = 'container-fattening-entry';
+    
+    
+    
+    const elemIdContProdPigOpsEdit      = 'container-prod-pig-ops-edit';
+    const elemIdContProdFeedAddEdit     = 'container-prod-feed-add-edit';
+    const elemIdContProdHarvestAddEdit  = 'container-prod-harvest-add-edit';
+    
+    
+    const elemIdContProdHistoryList     = 'container-prod-history-list';
+    const elemIdContProdHistoryEntry    = 'container-prod-history-entry';
+    
+    const elemIdContProdNotPregnantList = 'container-prod-not-pregnant-list';
+    
+    const elemIdContAllFeedBalList      = 'container-all-feed-bal-list';
+    const elemIdContAllFeedBalAddEdit   = 'container-all-feed-bal-add-edit';
+    
+    
+    
+    const elemIdContFarmFeedBuyList     = 'container-farm-feed-buy-list';
+    const elemIdContFarmFeedBuyAddEdit  = 'container-farm-feed-buy-add-edit';
+    const elemIdContFeedBuyItemAddEdit  = 'container-farm-feed-buy-item-add-edit';
+    
+    const elemIdContProdFeedBalAddEdit  = 'container-feed-balance-add-edit';
+    
+    
+    const elemIdContBoarExtMateList     = 'container-boar-ext-mate-list';
+    const elemIdContBoarExtMateAddEdit  = 'container-boar-ext-mate-add-edit';
+    
+    const elemIdContPigDeadList         = 'container-pig-dead-list';
+    const elemIdContPigDeadAddEdit      = 'container-pig-dead-add-edit';
+    
+    
+    
+    
+    const elemIdContProdSalesList       = 'container-prod-sales-list';
+    const elemIdContProdSalesEntry      = 'container-prod-sales-entry';
+    
+    
+    const elemIdContAccOpsSettingsEdit  = 'container-acc-ops-settings-edit'; 
+    const elemIdContAccPigOpsList       = 'container-acc-pig-ops-list';
+    const elemIdContAccPigOpsAddEdit    = 'container-acc-pig-ops-add-edit';
+    
+    
+    const elemIdContSupplierAddEdit     = 'container-supplier-add-edit';
+    
+    const elemIdContUserList            = 'container-user-list';
+    const elemIdContUserAddEdit         = 'container-user-add-edit';
+    
+    const elemIdContAccessCodeList     = 'container-access-code-list';
+    const elemIdContAccessCodeAddEdit  = 'container-access-code-add-edit';
     
     
     
@@ -212,7 +576,99 @@ export function Navigation(){
     let elemDesktopPigFarmName          = null;
     let elemMobilePigFarmName           = null;
     
+    let elemPageContMyAccount           = null;
+    let elemPageContCustomerPricing     = null;
     
+    let elemPageContHomeDashBoard       = null;
+    let elemPageContPigFarmAddEdit      = null;
+    
+    let elemPageContFeedBackUs          = null;
+    
+    
+    
+    let elemPageContAccountDisabled     = null;
+    let elemPageContUserDisabled        = null;
+    let elemPageContAccountBillUnpaid   = null;
+        
+    let elemPageContSowBoarList         = null;
+    let elemPageContSowBoarAddEdit      = null;
+    let elemPageContSowBoarEntry        = null;
+    let elemPageContSowBoarDisposed     = null;
+        
+        
+    let elemPageContMedVacAddEdit       = null;
+    let elemPageContHealthAddEdit       = null;
+    let elemPageContNotesAddEdit        = null;
+    let elemPageContParentTrace         = null;
+            
+    let elemPageContProdGestaList       = null;
+    let elemPageContProdGestaAdd        = null;
+    let elemPageContProdGestaEntry      = null;
+            
+    let elemPageContProdLactaList       = null;
+    let elemPageContProdLactaEntry      = null;
+        
+        
+    let elemPageContFatteningList       = null;
+    let elemPageContFatteningAdd        = null;
+    let elemPageContFatteningEntry      = null;
+        
+    let elemPageContProdPigOpsEdit      = null; 
+    let elemPageContProdFeedAddEdit     = null;
+    let elemPageContProdHarvestAddEdit  = null;
+    
+    let elemPageContProdFeedBalAddEdit  = null;
+    
+    let elemPageContProdHistoryList     = null;
+    let elemPageContProdHistoryEntry    = null;
+    let elemPageContProdNotPregnantList = null;
+    
+    let elemPageContAllFeedBalList      = null;
+    let elemPageContAllFeedBalAddEdit   = null;
+    
+    let elemPageContBoarExtMateList     = null;
+    let elemPageContBoarExtMateAddEdit  = null;
+    
+    let elemPageContPigDeadList         = null;
+    let elemPageContPigDeadAddEdit      = null;
+    
+    
+    let elemPageContProdSalesList       = null;
+    let elemPageContProdSalesEntry      = null;
+    
+    let elemPageContFarmFeedBuyList     = null;
+    let elemPageContFarmFeedBuyAddEdit  = null;
+    let elemPageContFeedBuyItemAddEdit  = null;
+    
+    
+    
+    let elemPageContAccOpsSettingsEdit  = null;
+    let elemPageContAccPigOpsList       = null;
+    let elemPageContAccPigOpsAddEdit    = null;
+    
+    
+    let elemPageContSupplierAddEdit     = null;
+    
+    
+    let elemPageContUserList            = null;
+    let elemPageContUserAddEdit         = null;
+    
+    let elemPageContAccessCodeList      = null;
+    let elemPageContAccessCodeAddEdit   = null;
+    
+    
+    let CONTAINER_GROUP_PRODUCTION      = null;
+    let CONTAINER_GROUP_SOW_BOAR_GILT   = null;
+    let CONTAINER_GROUP_OPERATIONS      = null;
+    let CONTAINER_GROUP_FINANCIALS      = null;
+    let CONTAINER_GROUP_ACCOUNT_LISTS   = null;
+    let CONTAINER_GROUP_SETTINGS        = null;
+    let CONTAINER_GROUP_ADMIN           = null;
+    
+    
+    let containerToPageIdMap            = null;
+    
+
     this.curScreenIsMobile      = null;
     
     
@@ -228,7 +684,7 @@ export function Navigation(){
     };
     
     
-    this.pageContainers         = new NavPageContainers(this);
+    //this.currentPage            = null;
     
     
     this.managerNavLinks        = new ManagerNavLinks(this);
@@ -252,338 +708,338 @@ export function Navigation(){
     
     this.pageMyAccount          = new PageMyAccount({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.MY_ACCOUNT)
+        elemIdDivContainer:     elemIdContMyAccount
     });
-
-
+    
+    
     this.pageCustomerPricing    = new PageCustomerPricing({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.CUSTOMER_PRICING),
+        elemIdDivContainer:     elemIdContCustomerPricing,
         uniqueKey:              'customer-pricing'
     });
-
-
+    
+    
     this.pageCustomerFeedback   = new PageCustomerFeedback({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FEEDBACK_US),
+        elemIdDivContainer:     elemIdContFeedBackUs,
         uniqueKey:              'customer-feedback'
     });
-
-
+    
+    
     this.pageAccountDisabled    = new PageAccountDisabled({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACCOUNT_DISABLED)
+        elemIdDivContainer:     elemIdContAccountDisabled
     });
-
-
+    
+    
     this.pageUserDisabled       = new PageUserDisabled({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.USER_DISABLED)
+        elemIdDivContainer:     elemIdContUserDisabled
     });
-
-
+    
+    
     this.pageAccountUnpaidBill  = new PageAccountUnpaidBill({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACCOUNT_BILL_UNPAID),
+        elemIdDivContainer:     elemIdContAccountBillUnpaid,
         uniqueKey:              'acc-unpaid-bill'
     });
-
-
-
-
+    
+    
+    
+    
     this.pageHomeDashBoard      = new PageHomeDashBoard({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.HOME),
+        elemIdDivContainer:     elemIdContHomeDashBoard,
         uniqueKey:              'home-dashboard'
     });
-
-
+    
+    
     this.pagePigFarmAddEdit     = new PagePigFarmAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PIG_FARM_ADD_EDIT),
+        elemIdDivContainer:     elemIdContPigFarmAddEdit,
         uniqueKey:              'pig-farm-add-edit'
     });
-
-
-
+    
+    
+    
     this.pageSowBoarList        = new PageSowBoarList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SOW_BOAR_LIST),
+        elemIdDivContainer:     elemIdContSowBoarList,
         uniqueKey:              'sow-boar-list'
     });
-
-
+    
+    
     this.pageSowBoarAddEdit     = new PageSowBoarAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SOW_BOAR_ADD_EDIT),
+        elemIdDivContainer:     elemIdContSowBoarAddEdit,
         uniqueKey:              'sow-boar-add-edit'
     });
-
-
+   
+    
     this.pageSowBoarEntry       = new PageSowBoarEntry({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SOW_BOAR_ENTRY),
+        elemIdDivContainer:     elemIdContSowBoarEntry,
         uniqueKey:              'sow-boar-entry'
     })
-
-
+    
+    
     this.pageSowBoarDisposed     = new PageSowBoarDisposed({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SOW_BOAR_DISPOSED),
+        elemIdDivContainer:     elemIdContSowBoarDisposed,
         uniqueKey:              'sow-boar-disposed'
     });
-
-
+    
+    
     this.pageMedVacAddEdit      = new PageMedVacAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.MEDVAC_ADD_EDIT),
+        elemIdDivContainer:     elemIdContMedVacAddEdit,
         uniqueKey:              'medvac-add-edit'
     });
-
-
+    
+    
     this.pageHealthAddEdit      = new PageHealthNotesAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.HEALTH_ADD_EDIT),
+        elemIdDivContainer:     elemIdContHealthAddEdit,
         uniqueKey:              'health-add-edit',
         isNotes:                false
     });
-
-
+    
+    
     this.pageNotesAddEdit       = new PageHealthNotesAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.NOTES_ADD_EDIT),
+        elemIdDivContainer:     elemIdContNotesAddEdit,
         uniqueKey:              'notes-add-edit',
         isNotes:                true
     });
-
-
+    
+    
     this.pageParentTrace        = new PageParentTrace({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.TRACE_PARENTS)
+        elemIdDivContainer:     elemIdContParentTrace
     });
-
-
-
+    
+    
+     
     this.pageMobGestatingList   = new PageMobGestaLacta({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_GESTA_LIST),
+        elemIdDivContainer:     elemIdContProdGestaList,
         isGesta:                true,
-        uniqueKey:              'prod-gesta-list', 
+        uniqueKey:              'prod-gesta-list', // Use for uniqueness in elements
         pageTitle:              'Prod Gestating'
     });
-
-
+    
+    
     this.pageMobLactatingList   = new PageMobGestaLacta({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_LACTA_LIST),
+        elemIdDivContainer:     elemIdContProdLactaList,
         isGesta:                false,
-        uniqueKey:              'prod-lacta-list', 
+        uniqueKey:              'prod-lacta-list', // Use for uniqueness in elements
         pageTitle:              'Prod Lactating'
     });
-
-
+    
+    
     this.pageProdPigOpsEdit    = new PageProdPigOpsEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_PIG_OPS_EDIT),
+        elemIdDivContainer:     elemIdContProdPigOpsEdit,
         uniqueKey:              'prod-pigops-edit'
     });
-
-
+    
+    
     this.pageProdGestatingAdd   = new PageProdGestatingAdd({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_GESTA_ADD),
+        elemIdDivContainer:     elemIdContProdGestaAdd,
         uniqueKey:              'prod-add-gesta'
     });
-
-
+    
+    
     this.pageProdGestatingEntry = new PageProdGestatingEntry({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_GESTA_ENTRY),
+        elemIdDivContainer:     elemIdContProdGestaEntry,
         uniqueKey:              'prod-gesta'
     });
-
-
+    
+    
     this.pageProdLactatingEntry = new PageProdLactatingEntry({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_LACTA_ENTRY),
+        elemIdDivContainer:     elemIdContProdLactaEntry,
         uniqueKey:              'prod-lacta'
     });
-
-
+    
+    
     this.pageProdFatteningList  = new PageProdFatteningList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_FATTENING_LIST),
+        elemIdDivContainer:     elemIdContFatteningList,
         uniqueKey:              'prod-fattening-list',
         pageTitle:              'Fattening'
     });
-
-
+    
+    
     this.pageProdFatteningEntry = new PageProdFatteningEntry({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_FATTENING_ENTRY),
+        elemIdDivContainer:     elemIdContFatteningEntry,
         uniqueKey:              'prod-fattening'
     });
-
-
-
-
+    
+    
+    
+    
     this.pagePigFarmFeedBuyList = new PagePigFarmFeedBuyList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARM_FEED_BUY_LIST),
+        elemIdDivContainer:     elemIdContFarmFeedBuyList,
         uniqueKey:              'farm-feed-buy-list'
     });
-
-
+    
+    
     this.pagePfFeedBuyAddEdit   = new PagePfFeedBuyAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARM_FEED_BUY_ADD_EDIT),
+        elemIdDivContainer:     elemIdContFarmFeedBuyAddEdit,
         uniqueKey:              'farm-feed-buy-add-edit'
     });
-
-
+    
+    
     this.pagePfFeedBuyItemAddEdit = new PagePfBuyItemAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT),
+        elemIdDivContainer:     elemIdContFeedBuyItemAddEdit,
         uniqueKey:              'feed-buy-item-add-edit'
     });
-
-
+    
+    
     this.pageProdFeedAddEdit    = new PageProdFeedAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_FEED_ADD_EDIT),
+        elemIdDivContainer:     elemIdContProdFeedAddEdit,
         uniqueKey:              'prod-feed-add-edit'
     });
-
-
+    
+    
     this.pageFeedBalanceAddEdit = new PageFeedBalanceAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_FEED_BAL_ADD_EDIT),
+        elemIdDivContainer:     elemIdContProdFeedBalAddEdit,
         uniqueKey:              'feed-balance-add-edit'
     });
-
-
+    
+    
     this.pageProdHarvestAddEdit = new PageProdHarvestAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_HARVEST_ADD_EDIT),
+        elemIdDivContainer:     elemIdContProdHarvestAddEdit,
         uniqueKey:              'prod-harvest-add-edit'
     });
-
-
+    
+    
     this.pageProdHistoryList    = new PageProdHistoryList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_HISTORY_LIST),
+        elemIdDivContainer:     elemIdContProdHistoryList,
         uniqueKey:              'prod-history-list'
     });
-
-
+    
     this.pageProdHistoryEntry   = new PageProdFatteningEntry({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_HISTORY_ENTRY),
+        elemIdDivContainer:     elemIdContProdHistoryEntry,
         uniqueKey:              'prod-history-entry',
         isProdHistory:          true
     });
-
-
+    
+    
     this.pageNotPregnantList    = new PageProdNotPregnantList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_NOT_PREGNANT_LIST),
+        elemIdDivContainer:     elemIdContProdNotPregnantList,
         uniqueKey:              'prod-not-pregnant'
     });
-
-
+    
+    
     this.pageAllFeedBalanceList = new PageAllFeedBalanceList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ALL_FEED_BAL_LIST),
+        elemIdDivContainer:     elemIdContAllFeedBalList,
         uniqueKey:              'all-feed-balance-list'
     });
-
-
+    
+    
     this.pageAllFeedBalanceAddEdit = new PageAllFeedBalanceAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ALL_FEED_BAL_ADD_EDIT),
+        elemIdDivContainer:     elemIdContAllFeedBalAddEdit,
         uniqueKey:              'all-feed-balance-add-edit'
-
+    
     });
-
-
+    
+    
     this.pagePigDeadList        = new PageProdPigDeadList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PIG_DEAD_LIST),
+        elemIdDivContainer:     elemIdContPigDeadList,
         uniqueKey:              'pig-dead-list'
     });
-
-
+    
+    
     this.pagePigDeadAddEdit     = new PagePigDeadAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PIG_DEAD_ADD_EDIT),
+        elemIdDivContainer:     elemIdContPigDeadAddEdit,
         uniqueKey:              'pig-dead-add-edit'
     });
-
-
-
+    
+    
+    
     this.pageProdSalesList    = new PageProdHistoryList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_SALES_LIST),
+        elemIdDivContainer:     elemIdContProdSalesList,
         uniqueKey:              'prod-sales-list',
         isProdSalesHistory:     true
     });
-
-
+    
+    
     this.pageProdSalesEntry   = new PageProdSalesEntry({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_SALES_ENTRY),
+        elemIdDivContainer:     elemIdContProdSalesEntry,
         uniqueKey:              'prod-sales-entry',
         isProdHistory:          true
     });
-
-
+    
+    
     this.pageAccOpsSettingsEdit = new PageAccOpsSettingsEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACC_OPS_SETTINGS_EDIT),
+        elemIdDivContainer:     elemIdContAccOpsSettingsEdit,
         uniqueKey:              'acc-ops-settings-edit'
     });
-
-
+    
+    
     this.pageAccPigOpsList      = new PageAccPigOpsList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACC_PIG_OPS_LIST),
+        elemIdDivContainer:     elemIdContAccPigOpsList,
         uniqueKey:              'acc-pig-ops-list'
     });
-
-
+    
+    
     this.pageAccPigOpsAddEdit   = new PageAccPigOpsAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACC_PIG_OPS_ADD_EDIT),
+        elemIdDivContainer:     elemIdContAccPigOpsAddEdit,
         uniqueKey:              'acc-pig-ops-add-edit'
     });
-
-
+    
+    
     this.pageSupplierAddEdit    = new PageCommonSupplierAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SUPPLIER_ADD_EDIT),
+        elemIdDivContainer:     elemIdContSupplierAddEdit,
         uniqueKey:              'supplier-add-edit'
     });
-
-
+    
+    
     this.pageUserList           = new PageUserList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.USER_LIST),
+        elemIdDivContainer:     elemIdContUserList,
         uniqueKey:              'user-list'
     });
-
-
+    
+    
     this.pageAccessCodeList     = new PageAccessCodeList({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACCESS_CODE_LIST),
+        elemIdDivContainer:     elemIdContAccessCodeList,
         uniqueKey:              'access-code-list'
     });
-
-
+    
+    
     this.pageAccessCodeAddEdit  = new PageAccessCodeAddEdit({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACCESS_CODE_ADD_EDIT),
+        elemIdDivContainer:     elemIdContAccessCodeAddEdit,
         uniqueKey:              'access-code-add-edit'
     });
+    
     
     
     
@@ -846,9 +1302,198 @@ export function Navigation(){
         elemMobilePigFarmName           = document.getElementById('mobilePigFarmName');
         
         
-        
-        this.pageContainers.findElements();
 
+        elemPageContMyAccount           = document.getElementById(elemIdContMyAccount);
+        elemPageContCustomerPricing     = document.getElementById(elemIdContCustomerPricing)
+        
+        
+        elemPageContHomeDashBoard       = document.getElementById(elemIdContHomeDashBoard);
+        elemPageContPigFarmAddEdit      = document.getElementById(elemIdContPigFarmAddEdit);
+        
+        elemPageContFeedBackUs          = document.getElementById(elemIdContFeedBackUs);
+
+        
+        elemPageContAccountDisabled     = document.getElementById(elemIdContAccountDisabled);
+        elemPageContUserDisabled        = document.getElementById(elemIdContUserDisabled);
+        elemPageContAccountBillUnpaid   = document.getElementById(elemIdContAccountBillUnpaid);
+        
+                
+        elemPageContSowBoarList         = document.getElementById(elemIdContSowBoarList);
+        elemPageContSowBoarAddEdit      = document.getElementById(elemIdContSowBoarAddEdit);
+        elemPageContSowBoarEntry        = document.getElementById(elemIdContSowBoarEntry);
+        elemPageContSowBoarDisposed     = document.getElementById(elemIdContSowBoarDisposed);
+        
+        
+        elemPageContMedVacAddEdit       = document.getElementById(elemIdContMedVacAddEdit);
+        elemPageContHealthAddEdit       = document.getElementById(elemIdContHealthAddEdit);
+        elemPageContNotesAddEdit        = document.getElementById(elemIdContNotesAddEdit);
+        elemPageContParentTrace         = document.getElementById(elemIdContParentTrace);
+                
+        elemPageContProdGestaList       = document.getElementById(elemIdContProdGestaList);
+        elemPageContProdGestaAdd        = document.getElementById(elemIdContProdGestaAdd);
+        elemPageContProdGestaEntry      = document.getElementById(elemIdContProdGestaEntry);
+                
+        elemPageContProdLactaList       = document.getElementById(elemIdContProdLactaList);
+        elemPageContProdLactaEntry      = document.getElementById(elemIdContProdLactaEntry);
+                
+        elemPageContFatteningList       = document.getElementById(elemIdContFatteningList);
+        elemPageContFatteningAdd        = document.getElementById(elemIdContFatteningAdd);
+        elemPageContFatteningEntry      = document.getElementById(elemIdContFatteningEntry);
+                
+        elemPageContProdPigOpsEdit      = document.getElementById(elemIdContProdPigOpsEdit);
+        elemPageContProdFeedAddEdit     = document.getElementById(elemIdContProdFeedAddEdit);
+        elemPageContProdHarvestAddEdit  = document.getElementById(elemIdContProdHarvestAddEdit);
+        
+        elemPageContProdFeedBalAddEdit  = document.getElementById(elemIdContProdFeedBalAddEdit);
+        
+        elemPageContProdHistoryList     = document.getElementById(elemIdContProdHistoryList);
+        elemPageContProdHistoryEntry    = document.getElementById(elemIdContProdHistoryEntry);
+        
+        elemPageContProdNotPregnantList = document.getElementById(elemIdContProdNotPregnantList);
+        
+        
+        elemPageContAllFeedBalList      = document.getElementById(elemIdContAllFeedBalList);
+        elemPageContAllFeedBalAddEdit   = document.getElementById(elemIdContAllFeedBalAddEdit);
+        
+        elemPageContBoarExtMateList     = document.getElementById(elemIdContBoarExtMateList);
+        elemPageContBoarExtMateAddEdit  = document.getElementById(elemIdContBoarExtMateAddEdit);
+        
+        elemPageContPigDeadList         = document.getElementById(elemIdContPigDeadList);
+        elemPageContPigDeadAddEdit      = document.getElementById(elemIdContPigDeadAddEdit);
+        
+        elemPageContProdSalesList       = document.getElementById(elemIdContProdSalesList);
+        elemPageContProdSalesEntry      = document.getElementById(elemIdContProdSalesEntry);
+    
+    
+    
+        elemPageContFarmFeedBuyList     = document.getElementById(elemIdContFarmFeedBuyList);
+        elemPageContFarmFeedBuyAddEdit  = document.getElementById(elemIdContFarmFeedBuyAddEdit);
+        elemPageContFeedBuyItemAddEdit  = document.getElementById(elemIdContFeedBuyItemAddEdit);
+        
+        
+        
+        elemPageContAccOpsSettingsEdit  = document.getElementById(elemIdContAccOpsSettingsEdit);
+        elemPageContAccPigOpsList       = document.getElementById(elemIdContAccPigOpsList);
+        elemPageContAccPigOpsAddEdit    = document.getElementById(elemIdContAccPigOpsAddEdit);
+        
+        elemPageContSupplierAddEdit     = document.getElementById(elemIdContSupplierAddEdit);
+    
+        elemPageContUserList            = document.getElementById(elemIdContUserList);
+        
+        elemPageContAccessCodeList      = document.getElementById(elemIdContAccessCodeList);
+        elemPageContAccessCodeAddEdit   = document.getElementById(elemIdContAccessCodeAddEdit);
+        
+        
+        
+        CONTAINER_GROUP_PRODUCTION      = [
+            elemPageContProdGestaList,
+            elemPageContProdLactaList,
+            elemPageContFatteningList,
+            elemPageContProdHistoryList,
+            elemPageContProdNotPregnantList
+        ]; 
+        
+        
+        CONTAINER_GROUP_SOW_BOAR_GILT   = [
+            elemPageContSowBoarList,
+            elemPageContSowBoarDisposed,
+            elemPageContParentTrace
+        ];
+        
+        
+        CONTAINER_GROUP_OPERATIONS      = [
+            elemPageContAllFeedBalList,
+            elemPageContPigDeadList
+        ];
+        
+        
+        CONTAINER_GROUP_FINANCIALS      = [
+            elemPageContProdSalesList,
+            elemPageContFarmFeedBuyList
+        ];
+        
+        
+        CONTAINER_GROUP_ACCOUNT_LISTS   = [];
+        
+        
+        CONTAINER_GROUP_SETTINGS        = [
+            elemPageContAccOpsSettingsEdit,
+            elemPageContAccPigOpsList
+        ];
+        
+        
+        CONTAINER_GROUP_ADMIN           = [
+            elemPageContUserList,
+            elemPageContAccessCodeList
+        ];
+        
+        
+        containerToPageIdMap = [
+            { container: elemPageContMyAccount,             id: PAGE_ID.MY_ACCOUNT },
+            { container: elemPageContCustomerPricing,       id: PAGE_ID.CUSTOMER_PRICING },
+            { container: elemPageContHomeDashBoard,         id: PAGE_ID.HOME },
+            { container: elemPageContFeedBackUs,            id: PAGE_ID.FEEDBACK_US },
+            { container: elemPageContPigFarmAddEdit,        id: PAGE_ID.PIG_FARM_ADD_EDIT },
+                
+            { container: elemPageContSowBoarList,           id: PAGE_ID.SOW_BOAR_LIST },
+            { container: elemPageContSowBoarAddEdit,        id: PAGE_ID.SOW_BOAR_ADD_EDIT },
+            { container: elemPageContSowBoarEntry,          id: PAGE_ID.SOW_BOAR_ENTRY },
+            { container: elemPageContSowBoarDisposed,       id: PAGE_ID.SOW_BOAR_DISPOSED },
+                
+            { container: elemPageContMedVacAddEdit,         id: PAGE_ID.MEDVAC_ADD_EDIT },
+            { container: elemPageContHealthAddEdit,         id: PAGE_ID.HEALTH_ADD_EDIT },
+            { container: elemPageContNotesAddEdit,          id: PAGE_ID.NOTES_ADD_EDIT },
+            { container: elemPageContParentTrace,           id: PAGE_ID.TRACE_PARENTS },
+                
+            { container: elemPageContProdGestaList,         id: PAGE_ID.PROD_GESTA_LIST },
+            { container: elemPageContProdGestaAdd,          id: PAGE_ID.PROD_GESTA_ADD },
+            { container: elemPageContProdGestaEntry,        id: PAGE_ID.PROD_GESTA_ENTRY },
+                
+            { container: elemPageContProdLactaList,         id: PAGE_ID.PROD_LACTA_LIST },
+            { container: elemPageContProdLactaEntry,        id: PAGE_ID.PROD_LACTA_ENTRY },
+                
+            { container: elemPageContFatteningList,         id: PAGE_ID.PROD_FATTENING_LIST },
+            { container: elemPageContFatteningAdd,          id: PAGE_ID.PROD_FATTENING_ADD },
+            { container: elemPageContFatteningEntry,        id: PAGE_ID.PROD_FATTENING_ENTRY },
+                
+            { container: elemPageContProdPigOpsEdit,        id: PAGE_ID.PROD_PIG_OPS_EDIT },
+                
+            { container: elemPageContProdFeedAddEdit,       id: PAGE_ID.PROD_FEED_ADD_EDIT },
+            { container: elemPageContProdFeedBalAddEdit,    id: PAGE_ID.PROD_FEED_BAL_ADD_EDIT },
+                
+            { container: elemPageContProdHarvestAddEdit,    id: PAGE_ID.PROD_HARVEST_ADD_EDIT },
+                
+            { container: elemPageContProdHistoryList,       id: PAGE_ID.PROD_HISTORY_LIST },
+            { container: elemPageContProdHistoryEntry,      id: PAGE_ID.PROD_HISTORY_ENTRY },
+            { container: elemPageContProdNotPregnantList,   id: PAGE_ID.PROD_NOT_PREGNANT_LIST },
+                
+            { container: elemPageContAllFeedBalList,        id: PAGE_ID.ALL_FEED_BAL_LIST },
+            { container: elemPageContAllFeedBalAddEdit,     id: PAGE_ID.ALL_FEED_BAL_ADD_EDIT },
+                
+            { container: elemPageContBoarExtMateList,       id: PAGE_ID.BOAR_EXT_MATE_LIST },
+            { container: elemPageContBoarExtMateAddEdit,    id: PAGE_ID.BOAR_EXT_MATE_ADD_EDIT }, 
+                
+            { container: elemPageContPigDeadList,           id: PAGE_ID.PIG_DEAD_LIST },
+            { container: elemPageContPigDeadAddEdit,        id: PAGE_ID.PIG_DEAD_ADD_EDIT },
+                
+            { container: elemPageContProdSalesList,         id: PAGE_ID.PROD_SALES_LIST },
+            { container: elemPageContProdSalesEntry,        id: PAGE_ID.PROD_SALES_ENTRY },
+                
+            { container: elemPageContFarmFeedBuyList,       id: PAGE_ID.FARM_FEED_BUY_LIST },
+            { container: elemPageContFarmFeedBuyAddEdit,    id: PAGE_ID.FARM_FEED_BUY_ADD_EDIT },
+            { container: elemPageContFeedBuyItemAddEdit,    id: PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT },
+                
+            { container: elemPageContAccOpsSettingsEdit,    id: PAGE_ID.ACC_OPS_SETTINGS_EDIT },
+            { container: elemPageContAccPigOpsList,         id: PAGE_ID.ACC_PIG_OPS_LIST },
+            { container: elemPageContAccPigOpsAddEdit,      id: PAGE_ID.ACC_PIG_OPS_ADD_EDIT },
+                
+            { container: elemPageContSupplierAddEdit,       id: PAGE_ID.SUPPLIER_ADD_EDIT },
+                
+            { container: elemPageContUserList,              id: PAGE_ID.USER_LIST },
+                
+            { container: elemPageContAccessCodeList,        id: PAGE_ID.ACCESS_CODE_LIST },
+            { container: elemPageContAccessCodeAddEdit,     id: PAGE_ID.ACCESS_CODE_ADD_EDIT }
+        ];
     
     }
     
@@ -944,8 +1589,8 @@ export function Navigation(){
         this.managerAddress.setCurCountry(country);
         
             
-        const account_hid = pig_farm_account.account.account.hid;
-        this.pigFarm.accountLists.setPigFarmAccountHid(account_hid);
+        
+        this.pigFarm.accountLists.setPigFarmAccountHid(pig_farm_account.account.account.hid);
         
         // Request account feed supplier
         this.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.FEED);
@@ -957,10 +1602,9 @@ export function Navigation(){
         history.pushState({inApp: true}, '', window.location.href);
         console.log('\n\n\nCreated initial history entry');
         
-        const container_home = thisObj.pageContainers.getPageContainer(PAGE_ID.HOME);
         
         // This is the entry point on page load. The first page must be the dashboard.
-        this.curPageNavigated.pageContainer = container_home;
+        this.curPageNavigated.pageContainer = elemPageContHomeDashBoard;
         
     }
     
@@ -1023,19 +1667,261 @@ export function Navigation(){
     
     
     this.getPageContainer = function(page_id){
-        return thisObj.pageContainers.getPageContainer(page_id);
+        switch(page_id){
+            case PAGE_ID.MY_ACCOUNT: {
+                return elemPageContMyAccount;
+            }
+            
+            case PAGE_ID.CUSTOMER_PRICING: {
+                return elemPageContCustomerPricing;
+            } 
+            
+            case PAGE_ID.HOME: {
+                return elemPageContHomeDashBoard;
+            }
+            
+            
+            case PAGE_ID.FEEDBACK_US: {
+                return elemPageContFeedBackUs;
+            }
+            
+            
+            
+            
+            case PAGE_ID.PIG_FARM_ADD_EDIT:{
+                return elemPageContPigFarmAddEdit;
+            }
+            
+            case PAGE_ID.SOW_BOAR_LIST:{
+                return elemPageContSowBoarList;
+            }
+    
+            case PAGE_ID.SOW_BOAR_ADD_EDIT:{
+                return elemPageContSowBoarAddEdit;
+            }
+    
+            case PAGE_ID.SOW_BOAR_ENTRY:{
+                return elemPageContSowBoarEntry;
+            }
+    
+            case PAGE_ID.SOW_BOAR_DISPOSED:{
+                return elemPageContSowBoarDisposed;
+            }
+    
+    
+            case PAGE_ID.MEDVAC_ADD_EDIT:{
+                return elemPageContMedVacAddEdit;
+            }
+            
+            case PAGE_ID.HEALTH_ADD_EDIT:{
+                return elemPageContHealthAddEdit;
+            }
+            
+            case PAGE_ID.NOTES_ADD_EDIT:{
+                return elemPageContNotesAddEdit;
+            }
+            
+            case PAGE_ID.TRACE_PARENTS:{
+                return elemPageContParentTrace;
+            }
+            
+
+            
+    
+            case PAGE_ID.PROD_GESTA_LIST:{
+                return elemPageContProdGestaList;
+            }
+            
+            case PAGE_ID.PROD_GESTA_ADD:{
+                return elemPageContProdGestaAdd;
+            }
+            
+            case PAGE_ID.PROD_GESTA_ENTRY:{
+                return elemPageContProdGestaEntry;
+            }
+            
+            
+            case PAGE_ID.PROD_LACTA_LIST:{
+                return elemPageContProdLactaList;
+            }
+            
+            case PAGE_ID.PROD_LACTA_ENTRY:{
+                return elemPageContProdLactaEntry;
+            }
+            
+            
+            case PAGE_ID.PROD_FATTENING_LIST:{
+                return elemPageContFatteningList;
+            }
+            
+            case PAGE_ID.PROD_FATTENING_ADD:{
+                return elemPageContFatteningAdd;
+            }
+            
+            case PAGE_ID.PROD_FATTENING_ENTRY:{
+                return elemPageContFatteningEntry;
+            }
+
+            
+            
+            case PAGE_ID.PROD_PIG_OPS_EDIT:{
+                return elemPageContProdPigOpsEdit;
+            }
+            
+            
+            case PAGE_ID.PROD_FEED_ADD_EDIT: {
+                return elemPageContProdFeedAddEdit;
+            }
+            
+            case PAGE_ID.PROD_FEED_BAL_ADD_EDIT: {
+                return elemPageContProdFeedBalAddEdit;
+            }
+            
+            
+            case PAGE_ID.PROD_HARVEST_ADD_EDIT: {
+                return elemPageContProdHarvestAddEdit;
+            }
+
+            
+            case PAGE_ID.PROD_HISTORY_LIST: {
+                return elemPageContProdHistoryList;
+            }
+            
+            case PAGE_ID.PROD_HISTORY_ENTRY: {
+                return elemPageContProdHistoryEntry;
+            }
+            
+            case PAGE_ID.PROD_NOT_PREGNANT_LIST: {
+                return elemPageContProdNotPregnantList;
+            }
+            
+            
+            case PAGE_ID.ALL_FEED_BAL_LIST: {
+                return elemPageContAllFeedBalList;
+            }
+            
+            case PAGE_ID.ALL_FEED_BAL_ADD_EDIT: {
+                return elemPageContAllFeedBalAddEdit;
+            }
+            
+            
+            case PAGE_ID.BOAR_EXT_MATE_LIST: {
+                return elemPageContBoarExtMateList;
+            }
+            
+            case PAGE_ID.BOAR_EXT_MATE_ADD_EDIT: {
+                return elemPageContBoarExtMateAddEdit;
+            }
+    
+            
+            case PAGE_ID.PIG_DEAD_LIST: {
+                return elemPageContPigDeadList;
+            }
+            
+            case PAGE_ID.PIG_DEAD_ADD_EDIT: {
+                return elemPageContPigDeadAddEdit;
+            }
+    
+               
+            
+                
+             
+            case PAGE_ID.PROD_SALES_LIST: {
+                return elemPageContProdSalesList;
+                break;
+            }
+             
+            case PAGE_ID.PROD_SALES_ENTRY: {
+                return elemPageContProdSalesEntry;
+                break;
+            }
+            
+            
+            case PAGE_ID.FARM_FEED_BUY_LIST: {
+                return elemPageContFarmFeedBuyList;
+            }
+            
+            case PAGE_ID.FARM_FEED_BUY_ADD_EDIT: {
+                return elemPageContFarmFeedBuyAddEdit;
+            }
+            
+            case PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT: {
+                return elemPageContFeedBuyItemAddEdit;
+            }
+            
+            
+            
+            
+            case PAGE_ID.ACC_OPS_SETTINGS_EDIT:{
+                return elemPageContAccOpsSettingsEdit;
+            } 
+        
+            case PAGE_ID.ACC_PIG_OPS_LIST: {
+                return elemPageContAccPigOpsList;
+            }
+            
+
+            case PAGE_ID.ACC_PIG_OPS_ADD_EDIT: {
+                return elemPageContAccPigOpsAddEdit;
+            }
+
+            
+            case PAGE_ID.SUPPLIER_ADD_EDIT:{
+                return elemPageContSupplierAddEdit;
+            }
+            
+            
+            
+            case PAGE_ID.USER_LIST: {
+                return elemPageContUserList;
+                break;
+            }    
+            
+            case PAGE_ID.USER_ADD_EDIT: {
+                break;
+            }
+
+            case PAGE_ID.ACCESS_CODE_LIST: {
+                return elemPageContAccessCodeList;
+            }
+            
+            case PAGE_ID.ACCESS_CODE_ADD_EDIT: {
+                return elemPageContAccessCodeAddEdit;
+            }
+
+               
+            
+            
+            default:{
+                return elemPageContHomeDashBoard;
+            }
+        }
+        
+        return null;
+        
     }
         
        
     this.getPageIdFromContainer = function(page_container) {
-        return thisObj.getPageIdFromContainer.getPageContainer(page_id);
+
+        // Loop through mappings to find match
+        for (let i = 0; i < containerToPageIdMap.length; i++) {
+            if (containerToPageIdMap[i].container === page_container) {
+                return containerToPageIdMap[i].id;
+            }
+        }
+        
+        // Default fallback
+        return PAGE_ID.HOME;
     };
         
         
     this.showThisPage = function(page_container){
-
-        const container_home    = thisObj.pageContainers.getPageContainer(PAGE_ID.HOME);
-        const hidden_containers = thisObj.pageContainers.hiddenContainers;
+        // All navigation menus will use this
+        // Be sure the body back ground color is reset to default
+        //document.body.style.backgroundColor = '#f5f7fa';
+        
+        const hidden_containers = document.getElementsByClassName("hidden-container");
         
         
         // Perform user and account control checks.
@@ -1158,7 +2044,7 @@ export function Navigation(){
                 
                 
                 // Update public sections. 
-                if (cur_entry == container_home){
+                if (cur_entry == elemPageContHomeDashBoard){
                     thisObj.managerPublicSections.beforeShow();
                     
                     // Clear History if current page is dashboard
@@ -1187,7 +2073,7 @@ export function Navigation(){
     
         
     this._onClickNavSowBoar = function(is_mobile, sow_boar_type){
-        const next_page = thisObj.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+        const next_page = elemPageContSowBoarList;
         
         // Push currentPage to NavHistory;
         // Will also compare current page and next_page NAV_MENU_GROUP. 
@@ -1204,14 +2090,7 @@ export function Navigation(){
     
     
     this._onClickNavParentTrace = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.TRACE_PARENTS);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContParentTrace);
         thisObj.pageParentTrace.show();
     }
     
@@ -1230,11 +2109,9 @@ export function Navigation(){
         
         
         if (operation_type == PIG_OPERATION_TYPE.GESTATING){
-            const next_page = thisObj.getPageContainer(PAGE_ID.PROD_GESTA_LIST);
-            
             if (check_data_updates){
                 const callback_success = function(){
-                    thisObj.showThisPage(next_page);
+                    thisObj.showThisPage(elemPageContProdGestaList);
                     thisObj.pageMobGestatingList.show();
                 };
                 
@@ -1243,7 +2120,7 @@ export function Navigation(){
             }
             
             else{
-                thisObj.showThisPage(next_page);
+                thisObj.showThisPage(elemPageContProdGestaList);
                 thisObj.pageMobGestatingList.show();
             }
             
@@ -1252,10 +2129,7 @@ export function Navigation(){
         
         if ((operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS) || 
             (operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
-            
-            const next_page = thisObj.getPageContainer(PAGE_ID.PROD_LACTA_LIST);
-                
-            thisObj.showThisPage(next_page);
+            thisObj.showThisPage(elemPageContProdLactaList);
             thisObj.pageMobLactatingList.show();
             return;
         }
@@ -1264,31 +2138,25 @@ export function Navigation(){
     
     
     this._onClickNavProdFattening = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_FATTENING_LIST);
-        
-        thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContFatteningList);
         thisObj.pageProdFatteningList.show();
     }
     
     
     this._onClickNavProdHistory = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_HISTORY_LIST);
-        
-        thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContProdHistoryList);
         thisObj.pageProdHistoryList.show();
     }
     
     
     this._onClickNavProdNotPregnant = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_NOT_PREGNANT_LIST);
-        
-        thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContProdNotPregnantList);
         thisObj.pageNotPregnantList.show();
     }
     
         
     this._onClickNavFeedBalance = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
+        const next_page = elemPageContAllFeedBalList;
         
         // Push currentPage to NavHistory;
         // Will also compare current page and next_page NAV_MENU_GROUP. 
@@ -1301,7 +2169,7 @@ export function Navigation(){
         
     
     this._onClickNavPigDead = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
+        const next_page = elemPageContPigDeadList;
         
         // Push currentPage to NavHistory;
         // Will also compare current page and next_page NAV_MENU_GROUP. 
@@ -1324,28 +2192,14 @@ export function Navigation(){
     
     
     this._onClickNavProdSales = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_SALES_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContProdSalesList);
         thisObj.pageProdSalesList.show();
     }
     
         
         
     this._onClickNavFeedsExpenses = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.FARM_FEED_BUY_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        //thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContFarmFeedBuyList);
         thisObj.pagePigFarmFeedBuyList.beforeShow();
     }
         
@@ -1387,54 +2241,26 @@ export function Navigation(){
         
         
     this._onClickNavAccOpsSettings = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.ACC_OPS_SETTINGS_EDIT);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContAccOpsSettingsEdit);
         thisObj.pageAccOpsSettingsEdit.show();
     }
     
         
     this._onClickNavAccPigOps = function(is_mobile, operation_type){
-        const next_page = thisObj.getPageContainer(PAGE_ID.ACC_PIG_OPS_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContAccPigOpsList);
         thisObj.pageAccPigOpsList.show(operation_type);
     }
         
     
                     
     this._onClickNavUsers = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.USER_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContUserList);
         thisObj.pageUserList.show();
     }
         
         
     this._onClickNavAccessCodes = function(is_mobile){
-        const next_page = thisObj.getPageContainer(PAGE_ID.ACCESS_CODE_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //thisObj.pushCurrentPageToNavHistory(next_page);
-        
-        
-        thisObj.showThisPage(next_page);
+        thisObj.showThisPage(elemPageContAccessCodeList);
         thisObj.pageAccessCodeList.show();
     }
         
@@ -1613,7 +2439,104 @@ export function Navigation(){
  
  
     this.pageContainerToString = function(page_container){
-        return thisObj.pageContainers.pageContainerToString(page_container);
+        switch(page_container) {
+        
+            case elemPageContMyAccount              :{return "PageContMyAccount        ";}
+            case elemPageContCustomerPricing        :{return "PageContCustomerPricing  ";}
+                                                    
+                                                    
+            case elemPageContAccountDisabled        :{return "PageContAccountDisabled  ";}
+            case elemPageContUserDisabled           :{return "PageContUserDisabled     ";}
+            case elemPageContAccountBillUnpaid      :{return "PageContAccountBillUnpaid";}
+                                                    
+                                                    
+            case elemPageContHomeDashBoard          :{return "PageContHomeDashBoard    ";}
+            case elemPageContPigFarmAddEdit         :{return "PageContPigFarmAddEdit   ";}
+                                                    
+            case elemPageContFeedBackUs             :{return "PageContFeedBackUs       ";}
+                                                    
+                                                    
+            case elemPageContSowBoarList            :{return "PageContSowBoarList      ";}
+            case elemPageContSowBoarAddEdit         :{return "PageContSowBoarAddEdit   ";}
+            case elemPageContSowBoarEntry           :{return "PageContSowBoarEntry     ";}
+            case elemPageContSowBoarDisposed        :{return "PageContSowBoarDisposed  ";}
+                                                    
+                                                    
+            case elemPageContMedVacAddEdit          :{return "PageContMedVacAddEdit    ";}
+            case elemPageContHealthAddEdit          :{return "PageContHealthAddEdit    ";}
+            case elemPageContNotesAddEdit           :{return "PageContNotesAddEdit     ";}
+            
+            
+            case elemPageContParentTrace            :{return "PageContNotesAddEdit     ";}
+                
+                
+            case elemPageContProdGestaList          :{return "PageContProdGestaList      ";}
+            case elemPageContProdGestaAdd           :{return "PageContProdGestaAdd       ";}
+            case elemPageContProdGestaEntry         :{return "PageContProdGestaEntry     ";}
+                                                    
+            case elemPageContProdLactaList          :{return "PageContProdLactaList      ";}
+            case elemPageContProdLactaEntry         :{return "PageContProdLactaEntry     ";}
+                                                    
+            case elemPageContFatteningList          :{return "PageContFatteningList      ";}
+            case elemPageContFatteningAdd           :{return "PageContFatteningAdd       ";}
+            case elemPageContFatteningEntry         :{return "PageContFatteningEntry     ";}
+                                                    
+                                                    
+                                                    
+            case elemPageContProdPigOpsEdit         :{return "PageContProdPigOpsEdit     ";}
+            case elemPageContProdFeedAddEdit        :{return "PageContProdFeedAddEdit    ";}
+            case elemPageContProdHarvestAddEdit     :{return "PageContProdHarvestAddEdit ";}
+                                                    
+                                                    
+            case elemPageContProdHistoryList        :{return "PageContProdHistoryList    ";}
+            case elemPageContProdHistoryEntry       :{return "PageContProdHistoryEntry   ";}
+                                                    
+            case elemPageContProdNotPregnantList    :{return "PageContProdNotPregnantList";}
+                                     
+                                                    
+            case elemPageContAllFeedBalList         :{return "PageContAllFeedBalList     ";}
+            case elemPageContAllFeedBalAddEdit      :{return "PageContAllFeedBalAddEdit  ";}
+            
+            
+            case elemPageContBoarExtMateList        :{return "PageContBoarExtMateList    ";}
+            case elemPageContBoarExtMateAddEdit     :{return "PageContBoarExtMateAddEdit ";}
+            
+            
+            case elemPageContPigDeadList            :{return "elemPageContPigDeadList       ";}
+            case elemPageContPigDeadAddEdit         :{return "elemPageContPigDeadAddEdit    ";}
+            
+            
+            
+            
+            
+            case elemPageContFarmFeedBuyList        :{return "elemPageContFarmFeedBuyList   ";}
+            case elemPageContFarmFeedBuyAddEdit     :{return "elemPageContFarmFeedBuyAddEdit";}
+            case elemPageContFeedBuyItemAddEdit     :{return "elemPageContFeedBuyItemAddEdit";}
+                                                    
+            case elemPageContProdFeedBalAddEdit     :{return "elemPageContProdFeedBalAddEdit";}
+                                                    
+                                                    
+            case elemPageContProdSalesList          :{return "elemPageContProdSalesList     ";}
+            case elemPageContProdSalesEntry         :{return "elemPageContProdSalesEntry    ";}
+                                                    
+                                                    
+            case elemPageContAccOpsSettingsEdit     :{return "elemPageContAccOpsSettingsEdit";}
+            case elemPageContAccPigOpsList          :{return "elemPageContAccPigOpsList     ";}
+            case elemPageContAccPigOpsAddEdit       :{return "elemPageContAccPigOpsAddEdit  ";}
+                                                    
+                                                    
+            case elemPageContSupplierAddEdit        :{return "elemPageContSupplierAddEdit   ";}
+                                                    
+            case elemPageContUserList               :{return "elemPageContUserList          ";}
+            case elemPageContUserAddEdit            :{return "elemPageContUserAddEdit       ";}
+            
+            case elemPageContAccessCodeList         :{return "elemPageContAccessCodeList    ";}
+            case elemPageContAccessCodeAddEdit      :{return "elemPageContAccessCodeAddEdit ";}
+            
+            default:{return null;}
+        }
+        
+        return null;
     }
     
     
@@ -1624,6 +2547,35 @@ export function Navigation(){
     // Example ['Sows', 'Boars', 'Gilts', 'Disposed', 'Parent Trace'] belongs to
     // NAV_MENU_GROUP.SOW_BOAR_GILT;
     this.getNavigationMenuGroup = function(page_container){
-        return thisObj.pageContainers.getNavigationMenuGroup(page_container);
+        
+        if (CONTAINER_GROUP_PRODUCTION.includes(page_container)){
+            return NAV_MENU_GROUP.PRODUCTION;
+        }
+        
+        if (CONTAINER_GROUP_SOW_BOAR_GILT.includes(page_container)){
+            return NAV_MENU_GROUP.SOW_BOAR_GILT;
+        }
+        
+        if (CONTAINER_GROUP_OPERATIONS.includes(page_container)){
+            return NAV_MENU_GROUP.OPERATIONS;
+        }
+        
+        if (CONTAINER_GROUP_FINANCIALS.includes(page_container)){
+            return NAV_MENU_GROUP.FINANCIALS;
+        }
+        
+        if (CONTAINER_GROUP_ACCOUNT_LISTS.includes(page_container)){
+            return NAV_MENU_GROUP.ACCOUNT_LISTS;
+        }
+        
+        if (CONTAINER_GROUP_SETTINGS.includes(page_container)){
+            return NAV_MENU_GROUP.SETTINGS;
+        }
+        
+        if (CONTAINER_GROUP_ADMIN.includes(page_container)){
+            return NAV_MENU_GROUP.ADMIN;
+        }
+        
+        return null;
     }
 }
