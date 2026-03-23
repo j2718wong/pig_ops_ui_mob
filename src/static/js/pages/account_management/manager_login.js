@@ -142,6 +142,19 @@ export function ManagerLogin(){
     
     
     this.onPageLoad = function(){
+        const url_path = window.location.pathname;
+        
+        if (url_path == '/logout'){
+            // Clear cookies and storage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Redirect to home or login
+            window.location.href = '/login';
+            return;
+        }
+        
+        
         // Set CopyRight Year
         const currentYear = new Date().getFullYear();
         elemCopyRightYear.textContent = currentYear;
@@ -160,7 +173,9 @@ export function ManagerLogin(){
             
                 switch (state){
                     case 'NF':{
-                        // This comes now from /signup?state=NF
+                        // This comes now from Navigation redirect. 
+                        // 
+                        // window.location.href = "/login?state=NF";
                         
                         
                         // No Farm state; but the user has bearer token;
@@ -178,7 +193,30 @@ export function ManagerLogin(){
                         // In this case the user should go back to the registration 
                         // page where to input first pig farm. 
                         
+                        
+                        // 2026-03-23 Notes:
+                        // 2.) It is also possible that user, use the back button
+                        // or simply refresh again this URL "/login?state=NF". 
+                        // It should be checked if user has really no farms
+                        // before going to  PAGE_ID.ADD_FARM;
+                        
+                        
                         const callback_success = function(data_user_account){
+                            console.log('data_user_account');
+                            
+                            console.log(data_user_account);
+                            
+                            // Check if user has really no assigned Farm
+                            const user = data_user_account.user;
+                            
+                            if (user.pig_farms){
+                                // User has assigned farms even the URL path tells that user has no farm
+                                // redirect to "/"
+                                window.location.href = "/";
+                                return;
+                            }
+                            
+                            
                             const goto_page_id   = PAGE_ID.ADD_FARM;
                             const page_container = thisObj.getPageContainer(goto_page_id);
                                 
@@ -237,10 +275,10 @@ export function ManagerLogin(){
         
         
         // No bearer token;
-        const url_path = window.location.pathname;
-        
-        
         let options;
+        
+        
+        
         
         if (url_path == '/signup'){
             options = {

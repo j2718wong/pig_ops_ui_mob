@@ -40,11 +40,11 @@ export function PageCreateOrJoinAccount(input_settings){
 
     
     let elemJoinAccount         = null;
-    let elemAccessCode         = null;
+    let elemAccessCode          = null;
     let elemInvalidAccCodeShow  = null;
     let elemInvalidAccCodeMsg   = null;
     
-    
+    let elemBackToSignUp        = null;
     
     let curDataUserAccount      = null;
     
@@ -145,6 +145,27 @@ export function PageCreateOrJoinAccount(input_settings){
             👆 Click to Continue
         </div>
     </div>
+    
+    <div style="margin-top: 0.5rem; text-align: center;">
+        <button 
+            id="back-signup-btn" 
+            type="button" 
+            style="
+                background: none;
+                border: none;
+                color: var(--corporate-blue);
+                font-size: 1rem;
+                cursor: pointer;
+                padding: 6px 12px;
+                transition: all 0.2s ease;
+                font-family: inherit;
+            "
+            onmouseover="this.style.textDecoration='underline';"
+            onmouseout="this.style.textDecoration='none';"
+        >
+            Back to Signup
+        </button>
+    </div>
 
     
 </div>
@@ -174,9 +195,11 @@ export function PageCreateOrJoinAccount(input_settings){
         
         
         elemJoinAccount         = elemDivContainer.querySelector('#join-account');
-        elemAccessCode         = elemDivContainer.querySelector('#account-code');
+        elemAccessCode          = elemDivContainer.querySelector('#account-code');
         elemInvalidAccCodeShow  = elemDivContainer.querySelector('#invalid-account-code-show');
         elemInvalidAccCodeMsg   = elemDivContainer.querySelector('#invalid-account-code-msg');
+        
+        elemBackToSignUp        = elemDivContainer.querySelector('#back-signup-btn');
     }
     
     
@@ -196,7 +219,21 @@ export function PageCreateOrJoinAccount(input_settings){
             thisObj.onClickJoinAccount();
         });
 
-        
+        elemBackToSignUp.addEventListener('click', function() {
+            // 2. Clear frontend storage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // 3. Clear all cookies
+            document.cookie.split(";").forEach(function(c) {
+                var name = c.split("=")[0].trim();
+                document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+                document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+            });
+            
+            // 4. Redirect to signup
+            window.location.href = '/signup';
+        });
     }
     
     

@@ -63,6 +63,9 @@ export function PageAddFarm(input_settings){
     let elemBtnSave             = null;
 
 
+    let elemBackToSignUp        = null;
+
+
     let dataUserAccount         = null;
     
     // Store location data
@@ -184,6 +187,27 @@ export function PageAddFarm(input_settings){
           
         </div>
     </div>
+    
+    <div style="margin-top: 0.5rem; text-align: center;">
+        <button 
+            id="back-signup-btn-add-farm" 
+            type="button" 
+            style="
+                background: none;
+                border: none;
+                color: var(--corporate-blue);
+                font-size: 1rem;
+                cursor: pointer;
+                padding: 6px 12px;
+                transition: all 0.2s ease;
+                font-family: inherit;
+            "
+            onmouseover="this.style.textDecoration='underline';"
+            onmouseout="this.style.textDecoration='none';"
+        >
+            Back to Signup
+        </button>
+    </div>
 
 
 </div>
@@ -226,6 +250,8 @@ export function PageAddFarm(input_settings){
         elemServerErrorMsg          = elemDivContainer.querySelector('#' + elemIdServerErrorMsg);
         
         elemBtnSave                 = elemDivContainer.querySelector('#createFarmBtn');
+        
+        elemBackToSignUp            = elemDivContainer.querySelector('#back-signup-btn-add-farm');
     }
     
     
@@ -286,7 +312,26 @@ export function PageAddFarm(input_settings){
             }
         });
 
+
         elemBtnSave.addEventListener('click', thisObj.onClickCreateFarm);
+        
+        
+        elemBackToSignUp.addEventListener('click', function() {
+            // 2. Clear frontend storage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // 3. Clear all cookies
+            document.cookie.split(";").forEach(function(c) {
+                var name = c.split("=")[0].trim();
+                document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+                document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+            });
+            
+            // 4. Redirect to signup
+            window.location.href = '/signup';
+        });
+        
     }
 
 
