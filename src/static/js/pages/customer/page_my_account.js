@@ -179,14 +179,37 @@ export function PageMyAccount(input_settings){
     
 
         pigFarmTable.getHtmlTableRow = function(cur_entry){
+            console.log('Test 1');
+            console.log(cur_entry);
+            
             const pig_farm_name = cur_entry.pig_farm.name;
             
-            let address = '';
+            const pig_farm_location = cur_entry.location;
+            
+            let s_address = '';
+            
+            s_address = pig_farm_location.country.name;
+            if (pig_farm_location.address){
+                const address = pig_farm_location.address;
+                
+                if (address.level_1){
+                    s_address += `, ${address.level_1.name}`;
+                    
+                    if (address.level_2){
+                        s_address += `, ${address.level_2.name}`;
+                        
+                        if (address.level_3){
+                            s_address += `, ${address.level_3.name}`;
+                        }
+                    }
+                }
+            }
+            
             
             const html = `
                 <tr>
                     <td>${pig_farm_name}</td>
-                    <td>${address}</td>
+                    <td>${s_address}</td>
                 </tr>
             `;
             
@@ -218,6 +241,29 @@ export function PageMyAccount(input_settings){
                 
                 if (index == 0 || index == 1){
                     cur_td.onclick = function(){
+                        // Show Container
+                        const next_page_id   = PAGE_ID.PIG_FARM_ADD_EDIT;
+                        const next_page = navigation.getPageContainer(next_page_id);
+                        
+                        // Push currentPage to NavHistory; 
+                        // Will also compare current page and  next_page NAV_MENU_GROUP.
+                        navigation.pushCurrentPageToNavHistory(next_page);
+                        
+                        navigation.showThisPage(next_page);
+                        
+                        
+                        // Show Page
+                        const go_back_page_id   = PAGE_ID.MY_ACCOUNT;
+                        const go_back_page = navigation.getPageContainer(go_back_page_id);
+                        
+                    
+                        const options ={
+                            is_add:                 false,   // false is edit
+                            go_back_page:           go_back_page 
+                        }
+                        navigation.pagePigFarmAddEdit.show(options);
+
+                    
                     };
                             
                 }
@@ -438,10 +484,11 @@ export function PageMyAccount(input_settings){
         options ={
             go_back_page:           go_back_page
         }
-            
-        
+         
         */
-        showOptions = options;
+        if (options){ // Change showOptions if there is a given options.  
+            showOptions = options;
+        }
         
         
         elemBtnClose.onclick = function(){
@@ -508,6 +555,36 @@ export function PageMyAccount(input_settings){
         
     }
     
+    
+    this.exitEditAccAndSave = function(){
+        if (!dataUserAccount) return;
+        
+        // already not editing
+        if (elemAccountNameEditInput.classList.contains('hidden-section')) return; 
+
+        const newName = elemAccountNameEditInput.value.trim();
+        if (newName.length < 8) {
+            
+            elemInvalidAccNameShow.style.display = 'block';
+            return;
+        }
+        
+        
+        if (newName !== dataUserAccount.account.account.name) {
+            thisObj.onSaveAccountName(newName);
+        }
+        
+        
+        const account_name  = dataUserAccount.account.account.name;
+        
+
+        // always switch back to read-only display (even if same or empty we revert display)
+        elemAccountNameDisplay.innerText = account_name;   // ensure fresh
+        elemAccountNameDisplay.classList.remove('hidden-section');
+        elemAccountNameEditInput.classList.add('hidden-section');
+
+    }
+
     
     this.onSaveAccountName = function(new_acc_name){
         const user_hid      = dataUserAccount.user.user.hid;

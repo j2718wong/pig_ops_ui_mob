@@ -268,10 +268,16 @@ export function PagePigFarmAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                showOptions.go_back_page);
+            
             navigation.showThisPage(showOptions.go_back_page);
         };
         
         elemBtnCancel.onclick = function() {
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                        showOptions.go_back_page);
+                    
             navigation.showThisPage(showOptions.go_back_page);
         };
     }
@@ -284,7 +290,7 @@ export function PagePigFarmAddEdit(input_settings){
         elemUiName.setValue(pig_farm.pig_farm.name);
         
         if (pig_farm.location.address){
-            if (pig_farm.location.address.level_1.hid){
+            if (pig_farm.location.address.level_1 && pig_farm.location.address.level_1.hid){
                 elemWarningBox.style.display = 'none';
             }
             else{
@@ -368,17 +374,23 @@ export function PagePigFarmAddEdit(input_settings){
         if (address_hids){
             if (address_hids.level_1_hid == '0' || address_hids.level_1_hid == '-1'){}
             else{
-                post_data.level_1_hid = address_hids.level_1_hid;
+                if (address_hids.level_1_hid.length > 0){
+                    post_data.level_1_hid = address_hids.level_1_hid;
+                }
             }
             
             if (address_hids.level_2_hid == '0' || address_hids.level_2_hid == '-1'){}
             else{
-                post_data.level_2_hid = address_hids.level_2_hid;
+                if (address_hids.level_2_hid.length > 0){
+                    post_data.level_2_hid = address_hids.level_2_hid;
+                }
             }
             
             if (address_hids.level_3_hid == '0' || address_hids.level_3_hid == '-1'){}
             else{
-                post_data.level_3_hid = address_hids.level_3_hid;
+                if (address_hids.level_3_hid.length > 0){
+                    post_data.level_3_hid = address_hids.level_3_hid;
+                }
             }
         }
         
@@ -430,7 +442,15 @@ export function PagePigFarmAddEdit(input_settings){
                     
                     
                     // Show page
-                    navigation.pageHomeDashBoard.show();
+                    
+                    const go_back_page_id = navigation.getPageIdFromContainer(showOptions.go_back_page);
+                    
+                    if (go_back_page_id == PAGE_ID.MY_ACCOUNT){
+                        navigation.pageMyAccount.show();
+                    }
+                    else{
+                        navigation.pageHomeDashBoard.show();
+                    }
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

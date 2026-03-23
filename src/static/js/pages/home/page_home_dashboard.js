@@ -501,9 +501,8 @@ export function PageHomeDashBoard(input_settings){
                 const go_back_page = navigation.getPageContainer(go_back_page_id);
                 
             
-                const options ={
+                const options = {
                     is_add:                 false,   // false is edit
-                    callback_after_edit:    thisObj.onSuccessEditFarm,
                     go_back_page:           go_back_page 
                 }
                 navigation.pagePigFarmAddEdit.show(options);
@@ -525,8 +524,5 @@ export function PageHomeDashBoard(input_settings){
     }
     
     
-    this.onSuccessEditFarm = function(){
-        
-    }
-    
+   
 }
