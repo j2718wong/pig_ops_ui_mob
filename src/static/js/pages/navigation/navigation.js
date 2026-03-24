@@ -581,6 +581,29 @@ export function Navigation(){
     
     
     
+    // Helper function to get language parameter for URLs
+    function getLanguageParam() {
+        // First check URL parameters (highest priority)
+        const urlParams = new URLSearchParams(window.location.search);
+        let lang = urlParams.get('lang');
+        
+        // If not in URL, check localStorage
+        if (!lang) {
+            lang = localStorage.getItem('user_language');
+        }
+        
+        console.log('getLanguageParam - lang found:', lang);
+        
+        // Return properly formatted parameter
+        if (lang && lang !== 'default' && lang !== 'null' && lang !== 'undefined') {
+            // Make sure it's a valid language code (like 'bis', 'en', etc.)
+            if (lang === 'bis' || lang === 'en' || lang === 'ph') {
+                return '?lang=' + lang;
+            }
+        }
+        return '';
+    }
+    
     
     this.init = function(){
         
@@ -591,7 +614,8 @@ export function Navigation(){
             this.requestPigFarmData(bearer_token);
         }
         else{
-            window.location.href = '/login';
+            const langParam = getLanguageParam();
+            window.location.href = '/login' + langParam;
         }
     }
     
@@ -648,8 +672,9 @@ export function Navigation(){
                         // Clear all items from localStorage
                         localStorage.clear();
                         
-                        // Redirect to /login
-                        window.location.href = '/login';
+                        // Redirect to /login with language preservation
+                        const langParam = getLanguageParam();
+                        window.location.href = '/login' + langParam;
                         
                         return;
                     }
@@ -661,8 +686,9 @@ export function Navigation(){
                         // Clear all items from localStorage
                         localStorage.clear();
                         
-                        // Redirect to /login
-                        window.location.href = '/login';
+                        // Redirect to /login with language preservation
+                        const langParam = getLanguageParam();
+                        window.location.href = '/login' + langParam;
                         
                         return;
                     }

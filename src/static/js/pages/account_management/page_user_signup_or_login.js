@@ -110,6 +110,7 @@ export async function getLocationWithFallback() {
 }
 
 
+// In page_user_signup_or_login.js
 export async function loadHomePageWithToken() {
     // Try to get token from cookie first (new flow)
     let token = getCookie('access_token');
@@ -123,12 +124,28 @@ export async function loadHomePageWithToken() {
     
     if (!token) {
         console.log('No token found, redirecting to login');
-        window.location.href = '/login';
+        // Preserve language when redirecting to login
+        const savedLang = localStorage.getItem('user_language');
+        let loginUrl = '/login';
+        if (savedLang && savedLang !== 'default') {
+            loginUrl += '?lang=' + savedLang;
+        }
+        window.location.href = loginUrl;
         return;
     }
     
     try {
-        const response = await fetch('/', {
+        // Get language preference
+        const savedLang = localStorage.getItem('user_language');
+        let url = '/';
+        if (savedLang && savedLang !== 'default') {
+            url = '/?lang=' + savedLang;
+            console.log('loadHomePageWithToken - loading homepage with language:', savedLang);
+        } else {
+            console.log('loadHomePageWithToken - loading homepage without language');
+        }
+        
+        const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -139,14 +156,29 @@ export async function loadHomePageWithToken() {
             document.open();
             document.write(html);
             document.close();
-            history.pushState({}, '', '/');
+            // Update URL to include language if needed
+            if (savedLang && savedLang !== 'default') {
+                history.pushState({}, '', '/?lang=' + savedLang);
+            } else {
+                history.pushState({}, '', '/');
+            }
         } else {
             console.log('Failed to load homepage, redirecting to login');
-            window.location.href = '/login';
+            const savedLang = localStorage.getItem('user_language');
+            let loginUrl = '/login';
+            if (savedLang && savedLang !== 'default') {
+                loginUrl += '?lang=' + savedLang;
+            }
+            window.location.href = loginUrl;
         }
     } catch (error) {
         console.error('Failed to load homepage:', error);
-        window.location.href = '/login';
+        const savedLang = localStorage.getItem('user_language');
+        let loginUrl = '/login';
+        if (savedLang && savedLang !== 'default') {
+            loginUrl += '?lang=' + savedLang;
+        }
+        window.location.href = loginUrl;
     }
 }
 
@@ -787,6 +819,15 @@ export function PageUserSignUpOrLogin(input_settings){
                         localStorage.setItem('access_token', response.bearer_token);
                         const data_user_account = response.user_account;
                         
+                        
+                        // Capture language from URL or localStorage before redirect
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const urlLang = urlParams.get('lang');
+                        if (urlLang) {
+                            localStorage.setItem('user_language', urlLang);
+                        }
+                        
+                        
                         parentObj.handlePostLoginFlow(data_user_account);
                         return;
                     }
@@ -1037,6 +1078,14 @@ export function PageUserSignUpOrLogin(input_settings){
             localStorage.setItem('access_token', data.bearer_token);
             localStorage.setItem('user_picture', data.user_picture);
             
+            // Capture language from URL or localStorage before redirect
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlLang = urlParams.get('lang');
+            if (urlLang) {
+                localStorage.setItem('user_language', urlLang);
+            }
+            
+            
             // Hide loading and proceed
             loadingAnimation.hide();
             parentObj.handlePostLoginFlow(data.user_account);
@@ -1238,6 +1287,15 @@ export function PageUserSignUpOrLogin(input_settings){
                         // Store token
                         localStorage.setItem('access_token', response.bearer_token);
                         const data_user_account = response.user_account;
+                        
+                        
+                        // Capture language from URL or localStorage before redirect
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const urlLang = urlParams.get('lang');
+                        if (urlLang) {
+                            localStorage.setItem('user_language', urlLang);
+                        }
+                        
                         
                         parentObj.handlePostLoginFlow(data_user_account);
                         return;

@@ -168,6 +168,14 @@ export function ManagerLogin(){
             
             const urlParams = new URLSearchParams(window.location.search);
             const state     = urlParams.get('state');
+            const urlLang   = urlParams.get('lang');
+    
+            // If language is present in URL, store it immediately
+            if (urlLang) {
+                console.log('Language found in URL:', urlLang);
+                localStorage.setItem('user_language', urlLang);
+            }
+            
             
             if (state) {
             
@@ -212,7 +220,14 @@ export function ManagerLogin(){
                             if (user.pig_farms){
                                 // User has assigned farms even the URL path tells that user has no farm
                                 // redirect to "/"
-                                window.location.href = "/";
+                                // redirect to "/" with language
+                                const savedLang = localStorage.getItem('user_language');
+                                if (savedLang && savedLang !== 'default') {
+                                    window.location.href = '/?lang=' + savedLang;
+                                } else {
+                                    window.location.href = "/";
+                                }
+                                
                                 return;
                             }
                             
@@ -245,11 +260,14 @@ export function ManagerLogin(){
                 console.log('\n\n\nonmanagerLogin; failure; to remove token');
 
 
-                const goto_page_id   = PAGE_ID.SIGNUP_OR_LOGIN;
-                const page_container = thisObj.getPageContainer(goto_page_id);
-                    
-                thisObj.showThisPage(page_container);
-                thisObj.pageUserSignUpOrLogin.show({is_login: true});
+                // Preserve language if it exists
+                const savedLang = localStorage.getItem('user_language');
+                let loginUrl = '/login';
+                if (savedLang && savedLang !== 'default') {
+                    loginUrl += '?lang=' + savedLang;
+                }
+                
+                window.location.href = loginUrl;
                 
                 return;
             };
@@ -258,9 +276,36 @@ export function ManagerLogin(){
             const callback_success = function(data_user_account){
                 if (data_user_account.account){
                     // Redirect to Dashboard if user has account
-                    window.location.href = '/'
+                    const savedLang = localStorage.getItem('user_language');
+                    
+                    
+                    
+                    // ALWAYS include language if it exists
+                    if (savedLang && savedLang !== 'default'){
+                        console.log('Redirecting with language:', savedLang);
+                        window.location.href = '/?lang=' + savedLang;
+                    } 
+                    else if (savedLang === 'default') {
+                        // If language is explicitly set to 'default', don't include lang param
+                        window.location.href = '/';
+                    }
+                    else {
+                        // No language saved, check URL for language
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const urlLang = urlParams.get('lang');
+                        if (urlLang && urlLang !== 'default') {
+                            console.log('Found language in URL, preserving:', urlLang);
+                            window.location.href = '/?lang=' + urlLang;
+                        } else {
+                            window.location.href = '/';
+                        }
+                    }
+                    
                     return;
                 }
+                
+                
+ 
                 
                 thisObj.handlePostLoginFlow(data_user_account); 
                 return;
@@ -389,8 +434,28 @@ export function ManagerLogin(){
                 }
                 
                 if (account_has_farms > 0){
-                    loadHomePageWithToken();
-                    return;
+                    
+                    //loadHomePageWithToken();
+                    //return;
+                    
+                    // Use the stored language for redirect
+                    const savedLang = localStorage.getItem('user_language');
+                    if (savedLang && savedLang !== 'default') {
+                        console.log('Redirecting to home with language:', savedLang);
+                        window.location.href = '/?lang=' + savedLang;
+                    } else {
+                        // Check if language exists in URL before redirecting without it
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const urlLang = urlParams.get('lang');
+                        if (urlLang && urlLang !== 'default') {
+                            console.log('Preserving language from URL:', urlLang);
+                            window.location.href = '/?lang=' + urlLang;
+                        } else {
+                            window.location.href = '/';
+                        }
+                    }
+                                    
+                    
                 } else {
                     const goto_page_id = PAGE_ID.ADD_FARM;
                     const page_container = thisObj.getPageContainer(goto_page_id);
