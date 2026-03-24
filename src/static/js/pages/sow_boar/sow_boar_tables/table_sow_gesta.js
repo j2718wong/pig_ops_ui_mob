@@ -60,6 +60,46 @@ export function SowBoarTableSowGesta(input_settings){
         elemIdTableBody         = `${settings.uniqueKey}-sow-gesta-tbody`;
         
         
+        const translations      = navigation.getTranslations();
+        
+        let label_sow           = 'Sow';
+        let label_last_mate     = 'Last Mate';
+        let label_expected      = 'Expected';
+        
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.sow)    {label_sow = labels_common.sow;}
+                }
+            }
+            
+            
+            
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.last_mate) {
+                        label_last_mate = labels_sow_boar_list.last_mate;
+                    }
+                    
+                    if(labels_sow_boar_list.expected) {
+                        label_expected = labels_sow_boar_list.expected;
+                    }
+
+                    
+                }
+            }
+        }
+        
+        
+        
         const html = `
         
         <div id="${elemIdTableShow}">
@@ -72,9 +112,9 @@ export function SowBoarTableSowGesta(input_settings){
       
                 <thead>
                     <tr>
-                        <th>Sow</th>
-                        <th>Last Mate</th>
-                        <th>Expected</th>
+                        <th>${label_sow}</th>
+                        <th>${label_last_mate}</th>
+                        <th>${label_expected}</th>
                     </tr>
                 </thead>
                 

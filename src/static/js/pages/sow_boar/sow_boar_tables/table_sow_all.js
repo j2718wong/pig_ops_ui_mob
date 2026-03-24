@@ -64,6 +64,52 @@ export function SowBoarTableSowAll(input_settings){
         elemIdTableBody         = `${settings.uniqueKey}-sow-all-tbody`;
         
         
+        const translations      = navigation.getTranslations();
+        
+        let label_sow           = 'Sow';
+        let label_status        = 'Status';
+        let label_age           = 'Age';
+        let label_output        = 'Output';
+        
+        let label_output_at_wean= 'Output at Wean';
+        let label_number_births = 'Number Births';
+        
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.sow)    {label_sow = labels_common.sow;}
+                    if(labels_common.status) {label_status = labels_common.status;}
+                    if(labels_common.age)    {label_age = labels_common.age;}
+                    if(labels_common.output) {label_output = labels_common.output;}
+                }
+            }
+            
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.output_at_wean) {
+                        label_output_at_wean = labels_sow_boar_list.output_at_wean;
+                    }
+                    
+                    if(labels_sow_boar_list.number_births) {
+                        label_number_births = labels_sow_boar_list.number_births;
+                    }
+
+                
+                }
+
+            }
+        }
+        
+        
+        
         const html = `
         
         <div id="${elemIdTableShow}">
@@ -77,10 +123,10 @@ export function SowBoarTableSowAll(input_settings){
       
                 <thead>
                     <tr>
-                        <th>Sow</th>
-                        <th>Status</th>
-                        <th>Age</th>
-                        <th>Output</th>
+                        <th>${label_sow}</th>
+                        <th>${label_status}</th>
+                        <th>${label_age}</th>
+                        <th>${label_output}</th>
                     </tr>
                 </thead>
                 
@@ -88,7 +134,7 @@ export function SowBoarTableSowAll(input_settings){
                 </tbody>
             </table>
             
-            <div>Output at Wean (Number Birth)</div>
+            <div>${label_output_at_wean} (${label_number_births})</div>
         </div>
         `;
         
@@ -184,7 +230,93 @@ export function SowBoarTableSowAll(input_settings){
         }
         
         
+        // Status string
         let s_status = SOW_STATUS_NAME[sow_boar.status_id];
+        
+        
+        const translations      = navigation.getTranslations();
+        
+        if (translations){
+            
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    switch (sow_boar.status_id){
+                        case SOW_STATUS.GROWING: {
+                            if (labels_sow_boar_list.status_growing){
+                                s_status = labels_sow_boar_list.status_growing;
+                            }
+                            
+                            break;
+                        }
+                          
+                        case SOW_STATUS.GESTATING: {
+                            if (labels_sow_boar_list.status_gesta){
+                                s_status = labels_sow_boar_list.status_gesta;
+                            }
+
+                            break;
+                        }
+                        
+                        case SOW_STATUS.LACTATING:{
+                            if (labels_sow_boar_list.status_lacta){
+                                s_status = labels_sow_boar_list.status_lacta;
+                            }
+                            
+                            break;
+                        }
+                        
+                        case SOW_STATUS.WEANING:  {
+                            if (labels_sow_boar_list.status_wean){
+                                s_status = labels_sow_boar_list.status_wean;
+                            }
+                            
+                            break;
+                        }
+                        
+                        case SOW_STATUS.CULLED:  {
+                            if (labels_sow_boar_list.status_culled){
+                                s_status = labels_sow_boar_list.status_culled;
+                            }
+
+                            break;
+                        }
+                         
+                        case SOW_STATUS.DEAD: {
+                            if (labels_sow_boar_list.status_dead){
+                                s_status = labels_sow_boar_list.status_dead;
+                            }
+
+                            break;
+                        }    
+                        
+                        case SOW_STATUS.SOLD:  {
+                            if (labels_sow_boar_list.status_sold){
+                                s_status = labels_sow_boar_list.status_sold;
+                            }
+                            
+                            break;
+                        }   
+                        
+                        case SOW_STATUS.DELETE: {
+                            if (labels_sow_boar_list.status_delete){
+                                s_status = labels_sow_boar_list.status_delete;
+                            }
+
+                            break;
+                        }  
+                        
+                    }
+                    
+                }
+            }
+        }
+        
+        
+        
             
         switch (sow_boar.status_id){
             case SOW_STATUS.GROWING:    {break;}

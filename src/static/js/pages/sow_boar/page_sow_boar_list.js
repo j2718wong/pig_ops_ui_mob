@@ -311,7 +311,54 @@ export function PageSowBoarList(input_settings){
         const html_table_boar       = tableBoar.getHtml(); 
         const html_table_gilt       = tableGilt.getHtml();  
         const html_table_disposed   = tableDiposed.getHtml();
-           
+        
+        
+        const translations      = navigation.getTranslations();
+        
+        let label_search_pig    = 'Search Pig Name or Number';
+        let label_sow_all       = 'All';
+        let label_sow_gesta     = "Gesta";
+        let label_sow_lacta     = "Lacta";
+        let label_sow_wean      = "Wean";
+        let label_sow_output    = "Output";
+        
+        
+        if (translations){
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.search_pig) {
+                        label_search_pig = labels_sow_boar_list.search_pig;
+                    }
+                    
+                    if(labels_sow_boar_list.sow_all) {
+                        label_sow_all = labels_sow_boar_list.sow_all;
+                    }
+                    
+                    if(labels_sow_boar_list.sow_gesta) {
+                        label_sow_gesta = labels_sow_boar_list.sow_gesta;
+                    }
+                    
+                    if(labels_sow_boar_list.sow_lacta) {
+                        label_sow_lacta = labels_sow_boar_list.sow_lacta;
+                    }
+                    
+                    if(labels_sow_boar_list.sow_wean) {
+                        label_sow_wean = labels_sow_boar_list.sow_wean;
+                    }
+                    
+                    if(labels_sow_boar_list.sow_output) {
+                        label_sow_output = labels_sow_boar_list.sow_output;
+                    }
+                    
+                }
+            }
+        }
+        
+        
         const html = `
 
 ${html_style}
@@ -346,7 +393,7 @@ ${html_style}
         <div class="mobile-controls">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Search Pig Name or Number">
+                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="${label_search_pig}">
             </div>
             <button class="btn-add-entry" id="${elemIdAddEntryBtn}">
                 <i class="fas fa-plus"></i>
@@ -361,11 +408,11 @@ ${html_style}
                 <!-- Animal Filter Buttons - Centered, no gaps -->
                 <div class="animal-filter">
                     <div class="filter-buttons sow">
-                        <button class="filter-button active" data-filter="all">All</button>
-                        <button class="filter-button" data-filter="gestating">Gesta</button>
-                        <button class="filter-button" data-filter="lactating">Lacta</button>
-                        <button class="filter-button" data-filter="weaning">Wean</button>
-                        <button class="filter-button" data-filter="output">Output</button>
+                        <button class="filter-button active" data-filter="all">${label_sow_all}</button>
+                        <button class="filter-button" data-filter="gestating">${label_sow_gesta}</button>
+                        <button class="filter-button" data-filter="lactating">${label_sow_lacta}</button>
+                        <button class="filter-button" data-filter="weaning">${label_sow_wean}</button>
+                        <button class="filter-button" data-filter="output">${label_sow_output}</button>
                     </div>
                     
                     
@@ -627,7 +674,8 @@ ${html_style}
                 tableSowOutput.renderTable(dataSowList);
             };
             
-            navigation.pigFarm.managerSowBoar.requestFarmPigletsOutput(callback_success);
+            navigation.pigFarm.managerSowBoar.requestFarmPigletsOutput(
+                callback_success);
         }
         
         
@@ -648,9 +696,48 @@ ${html_style}
         let is_add_sow = false;
         let entry_count = 0;
         
+        
+        const translations      = navigation.getTranslations();
+        
+        let label_sow_list      = 'Sow List';
+        let label_boar_list     = 'Boar List';
+        let label_gilt_list     = 'Gilt List';
+        let label_disposed_list = 'Disposed List';
+        
+        
+        if (translations){
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.sow_list) {
+                        label_sow_list = labels_sow_boar_list.sow_list;}
+                
+                    if(labels_sow_boar_list.boar_list) {
+                        label_boar_list = labels_sow_boar_list.boar_list;}
+                
+                    if(labels_sow_boar_list.gilt_list) {
+                        label_gilt_list = labels_sow_boar_list.gilt_list;}
+                
+                    if(labels_sow_boar_list.disposed_list) {
+                        label_disposed_list = labels_sow_boar_list.disposed_list;}
+                }
+                
+                
+                
+            }
+        }
+        
+        
+        
+    
+        
+        
         switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW: {
-                elemPageTitle.textContent = 'Sow List';
+                elemPageTitle.textContent = label_sow_list;
                 
                 elemAddEntryBtn.style.display = 'block';
                 
@@ -671,22 +758,27 @@ ${html_style}
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.DISPOSED);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, 
+                        SOW_BOAR_TYPE.DISPOSED);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.BOAR);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, 
+                        SOW_BOAR_TYPE.BOAR);
                 }
                 
                 curDataListView = dataSowList;
                 
-                if (showOptions.filter_type && showOptions.filter_type == 'weaning'){
+                if (showOptions.filter_type && 
+                    showOptions.filter_type == 'weaning'){
+                    
                     tableBoar.hide();
                     tableGilt.hide();
                     tableDiposed.hide();
                     
                     
-                    thisObj.resetSowFilterButton(3); // set the button to weaning sows
+                    // set the button to weaning sows
+                    thisObj.resetSowFilterButton(3); 
                     thisObj.onClickDataFilter('weaning')
                     return;
                  }
@@ -713,7 +805,7 @@ ${html_style}
             }
             
             case SOW_BOAR_TYPE.BOAR: {
-                elemPageTitle.textContent = 'Boar List';
+                elemPageTitle.textContent = label_boar_list;
                 
                 elemAddEntryBtn.style.display = 'block';
                 
@@ -723,11 +815,13 @@ ${html_style}
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.SOW);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, 
+                        SOW_BOAR_TYPE.SOW);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, 
+                        SOW_BOAR_TYPE.GILT);
                 }
                 
                 
@@ -750,7 +844,7 @@ ${html_style}
             }
             
             case SOW_BOAR_TYPE.GILT:{
-                elemPageTitle.textContent = 'Gilt List';
+                elemPageTitle.textContent = label_gilt_list;
                 
                 elemAddEntryBtn.style.display = 'block';
                 
@@ -760,11 +854,13 @@ ${html_style}
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.BOAR);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, 
+                        SOW_BOAR_TYPE.BOAR);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.DISPOSED);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, 
+                        SOW_BOAR_TYPE.DISPOSED);
                 }
                 
                 
@@ -788,7 +884,7 @@ ${html_style}
             }
             
             case SOW_BOAR_TYPE.DISPOSED:{
-                elemPageTitle.textContent = 'Disposed List';
+                elemPageTitle.textContent = label_disposed_list;
                 
                 elemAddEntryBtn.style.display = 'none';
                 
@@ -798,11 +894,13 @@ ${html_style}
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.GILT);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, 
+                        SOW_BOAR_TYPE.GILT);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.SOW);
+                    navigation.managerNavLinks.onClickNavSowBoar(null, 
+                        SOW_BOAR_TYPE.SOW);
                 }
                 
                 
@@ -939,26 +1037,50 @@ ${html_style}
             let excess_days     = diff_days % 365;
             let num_months      = Math.round(excess_days / 30);
             
+            const translations  = navigation.getTranslations();
+        
+            let label_year      = 'year';
+            let label_month     = 'month';
+            let label_years     = 'years';
+            let label_months    = 'months';
+            
+            
+            
+            if (translations){
+                if (translations.common_app && translations.common_app.labels){
+                    const labels_common = translations.common_app.labels;
+                    
+                    if (labels_common) {
+                        if(labels_common.year)  {label_year   = labels_common.year;}
+                        if(labels_common.month) {label_month  = labels_common.month;}
+                        if(labels_common.years) {label_years  = labels_common.years;}
+                        if(labels_common.months){label_months = labels_common.months;}
+                    }
+                }
+            }
+            
+            
+            
             if (num_months == 12){
                 num_years += 1;  num_months = 0;
             }
             
             if (num_years == 0){
-                s_age = `${num_months} months`;
+                s_age = `${num_months} ${label_months}`;
             }
             else{
                 if (num_years == 1){
-                    s_age = `${num_years} year`;
+                    s_age = `${num_years} ${label_year}`;
                 } else{
-                    s_age = `${num_years} years`;
+                    s_age = `${num_years} ${label_year}`;
                 }
                 
                 if (num_months  >0){
                     if (num_months == 1){
-                        s_age += `, <span class="nowrap">${num_months} month</span>`;
+                        s_age += `, <span class="nowrap">${num_months} ${label_month}</span>`;
                     }
                     else{
-                        s_age += `, <span class="nowrap">${num_months} months</span>`;
+                        s_age += `, <span class="nowrap">${num_months} ${label_months}</span>`;
                     }
                 }
             }

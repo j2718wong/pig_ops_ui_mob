@@ -79,6 +79,7 @@ export function PageMobGestaLacta(input_settings){
     let elemIdTablePigOps       = null;
     let elemIdTablePigCount     = null;
     
+    let elemIdLabelToday        = null;
     let elemIdDateToday         = null;
     
     
@@ -111,6 +112,7 @@ export function PageMobGestaLacta(input_settings){
     let elemTablePigOps         = null;
     let elemTablePigCount       = null;
     
+    let elemLabelToday          = null;    
     let elemDateToday           = null;
     
     
@@ -209,6 +211,7 @@ export function PageMobGestaLacta(input_settings){
         elemIdTablePigCount     = `${settings.uniqueKey}-table-pig-count`;
         
         
+        elemIdLabelToday        = `${settings.uniqueKey}-label-today`;
         elemIdDateToday         = `${settings.uniqueKey}-date-today`;
         
         
@@ -223,7 +226,51 @@ export function PageMobGestaLacta(input_settings){
         elemIdAddEntryBtn       = `${settings.uniqueKey}-mobile-add-entry-btn`;
            
            
-        let html_prod_tables = '';
+        let html_prod_tables    = '';
+        
+        
+        const translations      = navigation.getTranslations();
+        
+        let label_today         = 'Today';
+        let label_sow           = 'Sow';
+        let label_boar          = 'Boar';
+        let label_expected      = 'Expected';
+        let label_operation     = 'What to do?';
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.today){label_today = labels_common.today;}
+                    
+                    if(labels_common.sow) {label_sow = labels_common.sow;}
+                    if(labels_common.boar){label_boar = labels_common.boar;}
+                    
+                }
+            }
+            
+            
+            if (translations.page_gesta_lacta_list && 
+                translations.page_gesta_lacta_list.labels){
+                
+                const labels_gestating = translations.page_gesta_lacta_list.labels;
+                
+                if (labels_gestating){
+                    if(labels_gestating.Expected){
+                        label_expected = labels_gestating.Expected;
+                    }
+                    
+                    if(labels_gestating.Operation){
+                        label_operation = labels_gestating.Operation;
+                    }
+                }
+            }
+            
+        }
+        
+        
            
         let style_hide_add_button = '';
         if (settings.isGesta == false){
@@ -243,7 +290,10 @@ export function PageMobGestaLacta(input_settings){
                 
             </div>
             
-            <div>Today <span id = "${elemIdDateToday}" style="color:blue; font-weight:600;"></span></div>
+            <div>
+                <span id="${elemIdLabelToday}">${label_today}</span>
+                <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
+            </div>
             
             
             <!-- PigProd Lacta Table -->
@@ -257,11 +307,11 @@ export function PageMobGestaLacta(input_settings){
                 <thead>
                     <tr>
                         <th>
-                            <div>PID, Sow</div> 
-                            <div><span class="love-icon">❤️</span> Boar</div>
+                            <div>PID, ${label_sow}</div> 
+                            <div><span class="love-icon">❤️</span> ${label_boar}</div>
                         </th>
                         <th>Wean</th>
-                        <th>Operation</th>
+                        <th>${label_operation}</th>
                     </tr>
                 </thead>
                 
@@ -280,8 +330,8 @@ export function PageMobGestaLacta(input_settings){
                 <thead>
                     <tr>
                         <th>
-                            <div>PID, Sow</div> 
-                            <div><span class="love-icon">❤️</span> Boar</div>
+                            <div>PID, ${label_sow}</div> 
+                            <div><span class="love-icon">❤️</span> ${label_boar}</div>
                         </th>
                         <th>Num<br>Pigs</th>
                         <th>Dead at<br>Birth</th>
@@ -298,7 +348,10 @@ export function PageMobGestaLacta(input_settings){
         else{
             html_prod_tables = `
             <!-- PogProd Gesta Table -->
-            <div>Today <span id = "${elemIdDateToday}" style="color:blue; font-weight:600;"></span></div>
+            <div>
+                <span id="${elemIdLabelToday}">${label_today}</span>
+                <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
+            </div>
             
             <table class="data-table table-gesta-lacta">
                 <colgroup>
@@ -310,11 +363,11 @@ export function PageMobGestaLacta(input_settings){
                 <thead>
                     <tr>
                         <th>
-                            <div>PID, Sow</div> 
-                            <div><span class="love-icon">❤️</span> Boar</div>
+                            <div>PID, ${label_sow}</div> 
+                            <div><span class="love-icon">❤️</span> ${label_boar}</div>
                         </th>
-                        <th>Expected</th>
-                        <th>Operation</th>
+                        <th>${label_expected}</th>
+                        <th>${label_operation}</th>
                     </tr>
                 </thead>
                 
@@ -417,6 +470,7 @@ ${html_style}
         elemTablePigOps         = elemDivContainer.querySelector('#'+elemIdTablePigOps);
         elemTablePigCount       = elemDivContainer.querySelector('#'+elemIdTablePigCount);
         
+        elemLabelToday          = elemDivContainer.querySelector('#'+elemIdLabelToday);
         elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
         
         elemProdTableContainer  = elemDivContainer.querySelector('#'+elemIdProdTableContainer);
@@ -602,12 +656,28 @@ ${html_style}
         thisObj.gestaLactaCards.clearAlarmList();
         
         
+        const translations      = navigation.getTranslations();
+        
+        let label_sow           = 'Sow';
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.sow) {label_sow = labels_common.sow;}
+                }
+            }
+        }
+        
+        
         // Render HTML in elemProdCardsContainer
         if ((dataPigProdList == null) || (dataPigProdList.length == 0)){
             elemSearchInput.setAttribute("placeholder", "No entries found"); 
         }
         else{
-            elemSearchInput.setAttribute("placeholder", "Sow Name or PID");
+            elemSearchInput.setAttribute("placeholder", `${label_sow} or PID`);
         }
         
         let html = '';

@@ -186,7 +186,9 @@ const SOW_STATUS_NAME = {
     4:  'Weaning',
     5:  'Culled',
     6:  'Dead',
-    7:  'Sold'
+    7:  'Sold',
+    
+    99: 'Deleted'
     
 }
 
