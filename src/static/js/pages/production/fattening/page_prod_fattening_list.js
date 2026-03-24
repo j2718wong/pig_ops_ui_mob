@@ -381,8 +381,58 @@ export function PageProdFatteningList(input_settings){
     }
     
     
+    // This is currently defined as 140 days+ pigs from birth
+    this.getNumPigsToHarvest = function(){
+        const fattening_list = navigation.pigFarm.managerPigProd.dataFatteningList;
     
+        let num_pigs  = 0;
+        let diff_days;
+        
+        
+        const acc_settings_ops = navigation.pigFarm.getSettingsOperations();
+        
+        
+        for (const cur_entry of fattening_list){
+            
+        
+            const target_harvest = farmPage.calculateDateTargetHarvest(cur_entry, 
+                dtCurrentDate, acc_settings_ops);
+            
+            
+            const html_pid_sow_boar = farmPage.getHtmlPidSowLoveBoar(cur_entry);
+            
+        
+            
+            if (target_harvest.days_since_birth) {
+                // The current fattening entry has date of birth
+                diff_days = target_harvest.days_since_birth;
+            }
+            else{
+                // The current fattening entry has no date of birth;
+                // either bought from outside or combined to groups 
+                
+                
+                diff_days = target_harvest.days_since_wean;
+                
+                // Add this days 
+                diff_days += APPLICATION.DEFAULT_NUM_DAYS_WEAN;    
+                
+            }
+            
+            
+            if (diff_days >= APPLICATION.DEFAULT_NUM_DAYS_MIN_HARVEST){
+                // Add the current pig count
+                num_pigs = cur_entry.pig_production.cur_pig_count;
+            }
+            
+        
+        } 
+        
+        
+        
+        return num_pigs;
     
+    }
     
     
     this.setUserLanguage = function(language_key){

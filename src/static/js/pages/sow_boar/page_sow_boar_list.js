@@ -544,7 +544,7 @@ ${html_style}
     }
     
     
-    this.resetSowFilterButton = function(){
+    this.resetSowFilterButton = function(index_element){
         const filterButtons  = elemDivContainer.querySelectorAll('.filter-button');
         
         
@@ -552,8 +552,12 @@ ${html_style}
             cur_entry.classList.remove('active');
         } 
         
-        filterButtons[0].classList.add('active');
-        
+        if (index_element){
+            filterButtons[index_element].classList.add('active');
+
+        } else{
+            filterButtons[0].classList.add('active');
+        }
     }
     
     
@@ -674,6 +678,20 @@ ${html_style}
                     navigation.managerNavLinks.onClickNavSowBoar(null, SOW_BOAR_TYPE.BOAR);
                 }
                 
+                curDataListView = dataSowList;
+                
+                if (showOptions.filter_type && showOptions.filter_type == 'weaning'){
+                    tableBoar.hide();
+                    tableGilt.hide();
+                    tableDiposed.hide();
+                    
+                    
+                    thisObj.resetSowFilterButton(3); // set the button to weaning sows
+                    thisObj.onClickDataFilter('weaning')
+                    return;
+                 }
+                
+
 
                 tableSowAll.show();
                 tableSowGesta.hide();
@@ -688,7 +706,7 @@ ${html_style}
                 
                 thisObj.resetSowFilterButton();
                 
-                curDataListView = dataSowList;
+                
                 tableSowAll.renderTable(curDataListView);
                 
                 break;

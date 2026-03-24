@@ -463,7 +463,7 @@ export function ManagerNavLinks(_navigation) {
     
     
     this._processAfterHtmlRender = function(){
-        
+        this.onChangeLanguage();
         
     }
 
@@ -784,7 +784,7 @@ export function ManagerNavLinks(_navigation) {
             }
         }
         
-        if (!translated_nav_links){
+        if (translated_nav_links == null){
             return;
         }
         
@@ -1044,7 +1044,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
             
-    this.onClickNavSowBoar = function(is_mobile, sow_boar_type){
+    this.onClickNavSowBoar = function(is_mobile, sow_boar_type, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
         
         // Push currentPage to NavHistory;
@@ -1057,6 +1057,12 @@ export function ManagerNavLinks(_navigation) {
         const options= {
             sow_boar_type: sow_boar_type
         };
+        
+        if (show_options){
+            // Combine show_options to options
+            Object.assign(options, show_options); 
+        }
+        
         navigation.pageSowBoarList.show(options);
     }
     

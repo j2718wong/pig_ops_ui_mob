@@ -10,6 +10,7 @@ import {APPLICATION,
         PAGE_ID,
         PIG_OPERATION_TYPE,
         SOW_BOAR_TYPE,
+        SOW_STATUS,
         ACC_USER_GROUP}         from '../../constants.js';
 
 
@@ -61,18 +62,13 @@ export function PageHomeDashBoard(input_settings){
                                             
     let elemIdCardBoars         = null;         
     let elemIdCardGilts         = null;         
-                     
-                     
-                                
-    let elemIdNumLactaPiglets   = null;
-    let elemIdNumFatteningPigs  = null;
-                                
-    let elemIdNumLactaSows      = null;
-    let elemIdNumGestaSows      = null;
-                                
-    let elemIdNumBoars          = null;
-    let elemIdNumGilts          = null;
+                 
+    let elemIdCardWeanedSows    = null;
+    let elemIdCardToHarvest     = null;
     
+    
+    
+    let elemIdLabelExpectingSows= null;
     let elemIdExpectingSowsShow = null;
     let elemIdExpectingSows     = null;
     
@@ -91,6 +87,22 @@ export function PageHomeDashBoard(input_settings){
     let elemCardBoars           = null;         
     let elemCardGilts           = null;         
     
+    let elemCardWeanedSows      = null;
+    let elemCardToHarvest       = null;
+    
+    
+    
+    let elemLabelLactaPiglets   = null;
+    let elemLabelFatteningPigs  = null;
+                          
+    let elemLabelLactaSows      = null;
+    let elemLabelGestaSows      = null;
+                           
+    let elemLabelBoars          = null;
+    let elemLabelGilts          = null;
+    
+    let elemLabelWeanedSows     = null;
+    let elemLabelToHarvest      = null;
     
     
                               
@@ -103,26 +115,23 @@ export function PageHomeDashBoard(input_settings){
     let elemNumBoars            = null;
     let elemNumGilts            = null;
     
+    let elemNumWeanedSows       = null;
+    let elemNumToHarvest        = null;
     
+    
+    let elemLabelExpectingSows  = null;
     let elemExpectingSowsShow   = null;
     let elemExpectingSows       = null;
     
     
     let dtCurrentDate           = null;
 
-    //let textTranslation         = new TextTranslation();
-    let curUserLanguageKey      = 'en';
 
-    
     
     this.init = function(){
-        //textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
 
-        
         this.render();
         this.afterHtmlRender();
-        
-
     }
     
     
@@ -140,19 +149,13 @@ export function PageHomeDashBoard(input_settings){
         elemIdCardBoars         = `${settings.uniqueKey}-card-boars`;
         elemIdCardGilts         = `${settings.uniqueKey}-card-gilts`;
         
+        elemIdCardWeanedSows    = `${settings.uniqueKey}-card-weaned-sows`;
+        elemIdCardToHarvest     = `${settings.uniqueKey}-card-to-harvest`;
         
-        elemIdNumLactaPiglets   = `${settings.uniqueKey}-lacta-piglets`;
-        elemIdNumFatteningPigs  = `${settings.uniqueKey}-fattening-pigs`;
-        
-        elemIdNumLactaSows      = `${settings.uniqueKey}-lacta-sows`;
-        elemIdNumGestaSows      = `${settings.uniqueKey}-gesta-sows`;
-        
-        elemIdNumBoars          = `${settings.uniqueKey}-boars`;
-        elemIdNumGilts          = `${settings.uniqueKey}-gilts`;
-        
-        
+        elemIdLabelExpectingSows= `${settings.uniqueKey}-expecting-sows-label`;
         elemIdExpectingSowsShow = `${settings.uniqueKey}-expecting-sows-show`;
         elemIdExpectingSows     = `${settings.uniqueKey}-expecting-sows`;
+        
         
         const html = `
     <div class="dashboard">
@@ -169,11 +172,11 @@ export function PageHomeDashBoard(input_settings){
             <div class="grid-row">
                 <div class="stat-cell card-lacta-piglets" id="${elemIdCardLactaPiglets}">
                     <div class="label">Lacta Piglets</div>
-                    <div class="number" id="${elemIdNumLactaPiglets}">0</div>
+                    <div class="number">0</div>
                 </div>
                 <div class="stat-cell card-fattening" id="${elemIdCardFatteningPigs}">
                     <div class="label">Fattening Pigs</div>
-                    <div class="number" id="${elemIdNumFatteningPigs}">0</div>
+                    <div class="number">0</div>
                 </div>
             </div>
 
@@ -181,11 +184,11 @@ export function PageHomeDashBoard(input_settings){
             <div class="grid-row">
                 <div class="stat-cell card-lacta-sows" id="${elemIdCardLactaSows}">
                     <div class="label">Lacta Sows</div>
-                    <div class="number" id="${elemIdNumLactaSows}">0</div>
+                    <div class="number">0</div>
                 </div>
                 <div class="stat-cell card-gesta" id="${elemIdCardGestaSows}">
                     <div class="label">Gesta Sows</div>
-                    <div class="number" id="${elemIdNumGestaSows}">0</div>
+                    <div class="number">0</div>
                 </div>
             </div>
 
@@ -193,22 +196,38 @@ export function PageHomeDashBoard(input_settings){
             <div class="grid-row">
                 <div class="stat-cell" id="${elemIdCardBoars}">
                     <div class="label">Boars</div>
-                    <div class="number" id="${elemIdNumBoars}">0</div>
+                    <div class="number">0</div>
                 </div>
                 <div class="stat-cell card-gilts" id="${elemIdCardGilts}">
                     <div class="label">Gilts</div>
-                    <div class="number" id="${elemIdNumGilts}">0</div>
+                    <div class="number">0</div>
                 </div>
             </div>
+            
+            <!-- row 4: Weaned Sows | 140 Days+ -->
+            <div class="grid-row">
+                <div class="stat-cell card-wean-sows" id="${elemIdCardWeanedSows}">
+                    <div class="label">Weaned Sows</div>
+                    <div class="number">0</div>
+                </div>
+                <div class="stat-cell card-to-harvest" id="${elemIdCardToHarvest}">
+                    <div class="label">140 Days+</div>
+                    <div class="number">0</div>
+                </div>
+            </div>
+            
+            
         </div>
+
 
         <!-- row 4: Expecting Next 7 days (list) -->
         <div class="expecting-section" id="${elemIdExpectingSowsShow}">
             <div class="section-title">
-                <span>⏳</span> Expecting next 7 days
+                <span>⏳</span><span id="${elemIdLabelExpectingSows}">Expecting next 7 days</span>
             </div>
             <div class="sow-name-pills" id="${elemIdExpectingSows}"></div>
         </div>
+
 
         <!-- row 5: Harvest Next 7 days (table) -->
         <div class="harvest-section" style="display:none;">
@@ -268,17 +287,44 @@ export function PageHomeDashBoard(input_settings){
                                                                                              
         elemCardBoars           = elemDivContainer.querySelector('#'+elemIdCardBoars);            
         elemCardGilts           = elemDivContainer.querySelector('#'+elemIdCardGilts);        
-               
-                                                                                         
-        elemNumLactaPiglets     = elemDivContainer.querySelector('#'+elemIdNumLactaPiglets); 
-        elemNumFatteningPigs    = elemDivContainer.querySelector('#'+elemIdNumFatteningPigs);
-                                                                                         
-        elemNumLactaSows        = elemDivContainer.querySelector('#'+elemIdNumLactaSows);
-        elemNumGestaSows        = elemDivContainer.querySelector('#'+elemIdNumGestaSows);    
-                                                                                         
-        elemNumBoars            = elemDivContainer.querySelector('#'+elemIdNumBoars);        
-        elemNumGilts            = elemDivContainer.querySelector('#'+elemIdNumGilts);    
         
+        elemCardWeanedSows      = elemDivContainer.querySelector('#'+elemIdCardWeanedSows);
+        elemCardToHarvest       = elemDivContainer.querySelector('#'+elemIdCardToHarvest);
+        
+        
+        // Label elements - query from their parent stat-cells
+        elemLabelLactaPiglets   = elemCardLactaPiglets.querySelector('.label');
+        elemLabelFatteningPigs  = elemCardFatteningPigs.querySelector('.label');
+                               
+        elemLabelLactaSows      = elemCardLactaSows.querySelector('.label');
+        elemLabelGestaSows      = elemCardGestaSows.querySelector('.label');
+                               
+        elemLabelBoars          = elemCardBoars.querySelector('.label');
+        elemLabelGilts          = elemCardGilts.querySelector('.label');
+        
+        elemLabelBoars          = elemCardBoars.querySelector('.label');
+        elemLabelGilts          = elemCardGilts.querySelector('.label');
+        
+        elemLabelWeanedSows     = elemCardWeanedSows.querySelector('.label');
+        elemLabelToHarvest      = elemCardToHarvest.querySelector('.label');        
+        
+        
+        
+        // Number elements - query from their parent stat-cells
+        elemNumLactaPiglets     = elemCardLactaPiglets.querySelector('.number');
+        elemNumFatteningPigs    = elemCardFatteningPigs.querySelector('.number');
+                                  
+        elemNumLactaSows        = elemCardLactaSows.querySelector('.number');
+        elemNumGestaSows        = elemCardGestaSows.querySelector('.number');
+                                  
+        elemNumBoars            = elemCardBoars.querySelector('.number');
+        elemNumGilts            = elemCardGilts.querySelector('.number');
+        
+        elemNumWeanedSows       = elemCardWeanedSows.querySelector('.number');
+        elemNumToHarvest        = elemCardToHarvest.querySelector('.number');        
+        
+        
+        elemLabelExpectingSows  = elemDivContainer.querySelector('#'+elemIdLabelExpectingSows);
         elemExpectingSowsShow   = elemDivContainer.querySelector('#'+elemIdExpectingSowsShow);
         elemExpectingSows       = elemDivContainer.querySelector('#'+elemIdExpectingSows);
     }
@@ -286,7 +332,7 @@ export function PageHomeDashBoard(input_settings){
     
     this._processAfterHtmlRender = function(){
         
-
+        this.onUserChangeLanguage();
     }
     
     
@@ -321,6 +367,17 @@ export function PageHomeDashBoard(input_settings){
         elemCardGilts.addEventListener('click', function() {
             navigation.managerNavLinks.onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
         });
+        
+        
+        elemCardWeanedSows.addEventListener('click', function() {
+            const show_options = {filter_type: "weaning"};
+            navigation.managerNavLinks.onClickNavSowBoar(true, SOW_BOAR_TYPE.SOW, 
+                show_options);
+        });
+
+        elemNumToHarvest.addEventListener('click', function() {
+            //navigation.managerNavLinks.onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
+        });
     }
     
     
@@ -334,7 +391,65 @@ export function PageHomeDashBoard(input_settings){
    
     
     this.onUserChangeLanguage = function(){
+        const translations = navigation.getTranslations();
         
+        let trans_page_dashboard = null;
+        
+        if (translations){
+            if (translations.page_dashboard){
+                trans_page_dashboard = translations.page_dashboard;
+            }
+        }
+        
+        if (trans_page_dashboard == null){
+            return;
+        }
+        
+        
+        // Get the stats card labels from translations
+        const stats_card_labels = trans_page_dashboard.labels.stats_card;
+        
+        if (stats_card_labels) {
+        
+            // Update the labels for each stat card
+            if (elemLabelLactaPiglets && stats_card_labels.LactaPiglets) {
+                elemLabelLactaPiglets.textContent = stats_card_labels.LactaPiglets;
+            }
+            
+            if (elemLabelFatteningPigs && stats_card_labels.FatteningPigs) {
+                elemLabelFatteningPigs.textContent = stats_card_labels.FatteningPigs;
+            }
+            
+            if (elemLabelLactaSows && stats_card_labels.LactaSows) {
+                elemLabelLactaSows.textContent = stats_card_labels.LactaSows;
+            }
+            
+            if (elemLabelGestaSows && stats_card_labels.GestaSows) {
+                elemLabelGestaSows.textContent = stats_card_labels.GestaSows;
+            }
+            
+            if (elemLabelBoars && stats_card_labels.Boars) {
+                elemLabelBoars.textContent = stats_card_labels.Boars;
+            }
+            
+            if (elemLabelGilts && stats_card_labels.Gilts) {
+                elemLabelGilts.textContent = stats_card_labels.Gilts;
+            }
+            
+            if (elemLabelWeanedSows && stats_card_labels.WeanedSows) {
+                elemLabelWeanedSows.textContent = stats_card_labels.WeanedSows;
+            }
+            
+            if (elemLabelToHarvest && stats_card_labels.ToHarvest) {
+                elemLabelToHarvest.textContent = stats_card_labels.ToHarvest;
+            }
+            
+        }
+        
+        if (elemLabelExpectingSows && trans_page_dashboard.labels.ExpectingSows){
+            elemLabelExpectingSows.textContent = trans_page_dashboard.labels.ExpectingSows;
+        }
+            
      
     }
     
@@ -412,6 +527,30 @@ export function PageHomeDashBoard(input_settings){
         }
         
         elemNumBoars.textContent = num_pigs;
+        
+        
+        // Populate Weaning sows
+        const data_sow_list = navigation.pigFarm.managerSowBoar.dataSowList;
+        num_pigs = 0;
+        
+        
+        const sow_status_id = SOW_STATUS.WEANING;
+        
+        for (const cur_entry of data_sow_list){
+            const sow_boar = cur_entry.sow_boar;
+            
+            if (sow_boar.status_id == sow_status_id){
+                num_pigs += 1;
+            }
+        }
+        
+        elemNumWeanedSows.textContent = num_pigs;
+        
+        
+        // Populate Number Pigs >= 140 Days +
+        num_pigs = navigation.pageProdFatteningList.getNumPigsToHarvest();
+        elemNumToHarvest.textContent = num_pigs;
+        
         
         
         // Populate Expecting sows next MIN_DAYS_SHOW_EXPECTING days

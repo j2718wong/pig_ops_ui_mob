@@ -62,6 +62,7 @@
     --weaning-color: #07A4C4;
     --gilt-color: #2ecc71;
     --fattening-color: #fd7e14;
+    --to-harvest-color: #ffc107;
     
     --row-even: #eff7ff;
     --row-odd: #ffffff;
@@ -4329,6 +4330,14 @@ input[type=number] {
     border-left: 5px solid var(--gilt-color);
 }
 
+
+.stat-cell.card-wean-sows {
+    border-left: 5px solid var(--weaning-color);
+}
+
+.stat-cell.card-to-harvest {
+    border-left: 5px solid var(--to-harvest-color);
+}
 
 
 

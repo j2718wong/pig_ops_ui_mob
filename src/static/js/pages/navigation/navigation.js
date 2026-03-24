@@ -982,6 +982,11 @@ export function Navigation(){
     }
 
 
+    this.getTranslations = function(){
+        return window.SUPERPIG_TRANSLATIONS;
+        
+    }
+
     
     this.setDataUserAccount = function(data){
         this.userControl.setDataUserAccount(data);
