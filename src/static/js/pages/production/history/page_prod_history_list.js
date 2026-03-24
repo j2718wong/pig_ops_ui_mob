@@ -21,6 +21,9 @@ import {formatDate,
         sortList,
         createPaginationManager}    from '../../../utils.js';
 
+
+import {ComponentNavLeftRight}      from '../../common/ui/comp_nav_left_right.js';
+
 import {getSowBoarReference}        from '../../common/common_app.js';
 
 
@@ -32,6 +35,8 @@ import {ProdGrossProfitTable}       from './prod_hist_tables/table_prod_gross_pr
 
 export function PageProdHistoryList(input_settings){
     PageViewPigFarmPage.call(this);
+    
+    const TAG                   = 'PageProdHistoryList';
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -54,6 +59,7 @@ export function PageProdHistoryList(input_settings){
     // This is needed as this will be first element to be rendered
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
+    let componentNavLeftRight   = null;
     
     let elemIdNavPrevEntry      = null;
     let elemIdNavNextEntry      = null;
@@ -179,6 +185,24 @@ export function PageProdHistoryList(input_settings){
 
     
     this.render = function(){
+        const settings_nav = {
+           uniqueKey:           settings.uniqueKey,
+           elemDivContainer:    elemDivContainer,
+           pageTitle:           'User List'
+        };
+        
+        if (settings.isProdSalesHistory){
+            settings_nav.pageTitle = 'Prod Sales List'; 
+        }
+        else{
+            settings_nav.pageTitle = 'Prod History List';
+        }
+        
+        
+        componentNavLeftRight   = new ComponentNavLeftRight(settings_nav);
+        
+        
+        
         
         elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
         elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
@@ -210,6 +234,8 @@ export function PageProdHistoryList(input_settings){
             page_title          = 'Prod History List';
         }
         
+        
+        const html_nav          = componentNavLeftRight.getHtml();
         
         let html_table_gross_sales= '';
         let html_table_gross_profit ='';
@@ -245,17 +271,7 @@ export function PageProdHistoryList(input_settings){
 
         
 <div class="mobile-container">
-    <div class="nav-left-right">
-        <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
-                
-        <span>
-            <span class="nav-title blue" id="${elemIdEntryCount}"></span>
-            <span class="nav-title blue" id="${elemIdPageTitle}">${page_title}</span>
-        </span>
-        
-        <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
-            
-    </div>
+    ${html_nav}
     
     <!-- Mobile Info Box -->
         <!--
@@ -337,6 +353,8 @@ export function PageProdHistoryList(input_settings){
     
     
     this.afterHtmlRender = function(){
+        componentNavLeftRight.afterHtmlRender();
+        
         if (settings.isProdSalesHistory){
             tableProdGrossSales.afterHtmlRender();
             tableProdGrossProfit.afterHtmlRender();
@@ -418,31 +436,36 @@ export function PageProdHistoryList(input_settings){
         });
         
         
-        console.log('test a');
         if (settings.isProdSalesHistory){
-            console.log('test b');
             
-            console.log(elemNavPrevEntry);
+            componentNavLeftRight.callbackNavLeft = function(){
+                navigation.managerNavLinks.onClickNavFeedsExpenses();
+            };
             
-            // Set up listeners for navigation arrows
-            elemNavPrevEntry.onclick = function(){
-                console.log('test c');
+              
+            componentNavLeftRight.callbackNavRight = function(){
                 navigation.managerNavLinks.onClickNavFeedsExpenses();
-            }
-
-            elemNavNextEntry.onclick = function(){
-                navigation.managerNavLinks.onClickNavFeedsExpenses();
-            }
+            };
+            
+            
+            componentNavLeftRight.bindEventListeners();
+            
+            
         }
         else{
-            // Set up listeners for navigation arrows
-            elemNavPrevEntry.onclick = function(){
+            
+            componentNavLeftRight.callbackNavLeft = function(){
                 navigation.managerNavLinks.onClickNavProdFattening();
-            }
-
-            elemNavNextEntry.onclick = function(){
+            };
+            
+              
+            componentNavLeftRight.callbackNavRight = function(){
                 navigation.managerNavLinks.onClickNavProdNotPregnant();
-            }
+            };
+            
+            
+            componentNavLeftRight.bindEventListeners();
+            
         }
         
     }

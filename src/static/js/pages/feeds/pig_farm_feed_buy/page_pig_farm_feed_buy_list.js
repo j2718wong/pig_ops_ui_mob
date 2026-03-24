@@ -29,6 +29,8 @@ import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
 export function PagePigFarmFeedBuyList(input_settings){
     PageTableBasic.call(this);
     
+    const TAG                   = 'PagePigFarmFeedBuyList';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     
@@ -184,7 +186,17 @@ export function PagePigFarmFeedBuyList(input_settings){
     }
     
     
-    this.beforeShow = function(){
+    this.renderPage = function(page_data){
+        thisObj.show();
+    }
+    
+    
+    this.show = function(){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = null;
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
         // Request data if not yet requested
@@ -210,20 +222,6 @@ export function PagePigFarmFeedBuyList(input_settings){
             thisObj.renderTable(dataFarmFeedBuyList);
         }
      
-        
-    }
-    
-        
-    this.show = function(options){
-        
-        // show the last showOptions if there is no options
-        if (options == null){options = showOptions;}
-        
-        // So that not to instantiate in every table redraw
-        dtCurrentDate = new Date();
-        dtCurrentDate.setHours(0, 0, 0, 0);
-        
-        showOptions = options;
         
     }
     

@@ -722,9 +722,10 @@ export function ManagerNavLinks(_navigation) {
         // Will also compare current page and next_page NAV_MENU_GROUP. 
         navigation.pushCurrentPageToNavHistory(next_page);
         
+        console.log('onClickNavFeedsExpenses');
         
-        //navigation.showThisPage(next_page);
-        navigation.pagePigFarmFeedBuyList.beforeShow();
+        navigation.showThisPage(next_page);
+        navigation.pagePigFarmFeedBuyList.show();
     }
         
         
