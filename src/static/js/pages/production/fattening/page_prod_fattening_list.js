@@ -369,7 +369,7 @@ export function PageProdFatteningList(input_settings){
 
             if (index == 0 || index == 1) {
                 cur_td.onclick = function(){
-                    navigation.onClickProdFatteningEntry(pid);
+                    thisObj.onClickProdFatteningEntry(pid);
                 }
             }
             
@@ -545,6 +545,64 @@ export function PageProdFatteningList(input_settings){
         
     }
     
+    
+    this.onClickProdFatteningEntry = function(pig_prod_pid, show_options){
+        if (pig_prod_pid == null){
+            navigation.managerNavLinks.onClickNavProdFattening(null);
+            return;
+        }
+        
+
+        const next_page = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_ENTRY);
+        navigation.showThisPage(next_page);
+        
+        const data_pig_prod_list = navigation.pigFarm.managerPigProd.dataFatteningList;
+        
+        let prev_prod_pid = null;
+        let next_prod_pid = null;
+        
+        let index;
+        let prev_entry  = null;
+        let cur_entry   = null;
+        let next_entry  = null;
+        
+        for (index = 0; index< data_pig_prod_list.length; index++){
+            cur_entry = data_pig_prod_list[index];
+            
+            
+            
+            if (cur_entry.pig_production.farm_prod_id == pig_prod_pid){
+                
+                if ((index-1) >=0){
+                    prev_entry = data_pig_prod_list[index-1];
+                    prev_prod_pid = prev_entry.pig_production.farm_prod_id;
+                }
+                
+                if ((index+1) < data_pig_prod_list.length){
+                    next_entry = data_pig_prod_list[index+1];
+                    next_prod_pid = next_entry.pig_production.farm_prod_id;
+                }
+                
+                const options = {
+                    pig_prod_type:  PIG_PROD_TYPE.FATTENING,
+                    prev_prod_pid:  prev_prod_pid,
+                    next_prod_pid:  next_prod_pid,
+                    data_index:     index+1,
+                    total_entries:  data_pig_prod_list.length
+                };
+                
+                if (show_options){
+                    
+                }
+                
+                navigation.pageProdFatteningEntry.show(cur_entry, options);
+                return;
+            }
+        }
+        
+    }
+ 
+ 
     
     
     

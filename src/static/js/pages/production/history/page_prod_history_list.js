@@ -418,9 +418,15 @@ export function PageProdHistoryList(input_settings){
         });
         
         
+        console.log('test a');
         if (settings.isProdSalesHistory){
+            console.log('test b');
+            
+            console.log(elemNavPrevEntry);
+            
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
+                console.log('test c');
                 navigation.managerNavLinks.onClickNavFeedsExpenses();
             }
 

@@ -586,11 +586,13 @@ export function PageProdEntryCommon(input_settings){
             
             case PIG_PROD_TYPE.FATTENING:{
                 elemNavPrevEntry.onclick = function(){
-                    navigation.onClickProdFatteningEntry(options.prev_prod_pid);
+                    navigation.pageProdFatteningList.onClickProdFatteningEntry(
+                        options.prev_prod_pid);
                 }
                 
                 elemNavNextEntry.onclick = function(){
-                    navigation.onClickProdFatteningEntry(options.next_prod_pid);
+                    navigation.pageProdFatteningList.onClickProdFatteningEntry(
+                        options.next_prod_pid);
                 }
                 break;
             }

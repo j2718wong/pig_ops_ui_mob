@@ -196,21 +196,15 @@ export async function getLocationWithFallback() {
 
 export function Navigation(){
     const thisObj               = this;
-    
 
     
     let elemSubnavSummary       = null;
-    
-    
-    
-    const elemPageLoading               = document.getElementById('loading-page');
-    const elemPageMainContent           = document.getElementById('main-content');
-    
-    
-    
-    let elemNavLeftProductName          = null;
-    let elemDesktopPigFarmName          = null;
-    let elemMobilePigFarmName           = null;
+
+    const elemPageLoading       = document.getElementById('loading-page');
+
+    let elemNavLeftProductName  = null;
+    let elemDesktopPigFarmName  = null;
+    let elemMobilePigFarmName   = null;
     
     
     this.curScreenIsMobile      = null;
@@ -846,10 +840,7 @@ export function Navigation(){
         elemMobilePigFarmName           = document.getElementById('mobilePigFarmName');
         
         
-        
         this.pageContainers.findElements();
-
-    
     }
     
     
@@ -963,10 +954,8 @@ export function Navigation(){
         this.curPageNavigated.pageContainer = container_home;
         
     }
-    
-    
-    
-    
+
+
     
     this.setDataUserAccount = function(data){
         this.userControl.setDataUserAccount(data);
@@ -996,8 +985,8 @@ export function Navigation(){
         
         if (next_page){
             const cur_page = cur_page_navigated.pageContainer; 
-            const cur_page_nav_menu_group  = thisObj.getNavigationMenuGroup(cur_page);
-            const next_page_nav_menu_group = thisObj.getNavigationMenuGroup(next_page);
+            const cur_page_nav_menu_group  = thisObj.pageContainers.getNavigationMenuGroup(cur_page);
+            const next_page_nav_menu_group = thisObj.pageContainers.getNavigationMenuGroup(next_page);
             
             if (cur_page_nav_menu_group && next_page_nav_menu_group) {
                 // Swiping on menu to menu or list to list
@@ -1295,75 +1284,4 @@ export function Navigation(){
     }
     
     
-    this.onClickProdFatteningEntry = function(pig_prod_pid, show_options){
-        if (pig_prod_pid == null){
-            thisObj.managerNavLinks.onClickNavProdFattening(null);
-            return;
-        }
-        
-
-        const next_page = thisObj.getPageContainer(PAGE_ID.PROD_FATTENING_ENTRY);
-        thisObj.showThisPage(next_page);
-        
-        const data_pig_prod_list = thisObj.pigFarm.managerPigProd.dataFatteningList;
-        
-        let prev_prod_pid = null;
-        let next_prod_pid = null;
-        
-        let index;
-        let prev_entry  = null;
-        let cur_entry   = null;
-        let next_entry  = null;
-        
-        for (index = 0; index< data_pig_prod_list.length; index++){
-            cur_entry = data_pig_prod_list[index];
-            
-            
-            
-            if (cur_entry.pig_production.farm_prod_id == pig_prod_pid){
-                
-                if ((index-1) >=0){
-                    prev_entry = data_pig_prod_list[index-1];
-                    prev_prod_pid = prev_entry.pig_production.farm_prod_id;
-                }
-                
-                if ((index+1) < data_pig_prod_list.length){
-                    next_entry = data_pig_prod_list[index+1];
-                    next_prod_pid = next_entry.pig_production.farm_prod_id;
-                }
-                
-                const options = {
-                    pig_prod_type:  PIG_PROD_TYPE.FATTENING,
-                    prev_prod_pid:  prev_prod_pid,
-                    next_prod_pid:  next_prod_pid,
-                    data_index:     index+1,
-                    total_entries:  data_pig_prod_list.length
-                };
-                
-                if (show_options){
-                    
-                }
-                
-                thisObj.pageProdFatteningEntry.show(cur_entry, options);
-                return;
-            }
-        }
-        
-    }
- 
- 
-    this.pageContainerToString = function(page_container){
-        return thisObj.pageContainers.pageContainerToString(page_container);
-    }
-    
-    
-    // Will return NAV_MENU_GROUP from a  given page container.
-    // Pages that show up on NavLink click in the same group should have same 
-    // NAV_MENU_GROUP.
-    
-    // Example ['Sows', 'Boars', 'Gilts', 'Disposed', 'Parent Trace'] belongs to
-    // NAV_MENU_GROUP.SOW_BOAR_GILT;
-    this.getNavigationMenuGroup = function(page_container){
-        return thisObj.pageContainers.getNavigationMenuGroup(page_container);
-    }
 }

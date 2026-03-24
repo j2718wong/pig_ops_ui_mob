@@ -99,7 +99,7 @@ export function ManagerNavHistory(_navigation) {
     
     // Will push current page to navHistory list;
     this.pushCurrentPage = function(page_container, page_data, render_func){
-        const nav_menu_group = navigation.getNavigationMenuGroup(page_container);
+        const nav_menu_group = navigation.pageContainers.getNavigationMenuGroup(page_container);
         
         const cur_entry = {
             pageContainer:  page_container,
@@ -224,7 +224,8 @@ export function ManagerNavHistory(_navigation) {
         let s = '';
         
         for (const cur_entry of navHistoryList){
-            s += navigation.pageContainerToString(cur_entry.pageContainer);
+            s += navigation.pageContainers.pageContainerToString(
+                cur_entry.pageContainer);
             s += '\n';
         }
         

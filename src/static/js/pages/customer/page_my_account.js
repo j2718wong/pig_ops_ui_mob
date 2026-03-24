@@ -192,13 +192,13 @@ export function PageMyAccount(input_settings){
             if (pig_farm_location.address){
                 const address = pig_farm_location.address;
                 
-                if (address.level_1){
+                if (address.level_1 && address.level_1.name ){
                     s_address += `, ${address.level_1.name}`;
                     
-                    if (address.level_2){
+                    if (address.level_2 && address.level_2.name){
                         s_address += `, ${address.level_2.name}`;
                         
-                        if (address.level_3){
+                        if (address.level_3 && address.level_3.name){
                             s_address += `, ${address.level_3.name}`;
                         }
                     }
