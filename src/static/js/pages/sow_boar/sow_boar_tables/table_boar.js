@@ -73,8 +73,8 @@ export function SowBoarTableBoar(input_settings){
                 const labels_common = translations.common_app.labels;
                 
                 if (labels_common) {
-                    if(labels_common.boar)   {label_sow = labels_common.boar;}
-                    if(labels_common.age)    {label_age = labels_common.age;}
+                    if(labels_common.boar)   {label_boar = labels_common.boar;}
+                    if(labels_common.age)    {label_age  = labels_common.age;}
                 }
             }
             

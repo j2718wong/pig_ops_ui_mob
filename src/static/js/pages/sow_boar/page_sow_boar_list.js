@@ -78,6 +78,10 @@ export function PageSowBoarList(input_settings){
     let elemIdIncludeDisposed   = null;
     let elemIdSowOutputToggle   = null;
     
+    let elemIdDateTodayShow     = null;
+    let elemIdLabelToday        = null;
+    let elemIdDateToday         = null;
+    
     
     let elemIdTableRowCount     = null;
     let elemIdTablePagination   = null;
@@ -106,6 +110,10 @@ export function PageSowBoarList(input_settings){
     let elemSowControls         = null;     
     let elemIncludeDisposed     = null;
     let elemSowOutputToggle     = null;
+    
+    let elemDateTodayShow       = null;
+    let elemLabelToday          = null;
+    let elemDateToday           = null;
     
     let elemTableRowCount       = null;
     let elemTablePagination     = null;
@@ -287,6 +295,11 @@ export function PageSowBoarList(input_settings){
         elemIdIncludeDisposed   = `${settings.uniqueKey}-inc-disposed`;
         elemIdSowOutputToggle   = `${settings.uniqueKey}-output-toggle`;
         
+        elemIdDateTodayShow     = `${settings.uniqueKey}-today-show`;
+        elemIdLabelToday        = `${settings.uniqueKey}-label-today`;
+        elemIdDateToday         = `${settings.uniqueKey}-date-today`;
+        
+
         
         elemIdTableRowCount     = `${settings.uniqueKey}-table-row-count`;
         elemIdTablePagination   = `${settings.uniqueKey}-table-pagination`;
@@ -316,13 +329,24 @@ export function PageSowBoarList(input_settings){
         
         let label_search_pig    = 'Search Pig Name or Number';
         let label_sow_all       = 'All';
-        let label_sow_gesta     = "Gesta";
-        let label_sow_lacta     = "Lacta";
-        let label_sow_wean      = "Wean";
-        let label_sow_output    = "Output";
+        let label_sow_gesta     = 'Gesta';
+        let label_sow_lacta     = 'Lacta';
+        let label_sow_wean      = 'Wean';
+        let label_sow_output    = 'Output';
+        
+        let label_today         = 'Today';
         
         
         if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.today)   {label_today = labels_common.today;}
+                }
+            }
+            
+            
             if (translations.page_sow_boar_list && 
                 translations.page_sow_boar_list.labels){
                 
@@ -434,6 +458,12 @@ ${html_style}
         </div>
         
         
+        <div id="${elemIdDateTodayShow}" style="text-align: center;">
+            <span id="${elemIdLabelToday}">${label_today}</span>
+            <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
+        </div>
+        
+        
         <!-- Controls Bar -->
         <div class="controls-bar">
             <div class="entry-count" id="${elemIdTableRowCount}">
@@ -452,7 +482,7 @@ ${html_style}
                 </button>
             </div>
         </div>
-
+        
 
         <!-- Table Sow All-->
         ${html_table_sow_all}
@@ -526,6 +556,10 @@ ${html_style}
         elemSowControls         = elemDivContainer.querySelector('#'+elemIdSowControls);    
         elemIncludeDisposed     = elemDivContainer.querySelector('#'+elemIdIncludeDisposed);
         elemSowOutputToggle     = elemDivContainer.querySelector('#'+elemIdSowOutputToggle);
+        
+        elemDateTodayShow       = elemDivContainer.querySelector('#'+elemIdDateTodayShow);
+        elemLabelToday          = elemDivContainer.querySelector('#'+elemIdLabelToday);
+        elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
         
         
         elemTableRowCount       = elemDivContainer.querySelector('#'+elemIdTableRowCount);
@@ -646,6 +680,20 @@ ${html_style}
     
     
     this.show = function(options){
+        // So that not to instantiate in every table redraw
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
+        this.dtCurrentDate = dtCurrentDate;
+        
+        
+        const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
+        
+        // This is only shown in Gesta tab
+        elemDateToday.textContent = s_dt_current;
+        elemDateTodayShow.style.display = 'none';
+        
+        
         
         dataSowList     = navigation.pigFarm.managerSowBoar.dataSowList;
         dataBoarList    = navigation.pigFarm.managerSowBoar.dataBoarList;
@@ -678,11 +726,6 @@ ${html_style}
         }
         
         
-        // So that not to instantiate in every table redraw
-        dtCurrentDate = new Date();
-        dtCurrentDate.setHours(0, 0, 0, 0);
-        
-        this.dtCurrentDate = dtCurrentDate;
         
         
         showOptions = options;
@@ -1100,6 +1143,8 @@ ${html_style}
         
         switch(filter_type){
             case 'all':{
+                elemDateTodayShow.style.display = 'none';
+                
                 tableSowAll.show();
                 tableSowGesta.hide();
                 tableSowLacta.hide();
@@ -1113,6 +1158,9 @@ ${html_style}
             }
             
             case 'gestating':{
+                elemDateTodayShow.style.display = 'block';
+
+                
                 tableSowAll.hide();
                 tableSowGesta.show();
                 tableSowLacta.hide();
@@ -1131,6 +1179,9 @@ ${html_style}
             }
             
             case 'lactating':{
+                elemDateTodayShow.style.display = 'none';
+
+                
                 tableSowAll.hide();
                 tableSowGesta.hide();
                 tableSowLacta.show();
@@ -1149,6 +1200,8 @@ ${html_style}
             }
             
             case 'weaning':{
+                elemDateTodayShow.style.display = 'none';
+
                 tableSowAll.hide();
                 tableSowGesta.hide();
                 tableSowLacta.hide();
@@ -1195,6 +1248,7 @@ ${html_style}
     
     
     this.onClickSowListOutput = function(){
+        elemDateTodayShow.style.display = 'none';
         
         tableSowAll.hide();
         tableSowGesta.hide();

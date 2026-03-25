@@ -58,9 +58,10 @@ export function SowBoarTableSowGesta(input_settings){
         elemIdTableShow         = `${settings.uniqueKey}-sow-gesta-show`;
         elemIdTableBody         = `${settings.uniqueKey}-sow-gesta-tbody`;
         
-        
+
         const translations      = navigation.getTranslations();
         
+
         let label_sow           = 'Sow';
         let label_last_mate     = 'Last Mate';
         let label_expected      = 'Expected';
@@ -72,7 +73,7 @@ export function SowBoarTableSowGesta(input_settings){
                 const labels_common = translations.common_app.labels;
                 
                 if (labels_common) {
-                    if(labels_common.sow)    {label_sow = labels_common.sow;}
+                    if(labels_common.sow)   {label_sow = labels_common.sow;}
                 }
             }
             
@@ -91,8 +92,6 @@ export function SowBoarTableSowGesta(input_settings){
                     if(labels_sow_boar_list.expected) {
                         label_expected = labels_sow_boar_list.expected;
                     }
-
-                    
                 }
             }
         }
@@ -102,6 +101,7 @@ export function SowBoarTableSowGesta(input_settings){
         const html = `
         
         <div id="${elemIdTableShow}">
+            
             <table class="data-table table-sow">
                 <colgroup>
                     <col style="width: 30%;">
