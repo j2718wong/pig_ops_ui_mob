@@ -101,10 +101,28 @@ export function PageAllFeedBalanceList(input_settings){
     
     
     this.render = function(){
+        let page_title          = 'Feed Balance List';
+        
+        const translations      = navigation.getTranslations();
+        
+        
+        if (translations){
+            if (translations.navigation && translations.navigation.nav_links){
+                const nav_links = translations.navigation.nav_links;
+                
+                if (nav_links) {
+                    if(nav_links.Operations1) {
+                        page_title = nav_links.Operations1;}
+                        
+                }
+            }
+        }
+        
+        
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
            elemDivContainer:    elemDivContainer,
-           pageTitle:           'Feed Balance List'
+           pageTitle:           page_title
         });
         
         

@@ -92,11 +92,26 @@ export function PageProdPigDeadList(input_settings){
     
     
     this.render = function(){
+        const translations      = navigation.getTranslations();
+        
+        let page_title          = 'Dead Pigs';
+        
+        if (translations){
+            if (translations.navigation && translations.navigation.nav_links){
+                const nav_links = translations.navigation.nav_links;
+                
+                if (nav_links) {
+                    if(nav_links.Operations3)   {
+                        page_title = nav_links.Operations3;}
+                }
+            }
+        }    
+            
         
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
            elemDivContainer:    elemDivContainer,
-           pageTitle:           'Dead Pigs'
+           pageTitle:           page_title
         });
         
         

@@ -31,6 +31,7 @@ export function ManagerPigProd(input_settings){
     
     this.dataNotPregnantList    = null;
     this.dataProdPigDeadList    = null;
+    this.dataBoarExtMateList    = null;
     
     
     
@@ -240,7 +241,6 @@ export function ManagerPigProd(input_settings){
     }
     
     
-    
     this.requestProdPigDeadList = function(callback_success, 
             elem_show_error){
         
@@ -295,7 +295,6 @@ export function ManagerPigProd(input_settings){
         });
         
     }
-    
     
     
     

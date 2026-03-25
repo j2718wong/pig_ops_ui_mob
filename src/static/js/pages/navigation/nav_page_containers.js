@@ -80,13 +80,11 @@ export function NavPageContainers(_navigation){
     
     const elemIdContProdFeedBalAddEdit  = 'container-feed-balance-add-edit';
     
-    
     const elemIdContBoarExtMateList     = 'container-boar-ext-mate-list';
     const elemIdContBoarExtMateAddEdit  = 'container-boar-ext-mate-add-edit';
     
     const elemIdContPigDeadList         = 'container-pig-dead-list';
     const elemIdContPigDeadAddEdit      = 'container-pig-dead-add-edit';
-    
     
     
     
@@ -180,6 +178,7 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.PROD_NOT_PREGNANT_LIST] = document.getElementById(elemIdContProdNotPregnantList);
         
         
+        
         this.containers[PAGE_ID.ALL_FEED_BAL_LIST]      = document.getElementById(elemIdContAllFeedBalList);
         this.containers[PAGE_ID.ALL_FEED_BAL_ADD_EDIT]  = document.getElementById(elemIdContAllFeedBalAddEdit);
         
@@ -188,6 +187,8 @@ export function NavPageContainers(_navigation){
         
         this.containers[PAGE_ID.PIG_DEAD_LIST]          = document.getElementById(elemIdContPigDeadList);
         this.containers[PAGE_ID.PIG_DEAD_ADD_EDIT]      = document.getElementById(elemIdContPigDeadAddEdit);
+        
+        
         
         this.containers[PAGE_ID.PROD_SALES_LIST]        = document.getElementById(elemIdContProdSalesList);
         this.containers[PAGE_ID.PROD_SALES_ENTRY]       = document.getElementById(elemIdContProdSalesEntry);
@@ -232,6 +233,7 @@ export function NavPageContainers(_navigation){
         
         CONTAINER_GROUP_OPERATIONS      = [
             this.containers[PAGE_ID.ALL_FEED_BAL_LIST],
+            this.containers[PAGE_ID.BOAR_EXT_MATE_LIST],
             this.containers[PAGE_ID.PIG_DEAD_LIST]
         ];
         

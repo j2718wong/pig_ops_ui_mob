@@ -61,7 +61,7 @@ export function PageBoarExternalMateList(input_settings){
     let elemTableBody           = null;
     
     
-    let dataPigDeadList     = null;
+    let dataBoarExtMateList     = null;
 
     
     let searchIncludeInsem      = true;
@@ -92,11 +92,26 @@ export function PageBoarExternalMateList(input_settings){
     
     
     this.render = function(){
+        const translations      = navigation.getTranslations();
+        
+        let page_title          = 'Boar External Mates';
+        
+        if (translations){
+            if (translations.navigation && translations.navigation.nav_links){
+                const nav_links = translations.navigation.nav_links;
+                
+                if (nav_links) {
+                    if(nav_links.Operations2)   {
+                        page_title = nav_links.Operations2;}
+                }
+            }
+        }   
+        
         
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
            elemDivContainer:    elemDivContainer,
-           pageTitle:           'Dead Pigs'
+           pageTitle:           page_title
         });
         
         
@@ -204,13 +219,12 @@ export function PageBoarExternalMateList(input_settings){
         
         
         const callback_success = function(data){
-            dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
-            thisObj.renderTable(dataPigDeadList);
+            thisObj.renderTable(data);
         };
 
    
-        // Request ProdPigDead List
-        navigation.pigFarm.managerPigProd.requestProdPigDeadList(
+        // Request BoarExtMate List
+        navigation.pigFarm.managerSowBoar.requestBoarExtMateList(
             callback_success, null);
         
     }
@@ -281,47 +295,6 @@ export function PageBoarExternalMateList(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         
-        // Boar column
-        const html_pid_sow  = farmPage.getHtmlPidSowLoveBoar(cur_entry.production);
-        
-        const dt_dead   = new Date(cur_entry.pig_dead.date_dead);
-        
-        
-        // Count how many days since birth
-        const date_actual_birth = cur_entry.production.birth.date_actual;
-        
-        let html_date_dead = `${cur_entry.pig_dead.date_dead}`;
-        if (date_actual_birth){
-            const dt_birth = new Date(date_actual_birth);
-            
-            let diff_msecs    = dt_dead - dt_birth;
-            let diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
-            
-            const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
-            
-            // Adjust Day 1 on date of birth if needed
-            if (acc_settings_ops){
-                if (acc_settings_ops.day_1_on_date_of_birth > 0){
-                    diff_days += 1;
-                }
-            }
-            
-            html_date_dead += ` <span class="nowrap">(Day ${diff_days})</span>`;  
-        }
-        
-        
-        let notes = '';
-        if (cur_entry.pig_dead.notes){
-            notes = cur_entry.pig_dead.notes;
-        }
-        
-        // Dead Type + comments
-        const s_desc = `
-            <span class="dead-type"><b>${cur_entry.pig_dead.dead_type}</b></span>
-            <span class="notes">${notes}</span>
-        `;
-        
-        
         
         const html = `
             <tr>
@@ -385,136 +358,7 @@ export function PageBoarExternalMateList(input_settings){
     
     
     this.searchEntries = function(key){
-        let data_pig_prod_list = dataPigDeadList;
         
-        
-        
-        const filtered = [];
-        for (const cur_entry of data_pig_prod_list){
-            
-            let u_sow_name          = null;
-            let u_sow_number        = null;
-            
-            let u_boar_name         = null;
-            let u_boar_number       = null;
-            
-            let u_semen_supplier    = null;
-            let u_semen_name        = null;
-            
-            
-            let s_pid   = `${cur_entry.pig_production.farm_prod_id}`;
-            
-            if (cur_entry.sow.name){
-                u_sow_name = cur_entry.sow.name.toUpperCase();
-            }
-            
-            if (cur_entry.sow.number){
-                u_sow_number = cur_entry.sow.number.toUpperCase();
-            }
-            
-            
-            let insemination = cur_entry.insemination;
-            
-            switch (insemination.insem_type){
-                case 'B': {
-                    if (insemination.boar.name){
-                        u_boar_name = insemination.boar.name.toUpperCase();
-                    }
-                    
-                    if (insemination.boar.number){
-                        u_boar_number = insemination.boar.number.toUpperCase();
-                    }
-                    
-                    break;
-                }
-                
-                case 'AI_X': {
-                    u_semen_supplier = insemination.ai.semen_supplier.name.toUpperCase();
-                    u_semen_name    = insemination.ai.semen_supplier.semen.name.toUpperCase();
-                    
-                    break;
-                }
-                
-                case 'AI_N': {
-                    if (insemination.ai.internal_boar.name){
-                        u_boar_name = insemination.ai.internal_boar.name.toUpperCase();
-                    }
-                    
-                    if (insemination.ai.internal_boar.number){
-                        u_boar_number = insemination.ai.internal_boar.number.toUpperCase();
-                    }
-                    
-                    break;
-                }
-            }
-            
-            
-            if (s_pid.startsWith(key)){
-                filtered.push(cur_entry);
-                continue;
-            }
-            
-            
-            if (u_sow_name){
-                if (u_sow_name.startsWith(key)){
-                    filtered.push(cur_entry);
-                    continue;
-                }
-            }
-            
-            if (u_sow_number){
-                if (u_sow_name.startsWith(key)){
-                    filtered.push(cur_entry);
-                    continue;
-                }
-            }
-            
-            
-            if (searchIncludeInsem){
-                if (u_boar_name){
-                    if (u_boar_name.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-                
-                if (u_boar_number){
-                    if (u_boar_number.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-                
-                if (u_semen_supplier){
-                    if (u_semen_supplier.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-            
-                if (u_semen_name){
-                    if (u_semen_name.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-            }
-            
-        } 
-        
-        
-        return filtered;
-    }
-    
-    
-    this.getDataPigProd = function(pid){
-        // Most functions with getData*** always use entry_hid as 
-        // input parameter. The DataPigProd will use pid instead
-        // as this is highly visible by in the page.
-        for (const cur_entry of dataPigProdList){
-            if(cur_entry.pig_production.farm_prod_id == pid){return cur_entry;}
-        }
-        return null;
     }
     
     
@@ -538,7 +382,7 @@ export function PageBoarExternalMateList(input_settings){
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         }
-        navigation.pagePigDeadAddEdit.show(options);
+        navigation.pageBoarExtMateAddEdit.show(options);
     }
     
     

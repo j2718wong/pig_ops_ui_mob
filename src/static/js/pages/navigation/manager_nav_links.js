@@ -518,22 +518,15 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavFeedBalance(false);
         });
         
-        
         elemDesktopNavOperations2.addEventListener('click', function() {
+            thisObj.onClickNavBoarExternalMate(false);
+        });
+        
+        elemDesktopNavOperations3.addEventListener('click', function() {
             thisObj.onClickNavPigDead(false);
         });
-        
-        
-          
-        /*
-        elemDesktopNavOperations2.addEventListener('click', function() {
-            thisObj.onClickNavReports(false);
-        });
-          
-        elemDesktopNavOperations3.addEventListener('click', function() {
-            thisObj.onClickNavFeedCalculator(false);
-        });  
-        */
+
+
 
 
         elemDesktopNavFinancials1.addEventListener('click', function() {
@@ -663,19 +656,14 @@ export function ManagerNavLinks(_navigation) {
         });  
         
         elemMobileNavOperations2.addEventListener('click', function() {
+            thisObj.onClickNavBoarExternalMate(true);
+        }); 
+        
+        elemMobileNavOperations3.addEventListener('click', function() {
             thisObj.onClickNavPigDead(true);
         }); 
         
-         
-        /*
-        elemMobileNavOperations2.addEventListener('click', function() {
-            thisObj.onClickNavReports(true);
-        }); 
-          
-        elemMobileNavOperations3.addEventListener('click', function() {
-            thisObj.onClickNavFeedCalculator(true);
-        });   
-        */
+
 
 
         elemMobileNavFinancials1.addEventListener('click', function() {
@@ -853,7 +841,7 @@ export function ManagerNavLinks(_navigation) {
             elemDesktopNavLabelOperations2.textContent = translated_nav_links.Operations2 || "Pig Dead";
         }
         if (elemDesktopNavLabelOperations3) {
-            elemDesktopNavLabelOperations3.textContent = translated_nav_links.Operations3 || "";
+            elemDesktopNavLabelOperations3.textContent = translated_nav_links.Operations3 || "Boar External Mate";
         }
         
         // Desktop financials submenu labels
@@ -980,7 +968,7 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelOperations2.textContent = translated_nav_links.Operations2 || "Pig Dead";
         }
         if (elemMobileNavLabelOperations3) {
-            elemMobileNavLabelOperations3.textContent = translated_nav_links.Operations3 || "";
+            elemMobileNavLabelOperations3.textContent = translated_nav_links.Operations3 || "Boar External Mate";
         }
         
         // Mobile financials submenu labels
@@ -1163,6 +1151,20 @@ export function ManagerNavLinks(_navigation) {
         navigation.pageAllFeedBalanceList.show();
     }
         
+        
+    this.onClickNavBoarExternalMate = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_LIST);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pageBoarExtMateList.show();
+    
+    }
+    
     
     this.onClickNavPigDead = function(is_mobile){
         const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
@@ -1175,6 +1177,8 @@ export function ManagerNavLinks(_navigation) {
         navigation.showThisPage(next_page);
         navigation.pagePigDeadList.show();
     }
+    
+    
     
         
     this.onClickNavReports = function(is_mobile){

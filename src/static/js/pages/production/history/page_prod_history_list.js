@@ -225,11 +225,31 @@ export function PageProdHistoryList(input_settings){
         
         let page_title          = '';
         
+        const translations      = navigation.getTranslations();
+        
+        let page_title_sales    = 'Prod Sales List';
+        let page_title_history  = 'Prod History List';
+        
+        if (translations){
+            if (translations.navigation && translations.navigation.nav_links){
+                const nav_links = translations.navigation.nav_links;
+                
+                if (nav_links) {
+                    if(nav_links.Financials1) {
+                        page_title_sales = nav_links.Financials1;}
+                        
+                    if(nav_links.Production4) {
+                        page_title_history = nav_links.Production4;}
+                    
+                }
+            }
+        }
+        
         if (settings.isProdSalesHistory){
-            page_title          = 'Prod Sales List';
+            page_title          = page_title_sales;
         }
         else{
-            page_title          = 'Prod History List';
+            page_title          = page_title_history;
         }
         
         

@@ -448,4 +448,59 @@ export function ManagerSowBoar(input_settings){
     
 
 
+    this.requestBoarExtMateList = function(callback_success, elem_show_error){
+        
+        const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
+        
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/sow_boar_mate/list?pfhid=${cur_pig_farm_hid}&is_external=1`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+    
+    
+    
+    
+
+
 }

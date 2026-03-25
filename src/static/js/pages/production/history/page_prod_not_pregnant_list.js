@@ -89,11 +89,28 @@ export function PageProdNotPregnantList(input_settings){
     
     
     this.render = function(){
+        let page_title          = 'Not Pregnant';
+        
+        const translations      = navigation.getTranslations();
+        
+        
+        if (translations){
+            if (translations.navigation && translations.navigation.nav_links){
+                const nav_links = translations.navigation.nav_links;
+                
+                if (nav_links) {
+                    if(nav_links.Production5) {
+                        page_title = nav_links.Production5;}
+                        
+                }
+            }
+        }
+        
         
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
            elemDivContainer:    elemDivContainer,
-           pageTitle:           'Not Pregnant'
+           pageTitle:           page_title
         });
         
         
