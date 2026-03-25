@@ -107,7 +107,7 @@ export function SowBoarTableGilt(input_settings){
                     <tr>
                         <th>${label_gilt}</th>
                         <th>${label_age}</th>
-                        <th>${label_operation} PigOp</th>
+                        <th>${label_operation}</th>
                     </tr>
                 </thead>
                 
