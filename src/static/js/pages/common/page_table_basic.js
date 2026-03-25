@@ -556,4 +556,35 @@ export function PageTableBasic(){
        
     }
     
+    this.writeLabelNoEntries = function(){
+        let label_no_entries = 'No Entries';
+        
+        if(thisObj.navigation){
+            const translations      = thisObj.navigation.getTranslations();
+        
+            if (translations){
+                if (translations.common && translations.common.labels){
+                    const labels_common = translations.common.labels;
+                    
+                    if (labels_common) {
+                        // This is an array
+                        if(labels_common.no_entries)  {
+                            
+                            
+                            const index = Math.floor(Math.random() * labels_common.no_entries.length);
+                            const cur_entry = labels_common.no_entries[index];
+                            
+                            label_no_entries = `${label_no_entries}; ${cur_entry}`;
+                        }
+
+                    }
+                }
+            }
+        }
+        
+        
+        return label_no_entries;
+    }
+    
+    
 }
