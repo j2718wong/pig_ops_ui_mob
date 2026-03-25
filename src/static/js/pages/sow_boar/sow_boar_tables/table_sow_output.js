@@ -62,6 +62,56 @@ export function SowBoarTableSowOutput(input_settings){
         elemIdTableBody         = `${settings.uniqueKey}-sow-output-tbody`;
         
         
+        const translations      = navigation.getTranslations();
+        
+        let label_sow           = 'Sow';
+        
+        let label_live_pigs_birth   = 'Live Pigs Birth';
+        let label_dead_at_birth     = 'Dead at Birth';
+        let label_dead_before_wean  = 'Dead before Wean';
+        let label_live_pigs_wean    = 'Live Pigs Wean';
+        
+        
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.sow)    {label_sow = labels_common.sow;}
+                }
+            }
+            
+            
+            
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.live_pigs_birth) {
+                        label_live_pigs_birth = labels_sow_boar_list.live_pigs_birth;
+                    }
+                    
+                    if(labels_sow_boar_list.dead_at_birth) {
+                        label_dead_at_birth = labels_sow_boar_list.dead_at_birth;
+                    }
+                    
+                    if(labels_sow_boar_list.dead_before_wean) {
+                        label_dead_before_wean = labels_sow_boar_list.dead_before_wean;
+                    }
+                    
+                    if(labels_sow_boar_list.live_pigs_wean) {
+                        label_live_pigs_wean = labels_sow_boar_list.live_pigs_wean;
+                    }
+                }
+            }
+        }
+        
+        
+        
         const html = `
         
         <div id="${elemIdTableShow}">
@@ -76,11 +126,11 @@ export function SowBoarTableSowOutput(input_settings){
                     
                     
                     <tr>
-                        <th>Sow</th>
-                        <th>Live Pigs Birth</th>
-                        <th>Dead at Birth</th>
-                        <th>Dead before Wean</th>
-                        <th>Live Pigs Wean</th>
+                        <th>${label_sow}</th>
+                        <th>${label_live_pigs_birth}</th>
+                        <th>${label_dead_at_birth}</th>
+                        <th>${label_dead_before_wean}</th>
+                        <th>${label_live_pigs_wean}</th>
                     </tr>
                     
                 </thead>

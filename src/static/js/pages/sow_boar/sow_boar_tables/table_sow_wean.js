@@ -79,6 +79,40 @@ export function SowBoarTableSowWean(input_settings){
         const html_style    = this._writeInlineStyle();
         
         
+        
+        const translations      = navigation.getTranslations();
+        
+        let label_sow           = 'Sow';
+        let label_date_weaned   = 'Date Weaned';
+        let label_operation     = 'What to do?';
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.sow)    {label_sow = labels_common.sow;}
+                }
+            }
+            
+            
+            
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.operation) {
+                        label_operation = labels_sow_boar_list.operation;
+                    }
+                }
+            }
+        }
+        
+        
+        
         const html = `
         ${html_style}
         
@@ -92,9 +126,9 @@ export function SowBoarTableSowWean(input_settings){
       
                 <thead>
                     <tr>
-                        <th>Sow</th>
-                        <th>Date Wean</th>
-                        <th>Pig Operation</th>
+                        <th>${label_sow}</th>
+                        <th>${label_date_weaned}</th>
+                        <th>${label_operation}</th>
                     </tr>
                 </thead>
                 
@@ -137,9 +171,15 @@ export function SowBoarTableSowWean(input_settings){
     
     
     this.getHtmlTableRowEmpty = function(){
+        let label_no_entries = thisObj.writeLabelNoEntries();
+        
+        if (label_no_entries){}
+        else{label_no_entries = 'No Entries';}
+        
+        
         const html = `
             <tr>
-                <td colspan="3"><div>No Entries</div></td>
+                <td colspan="3"><div>${label_no_entries}</div></td>
             </tr>
         `;
         
