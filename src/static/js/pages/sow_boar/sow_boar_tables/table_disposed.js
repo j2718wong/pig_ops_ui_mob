@@ -59,6 +59,48 @@ export function SowBoarTableDisposed(input_settings){
         elemIdTableBody         = `${settings.uniqueKey}-disposed-tbody`;
         
         
+        const translations      = navigation.getTranslations();
+        
+        let label_date_disposed = 'Date';
+        let label_disposed_type = 'Type';
+        let label_disposed_name = 'Name';
+        let label_status        = 'Status';
+        
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.status)   {label_status = labels_common.status;}
+                }
+            }
+            
+            
+            
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.date_disposed) {
+                        label_date_disposed = labels_sow_boar_list.date_disposed;
+                    }
+                    
+                    if(labels_sow_boar_list.disposed_type) {
+                        label_disposed_type = labels_sow_boar_list.disposed_type;
+                    }
+
+                    if(labels_sow_boar_list.disposed_name) {
+                        label_disposed_name = labels_sow_boar_list.disposed_name;
+                    }
+                }
+            }
+        }
+        
+        
         const html = `
         
         <div id="${elemIdTableShow}">
@@ -72,10 +114,10 @@ export function SowBoarTableDisposed(input_settings){
                 
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Name</th>
-                        <th>Status</th>
+                        <th>${label_date_disposed}</th>
+                        <th>${label_disposed_type}</th>
+                        <th>${label_disposed_name}</th>
+                        <th>${label_status}</th>
                     </tr>
                 </thead>
                 
@@ -118,9 +160,15 @@ export function SowBoarTableDisposed(input_settings){
 
     
     this.getHtmlTableRowEmpty = function(){
+        let label_no_entries = thisObj.writeLabelNoEntries();
+        
+        if (label_no_entries){}
+        else{label_no_entries = 'No Entries';}
+        
+        
         const html = `
             <tr>
-                <td colspan="4"><div>No Entries</div></td>
+                <td colspan="4"><div>${label_no_entries}</div></td>
             </tr>
         `;
         
