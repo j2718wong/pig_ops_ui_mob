@@ -180,7 +180,7 @@ export function PageAllFeedBalanceList(input_settings){
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavPigDead();
+            navigation.managerNavLinks.onClickNavBoarExternalMate();
         };
         
         

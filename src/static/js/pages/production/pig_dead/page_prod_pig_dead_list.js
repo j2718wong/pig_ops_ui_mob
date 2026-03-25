@@ -166,7 +166,7 @@ export function PageProdPigDeadList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavFeedBalance();
+            navigation.managerNavLinks.onClickNavBoarExternalMate();
         };
         
           

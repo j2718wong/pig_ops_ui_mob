@@ -171,7 +171,7 @@ export function PageBoarExternalMateList(input_settings){
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavFeedBalance();
+            navigation.managerNavLinks.onClickNavPigDead();
         };
         
         
@@ -248,6 +248,49 @@ export function PageBoarExternalMateList(input_settings){
         
         const html_style = this._writeInlineStyle();
         
+        const translations      = navigation.getTranslations();
+        
+        let label_boar          = 'Boar';
+        let label_external_sow  = 'External Sow';
+        let label_date_mate     = 'Date Mate';
+        let label_date_expected = 'Date Expected';
+        
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.boar)   {label_boar = labels_common.boar;}
+                }
+            }
+            
+            
+            
+            if (translations.page_boar_external_mates && 
+                translations.page_boar_external_mates.labels){
+                
+                const labels_list = translations.page_boar_external_mates.labels;
+                
+                if (labels_list) {
+                    if(labels_list.external_sow) {
+                        label_external_sow = labels_list.external_sow;
+                    }
+                    
+                    if(labels_list.date_mate) {
+                        label_date_mate = labels_list.date_mate;
+                    }
+                    
+                    if(labels_list.date_expected) {
+                        label_date_expected = labels_list.date_expected;
+                    }
+                }
+            }
+        }
+        
+        
+        
         
         const html = `
         ${html_style}
@@ -264,10 +307,10 @@ export function PageBoarExternalMateList(input_settings){
 
             <thead>
                 <tr>
-                    <th>Boar</th>
-                    <th>External Sow</th>
-                    <th>Date Mate</th>
-                    <th>Date Expected</th>
+                    <th>${label_boar}</th>
+                    <th>${label_external_sow}</th>
+                    <th>${label_date_mate}</th>
+                    <th>${label_date_expected}</th>
                 </tr>
             </thead>
             
@@ -284,9 +327,15 @@ export function PageBoarExternalMateList(input_settings){
        
 
     this.getHtmlTableRowEmpty = function(){
+        let label_no_entries = thisObj.writeLabelNoEntries();
+        
+        if (label_no_entries){}
+        else{label_no_entries = 'No Entries';}
+        
+        
         const html = `
             <tr>
-                <td colspan="4"><div>No Entries</div></td>
+                <td colspan="4"><div>${label_no_entries}</div></td>
             </tr>
         `;
         return html;
