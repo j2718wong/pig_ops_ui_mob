@@ -251,7 +251,7 @@ export function PageBoarExternalMateList(input_settings){
         const translations      = navigation.getTranslations();
         
         let label_boar          = 'Boar';
-        let label_external_sow  = 'External Sow';
+        let label_sow_owner     = 'Sow Owner';
         let label_date_mate     = 'Date Mate';
         let label_date_expected = 'Date Expected';
         
@@ -274,8 +274,8 @@ export function PageBoarExternalMateList(input_settings){
                 const labels_list = translations.page_boar_external_mates.labels;
                 
                 if (labels_list) {
-                    if(labels_list.external_sow) {
-                        label_external_sow = labels_list.external_sow;
+                    if(labels_list.sow_owner) {
+                        label_sow_owner = labels_list.sow_owner;
                     }
                     
                     if(labels_list.date_mate) {
@@ -308,7 +308,7 @@ export function PageBoarExternalMateList(input_settings){
             <thead>
                 <tr>
                     <th>${label_boar}</th>
-                    <th>${label_external_sow}</th>
+                    <th>${label_sow_owner}</th>
                     <th>${label_date_mate}</th>
                     <th>${label_date_expected}</th>
                 </tr>
@@ -413,7 +413,7 @@ export function PageBoarExternalMateList(input_settings){
     
     this.onClickAddEntry = function(){
         // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
+        const next_page = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -423,7 +423,7 @@ export function PageBoarExternalMateList(input_settings){
         
         
         // Show Page
-        const go_back_page_id = PAGE_ID.PIG_DEAD_LIST;
+        const go_back_page_id = PAGE_ID.BOAR_EXT_MATE_LIST;
         const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         const options ={

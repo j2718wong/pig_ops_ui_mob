@@ -249,6 +249,7 @@ export function createPaginationManager(config) {
     let currentPage = 1;
     let totalPages = Math.ceil(data.length / itemsPerPage);
     
+    
     // Public methods
     return {
         init() {

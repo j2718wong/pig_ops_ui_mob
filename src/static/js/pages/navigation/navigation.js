@@ -87,6 +87,7 @@ import {PageProdPigDeadList}        from '../production/pig_dead/page_prod_pig_d
 import {PagePigDeadAddEdit}         from '../production/pig_dead/page_pig_dead_add_edit.js';
 
 import {PageBoarExternalMateList}   from '../sow_boar/boar_external_mate/page_boar_external_mate_list.js'
+import {PageBoarExtMateAddEdit}     from '../sow_boar/boar_external_mate/page_boar_ext_mate_add_edit.js'
 
 
 import {PageProdSalesEntry}         from '../financials/prod_sales/page_prod_sales_entry.js';
@@ -507,6 +508,12 @@ export function Navigation(){
         uniqueKey:              'boar-ext-mate-list'
     });
 
+    this.pageBoarExtMateAddEdit = new PageBoarExtMateAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT),
+        uniqueKey:              'boar-ext-mate-add-edit'
+    });
+
 
 
     this.pagePigDeadList        = new PageProdPigDeadList({
@@ -838,6 +845,7 @@ export function Navigation(){
         this.pageAllFeedBalanceAddEdit.init();
         
         this.pageBoarExtMateList.init();
+        this.pageBoarExtMateAddEdit.init();
         
         this.pagePigDeadList.init();
         this.pagePigDeadAddEdit.init();

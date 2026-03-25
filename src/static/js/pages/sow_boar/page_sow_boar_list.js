@@ -467,7 +467,6 @@ ${html_style}
         <!-- Controls Bar -->
         <div class="controls-bar">
             <div class="entry-count" id="${elemIdTableRowCount}">
-                12 Entries
             </div>
             
             <div class="pagination-controls" id="${elemIdTablePagination}">
@@ -717,8 +716,7 @@ ${html_style}
         // Request requestFarmPigletsOutput 
         if (navigation.pigFarm.managerSowBoar.dataFarmPigletsOutput == null){
             const callback_success = function(){
-                // Still rendered even hidden;
-                tableSowOutput.renderTable(dataSowList);
+                // Render Table later
             };
             
             navigation.pigFarm.managerSowBoar.requestFarmPigletsOutput(
@@ -773,6 +771,9 @@ ${html_style}
         }
         
         
+        console.log('SowBoarList Show Options');
+        console.log(showOptions);
+       
         
         switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW: {
@@ -878,7 +879,7 @@ ${html_style}
                 
                 
                 curDataListView = dataBoarList;
-                tableBoar.renderTable(curDataListView);
+                tableBoar.renderTable(curDataListView); 
                 break;
             }
             
@@ -978,7 +979,7 @@ ${html_style}
         }
         
         // Set Entry count
-        //elemEntryCount.textContent = entry_count;
+        elemEntryCount.textContent = entry_count;
         
         
         // Need to set click listener

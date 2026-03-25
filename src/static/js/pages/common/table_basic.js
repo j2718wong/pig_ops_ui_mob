@@ -76,6 +76,7 @@ export function TableBasic(input_settings){
     this.renderTable = function(data_list){
         navigation  = parentObj.navigation;
         
+            
         const config = {
             navigation:         parentObj.navigation,
             
@@ -99,6 +100,7 @@ export function TableBasic(input_settings){
         const paginationManager = new createPaginationManager(config); 
         paginationManager.init();
         
+
         // One event handler at a time
         parentObj.elemTablePrevPage.onclick = function(){
             paginationManager.goToPrevPage();

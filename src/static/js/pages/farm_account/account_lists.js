@@ -12,6 +12,21 @@ export function AccountLists(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
     
+    
+    this.dataVerNum             = {
+        gestating_ops:          0,        
+        lactating_piglets_ops:  0,
+        lactating_sow_ops:      0,    
+        gilt_ops:               0,             
+        weaning_sow_ops:        0,      
+        
+        account:                0,
+        pig_buyer:              0             
+       
+    };
+    
+    
+    
     this.dataUserList           = null;
     
     
@@ -30,6 +45,54 @@ export function AccountLists(_navigation){
     
     this.setPigFarmAccountHid = function(hid){
         accountHid = hid;
+    }
+    
+    
+    this.requestAccountDataVerNum = function(callback_success, elem_show_error){
+        const base_url = window.location.origin;
+        let url = `${base_url}/account/data_ver_num?ahid=${accountHid}&r=1`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
     }
     
     
@@ -343,7 +406,10 @@ export function AccountLists(_navigation){
                         }
                     }
                     
-                    thisObj.dataAccPigBuyer = response.data;
+                    // Boar customer can be also considered pig buyer
+                    thisObj.dataAccPigBuyer = response.data; 
+                    
+                    // There is also a dedicated list for just boar customer
                     thisObj.dataAccBoarCustomer = acc_boar_customer;
                     
                     if (callback_success){callback_success(response.data);}

@@ -869,7 +869,7 @@ export function ManagerPigProd(input_settings){
                     parentObj.dataVerNum.sow = data_ver_num_sow;
                 };
                 
-                parentObject.managerSowBoar.requestSowBoarList(true,
+                parentObj.managerSowBoar.requestSowBoarList(true,
                     callback_success_sow, elem_show_error);
             }
             
@@ -880,7 +880,7 @@ export function ManagerPigProd(input_settings){
                 };
                 
                 // This should update navigation.pigFarm.managerSowBoar.dataBoarList
-                parentObject.managerSowBoar.requestSowBoarList(false,
+                parentObj.managerSowBoar.requestSowBoarList(false,
                     callback_success_boar, elem_show_error);
             }
 
@@ -891,7 +891,7 @@ export function ManagerPigProd(input_settings){
                     parentObj.dataVerNum.staff = data_ver_num_staff;
                 };
                 
-                parentObject.requestDataPigFarmStaffList(
+                parentObj.requestDataPigFarmStaffList(
                     callback_success_staff, elem_show_error);
             }
             
@@ -902,7 +902,7 @@ export function ManagerPigProd(input_settings){
                     parentObj.dataVerNum.feed_buy = data_ver_num_feed_buy;
                 };
                 
-                parentObject.requestDataPigFarmFeedBuyList(
+                parentObj.requestDataPigFarmFeedBuyList(
                     callback_success_feed_buy, elem_show_error);
             }
             

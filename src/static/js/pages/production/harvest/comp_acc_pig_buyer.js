@@ -34,6 +34,8 @@ export function ComponentAccPigBuyer(input_settings){
         parentObj:          thisObj,
         uniqueKey:          'acc-pig-buyer',
 
+        isBoarCustomer:     false,
+
         titleExpandSection: 'Add Pig Buyer',
         htmlExpandSection:  null,
         labelBtnExpandSave: 'Save Pig Buyer',
@@ -72,9 +74,15 @@ export function ComponentAccPigBuyer(input_settings){
     input_settings.htmlExpandSection = elemUiAccPigBuyer.getHtml();
     
     
-    let dataAccPigBuyerList       = null;
+    let isBoarCustomer          = false;
     
-    let elemAccPigBuyer           = null;
+    if (input_settings.isBoarCustomer){
+        isBoarCustomer = input_settings.isBoarCustomer;
+    }
+    
+    let dataAccPigBuyerList     = null;
+    
+    let elemAccPigBuyer         = null;
     
     
     // This needs to be set
