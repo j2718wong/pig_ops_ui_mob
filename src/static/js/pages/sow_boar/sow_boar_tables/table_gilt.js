@@ -59,6 +59,40 @@ export function SowBoarTableGilt(input_settings){
         elemIdTableBody         = `${settings.uniqueKey}-gilt-tbody`;
         
         
+        const translations      = navigation.getTranslations();
+        
+        let label_gilt          = 'Gilt';
+        let label_age           = 'Age';
+        let label_operation     = 'What to do?';
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.gilt)   {label_gilt = labels_common.gilt;}
+                    if(labels_common.age)    {label_age = labels_common.age;}
+                }
+            }
+            
+            
+            
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.operation) {
+                        label_operation = labels_sow_boar_list.operation;
+                    }
+                }
+            }
+        }
+        
+        
+        
         const html = `
         
         <div id="${elemIdTableShow}">
@@ -71,9 +105,9 @@ export function SowBoarTableGilt(input_settings){
                 
                 <thead>
                     <tr>
-                        <th>Gilt</th>
-                        <th>Age</th>
-                        <th>Next PigOp</th>
+                        <th>${label_gilt}</th>
+                        <th>${label_age}</th>
+                        <th>${label_operation} PigOp</th>
                     </tr>
                 </thead>
                 
@@ -116,9 +150,15 @@ export function SowBoarTableGilt(input_settings){
     
     
     this.getHtmlTableRowEmpty = function(){
+        let label_no_entries = thisObj.writeLabelNoEntries();
+        
+        if (label_no_entries){}
+        else{label_no_entries = 'No Entries';}
+        
+        
         const html = `
             <tr>
-                <td colspan="3"><div>No Entries</div></td>
+                <td colspan="3"><div>${label_no_entries}</div></td>
             </tr>
         `;
         
