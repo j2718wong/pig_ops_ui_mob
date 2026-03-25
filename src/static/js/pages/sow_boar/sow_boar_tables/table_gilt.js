@@ -18,8 +18,7 @@ import {APPLICATION,
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT,
-        createPaginationManager}    from '../../../utils.js';
+        FORMAT_COMPACT}             from '../../../utils.js';
 
 import {getSowBoarReference}        from '../../common/common_app.js';
 

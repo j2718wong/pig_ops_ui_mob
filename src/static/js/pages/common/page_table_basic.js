@@ -403,6 +403,8 @@ export function PageTableBasic(){
         
         
         const config = {
+            navigation:         thisObj.navigation,
+            
             elemPagination:     elemTablePagination,
             elemTableBody:      thisObj.getElemTableBody(),
             elemEntryCount:     elemTableRowCount,
@@ -410,7 +412,9 @@ export function PageTableBasic(){
             elemTotalPages:     elemTableTotalPages,
             elemPrevPageBtn:    elemTablePrevPage,
             elemNextPageBtn:    elemTableNextPage,
+            
             data:               curDataView,
+            
             itemsPerPage:       items_per_page,
             renderRow:          thisObj.getHtmlTableRow,
             renderRowEmpty:     thisObj.getHtmlTableRowEmpty,

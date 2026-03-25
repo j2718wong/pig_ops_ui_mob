@@ -18,8 +18,7 @@ import {APPLICATION,
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT,
-        createPaginationManager}    from '../../../utils.js';
+        FORMAT_COMPACT}             from '../../../utils.js';
 
 import {getSowBoarReference}        from '../../common/common_app.js';
 
@@ -205,6 +204,51 @@ export function SowBoarTableSowAll(input_settings){
         if (sow_boar.status_id == SOW_STATUS.GESTATING){
             if (sow_boar.cur_pig_production){
                 
+                const translations      = navigation.getTranslations();
+        
+        
+                let label_due           = 'Due';
+                let label_due_days      = 'Days';
+                let label_due_soon      = 'Due Soon';
+                let label_due_today     = 'Due Today';
+                let label_overdue       = 'Overdue';
+                
+                
+                if (translations){
+                    
+                    
+                    if (translations.page_sow_boar_list && 
+                        translations.page_sow_boar_list.labels){
+                        
+                        const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                        
+                        if (labels_sow_boar_list) {
+                            if(labels_sow_boar_list.due) {
+                                label_due = labels_sow_boar_list.due;
+                            }
+
+                            if(labels_sow_boar_list.due_days) {
+                                label_due_days = labels_sow_boar_list.due_days;
+                            }
+                            
+                            
+                            if(labels_sow_boar_list.due_soon) {
+                                label_due_soon = labels_sow_boar_list.due_soon;
+                            }
+                            
+                            if(labels_sow_boar_list.due_today) {
+                                label_due_today = labels_sow_boar_list.due_today;
+                            }
+                            
+                            if(labels_sow_boar_list.overdue) {
+                                label_overdue = labels_sow_boar_list.overdue;
+                            }
+                            
+                        }
+                    }
+                }
+
+                
                 const date_expected_birth   = sow_boar.cur_pig_production.date_expected_birth;
                 const dt_expected_birth     = new Date(date_expected_birth);
                 
@@ -212,19 +256,19 @@ export function SowBoarTableSowAll(input_settings){
                 const diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
                 
                 if ((diff_days >= 3) && (diff_days <= 7)) {
-                    htmlSowDueWarning = `<span class="due-soon">Due ${diff_days} Days</span>`;
+                    htmlSowDueWarning = `<span class="due-soon">${label_due} ${diff_days} ${label_due_days}</span>`;
                 } 
                 
                 if ((diff_days == 1) || (diff_days == 2)) {
-                    htmlSowDueWarning = `<span class="due-soon">Due Soon</span>`;
+                    htmlSowDueWarning = `<span class="due-soon">${label_due_soon}</span>`;
                 } 
                 
                 if (diff_days == 0) {
-                    htmlSowDueWarning = `<span class="due-soon">Due Today</span>`;
+                    htmlSowDueWarning = `<span class="due-soon">${label_due_today}</span>`;
                 }
                 
                 if (diff_days < 0) {
-                    htmlSowDueWarning = `<span class="due-soon">Overdue</span>`;
+                    htmlSowDueWarning = `<span class="due-soon">${label_overdue}</span>`;
                 }
             }
         }

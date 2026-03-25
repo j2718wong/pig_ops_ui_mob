@@ -227,6 +227,8 @@ export function insertIntoSortedList(list, object_to_insert, sort_key, sort_dire
 
 export function createPaginationManager(config) {
     const {
+        navigation,
+        
         elemPagination,
         elemTableBody,
         elemEntryCount,
@@ -234,7 +236,9 @@ export function createPaginationManager(config) {
         elemTotalPages,
         elemPrevPageBtn,
         elemNextPageBtn,
+        
         data,
+        
         itemsPerPage,
         renderRow,
         renderRowEmpty,
@@ -255,7 +259,28 @@ export function createPaginationManager(config) {
         
         updateEntryCount() {
             if (elemEntryCount){
-                elemEntryCount.textContent = `${data.length} Entries`;
+                
+                let label_entries = 'Entries';
+                
+                if (navigation){
+                    const translations      = navigation.getTranslations();
+        
+                    
+                    if (translations){
+                        if (translations.common && translations.common.labels){
+                            const labels_common = translations.common.labels;
+                            
+                            if (labels_common) {
+                                if(labels_common.entries) {
+                                    label_entries = labels_common.entries;
+                                }
+                            }
+                        }
+                    } 
+                }
+                
+                
+                elemEntryCount.textContent = `${data.length} ${label_entries}`;
                 
                 if (data.length <= itemsPerPage){
                     elemPagination.style.display = 'none';

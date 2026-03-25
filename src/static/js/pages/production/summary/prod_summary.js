@@ -20,8 +20,7 @@ import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
-        FORMAT_COMPACT_NO_SPACE,
-        createPaginationManager} from '../../../utils.js';
+        FORMAT_COMPACT_NO_SPACE} from '../../../utils.js';
 
 
 /*

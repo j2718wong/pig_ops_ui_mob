@@ -73,6 +73,8 @@ export function TableBasic(input_settings){
     this.renderTable = function(data_list){
         
         const config = {
+            navigation:         parentObj.navigation,
+            
             elemPagination:     parentObj.elemTablePagination,
             elemTableBody:      thisObj.getElemTableBody(),
             elemEntryCount:     parentObj.elemTableRowCount,

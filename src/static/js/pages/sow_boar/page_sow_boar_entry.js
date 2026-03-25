@@ -14,14 +14,12 @@ import {APPLICATION,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         SOW_STATUS_NAME,
-        MULTIKEY_OBJ_TYPE}             from '../../constants.js';
+        MULTIKEY_OBJ_TYPE}      from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT,
-        sortList,
-        createPaginationManager} from '../../utils.js';
+        FORMAT_COMPACT}         from '../../utils.js';
         
 import {ComponentTabsWithMore}  from '../common/ui/comp_tabs_with_more.js';
         

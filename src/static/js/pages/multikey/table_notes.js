@@ -16,9 +16,7 @@ import {APPLICATION,
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT,
-        sortList,
-        createPaginationManager} from '../../utils.js';
+        FORMAT_COMPACT}         from '../../utils.js';
 
 
 
