@@ -214,7 +214,7 @@ export function SowBoarTableBoar(input_settings){
             <tr>
                 <td>${sow_reference}</td>
                 <td>${s_age}</td>
-                <td style="padding-left:0; text-align:left">${mate_count}</td>
+                <td style="padding-left:0; text-align:center">${mate_count}</td>
                 <td style="padding-left:0;">${s_last_mate}</td>
             </tr>
         `;

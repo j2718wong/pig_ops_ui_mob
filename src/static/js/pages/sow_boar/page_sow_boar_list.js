@@ -770,10 +770,7 @@ ${html_style}
             }
         }
         
-        
-        console.log('SowBoarList Show Options');
-        console.log(showOptions);
-       
+
         
         switch (showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW: {

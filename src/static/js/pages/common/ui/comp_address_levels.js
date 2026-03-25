@@ -249,7 +249,6 @@ export function ComponentAddressLevels(input_settings){
                 } else {
                     // Need to load level 2 data first
                     this.requestDataAddressLevel2(this.curAddressLevel1, function() {
-                        console.log('goto thisObj._setAddressLevel2');
                         thisObj._setAddressLevel2(location);
                     });
                 }

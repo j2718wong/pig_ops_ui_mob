@@ -179,8 +179,7 @@ export function PageMyAccount(input_settings){
     
 
         pigFarmTable.getHtmlTableRow = function(cur_entry){
-            console.log('Test 1');
-            console.log(cur_entry);
+
             
             const pig_farm_name = cur_entry.pig_farm.name;
             

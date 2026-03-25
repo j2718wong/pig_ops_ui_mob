@@ -132,11 +132,6 @@ export function PageSowBoarEntry(input_settings){
         {
             data_tab_id:    elemIdTabMates,
             label:          'Mates'
-        },
-        
-        {
-            data_tab_id:    elemIdTabMatesExt,
-            label:          'Mates External'
         }
         
     ];

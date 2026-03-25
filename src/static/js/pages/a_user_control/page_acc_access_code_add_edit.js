@@ -282,8 +282,6 @@ export function PageAccessCodeAddEdit(input_settings){
         
         const user_group_num = componentUserRole.getUserRole();
         
-        console.log('user_group_num = ' + user_group_num);
-        
         if (user_group_num){}
         else{
             elemServerErrorMsg.textContent = 'Must select a user role';
