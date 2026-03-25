@@ -241,7 +241,7 @@ export function SowBoarTableSowLacta(input_settings){
             <td><span>${sow_reference}</span></td>
             <td>${s_date_important}</td>
             <td style="text-align:center;">${cur_pig_count}</td>
-            <td>${s_dead}</td>
+            <td style="text-align:center;">${s_dead}</td>
         </tr>
         `;
         
@@ -274,10 +274,17 @@ export function SowBoarTableSowLacta(input_settings){
             }
             
             
-            if (index == 2){
+            if (index == 1 || index == 2){
                 // Goto LactaEntry Page
                 cur_td.onclick = function(){
                     navigation.onClickProdLactatingEntry(pid);
+                };
+            }
+            
+            if (index == 3){
+                // Goto Pig Dead List Page
+                cur_td.onclick = function(){
+                    navigation.managerNavLinks.onClickNavPigDead();
                 };
             }
             
