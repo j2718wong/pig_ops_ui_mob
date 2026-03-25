@@ -1200,10 +1200,19 @@ ${html_style}
         tableSowGesta.hide();
         tableSowLacta.hide();
         tableSowWean.hide();
-        tableSowOutput.show();
+        
+        
         
         
         curDataListView         = dataSowList;
+        
+        // Need to render this back to refresh row count 
+        tableSowOutput.renderTable(dataSowList);
+        
+        tableSowOutput.show();
+        
+        
+        
         
         curDataFilter = 'output';
         

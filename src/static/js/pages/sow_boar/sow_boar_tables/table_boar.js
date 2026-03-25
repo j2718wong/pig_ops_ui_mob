@@ -59,6 +59,46 @@ export function SowBoarTableBoar(input_settings){
         elemIdTableBody         = `${settings.uniqueKey}-boar-tbody`;
         
         
+        const translations      = navigation.getTranslations();
+        
+        let label_boar          = 'Boar';
+        let label_age           = 'Age';
+        let label_mate_count    = 'Mate Count';
+        let label_last_mate     = 'Last Mate';
+        
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.boar)   {label_sow = labels_common.boar;}
+                    if(labels_common.age)    {label_age = labels_common.age;}
+                }
+            }
+            
+            
+            
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.boar_mate_count) {
+                        label_mate_count = labels_sow_boar_list.boar_mate_count;
+                    }
+                    
+                    if(labels_sow_boar_list.last_mate) {
+                        label_last_mate = labels_sow_boar_list.last_mate;
+                    }
+                    
+                   
+                }
+            }
+        }
+        
         const html = `
         
         <div id="${elemIdTableShow}">
@@ -72,10 +112,10 @@ export function SowBoarTableBoar(input_settings){
                 
                 <thead>
                     <tr>
-                        <th>Boar</th>
-                        <th>Age</th>
-                        <th style="padding-left:0;">Mates</th>
-                        <th style="padding-left:0;">Last Mate</th>
+                        <th>${label_boar}</th>
+                        <th>${label_age}</th>
+                        <th style="padding-left:0;">${label_mate_count}</th>
+                        <th style="padding-left:0;">${label_last_mate}</th>
                     </tr>
                 </thead>
                 

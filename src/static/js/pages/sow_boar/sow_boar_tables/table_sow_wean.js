@@ -104,6 +104,11 @@ export function SowBoarTableSowWean(input_settings){
                 const labels_sow_boar_list = translations.page_sow_boar_list.labels;
                 
                 if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.date_weaned) {
+                        label_date_weaned = labels_sow_boar_list.date_weaned;
+                    }
+
+                    
                     if(labels_sow_boar_list.operation) {
                         label_operation = labels_sow_boar_list.operation;
                     }
