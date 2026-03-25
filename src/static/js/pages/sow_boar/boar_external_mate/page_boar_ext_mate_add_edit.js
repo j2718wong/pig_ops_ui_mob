@@ -69,6 +69,8 @@ export function PageBoarExtMateAddEdit(input_settings){
     let elemBtnSave             = null;
     
     
+    let showOptions             = null;
+    
     
     this.init = function(){
         this.render();
@@ -287,11 +289,13 @@ export function PageBoarExtMateAddEdit(input_settings){
     }
     
     
-    this.show = function(){
+    this.show = function(options){
         thisObj._resetForm();
         
         componentSelectBoar.beforeShow();
         componentBoarCustomer.beforeShow();
+        
+        showOptions = options;
     }
     
         
