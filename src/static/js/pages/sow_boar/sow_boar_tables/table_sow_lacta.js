@@ -79,6 +79,49 @@ export function SowBoarTableSowLacta(input_settings){
         const html_style    = this._writeInlineStyle();
         
         
+        
+        const translations      = navigation.getTranslations();
+        
+        let label_sow           = 'Sow';
+        let label_target_wean   = 'Target Date Wean';
+        let label_num_piglets   = 'Num Piglets';
+        let label_dead_before_wean = 'Dead Before Wean';
+        
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.sow)    {label_sow = labels_common.sow;}
+                }
+            }
+            
+            
+            
+            if (translations.page_sow_boar_list && 
+                translations.page_sow_boar_list.labels){
+                
+                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
+                
+                if (labels_sow_boar_list) {
+                    if(labels_sow_boar_list.target_wean) {
+                        label_target_wean = labels_sow_boar_list.target_wean;
+                    }
+                    
+                    if(labels_sow_boar_list.num_piglets) {
+                        label_num_piglets = labels_sow_boar_list.num_piglets;
+                    }
+                    
+                    if(labels_sow_boar_list.dead_before_wean) {
+                        label_dead_before_wean = labels_sow_boar_list.dead_before_wean;
+                    }
+                }
+            }
+        }
+        
+        
+        
         const html = `
         ${html_style}
         
@@ -92,10 +135,10 @@ export function SowBoarTableSowLacta(input_settings){
       
                 <thead>
                     <tr>
-                        <th>Sow</th>
-                        <th>Target Date Wean</th>
-                        <th style="text-align:center;">Num Piglets</th>
-                        <th>Dead after Birth</th>
+                        <th>${label_sow}</th>
+                        <th>${label_target_wean}</th>
+                        <th style="text-align:center;">${label_num_piglets}</th>
+                        <th>${label_dead_before_wean}</th>
                     </tr>
                 </thead>
                 
@@ -138,9 +181,15 @@ export function SowBoarTableSowLacta(input_settings){
     
     
     this.getHtmlTableRowEmpty = function(){
+        let label_no_entries = thisObj.writeLabelNoEntries();
+        
+        if (label_no_entries){}
+        else{label_no_entries = 'No Entries';}
+        
+        
         const html = `
             <tr>
-                <td colspan="4"><div>No Entries</div></td>
+                <td colspan="4"><div>${label_no_entries}</div></td>
             </tr>
         `;
         

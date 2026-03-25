@@ -33,6 +33,9 @@ export function TableBasic(input_settings){
     const settings              = input_settings;
     
     
+    let navigation              = null;
+    
+    
     // Need to overwrite
     this.getHtml = function(){
         return null;
@@ -71,6 +74,7 @@ export function TableBasic(input_settings){
     
     
     this.renderTable = function(data_list){
+        navigation  = parentObj.navigation;
         
         const config = {
             navigation:         parentObj.navigation,
@@ -119,4 +123,34 @@ export function TableBasic(input_settings){
     // Need to overwrite
     this.getElemTableRow = function(cur_entry){}
     
+    
+    this.writeLabelNoEntries = function(){
+        let label_no_entries = 'No Entries';
+        
+        if(navigation){
+            const translations      = navigation.getTranslations();
+        
+            if (translations){
+                if (translations.common && translations.common.labels){
+                    const labels_common = translations.common.labels;
+                    
+                    if (labels_common) {
+                        // This is an array
+                        if(labels_common.no_entries)  {
+                            
+                            
+                            const index = Math.floor(Math.random() * labels_common.no_entries.length);
+                            const cur_entry = labels_common.no_entries[index];
+                            
+                            label_no_entries = `${label_no_entries}; ${cur_entry}`;
+                        }
+
+                    }
+                }
+            }
+        }
+        
+        
+        return label_no_entries;
+    }
 } 

@@ -156,9 +156,14 @@ export function SowBoarTableSowGesta(input_settings){
     
     
     this.getHtmlTableRowEmpty = function(){
+        let label_no_entries = thisObj.writeLabelNoEntries();
+        
+        if (label_no_entries){}
+        else{label_no_entries = 'No Entries';}
+        
         const html = `
             <tr>
-                <td colspan="3"><div>No Entries</div></td>
+                <td colspan="3"><div>label_no_entries</div></td>
             </tr>
         `;
         
