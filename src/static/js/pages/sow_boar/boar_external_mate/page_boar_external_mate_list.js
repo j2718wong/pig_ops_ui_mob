@@ -344,12 +344,24 @@ export function PageBoarExternalMateList(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         
+        console.log(cur_entry);
+        
+        const boar_name = getSowBoarReference(cur_entry.sow_boar);
+        
+        const dt_mate           = new Date(cur_entry.date_mate);
+        const s_date_mate       = formatDate(dt_mate, FORMAT_COMPACT);
+        
+        const dt_expected       = new Date(cur_entry.date_expected_birth);
+        const s_date_exp_birth  = formatDate(dt_expected, FORMAT_COMPACT);
+        
+        
         
         const html = `
             <tr>
-                <td>${html_pid_sow}</td>
-                <td>${html_date_dead}</td>
-                <td>${s_desc}</td>
+                <td>${boar_name}</td>
+                <td>${cur_entry.boar_customer.name}</td>
+                <td>${s_date_mate}</td>
+                <td>${s_date_exp_birth}</td>
             </tr>
         `;
         
@@ -362,8 +374,6 @@ export function PageBoarExternalMateList(input_settings){
         
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
-        
-        let pid = cur_entry.production.pig_production.farm_prod_id;
         
          
 

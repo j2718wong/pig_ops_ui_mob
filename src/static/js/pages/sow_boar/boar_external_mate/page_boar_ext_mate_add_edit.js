@@ -106,6 +106,8 @@ export function PageBoarExtMateAddEdit(input_settings){
             navigation:         navigation,
             parentObj:          thisObj,
             uniqueKey:          `${settings.uniqueKey}-boar-customer`,
+            
+            isBoarCustomer:     true,
 
             titleExpandSection: 'Add Boar Customer',
             htmlExpandSection:  null,
@@ -142,7 +144,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         const html_select_boar  = componentSelectBoar.getHtml();
         const html_date_mating  = elemUiDateMating.getHtml();
-        
+        const html_customer     = componentBoarCustomer.getHtml();
         
         const html_notes        = elemUiNotes.getHtml();
         
@@ -161,18 +163,16 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     <div class="modal-body">
         
-        <!--  Boar Field -->
+        
         ${html_select_boar}
 
         
-        <!-- Date Mating -->
         ${html_date_mating}
         
-            
-       
-                
         
-        <!-- Notes -->
+        ${html_customer}
+       
+        
         ${html_notes}
         
         
@@ -202,7 +202,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     this.afterHtmlRender = function(){
         componentSelectBoar.afterHtmlRender();
         elemUiDateMating.afterHtmlRender();
-        //componentBoarCustomer.afterHtmlRender();
+        componentBoarCustomer.afterHtmlRender();
         elemUiNotes.afterHtmlRender();
         
         this._findElements();
@@ -234,12 +234,34 @@ export function PageBoarExtMateAddEdit(input_settings){
         
               
         elemBtnClose.addEventListener('click', function() {
-            navigation.managerNavLinks.onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            // Remove NavHistoryHead if same with go_back_page
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                showOptions.go_back_page);
+            
+            
+            // This will not redraw the previous page; only shwo container
+            navigation.showThisPage(showOptions.go_back_page);
+            
+            if (APPLICATION.DEBUG_NAV_HISTORY){
+                console.log('\n\nBack to Boar Ext Mate List ')
+                thisObj.debugNavHistory(TAG);
+            }
         });
         
         
         elemBtnCancel.addEventListener('click', function() {
-            navigation.managerNavLinks.onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            // Remove NavHistoryHead if same with go_back_page
+            navigation.managerNavHistory.removeFromNavHistoryHead(
+                showOptions.go_back_page);
+            
+            
+            // This will not redraw the previous page; only shwo container
+            navigation.showThisPage(showOptions.go_back_page);
+            
+            if (APPLICATION.DEBUG_NAV_HISTORY){
+                console.log('\n\nBack to Boar Ext Mate List ')
+                thisObj.debugNavHistory(TAG);
+            }
         });
         
         
@@ -258,10 +280,8 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         elemUiDateMating.reset();
         
-        
-        
         componentSelectBoar.reset();
-        
+        componentBoarCustomer.reset();
         elemUiNotes.reset();
         
     }
@@ -270,6 +290,8 @@ export function PageBoarExtMateAddEdit(input_settings){
     this.show = function(){
         thisObj._resetForm();
         
+        componentSelectBoar.beforeShow();
+        componentBoarCustomer.beforeShow();
     }
     
         
@@ -291,72 +313,19 @@ export function PageBoarExtMateAddEdit(input_settings){
         let validation      = 0;
         
 
-        let input_sow_hid           = componentSelectSow.getValue();
-        let input_insem_type        = elemInsemType.value;
-        let input_boar_hid          = componentSelectBoar.getValue();
-        let input_boar_int_hid      = componentSelectBoarInt.getValue();
-        let input_date_mating       = elemUiDateMating.getValue();
-        let input_semen_supplier_hid = componentSemenSupplier.getValue();
-        let input_semen_type_hid    = componentSemenType.getValue();
-        let input_semen_cost        = elemSemenCost.value;
-        let input_other_cost        = elemOtherCost.value;
-        let input_insem_notes       = elemUiNotes.getValue();
-        let input_staff_hid         = componentStaff.getValue();
+        let input_boar_hid      = componentSelectBoar.getValue();
+        let input_date_mating   = elemUiDateMating.getValue();
+        let input_customer_hid  = componentBoarCustomer.getValue();
+        let input_notes         = elemUiNotes.getValue();
         
         
-        input_elem          = componentSelectSow.getElemSelect();
-        
-
-        if (input_sow_hid == '0'  || input_sow_hid == '-1'){
+        input_elem          = componentSelectBoar.getElemSelect();
+        if (input_boar_hid == '0'  || input_boar_hid == '-1'){
             validation = -1;
         }
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
-        
-        
-        switch (input_insem_type){
-            case 'boar-mating': {
-                input_elem          = componentSelectBoar.getElemSelect();
-                if (input_boar_hid == '0'  || input_boar_hid == '-1'){
-                    validation = -1;
-                }
-                addValidationClassToElem(input_elem, validation);
-                if (validation != 0) {return;}
             
-                break;
-            }
-            
-            case 'ai-external': {
-                input_elem          = componentSemenSupplier.getElemSelect();
-                if (input_semen_supplier_hid == '0'  || input_semen_supplier_hid == '-1'){
-                    validation = -1;
-                }
-                addValidationClassToElem(input_elem, validation);
-                if (validation != 0) {return;}
-                
-                
-                input_elem          = componentSemenType.getElemSelect();
-                if (input_semen_type_hid == '0'  || input_semen_type_hid == '-1'){
-                    validation = -1;
-                }
-                addValidationClassToElem(input_elem, validation);
-                if (validation != 0) {return;}
-                
-                break;
-            }
-        
-            case 'ai-internal':{
-                input_elem          = componentSelectBoarInt.getElemSelect();
-                if (input_boar_int_hid == '0'  || input_boar_int_hid == '-1'){
-                    validation = -1;
-                }
-                addValidationClassToElem(input_elem, validation);
-                if (validation != 0) {return;}
-            
-                break;
-            }
-        
-        }
         
         input_elem          = elemUiDateMating.getElemText();
         
@@ -374,23 +343,13 @@ export function PageBoarExtMateAddEdit(input_settings){
         if (validation != 0) {return;}
         
         
-        // The staff can be from the drop down
-        // Or Done by User (Done by Me checkbox)
-        let done_by_user = 0
-        
-        input_elem = componentStaff.getElemCheckBox();
-        if (input_elem.checked){
-            done_by_user = 1;
+        input_elem          = componentBoarCustomer.getElemSelect();
+        if (input_customer_hid == '0'  || input_customer_hid == '-1'){
+            validation = -1;
         }
+        addValidationClassToElem(input_elem, validation);
+        if (validation != 0) {return;}
         
-        if (done_by_user == 0){
-            input_elem = componentStaff.getElemSelect();
-            if (input_staff_hid == '0'  || input_staff_hid == '-1'){
-                validation = -1;
-            }
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
         
         
         // Final check before sending request
@@ -406,66 +365,15 @@ export function PageBoarExtMateAddEdit(input_settings){
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'sow_hid':          input_sow_hid,
             'boar_hid':         input_boar_hid,
-            'semen_supplier_hid':   input_semen_supplier_hid,
-            'semen_sup_semen_hid':  input_semen_type_hid,
-            'semen_ai_boar_hid':    input_boar_int_hid,
+            'boar_customer_hid': input_customer_hid,
+            'notes':            input_notes,
             
-            'insem_staff_hid':  input_staff_hid,
-            'done_by_user':     done_by_user,
-
-            'insem_notes':      input_insem_notes,
-            
-            'insem_date':       dt_mating_s
+            'date_mate':        dt_mating_s
         };
         
-        if (done_by_user > 0){
-            delete post_data.insem_staff_hid;
-        }
-        
-        if (input_semen_cost != null && input_semen_cost > 0){
-            post_data.semen_cost = parseFloat(input_semen_cost);
-        }
-        
-        if (input_other_cost != null && input_other_cost > 0) {
-            post_data.insem_cost = parseFloat(input_other_cost);
-        }
-        
-        
-        if (input_insem_type == 'boar-mating'){
-            delete post_data.semen_supplier_hid;
-            delete post_data.semen_sup_semen_hid;
-        }
-        else{
-            delete post_data.boar_hid;
-        }
-        
-        
-        switch (input_insem_type){
-            case 'boar-mating': {
-                delete post_data.semen_supplier_hid;
-                delete post_data.semen_sup_semen_hid;
-                delete post_data.semen_ai_boar_hid;
-            
-                break;
-            }
-            
-            case 'ai-external': {
-                delete post_data.boar_hid;
-                delete post_data.semen_ai_boar_hid;
-                break;
-            }
-        
-            case 'ai-internal':{
-                delete post_data.boar_hid;
-                delete post_data.semen_supplier_hid;
-                delete post_data.semen_sup_semen_hid;
-            
-                break;
-            }
-        }
-        
+       
+       
         
         const bearer_token = localStorage.getItem('access_token');
         
@@ -479,7 +387,7 @@ export function PageBoarExtMateAddEdit(input_settings){
             },
             
             timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: `${base_url}/pig_prod/add`,
+            url: `${base_url}/boar_ext_mate/add`,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -490,7 +398,11 @@ export function PageBoarExtMateAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    thisObj.onSuccessAddGestatingEntry();
+                    navigation.managerNavHistory.removeFromNavHistoryHead(
+                        showOptions.go_back_page);
+                    
+                    navigation.showThisPage(showOptions.go_back_page);
+                    navigation.pageBoarExtMateList.show();
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(
@@ -508,38 +420,6 @@ export function PageBoarExtMateAddEdit(input_settings){
         });
     }
     
-    
-    this.onSuccessAddGestatingEntry = function(){
-        const pig_prod_type = PIG_PROD_TYPE.GESTATING;
-        
-        const callback_success = function(data){
-            //thisObj.show(); 
-            
-            navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
-                PIG_OPERATION_TYPE.GESTATING);
-        };
-        
-        
-        // Sow Entry in SowList needs to be updated
-        // This will request the whole sow_list
-        navigation.pigFarm.managerSowBoar.requestSowBoarList(true, null,
-            elemServerErrorMsg);
-        
-        
-        // If selected sow status is currently gestating,
-        // Need to update Not PregnantList.
-        if (componentSelectSow.isSelectedSowGestating){
-            navigation.pigFarm.managerPigProd.requestPigProdNotPregnantList(
-                null, elemServerErrorMsg);
-        }
-        
-        
-        // Request PigProdList
-        navigation.pigFarm.managerPigProd.requestPigProdList(
-            pig_prod_type, callback_success, elemServerErrorMsg);
-        
-    }
-    
-    
+      
     
 }   

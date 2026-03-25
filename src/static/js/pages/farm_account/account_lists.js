@@ -407,10 +407,10 @@ export function AccountLists(_navigation){
                     }
                     
                     // Boar customer can be also considered pig buyer
-                    thisObj.dataAccPigBuyer = response.data; 
+                    thisObj.dataAccPigBuyerList = response.data; 
                     
                     // There is also a dedicated list for just boar customer
-                    thisObj.dataAccBoarCustomer = acc_boar_customer;
+                    thisObj.dataAccBoarCustomerList = acc_boar_customer;
                     
                     if (callback_success){callback_success(response.data);}
                     

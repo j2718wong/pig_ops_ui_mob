@@ -125,12 +125,31 @@ export function ComponentAccPigBuyer(input_settings){
     
     
     this.beforeShow = function(options){
+        // The pig_buyer_list here can mean pig buyer
+        // or boar customer
         
-        const pig_buyer_list = navigation.pigFarm.accountLists.dataAccPigBuyerList;
+        let pig_buyer_list = null;
+        
+        let account_lists = navigation.pigFarm.accountLists;
+        if (isBoarCustomer){
+            pig_buyer_list = account_lists.dataAccBoarCustomerList;
+        }
+        else{
+            pig_buyer_list = account_lists.dataAccPigBuyerList;
+        }
+        
         if (pig_buyer_list == null){
             
             const callback_success = function(data){
-                thisObj.setDataAccPigBuyerList(data);
+                let account_lists = navigation.pigFarm.accountLists;
+                if (isBoarCustomer){
+                    pig_buyer_list = account_lists.dataAccBoarCustomerList;
+                }
+                else{
+                    pig_buyer_list = account_lists.dataAccPigBuyerList;
+                }
+                
+                thisObj.setDataAccPigBuyerList(pig_buyer_list);
             };
             
             let elem_show_error = null;
@@ -236,6 +255,9 @@ export function ComponentAccPigBuyer(input_settings){
             'name':             input_name
         };
         
+        if (isBoarCustomer){
+            post_data.is_boar_customer = 1;
+        }
         
 
         // Element where to display server error message in this component
@@ -269,7 +291,19 @@ export function ComponentAccPigBuyer(input_settings){
                     const account_pig_buyer_hid = response.account_pig_buyer.hid;
                     
                     const callback_success = function(data){
-                        thisObj.setDataAccPigBuyerList(data, account_pig_buyer_hid);
+                        let pig_buyer_list = null;
+                        
+                        let account_lists = navigation.pigFarm.accountLists;
+                        if (isBoarCustomer){
+                            pig_buyer_list = account_lists.dataAccBoarCustomerList;
+                        }
+                        else{
+                            pig_buyer_list = account_lists.dataAccPigBuyerList;
+                        }
+                        
+                        
+                        thisObj.setDataAccPigBuyerList(pig_buyer_list, 
+                                account_pig_buyer_hid);
                         thisObj.closeExpandable();
                     };
                     

@@ -684,12 +684,9 @@ ${html_style}
         
         if (dataPigProdList != null){
             for (const cur_entry of dataPigProdList){
-                //html += thisObj.gestaLactaCards.getHtmlPigProdCard(cur_entry)
                 const cardElement = thisObj.gestaLactaCards.getElemPigProdCard(cur_entry);
                 elemProdCardsContainer.appendChild(cardElement);
             }
-           
-            //elemProdCardsContainer.innerHTML = html;
         }
         
         

@@ -1033,6 +1033,39 @@ export function ManagerNavLinks(_navigation) {
     
             
     this.onClickNavSowBoar = function(is_mobile, sow_boar_type, show_options){
+        
+        
+        const callback_success = function(){
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+        
+            // Push currentPage to NavHistory;
+            // Will also compare current page and next_page NAV_MENU_GROUP. 
+            navigation.pushCurrentPageToNavHistory(next_page);
+            
+            
+            navigation.showThisPage(next_page);
+            
+            const options= {
+                sow_boar_type: sow_boar_type
+            };
+            
+            if (show_options){
+                // Combine show_options to options
+                Object.assign(options, show_options); 
+            }
+            
+            navigation.pageSowBoarList.show(options);
+        };
+        
+        
+        if (sow_boar_type == SOW_BOAR_TYPE.SOW){
+            // Check data updates if user navaigates to SOW
+            navigation.pigFarm.managerPigProd.checkIfToUpdateDataPigProdList(
+                callback_success);
+            return;
+        }
+        
+        
         const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
         
         // Push currentPage to NavHistory;
@@ -1052,6 +1085,7 @@ export function ManagerNavLinks(_navigation) {
         }
         
         navigation.pageSowBoarList.show(options);
+        
     }
     
     
