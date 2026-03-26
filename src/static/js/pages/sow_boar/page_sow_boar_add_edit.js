@@ -221,8 +221,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         if (translations){
-            
-            
+
             if (translations.page_sow_boar_add && 
                 translations.page_sow_boar_add.labels){
                 
@@ -237,6 +236,10 @@ export function PageSowBoarAddEdit(input_settings){
                     if(labels_page.number)         {label_number = labels_page.number;}
                     if(labels_page.number_invalid) {label_number_inv = labels_page.number_invalid;}
                     if(labels_page.number_help)    {label_number_help = labels_page.number_help;}
+                    
+                    
+                    if(labels_page.date_birth)     {label_date_birth = labels_page.date_birth;}
+                    if(labels_page.date_birth_help){label_ready_help = labels_page.date_birth_help;}
                     
                     
                     if(labels_page.parent_sow)     {label_parent_sow = labels_page.parent_sow;}
@@ -596,7 +599,7 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         const elem_select = elemUiParentSow.getElemSelect();
-        //const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
+
         
         const select_data = thisObj.commonSelectOptions.setDataSowList(filtered, 
             elem_select, null, {parent_sow_only: true});
@@ -619,7 +622,7 @@ export function PageSowBoarAddEdit(input_settings){
         // TODO: how to add disposed boars
         
         const elem_select = elemUiParentBoar.getElemSelect();
-        //const special_options =[{value:'1', text:'I dont know', classname:'not-known'}];
+
         thisObj.commonSelectOptions.setDataBoarList(filtered, elem_select);
         elemUiParentBoar.setEntryCount(filtered);
     }
@@ -823,17 +826,52 @@ export function PageSowBoarAddEdit(input_settings){
         }
         
         
+        const translations      = navigation.getTranslations();
+        
+        let label_add_sow       = 'Add Sow';
+        let label_edit_sow      = 'Edit Sow';
+        
+        let label_add_boar      = 'Add Boar';
+        let label_edit_boar     = 'Edit Boar';
+        
+        let label_add_gilt      = 'Add Gilt';
+        let label_edit_gilt     = 'Edit Gilt';
+        
+        
+        
+        if (translations){
+            if (translations.page_sow_boar_add && 
+                translations.page_sow_boar_add.labels){
+                
+                const labels_page = translations.page_sow_boar_add.labels;
+                
+                            
+                if (labels_page) {
+                    if(labels_page.add_sow)   {label_add_sow = labels_page.add_sow;}
+                    if(labels_page.edit_sow)  {label_edit_sow = labels_page.edit_sow;}
+                    
+                    if(labels_page.add_boar)  {label_add_boar = labels_page.add_boar;}
+                    if(labels_page.edit_boar) {label_edit_boar = labels_page.edit_boar;}
+                    
+                    if(labels_page.add_gilt)  {label_add_gilt = labels_page.add_gilt;}
+                    if(labels_page.edit_gilt) {label_edit_gilt = labels_page.edit_gilt;}
+                    
+                }
+            }
+        }
+        
+        
         
         // Change Header title
         switch(showOptions.sow_boar_type){
             case SOW_BOAR_TYPE.SOW: {
                 if (showOptions.is_add){
-                    html = `<i class="fas fa-plus me-2"></i>Add Sow`;
+                    html = `<i class="fas fa-plus me-2"></i>${label_add_sow}`;
                 }
                 else{
                     const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
                     
-                    html = `<i class="fas fa-edit me-2"></i>Edit Sow: ${sow_boar_name}`;
+                    html = `<i class="fas fa-edit me-2"></i>${label_edit_sow}: ${sow_boar_name}`;
                     
                     thisObj.populateForm(thisObj.curDataSowBoar);
                 }
@@ -850,12 +888,12 @@ export function PageSowBoarAddEdit(input_settings){
     
             case SOW_BOAR_TYPE.BOAR: {
                 if (showOptions.is_add){
-                    html = `<i class="fas fa-plus me-2"></i>Add Boar`;
+                    html = `<i class="fas fa-plus me-2"></i>${label_add_boar}`;
                 }
                 else{
                     const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
                     
-                    html = `<i class="fas fa-edit me-2"></i>Edit Boar: ${sow_boar_name}`;
+                    html = `<i class="fas fa-edit me-2"></i>${label_edit_boar}: ${sow_boar_name}`;
                     
                     thisObj.populateForm(thisObj.curDataSowBoar);
                 }
@@ -871,13 +909,13 @@ export function PageSowBoarAddEdit(input_settings){
     
             case SOW_BOAR_TYPE.GILT:{
                 if (showOptions.is_add){
-                    html = `<i class="fas fa-plus me-2"></i>Add Gilt`;
+                    html = `<i class="fas fa-plus me-2"></i>${label_add_gilt}`;
                     elemInfoShow.style.display = 'block';
                 }
                 else{
                     const sow_boar_name = getSowBoarReference(thisObj.curDataSowBoar.sow_boar);
                     
-                    html = `<i class="fas fa-edit me-2"></i>Edit Gilt: ${sow_boar_name}`;
+                    html = `<i class="fas fa-edit me-2"></i>${label_edit_gilt}: ${sow_boar_name}`;
                     elemInfoShow.style.display = 'none';
                     
                     thisObj.populateForm(thisObj.curDataSowBoar);
