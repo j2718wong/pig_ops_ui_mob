@@ -113,6 +113,68 @@ export function PageProdGestatingAdd(input_settings){
     
     this.render = function(){
         
+        const translations      = navigation.getTranslations();
+        
+        let label_select_sow    = 'Select Sow';
+        
+        let label_date_mating   = 'Date Mating or Insemination';     
+        let label_valid_date    = 'Please input a valid date.'
+        
+        
+        let label_select_boar   = 'Select Boar';
+        
+        
+        let label_semen_supplier= 'Semen Supplier';
+        
+        
+        let label_add_semen_type    = 'Add new Semen Type';
+        let label_save_semen_type   = 'Save Semen Type';
+        let label_select_semen_type = 'Select Semen Type';
+        let label_semen_type_help   = 'Supplier Semen Type';
+        
+        let label_boar_semen_source = 'Boar where Semen extracted';
+        
+        
+        let label_notes             = 'Notes';
+        
+        
+        
+        if (translations){
+            if (translations.common_app && 
+                translations.common_app.labels){
+                
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.select_sow)        {label_select_sow = labels_common.select_sow;}
+                    if(labels_common.valid_date)        {label_valid_date = labels_common.valid_date;}
+                    if(labels_common.select_boar)       {label_select_boar = labels_common.select_boar;}
+                }
+            }
+            
+            
+            
+            if (translations.page_gestating_add && 
+                translations.page_gestating_add.labels){
+                
+                const labels_page = translations.page_gestating_add.labels;
+                
+                if (labels_page) {
+                    if(labels_page.date_mating)         {label_date_mating = labels_page.date_mating;}
+                    
+                    if(labels_page.add_semen_type)      {label_add_semen_type = labels_page.add_semen_type;}
+                    if(labels_page.save_semen_type)     {label_save_semen_type = labels_page.save_semen_type;}
+                    if(labels_page.semen_type)          {label_select_semen_type = labels_page.semen_type;}
+                    if(labels_page.semen_type_help)     {label_semen_type_help = labels_page.semen_type_help;}
+                    
+                    
+                    if(labels_page.notes)               {label_notes = labels_page.notes;}
+                }
+            }
+        }
+        
+        
+        
         elemIdBtnClose          = `${settings.uniqueKey}-select-close`;
         
         componentSelectSow      = new SelectSowGesta({
@@ -121,7 +183,7 @@ export function PageProdGestatingAdd(input_settings){
             
             pageDivContainer:   elemDivContainer,
             
-            labelSelect:        'Select Sow',
+            labelSelect:        label_select_sow,
             helpText:           null
         });
         
@@ -129,9 +191,9 @@ export function PageProdGestatingAdd(input_settings){
         elemUiDateMating        = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date-mating`,
         
-            textLabel:          'Date Mating or Insemination',
+            textLabel:          label_date_mating,
             isRequired:         true,
-            invalidFeedBack:    'Please input date.',
+            invalidFeedBack:    label_valid_date,
             helpText:           null
         });
         
@@ -145,7 +207,7 @@ export function PageProdGestatingAdd(input_settings){
             
             pageDivContainer:   elemDivContainer,
             
-            labelSelect:        'Select Boar',
+            labelSelect:        label_select_boar,
             helpText:           null
         });
         
@@ -161,7 +223,7 @@ export function PageProdGestatingAdd(input_settings){
             
             pageDivContainer:   elemDivContainer,
             
-            labelSelect:        'Semen Supplier',
+            labelSelect:        label_semen_supplier,
             helpText:           null
         });
         
@@ -171,12 +233,12 @@ export function PageProdGestatingAdd(input_settings){
             parentObj:          thisObj,
             uniqueKey:          `${settings.uniqueKey}-semen-type`,
 
-            titleExpandSection: 'Add New Semen Type',
+            titleExpandSection: label_add_semen_type,
             htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save Semen Type',
+            labelBtnExpandSave: label_save_semen_type,
             
-            labelSelect:        'Select Semen Type',
-            helpText:           'Supplier Semen Type'
+            labelSelect:        label_select_semen_type,
+            helpText:           label_semen_type_help
         });
         
         
@@ -189,7 +251,7 @@ export function PageProdGestatingAdd(input_settings){
             
             pageDivContainer:   elemDivContainer,
             
-            labelSelect:        'Boar where Semen extracted',
+            labelSelect:        label_boar_semen_source,
             helpText:           null
         });
         
@@ -203,7 +265,7 @@ export function PageProdGestatingAdd(input_settings){
             
             isTextArea:         true,
             className:          'form-group-text-area',
-            textLabel:          'Notes',
+            textLabel:          label_notes,
             isRequired:         false,
             textMaxChars:       160,
             rows:               3,
@@ -260,14 +322,11 @@ export function PageProdGestatingAdd(input_settings){
     
     <div class="modal-body">
         
-        <!-- 1. Sow Field with Combined Warning -->
         ${html_select_sow}    
         
-        <!-- 2. Date Mating -->
         ${html_date_mating}
         
         
-        <!-- 3. Insemination Type -->
         <div class="form-group-select">
             <label for="${elemIdInsemType}" class="form-label">
                 Insemination Type
@@ -280,17 +339,13 @@ export function PageProdGestatingAdd(input_settings){
             </select>
         </div>
         
-        <!-- 4. Boar Field -->
         ${html_select_boar}
         
         <div id="${elemIdAiShow}" class="ai-section" style="display: none;">
-            <!-- 1. Semen Supplier -->
             ${html_semen_supplier}
             
-            <!-- 2. Semen Type -->
             ${html_semen_type}
             
-            <!-- 3. Semen Cost -->
             <div class="form-group-number">
                 <label for="${elemIdSemenCost}" class="form-label">
                     Semen Cost
@@ -307,7 +362,6 @@ export function PageProdGestatingAdd(input_settings){
         ${html_select_boar_int}
         
         
-        <!-- 5. Other Cost -->
         <div class="form-group-number">
             <label for="${elemIdOtherCost}" class="form-label">
                 Other Cost
@@ -320,15 +374,13 @@ export function PageProdGestatingAdd(input_settings){
         </div>
         
         
-        <!-- 6. Notes -->
         ${html_notes}
         
-        <!-- 7. Staff -->
         ${html_staff}
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
-        <!-- Footer Buttons -->
+        
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" data-bs-dismiss="modal" style="margin-right:10px;">
                 <i class="fas fa-times me-2"></i>Cancel
