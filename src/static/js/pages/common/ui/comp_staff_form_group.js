@@ -84,7 +84,7 @@ export function ComponentStaffFormGroup(input_settings){
     
     let isExpandSectionExpanded = false;
     
-    const commonSelectOptions   = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
     
     this.getHtml = function(){

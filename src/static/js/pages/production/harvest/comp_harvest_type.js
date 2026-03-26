@@ -41,7 +41,7 @@ export function ComponentHarvestType(input_settings){
     
      
    
-    const commonSelectOptions   = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
 
     this.setDataHarvestType = function(data, selected_entry_value){

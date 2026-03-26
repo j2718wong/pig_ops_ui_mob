@@ -41,7 +41,7 @@ export function ComponentPigDeadType(input_settings){
     
      
    
-    const commonSelectOptions   = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
 
     this.setDataPigDeadType = function(data, selected_entry_value){

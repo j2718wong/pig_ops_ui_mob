@@ -167,10 +167,8 @@ export function PageProdHarvestAddEdit(input_settings){
     let dtCurrentDate           = null;
     
     
-    let commonSelectOptions     = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
-    
-
     
     
     this.init = function(){

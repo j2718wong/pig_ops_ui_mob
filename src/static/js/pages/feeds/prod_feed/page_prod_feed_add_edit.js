@@ -138,7 +138,7 @@ export function PageProdFeedAddEdit(input_settings){
     let dtCurrentDate           = null;
     
     
-    let commonSelectOptions     = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
     
     let tableFeedBuy            = null;

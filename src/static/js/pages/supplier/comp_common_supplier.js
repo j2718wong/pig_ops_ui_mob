@@ -74,8 +74,7 @@ export function ComponentCommonSupplier(input_settings){
     let dataSupplierList    = null;
     
     
-    // This needs to be set
-    const commonSelectOptions   = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
     
     this.afterHtmlRender = function(){

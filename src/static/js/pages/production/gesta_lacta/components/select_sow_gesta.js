@@ -46,7 +46,7 @@ export function SelectSowGesta(input_settings){
     
     const pageDivContainer      = settings.pageDivContainer;
     
-    const commonSelectOptions   = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
 
     const elemIdUiShow          = `${settings.uniqueKey}-show`;

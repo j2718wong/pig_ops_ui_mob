@@ -86,7 +86,7 @@ export function ComponentAccPigBuyer(input_settings){
     
     
     // This needs to be set
-    const commonSelectOptions   = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
     
     this.afterHtmlRender = function(){

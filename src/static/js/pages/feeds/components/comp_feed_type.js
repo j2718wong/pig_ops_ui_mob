@@ -45,8 +45,8 @@ export function ComponentFeedType(input_settings){
     let elemWeightPerUnit   = null;
    
    
-    const commonSelectOptions   = new CommonSelectOptions();
-    
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
+
     
     this.setElemWeightPerUnit = function(elem){
         elemWeightPerUnit = elem;

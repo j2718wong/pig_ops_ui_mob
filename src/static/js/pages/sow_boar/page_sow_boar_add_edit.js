@@ -189,6 +189,81 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this.render = function(){
+        const translations      = navigation.getTranslations();
+        
+        let label_name          = 'Name';
+        let label_name_inv      = 'Please enter a valid name.';
+        let label_name_help     = 'Pig name to easily remember.';
+        
+        
+        let label_number        = 'Number';
+        let label_number_inv    = 'Please enter a valid number.';
+        let label_number_help   = 'Can be eartag number; can be blank.';
+        
+        let label_date_birth        = 'Date of Birth';
+        let label_date_birth_help   = "Can be blank. This is used to calculate pig's age.";
+        
+        let label_parent_sow        = 'Select Parent Sow';
+        let label_parent_sow_help   = 'Skip if you dont know.';
+    
+        let label_parent_boar       = 'Select Parent Boar';
+        let label_parent_boar_help  = 'Skip if you dont know.';
+        
+        let label_num_nipples       = 'Number of Nipples';
+        let label_num_nipples_help  = 'Yes. We record this. You better count.';
+        
+        let label_ready_for_mating  = 'Is Ready for Mating?';
+        let label_production_ready  = 'Production Ready';
+        let label_ready_help        = 'Need to specify if ready to mate. <span class="sow-only"> Not Production Ready sow will  be listed in Gilt List. ';
+        
+        let label_notes             = 'Notes';     
+        
+        
+        
+        if (translations){
+            
+            
+            if (translations.page_sow_boar_add && 
+                translations.page_sow_boar_add.labels){
+                
+                const labels_page = translations.page_sow_boar_add.labels;
+                
+                if (labels_page) {
+                    if(labels_page.name)           {label_name = labels_page.name;}
+                    if(labels_page.name_invalid)   {label_name_inv = labels_page.name_invalid;}
+                    if(labels_page.name_help)      {label_name_help = labels_page.name_help;}
+                    
+                    
+                    if(labels_page.number)         {label_number = labels_page.number;}
+                    if(labels_page.number_invalid) {label_number_inv = labels_page.number_invalid;}
+                    if(labels_page.number_help)    {label_number_help = labels_page.number_help;}
+                    
+                    
+                    if(labels_page.parent_sow)     {label_parent_sow = labels_page.parent_sow;}
+                    if(labels_page.parent_sow_help){label_parent_sow_help = labels_page.parent_sow_help;}
+                    
+                    
+                    if(labels_page.parent_boar)     {label_parent_boar = labels_page.parent_boar;}
+                    if(labels_page.parent_boar_help){label_parent_boar_help = labels_page.parent_boar_help;}
+                    
+                    
+                    if(labels_page.num_nipples)     {label_num_nipples = labels_page.num_nipples;}
+                    if(labels_page.num_nipples_help){label_num_nipples_help = labels_page.num_nipples_help;}
+                    
+                    
+                    if(labels_page.ready_for_mating){label_ready_for_mating = labels_page.ready_for_mating;}
+                    if(labels_page.production_ready){label_production_ready = labels_page.production_ready;}
+                    if(labels_page.ready_help)      {label_ready_help = labels_page.ready_help;}
+                    
+                    
+                    if(labels_page.notes)           {label_notes = labels_page.notes;}
+                    
+                }
+            }
+        }
+        
+        
+        
         
         elemIdContBreadCrumbs   = `${settings.uniqueKey}-cont-breadcrumbs`;
         thisObj.setBreadCrumbs(elemIdContBreadCrumbs);
@@ -205,11 +280,11 @@ export function PageSowBoarAddEdit(input_settings){
             uniqueKey:          `${settings.uniqueKey}-name`,
         
             className:          'form-group-text',
-            textLabel:          'Name',
+            textLabel:          label_name,
             isRequired:         false,
             textMaxChars:       MAXCHAR_SOW_BOAR_NAME,
-            invalidFeedBack:    'Please enter a valid name.',
-            helpText:           'Pig name to easily remember.'
+            invalidFeedBack:    label_name_inv,
+            helpText:           label_name_help
         });
         
         
@@ -217,11 +292,11 @@ export function PageSowBoarAddEdit(input_settings){
             uniqueKey:          `${settings.uniqueKey}-number`,
         
             className:          'form-group-text',
-            textLabel:          'Number',
+            textLabel:          label_number,
             isRequired:         false,
             textMaxChars:       MAXCHAR_SOW_BOAR_NUMBER,
-            invalidFeedBack:    'Please enter a pig number.',
-            helpText:           'This can be an eartag number of your pig.'
+            invalidFeedBack:    label_number_inv,
+            helpText:           label_number_help
         });
         
         
@@ -229,10 +304,10 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiDateOfBirth       = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date-birth`,
         
-            textLabel:          'Date of Birth',
+            textLabel:          label_date_birth,
             isRequired:         false,
             invalidFeedBack:    null,
-            helpText:           "Can be blank. This is use to calculate pig's age."
+            helpText:           label_date_birth_help
         });
         
         
@@ -242,15 +317,15 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiParentSow         = new UiSelectWithEntryCount({
             uniqueKey:           `${settings.uniqueKey}-parent-sow`,
         
-            labelSelect:         'Select Parent Sow',
-            helpText:            'Skip if you dont know.'
+            labelSelect:         label_parent_sow,
+            helpText:            label_parent_sow_help
         });
         
         elemUiParentBoar        = new UiSelectWithEntryCount({
             uniqueKey:           `${settings.uniqueKey}-parent-boar`,
         
-            labelSelect:         'Select Parent Boar',
-            helpText:            'Skip if you dont know.'
+            labelSelect:         label_parent_boar,
+            helpText:            label_parent_boar_help
         });
         
         
@@ -270,9 +345,9 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiIsProdReady       = new UiInputCheckBox({
             uniqueKey:          `${settings.uniqueKey}-is-prod-ready`,
         
-            textLabel:          'Is Ready for Mating?',
-            checkBoxLabel:      'Production Ready',
-            helpText:           'Need to specify if ready to mate. <span class="sow-only"> Not Production Ready sow will be listed in Gilt List. </span>'  
+            textLabel:          label_ready_for_mating,
+            checkBoxLabel:      label_production_ready,
+            helpText:           label_ready_help  
         });
         
         
@@ -281,7 +356,7 @@ export function PageSowBoarAddEdit(input_settings){
             
             isTextArea:         true,
             className:          'form-group-text-area',
-            textLabel:          'Notes',
+            textLabel:          label_notes,
             textMaxChars:       160,
             rows:               3,
             helpText:           null  
@@ -360,14 +435,14 @@ export function PageSowBoarAddEdit(input_settings){
         <!-- Number of Sow nipples -->
         <div class="form-group-number" id="${elemIdNumNipplesShow}">
             <label for="${elemIdNumNipples}" class="form-label">
-                Number of Nipples
+                ${label_num_nipples}
             </label>
             <div class="number-input-group">
                 <button class="number-btn minus" data-target="${elemIdNumNipples}">-</button>
                 <input type="number" class="form-control number-input" id="${elemIdNumNipples}" value="14" min="12">
                 <button class="number-btn plus" data-target="${elemIdNumNipples}">+</button>
             </div>
-            <div class="form-text">Yes. We record this. You better count.</div>
+            <div class="form-text">${label_num_nipples_help}</div>
         
         </div>
         

@@ -64,7 +64,7 @@ export function ComponentAddressLevels(input_settings){
     let elemAddressLevel3Count      = null;
                                 
     
-    const commonSelectOptions       = new CommonSelectOptions();
+    const commonSelectOptions       = new CommonSelectOptions(navigation);
     
     
     this.curAddressLevel1           = null;

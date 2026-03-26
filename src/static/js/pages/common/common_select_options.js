@@ -16,9 +16,34 @@ import {formatDate,
         FORMAT_COMPACT}         from '../../utils.js';
 
 
+const DEFAULT_LABEL_NO_ENTRIES    = 'No Entries';
+const DEFAULT_LABEL_PLEASE_SELECT = 'Please Select';
 
         
-export function CommonSelectOptions(){
+export function CommonSelectOptions(_navigation){
+    const thisObj       = this;
+     
+    this.navigation     = _navigation;
+    
+    this.getCommonTranslatedLabels = function() {
+        // First try the global translations object (injected server-side)
+        const translations = window.SUPERPIG_TRANSLATIONS;
+
+        if (translations){
+            if (translations.common && translations.common.labels){
+                return translations.common.labels;
+            }
+        }
+      
+ 
+        // Fallback to navigation manager if available
+        if (thisObj.navigation && thisObj.navigation.managerTranslations) {
+            return thisObj.navigation.managerTranslations.getCommonTranslatedLabels();
+        }
+        
+        return null;
+    }
+        
     
     this.setDataSowList = function(data, select_elem, special_options, options){
         /**
@@ -30,24 +55,41 @@ export function CommonSelectOptions(){
          * 
          * */
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        } 
+        
         
         let select_data = [];
         if (data.length == 0){
             if (special_options){
-                select_data.push({value:"0", text:"Please Select"});
+                select_data.push({value:"0", text:label_please_select});
                 // do not use this
                 //select_data.push(...special_options);
                 for (const cur_option of special_options){select_data.push(cur_option);}
             }
             else{
-                select_data.push({value:"-1", text:"No Entries"});
+                select_data.push({value:"-1", text: label_no_entries});
             }
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         if (special_options){
             // do not use this
             // select_data.push(...special_options);
@@ -97,16 +139,34 @@ export function CommonSelectOptions(){
     
     this.setDataBoarList = function(data, select_elem, special_options){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (!special_options) {
             if (data.length == 0){
-                select_data.push({value:"-1", text:"No Entries"});
+                select_data.push({value:"-1", text: label_no_entries});
                 replaceSelectOptions(select_elem, select_data);
                 return;
             }
         }
         
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         if (special_options){
             // do not use this
             // select_data.push(...special_options);
@@ -137,16 +197,34 @@ export function CommonSelectOptions(){
     
     this.setDataSupplierList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.supplier.hid, 
@@ -159,16 +237,34 @@ export function CommonSelectOptions(){
     
     this.setDataSemenTypeList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.hid, 
@@ -181,16 +277,34 @@ export function CommonSelectOptions(){
     
     this.setDataStaffList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.pig_farm_staff.hid, 
@@ -203,16 +317,34 @@ export function CommonSelectOptions(){
     
     this.setDataMedVacBrandList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.hid, 
@@ -225,16 +357,34 @@ export function CommonSelectOptions(){
     
     this.setDataMedVacTypeList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.hid, 
@@ -247,16 +397,34 @@ export function CommonSelectOptions(){
     
     this.setDataAccMedVacList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.acc_medvac.hid, 
@@ -269,17 +437,35 @@ export function CommonSelectOptions(){
     
     this.setDataAddressLevelList = function(data, select_elem, special_options){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (!special_options){
             if (data.length == 0){
-                select_data.push({value:"-1", text:"No Entries"});
+                select_data.push({value:"-1", text:label_no_entries});
                 replaceSelectOptions(select_elem, select_data);
                 return;
             }
         }
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.hid, 
@@ -292,16 +478,34 @@ export function CommonSelectOptions(){
     
     this.setDataFeedTypeList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.hid, 
@@ -314,16 +518,34 @@ export function CommonSelectOptions(){
     
     this.setDataFeedBrandList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.hid, 
@@ -336,16 +558,34 @@ export function CommonSelectOptions(){
     
     this.setDataPigFarmFeedBuyList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             const hid       = cur_entry.pf_feed_buy.hid;
@@ -363,16 +603,34 @@ export function CommonSelectOptions(){
     
     this.setDataHarvestTypeList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.hid, 
@@ -385,16 +643,34 @@ export function CommonSelectOptions(){
     
     this.setDataPigDeadTypeList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.hid, 
@@ -408,16 +684,34 @@ export function CommonSelectOptions(){
     
     this.setDataAccPigBuyerList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.pig_buyer.hid, 
@@ -431,16 +725,34 @@ export function CommonSelectOptions(){
     
     this.setDataAccPigFarmList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         for (const cur_entry of data){
             select_data.push({value: cur_entry.pig_farm.hid, 
@@ -453,16 +765,34 @@ export function CommonSelectOptions(){
     
     this.setDataPigProdList = function(data, select_elem){
         
+        let label_please_select = DEFAULT_LABEL_PLEASE_SELECT;
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        
+        // Update these common labels if there is an available translation.
+        let labels_common = thisObj.getCommonTranslatedLabels();
+        
+        if (labels_common){
+            if (labels_common.please_select){
+                label_please_select = labels_common.please_select;
+            }
+            
+            if (labels_common.select_no_entries){
+                label_no_entries = labels_common.select_no_entries;
+            } 
+        }
+        
+        
         let select_data = [];
         if (data.length == 0){
-            select_data.push({value:"-1", text:"No Entries"});
+            select_data.push({value:"-1", text:label_no_entries});
             replaceSelectOptions(select_elem, select_data);
             return;
         }
         
         
         select_data = [];
-        select_data.push({value:"0", text:"Please Select"});
+        select_data.push({value:"0", text:label_please_select});
         
         
         

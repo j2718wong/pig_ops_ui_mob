@@ -20,12 +20,16 @@ import {ManagerNavLinks}            from './manager_nav_links.js';
 import {ManagerPublicSections}      from './manager_public_sections.js';
 import {ManagerNavHistory}          from './manager_nav_history.js';
 
+import {ManagerTranslations}        from './manager_translations.js';
+
+
 import {UserControl}                from './user_control.js';
 
 
 import {ServerError}                from '../common/server_error.js';
 import {ToastAlert}                 from '../common/toast_alert.js';
 import {MoreModal}                  from '../common/more_modal.js';
+
 
 
 import {ManagerAddress}             from '../common/manager_address.js';
@@ -239,11 +243,22 @@ export function Navigation(){
     this.moreModal              = new MoreModal(this);
     
     
+    this.managerTranslations    = new ManagerTranslations(this);
+    
     this.managerRequest         = new ManagerRequest(this);
     this.managerAddress         = new ManagerAddress(this);
     this.managerPublicData      = new ManagerPublicData(this)
+    
+    
+    
     this.pigFarm                = new PigFarm(this);
     
+    
+    
+    
+    this.getTranslations = function(){
+        return thisObj.managerTranslations.getTranslations(); 
+    }
     
     
     this.pageMyAccount          = new PageMyAccount({
@@ -1005,10 +1020,7 @@ export function Navigation(){
     }
 
 
-    this.getTranslations = function(){
-        return window.SUPERPIG_TRANSLATIONS;
-        
-    }
+    
 
     
     this.setDataUserAccount = function(data){

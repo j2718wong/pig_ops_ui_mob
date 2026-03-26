@@ -80,7 +80,7 @@ export function PageJoinAccReqApprove(input_settings){
     let elemBtnSave             = null;
     
     
-    let commonSelectOptions     = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
     
     let dataJoinAccRequest      = null;

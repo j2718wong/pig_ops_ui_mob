@@ -412,7 +412,7 @@ ${html_style}
     
     
     <div>
-        <!-- Search and Add Entry Controls -->
+
         <div class="mobile-controls">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
@@ -424,11 +424,10 @@ ${html_style}
             </button>
         </div>
         
-        <!-- Centered Filter Controls -->
         <div id="${elemIdFilterControls}">
         
             <div class="filter-controls">
-                <!-- Animal Filter Buttons - Centered, no gaps -->
+
                 <div class="animal-filter">
                     <div class="filter-buttons sow">
                         <button class="filter-button active" data-filter="all">${label_sow_all}</button>
@@ -437,9 +436,7 @@ ${html_style}
                         <button class="filter-button" data-filter="weaning">${label_sow_wean}</button>
                         <button class="filter-button" data-filter="output">${label_sow_output}</button>
                     </div>
-                    
-                    
-                    
+
                 </div>
                 
             </div>

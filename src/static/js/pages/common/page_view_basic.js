@@ -157,6 +157,7 @@ export function PageViewPigFarmPage(){
 
     
     this.commonSelectOptions    = new CommonSelectOptions();
+    this.commonSelectOptions.navigation = thisObj.navigation;
     
     
     this.calculateNumDaysSinceInsem = function(insem_date, dt_current, acc_settings_ops){

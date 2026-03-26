@@ -7,6 +7,14 @@
 import {UiBasic}                    from './ui_basic.js';
 
 
+
+const DEFAULT_LABEL_PLEASE_SELECT   = 'Please Select';
+const DEFAULT_LABEL_NO_ENTRIES      = 'No Entries';
+const DEFAULT_LABEL_ENTRY           = 'Entry';
+const DEFAULT_LABEL_ENTRIES         = 'Entries';
+
+
+
 export function UiSelectWithEntryCount(input_settings){
     UiBasic.call(this);
     
@@ -35,6 +43,43 @@ export function UiSelectWithEntryCount(input_settings){
     let elemEntryCount          = null;
     
     
+    let label_please_select     = DEFAULT_LABEL_PLEASE_SELECT;
+    let label_no_entries        = DEFAULT_LABEL_NO_ENTRIES;
+    let label_entry             = DEFAULT_LABEL_ENTRY;
+    let label_entries           = DEFAULT_LABEL_ENTRIES;
+    
+    
+    const translations = window.SUPERPIG_TRANSLATIONS;
+
+    if (translations){
+        if (translations.common && translations.common.labels){
+            const labels_common = translations.common.labels;
+            
+            if (labels_common){
+                if (labels_common.please_select){
+                    label_please_select = labels_common.please_select;
+                }
+                
+                if (labels_common.select_no_entries){
+                    label_no_entries = labels_common.select_no_entries;
+                } 
+                
+                if (labels_common.entry){
+                    label_entry = labels_common.entry;
+                }
+                
+                if (labels_common.entries){
+                    label_entries = labels_common.entries;
+                } 
+
+            }
+            
+        }
+    }
+    
+    
+    
+    
     this.getHtml = function(){
         let s_help = '';
         
@@ -49,7 +94,7 @@ export function UiSelectWithEntryCount(input_settings){
             </label>
             
             <select class="form-select" id="${elemIdSelect}">
-                <option value="-1" selected disabled>No Entries</option>
+                <option value="-1" selected disabled>${label_no_entries}</option>
             </select>
             
             ${s_help}
@@ -96,14 +141,14 @@ export function UiSelectWithEntryCount(input_settings){
     this.setEntryCount = function(data){
         if (data){
             if (data.length == 1){
-                elemEntryCount.textContent = ` (${data.length} Entry)`;
+                elemEntryCount.textContent = ` (1 ${label_entry})`;
             }
             else{
-                elemEntryCount.textContent = ` (${data.length} Entries)`;
+                elemEntryCount.textContent = ` (${data.length} ${label_entries})`;
             }
         }
         else{
-            elemEntryCount.textContent = ` (0 Entries)`;
+            elemEntryCount.textContent = ` (0 ${label_entries})`;
         }
     }
     

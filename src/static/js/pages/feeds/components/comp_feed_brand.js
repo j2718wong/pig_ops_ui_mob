@@ -66,8 +66,7 @@ export function ComponentFeedBrand(input_settings){
     let elemFeedBrandName     = null;
     
     
-    // This needs to be set
-    const commonSelectOptions   = new CommonSelectOptions();
+    const commonSelectOptions   = new CommonSelectOptions(navigation);
     
     
     this.afterHtmlRender = function(){
