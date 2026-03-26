@@ -177,17 +177,36 @@ export function SowBoarTableDisposed(input_settings){
     
     
     this.getHtmlTableRow = function(cur_entry){
+        const translations      = navigation.getTranslations();
+        
+        let label_sow           = 'Sow';
+        let label_boar          = 'Boar';
+        let label_gilt          = 'Gilt';
+        
+        if (translations){
+            if (translations.common_app && translations.common_app.labels){
+                const labels_common = translations.common_app.labels;
+                
+                if (labels_common) {
+                    if(labels_common.sow)   {label_sow = labels_common.sow;}
+                    if(labels_common.boar)  {label_boar = labels_common.boar;}
+                    if(labels_common.gilt)  {label_gilt = labels_common.gilt;}
+                }
+            }
+        }
+        
+        
         let pig_type = '';
         
         if (cur_entry.sow_boar.farm_boar_id){
-            pig_type = 'Boar';
+            pig_type = label_boar;
         }
         else{
             if (cur_entry.sow_boar.status_id == SOW_STATUS.GROWING){
-                pig_type = 'Gilt';
+                pig_type = label_gilt;
             }
             else{
-                pig_type = 'Sow';
+                pig_type = label_sow;
             }
         }
         

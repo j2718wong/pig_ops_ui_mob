@@ -212,6 +212,10 @@ export function PageSowBoarAddEdit(input_settings){
         let label_num_nipples       = 'Number of Nipples';
         let label_num_nipples_help  = 'Yes. We record this. You better count.';
         
+        let label_is_external       = 'Is External?';
+        let label_external          = 'External. Not owned by the pig farm.';
+        let label_is_external_help  = "Check this if you borrowed your neighbor's boar.";
+        
         let label_ready_for_mating  = 'Is Ready for Mating?';
         let label_production_ready  = 'Production Ready';
         let label_ready_help        = 'Need to specify if ready to mate. <span class="sow-only"> Not Production Ready sow will  be listed in Gilt List. ';
@@ -253,6 +257,9 @@ export function PageSowBoarAddEdit(input_settings){
                     if(labels_page.num_nipples)     {label_num_nipples = labels_page.num_nipples;}
                     if(labels_page.num_nipples_help){label_num_nipples_help = labels_page.num_nipples_help;}
                     
+                    if(labels_page.is_external)     {label_is_external = labels_page.is_external;}
+                    if(labels_page.external)        {label_is_external = labels_page.external;}
+                    if(labels_page.is_external_help){label_is_external = labels_page.is_external_help;}
                     
                     if(labels_page.ready_for_mating){label_ready_for_mating = labels_page.ready_for_mating;}
                     if(labels_page.production_ready){label_production_ready = labels_page.production_ready;}
@@ -339,9 +346,9 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiIsExternal        = new UiInputCheckBox({
             uniqueKey:          `${settings.uniqueKey}-is-external`,
         
-            textLabel:          'Is External?',
-            checkBoxLabel:      'External. Not owned by the pig farm.',
-            helpText:           "Check this if you borrowed your neighbor's boar."  
+            textLabel:          label_is_external,
+            checkBoxLabel:      label_external,
+            helpText:           label_is_external_help  
         });
         
         

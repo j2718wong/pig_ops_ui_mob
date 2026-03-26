@@ -761,9 +761,6 @@ ${html_style}
                     if(labels_sow_boar_list.disposed_list) {
                         label_disposed_list = labels_sow_boar_list.disposed_list;}
                 }
-                
-                
-                
             }
         }
         
@@ -943,6 +940,9 @@ ${html_style}
                         dataDisposedList = data;
                         curDataListView = dataDisposedList;
                         tableDiposed.renderTable(curDataListView);
+                        
+                        entry_count = dataDisposedList.length;
+                        elemEntryCount.textContent = entry_count;
                     };
                     
                     tableDiposed.requestDisposedSowBoar(callback);
@@ -971,6 +971,7 @@ ${html_style}
             }
         
         }
+        
         
         // Set Entry count
         elemEntryCount.textContent = entry_count;
