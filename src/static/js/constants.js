@@ -45,6 +45,13 @@ const NAV_MENU_GROUP = {
 };
 
 
+const TRANSLATION_MODE = {
+    USE_ENGLISH:            0,
+    ENGLISH_FIRST_THEN_LOCAL: 1,    // if local translation not available use english
+    USE_LOCAL:              2       // if local translation not available use english
+}
+
+
 const PAGE_ID = {
     NOT_LOGGED_IN:          0,
     SIGNUP_OR_LOGIN:        1,
@@ -312,6 +319,8 @@ export {
     APPLICATION,
     SOCIAL_MEDIA,
     ACC_USER_GROUP,
+    
+    TRANSLATION_MODE,
     
     NAV_MENU_GROUP,
     PAGE_ID,

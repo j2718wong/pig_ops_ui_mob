@@ -17,6 +17,13 @@ import {formatDate,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT}         from '../../../../utils.js';
 
+
+import {DEFAULT_LABEL_PLEASE_SELECT,
+        DEFAULT_LABEL_NO_ENTRIES,   
+        DEFAULT_LABEL_ENTRY,        
+        DEFAULT_LABEL_ENTRIES}  from '../../../common/ui/select_with_entry_count.js';
+
+
 import {UiBasic}                from '../../../common/ui/ui_basic.js';
 
 import {CommonSelectOptions}    from '../../../common/common_select_options.js';
@@ -69,6 +76,85 @@ export function SelectSowGesta(input_settings){
     let elemSowLastPid          = null;
     
     
+    let label_please_select     = DEFAULT_LABEL_PLEASE_SELECT;
+    let label_no_entries        = DEFAULT_LABEL_NO_ENTRIES;
+    let label_entry             = DEFAULT_LABEL_ENTRY;
+    let label_entries           = DEFAULT_LABEL_ENTRIES;
+    
+    
+    // Breeding warning
+    let label_warning_header       = "Sow Already Bred";
+    let label_warning_message      = "This sow was last bred on {date} with production PID: {pid}. If this new entry will be saved, the previous production gestating entry will be marked as {not_pregnant} and will be removed from the {prod_gestating_list}. Please ensure this is an intentional breeding due to sow reheat. {cannot_undo}";
+    let label_cannot_undo          = "This cannot be undone.";  
+    let label_not_pregnant         = "Not Pregnant";
+    let label_prod_gestating_list  = "Prod Gestating List";
+    
+    
+    
+    const translations = window.SUPERPIG_TRANSLATIONS;
+
+    if (translations){
+        if (translations.common && translations.common.labels){
+            const labels_common = translations.common.labels;
+            
+            if (labels_common){
+                if (labels_common.please_select){
+                    label_please_select = labels_common.please_select;
+                }
+                
+                if (labels_common.select_no_entries){
+                    label_no_entries = labels_common.select_no_entries;
+                } 
+                
+                if (labels_common.entry){
+                    label_entry = labels_common.entry;
+                }
+                
+                if (labels_common.entries){
+                    label_entries = labels_common.entries;
+                } 
+
+            }
+            
+        }
+        
+        
+        if (translations.page_gestating_add && 
+            translations.page_gestating_add.labels){
+            
+            const labels_page = translations.page_gestating_add.labels;
+            
+            if (labels_page) {
+                
+                const labels_warning = labels_page.breeding_warning;
+                
+                if (labels_warning.header){
+                    label_warning_header = labels_warning.header;
+                }
+                
+                if (labels_warning.message){
+                    label_warning_message = labels_warning.message;
+                }
+                
+                if (labels_warning.cannot_undo){
+                    label_cannot_undo = labels_warning.cannot_undo;
+                }
+                
+                
+                if (labels_warning.not_pregnant){
+                    label_not_pregnant = labels_warning.not_pregnant;
+                }
+                
+                if (labels_warning.prod_gestating_list){
+                    label_prod_gestating_list = labels_warning.prod_gestating_list;
+                }
+            }
+        }
+    }
+    
+    
+    
+    
     let dataSowList             = null;
     
     
@@ -88,7 +174,7 @@ export function SelectSowGesta(input_settings){
             
             <div class="input-group">
                 <select class="form-select" id="${elemIdSelect}">
-                    <option value="-1" selected disabled>No Entries</option>
+                    <option value="-1" selected disabled>${label_no_entries}</option>
                 </select>
                 <button class="btn" type="button" id="${elemIdEntryAdd}">
                     <i class="bi bi-plus"></i> New
@@ -96,22 +182,13 @@ export function SelectSowGesta(input_settings){
             </div>
             
             
-            <!-- Combined Breeding Status Warning -->
             <div id="${elemIdSowStatusShow}" class="warning-box" style="display: none;">
                 <div class="warning-header">
                     <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
-                    <span>Sow Already Bred</span>
+                    <span class="warning-header-text"></span>
                 </div>
                 <div class="warning-details">
-                    <span>
-                        This sow was last bred on <span id="${elemIdSowLastInsem}">Jan 15, 2024</span>
-                        with production <b>PID: <span id="${elemIdSowLastPid}">20</span></b>. 
-                        If this new entry will be saved, the previous production gestating  
-                        entry will be marked as <b>Not Pregnant</b> and will
-                        be removed from the Prod Gestating List.
-                        
-                        Please ensure this is an intentional breeding due to sow reheat.
-                    </span>
+                    <span class="warning-message-text"></span>
                 </div>
             </div>
             
@@ -130,8 +207,12 @@ export function SelectSowGesta(input_settings){
         elemEntryAdd            = pageDivContainer.querySelector('#'+elemIdEntryAdd);
         
         elemSowStatusShow       = pageDivContainer.querySelector('#'+elemIdSowStatusShow);
-        elemSowLastInsem        = pageDivContainer.querySelector('#'+elemIdSowLastInsem);
-        elemSowLastPid          = pageDivContainer.querySelector('#'+elemIdSowLastPid);
+    
+    
+        // New: elements for dynamic content
+        thisObj.elemWarningHeader  = pageDivContainer.querySelector('.warning-header-text');
+        thisObj.elemWarningMessage = pageDivContainer.querySelector('.warning-message-text');
+        thisObj.elemCannotUndo     = pageDivContainer.querySelector('.warning-cannot-undo');
     }
     
     
@@ -184,6 +265,33 @@ export function SelectSowGesta(input_settings){
 
 
     
+    this._renderBreedingWarning = function(dateValue, pidValue){
+        if (!thisObj.elemWarningHeader || !thisObj.elemWarningMessage) return;
+        
+        // Set header (plain text)
+        thisObj.elemWarningHeader.textContent = label_warning_header;
+        
+        // Create dynamic spans
+        const dateSpan = document.createElement('span');
+        dateSpan.id = elemIdSowLastInsem;
+        dateSpan.textContent = dateValue;
+        
+        const pidSpan = document.createElement('span');
+        pidSpan.id = elemIdSowLastPid;
+        pidSpan.textContent = pidValue;
+        
+        // Build the message with replacements
+        let message = label_warning_message
+            .replace('{date}', dateSpan.outerHTML)
+            .replace('{pid}', pidSpan.outerHTML)
+            .replace('{not_pregnant}', `<strong>${label_not_pregnant}</strong>`)
+            .replace('{prod_gestating_list}', `<strong>${label_prod_gestating_list}</strong>`)
+            .replace('{cannot_undo}', `<strong style="color:red;">${label_cannot_undo}</strong>`);
+        
+        thisObj.elemWarningMessage.innerHTML = message;
+    }
+    
+    
     this.getElemSelect  = function(){
         return elemSelect;
     }
@@ -201,10 +309,10 @@ export function SelectSowGesta(input_settings){
     
     this.setEntryCount = function(data){
         if (data.length == 1){
-            elemEntryCount.textContent = ` (${data.length} Entry)`;
+            elemEntryCount.textContent = ` (1 ${label_entry})`;
         }
         else{
-            elemEntryCount.textContent = ` (${data.length} Entries)`;
+            elemEntryCount.textContent = ` (${data.length} ${label_entries})`;
         }
     }
     
@@ -285,17 +393,21 @@ export function SelectSowGesta(input_settings){
                     if (sow_boar.cur_pig_production){
                         
                         const pig_production = sow_boar.cur_pig_production;
-                        
                         const dt_insem = new Date(pig_production.insemination.insem_date);
                         
-                        elemSowLastInsem.textContent  = formatDate(dt_insem);
-                        elemSowLastPid.textContent    = pig_production.pig_production.farm_prod_id;  
+                        const date_formatted = formatDate(dt_insem);
+                        const pid = pig_production.pig_production.farm_prod_id;
+                    
+                        // Use the new render method
+                        thisObj._renderBreedingWarning(date_formatted, pid);
+                            
                         
                         elemSowStatusShow.style.display = 'block';
                         
                         thisObj.isSelectedSowGestating = true;
                     }
                 }
+                
                 break;
             }
         }
@@ -303,7 +415,7 @@ export function SelectSowGesta(input_settings){
     
     
     this.getDataSow = function(sow_hid){
-        for (const cur_entry of sowList){
+        for (const cur_entry of dataSowList){
             if (cur_entry.sow_boar.hid == sow_hid){return cur_entry;}
         } 
         

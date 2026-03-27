@@ -138,6 +138,11 @@ export function PageProdGestatingAdd(input_settings){
         let label_notes             = 'Notes';
         
         
+        let label_insem_type        = 'Insemination Type';    
+        let label_insem_boar        = 'Boar Mating';
+        let label_insem_ai_external = 'Artificial Insem External';
+        let label_insem_ai_internal = 'Artificial Insem Internal';
+        
         
         if (translations){
             if (translations.common_app && 
@@ -146,9 +151,17 @@ export function PageProdGestatingAdd(input_settings){
                 const labels_common = translations.common_app.labels;
                 
                 if (labels_common) {
-                    if(labels_common.select_sow)        {label_select_sow = labels_common.select_sow;}
-                    if(labels_common.valid_date)        {label_valid_date = labels_common.valid_date;}
-                    if(labels_common.select_boar)       {label_select_boar = labels_common.select_boar;}
+                    if(labels_common.select_sow) {
+                        label_select_sow = labels_common.select_sow;
+                    }
+                    
+                    if(labels_common.valid_date) {
+                        label_valid_date = labels_common.valid_date;
+                    }
+                    
+                    if(labels_common.select_boar) {
+                        label_select_boar = labels_common.select_boar;
+                    }
                 }
             }
             
@@ -160,15 +173,49 @@ export function PageProdGestatingAdd(input_settings){
                 const labels_page = translations.page_gestating_add.labels;
                 
                 if (labels_page) {
-                    if(labels_page.date_mating)         {label_date_mating = labels_page.date_mating;}
+                    if(labels_page.date_mating) {
+                        label_date_mating = labels_page.date_mating;
+                    }
                     
-                    if(labels_page.add_semen_type)      {label_add_semen_type = labels_page.add_semen_type;}
-                    if(labels_page.save_semen_type)     {label_save_semen_type = labels_page.save_semen_type;}
-                    if(labels_page.semen_type)          {label_select_semen_type = labels_page.semen_type;}
-                    if(labels_page.semen_type_help)     {label_semen_type_help = labels_page.semen_type_help;}
+                    if(labels_page.add_semen_type) {
+                        label_add_semen_type = labels_page.add_semen_type;
+                    }
+                    
+                    if(labels_page.save_semen_type) {
+                        label_save_semen_type = labels_page.save_semen_type;
+                    }
+                    
+                    if(labels_page.semen_type) {
+                        label_select_semen_type = labels_page.semen_type;
+                    }
+                    
+                    if(labels_page.semen_type_help) {
+                        label_semen_type_help = labels_page.semen_type_help;
+                    }
                     
                     
-                    if(labels_page.notes)               {label_notes = labels_page.notes;}
+                    if(labels_page.notes) {
+                        label_notes = labels_page.notes;
+                    }
+                    
+                    
+                    
+                    if(labels_page.insem_type) {
+                        label_insem_type = labels_page.insem_type;
+                    }
+                    
+                    if(labels_page.insem_boar) {
+                        label_insem_boar = labels_page.insem_boar;
+                    }
+                    
+                    if(labels_page.insem_ai_external) {
+                        label_insem_ai_external = labels_page.insem_ai_external;
+                    }
+                    
+                    if(labels_page.insem_ai_internal) {
+                        label_insem_ai_internal = labels_page.insem_ai_internal;
+                    }
+                           
                 }
             }
         }
@@ -329,13 +376,13 @@ export function PageProdGestatingAdd(input_settings){
         
         <div class="form-group-select">
             <label for="${elemIdInsemType}" class="form-label">
-                Insemination Type
+                ${label_insem_type}
             </label>
                         
             <select class="form-select" id="${elemIdInsemType}" required>
-                <option value="boar-mating" selected>Boar Mating</option>
-                <option value="ai-external">Artificial Insem External</option>
-                <option value="ai-internal">Artificial Insem Internal</option>
+                <option value="boar-mating" selected>${label_insem_boar}</option>
+                <option value="ai-external">${label_insem_ai_external}</option>
+                <option value="ai-internal">${label_insem_ai_internal}</option>
             </select>
         </div>
         

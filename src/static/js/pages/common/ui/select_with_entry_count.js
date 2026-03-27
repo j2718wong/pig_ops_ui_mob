@@ -8,10 +8,10 @@ import {UiBasic}                    from './ui_basic.js';
 
 
 
-const DEFAULT_LABEL_PLEASE_SELECT   = 'Please Select';
-const DEFAULT_LABEL_NO_ENTRIES      = 'No Entries';
-const DEFAULT_LABEL_ENTRY           = 'Entry';
-const DEFAULT_LABEL_ENTRIES         = 'Entries';
+export const DEFAULT_LABEL_PLEASE_SELECT   = 'Please Select';
+export const DEFAULT_LABEL_NO_ENTRIES      = 'No Entries';
+export const DEFAULT_LABEL_ENTRY           = 'Entry';
+export const DEFAULT_LABEL_ENTRIES         = 'Entries';
 
 
 

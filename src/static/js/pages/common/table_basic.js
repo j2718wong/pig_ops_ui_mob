@@ -18,6 +18,8 @@ import {formatDate,
         FORMAT_COMPACT,
         createPaginationManager}    from '../../utils.js';
 
+import {DEFAULT_NO_ENTRIES_TABLE}   from './page_table_basic.js';
+
 
 
 export function TableBasic(input_settings){
@@ -127,31 +129,31 @@ export function TableBasic(input_settings){
     
     
     this.writeLabelNoEntries = function(){
+        // If language is default or english, the label_no_entries is a 
+        // random entry from DEFAULT_NO_ENTRIES_TABLE
+        
+        // If PH dialects, it should start with 'No Entries';
+        // + local variation of 'No Entries'  translation.
+        // Or much better tehre is a flag that can switched to and 
+        // English 'No Entries; ' + local variation 
+        
+        // If non-PH dialects, it should be a random entry from translated
+        // 'No Entries'  translation
+        
+        
+        // TODO get a random entry from DEFAULT_NO_ENTRIES_TABLE
         let label_no_entries = 'No Entries';
         
-        if(navigation){
-            const translations      = navigation.getTranslations();
-        
-            if (translations){
-                if (translations.common && translations.common.labels){
-                    const labels_common = translations.common.labels;
-                    
-                    if (labels_common) {
-                        // This is an array
-                        if(labels_common.no_entries)  {
-                            
-                            
-                            const index = Math.floor(Math.random() * labels_common.no_entries.length);
-                            const cur_entry = labels_common.no_entries[index];
-                            
-                            label_no_entries = `${label_no_entries}; ${cur_entry}`;
-                        }
 
-                    }
-                }
-            }
-        }
         
+        if(navigation){
+            const manager_translations = navigation.managerTranslations; 
+            const translation_helper = manager_translations.translationHelper;
+
+            const term_path = 'common.labels.no_entries';
+            label_no_entries = translation_helper.getTranslatedText(term_path, 
+                DEFAULT_NO_ENTRIES_TABLE);
+        }
         
         return label_no_entries;
     }

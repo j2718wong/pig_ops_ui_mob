@@ -4,7 +4,10 @@
 
 'use strict';
 
-import {APPLICATION}              from '../../constants.js';
+import {APPLICATION,
+        TRANSLATION_MODE}           from '../../constants.js';
+
+import {TranslationHelper}          from './translation_helper.js';
 
 
 export function ManagerTranslations(_navigation) {
@@ -12,6 +15,11 @@ export function ManagerTranslations(_navigation) {
     const navigation                = _navigation;
     
     
+    
+    this.translationHelper  = new TranslationHelper({
+        'parentObj':    this,
+        'navigation':   navigation  
+    });
     
     
     this.init = function(){
@@ -22,6 +30,25 @@ export function ManagerTranslations(_navigation) {
     this.getTranslations = function(){
         return window.SUPERPIG_TRANSLATIONS;
     }
+    
+    
+    this.getTraslationMode = function(){
+        const translations = window.SUPERPIG_TRANSLATIONS;
+        
+        if (translations){
+            const translations_language = translations.language;
+            
+            switch(translations_language){
+                case 'PH-BIS': return TRANSLATION_MODE.ENGLISH_FIRST_THEN_LOCAL
+            
+                default: break;
+            }
+            
+        }
+        
+        return TRANSLATION_MODE.USE_ENGLISH;
+    }
+    
     
     
     this.getCommonTranslatedLabels = function(){
