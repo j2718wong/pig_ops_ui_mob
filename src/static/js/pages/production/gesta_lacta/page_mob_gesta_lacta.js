@@ -164,14 +164,8 @@ export function PageMobGestaLacta(input_settings){
     
     
     this.init = function(){
-        //textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
-        
-        
-        
         this.render();
         this.afterHtmlRender();
-        
-        
     }
     
     
@@ -229,7 +223,8 @@ export function PageMobGestaLacta(input_settings){
         let html_prod_tables    = '';
         
         
-        const translations      = navigation.getTranslations();
+        let label_prod_gesta    = 'Prod Gestating';
+        let label_prod_lacta    = 'Prod Lactating';
         
         let label_today         = 'Today';
         let label_sow           = 'Sow';
@@ -238,36 +233,28 @@ export function PageMobGestaLacta(input_settings){
         let label_operation     = 'What to do?';
         
         
-        if (translations){
-            if (translations.common_app && translations.common_app.labels){
-                const labels_common = translations.common_app.labels;
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_prod_gesta    = helper.getSimpleTranslation('page_gesta_lacta_list.labels.prod_gestating') || label_prod_gesta;
+        label_prod_lacta    = helper.getSimpleTranslation('page_gesta_lacta_list.labels.prod_lactating') || label_prod_lacta;
+        
+        
+        label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
+        label_sow           = helper.getSimpleTranslation('common_app.labels.sow') || label_sow;
+        label_boar          = helper.getSimpleTranslation('common_app.labels.boar') || label_boar;
+    
+        label_expected      = helper.getSimpleTranslation('page_gesta_lacta_list.labels.expected') || label_expected;
+        label_operation     = helper.getSimpleTranslation('page_gesta_lacta_list.labels.operation') || label_operation;
                 
-                if (labels_common) {
-                    if(labels_common.today){label_today = labels_common.today;}
-                    
-                    if(labels_common.sow) {label_sow = labels_common.sow;}
-                    if(labels_common.boar){label_boar = labels_common.boar;}
-                    
-                }
-            }
-            
-            
-            if (translations.page_gesta_lacta_list && 
-                translations.page_gesta_lacta_list.labels){
-                
-                const labels_gestating = translations.page_gesta_lacta_list.labels;
-                
-                if (labels_gestating){
-                    if(labels_gestating.Expected){
-                        label_expected = labels_gestating.Expected;
-                    }
-                    
-                    if(labels_gestating.Operation){
-                        label_operation = labels_gestating.Operation;
-                    }
-                }
-            }
-            
+        
+        let page_title      = settings.pageTitle;
+        
+        // The settings.pageTitle will be overriden using the translated PageTitle
+        if (settings.isGesta){
+            page_title = label_prod_gesta;
+        } else{
+            page_title = label_prod_lacta;
         }
         
         
@@ -277,9 +264,8 @@ export function PageMobGestaLacta(input_settings){
             style_hide_add_button = 'display:none;';
             
             html_prod_tables = `
-            <!-- Centered Filter Controls -->
+            
             <div class="filter-controls" id="${elemIdTableColControls}">
-                <!-- Animal Filter Buttons - Centered, no gaps -->
                 <div class="animal-filter">
                     <div class="filter-buttons sow">
                         <button class="filter-button active" id="${elemIdLactaPigOps}" style="min-width:120px;">PigOps</button>
@@ -287,7 +273,6 @@ export function PageMobGestaLacta(input_settings){
                         <!--<button class="filter-button" id="${elemIdLactaFeeds}">Feeds</button>-->
                     </div>
                 </div>
-                
             </div>
             
             <div>
@@ -392,7 +377,7 @@ ${html_style}
             
         <span>
             <span class="nav-title blue" id="${elemIdEntryCount}"></span>
-            <span class="nav-title blue" id="${elemIdPageTitle}" style="margin-right:8px;">${settings.pageTitle}</span>
+            <span class="nav-title blue" id="${elemIdPageTitle}" style="margin-right:8px;">${page_title}</span>
             <span class="inline-bell larger" id="${elemIdPageHeaderAlarm}" title="Due operations!" style="display:none;">
                 <i class="fas fa-bell"></i>
             </span>
@@ -402,7 +387,7 @@ ${html_style}
             
     </div>
     
-    <!-- Mobile Info Box -->
+
     <!--
     <div class="mobile-info-box">
         <div class="info-text" id="${elemIdPageInfo}">
@@ -656,25 +641,20 @@ ${html_style}
         thisObj.gestaLactaCards.clearAlarmList();
         
         
-        const translations      = navigation.getTranslations();
-        
+        let label_no_entries    = 'No Entries';    
         let label_sow           = 'Sow';
         
         
-        if (translations){
-            if (translations.common_app && translations.common_app.labels){
-                const labels_common = translations.common_app.labels;
-                
-                if (labels_common) {
-                    if(labels_common.sow) {label_sow = labels_common.sow;}
-                }
-            }
-        }
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        label_no_entries = helper.getSimpleTranslation('common.labels.no_entries') || label_no_entries;
+        label_sow        = helper.getSimpleTranslation('common_app.labels.sow') || label_sow;
+        
         
         
         // Render HTML in elemProdCardsContainer
         if ((dataPigProdList == null) || (dataPigProdList.length == 0)){
-            elemSearchInput.setAttribute("placeholder", "No entries found"); 
+            elemSearchInput.setAttribute("placeholder", label_no_entries); 
         }
         else{
             elemSearchInput.setAttribute("placeholder", `${label_sow} or PID`);
@@ -755,11 +735,6 @@ ${html_style}
             elemEntryCount.innerHTML = `${prod_count}`;
         }
         
-        
-        
-        
-        
-        
     }
     
     
@@ -780,9 +755,15 @@ ${html_style}
             }
         }
         else{
+            const helper = navigation.managerTranslations.translationHelper;
+            
+            
+            const label_no_entries = helper.getSimpleTranslation('common.labels.no_entries') || label_no_entries;
+            
+            
             const html = `
                 <tr>
-                    <td colspan="3"><div>No Entries</div></td>
+                    <td colspan="3"><div>${label_no_entries}</div></td>
                 </tr>
             `;
             
