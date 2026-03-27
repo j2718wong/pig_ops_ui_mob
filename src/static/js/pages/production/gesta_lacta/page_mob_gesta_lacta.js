@@ -230,7 +230,13 @@ export function PageMobGestaLacta(input_settings){
         let label_sow           = 'Sow';
         let label_boar          = 'Boar';
         let label_expected      = 'Expected';
+        let label_wean          = 'Wean';
         let label_operation     = 'What to do?';
+        
+        
+        let label_num_pigs      = 'Num Pigs';
+        let label_dead_at_birth = 'Dead at Birth';
+        let label_dead_b4_wean  = 'Dead before Wean';
         
         
         const helper = navigation.managerTranslations.translationHelper;
@@ -245,8 +251,14 @@ export function PageMobGestaLacta(input_settings){
         label_boar          = helper.getSimpleTranslation('common_app.labels.boar') || label_boar;
     
         label_expected      = helper.getSimpleTranslation('page_gesta_lacta_list.labels.expected') || label_expected;
+        label_wean          = helper.getSimpleTranslation('page_gesta_lacta_list.labels.weaning') || label_wean;
         label_operation     = helper.getSimpleTranslation('page_gesta_lacta_list.labels.operation') || label_operation;
-                
+        
+        
+        label_num_pigs      = helper.getSimpleTranslation('page_sow_boar_list.labels.num_piglets') || label_num_pigs;
+        label_dead_at_birth = helper.getSimpleTranslation('page_sow_boar_list.labels.dead_at_birth') || label_dead_at_birth;
+        label_dead_b4_wean  = helper.getSimpleTranslation('page_sow_boar_list.labels.dead_before_wean') || label_dead_b4_wean;
+        
         
         let page_title      = settings.pageTitle;
         
@@ -295,7 +307,7 @@ export function PageMobGestaLacta(input_settings){
                             <div>PID, ${label_sow}</div> 
                             <div><span class="love-icon">❤️</span> ${label_boar}</div>
                         </th>
-                        <th>Wean</th>
+                        <th>${label_wean}</th>
                         <th>${label_operation}</th>
                     </tr>
                 </thead>
@@ -318,9 +330,9 @@ export function PageMobGestaLacta(input_settings){
                             <div>PID, ${label_sow}</div> 
                             <div><span class="love-icon">❤️</span> ${label_boar}</div>
                         </th>
-                        <th>Num<br>Pigs</th>
-                        <th>Dead at<br>Birth</th>
-                        <th>Dead after<br>Birth</th>
+                        <th>${label_num_pigs}</th>
+                        <th>${label_dead_at_birth}</th>
+                        <th>${label_dead_b4_wean}</th>
                     </tr>
                 </thead>
                 
