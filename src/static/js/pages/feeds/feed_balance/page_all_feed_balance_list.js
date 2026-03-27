@@ -210,7 +210,7 @@ export function PageAllFeedBalanceList(input_settings){
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
-        
+        /*
         // Request pig_farm data_version
         const callback_success = function(data){
             // This is teh typical data returned
@@ -227,7 +227,7 @@ export function PageAllFeedBalanceList(input_settings){
         
         
         navigation.pigFarm.requestPigFarmDataVerNum(callback_success);
-        
+        */
         
         const callback_success = function(data){
             thisObj.renderTable(data);
