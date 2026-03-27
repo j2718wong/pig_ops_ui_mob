@@ -338,7 +338,7 @@ export function PageSowBoarList(input_settings){
         
         const helper = navigation.managerTranslations.translationHelper;
 
-        label_add_entry     = helper.getSimpleTranslation('common.labels.add_entry') || add_entry;
+        label_add_entry     = helper.getSimpleTranslation('common.labels.add_entry') || label_add_entry;
         
         label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
 
