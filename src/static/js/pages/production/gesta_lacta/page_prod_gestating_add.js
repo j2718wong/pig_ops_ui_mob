@@ -151,10 +151,10 @@ export function PageProdGestatingAdd(input_settings){
         let label_insem_ai_internal = 'Artificial Insem Internal';
         
         
-        let labeladd_new_staff      = 'Add New Staff';   
-        let labelsave_new_staff     = 'Save New Staff'; 
-        let labelselect_staff       = 'Select Staff';
-        let labelselect_staff_help  = 'Who did the operation';
+        let label_add_new_staff     = 'Add New Staff';   
+        let label_save_new_staff    = 'Save New Staff'; 
+        let label_select_staff      = 'Select Staff';
+        let label_select_staff_help = 'Who did the operation';
         
         
         const helper = navigation.managerTranslations.translationHelper;
