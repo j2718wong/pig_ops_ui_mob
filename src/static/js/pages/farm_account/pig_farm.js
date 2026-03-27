@@ -32,6 +32,7 @@ export function PigFarm(_navigation){
         pig_prod:               0,
         staff:                  0,
         feed_buy:               0,
+        feed_balance:           0,
         not_pregnant:           0
     };
     
@@ -145,7 +146,8 @@ export function PigFarm(_navigation){
                     pig_prod:               data[2],
                     staff:                  data[3],
                     feed_buy:               data[4],
-                    not_pregnant:           data[5]
+                    feed_balance:           data[5],
+                    not_pregnant:           data[6]
                 };
                 
                 

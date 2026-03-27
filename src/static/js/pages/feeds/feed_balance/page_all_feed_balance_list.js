@@ -101,28 +101,19 @@ export function PageAllFeedBalanceList(input_settings){
     
     
     this.render = function(){
-        let page_title          = 'Feed Balance List';
-        
-        const translations      = navigation.getTranslations();
+        let label_page_title    = 'Feed Balance List';
         
         
-        if (translations){
-            if (translations.navigation && translations.navigation.nav_links){
-                const nav_links = translations.navigation.nav_links;
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_page_title  = helper.getSimpleTranslation('navigation.nav_links.Operations1') || label_page_title;
+        
                 
-                if (nav_links) {
-                    if(nav_links.Operations1) {
-                        page_title = nav_links.Operations1;}
-                        
-                }
-            }
-        }
-        
-        
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
            elemDivContainer:    elemDivContainer,
-           pageTitle:           page_title
+           pageTitle:           label_page_title
         });
         
         
@@ -132,7 +123,7 @@ export function PageAllFeedBalanceList(input_settings){
         const html_nav          = componentNavLeftRight.getHtml();   
         const html_table        = thisObj.getHtml();
            
-
+        
            
         const html = `
 
@@ -219,6 +210,25 @@ export function PageAllFeedBalanceList(input_settings){
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
+        
+        // Request pig_farm data_version
+        const callback_success = function(data){
+            // This is teh typical data returned
+            const data_ver_num_sow          = data[0];
+            const data_ver_num_boar         = data[1];
+            const data_ver_num_pig_prod     = data[2];
+            const data_ver_num_staff        = data[3];
+            const data_ver_num_feed_buy     = data[4];
+            const data_ver_num_feed_balance = data[5];
+            const data_ver_num_not_pregnant = data[6];
+            
+            
+        };
+        
+        
+        navigation.pigFarm.requestPigFarmDataVerNum(callback_success);
+        
+        
         const callback_success = function(data){
             thisObj.renderTable(data);
         };
@@ -233,6 +243,17 @@ export function PageAllFeedBalanceList(input_settings){
         const html_style = this._writeInlineStyle();
         
         
+        let label_date          = 'Date';
+        let label_feed_balance  = 'Feed Balance';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_date          = helper.getSimpleTranslation('common_app.labels.date') || label_date;
+        label_feed_balance  = helper.getSimpleTranslation('feed_balance.labels.feed_balance') || label_feed_balance;
+        
+        
         const html = `
         ${html_style}
         
@@ -244,8 +265,8 @@ export function PageAllFeedBalanceList(input_settings){
             
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Feed Balance</th>
+                    <th>${label_date}</th>
+                    <th>${label_feed_balance}</th>
                 </tr>
             </thead>
             
@@ -261,9 +282,15 @@ export function PageAllFeedBalanceList(input_settings){
        
 
     this.getHtmlTableRowEmpty = function(){
+        let label_no_entries = thisObj.writeLabelNoEntries();
+        
+        if (label_no_entries){}
+        else{label_no_entries = 'No Entries';}
+        
+        
         const html = `
             <tr>
-                <td colspan="2"><div>No Entries</div></td>
+                <td colspan="2"><div>${label_no_entries}</div></td>
             </tr>
         `;
         return html;
@@ -429,17 +456,12 @@ export function PageAllFeedBalanceList(input_settings){
         
         const options ={
             is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         };
         navigation.pageAllFeedBalanceAddEdit.show(options);
         
     }
     
-    
-    this.onSuccessAddEntry = function(){
-        
-    }
     
     
     this.onSuccessEditEntry = function(){
@@ -451,10 +473,15 @@ export function PageAllFeedBalanceList(input_settings){
     this.onClickRowEntry = function(row_entry){
         
         if (row_entry){
+            const goto_page_id   = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
+            const page_container = navigation.getPageContainer(goto_page_id);
+            navigation.showThisPage(page_container);
+            
+            
             const go_back_page_id = PAGE_ID.ALL_FEED_BAL_LIST;
             const go_back_page = navigation.getPageContainer(go_back_page_id);
         
-            const options ={
+            const options = {
                 is_add:                 false,   // false is edit
                 callback_after_edit:    thisObj.onSuccessEditEntry,
                 go_back_page:           go_back_page
@@ -462,9 +489,7 @@ export function PageAllFeedBalanceList(input_settings){
             navigation.pageAllFeedBalanceAddEdit.show(options, row_entry);
             
             
-            const goto_page_id   = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
-            const page_container = navigation.getPageContainer(goto_page_id);
-            navigation.showThisPage(page_container);
+            
         }
     }
 }

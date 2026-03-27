@@ -235,6 +235,38 @@ export function ProdEntryPigOps(input_settings){
         
         const html_style        = thisObj._writeInlineStyle();
         
+        
+        let label_tab_title     = 'Scheduled Pig Operations';
+        
+        let label_date          = 'Date';
+        let label_operation     = 'Pig Operation';
+        let label_done_by       = 'Done By';
+        
+        
+        let label_all          = 'All';
+        let label_sow          = 'Sow';
+        let label_piglets      = 'Piglets';
+        let label_hide_completed = 'Hide Completed';
+        
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_tab_title     = helper.getSimpleTranslation('prod_entry_pig_ops.labels.scheduled_pig_ops') || label_tab_title;
+        
+        label_date          = helper.getSimpleTranslation('common_app.labels.date') || label_date;
+        label_operation     = helper.getSimpleTranslation('prod_entry_pig_ops.labels.operation') || label_operation;
+        label_done_by       = helper.getSimpleTranslation('prod_entry_pig_ops.labels.done_by') || label_done_by;
+        
+        
+        label_all           = helper.getSimpleTranslation('prod_entry_pig_ops.labels.all') || label_all;
+        label_sow           = helper.getSimpleTranslation('common_app.labels.sow') || label_sow;
+        label_piglets       = helper.getSimpleTranslation('common_app.labels.piglets') || label_piglets;
+        
+        label_hide_completed= helper.getSimpleTranslation('common_app.labels.hide_completed') || label_hide_completed;
+        
+        
         const html = `
 
 ${html_style}
@@ -242,28 +274,27 @@ ${html_style}
 <div class="modal-body" id="${elemIdContentContainer}" >
     <div style= "display:flex; justify-content: center;">
         <h2 class="tab-title" >
-            Scheduled Pig Operations
+            ${label_tab_title}
         </h2>
     </div>
     
     <!-- Centered Filter Controls -->
     <div class="filter-controls" id="${elemIdFilterControls}">
-        <!-- Animal Filter Buttons - Centered, no gaps -->
+        
         <div class="animal-filter">
             <div class="filter-buttons">
-                <button class="filter-button active" data-filter="all">All</button>
-                <button class="filter-button" data-filter="sow">Sow</button>
-                <button class="filter-button" data-filter="piglets">Piglets</button>
+                <button class="filter-button active" data-filter="all">${label_all}</button>
+                <button class="filter-button" data-filter="sow">${label_sow}</button>
+                <button class="filter-button" data-filter="piglets">${label_piglets}</button>
             </div>
         </div>
         
-        <!-- Hide Completed Toggle - Centered -->
         <div class="hide-completed-control" style="margin-top:4px;">
             <div class="toggle-control" id="${elemIdHideCompleted}">
                 <div class="toggle-switch">
                     <div class="toggle-knob"></div>
                 </div>
-                <div class="toggle-label">Hide Completed</div>
+                <div class="toggle-label">${label_hide_completed}</div>
             </div>
         </div>
     </div>
@@ -278,9 +309,9 @@ ${html_style}
     
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Operation</th>
-                <th>Done By</th>
+                <th>${label_date}</th>
+                <th>${label_operation}</th>
+                <th>${label_done_by}</th>
             </tr>
         </thead>
         

@@ -1059,7 +1059,7 @@ export function ManagerNavLinks(_navigation) {
         
         
         if (sow_boar_type == SOW_BOAR_TYPE.SOW){
-            // Check data updates if user navaigates to SOW
+            // Check data updates if user navigates to SOW
             navigation.pigFarm.managerPigProd.checkIfToUpdateDataPigProdList(
                 callback_success);
             return;

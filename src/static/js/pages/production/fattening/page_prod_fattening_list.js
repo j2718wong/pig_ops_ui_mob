@@ -258,8 +258,8 @@ export function PageProdFatteningList(input_settings){
         
         label_sow           = helper.getSimpleTranslation('common_app.labels.sow') || label_sow;
         label_boar          = helper.getSimpleTranslation('common_app.labels.boar') || label_boar;
-        label_days          = helper.getSimpleTranslation('common_app.labels.days') || label_days;
-        label_pigs          = helper.getSimpleTranslation('common_app.labels.pigs') || label_pigs;
+        label_days          = helper.getSimpleTranslation('common_app.labels.num_days') || label_days;
+        label_pigs          = helper.getSimpleTranslation('common_app.labels.num_pigs') || label_pigs;
 
         
         label_date_harvest  = helper.getSimpleTranslation('page_sow_boar_list.labels.date_harvest') || label_date_harvest;

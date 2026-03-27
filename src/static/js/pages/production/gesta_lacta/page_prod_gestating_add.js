@@ -389,7 +389,7 @@ export function PageProdGestatingAdd(input_settings){
         
         <div class="form-group-number">
             <label for="${elemIdOtherCost}" class="form-label">
-                Other Cost
+                ${label_other_cost}
             </label>
                 
             <input type="number" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">

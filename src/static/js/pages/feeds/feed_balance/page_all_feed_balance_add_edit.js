@@ -674,11 +674,19 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
-            navigation.showThisPage(showOptions.go_back_page);
+            // This will always go back to PAGE_ID.ALL_FEED_BAL_LIST
+            const go_back_page_id   = PAGE_ID.ALL_FEED_BAL_LIST;
+            const go_back_page      = navigation.getPageContainer(go_back_page_id);
+            
+            navigation.showThisPage(go_back_page);
         };
         
         elemBtnCancel.onclick = function() {
-            navigation.showThisPage(showOptions.go_back_page);
+            // This will always go back to PAGE_ID.ALL_FEED_BAL_LIST
+            const go_back_page_id   = PAGE_ID.ALL_FEED_BAL_LIST;
+            const go_back_page      = navigation.getPageContainer(go_back_page_id);
+            
+            navigation.showThisPage(go_back_page);
         };
     }
     

@@ -840,7 +840,8 @@ export function ManagerPigProd(input_settings){
             const data_ver_num_pig_prod     = data[2];
             const data_ver_num_staff        = data[3];
             const data_ver_num_feed_buy     = data[4];
-            const data_ver_num_not_pregnant = data[5];
+            const data_ver_num_feed_balance = data[5];
+            const data_ver_num_not_pregnant = data[6];
             
             /*
             parentObj.dataVerNum = {
@@ -849,6 +850,7 @@ export function ManagerPigProd(input_settings){
                 pig_prod:               data_ver_num_pig_prod,
                 staff:                  data_ver_num_staff,
                 feed_buy:               data_ver_num_feed_buy,
+                feed_balance:           data_ver_num_feed_balance,
                 not_pregnant:           data_ver_num_not_pregnant
             };
             */
@@ -932,6 +934,7 @@ export function ManagerPigProd(input_settings){
                 callback_success();
             } 
         };
+        
         
         parentObj.requestPigFarmDataVerNum(callback_success_ver_num, 
             elem_show_error);
