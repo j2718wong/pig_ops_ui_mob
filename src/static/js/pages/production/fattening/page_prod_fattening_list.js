@@ -29,6 +29,8 @@ export function PageProdFatteningList(input_settings){
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation)
+    
     
     /*
     Typical input_settings
@@ -223,32 +225,11 @@ export function PageProdFatteningList(input_settings){
         dataPigProdList = navigation.pigFarm.managerPigProd.dataFatteningList;
         
         
-        /*
-        // Render HTML in elemProdCardsContainer
-        if ((dataPigProdList == null) || (dataPigProdList.length == 0)){
-            elemSearchInput.setAttribute("placeholder", "No entries found"); 
-        }
-        else{
-            elemSearchInput.setAttribute("placeholder", "PID");
-        }
+        // Set entry count; only show if mobile screen        
+        let prod_count = 0;
+        if (dataPigProdList){prod_count = dataPigProdList.length;}
         
-        
-        
-        elemSearchInput.addEventListener('input', function() {
-            
-            
-        });
-        */
-        
-        
-        
-        // Set entry count; only show if mobile screen
-        if (navigation.curScreenIsMobile == true){
-            let prod_count = 0;
-            if (dataPigProdList){prod_count = dataPigProdList.length;}
-            
-            elemEntryCount.innerHTML = `${prod_count}`;
-        }
+        elemEntryCount.innerHTML = `${prod_count}`;
         
         
         
@@ -264,6 +245,26 @@ export function PageProdFatteningList(input_settings){
     this.getHtmlTableHeader = function(){
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
         
+        let label_sow           = 'Sow';
+        let label_boar          = 'Boar';
+        let label_days          = 'Days';
+        let label_pigs          = 'Pigs';
+        
+        
+        let label_date_harvest  = 'Target Harvest';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        label_sow           = helper.getSimpleTranslation('common_app.labels.sow') || label_sow;
+        label_boar          = helper.getSimpleTranslation('common_app.labels.boar') || label_boar;
+        label_days          = helper.getSimpleTranslation('common_app.labels.days') || label_days;
+        label_pigs          = helper.getSimpleTranslation('common_app.labels.pigs') || label_pigs;
+
+        
+        label_date_harvest  = helper.getSimpleTranslation('page_sow_boar_list.labels.date_harvest') || label_date_harvest;
+        
+        
         
         const html = `
         
@@ -278,12 +279,12 @@ export function PageProdFatteningList(input_settings){
             <thead>
                 <tr>
                     <th>
-                        <div>PID, Sow</div> 
-                        <div><span class="love-icon">❤️</span> Boar</div>
+                        <div>PID, ${label_sow}</div> 
+                        <div><span class="love-icon">❤️</span> ${label_boar}</div>
                     </th>
-                    <th>Days</th>
-                    <th>Pigs</th>
-                    <th>Target Harvest</th>
+                    <th>${label_days}</th>
+                    <th>${label_pigs}</th>
+                    <th>${label_date_harvest}</th>
                 </tr>
             </thead>
             
@@ -300,9 +301,15 @@ export function PageProdFatteningList(input_settings){
        
 
     this.getHtmlTableRowEmpty = function(){
+        let label_no_entries = thisObj.writeLabelNoEntries();
+        
+        if (label_no_entries){}
+        else{label_no_entries = 'No Entries';}
+        
+        
         const html = `
             <tr>
-                <td colspan="4"><div>No Entries</div></td>
+                <td colspan="4"><div>${label_no_entries}</div></td>
             </tr>
         `;
         return html;

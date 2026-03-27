@@ -95,7 +95,7 @@ export function PageProdNotPregnantList(input_settings){
         
         const helper = navigation.managerTranslations.translationHelper;
 
-        page_title     = helper.getSimpleTranslation('nav_links.Production5') || page_title;
+        page_title     = helper.getSimpleTranslation('navigation.nav_links.Production5') || page_title;
         
         
         
