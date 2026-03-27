@@ -1293,7 +1293,6 @@ ${html_style}
         elemPigOpsAlarmTable.style.display = 'none';
         curViewIsPigProdList = true;
         
-        console.log('Test A');
         
         // Toggle Cards or Table View`
         if (curPigProdViewIsCards == true){

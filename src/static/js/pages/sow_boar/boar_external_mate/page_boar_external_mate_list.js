@@ -344,7 +344,6 @@ export function PageBoarExternalMateList(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         
-        console.log(cur_entry);
         
         const boar_name = getSowBoarReference(cur_entry.sow_boar);
         
