@@ -203,6 +203,7 @@ export function PageSowBoarAddEdit(input_settings){
         let label_number_inv    = 'Please enter a valid number.';
         let label_number_help   = 'Can be eartag number; can be blank.';
         
+        
         let label_date_birth        = 'Date of Birth';
         let label_date_birth_help   = "Can be blank. This is used to calculate pig's age.";
         
@@ -241,6 +242,7 @@ export function PageSowBoarAddEdit(input_settings){
         label_number            = helper.getSimpleTranslation('page_sow_boar_add.labels.number') || label_number;
         label_number_inv        = helper.getSimpleTranslation('page_sow_boar_add.labels.number_invalid') || label_number_inv;
         label_number_help       = helper.getSimpleTranslation('page_sow_boar_add.labels.number_help') || label_number_help;
+
 
         label_date_birth        = helper.getSimpleTranslation('page_sow_boar_add.labels.date_birth') || label_date_birth;
         label_date_birth_help   = helper.getSimpleTranslation('page_sow_boar_add.labels.date_birth_help') || label_date_birth_help;
@@ -1055,6 +1057,22 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this.onClickSaveButton = function(){
+        let label_duplicate_entry   = 'Duplicate Entry';
+        let label_cannot_be_blank   = 'Cannot be both blank';
+        
+        let label_name_invalid      = 'Please enter either name or number or both';
+        let label_number_invalid    = 'Please enter either name or number or both';
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_duplicate_entry   = helper.getSimpleTranslation('page_sow_boar_add.labels.duplicate_entry') || label_duplicate_entry;
+        label_cannot_be_blank   = helper.getSimpleTranslation('page_sow_boar_add.labels.cannot_be_blank') || label_cannot_be_blank;
+        
+        label_name_invalid      = helper.getSimpleTranslation('page_sow_boar_add.labels.name_invalid') || label_name_invalid;
+        label_number_invalid    = helper.getSimpleTranslation('page_sow_boar_add.labels.number_invalid') || label_number_invalid;
+        
+        
         let input_elem      = null;
         let validation      = 0;
         
@@ -1073,11 +1091,11 @@ export function PageSowBoarAddEdit(input_settings){
         
         let input_notes         = elemUiNotes.getValue().trim();
         
-        if (input_parent_sow_id == '0' || input_parent_sow_id == '1'){// I dont know option
+        if (input_parent_sow_id == '0' || input_parent_sow_id == '1'){
             input_parent_sow_id = null;
         }
         
-        if (input_parent_boar_id == '0' || input_parent_boar_id == '1'){// I dont know option
+        if (input_parent_boar_id == '0' || input_parent_boar_id == '1'){
             input_parent_boar_id = null;
         }
         
@@ -1115,10 +1133,10 @@ export function PageSowBoarAddEdit(input_settings){
         
         if (validation != 0){
             if (is_duplicate > 0){
-                elemUiName.setTextInvalid('Duplicate entry.');
+                elemUiName.setTextInvalid(label_duplicate_entry);
             }
             else{
-                elemUiName.setTextInvalid('Please enter a valid name.');
+                elemUiName.setTextInvalid(label_name_invalid);
             }
         }
         
@@ -1158,10 +1176,10 @@ export function PageSowBoarAddEdit(input_settings){
         
         if (validation != 0){
             if (is_duplicate > 0){
-                elemUiNumber.setTextInvalid('Duplicate entry.');
+                elemUiNumber.setTextInvalid(label_duplicate_entry);
             }
             else{
-                elemUiNumber.setTextInvalid('Please enter a valid number.');
+                elemUiNumber.setTextInvalid(label_number_invalid);
             }
         }
         
@@ -1173,8 +1191,8 @@ export function PageSowBoarAddEdit(input_settings){
         if (input_name.length == 0 && input_number.length == 0){
             validation = -1;
             
-            elemUiName.setTextInvalid('Cannot be both blank.');
-            elemUiNumber.setTextInvalid('Cannot be both blank.');
+            elemUiName.setTextInvalid(label_cannot_be_blank);
+            elemUiNumber.setTextInvalid(label_cannot_be_blank);
             
             input_elem          = elemUiName.getElemText();
             addValidationClassToElem(input_elem, validation);
