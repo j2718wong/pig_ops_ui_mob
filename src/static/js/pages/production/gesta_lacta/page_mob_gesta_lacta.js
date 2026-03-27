@@ -739,14 +739,10 @@ ${html_style}
         elemPigOpsAlarmTable.style.display = 'none';
         
         
-        // Set entry count; only show if mobile screen
-        if (navigation.curScreenIsMobile == true){
-            let prod_count = 0;
-            if (dataPigProdList){prod_count = dataPigProdList.length;}
-            
-            elemEntryCount.innerHTML = `${prod_count}`;
-        }
+        let prod_count = 0;
+        if (dataPigProdList){prod_count = dataPigProdList.length;}
         
+        elemEntryCount.innerHTML = `${prod_count}`;
     }
     
     

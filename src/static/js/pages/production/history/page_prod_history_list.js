@@ -38,7 +38,8 @@ export function PageProdHistoryList(input_settings){
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
-
+    this.setNavigation(navigation);
+    
     
     this.TABLE_ROW_PER_PAGE     = 10;
     

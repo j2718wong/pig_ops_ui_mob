@@ -30,6 +30,7 @@ export function PageProdNotPregnantList(input_settings){
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
     
     /*
     Typical input_settings
