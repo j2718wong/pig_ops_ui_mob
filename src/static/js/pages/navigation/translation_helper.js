@@ -157,48 +157,30 @@ export function TranslationHelper(settings) {
     
     
     /**
-     * Get a simple translated text (no random variations, single string)
+     * Get a simple translated text; The target termPath can either be a simple 
+     * text or array of text; 
      * @param {string} termPath - Dot notation path (e.g., 'common.labels.save')
-     * @param {string} defaultEnglish - Default English text
-     * @returns {string} The translated text
+     * @returns {string} The translated text or null
      */
-    this.getSimpleTranslation = function(termPath, defaultEnglish) {
-        const translationMode = thisObj.getTranslationMode();
-        
+    this.getSimpleTranslation = function(termPath) {
         // Get local translation
         let localText = null;
         const localVariations = thisObj.getLocalVariations(termPath);
         
         if (localVariations) {
             if (Array.isArray(localVariations)) {
-                localText = localVariations[0]; // Just take the first one for simple cases
+                localText = thisObj.getRandomFromArray(localVariations); 
             } else {
                 localText = localVariations;
             }
         }
         
-        // USE_ENGLISH mode
-        if (translationMode === TRANSLATION_MODE.USE_ENGLISH) {
-            return defaultEnglish;
+        if (localText){
+            if (localText.lenght == 0){return null;}
+            return localText;
         }
         
-        // ENGLISH_FIRST_THEN_LOCAL mode
-        else if (translationMode === TRANSLATION_MODE.ENGLISH_FIRST_THEN_LOCAL) {
-            if (localText) {
-                return defaultEnglish + '; ' + localText;
-            }
-            return defaultEnglish;
-        }
-        
-        // USE_LOCAL mode
-        else if (translationMode === TRANSLATION_MODE.USE_LOCAL) {
-            if (localText) {
-                return localText;
-            }
-            return defaultEnglish;
-        }
-        
-        return defaultEnglish;
+        return null;
     };
     
     

@@ -189,7 +189,10 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     this.render = function(){
-        const translations      = navigation.getTranslations();
+        
+        let label_save          = 'Save';
+        let label_cancel        = 'Cancel';
+        
         
         let label_name          = 'Name';
         let label_name_inv      = 'Please enter a valid name.';
@@ -223,54 +226,43 @@ export function PageSowBoarAddEdit(input_settings){
         let label_notes             = 'Notes';     
         
         
-        
-        if (translations){
+        const helper = navigation.managerTranslations.translationHelper;
 
-            if (translations.page_sow_boar_add && 
-                translations.page_sow_boar_add.labels){
-                
-                const labels_page = translations.page_sow_boar_add.labels;
-                
-                if (labels_page) {
-                    if(labels_page.name)           {label_name = labels_page.name;}
-                    if(labels_page.name_invalid)   {label_name_inv = labels_page.name_invalid;}
-                    if(labels_page.name_help)      {label_name_help = labels_page.name_help;}
-                    
-                    
-                    if(labels_page.number)         {label_number = labels_page.number;}
-                    if(labels_page.number_invalid) {label_number_inv = labels_page.number_invalid;}
-                    if(labels_page.number_help)    {label_number_help = labels_page.number_help;}
-                    
-                    
-                    if(labels_page.date_birth)     {label_date_birth = labels_page.date_birth;}
-                    if(labels_page.date_birth_help){label_ready_help = labels_page.date_birth_help;}
-                    
-                    
-                    if(labels_page.parent_sow)     {label_parent_sow = labels_page.parent_sow;}
-                    if(labels_page.parent_sow_help){label_parent_sow_help = labels_page.parent_sow_help;}
-                    
-                    
-                    if(labels_page.parent_boar)     {label_parent_boar = labels_page.parent_boar;}
-                    if(labels_page.parent_boar_help){label_parent_boar_help = labels_page.parent_boar_help;}
-                    
-                    
-                    if(labels_page.num_nipples)     {label_num_nipples = labels_page.num_nipples;}
-                    if(labels_page.num_nipples_help){label_num_nipples_help = labels_page.num_nipples_help;}
-                    
-                    if(labels_page.is_external)     {label_is_external = labels_page.is_external;}
-                    if(labels_page.external)        {label_is_external = labels_page.external;}
-                    if(labels_page.is_external_help){label_is_external = labels_page.is_external_help;}
-                    
-                    if(labels_page.ready_for_mating){label_ready_for_mating = labels_page.ready_for_mating;}
-                    if(labels_page.production_ready){label_production_ready = labels_page.production_ready;}
-                    if(labels_page.ready_help)      {label_ready_help = labels_page.ready_help;}
-                    
-                    
-                    if(labels_page.notes)           {label_notes = labels_page.notes;}
-                    
-                }
-            }
-        }
+            
+        // Common labels
+        label_save              = helper.getSimpleTranslation('common.labels.save') || label_save;
+        label_cancel            = helper.getSimpleTranslation('common.labels.cancel') || label_cancel;
+
+        // Page: sow_boar_add
+        label_name              = helper.getSimpleTranslation('page_sow_boar_add.labels.name') || label_name;
+        label_name_inv          = helper.getSimpleTranslation('page_sow_boar_add.labels.name_invalid') || label_name_inv;
+        label_name_help         = helper.getSimpleTranslation('page_sow_boar_add.labels.name_help') || label_name_help;
+
+        label_number            = helper.getSimpleTranslation('page_sow_boar_add.labels.number') || label_number;
+        label_number_inv        = helper.getSimpleTranslation('page_sow_boar_add.labels.number_invalid') || label_number_inv;
+        label_number_help       = helper.getSimpleTranslation('page_sow_boar_add.labels.number_help') || label_number_help;
+
+        label_date_birth        = helper.getSimpleTranslation('page_sow_boar_add.labels.date_birth') || label_date_birth;
+        label_date_birth_help   = helper.getSimpleTranslation('page_sow_boar_add.labels.date_birth_help') || label_date_birth_help;
+
+        label_parent_sow        = helper.getSimpleTranslation('page_sow_boar_add.labels.parent_sow') || label_parent_sow;
+        label_parent_sow_help   = helper.getSimpleTranslation('page_sow_boar_add.labels.parent_sow_help') || label_parent_sow_help;
+
+        label_parent_boar       = helper.getSimpleTranslation('page_sow_boar_add.labels.parent_boar') || label_parent_boar;
+        label_parent_boar_help  = helper.getSimpleTranslation('page_sow_boar_add.labels.parent_boar_help') || label_parent_boar_help;
+
+        label_num_nipples       = helper.getSimpleTranslation('page_sow_boar_add.labels.num_nipples') || label_num_nipples;
+        label_num_nipples_help  = helper.getSimpleTranslation('page_sow_boar_add.labels.num_nipples_help') || label_num_nipples_help;
+
+        label_is_external       = helper.getSimpleTranslation('page_sow_boar_add.labels.is_external') || label_is_external;
+        label_external          = helper.getSimpleTranslation('page_sow_boar_add.labels.external') || label_external;
+        label_is_external_help  = helper.getSimpleTranslation('page_sow_boar_add.labels.is_external_help') || label_is_external_help;
+
+        label_ready_for_mating  = helper.getSimpleTranslation('page_sow_boar_add.labels.ready_for_mating') || label_ready_for_mating;
+        label_production_ready  = helper.getSimpleTranslation('page_sow_boar_add.labels.production_ready') || label_production_ready;
+        label_ready_help        = helper.getSimpleTranslation('page_sow_boar_add.labels.ready_help') || label_ready_help;
+
+        label_notes             = helper.getSimpleTranslation('page_sow_boar_add.labels.notes') || label_notes;
         
         
         
@@ -414,25 +406,27 @@ export function PageSowBoarAddEdit(input_settings){
     
     
     <div class="modal-body">
-        <!-- Mobile Info Box -->
+        
         <div class="warning-box" id="${elemIdInfoShow}">
-            Adding a new Gilt will create schedule for new Gilt Pig Operations.
+            <span id="no-gilt-operations">
+                Currently there are no defined scheduled operations for gilt preparation.
+                <span>Click to add Gilt Operations</span>
+            </span>
+            
+            <span id="has-gilt-operations">
+                Adding a new Gilt will create schedule for new <span>Gilt Pig Operations</span>.
+            </span>
         </div>
         
         
-        <!-- 1. Name -->
         ${html_name}
         
-        <!-- 2. Number -->
         ${html_number}
         
-        <!-- 3. Date of Birth -->
         ${html_date_birth}
         
-        <!-- 4. Parent Sow Field -->
         ${html_parent_sow}
         
-        <!-- 5. Parent Boar Field -->
         ${html_parent_boar}
         
         
@@ -442,7 +436,6 @@ export function PageSowBoarAddEdit(input_settings){
             <span class="" id="${elemIdBirthProdId}"></span>
         </div>
         
-        <!-- Number of Sow nipples -->
         <div class="form-group-number" id="${elemIdNumNipplesShow}">
             <label for="${elemIdNumNipples}" class="form-label">
                 ${label_num_nipples}
@@ -457,26 +450,22 @@ export function PageSowBoarAddEdit(input_settings){
         </div>
         
         
-        <!-- 4. Is External -->
         ${html_is_external}
         
-        <!-- 5. Is Production Ready -->
         ${html_is_prod_ready}
         
-        
-        <!-- 6. Notes -->
         ${html_notes}
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
-        <!-- Footer Buttons -->
+        
         <div class="modal-footer">
                                            
             <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
-                <i class="fas fa-times me-2"></i>Cancel
+                <i class="fas fa-times me-2"></i>${label_cancel}
             </button>
             <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-                <i class="fas fa-save me-2"></i>Save
+                <i class="fas fa-save me-2"></i>${label_save}
             </button>
         </div>
         

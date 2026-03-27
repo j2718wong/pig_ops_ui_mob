@@ -113,12 +113,16 @@ export function PageProdGestatingAdd(input_settings){
     
     this.render = function(){
         
-        const translations      = navigation.getTranslations();
+        let label_save          = 'Save';
+        let label_cancel        = 'Cancel';
+        
+        let label_valid_date    = 'Please input a valid date.'
+        let label_numeric_value = 'Please enter numeric value.';       
+        
         
         let label_select_sow    = 'Select Sow';
         
         let label_date_mating   = 'Date Mating or Insemination';     
-        let label_valid_date    = 'Please input a valid date.'
         
         
         let label_select_boar   = 'Select Boar';
@@ -135,6 +139,9 @@ export function PageProdGestatingAdd(input_settings){
         let label_boar_semen_source = 'Boar where Semen extracted';
         
         
+        let label_semen_cost        = 'Semen Cost';
+        let label_other_cost        = 'Other Cost';
+        
         let label_notes             = 'Notes';
         
         
@@ -144,83 +151,53 @@ export function PageProdGestatingAdd(input_settings){
         let label_insem_ai_internal = 'Artificial Insem Internal';
         
         
-        if (translations){
-            if (translations.common_app && 
-                translations.common_app.labels){
-                
-                const labels_common = translations.common_app.labels;
-                
-                if (labels_common) {
-                    if(labels_common.select_sow) {
-                        label_select_sow = labels_common.select_sow;
-                    }
-                    
-                    if(labels_common.valid_date) {
-                        label_valid_date = labels_common.valid_date;
-                    }
-                    
-                    if(labels_common.select_boar) {
-                        label_select_boar = labels_common.select_boar;
-                    }
-                }
-            }
-            
-            
-            
-            if (translations.page_gestating_add && 
-                translations.page_gestating_add.labels){
-                
-                const labels_page = translations.page_gestating_add.labels;
-                
-                if (labels_page) {
-                    if(labels_page.date_mating) {
-                        label_date_mating = labels_page.date_mating;
-                    }
-                    
-                    if(labels_page.add_semen_type) {
-                        label_add_semen_type = labels_page.add_semen_type;
-                    }
-                    
-                    if(labels_page.save_semen_type) {
-                        label_save_semen_type = labels_page.save_semen_type;
-                    }
-                    
-                    if(labels_page.semen_type) {
-                        label_select_semen_type = labels_page.semen_type;
-                    }
-                    
-                    if(labels_page.semen_type_help) {
-                        label_semen_type_help = labels_page.semen_type_help;
-                    }
-                    
-                    
-                    if(labels_page.notes) {
-                        label_notes = labels_page.notes;
-                    }
-                    
-                    
-                    
-                    if(labels_page.insem_type) {
-                        label_insem_type = labels_page.insem_type;
-                    }
-                    
-                    if(labels_page.insem_boar) {
-                        label_insem_boar = labels_page.insem_boar;
-                    }
-                    
-                    if(labels_page.insem_ai_external) {
-                        label_insem_ai_external = labels_page.insem_ai_external;
-                    }
-                    
-                    if(labels_page.insem_ai_internal) {
-                        label_insem_ai_internal = labels_page.insem_ai_internal;
-                    }
-                           
-                }
-            }
-        }
+        let labeladd_new_staff      = 'Add New Staff';   
+        let labelsave_new_staff     = 'Save New Staff'; 
+        let labelselect_staff       = 'Select Staff';
+        let labelselect_staff_help  = 'Who did the operation';
         
         
+        const helper = navigation.managerTranslations.translationHelper;
+
+        
+        // Common labels
+        label_save              = helper.getSimpleTranslation('common.labels.save') || label_save;
+        label_cancel            = helper.getSimpleTranslation('common.labels.cancel') || label_cancel;
+        label_valid_date        = helper.getSimpleTranslation('common.labels.valid_date') || label_valid_date;
+        label_numeric_value     = helper.getSimpleTranslation('common.labels.numeric_value') || label_numeric_value;
+        
+
+        // Common app labels
+        label_select_sow        = helper.getSimpleTranslation('common_app.labels.select_sow') || label_select_sow;
+        label_select_boar       = helper.getSimpleTranslation('common_app.labels.select_boar') || label_select_boar;
+
+
+        // Page: gestating_add
+        label_date_mating       = helper.getSimpleTranslation('page_gestating_add.labels.date_mating') || label_date_mating;
+        label_semen_supplier    = helper.getSimpleTranslation('page_gestating_add.labels.semen_supplier') || label_semen_supplier;
+        label_add_semen_type    = helper.getSimpleTranslation('page_gestating_add.labels.add_semen_type') || label_add_semen_type;
+        label_save_semen_type   = helper.getSimpleTranslation('page_gestating_add.labels.save_semen_type') || label_save_semen_type;
+        label_select_semen_type = helper.getSimpleTranslation('page_gestating_add.labels.semen_type') || label_select_semen_type;
+        label_semen_type_help   = helper.getSimpleTranslation('page_gestating_add.labels.semen_type_help') || label_semen_type_help;
+        label_boar_semen_source = helper.getSimpleTranslation('page_gestating_add.labels.boar_semen_source') || label_boar_semen_source;
+        
+        label_semen_cost        = helper.getSimpleTranslation('page_gestating_add.labels.semen_cost') || label_semen_cost;
+        
+        label_other_cost        = helper.getSimpleTranslation('page_gestating_add.labels.other_cost') || label_other_cost;
+        
+        label_notes             = helper.getSimpleTranslation('page_gestating_add.labels.notes') || label_notes;
+        
+        label_insem_type        = helper.getSimpleTranslation('page_gestating_add.labels.insem_type') || label_insem_type;
+        label_insem_boar        = helper.getSimpleTranslation('page_gestating_add.labels.insem_boar') || label_insem_boar;
+        label_insem_ai_external = helper.getSimpleTranslation('page_gestating_add.labels.insem_ai_external') || label_insem_ai_external;
+        label_insem_ai_internal = helper.getSimpleTranslation('page_gestating_add.labels.insem_ai_internal') || label_insem_ai_internal;        
+
+
+        label_add_new_staff     = helper.getSimpleTranslation('page_gestating_add.labels.add_new_staff') || label_add_new_staff;
+        label_save_new_staff    = helper.getSimpleTranslation('page_gestating_add.labels.save_new_staff') || label_save_new_staff;
+        label_select_staff      = helper.getSimpleTranslation('page_gestating_add.labels.select_staff') || label_select_staff;
+        label_select_staff_help = helper.getSimpleTranslation('page_gestating_add.labels.select_staff_help') || label_select_staff_help;
+
         
         elemIdBtnClose          = `${settings.uniqueKey}-select-close`;
         
@@ -328,14 +305,15 @@ export function PageProdGestatingAdd(input_settings){
             includeAddNew:      true,
             includeDoneByMe:    true,
             
-            titleExpandSection: 'Add New Staff',
+            titleExpandSection: label_add_new_staff,
             htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save New Staff',
+            labelBtnExpandSave: label_save_new_staff,
             
-            labelSelect:        'Staff Member',
-            helpText:           'Who did the operation'
+            labelSelect:        label_select_staff,
+            helpText:           label_select_staff_help
         });
-        
+            
+           
         
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
@@ -395,12 +373,12 @@ export function PageProdGestatingAdd(input_settings){
             
             <div class="form-group-number">
                 <label for="${elemIdSemenCost}" class="form-label">
-                    Semen Cost
+                    ${label_semen_cost}
                 </label>
                 
                 <input type="number" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0" value="0.00">
                 <div class="invalid-feedback">
-                    Please enter numeric value.
+                    ${label_numeric_value}
                 </div>
             </div>
         </div>
@@ -416,7 +394,7 @@ export function PageProdGestatingAdd(input_settings){
                 
             <input type="number" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">
             <div class="invalid-feedback">
-                Please enter numeric value.
+                ${label_numeric_value}
             </div>
         </div>
         
@@ -430,10 +408,10 @@ export function PageProdGestatingAdd(input_settings){
         
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" data-bs-dismiss="modal" style="margin-right:10px;">
-                <i class="fas fa-times me-2"></i>Cancel
+                <i class="fas fa-times me-2"></i>${label_cancel}
             </button>
             <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-                <i class="fas fa-save me-2"></i>Save
+                <i class="fas fa-save me-2"></i>${label_save}
             </button>
         </div>
     </div>
