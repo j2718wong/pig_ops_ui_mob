@@ -325,8 +325,7 @@ export function PageSowBoarList(input_settings){
         const html_table_disposed   = tableDiposed.getHtml();
         
         
-        const translations      = navigation.getTranslations();
-        
+        let label_add_entry     = 'Add Entry';
         let label_search_pig    = 'Search Pig Name or Number';
         let label_sow_all       = 'All';
         let label_sow_gesta     = 'Gesta';
@@ -337,49 +336,19 @@ export function PageSowBoarList(input_settings){
         let label_today         = 'Today';
         
         
-        if (translations){
-            if (translations.common_app && translations.common_app.labels){
-                const labels_common = translations.common_app.labels;
-                
-                if (labels_common) {
-                    if(labels_common.today)   {label_today = labels_common.today;}
-                }
-            }
-            
-            
-            if (translations.page_sow_boar_list && 
-                translations.page_sow_boar_list.labels){
-                
-                const labels_sow_boar_list = translations.page_sow_boar_list.labels;
-                
-                if (labels_sow_boar_list) {
-                    if(labels_sow_boar_list.search_pig) {
-                        label_search_pig = labels_sow_boar_list.search_pig;
-                    }
-                    
-                    if(labels_sow_boar_list.sow_all) {
-                        label_sow_all = labels_sow_boar_list.sow_all;
-                    }
-                    
-                    if(labels_sow_boar_list.sow_gesta) {
-                        label_sow_gesta = labels_sow_boar_list.sow_gesta;
-                    }
-                    
-                    if(labels_sow_boar_list.sow_lacta) {
-                        label_sow_lacta = labels_sow_boar_list.sow_lacta;
-                    }
-                    
-                    if(labels_sow_boar_list.sow_wean) {
-                        label_sow_wean = labels_sow_boar_list.sow_wean;
-                    }
-                    
-                    if(labels_sow_boar_list.sow_output) {
-                        label_sow_output = labels_sow_boar_list.sow_output;
-                    }
-                    
-                }
-            }
-        }
+        const helper = navigation.managerTranslations.translationHelper;
+
+        label_add_entry     = helper.getSimpleTranslation('common.labels.add_entry') || add_entry;
+        
+        label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
+
+        label_search_pig    = helper.getSimpleTranslation('page_sow_boar_list.labels.search_pig') || label_search_pig;
+        
+        label_sow_all       = helper.getSimpleTranslation('page_sow_boar_list.labels.sow_all') || label_sow_all;
+        label_sow_gesta     = helper.getSimpleTranslation('page_sow_boar_list.labels.sow_gesta') || label_sow_gesta;
+        label_sow_lacta     = helper.getSimpleTranslation('page_sow_boar_list.labels.sow_lacta') || label_sow_lacta;
+        label_sow_wean      = helper.getSimpleTranslation('page_sow_boar_list.labels.sow_wean') || label_sow_wean;
+        label_sow_output    = helper.getSimpleTranslation('page_sow_boar_list.labels.sow_output') || label_sow_output;
         
         
         const html = `
@@ -420,7 +389,7 @@ ${html_style}
             </div>
             <button class="btn-add-entry" id="${elemIdAddEntryBtn}">
                 <i class="fas fa-plus"></i>
-                Add Entry
+                ${label_add_entry}
             </button>
         </div>
         

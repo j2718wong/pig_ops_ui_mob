@@ -128,6 +128,10 @@ export function PageTableBasic(){
     */
     this.setSettingsTable = function(input_settings){
         settings = input_settings;
+        
+        if (input_settings.navigation){
+            thisObj.setNavigation(input_settings.navigation);
+        }
     }
     
     
@@ -167,6 +171,19 @@ export function PageTableBasic(){
         
         elemIdTableContent      = `${settings.uniqueKey}-table-content`;
 
+        
+        let label_add_entry     = 'Add Entry';
+        let label_search        = 'Search';
+        
+
+        if (thisObj.navigation){
+            const helper = navigation.managerTranslations.translationHelper;
+            
+            label_add_entry     = helper.getSimpleTranslation('common.labels.add_entry') || add_entry;
+            label_search        = helper.getSimpleTranslation('common.labels.search') || label_search;
+        }
+        
+
         let html_header = `
         <h2>
             <span class="nav-title blue" id="${elemIdTableEntryCount}"></span>
@@ -182,7 +199,7 @@ export function PageTableBasic(){
         let html_add_button = `
             <button class="btn-add-entry" id="${elemIdAddEntryBtn}">
                 <i class="fas fa-plus"></i>
-                Add Entry
+                ${label_add_entry}
             </button>
         `;
         
@@ -196,7 +213,7 @@ export function PageTableBasic(){
         <div class="mobile-controls" id="${elemIdSearchAddControl}">
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="Search">
+                <input type="text" class="search-input" id=${elemIdSearchInput} placeholder="${label_search}">
             </div>
             ${html_add_button}
         </div>

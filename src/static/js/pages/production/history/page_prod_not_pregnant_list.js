@@ -91,20 +91,11 @@ export function PageProdNotPregnantList(input_settings){
     this.render = function(){
         let page_title          = 'Not Pregnant';
         
-        const translations      = navigation.getTranslations();
         
+        const helper = navigation.managerTranslations.translationHelper;
+
+        page_title     = helper.getSimpleTranslation('nav_links.Production5') || page_title;
         
-        if (translations){
-            if (translations.navigation && translations.navigation.nav_links){
-                const nav_links = translations.navigation.nav_links;
-                
-                if (nav_links) {
-                    if(nav_links.Production5) {
-                        page_title = nav_links.Production5;}
-                        
-                }
-            }
-        }
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({
@@ -248,6 +239,20 @@ export function PageProdNotPregnantList(input_settings){
         
         const html_style = this._writeInlineStyle();
         
+        let label_sow           = 'Sow';
+        let label_boar          = 'Boar';
+        
+        let label_date_mate     = 'Date Mate';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        label_sow           = helper.getSimpleTranslation('common_app.labels.sow') || label_sow;
+        label_boar          = helper.getSimpleTranslation('common_app.labels.boar') || label_boar;
+        
+        label_date_mate     = helper.getSimpleTranslation('page_sow_boar_list.labels.date_mate') || label_date_mate;
+        
+        
         
         const html = `
         ${html_style}
@@ -263,9 +268,9 @@ export function PageProdNotPregnantList(input_settings){
             <thead>
                 <tr>
                     <th>PID</th>
-                    <th>Sow</th>
-                    <th>Boar</th>
-                    <th>Date Mate</th>
+                    <th>${label_sow}</th>
+                    <th>${label_boar}</th>
+                    <th>${label_date_mate}</th>
                 </tr>
             </thead>
             
