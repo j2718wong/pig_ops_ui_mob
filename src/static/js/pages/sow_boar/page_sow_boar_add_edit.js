@@ -409,7 +409,7 @@ export function PageSowBoarAddEdit(input_settings){
     
     <div class="modal-body">
         
-        <div class="warning-box" id="${elemIdInfoShow}">
+        <div class="warning-box" id="${elemIdInfoShow}" style="display:none;">
             <span id="no-gilt-operations">
                 Currently there are no defined scheduled operations for gilt preparation.
                 <span>Click to add Gilt Operations</span>
