@@ -217,8 +217,11 @@ export function ComponentSemenSupplier(input_settings){
         let s = '';
         
         s = `${supplier_address.level_1.name}, ${supplier_address.level_2.name}`;
-        if ('hid' in supplier_address.level_3){
-            s += `, ${supplier_address.level_3.name}`
+        
+        if (supplier_address.level_3) {
+            if (supplier_address.level_3.hid){
+                s += `, ${supplier_address.level_3.name}`
+            }
         }
         elemSupplierInfo.innerHTML = s;
         

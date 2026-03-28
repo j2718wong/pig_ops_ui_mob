@@ -70,6 +70,8 @@ export function ProdHistTableWeights(input_settings){
             padding-right:0;
         }
         
+        
+        
       </style>
     `;
         return html;
@@ -98,6 +100,8 @@ export function ProdHistTableWeights(input_settings){
         ${html_style}
         
         <div id="${elemIdTableShow}">
+            
+        
             <table class="data-table table-prod-weights">
                 <colgroup>
                     <col style="width: 34%;">
@@ -120,7 +124,9 @@ export function ProdHistTableWeights(input_settings){
                 </tbody>
             </table>
             
-            <div class="data-table-legend">Average Wt = Live Weight| Slaughter Weight</div>
+            <div class="data-table-legend">LW = <span>Live Weight</span></div>
+            <div class="data-table-legend">SW = <span>Slaughter Weight</span></div>
+            <div class="data-table-legend">Average Wt = Live Weight | Slaughter Weight</div>
             
         </div>
         `;
