@@ -116,7 +116,50 @@ export function ProdEntryBirth(input_settings){
     
     
     this.getHtml = function(){
-                
+        
+        let label_save_changes      = 'Save Changes';
+            
+        let label_birth_info        = 'Birth Information';
+        let label_date_expected     = 'Date Expected Birth';
+        let label_date_birth        = 'Date Actual Birth';
+        let label_valid_date        = 'Please enter a valid date';
+            
+        let label_sow               = 'Sow';
+        
+        let label_num_live_female   = 'Number of Live Female Piglets';
+        let label_num_live_male     = 'Number of Live Male Piglets';
+        let label_num_still_birth   = 'Number of Stillbirth Piglets';
+        
+        let label_warning_1 = WARNING_1;
+        
+        
+        let label_warning_3 = 'Birth Information cannot be changed after wean';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        // Common labels
+        label_save_changes      = helper.getSimpleTranslation('common.labels.save_changes') || label_save_changes;
+        label_valid_date        = helper.getSimpleTranslation('common.labels.valid_date') || label_valid_date;
+        
+        
+        // Common app labels
+        label_sow               = helper.getSimpleTranslation('common_app.labels.sow') || label_sow;
+        
+        
+        // Page: prod_entry_birth
+        label_birth_info        = helper.getSimpleTranslation('prod_entry_birth.labels.birth_info') || label_birth_info;
+        
+        label_date_expected     = helper.getSimpleTranslation('prod_entry_birth.labels.date_expected') || label_date_expected;
+        label_date_birth        = helper.getSimpleTranslation('prod_entry_birth.labels.date_birth') || label_date_birth;
+        
+        label_num_live_female   = helper.getSimpleTranslation('prod_entry_birth.labels.num_live_female') || label_num_live_female;
+        label_num_live_male     = helper.getSimpleTranslation('prod_entry_birth.labels.num_live_male') || label_num_live_male;
+        label_num_still_birth   = helper.getSimpleTranslation('prod_entry_birth.labels.num_still_birth') || label_num_still_birth;
+        
+        label_warning_1         = helper.getSimpleTranslation('prod_entry_birth.warning_1') || label_warning_1;
+        
+                        
         elemIdWarningBox        = `${settings.uniqueKey}-warning-box`;
         elemIdCannotUpdate      = `${settings.uniqueKey}-cannot-update`;
         
@@ -127,9 +170,9 @@ export function ProdEntryBirth(input_settings){
             uniqueKey:          `${settings.uniqueKey}-date-birth`,
         
             className:          'form-group-date',
-            textLabel:          'Date Actual Birth',
+            textLabel:          label_date_birth,
             isRequired:         true,
-            invalidFeedBack:    'Please enter a valid date.',
+            invalidFeedBack:    label_valid_date,
             helpText:           null
         });
         
@@ -139,7 +182,7 @@ export function ProdEntryBirth(input_settings){
             
             className:          'form-group-number',
             iconLabel:          '<i class="fas fa-venus" style="color: var(--icon-pink);"></i>',
-            textLabel:          'Number of Live Female Piglets',
+            textLabel:          label_num_live_female,
             minValue:           0,
             step:               1,
             isRequired:         true,
@@ -153,7 +196,7 @@ export function ProdEntryBirth(input_settings){
             
             className:          'form-group-number',
             iconLabel:          '<i class="fas fa-mars" style="color: var(--icon-blue);"></i>',
-            textLabel:          'Number of Live Male Piglets',
+            textLabel:          label_num_live_male,
             minValue:           0,
             step:               1,
             isRequired:         true,
@@ -166,7 +209,7 @@ export function ProdEntryBirth(input_settings){
             uniqueKey:          `${settings.uniqueKey}-num-dead`,
             
             className:          'form-group-number',
-            textLabel:          'Number of Stillbirth Piglets',
+            textLabel:          label_num_still_birth,
             minValue:           0,
             step:               1,
             isRequired:         false,
@@ -209,31 +252,26 @@ export function ProdEntryBirth(input_settings){
         const html = `
 <div class="modal-body">
     <h2 class="tab-title">
-        Birth Information
+        ${label_birth_info}
     </h2>
     
     <div class="warning-box" id="${elemIdWarningBox}">
-        Setting the Date Actual Birth will update this production entry from 
-        Gestating Status to Lactating Status and will be removed from Production 
-        Gestating List. Will be put in Production Lactating List. 
-        <b>This cannot be undone.</b>
+        ${label_warning_1}
     </div>
     
     <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:8px;">
-        Birth info of a production entry that is already in 
-        <b>Weaning Stage</b> or later cannot be updated.
+        ${label_warning_3}
     </div>
     
     
-    <!-- 1. Sow Field cannot be edited. -->
     <div class="form-group-text">
-        <label class="form-label">Sow Name</label>
+        <label class="form-label">${label_sow}</label>
         <span class="" id="${elemIdSow}"></span>
     </div>
     
     
     <div class="form-group-text">
-        <label for="${elemIdDateExpected}" class="form-label">Date Expected Birth</label>
+        <label for="${elemIdDateExpected}" class="form-label">${label_date_expected}</label>
         <span class="" id="${elemIdDateExpected}"></span>
     </div>
     
@@ -360,9 +398,20 @@ export function ProdEntryBirth(input_settings){
         componentStaff.beforeShow();
 
         
+        let label_warning_1 = WARNING_1;
+        let label_warning_2 = WARNING_2;
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_warning_1         = helper.getSimpleTranslation('prod_entry_birth.warning_1') || label_warning_1;
+        label_warning_2         = helper.getSimpleTranslation('prod_entry_birth.warning_2') || label_warning_2;
+        
+        
         // Populate birth details if already given birth
         if (pig_prod_birth.date_actual) {
-            elemWarningBox.innerHTML = WARNING_2;
+            elemWarningBox.innerHTML = label_warning_2;
             
             // Set date of actual birth
             elemUiDateBirth.setDate(pig_prod_birth.date_actual);
@@ -379,7 +428,7 @@ export function ProdEntryBirth(input_settings){
             componentStaff.setValue(pig_prod_birth.birth_staff_hid);
         }
         else{
-            elemWarningBox.innerHTML = WARNING_1;
+            elemWarningBox.innerHTML = label_warning_1;
         }
         
         
