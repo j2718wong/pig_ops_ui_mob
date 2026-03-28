@@ -25,6 +25,35 @@ import {ComponentAccMedVac}         from '../../multikey/components/comp_acc_med
 import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 
+export const DEFAULT_MEDVAC_BRAND_LABELS = {
+    ADD_NEW:    'Add New MedVac Brand',
+    SAVE:       'Save MedVac Brand',
+    
+    SELECT:     'Select MedVac Brand',
+    HELP:       'MedVac brand name or manufacturer'
+};
+
+
+export const DEFAULT_MEDVAC_TYPE_LABELS = {
+    ADD_NEW:    'Add New MedVac Type',
+    SAVE:       'Save MedVac Type',
+    
+    SELECT:     'Select MedVac Type',
+    HELP:       'MedVac generic description or what it is for'
+};
+
+
+export const DEFAULT_MEDVAC_NAME_LABELS = {
+    ADD_NEW:    'Add New MedVac Name',
+    SAVE:       'Save MedVac Name',
+    
+    SELECT:     'Select MedVac Name',
+    HELP:       'MedVac product name'
+};
+
+
+
+
 export function PageProdPigOpsEdit(input_settings){
     PagePigProdWithBreadCrumbs.call(this, input_settings);
     
@@ -114,6 +143,68 @@ export function PageProdPigOpsEdit(input_settings){
     
     
     this.render = function(){
+        let label_save                  = 'Save';
+        let label_cancel                = 'Cancel';
+        
+        
+        let label_mark_as_done          = 'Mark PigOps as Done';
+        let label_date_completed        = 'Date Completed';
+        let label_valid_date            = 'Please enter a valid date';
+        
+        let label_add_medvac_brand      = DEFAULT_MEDVAC_BRAND_LABELS.ADD_NEW;
+        let label_save_medvac_brand     = DEFAULT_MEDVAC_BRAND_LABELS.SAVE;
+        let label_select_medvac_brand   = DEFAULT_MEDVAC_BRAND_LABELS.SELECT;
+        let label_medvac_brand_help     = DEFAULT_MEDVAC_BRAND_LABELS.HELP;
+        
+        let label_add_medvac_type       = DEFAULT_MEDVAC_TYPE_LABELS.ADD_NEW;
+        let label_save_medvac_type      = DEFAULT_MEDVAC_TYPE_LABELS.SAVE;
+        let label_select_medvac_type    = DEFAULT_MEDVAC_TYPE_LABELS.SELECT;
+        let label_medvac_type_help      = DEFAULT_MEDVAC_TYPE_LABELS.HELP;
+        
+        let label_add_medvac_name       = DEFAULT_MEDVAC_NAME_LABELS.ADD_NEW;
+        let label_save_medvac_name      = DEFAULT_MEDVAC_NAME_LABELS.SAVE;
+        let label_select_medvac_name    = DEFAULT_MEDVAC_NAME_LABELS.SELECT;
+        let label_medvac_name_help      = DEFAULT_MEDVAC_NAME_LABELS.HELP;
+
+
+        let label_notes                 = 'Notes of what was done';
+        
+        
+
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        
+        // Common labels
+        label_save                = helper.getSimpleTranslation('common.labels.save') || label_save;
+        label_cancel              = helper.getSimpleTranslation('common.labels.cancel') || label_cancel;
+        label_valid_date          = helper.getSimpleTranslation('common.labels.valid_date') || label_valid_date;
+        
+        
+        
+        label_mark_as_done        = helper.getSimpleTranslation('prod_pig_ops_edit.labels.mark_as_done') || label_mark_as_done; 
+        label_date_completed      = helper.getSimpleTranslation('prod_pig_ops_edit.labels.date_completed') || label_date_completed; 
+        
+        
+        label_add_medvac_brand    = helper.getSimpleTranslation('prod_pig_ops_edit.labels.add_medvac_brand') || label_add_medvac_brand;   
+        label_save_medvac_brand   = helper.getSimpleTranslation('prod_pig_ops_edit.labels.save_medvac_brand') || label_save_medvac_brand;  
+        label_select_medvac_brand = helper.getSimpleTranslation('prod_pig_ops_edit.labels.select_medvac_brand') || label_select_medvac_brand;
+        label_medvac_brand_help   = helper.getSimpleTranslation('prod_pig_ops_edit.labels.medvac_brand_help') || label_medvac_brand_help;  
+        
+        label_add_medvac_type     = helper.getSimpleTranslation('prod_pig_ops_edit.labels.add_medvac_type') || label_add_medvac_type;   
+        label_save_medvac_type    = helper.getSimpleTranslation('prod_pig_ops_edit.labels.save_medvac_type') || label_save_medvac_type;  
+        label_select_medvac_type  = helper.getSimpleTranslation('prod_pig_ops_edit.labels.select_medvac_type') || label_select_medvac_type;
+        label_medvac_type_help    = helper.getSimpleTranslation('prod_pig_ops_edit.labels.medvac_type_help') || label_medvac_type_help;  
+        
+        label_add_medvac_name     = helper.getSimpleTranslation('prod_pig_ops_edit.labels.add_medvac_name') || label_add_medvac_name;   
+        label_save_medvac_name    = helper.getSimpleTranslation('prod_pig_ops_edit.labels.save_medvac_name') || label_save_medvac_name;  
+        label_select_medvac_name  = helper.getSimpleTranslation('prod_pig_ops_edit.labels.select_medvac_name') || label_select_medvac_name;
+        label_medvac_name_help    = helper.getSimpleTranslation('prod_pig_ops_edit.labels.medvac_name_help') || label_medvac_name_help;  
+        
+        label_notes               = helper.getSimpleTranslation('prod_pig_ops_edit.labels.notes') || label_notes;
+
+        
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
@@ -124,9 +215,9 @@ export function PageProdPigOpsEdit(input_settings){
         elemUiDateActual         = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date-actual`,
         
-            textLabel:          `Completion Date`,
+            textLabel:          label_date_completed,
             isRequired:         true,
-            invalidFeedBack:    `Please enter a date.`,
+            invalidFeedBack:    label_valid_date,
             helpText:           null
         });
         
@@ -134,29 +225,16 @@ export function PageProdPigOpsEdit(input_settings){
         elemIdMedVacInputs      = `${settings.uniqueKey}-medvac-inputs`;
         
         
-        componentMedVacBrand    = new ComponentMedVacBrand({
-            navigation:         navigation,
-            uniqueKey:          `${settings.uniqueKey}-medvac-brand-name`,
-
-            titleExpandSection: 'Add New MedVac Brand',
-            htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save MedVac Brand',
-            
-            labelSelect:        'Select MedVac Brand',
-            helpText:           'MedVac brand name or manufacturer'
-        });
-        
-        
         componentMedVacType     = new ComponentMedVacType({
             navigation:         navigation,
             uniqueKey:          `${settings.uniqueKey}-medvac-type`,
 
-            titleExpandSection: 'Add New MedVac Type',
+            titleExpandSection: label_add_medvac_type,
             htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save MedVac Type',
+            labelBtnExpandSave: label_save_medvac_type,
         
-            labelSelect:        'Select MedVac Type',
-            helpText:           'MedVac generic description or what it is for'
+            labelSelect:        label_select_medvac_type,
+            helpText:           label_medvac_type_help
         });
         
         
@@ -165,14 +243,26 @@ export function PageProdPigOpsEdit(input_settings){
             parentObj:          thisObj,
             uniqueKey:          `${settings.uniqueKey}-medvac-name`,
 
-            titleExpandSection: 'Add New MedVac Name',
+            titleExpandSection: label_add_medvac_name,
             htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save MedVac Name',
+            labelBtnExpandSave: label_save_medvac_name,
         
-            labelSelect:        'Select MedVac Name',
-            helpText:           'MedVac product name'
+            labelSelect:        label_select_medvac_name,
+            helpText:           label_medvac_name_help
         });
         
+        
+        componentMedVacBrand    = new ComponentMedVacBrand({
+            navigation:         navigation,
+            uniqueKey:          `${settings.uniqueKey}-medvac-brand-name`,
+
+            titleExpandSection: label_add_medvac_brand,
+            htmlExpandSection:  null,
+            labelBtnExpandSave: label_save_medvac_brand,
+            
+            labelSelect:        label_select_medvac_brand,
+            helpText:           label_medvac_brand_help
+        });
         
         
         elemUiNotes             = new UiInputTextWithCounter({
@@ -181,7 +271,7 @@ export function PageProdPigOpsEdit(input_settings){
             isTextArea:         true,
             isRequired:         false,
             className:          'form-group-text-area',
-            textLabel:          'Notes',
+            textLabel:          label_notes,
             textMaxChars:       160,
             rows:               3,
             helpText:           null  
@@ -226,7 +316,7 @@ export function PageProdPigOpsEdit(input_settings){
 
     <div class="modal-header">
         <h5 class="modal-title" id="edit-entry-prod-pig-ops-modal-label">
-            <span id="${elemIdHeaderTitle}">Mark PigOps as Done</span>
+            <span id="${elemIdHeaderTitle}">${label_mark_as_done}</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
@@ -244,13 +334,10 @@ export function PageProdPigOpsEdit(input_settings){
         
         <div id="${elemIdMedVacInputs}">
             
-            <!-- MedVac Type -->
             ${html_medvac_type}
             
-            <!-- Name -->
             ${html_acc_medvac}
             
-            <!-- MedVac Brand -->
             ${html_medvac_brand}
             
         </div>
@@ -262,18 +349,18 @@ export function PageProdPigOpsEdit(input_settings){
     
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
     
-    </div>
         
-    <!-- Footer Buttons -->
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
-            <i class="fas fa-times me-2"></i>Cancel
-        </button>
-        <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-            <i class="fas fa-save me-2"></i>Save
-        </button>
-    </div>
+        <!-- Footer Buttons -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
+                <i class="fas fa-times me-2"></i>${label_cancel}
+            </button>
+            <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
+                <i class="fas fa-save me-2"></i>${label_save}
+            </button>
+        </div>
     
+    </div>
 </div>
 
         `;
@@ -378,17 +465,38 @@ export function PageProdPigOpsEdit(input_settings){
         componentStaff.beforeShow();
         
         
+        // Additional translation
+        
+        let label_mark_as_done          = 'Mark PigOps as Done';
+        let label_edit_pig_ops          = 'Edit PigOps';
+        let label_piglets_operation     = 'Piglets Operation';
+        let label_sow_operation         = 'Sow Operation';
+        
+        let label_notes_help            = 'Describe the dosage given to pig. Sample: 2mL injection.';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_mark_as_done      = helper.getSimpleTranslation('prod_pig_ops_edit.labels.mark_as_done') || label_mark_as_done;   
+        label_edit_pig_ops      = helper.getSimpleTranslation('prod_pig_ops_edit.labels.edit_pig_ops') || label_edit_pig_ops;   
+        label_piglets_operation = helper.getSimpleTranslation('prod_pig_ops_edit.labels.piglets_operation') || label_piglets_operation;   
+        label_sow_operation     = helper.getSimpleTranslation('prod_pig_ops_edit.labels.sow_operation') || label_sow_operation;   
+        
+        label_notes_help        = helper.getSimpleTranslation('prod_pig_ops_edit.labels.notes_help') || label_notes_help; 
+        
+        
         // Add additional subtitle2 
         const operation_type = curDataProdPigOps.pig_prod_pig_ops.operation_type;
         switch (operation_type){ 
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS: {
-                elemHeaderSubTitle2.innerHTML = 'Piglets Operation';
+                elemHeaderSubTitle2.innerHTML = label_piglets_operation;
                 elemHeaderSubTitle2.style.display = 'block';
                 break;
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW: {
-                elemHeaderSubTitle2.innerHTML = 'Sow Operation';
+                elemHeaderSubTitle2.innerHTML = label_sow_operation;
                 elemHeaderSubTitle2.style.display = 'block';
                 break;
             }
@@ -403,8 +511,7 @@ export function PageProdPigOpsEdit(input_settings){
         
         // Update elemUiNotes help text
         if (curDataProdPigOps.account_pig_ops.is_medvac > 0){
-            // TODO temporary hardcode
-            elemUiNotes.setTextHelp('Describe the dosage given to pig. Sample: 2mL injection.');
+            elemUiNotes.setTextHelp(label_notes_help);
         }
         
         else{
@@ -421,11 +528,12 @@ export function PageProdPigOpsEdit(input_settings){
             }
         }
         
+        
         if (is_mark_done == true){
-            elemHeaderTitle.textContent = 'Mark PigOps as Done';
+            elemHeaderTitle.textContent = label_mark_as_done;
         }
         else{
-            elemHeaderTitle.textContent = 'Edit PigOps';
+            elemHeaderTitle.textContent = label_edit_pig_ops;
         }
         
         const pid           = showOptions.pid;
@@ -611,17 +719,7 @@ export function PageProdPigOpsEdit(input_settings){
         }
         
         
-        // Check if user_account_hid is same with farm_account_hid;
-        const user_account_hid = navigation.userControl.getUserAccountHid();
-        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
-        
-        if (user_account_hid != farm_account_hid){
-            console.log('User account_hid not equal to farm_account_hid');
-            return;
-        } 
-        
-        
-        
+
         // Final check before sending request
         if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
             return;

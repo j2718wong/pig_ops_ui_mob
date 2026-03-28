@@ -138,15 +138,16 @@ export function PagePigDeadAddEdit(input_settings){
         
         
         elemUiCurrentProduction  = new UiSelectWithEntryCount({
-            uniqueKey:           `${settings.uniqueKey}-pig-prod`,
+            uniqueKey:          `${settings.uniqueKey}-pig-prod`,
+            navigation:         navigation,
         
-            labelSelect:         'Select Current Production',
-            helpText:            null
+            labelSelect:        'Select Current Production',
+            helpText:           null
         });
         
         
         
-        componentNumDead       = new ComponentPlusMinusInput({
+        componentNumDead        = new ComponentPlusMinusInput({
             uniqueKey:          `${settings.uniqueKey}-num-dead`,
             
             className:          'form-group-number',

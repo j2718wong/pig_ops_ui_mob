@@ -47,13 +47,27 @@ export function ComponentMedVacType(input_settings){
     const MAXCHAR_MEDVAC_TYPE   = 50;
     
     
+    let label_medvac_type       = 'MedVac Type';
+    let label_valid_name        = 'Please enter a valid name.';
+    let label_duplicate_entry   = 'Duplicate entry'; 
+    
+    const helper = navigation.managerTranslations.translationHelper;
+    
+    
+    // Common labels
+    label_valid_name        = helper.getSimpleTranslation('common.labels.valid_name') || label_valid_name;
+    label_duplicate_entry   = helper.getSimpleTranslation('common.labels.duplicate_entry') || label_duplicate_entry;
+    
+    label_medvac_type       = helper.getSimpleTranslation('common.labels.medvac_type') || label_medvac_type;
+    
+    
     const elemUiMedVacTypeName   = new UiInputTextWithCounter({
                                     uniqueKey:      input_settings.uniqueKey,
                                     className:      'form-group',
-                                    textLabel:      'MedVac Type',
+                                    textLabel:      label_medvac_type,
                                     isRequired:     true,
                                     textMaxChars:   MAXCHAR_MEDVAC_TYPE,
-                                    invalidFeedBack: 'Please enter a valid type.',
+                                    invalidFeedBack: label_valid_name,
                                     textHelpText:   ''
                                 });
     
@@ -185,10 +199,10 @@ export function ComponentMedVacType(input_settings){
         
         if (validation != 0){
             if (is_duplicate > 0){
-                elemUiMedVacTypeName.setTextInvalid('Duplicate entry.');
+                elemUiMedVacTypeName.setTextInvalid(label_duplicate_entry);
             }
             else{
-                elemUiMedVacTypeName.setTextInvalid('Please enter a valid name.');
+                elemUiMedVacTypeName.setTextInvalid(label_valid_name);
             }
         }
         addValidationClassToElem(input_elem, validation);

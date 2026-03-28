@@ -47,13 +47,27 @@ export function ComponentMedVacBrand(input_settings){
     const MAXCHAR_MEDVAC_BRAND_NAME   = 50;
     
     
+    let label_medvac_brand      = 'MedVac Brand Name';
+    let label_valid_name        = 'Please enter a valid name.';
+    let label_duplicate_entry   = 'Duplicate entry'; 
+    
+    const helper = navigation.managerTranslations.translationHelper;
+    
+    
+    // Common labels
+    label_valid_name        = helper.getSimpleTranslation('common.labels.valid_name') || label_valid_name;
+    label_duplicate_entry   = helper.getSimpleTranslation('common.labels.duplicate_entry') || label_duplicate_entry;
+    
+    label_medvac_brand       = helper.getSimpleTranslation('common.labels.medvac_brand') || label_medvac_brand;
+    
+    
     const elemUiMedVacBrandName   = new UiInputTextWithCounter({
                                     uniqueKey:      input_settings.uniqueKey,
                                     className:      'form-group',
-                                    textLabel:      'Brand Name',
+                                    textLabel:      label_medvac_brand,
                                     isRequired:     true,
                                     textMaxChars:   MAXCHAR_MEDVAC_BRAND_NAME,
-                                    invalidFeedBack: 'Please enter a valid name.',
+                                    invalidFeedBack: label_valid_name,
                                     textHelpText:   ''
                                 });
     
@@ -185,10 +199,10 @@ export function ComponentMedVacBrand(input_settings){
         
         if (validation != 0){
             if (is_duplicate > 0){
-                elemUiMedVacBrandName.setTextInvalid('Duplicate entry.');
+                elemUiMedVacBrandName.setTextInvalid(label_duplicate_entry);
             }
             else{
-                elemUiMedVacBrandName.setTextInvalid('Please enter a valid name.');
+                elemUiMedVacBrandName.setTextInvalid(label_valid_name);
             }
         }
         addValidationClassToElem(input_elem, validation);

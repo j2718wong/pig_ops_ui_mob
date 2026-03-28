@@ -6,6 +6,12 @@
 
 import {UiBasic}                    from './ui_basic.js';
 
+import {DEFAULT_LABEL_PLEASE_SELECT,
+        DEFAULT_LABEL_NO_ENTRIES,   
+        DEFAULT_LABEL_ENTRY,        
+        DEFAULT_LABEL_ENTRIES}      from './select_with_entry_count.js';      
+
+
 
 export function UiSelectWithAddExpandable(input_settings){
     UiBasic.call(this);
@@ -28,6 +34,7 @@ export function UiSelectWithAddExpandable(input_settings){
     */
     const thisObj               = this;
     const settings              = input_settings;
+    const navigation            = input_settings.navigation;
 
     const elemDivContainer      = settings.elemDivContainer;
 
@@ -57,6 +64,30 @@ export function UiSelectWithAddExpandable(input_settings){
     this.callbackBeforeExpand   = null;
     
     
+    let label_cancel            = 'Cancel';
+    let label_new               = 'New';
+    
+    let label_please_select     = DEFAULT_LABEL_PLEASE_SELECT;
+    let label_no_entries        = DEFAULT_LABEL_NO_ENTRIES;
+    let label_entry             = DEFAULT_LABEL_ENTRY;
+    let label_entries           = DEFAULT_LABEL_ENTRIES;
+    
+    
+    const helper = navigation.managerTranslations.translationHelper;
+    
+    
+    // Common labels
+    label_cancel            = helper.getSimpleTranslation('common.labels.cancel') || label_cancel;
+    label_new               = helper.getSimpleTranslation('common.labels.new') || label_new;
+    
+        
+    label_please_select     = helper.getSimpleTranslation('common.labels.please_select') || label_please_select;
+    label_no_entries        = helper.getSimpleTranslation('common.labels.select_no_entries') || label_no_entries;
+    label_entry             = helper.getSimpleTranslation('common.labels.entry') || label_entry;
+    label_entries           = helper.getSimpleTranslation('common.labels.entries') || label_entries;
+    
+    
+    
     this.getHtml = function(){
         
         let s_help = '';
@@ -74,7 +105,7 @@ export function UiSelectWithAddExpandable(input_settings){
                 
                 <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
                 
-                <button class="btn btn-cancel" id="${elemIdExpandCancel}">Cancel</button>
+                <button class="btn btn-cancel" id="${elemIdExpandCancel}">${label_cancel}</button>
                 <button class="btn btn-success" id="${elemIdExpandSave}">${settings.labelBtnExpandSave}</button>
             </div>
         
@@ -85,10 +116,10 @@ export function UiSelectWithAddExpandable(input_settings){
             
             <div class="input-group">
                 <select class="form-select" id="${elemIdSelect}">
-                    <option value="-1" selected disabled>No Entries</option>
+                    <option value="-1" selected disabled>${label_no_entries}</option>
                 </select>
                 <button class="btn" type="button" id="${elemIdEntryAdd}">
-                    <i class="bi bi-plus"></i> New
+                    <i class="bi bi-plus"></i> ${label_new}
                 </button>
             </div>
             ${s_help}
@@ -202,10 +233,10 @@ export function UiSelectWithAddExpandable(input_settings){
     
     this.setEntryCount = function(data){
         if (data.length == 1){
-            elemEntryCount.textContent = ` (${data.length} Entry)`;
+            elemEntryCount.textContent = ` (1 ${label_entry})`;
         }
         else{
-            elemEntryCount.textContent = ` (${data.length} Entries)`;
+            elemEntryCount.textContent = ` (${data.length} ${label_entries})`;
         }
     }
     

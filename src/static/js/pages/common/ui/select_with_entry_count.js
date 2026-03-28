@@ -31,7 +31,8 @@ export function UiSelectWithEntryCount(input_settings){
     */
     const thisObj               = this;
     const settings              = input_settings;
-
+    const navigation            = input_settings.navigation;
+    
     
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     

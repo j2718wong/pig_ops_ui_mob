@@ -104,15 +104,17 @@ export function PageParentTrace(input_settings){
         elemIdSowBoarTrace      = `parent-trace-sow-boar`;
         
         elemUiSow               = new UiSelectWithEntryCount({
-            uniqueKey:           'parent-trace-sow',
+            uniqueKey:          'parent-trace-sow',
+            navigation:         navigation,
         
-            labelSelect:         '<i class="fas fa-venus" style="color: var(--icon-pink);"></i> Select Sow or Gilt'
+            labelSelect:        '<i class="fas fa-venus" style="color: var(--icon-pink);"></i> Select Sow or Gilt'
         });
         
         elemUiBoar              = new UiSelectWithEntryCount({
-            uniqueKey:           'parent-trace-boar',
-        
-            labelSelect:         '<i class="fas fa-mars" style="color: var(--icon-blue);"></i> Select Boar'
+            uniqueKey:          'parent-trace-boar',
+            navigation:         navigation,
+            
+            labelSelect:        '<i class="fas fa-mars" style="color: var(--icon-blue);"></i> Select Boar'
         });
         
         

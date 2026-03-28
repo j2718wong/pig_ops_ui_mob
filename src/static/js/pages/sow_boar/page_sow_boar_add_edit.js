@@ -319,17 +319,19 @@ export function PageSowBoarAddEdit(input_settings){
         elemIdBirthProdId       = `${settings.uniqueKey}-birth-prod-id`;
         
         elemUiParentSow         = new UiSelectWithEntryCount({
-            uniqueKey:           `${settings.uniqueKey}-parent-sow`,
+            uniqueKey:          `${settings.uniqueKey}-parent-sow`,
+            navigation:         navigation,
         
-            labelSelect:         label_parent_sow,
-            helpText:            label_parent_sow_help
+            labelSelect:        label_parent_sow,
+            helpText:           label_parent_sow_help
         });
         
         elemUiParentBoar        = new UiSelectWithEntryCount({
-            uniqueKey:           `${settings.uniqueKey}-parent-boar`,
+            uniqueKey:          `${settings.uniqueKey}-parent-boar`,
+            navigation:         navigation,
         
-            labelSelect:         label_parent_boar,
-            helpText:            label_parent_boar_help
+            labelSelect:        label_parent_boar,
+            helpText:           label_parent_boar_help
         });
         
         
