@@ -212,6 +212,9 @@ export function Navigation(){
     let elemDesktopPigFarmName  = null;
     let elemMobilePigFarmName   = null;
     
+    let dataApplication         = null;
+    let dataUserAccount         = null;
+    
     
     this.curScreenIsMobile      = null;
     
@@ -978,14 +981,30 @@ export function Navigation(){
     
     
     this.setPageData = function(data){
-        
+        // Save this
+        dataApplication = data.application;
         this.managerPublicSections.setDataCompanyApp(data.application);
         
         
+        // Save this
+        dataUserAccount = data.user_account;
         this.setDataUserAccount(data.user_account);
         
         const user_current_farm = this.userControl.getCurrentFarm();
         const pig_farm_account = data.pig_farm_account;
+        
+        
+        console.log('\n\ndataUserAccount');
+        console.log(dataUserAccount);
+        
+        
+        console.log('\n\nuser_current_farm');
+        console.log(user_current_farm);
+        
+        
+        console.log('\n\npig_farm_account');
+        console.log(pig_farm_account);
+        
         
         this.pigFarm.setDataPigFarm(user_current_farm);
         this.pigFarm.setDataPigFarmAccount(pig_farm_account);
@@ -1021,14 +1040,17 @@ export function Navigation(){
 
 
     
-
-    
     this.setDataUserAccount = function(data){
         this.userControl.setDataUserAccount(data);
         
         this.updatePigFarmName();
     }
     
+    
+    this.addDataToSaveBeforePageUnload = function(app_data_to_save){
+        app_data_to_save.data_application   = dataApplication;
+        app_data_to_save.user_account       = setDataUserAccount;      
+    }
     
 
     // Update pig farm name on resize for responsive centering
@@ -1234,7 +1256,6 @@ export function Navigation(){
         thisObj.pageHomeDashBoard.show();
     }
     
-
 
     this.onClickProdGestatingEntry = function(pig_prod_pid){
         if (pig_prod_pid == null){

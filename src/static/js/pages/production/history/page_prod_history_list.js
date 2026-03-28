@@ -280,9 +280,8 @@ export function PageProdHistoryList(input_settings){
             html_table_weights      = tableProdHistWeights.getHtml();
             
             html_filter_buttons = `
-                        <button class="filter-button active" data-filter="all">All</button>
+                        <button class="filter-button active" data-filter="all">Pig Count</button>
                         <button class="filter-button" data-filter="weights">Weight</button>
-                        <button class="filter-button" data-filter="harvests">Harvest</button>
             `;
         }
     
