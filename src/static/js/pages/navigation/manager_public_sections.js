@@ -22,7 +22,6 @@ export function ManagerPublicSections(_navigation) {
     let elemCopyRightYear           = null;
     let elemFooterProductName       = null;
     
-    let elemCoreVersionHash         = null;
     
     
     this.dataCompanyApp         = null;
@@ -51,29 +50,11 @@ export function ManagerPublicSections(_navigation) {
         elemCopyRightYear           = footer.querySelector('#footer-copyright-year');
         elemFooterProductName       = footer.querySelector('#footer-product-name');
         
-        elemCoreVersionHash         = footer.querySelector('#core-version-hash');
     }
     
     
     this._processAfterHtmlRender = function(){
-        function getVersionFromBundle() {
-            // Find the core bundle script tag
-            const scripts = document.getElementsByTagName('script');
-            for (let script of scripts) {
-                const src = script.src;
-                if (src && src.includes('bundle.core.')) {
-                    const match = src.match(/bundle\.core\.([a-f0-9]+)\.min\.js/);
-                    if (match) {
-                        return match[1];
-                    }
-                }
-            }
-            return null;
-        }
-        
-        
-        
-        elemCoreVersionHash.textContent = getVersionFromBundle();
+       
         
     }
 
