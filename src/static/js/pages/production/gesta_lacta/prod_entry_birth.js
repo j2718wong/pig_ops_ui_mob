@@ -130,8 +130,13 @@ export function ProdEntryBirth(input_settings){
         let label_num_live_male     = 'Number of Live Male Piglets';
         let label_num_still_birth   = 'Number of Stillbirth Piglets';
         
-        let label_warning_1 = WARNING_1;
+        let label_add_new_staff     = 'Add New Staff';   
+        let label_save_new_staff    = 'Save New Staff';  
+        let label_select_staff      = 'Select Staff';
+        let label_select_staff_help = 'Who did the operation';
         
+        
+        let label_warning_1 = WARNING_1;
         
         let label_warning_3 = 'Birth Information cannot be changed after wean';
         
@@ -156,6 +161,11 @@ export function ProdEntryBirth(input_settings){
         label_num_live_female   = helper.getSimpleTranslation('prod_entry_birth.labels.num_live_female') || label_num_live_female;
         label_num_live_male     = helper.getSimpleTranslation('prod_entry_birth.labels.num_live_male') || label_num_live_male;
         label_num_still_birth   = helper.getSimpleTranslation('prod_entry_birth.labels.num_still_birth') || label_num_still_birth;
+        
+        label_add_new_staff     = helper.getSimpleTranslation('prod_entry_birth.labels.add_new_staff') || label_add_new_staff;
+        label_save_new_staff    = helper.getSimpleTranslation('prod_entry_birth.labels.save_new_staff') || label_save_new_staff;
+        label_select_staff      = helper.getSimpleTranslation('prod_entry_birth.labels.select_staff') || label_select_staff;
+        label_select_staff_help = helper.getSimpleTranslation('prod_entry_birth.labels.select_staff_help') || label_select_staff_help;
         
         label_warning_1         = helper.getSimpleTranslation('prod_entry_birth.warning_1') || label_warning_1;
         
@@ -226,12 +236,12 @@ export function ProdEntryBirth(input_settings){
             includeAddNew:      true,
             includeDoneByMe:    true,
             
-            titleExpandSection: 'Add New Staff',
+            titleExpandSection: label_add_new_staff,
             htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save New Staff',
+            labelBtnExpandSave: label_save_new_staff,
             
-            labelSelect:        'Staff Member',
-            helpText:           'Who did the operation'
+            labelSelect:        label_select_staff,
+            helpText:           label_select_staff_help
         });
     
         
@@ -294,7 +304,7 @@ export function ProdEntryBirth(input_settings){
     <!-- Footer Buttons -->
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-            <i class="fas fa-save me-2"></i>Save Changes
+            <i class="fas fa-save me-2"></i>${label_save_changes}
         </button>
     </div>
 </div>

@@ -13,6 +13,11 @@ import {addValidationClassToElem} from './ui_utils.js';
 import {APPLICATION}            from '../../../constants.js';
 
 
+const DEFAULT_LABEL_NO_ENTRIES      = 'No Entries';
+const DEFAULT_LABEL_ENTRY           = 'Entry';
+const DEFAULT_LABEL_ENTRIES         = 'Entries';
+
+
 export function ComponentStaffFormGroup(input_settings){
     
     /* Typical settings
@@ -87,7 +92,37 @@ export function ComponentStaffFormGroup(input_settings){
     const commonSelectOptions   = new CommonSelectOptions(navigation);
     
     
+    let label_entry             = DEFAULT_LABEL_ENTRY;
+    let label_entries           = DEFAULT_LABEL_ENTRIES;
+    
+    
+    const helper = navigation.managerTranslations.translationHelper;
+    
+    
+    // Common labels
+    label_entry             = helper.getSimpleTranslation('common.labels.entry') || label_entry;
+    label_entries           = helper.getSimpleTranslation('common.labels.entries') || label_entries;
+    
+    
+    
     this.getHtml = function(){
+        let label_valid_name    = 'Please enter a valid name.'      
+        let label_no_entries    = DEFAULT_LABEL_NO_ENTRIES;
+        
+        let label_new_staff_name= 'New Staff Name';
+        let label_done_by_me    = 'Done By Me';
+        let label_need_to_select= 'Need to select if not done by you.';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        // Common labels
+        label_valid_name        = helper.getSimpleTranslation('common.labels.valid_name') || label_valid_name;
+        label_no_entries        = helper.getSimpleTranslation('common.labels.no_entries') || label_no_entries;
+        
+        label_new_staff_name    = helper.getSimpleTranslation('common_app.labels.new_staff_name') || label_new_staff_name;
+        label_done_by_me        = helper.getSimpleTranslation('common_app.labels.done_by_me') || label_done_by_me;
+        label_need_to_select    = helper.getSimpleTranslation('common_app.labels.need_to_select') || label_need_to_select;
         
         
         let html_add_new = '';
@@ -108,7 +143,7 @@ export function ComponentStaffFormGroup(input_settings){
                 <input type="checkbox" id="${elemIdChkDoneByMe}">
                 <label for="${elemIdChkDoneByMe}" class="checkbox-label">
                     <i class="fas fa-user-check checkbox-icon"></i>
-                    Done by Me
+                    ${label_done_by_me}
                 </label>
             </div>
             `;
@@ -134,11 +169,11 @@ export function ComponentStaffFormGroup(input_settings){
                 
                 <div class="form-group">
                     <label for="${elemIdText}" class="form-label">
-                        Staff Name ${s_required_mark}
+                        ${label_new_staff_name} ${s_required_mark}
                         <span id="${elemIdCharCounter}" class="char-counter">0/${MAXCHAR_STAFF_NAME}</span>
                     </label>
                     <input  type="text" class="form-control" id="${elemIdText}" maxlength="${MAXCHAR_STAFF_NAME}" ${s_required}>
-                    <div class="invalid-feedback" id="${elemIdTextInv}">Please enter a valid name. </div>
+                    <div class="invalid-feedback" id="${elemIdTextInv}">${label_valid_name}</div>
                     <div class="form-text"></div>
                 </div>
                 
@@ -155,13 +190,13 @@ export function ComponentStaffFormGroup(input_settings){
             
             <div class="input-group" id="${elemIdSelectGroup}">
                 <select class="form-select" id="${elemIdSelect}">
-                    <option value="-1" selected disabled>No Entries</option>
+                    <option value="-1" selected disabled>${label_no_entries}</option>
                 </select>
                 ${html_add_new}
             </div>
             
             <div class="invalid-feedback">
-                Need to select if not done by you.
+                ${label_need_to_select}
             </div>
             
             ${html_done_by_me}
@@ -387,10 +422,10 @@ export function ComponentStaffFormGroup(input_settings){
     
     this.setEntryCount = function(data){
         if (data.length == 1){
-            elemEntryCount.textContent = ` (${data.length} Entry)`;
+            elemEntryCount.textContent = ` (1 ${label_entry})`;
         }
         else{
-            elemEntryCount.textContent = ` (${data.length} Entries)`;
+            elemEntryCount.textContent = ` (${data.length} ${label_entries})`;
         }
     }
     

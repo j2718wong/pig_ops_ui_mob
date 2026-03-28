@@ -49,35 +49,14 @@ export function UiSelectWithEntryCount(input_settings){
     let label_entries           = DEFAULT_LABEL_ENTRIES;
     
     
-    const translations = window.SUPERPIG_TRANSLATIONS;
-
-    if (translations){
-        if (translations.common && translations.common.labels){
-            const labels_common = translations.common.labels;
-            
-            if (labels_common){
-                if (labels_common.please_select){
-                    label_please_select = labels_common.please_select;
-                }
-                
-                if (labels_common.select_no_entries){
-                    label_no_entries = labels_common.select_no_entries;
-                } 
-                
-                if (labels_common.entry){
-                    label_entry = labels_common.entry;
-                }
-                
-                if (labels_common.entries){
-                    label_entries = labels_common.entries;
-                } 
-
-            }
-            
-        }
-    }
+    const helper = navigation.managerTranslations.translationHelper;
     
     
+    // Common labels
+    label_please_select     = helper.getSimpleTranslation('common.labels.please_select') || label_please_select;
+    label_no_entries        = helper.getSimpleTranslation('common.labels.select_no_entries') || label_no_entries;
+    label_entry             = helper.getSimpleTranslation('common.labels.entry') || label_entry;
+    label_entries           = helper.getSimpleTranslation('common.labels.entries') || label_entries;
     
     
     this.getHtml = function(){
