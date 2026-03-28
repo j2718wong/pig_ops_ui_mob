@@ -654,7 +654,7 @@ ${html_style}
         
         const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
         
-        // This is only shown in Gesta tab
+        // This is only shown in Gesta, Lacta and Wean tabs
         elemDateToday.textContent = s_dt_current;
         elemDateTodayShow.style.display = 'none';
         
@@ -1144,7 +1144,7 @@ ${html_style}
             }
             
             case 'lactating':{
-                elemDateTodayShow.style.display = 'none';
+                elemDateTodayShow.style.display = 'block';
 
                 
                 tableSowAll.hide();
@@ -1165,7 +1165,7 @@ ${html_style}
             }
             
             case 'weaning':{
-                elemDateTodayShow.style.display = 'none';
+                elemDateTodayShow.style.display = 'block';
 
                 tableSowAll.hide();
                 tableSowGesta.hide();
