@@ -27,6 +27,8 @@ export function PigFarm(_navigation){
     this.accountLists           = new AccountLists(_navigation);
     
     this.dataVerNum             = {
+        summary_report_id:      0,   // odd one out; will point to latest farm summary report
+        
         sow:                    0,
         boar:                   0,
         pig_prod:               0,
@@ -141,13 +143,15 @@ export function PigFarm(_navigation){
             const callback_set_pig_farm_data_ver_num = function(data){
                 
                 thisObj.dataVerNum = {
-                    sow:                    data[0],
-                    boar:                   data[1],
-                    pig_prod:               data[2],
-                    staff:                  data[3],
-                    feed_buy:               data[4],
-                    feed_balance:           data[5],
-                    not_pregnant:           data[6]
+                    summary_report_id:      data[0],
+                    
+                    sow:                    data[1],
+                    boar:                   data[2],
+                    pig_prod:               data[3],
+                    staff:                  data[4],
+                    feed_buy:               data[5],
+                    feed_balance:           data[6],
+                    not_pregnant:           data[7]
                 };
                 
                 

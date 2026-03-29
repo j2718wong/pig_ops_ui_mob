@@ -835,16 +835,20 @@ export function ManagerPigProd(input_settings){
         
         
         const callback_success_ver_num = function(data){
-            const data_ver_num_sow          = data[0];
-            const data_ver_num_boar         = data[1];
-            const data_ver_num_pig_prod     = data[2];
-            const data_ver_num_staff        = data[3];
-            const data_ver_num_feed_buy     = data[4];
-            const data_ver_num_feed_balance = data[5];
-            const data_ver_num_not_pregnant = data[6];
+            const summary_report_id         = data[0];
+            
+            const data_ver_num_sow          = data[1];
+            const data_ver_num_boar         = data[2];
+            const data_ver_num_pig_prod     = data[3];
+            const data_ver_num_staff        = data[4];
+            const data_ver_num_feed_buy     = data[5];
+            const data_ver_num_feed_balance = data[6];
+            const data_ver_num_not_pregnant = data[7];
             
             /*
             parentObj.dataVerNum = {
+                summary_report_id:      0,   // odd one out; will point to latest farm summary report
+             
                 sow:                    data_ver_num_sow,
                 boar:                   data_ver_num_boar,
                 pig_prod:               data_ver_num_pig_prod,
@@ -854,6 +858,13 @@ export function ManagerPigProd(input_settings){
                 not_pregnant:           data_ver_num_not_pregnant
             };
             */
+            
+            
+            if (parentObj.dataVerNum.summary_report_id != summary_report_id){
+                // TODO;
+                // update summary report table
+                // update once click report button to point to the pdf
+            }
             
             
             /**
