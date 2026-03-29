@@ -657,9 +657,49 @@ export function Navigation(){
     }
     
     
+    // GPS Test Function - Add this to your page
+    this.testGPS = function()  {
+        // Check if browser supports GPS
+        if (navigator.geolocation) {
+            console.log('GPS is supported');
+            
+            // Request location
+            navigator.geolocation.getCurrentPosition(
+                // Success function
+                function(position) {
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    var accuracy = position.coords.accuracy;
+                    
+                    console.log('GPS Success!');
+                    console.log('Latitude: ' + lat);
+                    console.log('Longitude: ' + lng);
+                    console.log('Accuracy: ' + accuracy + ' meters');
+                    
+                },
+                
+                // Error function
+                function(error) {
+                    console.log('GPS Error: ' + error.message);
+                },
+                
+                // Options
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000
+                }
+            );
+        } else {
+            console.log('GPS not supported in this browser');
+        }
+    }
+
+    
     
     // This is first request if there is a token saved in client browser
     this.requestPigFarmData = async function(bearer_token){
+        thisObj.testGPS();
+        
         const base_url = window.location.origin;
         let url = `${base_url}/pig_farm/data`;
         
