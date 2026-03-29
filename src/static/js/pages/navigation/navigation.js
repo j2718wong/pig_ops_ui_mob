@@ -89,6 +89,8 @@ import {PageAllFeedBalanceList}     from '../feeds/feed_balance/page_all_feed_ba
 import {PageAllFeedBalanceAddEdit}  from '../feeds/feed_balance/page_all_feed_balance_add_edit.js';
 import {PageProdPigDeadList}        from '../production/pig_dead/page_prod_pig_dead_list.js';
 import {PagePigDeadAddEdit}         from '../production/pig_dead/page_pig_dead_add_edit.js';
+import {PageSummaryReportList}      from '../reports/page_summary_report_list.js';
+
 
 import {PageBoarExternalMateList}   from '../sow_boar/boar_external_mate/page_boar_external_mate_list.js'
 import {PageBoarExtMateAddEdit}     from '../sow_boar/boar_external_mate/page_boar_ext_mate_add_edit.js'
@@ -547,7 +549,12 @@ export function Navigation(){
         uniqueKey:              'pig-dead-add-edit'
     });
 
-
+    
+    this.pageSummaryReportList = new PageSummaryReportList({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SUMMARY_REPORT_LIST),
+        uniqueKey:              'summary-report-list'
+    });
     
 
 
@@ -698,7 +705,7 @@ export function Navigation(){
     
     // This is first request if there is a token saved in client browser
     this.requestPigFarmData = async function(bearer_token){
-        thisObj.testGPS();
+        //thisObj.testGPS();
         
         const base_url = window.location.origin;
         let url = `${base_url}/pig_farm/data`;
@@ -907,6 +914,8 @@ export function Navigation(){
         
         this.pagePigDeadList.init();
         this.pagePigDeadAddEdit.init();
+        
+        this.pageSummaryReportList.init();
         
         
         this.pageProdSalesList.init();

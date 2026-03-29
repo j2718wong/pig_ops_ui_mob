@@ -4,31 +4,30 @@
 
 'use strict';
 
-import {PageTableBasic}         from '../../common/page_table_basic.js';
-import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
+import {PageTableBasic}         from '../common/page_table_basic.js';
+
 
 
 import {APPLICATION,
         PAGE_ID,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
-        PROD_STATUS}            from '../../../constants.js';
+        PROD_STATUS}            from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT,
-        sortList}               from '../../../utils.js';
+        sortList}               from '../../utils.js';
 
-import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
-
-import {getSowBoarReference}    from '../../common/common_app.js';
+import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
 
 
-export function PageProdPigDeadList(input_settings){
+
+export function PageSummaryReportList(input_settings){
     PageTableBasic.call(this);
     
-    const TAG                   = 'PageProdPigDeadList';
+    const TAG                   = 'PageSummaryReportList';
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -61,15 +60,12 @@ export function PageProdPigDeadList(input_settings){
     let elemTableBody           = null;
     
     
-    let dataPigDeadList     = null;
+    let dataSummaryReportList   = null;
 
-    
-    let searchIncludeInsem      = true;
     
     let dtCurrentDate           = null;
 
 
-    let farmPage                = new PageViewPigFarmPage();
 
     
     this.init = function(){
@@ -92,14 +88,15 @@ export function PageProdPigDeadList(input_settings){
     
     
     this.render = function(){
-        let label_page_title    = 'Dead Pigs';
+        let label_page_title          = 'Summary Report';
         
         
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations3') || label_page_title;
-        
+        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations4') || label_page_title;
+      
+            
         
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
@@ -159,12 +156,12 @@ export function PageProdPigDeadList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavBoarExternalMate();
+            navigation.managerNavLinks.onClickNavPigDead();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavSummaryReports();
+            navigation.managerNavLinks.onClickNavFeedBalance();
         };
         
         
@@ -182,20 +179,6 @@ export function PageProdPigDeadList(input_settings){
     
     
     
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        /*
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }*/
-    }
-    
     
     this.renderPage = function(page_data){
         thisObj.show();
@@ -211,15 +194,29 @@ export function PageProdPigDeadList(input_settings){
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
-        const callback_success = function(data){
-            dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
-            thisObj.renderTable(dataPigDeadList);
-        };
+        // Request data if not yet requested
+        dataSummaryReportList = navigation.pigFarm.dataSummaryReportList;
+        if (dataSummaryReportList == null){
+            
+            const callback_success = function(data){
+                dataSummaryReportList = navigation.pigFarm.dataSummaryReportList;
+                
+                thisObj.setDataEntryList(dataSummaryReportList);
+                thisObj.renderTable(dataSummaryReportList);
+            };
+            
+            
+            let elem_show_error = thisObj.elemServerErrorMsg;
+       
+            // Request SummaryReportList
+            navigation.pigFarm.requestDataPigFarmSummaryReportList(
+                callback_success, elem_show_error);
 
-   
-        // Request ProdPigDead List
-        navigation.pigFarm.managerPigProd.requestProdPigDeadList(
-            callback_success, null);
+        }
+        else{
+            thisObj.setDataEntryList(dataSummaryReportList);
+            thisObj.renderTable(dataSummaryReportList);
+        }
         
     }
     
@@ -243,25 +240,35 @@ export function PageProdPigDeadList(input_settings){
         const html_style = this._writeInlineStyle();
         
         
+        let label_date          = 'Date';
+        let label_report        = 'Report';
+        let label_notes         = 'Notes';
+        
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_date              = helper.getSimpleTranslation('common_app.labels.date') || label_date;
+        label_report            = helper.getSimpleTranslation('common_app.labels.report') || label_report;
+        label_notes             = helper.getSimpleTranslation('common_app.labels.notes') || label_notes;
+        
+
         const html = `
         ${html_style}
         
         <table class="data-table table-prod-hist" id="">
             <colgroup>
-                <col style="width: 33%;">
                 <col style="width: 27%;">
                 <col style="width: 40%;">
-               
+                <col style="width: 33%;">
             </colgroup>
 
             <thead>
                 <tr>
-                    <th>
-                        <div>PID, Sow</div> 
-                        <div><span class="love-icon">❤️</span> Boar</div>
-                    </th>
-                    <th>Date Dead</th>
-                    <th>Description</th>
+                    <th>${label_date}</th>
+                    <th>${label_report}</th>
+                    <th>${label_notes}</th>
                 </tr>
             </thead>
             
@@ -382,155 +389,13 @@ export function PageProdPigDeadList(input_settings){
     }
     
     
-    
-    
-    
-    
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
-    }
-    
+
     
     this.searchEntries = function(key){
-        let data_pig_prod_list = dataPigDeadList;
-        
-        
-        
-        const filtered = [];
-        for (const cur_entry of data_pig_prod_list){
-            
-            let u_sow_name          = null;
-            let u_sow_number        = null;
-            
-            let u_boar_name         = null;
-            let u_boar_number       = null;
-            
-            let u_semen_supplier    = null;
-            let u_semen_name        = null;
-            
-            
-            let s_pid   = `${cur_entry.pig_production.farm_prod_id}`;
-            
-            if (cur_entry.sow.name){
-                u_sow_name = cur_entry.sow.name.toUpperCase();
-            }
-            
-            if (cur_entry.sow.number){
-                u_sow_number = cur_entry.sow.number.toUpperCase();
-            }
-            
-            
-            let insemination = cur_entry.insemination;
-            
-            switch (insemination.insem_type){
-                case 'B': {
-                    if (insemination.boar.name){
-                        u_boar_name = insemination.boar.name.toUpperCase();
-                    }
-                    
-                    if (insemination.boar.number){
-                        u_boar_number = insemination.boar.number.toUpperCase();
-                    }
-                    
-                    break;
-                }
-                
-                case 'AI_X': {
-                    u_semen_supplier = insemination.ai.semen_supplier.name.toUpperCase();
-                    u_semen_name    = insemination.ai.semen_supplier.semen.name.toUpperCase();
-                    
-                    break;
-                }
-                
-                case 'AI_N': {
-                    if (insemination.ai.internal_boar.name){
-                        u_boar_name = insemination.ai.internal_boar.name.toUpperCase();
-                    }
-                    
-                    if (insemination.ai.internal_boar.number){
-                        u_boar_number = insemination.ai.internal_boar.number.toUpperCase();
-                    }
-                    
-                    break;
-                }
-            }
-            
-            
-            if (s_pid.startsWith(key)){
-                filtered.push(cur_entry);
-                continue;
-            }
-            
-            
-            if (u_sow_name){
-                if (u_sow_name.startsWith(key)){
-                    filtered.push(cur_entry);
-                    continue;
-                }
-            }
-            
-            if (u_sow_number){
-                if (u_sow_name.startsWith(key)){
-                    filtered.push(cur_entry);
-                    continue;
-                }
-            }
-            
-            
-            if (searchIncludeInsem){
-                if (u_boar_name){
-                    if (u_boar_name.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-                
-                if (u_boar_number){
-                    if (u_boar_number.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-                
-                if (u_semen_supplier){
-                    if (u_semen_supplier.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-            
-                if (u_semen_name){
-                    if (u_semen_name.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-            }
-            
-        } 
-        
-        
-        return filtered;
     }
     
     
-    this.getDataPigProd = function(pid){
-        // Most functions with getData*** always use entry_hid as 
-        // input parameter. The DataPigProd will use pid instead
-        // as this is highly visible by in the page.
-        for (const cur_entry of dataPigProdList){
-            if(cur_entry.pig_production.farm_prod_id == pid){return cur_entry;}
-        }
-        return null;
-    }
-    
+
     
     this.onClickAddEntry = function(){
         // Show Container
@@ -552,7 +417,7 @@ export function PageProdPigDeadList(input_settings){
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         }
-        navigation.pagePigDeadAddEdit.show(options);
+        navigation.pageReportSummaryAddEdit.show(options);
     }
     
     

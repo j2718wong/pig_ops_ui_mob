@@ -184,17 +184,28 @@ export function PageProdHistoryList(input_settings){
 
     
     this.render = function(){
+        let label_sales_list    = 'Prod Sales List';
+        let label_history_list  = 'Prod History List';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_sales_list        = helper.getSimpleTranslation('navigation.nav_links.Financials1') || label_sales_list;
+        label_history_list      = helper.getSimpleTranslation('navigation.nav_links.Production4') || label_history_list;
+        
+        
         const settings_nav = {
            uniqueKey:           settings.uniqueKey,
            elemDivContainer:    elemDivContainer,
-           pageTitle:           'User List'
+           pageTitle:           null
         };
         
         if (settings.isProdSalesHistory){
-            settings_nav.pageTitle = 'Prod Sales List'; 
+            settings_nav.pageTitle = label_sales_list; 
         }
         else{
-            settings_nav.pageTitle = 'Prod History List';
+            settings_nav.pageTitle = label_history_list;
         }
         
         
@@ -222,36 +233,6 @@ export function PageProdHistoryList(input_settings){
         elemIdTableCurPage      = `${settings.uniqueKey}-table-cur-page`;
         elemIdTableTotalPages   = `${settings.uniqueKey}-table-total-pages`;
         elemIdTableNextPage     = `${settings.uniqueKey}-table-next-page`;
-        
-        
-        let page_title          = '';
-        
-        const translations      = navigation.getTranslations();
-        
-        let page_title_sales    = 'Prod Sales List';
-        let page_title_history  = 'Prod History List';
-        
-        if (translations){
-            if (translations.navigation && translations.navigation.nav_links){
-                const nav_links = translations.navigation.nav_links;
-                
-                if (nav_links) {
-                    if(nav_links.Financials1) {
-                        page_title_sales = nav_links.Financials1;}
-                        
-                    if(nav_links.Production4) {
-                        page_title_history = nav_links.Production4;}
-                    
-                }
-            }
-        }
-        
-        if (settings.isProdSalesHistory){
-            page_title          = page_title_sales;
-        }
-        else{
-            page_title          = page_title_history;
-        }
         
         
         const html_nav          = componentNavLeftRight.getHtml();

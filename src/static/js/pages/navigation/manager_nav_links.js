@@ -54,6 +54,7 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavOperations1       = null;
     let elemDesktopNavOperations2       = null;
     let elemDesktopNavOperations3       = null;
+    let elemDesktopNavOperations4       = null;
                                         
                                         
     let elemDesktopNavFinancials1       = null;
@@ -99,6 +100,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavOperations1        = null;
     let elemMobileNavOperations2        = null;
     let elemMobileNavOperations3        = null;
+    let elemMobileNavOperations4        = null;
                                         
                                         
     let elemMobileNavFinancials1        = null;
@@ -152,6 +154,7 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavLabelOperations1      = null;
     let elemDesktopNavLabelOperations2      = null;
     let elemDesktopNavLabelOperations3      = null;
+    let elemDesktopNavLabelOperations4      = null;
     
     let elemDesktopNavLabelFinancials1      = null;
     let elemDesktopNavLabelFinancials2      = null;
@@ -199,6 +202,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavLabelOperations1       = null;
     let elemMobileNavLabelOperations2       = null;
     let elemMobileNavLabelOperations3       = null;
+    let elemMobileNavLabelOperations4       = null;
     
     let elemMobileNavLabelFinancials1       = null;
     let elemMobileNavLabelFinancials2       = null;
@@ -283,7 +287,8 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavOperations1       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-1');
         elemDesktopNavOperations2       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-2');
         elemDesktopNavOperations3       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-3');
-    
+        elemDesktopNavOperations4       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-4');
+        
     
         elemDesktopNavFinancials1       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-1');  
         elemDesktopNavFinancials2       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-2');  
@@ -327,6 +332,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavOperations1        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-1');
         elemMobileNavOperations2        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-2');
         elemMobileNavOperations3        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-3');
+        elemMobileNavOperations4        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-4');
         
         
         elemMobileNavFinancials1        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-1');  
@@ -387,6 +393,7 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavLabelOperations1      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-1 .nav-label');
         elemDesktopNavLabelOperations2      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-2 .nav-label');
         elemDesktopNavLabelOperations3      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-3 .nav-label');
+        elemDesktopNavLabelOperations4      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-4 .nav-label');
         
         // Desktop submenu labels - Financials
         elemDesktopNavLabelFinancials1      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-1 .nav-label');
@@ -440,6 +447,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavLabelOperations1       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-1 .nav-label');
         elemMobileNavLabelOperations2       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-2 .nav-label');
         elemMobileNavLabelOperations3       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-3 .nav-label');
+        elemMobileNavLabelOperations4       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-4 .nav-label');
         
         // Mobile submenu labels - Financials
         elemMobileNavLabelFinancials1       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-1 .nav-label');
@@ -545,6 +553,9 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavPigDead(false);
         });
 
+        elemDesktopNavOperations4.addEventListener('click', function() {
+           thisObj.onClickNavSummaryReports(false);
+        });
 
 
 
@@ -682,6 +693,9 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavPigDead(true);
         }); 
         
+        elemMobileNavOperations4.addEventListener('click', function() {
+            thisObj.onClickNavSummaryReports(true);
+        });
 
 
 
@@ -857,10 +871,13 @@ export function ManagerNavLinks(_navigation) {
             elemDesktopNavLabelOperations1.textContent = translated_nav_links.Operations1 || "Feed Balance";
         }
         if (elemDesktopNavLabelOperations2) {
-            elemDesktopNavLabelOperations2.textContent = translated_nav_links.Operations2 || "Pig Dead";
+            elemDesktopNavLabelOperations2.textContent = translated_nav_links.Operations2 || "Boar External Mate";
         }
         if (elemDesktopNavLabelOperations3) {
-            elemDesktopNavLabelOperations3.textContent = translated_nav_links.Operations3 || "Boar External Mate";
+            elemDesktopNavLabelOperations3.textContent = translated_nav_links.Operations3 || "Pig Dead";
+        }
+        if (elemDesktopNavLabelOperations4) {
+            elemDesktopNavLabelOperations4.textContent = translated_nav_links.Operations4 || "Reports";
         }
         
         // Desktop financials submenu labels
@@ -984,10 +1001,13 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelOperations1.textContent = translated_nav_links.Operations1 || "Feed Balance";
         }
         if (elemMobileNavLabelOperations2) {
-            elemMobileNavLabelOperations2.textContent = translated_nav_links.Operations2 || "Pig Dead";
+            elemMobileNavLabelOperations2.textContent = translated_nav_links.Operations2 || "Boar External Mate";
         }
         if (elemMobileNavLabelOperations3) {
-            elemMobileNavLabelOperations3.textContent = translated_nav_links.Operations3 || "Boar External Mate";
+            elemMobileNavLabelOperations3.textContent = translated_nav_links.Operations3 || "Pig Dead";
+        }
+        if (elemMobileNavLabelOperations4) {
+            elemMobileNavLabelOperations4.textContent = translated_nav_links.Operations4 || "Reports";
         }
         
         // Mobile financials submenu labels
@@ -1232,10 +1252,12 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
-    
         
-    this.onClickNavReports = function(is_mobile){
-        console.log('onClickNavReports not yet implemented; is_mobile=' + is_mobile);
+    this.onClickNavSummaryReports = function(is_mobile){
+        const next_page = navigation.getPageContainer(PAGE_ID.SUMMARY_REPORT_LIST);
+    
+        navigation.showThisPage(next_page);
+        navigation.pageSummaryReportList.show();
     }
         
         

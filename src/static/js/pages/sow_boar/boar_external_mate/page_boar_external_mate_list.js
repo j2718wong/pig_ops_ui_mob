@@ -92,26 +92,19 @@ export function PageBoarExternalMateList(input_settings){
     
     
     this.render = function(){
-        const translations      = navigation.getTranslations();
+        let label_page_title    = 'Boar External Mates';
         
-        let page_title          = 'Boar External Mates';
         
-        if (translations){
-            if (translations.navigation && translations.navigation.nav_links){
-                const nav_links = translations.navigation.nav_links;
-                
-                if (nav_links) {
-                    if(nav_links.Operations2)   {
-                        page_title = nav_links.Operations2;}
-                }
-            }
-        }   
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations2') || label_page_title;
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
            elemDivContainer:    elemDivContainer,
-           pageTitle:           page_title
+           pageTitle:           label_page_title
         });
         
         
@@ -248,7 +241,6 @@ export function PageBoarExternalMateList(input_settings){
         
         const html_style = this._writeInlineStyle();
         
-        const translations      = navigation.getTranslations();
         
         let label_boar          = 'Boar';
         let label_sow_owner     = 'Sow Owner';
@@ -256,40 +248,14 @@ export function PageBoarExternalMateList(input_settings){
         let label_date_expected = 'Date Expected';
         
         
-        
-        if (translations){
-            if (translations.common_app && translations.common_app.labels){
-                const labels_common = translations.common_app.labels;
-                
-                if (labels_common) {
-                    if(labels_common.boar)   {label_boar = labels_common.boar;}
-                }
-            }
-            
-            
-            
-            if (translations.page_boar_external_mates && 
-                translations.page_boar_external_mates.labels){
-                
-                const labels_list = translations.page_boar_external_mates.labels;
-                
-                if (labels_list) {
-                    if(labels_list.sow_owner) {
-                        label_sow_owner = labels_list.sow_owner;
-                    }
-                    
-                    if(labels_list.date_mate) {
-                        label_date_mate = labels_list.date_mate;
-                    }
-                    
-                    if(labels_list.date_expected) {
-                        label_date_expected = labels_list.date_expected;
-                    }
-                }
-            }
-        }
+        const helper = navigation.managerTranslations.translationHelper;
         
         
+        label_boar              = helper.getSimpleTranslation('common_app.labels.boar') || label_boar;
+        
+        label_sow_owner         = helper.getSimpleTranslation('page_boar_external_mates.labels.sow_owner') || label_sow_owner;
+        label_date_mate         = helper.getSimpleTranslation('page_boar_external_mates.labels.date_mate') || label_date_mate;
+        label_date_expected     = helper.getSimpleTranslation('page_boar_external_mates.labels.date_expected') || label_date_expected;
         
         
         const html = `

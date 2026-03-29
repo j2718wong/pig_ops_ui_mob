@@ -128,20 +128,24 @@ const PAGE_ID = {
     PIG_DEAD_LIST:          54,
     PIG_DEAD_ADD_EDIT:      55,
     
-    
-    
-    FARM_FEED_BUY_LIST:     57,
-    FARM_FEED_BUY_ADD_EDIT: 58,
-    FARM_FEED_BUY_ITEM_ADD_EDIT: 59,
-    
-    
-    ACC_OPS_SETTINGS_EDIT:  60,
-    ACC_PIG_OPS_LIST:       61,
-    ACC_PIG_OPS_ADD_EDIT:   62,
+    SUMMARY_REPORT_LIST:    56,
+    SUMMARY_REPORT_ADD_EDIT:57,
     
     
     
-    SUPPLIER_ADD_EDIT:      70,
+    
+    FARM_FEED_BUY_LIST:     70,
+    FARM_FEED_BUY_ADD_EDIT: 71,
+    FARM_FEED_BUY_ITEM_ADD_EDIT: 72,
+    
+    
+    ACC_OPS_SETTINGS_EDIT:  80,
+    ACC_PIG_OPS_LIST:       81,
+    ACC_PIG_OPS_ADD_EDIT:   82,
+    
+    
+    
+    SUPPLIER_ADD_EDIT:      90,
     
     
     USER_LIST:              100,
@@ -303,6 +307,12 @@ const DATA_VER_NUM_INDEX_PIG_FARM = {
 
 
 
+const REPORT_TYPE = {
+    PIG_FARM_SUMMARY:       1    
+};
+
+
+
 const REQUEST_ERROR_NUM ={
     ERROR_DATABASE_ERROR:                       1,
     ERROR_SERVER_ERROR:                         2,  
@@ -341,6 +351,8 @@ export {
     HARVEST_TYPE,
     
     DATA_VER_NUM_INDEX_PIG_FARM,
+    
+    REPORT_TYPE,
     
     REQUEST_ERROR_NUM
 };
