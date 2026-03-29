@@ -565,11 +565,6 @@ export function PageProdFatteningEntry(input_settings){
                 break;
             }
             
-            case elemIdTabFatPigDead:{
-                curTabFat = thisObj.TAB_FAT_PIG_DEAD;
-                break;
-            }
-            
             
             
             case elemIdTabFatNotes:{
