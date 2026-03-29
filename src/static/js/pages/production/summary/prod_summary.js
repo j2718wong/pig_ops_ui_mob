@@ -118,6 +118,20 @@ export function ProdSummary(input_settings){
     let dtCurrentDate           = null;
     
     
+    let label_days_since_birth          = 'Days Since Birth';
+    let label_days_since_wean           = 'Days Since Wean';
+    let label_days_birth_to_last_harvest= 'Days Birth to Last Harvest';
+    
+    
+    const helper = navigation.managerTranslations.translationHelper;
+            
+    
+    label_days_since_birth          = helper.getSimpleTranslation('prod_summary.labels.days_since_birth') || label_days_since_birth;
+    label_days_since_wean           = helper.getSimpleTranslation('prod_summary.labels.days_since_wean') || label_days_since_wean;
+    label_days_birth_to_last_harvest= helper.getSimpleTranslation('prod_summary.labels.days_birth_to_last_harvest') || label_days_birth_to_last_harvest;
+        
+    
+    
     const moneyFormatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 1,
         maximumFractionDigits: 1
@@ -277,20 +291,23 @@ export function ProdSummary(input_settings){
             curDataEntry, null, acc_settings_ops);
     
 
-    
+        
+        // Update dynamic num_days label
         let numdays_label = '';
         
         const prod_status_id = curDataEntry.pig_production.prod_status_id; 
         if (prod_status_id == PROD_STATUS.HARVESTED || prod_status_id == PROD_STATUS.CLOSED){
-            elemTdNumDaysLabel.innerHTML  = 'Days Birth to Last Harvest';
+            elemTdNumDaysLabel.innerHTML  = label_days_birth_to_last_harvest;
+            
+            // TODO needs to be computed
         }
         else {
             if (curDataEntry.birth.date_actual){
-                elemTdNumDaysLabel.innerHTML  = 'Days Since Birth';  
+                elemTdNumDaysLabel.innerHTML  = label_days_since_birth;  
                 elemTdNumDays.innerHTML = target_harvest.days_since_birth;  
             }
             else{
-                elemTdNumDaysLabel.innerHTML  = 'Days Since Wean';  
+                elemTdNumDaysLabel.innerHTML  = label_days_since_wean;  
                 elemTdNumDays.innerHTML = target_harvest.days_since_wean;
             }
         }
@@ -699,7 +716,7 @@ export function ProdSummary(input_settings){
         let label_pig_count_birth       = 'Pig Count at Birth';
         let label_pig_count_wean        = 'Pig Count at Wean';
         let label_pig_count_latest      = 'Pig Count Latest';
-        let label_days_since_birth      = 'Days Since Birth';
+        
         let label_target_harvest        = 'Target Harvest';
         let label_pigs_harvested        = 'Total Pigs Harvested';
         let label_pigs_sold             = 'Total Pigs Sold';
@@ -712,13 +729,12 @@ export function ProdSummary(input_settings){
         
         
         const helper = navigation.managerTranslations.translationHelper;
-
             
         
         label_pig_count_birth           = helper.getSimpleTranslation('prod_summary.labels.pig_count_birth') || label_pig_count_birth;
         label_pig_count_wean            = helper.getSimpleTranslation('prod_summary.labels.pig_count_wean') || label_pig_count_wean;
         label_pig_count_latest          = helper.getSimpleTranslation('prod_summary.labels.pig_count_latest') || label_pig_count_latest;
-        label_days_since_birth          = helper.getSimpleTranslation('prod_summary.labels.days_since_birth') || label_days_since_birth;
+        
         label_target_harvest            = helper.getSimpleTranslation('prod_summary.labels.target_harvest') || label_target_harvest;
         label_pigs_harvested            = helper.getSimpleTranslation('prod_summary.labels.pigs_harvested') || label_pigs_harvested;
         label_pigs_sold                 = helper.getSimpleTranslation('prod_summary.labels.pigs_sold') || label_pigs_sold;
@@ -778,8 +794,8 @@ export function ProdSummary(input_settings){
         
         <table class="data-table">
             <colgroup>
-                <col style="width: 50%;">
-                <col style="width: 50%;">
+                <col style="width: 65%;">
+                <col style="width: 35%;">
             </colgroup>
             
             
