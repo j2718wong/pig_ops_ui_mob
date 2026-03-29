@@ -113,10 +113,6 @@ export function ProdSummary(input_settings){
 
 
 
-    //let textTranslation         = new TextTranslation();
-    let curUserLanguageKey      = 'en';
-
-
     let showOptions             = null;
     
     let dtCurrentDate           = null;
@@ -700,24 +696,58 @@ export function ProdSummary(input_settings){
         
         
         
+        let label_pig_count_birth       = 'Pig Count at Birth';
+        let label_pig_count_wean        = 'Pig Count at Wean';
+        let label_pig_count_latest      = 'Pig Count Latest';
+        let label_days_since_birth      = 'Days Since Birth';
+        let label_target_harvest        = 'Target Harvest';
+        let label_pigs_harvested        = 'Total Pigs Harvested';
+        let label_pigs_sold             = 'Total Pigs Sold';
+        let label_gilt_boar_harvested   = 'Gilt, Boar Harvested';
+        let label_gilt_boar_sold        = 'Gilt, Boar Sold';
+        let label_feeds_cost            = 'Feeds Cost';
+        let label_total_sales           = 'Total Sales';
+        let label_gross_profit          = 'Gross Profit';
+        let label_gross_profit_pp       = 'Gross Profit Per Pig'
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+
+            
+        
+        label_pig_count_birth           = helper.getSimpleTranslation('prod_summary.labels.pig_count_birth') || label_pig_count_birth;
+        label_pig_count_wean            = helper.getSimpleTranslation('prod_summary.labels.pig_count_wean') || label_pig_count_wean;
+        label_pig_count_latest          = helper.getSimpleTranslation('prod_summary.labels.pig_count_latest') || label_pig_count_latest;
+        label_days_since_birth          = helper.getSimpleTranslation('prod_summary.labels.days_since_birth') || label_days_since_birth;
+        label_target_harvest            = helper.getSimpleTranslation('prod_summary.labels.target_harvest') || label_target_harvest;
+        label_pigs_harvested            = helper.getSimpleTranslation('prod_summary.labels.pigs_harvested') || label_pigs_harvested;
+        label_pigs_sold                 = helper.getSimpleTranslation('prod_summary.labels.pigs_sold') || label_pigs_sold;
+        label_gilt_boar_harvested       = helper.getSimpleTranslation('prod_summary.labels.gilt_boar_harvested') || label_gilt_boar_harvested;
+        label_gilt_boar_sold            = helper.getSimpleTranslation('prod_summary.labels.gilt_boar_sold') || label_gilt_boar_sold;
+        label_feeds_cost                = helper.getSimpleTranslation('prod_summary.labels.feeds_cost') || label_feeds_cost;
+        label_total_sales               = helper.getSimpleTranslation('prod_summary.labels.total_sales') || label_total_sales;
+        label_gross_profit              = helper.getSimpleTranslation('prod_summary.labels.gross_profit') || label_gross_profit;
+        label_gross_profit_pp           = helper.getSimpleTranslation('prod_summary.labels.gross_profit_pp') || label_gross_profit_pp;
+
+        
         let html_financial = `
                 <tr class="tr-financial">
-                    <td>Feeds Cost, <span class="acc-currency"></span></td>
+                    <td>${label_feeds_cost}, <span class="acc-currency"></span></td>
                     <td id="${elemIdTdFeedsCost}">0.0</td>
                 </tr>
                 
                 <tr class="tr-financial">
-                    <td>Total Sales, <span class="acc-currency"></td>
+                    <td>${label_total_sales}, <span class="acc-currency"></td>
                     <td id="${elemIdTdTotalSales}">0.0</td>
                 </tr>
                 
                 <tr class="tr-financial">
-                    <td>Gross Profit, <span class="acc-currency"></td>
+                    <td>${label_gross_profit}, <span class="acc-currency"></td>
                     <td id="${elemIdTdGrossProfit}">0.0</td>
                 </tr>
                 
                 <tr class="tr-financial">
-                    <td>Gross Profit Per Pig, <span class="acc-currency"></td>
+                    <td>${label_gross_profit_pp}, <span class="acc-currency"></td>
                     <td id="${elemIdTdGrossProfitPP}">0.0</td>
                 </tr>
                 
@@ -755,48 +785,48 @@ export function ProdSummary(input_settings){
             
             <tbody>
                 <tr>
-                    <td>Pig Count at Birth</td>
+                    <td>${label_pig_count_birth}</td>
                     <td id="${elemIdTdPigCountBirth}">15</td>
                 </tr>
                 
                 <tr>
-                    <td>Pig Count at Wean</td>
+                    <td>${label_pig_count_wean}</td>
                     <td id="${elemIdTdPigCountWean}">15</td>
                 </tr>
                 
                 
                 <tr>
-                    <td>Pig Count Latest</td>
+                    <td>${label_pig_count_latest}</td>
                     <td id="${elemIdTdPigCountLatest}">15</td>
                 </tr>
                 
                 <tr>
-                    <td id="${elemIdTdNumDaysLabel}">Days Since Birth</td>
+                    <td id="${elemIdTdNumDaysLabel}">${label_days_since_birth}</td>
                     <td id="${elemIdTdNumDays}">145</td>
                 </tr>
                 
                 <tr>
-                    <td>Target Harvest</td>
+                    <td>${label_target_harvest}</td>
                     <td id="${elemIdTdTargetHarvest}">05 April 2026(150 days)</td>
                 </tr>
                 
                 <tr>
-                    <td>Total Pigs Harvested</td>
+                    <td>${label_pigs_harvested}</td>
                     <td id="${elemIdTdPigsHarvested}">0</td>
                 </tr>
                 
                 <tr>
-                    <td>Total Pigs Sold</td>
+                    <td>${label_pigs_sold}</td>
                     <td id="${elemIdTdPigsSold}">0</td>
                 </tr>
                 
                 <tr>
-                    <td>Gilt, Boar Harvested</td>
+                    <td>${label_gilt_boar_harvested}</td>
                     <td id="${elemIdTdGiltBoarInt}">0</td>
                 </tr>
                 
                 <tr>
-                    <td>Gilt, Boar Sold</td>
+                    <td>${label_gilt_boar_sold}</td>
                     <td id="${elemIdTdGiltBoarSold}">0</td>
                 </tr>
                 
