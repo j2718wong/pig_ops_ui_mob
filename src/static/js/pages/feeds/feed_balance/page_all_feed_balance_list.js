@@ -166,7 +166,7 @@ export function PageAllFeedBalanceList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavPigDead();
+            navigation.managerNavLinks.onClickNavSummaryReports();
         };
         
           
