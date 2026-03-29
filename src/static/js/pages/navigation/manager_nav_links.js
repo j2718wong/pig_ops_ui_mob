@@ -16,6 +16,8 @@ export function ManagerNavLinks(_navigation) {
     const thisObj                   = this;
     const navigation                = _navigation;
     
+    let elemDesktopFarmSummary          = null;
+    let elemMobileFarmSummary           = null;
     
       
     let elemDesktopNavSettings          = null;
@@ -237,7 +239,10 @@ export function ManagerNavLinks(_navigation) {
     
     this._findElements  = function(){
         
+         
         const nav_second_line           = document.querySelector('.nav-second-line');
+        
+        elemDesktopFarmSummary          = nav_second_line.querySelector('#desktop-nav-special-btn-summary');
         
         elemDesktopNavProduction        = nav_second_line.querySelector('#desktop-nav-production');
         elemDesktopNavSowBoarGilt       = nav_second_line.querySelector('#desktop-nav-sow-boar-gilt');
@@ -249,6 +254,8 @@ export function ManagerNavLinks(_navigation) {
                                           
         
         const mobile_nav                = document.querySelector('#mobileNav');
+        
+        elemMobileFarmSummary           = mobile_nav.querySelector('#mobile-nav-special-btn-summary');
                                           
         elemMobileNavSowBoarGilt        = mobile_nav.querySelector('#mobile-nav-sow-boar-gilt');
         elemMobileNavProduction         = mobile_nav.querySelector('#mobile-nav-production');
@@ -469,6 +476,18 @@ export function ManagerNavLinks(_navigation) {
 
     
     this._bindEventListeners = function(){
+        
+        elemDesktopFarmSummary.addEventListener('click', function() {
+            navigation.generateFarmSummaryReport();
+        });
+        
+        
+        elemMobileFarmSummary.addEventListener('click', function() {
+            navigation.generateFarmSummaryReport();
+        });
+
+        
+        
         elemDesktopNavProduction1.addEventListener('click', function() {
             thisObj.onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.GESTATING, true);
         });
