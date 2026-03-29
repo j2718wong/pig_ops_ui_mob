@@ -9,7 +9,10 @@ import {PageProdEntryCommon}    from '../gesta_lacta/page_prod_entry_common.js';
 import {PAGE_ID,
         SOW_STATUS,
         PIG_OPERATION_TYPE,
-        MULTIKEY_OBJ_TYPE}             from '../../../constants.js';
+        MULTIKEY_OBJ_TYPE}      from '../../../constants.js';
+
+
+import {DEFAULT_LABEL_TABS}     from '../default_strings_gesta_lacta.js';
 
 
 import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
@@ -62,22 +65,20 @@ export function PageProdFatteningEntry(input_settings){
     
     this.TAB_FAT_MEDVAC         = 5;
     this.TAB_FAT_HEALTH         = 6;
-    this.TAB_FAT_PIG_DEAD       = 7;
-    this.TAB_FAT_NOTES          = 8;
-    this.TAB_FAT_WEAN           = 9;
-    this.TAB_FAT_BIRTH          = 10;
-    this.TAB_FAT_MATING         = 11;
-    this.TAB_FAT_EXTRA          = 12;
+    this.TAB_FAT_NOTES          = 7;
+    this.TAB_FAT_WEAN           = 8;
+    this.TAB_FAT_BIRTH          = 9;
+    this.TAB_FAT_MATING         = 10;
+    this.TAB_FAT_EXTRA          = 11;
     
     
-    let elemIdTabFatProdSummary = `${settings.uniqueKey}-feed-summary`;
+    let elemIdTabFatProdSummary = `${settings.uniqueKey}-prod-summary`;
     let elemIdTabFatProdFeed    = `${settings.uniqueKey}-prod-feed`;
     let elemIdTabFatFeedBalance = `${settings.uniqueKey}-feed-bal`;
     let elemIdTabFatHarvest     = `${settings.uniqueKey}-harvest`;
     
     let elemIdTabFatMedVac      = `${settings.uniqueKey}-medvac`;
     let elemIdTabFatHealth      = `${settings.uniqueKey}-health`;
-    let elemIdTabFatPigDead     = `${settings.uniqueKey}-pig-dead`;
     let elemIdTabFatNotes       = `${settings.uniqueKey}-notes`;
     let elemIdTabFatWean        = `${settings.uniqueKey}-wean`;
     let elemIdTabFatBirth       = `${settings.uniqueKey}-birth`;
@@ -85,75 +86,110 @@ export function PageProdFatteningEntry(input_settings){
     let elemIdTabFatExtra       = `${settings.uniqueKey}-extra`;
     
     
+    // Keep the labels short on the first 4 tabs
+    let labelTabFatProduction   = DEFAULT_LABEL_TABS.PRODUCTION;
+    let labelTabFatFeeds        = DEFAULT_LABEL_TABS.FEEDS;
+    let labelTabFatFeedBalance  = DEFAULT_LABEL_TABS.FEED_BALANCE;
+    let labelTabFatHarvest      = DEFAULT_LABEL_TABS.HARVEST;
+    
+    
+    // Tabs shown on More modal
+    let labelTabFatMedVac       = DEFAULT_LABEL_TABS.MEDVAC;
+    let labelTabFatHealth       = DEFAULT_LABEL_TABS.HEALTH;
+    let labelTabFatNotes        = DEFAULT_LABEL_TABS.NOTES;
+    let labelTabFatWean         = DEFAULT_LABEL_TABS.WEAN;
+    let labelTabFatBirth        = DEFAULT_LABEL_TABS.BIRTH;
+    let labelTabFatMating       = DEFAULT_LABEL_TABS.MATING;
+    let labelTabFatExtra        = DEFAULT_LABEL_TABS.EXTRA;
+    
+    
+    const helper = navigation.managerTranslations.translationHelper;
+
+    
+    labelTabFatProduction       = helper.getSimpleTranslation('common_app.label_tabs.production') || labelTabFatProduction;
+    labelTabFatFeeds            = helper.getSimpleTranslation('common_app.label_tabs.feeds') || labelTabFatFeeds;
+    labelTabFatFeedBalance      = helper.getSimpleTranslation('common_app.label_tabs.feed_balance') || labelTabFatFeedBalance;
+    labelTabFatHarvest          = helper.getSimpleTranslation('common_app.label_tabs.harvest') || labelTabFatHarvest;
+
+
+    labelTabFatMedVac           = helper.getSimpleTranslation('common_app.label_tabs.medvac') || labelTabFatMedVac;
+    labelTabFatHealth           = helper.getSimpleTranslation('common_app.label_tabs.health') || labelTabFatHealth;
+    labelTabFatNotes            = helper.getSimpleTranslation('common_app.label_tabs.notes') || labelTabFatNotes;
+    labelTabFatWean             = helper.getSimpleTranslation('common_app.label_tabs.wean') || labelTabFatWean;
+    labelTabFatBirth            = helper.getSimpleTranslation('common_app.label_tabs.birth')   || labelTabFatBirth;
+    labelTabFatMating           = helper.getSimpleTranslation('common_app.label_tabs.mating') || labelTabFatMating;
+    labelTabFatExtra            = helper.getSimpleTranslation('common_app.label_tabs.extra') || labelTabFatExtra;
+    
+    
     let tabsProdFattening = [
         {
             data_tab_id:    elemIdTabFatProdSummary,
-            label:          'Prod'
+            label:          labelTabFatProduction
         },
         
         {
             data_tab_id:    elemIdTabFatProdFeed,
-            label:          'Feeds'
+            label:          labelTabFatFeeds
         },
         
         {
             data_tab_id:    elemIdTabFatFeedBalance,
-            label:          'Bal'
+            label:          labelTabFatFeedBalance
         },
         
         {
             data_tab_id:    elemIdTabFatHarvest,
-            label:          'Harvest'
+            label:          labelTabFatHarvest
         },
         
         
         
         {
             data_tab_id:    elemIdTabFatMedVac,
-            label:          'MedVac'
+            label:          labelTabFatMedVac
         },
         
         {
             data_tab_id:    elemIdTabFatHealth,
-            label:          'Health'
-        },
-        
-        {
-            data_tab_id:    elemIdTabFatPigDead,
-            label:          'Pig Dead'
+            label:          labelTabFatHealth
         },
         
         
         {
             data_tab_id:    elemIdTabFatNotes,
-            label:          'Notes'
+            label:          labelTabFatNotes
         },
         
         {
             data_tab_id:    elemIdTabFatWean,
-            label:          'Wean'
+            label:          labelTabFatWean
         },
         
         {
             data_tab_id:    elemIdTabFatBirth,
-            label:          'Birth'
+            label:          labelTabFatBirth
         },
         
         {
             data_tab_id:    elemIdTabFatMating,
-            label:          'Mating'
+            label:          labelTabFatMating
         },
         
         {
             data_tab_id:    elemIdTabFatExtra,
-            label:          'Extra'
+            label:          labelTabFatExtra
         }
     ];
     
     
     if (settings.isProdHistory){
         // Remove the following tabs: Harvest, Extra
-        tabsProdFattening.splice(11, 1); // remove Extra
+        tabsProdFattening.splice(10, 1); // remove Extra
+        
+        // The Harvest Tab is purposely removed and will go to
+        // Prod Sales History as this page contains
+        // money data. The ProdHistory will only show Production data
+        // after Harvest.  
         tabsProdFattening.splice(3, 1); // remove Harvest
     }
     
@@ -173,8 +209,7 @@ export function PageProdFatteningEntry(input_settings){
     let elemTabFatMating        = null;
     let elemTabFatExtra         = null;
     
-                                        
-    
+
     
     let dataPigProd             = null;
     let showOptions             = null;
@@ -217,13 +252,11 @@ export function PageProdFatteningEntry(input_settings){
                                                                                             
         elemTabFatMedVac        = elemDivContainer.querySelector('#'+elemIdTabFatMedVac);     
         elemTabFatHealth        = elemDivContainer.querySelector('#'+elemIdTabFatHealth);
-        elemTabFatPigDead       = elemDivContainer.querySelector('#'+elemIdTabFatPigDead); 
         elemTabFatNotes         = elemDivContainer.querySelector('#'+elemIdTabFatNotes);  
         elemTabFatWean          = elemDivContainer.querySelector('#'+elemIdTabFatWean);  
         elemTabFatBirth         = elemDivContainer.querySelector('#'+elemIdTabFatBirth);     
         elemTabFatMating        = elemDivContainer.querySelector('#'+elemIdTabFatMating);    
         elemTabFatExtra         = elemDivContainer.querySelector('#'+elemIdTabFatExtra);   
-       
     }
     
     
@@ -450,14 +483,6 @@ export function PageProdFatteningEntry(input_settings){
             }
             
             
-            case thisObj.TAB_FAT_PIG_DEAD:{
-                thisObj.componentTabsWithMore.switchTab(elemIdTabFatPigDead);
-                break;
-            }
-            
-            
-            
-            
             
             case thisObj.TAB_FAT_NOTES:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabFatNotes);
@@ -583,7 +608,7 @@ export function PageProdFatteningEntry(input_settings){
                 }
                 thisObj.prodEntryMating.beforeShow(dataPigProd, options_insem);
                 
-                curTabFat = thisObj.TAB_GESTA_MATING;
+                curTabFat = thisObj.TAB_FAT_MATING;
                 break;
             }
             

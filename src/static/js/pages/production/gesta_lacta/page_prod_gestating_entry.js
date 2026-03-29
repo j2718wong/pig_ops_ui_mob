@@ -11,6 +11,8 @@ import {PAGE_ID,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
 
+import {DEFAULT_LABEL_TABS}     from '../default_strings_gesta_lacta.js';
+
 
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
@@ -55,25 +57,40 @@ export function PageProdGestatingEntry(input_settings){
     let elemIdTabGestaStatus    = `prod-gesta-status`;
         
     
+    let labelTabGestaPigOps     = DEFAULT_LABEL_TABS.PIGOPS;
+    let labelTabGestaBirth      = DEFAULT_LABEL_TABS.BIRTH;
+    let labelTabGestaMating     = DEFAULT_LABEL_TABS.MATING;
+    let labelTabGestaStatus     = DEFAULT_LABEL_TABS.STATUS;
+    
+        
+    const helper = navigation.managerTranslations.translationHelper;
+    
+    
+    labelTabGestaPigOps         = helper.getSimpleTranslation('common_app.label_tabs.pigops') || labelTabGestaPigOps;
+    labelTabGestaBirth          = helper.getSimpleTranslation('common_app.label_tabs.birth')   || labelTabGestaBirth;
+    labelTabGestaMating         = helper.getSimpleTranslation('common_app.label_tabs.mating') || labelTabGestaMating;
+    labelTabGestaStatus         = helper.getSimpleTranslation('common_app.label_tabs.status') || labelTabGestaMating;
+ 
+    
     let tabsProdGesta = [
         {
             data_tab_id:    elemIdTabGestaPigOps,
-            label:          'PigOps'
+            label:          labelTabGestaPigOps
         },
         
         {
             data_tab_id:    elemIdTabGestaBirth,
-            label:          'Birth'
+            label:          labelTabGestaBirth
         },
         
         {
             data_tab_id:    elemIdTabGestaMating,
-            label:          'Mating'
+            label:          labelTabGestaMating
         },
         
         {
             data_tab_id:    elemIdTabGestaStatus,
-            label:          'Status'
+            label:          labelTabGestaStatus
         }
 
     ];

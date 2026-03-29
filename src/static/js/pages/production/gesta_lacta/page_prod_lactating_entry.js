@@ -12,6 +12,9 @@ import {PAGE_ID,
         MULTIKEY_OBJ_TYPE}      from '../../../constants.js';
 
 
+import {DEFAULT_LABEL_TABS}     from '../default_strings_gesta_lacta.js';
+
+
 import {ProdEntryPigOps}        from './prod_entry_pig_ops.js'
 import {ProdEntryMating}        from './prod_entry_mating.js'
 import {ProdEntryBirth}         from './prod_entry_birth.js'
@@ -24,7 +27,6 @@ import {TableHealthIssue}       from '../../multikey/table_health_issue.js'
 import {ProdSummary}            from '../summary/prod_summary.js'
 
 import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed.js'
-
 
 
 export function PageProdLactatingEntry(input_settings){
@@ -62,8 +64,6 @@ export function PageProdLactatingEntry(input_settings){
     this.TAB_LACTA_MATING       = 9;
     
     
-    
-    
     let elemIdTabLactaPigOps        = `prod-lacta-pigops`;
     let elemIdTabLactaBirth         = `prod-lacta-birth`;
     let elemIdTabLactaWean          = `prod-lacta-wean`;
@@ -77,52 +77,84 @@ export function PageProdLactatingEntry(input_settings){
     let elemIdTabLactaExtra         = `prod-lacta-extra`;
     
     
+    // Keep the labels short on the first 4 tabs
+    let labelTabLactaPigOps         = DEFAULT_LABEL_TABS.PIGOPS;
+    let labelTabLactaBirth          = DEFAULT_LABEL_TABS.BIRTH;
+    let labelTabLactaWean           = DEFAULT_LABEL_TABS.WEAN;
+    let labelTabLactaMedVac         = DEFAULT_LABEL_TABS.MEDVAC;
+           
+    
+    // Tabs shown on More modal
+    let labelTabLactaHealth         = DEFAULT_LABEL_TABS.HEALTH;
+    let labelTabLactaFeedSummary    = DEFAULT_LABEL_TABS.FEED_SUMMARY;
+    let labelTabLactaProdFeed       = DEFAULT_LABEL_TABS.PROD_FEED;
+    let labelTabLactaNotes          = DEFAULT_LABEL_TABS.NOTES;
+    let labelTabLactaMating         = DEFAULT_LABEL_TABS.MATING;
+    let labelTabLactaExtra          = DEFAULT_LABEL_TABS.EXTRA;
+    
+    
+    const helper = navigation.managerTranslations.translationHelper;
+
+    
+    labelTabLactaPigOps         = helper.getSimpleTranslation('common_app.label_tabs.pigops') || labelTabLactaPigOps;
+    labelTabLactaBirth          = helper.getSimpleTranslation('common_app.label_tabs.birth')   || labelTabLactaBirth;
+    labelTabLactaWean           = helper.getSimpleTranslation('common_app.label_tabs.wean') || labelTabLactaWean;
+    labelTabLactaMedVac         = helper.getSimpleTranslation('common_app.label_tabs.medvac') || labelTabLactaMedVac;
+                                                                                                                       
+    labelTabLactaHealth         = helper.getSimpleTranslation('common_app.label_tabs.health') || labelTabLactaHealth;
+    labelTabLactaFeedSummary    = helper.getSimpleTranslation('common_app.label_tabs.feed_summary') || labelTabLactaFeedSummary;
+    labelTabLactaProdFeed       = helper.getSimpleTranslation('common_app.label_tabs.feed_add') || labelTabLactaProdFeed;
+    labelTabLactaNotes          = helper.getSimpleTranslation('common_app.label_tabs.notes') || labelTabLactaNotes;
+    labelTabLactaMating         = helper.getSimpleTranslation('common_app.label_tabs.mating') || labelTabLactaMating;
+    labelTabLactaExtra          = helper.getSimpleTranslation('common_app.label_tabs.extra') || labelTabLactaExtra;
+    
+    
     let tabsProdLacta = [
         {
             data_tab_id:    elemIdTabLactaPigOps,
-            label:          'PigOps'
+            label:          labelTabLactaPigOps
         },
         
         {
             data_tab_id:    elemIdTabLactaBirth,
-            label:          'Birth'
+            label:          labelTabLactaBirth
         },
         
         {
             data_tab_id:    elemIdTabLactaWean,
-            label:          'Wean'
+            label:          labelTabLactaWean
         },
         
         {
             data_tab_id:    elemIdTabLactaMedVac,
-            label:          'MedVac'
+            label:          labelTabLactaMedVac
         },
         
         
         {
             data_tab_id:    elemIdTabLactaHealth,
-            label:          'Health'
+            label:          labelTabLactaHealth
         },
         
         {
             data_tab_id:    elemIdTabLactaFeedSummary,
-            label:          'Feed Summary'
+            label:          labelTabLactaFeedSummary
         },
         
         {
             data_tab_id:    elemIdTabLactaProdFeed,
-            label:          'Feed Add'
+            label:          labelTabLactaProdFeed
         },
         
         
         {
             data_tab_id:    elemIdTabLactaNotes,
-            label:          'Notes'
+            label:          labelTabLactaNotes
         },
         
         {
             data_tab_id:    elemIdTabLactaMating,
-            label:          'Mating'
+            label:          labelTabLactaMating
         }
     ];
     
@@ -310,9 +342,6 @@ export function PageProdLactatingEntry(input_settings){
                 dataPigProd, callback_success);
         }
         
-        
-    
-        
     }
     
 
@@ -363,7 +392,7 @@ export function PageProdLactatingEntry(input_settings){
                 break;
             }
             
-            case thisObj.TAB_GESTA_MATING:{
+            case thisObj.TAB_LACTA_MATING:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabLactaMating);
                 break;
             }

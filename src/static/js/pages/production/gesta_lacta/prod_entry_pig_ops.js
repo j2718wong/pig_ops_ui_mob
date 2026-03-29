@@ -264,7 +264,7 @@ export function ProdEntryPigOps(input_settings){
         label_sow           = helper.getSimpleTranslation('common_app.labels.sow') || label_sow;
         label_piglets       = helper.getSimpleTranslation('common_app.labels.piglets') || label_piglets;
         
-        label_hide_completed= helper.getSimpleTranslation('common_app.labels.hide_completed') || label_hide_completed;
+        label_hide_completed= helper.getSimpleTranslation('prod_entry_pig_ops.labels.hide_completed') || label_hide_completed;
         
         
         const html = `
