@@ -90,7 +90,7 @@ import {PageAllFeedBalanceAddEdit}  from '../feeds/feed_balance/page_all_feed_ba
 import {PageProdPigDeadList}        from '../production/pig_dead/page_prod_pig_dead_list.js';
 import {PagePigDeadAddEdit}         from '../production/pig_dead/page_pig_dead_add_edit.js';
 import {PageSummaryReportList}      from '../reports/page_summary_report_list.js';
-
+import {PageSummaryReportAdd}       from '../reports/page_summary_report_add.js';
 
 import {PageBoarExternalMateList}   from '../sow_boar/boar_external_mate/page_boar_external_mate_list.js'
 import {PageBoarExtMateAddEdit}     from '../sow_boar/boar_external_mate/page_boar_ext_mate_add_edit.js'
@@ -556,7 +556,12 @@ export function Navigation(){
         uniqueKey:              'summary-report-list'
     });
     
-
+    
+    this.pageSummaryReportAdd   = new PageSummaryReportAdd({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SUMMARY_REPORT_ADD_EDIT),
+        uniqueKey:              'summary-report-add'
+    });
 
 
     this.pageProdSalesList    = new PageProdHistoryList({
@@ -916,6 +921,7 @@ export function Navigation(){
         this.pagePigDeadAddEdit.init();
         
         this.pageSummaryReportList.init();
+        this.pageSummaryReportAdd.init();
         
         
         this.pageProdSalesList.init();

@@ -302,53 +302,19 @@ export function PageSummaryReportList(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         
-        // PID, Sow ❤ Boar column
-        const html_pid_sow  = farmPage.getHtmlPidSowLoveBoar(cur_entry.production);
-        
-        const dt_dead   = new Date(cur_entry.pig_dead.date_dead);
-        
-        
-        // Count how many days since birth
-        const date_actual_birth = cur_entry.production.birth.date_actual;
-        
-        let html_date_dead = `${cur_entry.pig_dead.date_dead}`;
-        if (date_actual_birth){
-            const dt_birth = new Date(date_actual_birth);
-            
-            let diff_msecs    = dt_dead - dt_birth;
-            let diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
-            
-            const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
-            
-            // Adjust Day 1 on date of birth if needed
-            if (acc_settings_ops){
-                if (acc_settings_ops.day_1_on_date_of_birth > 0){
-                    diff_days += 1;
-                }
-            }
-            
-            html_date_dead += ` <span class="nowrap">(Day ${diff_days})</span>`;  
-        }
-        
         
         let notes = '';
-        if (cur_entry.pig_dead.notes){
-            notes = cur_entry.pig_dead.notes;
+        if (cur_entry.notes){
+            notes = cur_entry.notes;
         }
         
-        // Dead Type + comments
-        const s_desc = `
-            <span class="dead-type"><b>${cur_entry.pig_dead.dead_type}</b></span>
-            <span class="notes">${notes}</span>
-        `;
-        
-        
+       
         
         const html = `
             <tr>
                 <td>${html_pid_sow}</td>
                 <td>${html_date_dead}</td>
-                <td>${s_desc}</td>
+                <td>${notes}</td>
             </tr>
         `;
         
@@ -399,7 +365,7 @@ export function PageSummaryReportList(input_settings){
     
     this.onClickAddEntry = function(){
         // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
+        const next_page = navigation.getPageContainer(PAGE_ID.SUMMARY_REPORT_ADD_EDIT);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -409,26 +375,14 @@ export function PageSummaryReportList(input_settings){
         
         
         // Show Page
-        const go_back_page_id = PAGE_ID.PIG_DEAD_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         const options ={
-            is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   
+            is_add:                 true
         }
-        navigation.pageReportSummaryAddEdit.show(options);
+        navigation.pageSummaryReportAdd.show(options);
     }
     
-    
-    this.onSuccessAddEntry = function(){
-        
-    }
-    
-    
-    this.onSuccessEditEntry = function(){
-        
-    }
+   
     
     
     this.onClickRowEntry = function(entry_hid){

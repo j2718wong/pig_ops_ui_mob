@@ -557,10 +557,13 @@ export function PagePigDeadAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    navigation.managerNavHistory.removeFromNavHistoryHead(
-                        showOptions.go_back_page);
+                    const go_back_page_id = PAGE_ID.PIG_DEAD_LIST;
+                    const go_back_page = navigation.getPageContainer(go_back_page_id);
                     
-                    navigation.showThisPage(showOptions.go_back_page);
+                    navigation.managerNavHistory.removeFromNavHistoryHead(
+                        go_back_page);
+                    
+                    navigation.showThisPage(go_back_page);
                     navigation.pagePigDeadList.show();
                 }
                 else{
