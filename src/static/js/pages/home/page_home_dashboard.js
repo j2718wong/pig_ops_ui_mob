@@ -761,7 +761,7 @@ export function PageHomeDashBoard(input_settings){
                     }
                     
                     
-                    let s_feed = `${cur_entry} ${feed_type_name}`;
+                    let s_feed = `<span class="nowrap">${cur_entry} ${feed_type_name}</span>`;
                     s += s_feed;
                     
                     
@@ -789,11 +789,6 @@ export function PageHomeDashBoard(input_settings){
                 }
                 
                 elemDateFeedBalance.textContent = `${s_dt_balance}, ${label_weekday}`;
-            
-                console.log('date abalnce is not null');
-            }
-            else{
-                console.log('date abalnce is null');
             }
             
             if (is_comma > 0){
