@@ -12,7 +12,8 @@ import {APPLICATION,
         PIG_OPERATION_TYPE,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        ACC_USER_GROUP}         from '../../constants.js';
+        ACC_USER_GROUP,
+        FEED_TYPE_NAME}         from '../../constants.js';
 
 
 import {formatDate,
@@ -74,6 +75,12 @@ export function PageHomeDashBoard(input_settings){
     let elemIdExpectingSows     = null;
     
     
+    let elemIdFeedBalanceShow   = null;
+    let elemIdLabelFeedBalance  = null;
+    let elemIdDateFeedBalance   = null;
+    let elemIdFeedBalanceText   = null;
+    
+    
     
     let elemFarmName            = null;
     let elemTodayDate           = null;
@@ -125,9 +132,18 @@ export function PageHomeDashBoard(input_settings){
     let elemExpectingSows       = null;
     
     
+    let elemFeedBalanceShow     = null;
+    let elemLabelFeedBalance    = null;
+    let elemDateFeedBalance     = null;
+    let elemFeedBalanceText     = null;
+    
+    
+    
     let dtCurrentDate           = null;
 
-
+    
+    let lastVerNumFeedBalance   = null;
+    
     
     this.init = function(){
 
@@ -153,9 +169,17 @@ export function PageHomeDashBoard(input_settings){
         elemIdCardWeanedSows    = `${settings.uniqueKey}-card-weaned-sows`;
         elemIdCardToHarvest     = `${settings.uniqueKey}-card-to-harvest`;
         
-        elemIdLabelExpectingSows= `${settings.uniqueKey}-expecting-sows-label`;
+        
         elemIdExpectingSowsShow = `${settings.uniqueKey}-expecting-sows-show`;
+        elemIdLabelExpectingSows= `${settings.uniqueKey}-expecting-sows-label`;
         elemIdExpectingSows     = `${settings.uniqueKey}-expecting-sows`;
+        
+        
+        elemIdFeedBalanceShow   = `${settings.uniqueKey}-feed-balance-show`;
+        elemIdLabelFeedBalance  = `${settings.uniqueKey}-feed-balance-label`;
+        elemIdDateFeedBalance   = `${settings.uniqueKey}-feed-balance-date`;
+        elemIdFeedBalanceText   = `${settings.uniqueKey}-feed-balance-text`;
+        
         
         
         const html = `
@@ -227,6 +251,19 @@ export function PageHomeDashBoard(input_settings){
                 <span>⏳</span><span id="${elemIdLabelExpectingSows}">Expecting next 7 days</span>
             </div>
             <div class="sow-name-pills" id="${elemIdExpectingSows}"></div>
+        </div>
+
+        
+        <!-- NEW ROW 4.5: Last Feed Balance -->
+        <div class="expecting-section" id="${elemIdFeedBalanceShow}">
+            <div class="section-title">
+                <span>📊</span> <span id="${elemIdLabelFeedBalance}">Last Feed Balance</span>
+            </div>
+            
+            <div id="${elemIdDateFeedBalance}"></div>
+            
+            <div class="feed-balance-text" id="${elemIdFeedBalanceText}" style="font-size: 1.2rem; color: #4b5563; margin-top: 0.25rem;">
+            </div>
         </div>
 
 
@@ -328,6 +365,12 @@ export function PageHomeDashBoard(input_settings){
         elemLabelExpectingSows  = elemDivContainer.querySelector('#'+elemIdLabelExpectingSows);
         elemExpectingSowsShow   = elemDivContainer.querySelector('#'+elemIdExpectingSowsShow);
         elemExpectingSows       = elemDivContainer.querySelector('#'+elemIdExpectingSows);
+    
+        elemFeedBalanceShow     = elemDivContainer.querySelector('#'+elemIdFeedBalanceShow);
+        elemLabelFeedBalance    = elemDivContainer.querySelector('#'+elemIdLabelFeedBalance);
+        elemDateFeedBalance     = elemDivContainer.querySelector('#'+elemIdDateFeedBalance);
+        elemFeedBalanceText     = elemDivContainer.querySelector('#'+elemIdFeedBalanceText);
+    
     }
     
     
@@ -628,6 +671,10 @@ export function PageHomeDashBoard(input_settings){
         
         
         
+        // Populate last Farm Feed Balance
+        thisObj.populateLastFeedBalance();
+        
+        
         // Get user.user_group.group_num
 
         const cur_user = navigation.userControl.dataUserAccount.user;
@@ -674,6 +721,111 @@ export function PageHomeDashBoard(input_settings){
         
     }
     
+
+    this.requestFeedBalace = function(){
+        const callback_success = function(data){
+            // Add up feeds;
+            
+            let date_balance = null;
+            
+            const feed_balance = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+            for (const cur_entry of data){
+                
+                for(let index = 0; index < 7; index++){
+                    feed_balance[index] += cur_entry.feeds[index];
+                }
+                
+                date_balance = cur_entry.date_balance;
+            }
+            
+            let s = '';
+            let is_comma = 0;
+            
+            
+            
+            let index = 0;
+            for (const cur_entry of feed_balance){
+                if (cur_entry > 0){
+                    if (is_comma){s += ', ';}
+                    
+                    let feed_type_name = '';
+                    switch (index){
+                        case 0: {feed_type_name = FEED_TYPE_NAME.GESTA; break;}
+                        case 1: {feed_type_name = FEED_TYPE_NAME.LACTA; break;}
+                        case 2: {feed_type_name = FEED_TYPE_NAME.BOST; break;}
+                        case 3: {feed_type_name = FEED_TYPE_NAME.PRES; break;}
+                        case 4: {feed_type_name = FEED_TYPE_NAME.START; break;}
+                        case 5: {feed_type_name = FEED_TYPE_NAME.GROW; break;}
+                        case 6: {feed_type_name = FEED_TYPE_NAME.FINISH; break;}
+                        
+                    }
+                    
+                    
+                    let s_feed = `${cur_entry} ${feed_type_name}`;
+                    s += s_feed;
+                    
+                    
+                    
+                    is_comma = 1;
+                }
+                
+                index += 1
+            } 
+            
+            
+            elemFeedBalanceText.textContent = s;
+            
+            if (date_balance){
+                const dt_balance  = new Date(date_balance);
+                const s_dt_balance = formatDate(dt_balance, FORMAT_COMPACT);
+                
+                let day = dt_balance.getDay();
+        
+                let label_weekday   = DEFAULT_WEEKDAY[day];
+                
+                const translations = navigation.getTranslations();
+                if (translations.common.day_of_week){
+                    label_weekday = translations.common.day_of_week[day]
+                }
+                
+                elemDateFeedBalance.textContent = `${s_dt_balance}, ${label_weekday}`;
+            
+                console.log('date abalnce is not null');
+            }
+            else{
+                console.log('date abalnce is null');
+            }
+            
+            if (is_comma > 0){
+                elemFeedBalanceShow.style.display = 'block';
+            } 
+            
+            
+            // Set last version from pigFarm
+            // This verison number increments when there is a chnage in farm feed balance
+            lastVerNumFeedBalance = navigation.pigFarm.dataVerNum.feed_balance;
+            
+        };
+        
+            
+        navigation.pigFarm.requestDataPigFarmLastFeedBalance(callback_success);
+    }
     
-   
+    
+    this.populateLastFeedBalance = function(){
+        elemFeedBalanceShow.style.display = 'none';
+        
+        const farmLastBalance = navigation.pigFarm.dataLastFeedBalance;
+        
+        if (farmLastBalance == null){
+            thisObj.requestFeedBalace();
+        }
+        else{
+            const cur_ver_num = navigation.pigFarm.dataVerNum.feed_balance;
+            
+            if (cur_ver_num != lastVerNumFeedBalance){
+                thisObj.requestFeedBalace();
+            }
+        }
+    }
 }

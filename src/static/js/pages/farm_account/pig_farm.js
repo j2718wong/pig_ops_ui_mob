@@ -53,6 +53,9 @@ export function PigFarm(_navigation){
     this.dataSummaryReportList  = null;
     
     
+    this.dataLastFeedBalance    = null;
+    
+    
     this.managerSowBoar         = new ManagerSowBoar({
         navigation:             navigation,
         parentObj:              this
@@ -599,6 +602,63 @@ export function PigFarm(_navigation){
         
     }
  
+    
+    
+    this.requestDataPigFarmLastFeedBalance = function(callback_success,
+            elem_show_error){
+        
+        const pig_farm_hid = thisObj.getPigFarmHid();
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_farm/last_feed_balance?pfhid=${pig_farm_hid}`;
+        
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataLastFeedBalance = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+ 
+    
+    
     
     
     this.requestDataPigFarmSummaryReportList = function(callback_success, 

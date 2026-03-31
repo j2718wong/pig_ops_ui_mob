@@ -4258,7 +4258,8 @@ input[type=number] {
     letter-spacing: -0.5px;
 }
 
-/* expecting section (row 4) */
+
+
 .expecting-section {
     background: white;
     border-radius: 24px;
@@ -4267,6 +4268,7 @@ input[type=number] {
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow);
 }
+
 
 .section-title {
     color: var(--corporate-blue-dark);

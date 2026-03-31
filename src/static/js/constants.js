@@ -273,7 +273,7 @@ const FEED_TYPE_NAME = {
     GESTA:              'Gesta',
     LACTA:              'Lacta',
     BOST:               'Booster',
-    PRES:               'PreStarter',
+    PRES:               'PreStart',
     START:              'Starter',
     GROW:               'Grower',
     FINISH:             'Finisher'
