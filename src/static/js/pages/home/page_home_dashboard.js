@@ -773,7 +773,7 @@ export function PageHomeDashBoard(input_settings){
             } 
             
             
-            elemFeedBalanceText.textContent = s;
+            elemFeedBalanceText.innerHTML = s;
             
             if (date_balance){
                 const dt_balance  = new Date(date_balance);
