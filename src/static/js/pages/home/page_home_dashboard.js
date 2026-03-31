@@ -519,10 +519,12 @@ export function PageHomeDashBoard(input_settings){
         let label_weekday   = DEFAULT_WEEKDAY[day];
         
         const translations = navigation.getTranslations();
-        if (translations.common.day_of_week){
-            label_weekday = translations.common.day_of_week[day]
-        }
         
+        if (translations) {        
+            if (translations.common.day_of_week){
+                label_weekday = translations.common.day_of_week[day]
+            }
+        }
         
         
         const pig_farm = navigation.pigFarm.dataPigFarm.pig_farm;
@@ -783,10 +785,11 @@ export function PageHomeDashBoard(input_settings){
             let label_weekday   = DEFAULT_WEEKDAY[day];
             
             const translations = navigation.getTranslations();
-            if (translations.common.day_of_week){
-                label_weekday = translations.common.day_of_week[day]
+            if (translations){
+                if (translations.common.day_of_week){
+                    label_weekday = translations.common.day_of_week[day]
+                }
             }
-            
             elemDateFeedBalance.textContent = `${s_dt_balance}, ${label_weekday}`;
         }
         
