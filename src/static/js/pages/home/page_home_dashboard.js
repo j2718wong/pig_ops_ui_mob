@@ -721,80 +721,85 @@ export function PageHomeDashBoard(input_settings){
         
     }
     
-
-    this.requestFeedBalace = function(){
-        const callback_success = function(data){
-            // Add up feeds;
+    
+    this.displayFeedBalance = function(data){
+        // Add up feeds;
             
-            let date_balance = null;
-            
-            const feed_balance = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
-            for (const cur_entry of data){
-                
-                for(let index = 0; index < 7; index++){
-                    feed_balance[index] += cur_entry.feeds[index];
-                }
-                
-                date_balance = cur_entry.date_balance;
-            }
-            
-            let s = '';
-            let is_comma = 0;
-            
-            
-            
-            let index = 0;
-            for (const cur_entry of feed_balance){
-                if (cur_entry > 0){
-                    if (is_comma){s += ', ';}
-                    
-                    let feed_type_name = '';
-                    switch (index){
-                        case 0: {feed_type_name = FEED_TYPE_NAME.GESTA; break;}
-                        case 1: {feed_type_name = FEED_TYPE_NAME.LACTA; break;}
-                        case 2: {feed_type_name = FEED_TYPE_NAME.BOST; break;}
-                        case 3: {feed_type_name = FEED_TYPE_NAME.PRES; break;}
-                        case 4: {feed_type_name = FEED_TYPE_NAME.START; break;}
-                        case 5: {feed_type_name = FEED_TYPE_NAME.GROW; break;}
-                        case 6: {feed_type_name = FEED_TYPE_NAME.FINISH; break;}
-                        
-                    }
-                    
-                    
-                    let s_feed = `<span class="nowrap">${cur_entry} ${feed_type_name}</span>`;
-                    s += s_feed;
-                    
-                    
-                    
-                    is_comma = 1;
-                }
-                
-                index += 1
-            } 
-            
-            
-            elemFeedBalanceText.innerHTML = s;
-            
-            if (date_balance){
-                const dt_balance  = new Date(date_balance);
-                const s_dt_balance = formatDate(dt_balance, FORMAT_COMPACT);
-                
-                let day = dt_balance.getDay();
+        let date_balance = null;
         
-                let label_weekday   = DEFAULT_WEEKDAY[day];
-                
-                const translations = navigation.getTranslations();
-                if (translations.common.day_of_week){
-                    label_weekday = translations.common.day_of_week[day]
-                }
-                
-                elemDateFeedBalance.textContent = `${s_dt_balance}, ${label_weekday}`;
+        const feed_balance = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+        for (const cur_entry of data){
+            
+            for(let index = 0; index < 7; index++){
+                feed_balance[index] += cur_entry.feeds[index];
             }
             
-            if (is_comma > 0){
-                elemFeedBalanceShow.style.display = 'block';
-            } 
+            date_balance = cur_entry.date_balance;
+        }
+        
+        let s = '';
+        let is_comma = 0;
+        
+        
+        
+        let index = 0;
+        for (const cur_entry of feed_balance){
+            if (cur_entry > 0){
+                if (is_comma){s += ', ';}
+                
+                let feed_type_name = '';
+                switch (index){
+                    case 0: {feed_type_name = FEED_TYPE_NAME.GESTA; break;}
+                    case 1: {feed_type_name = FEED_TYPE_NAME.LACTA; break;}
+                    case 2: {feed_type_name = FEED_TYPE_NAME.BOST; break;}
+                    case 3: {feed_type_name = FEED_TYPE_NAME.PRES; break;}
+                    case 4: {feed_type_name = FEED_TYPE_NAME.START; break;}
+                    case 5: {feed_type_name = FEED_TYPE_NAME.GROW; break;}
+                    case 6: {feed_type_name = FEED_TYPE_NAME.FINISH; break;}
+                    
+                }
+                
+                
+                let s_feed = `<span class="nowrap">${cur_entry} ${feed_type_name}</span>`;
+                s += s_feed;
+                
+                
+                
+                is_comma = 1;
+            }
             
+            index += 1
+        } 
+        
+        
+        elemFeedBalanceText.innerHTML = s;
+        
+        if (date_balance){
+            const dt_balance  = new Date(date_balance);
+            const s_dt_balance = formatDate(dt_balance, FORMAT_COMPACT);
+            
+            let day = dt_balance.getDay();
+    
+            let label_weekday   = DEFAULT_WEEKDAY[day];
+            
+            const translations = navigation.getTranslations();
+            if (translations.common.day_of_week){
+                label_weekday = translations.common.day_of_week[day]
+            }
+            
+            elemDateFeedBalance.textContent = `${s_dt_balance}, ${label_weekday}`;
+        }
+        
+        if (is_comma > 0){
+            elemFeedBalanceShow.style.display = 'block';
+        } 
+        
+    }
+    
+
+    this.requestFeedBalance = function(){
+        const callback_success = function(data){
+            thisObj.displayFeedBalance(data);
             
             // Set last version from pigFarm
             // This verison number increments when there is a chnage in farm feed balance
@@ -813,13 +818,16 @@ export function PageHomeDashBoard(input_settings){
         const farmLastBalance = navigation.pigFarm.dataLastFeedBalance;
         
         if (farmLastBalance == null){
-            thisObj.requestFeedBalace();
+            thisObj.requestFeedBalance();
         }
         else{
             const cur_ver_num = navigation.pigFarm.dataVerNum.feed_balance;
             
             if (cur_ver_num != lastVerNumFeedBalance){
-                thisObj.requestFeedBalace();
+                thisObj.requestFeedBalance();
+            }
+            else{
+                thisObj.displayFeedBalance(farmLastBalance);
             }
         }
     }
