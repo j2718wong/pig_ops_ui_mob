@@ -18,6 +18,16 @@ const APPLICATION = {
     DEBUG_NAV_HISTORY:              true
 };
 
+const DEFAULT_WEEKDAY = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+];
+
 
 const SOCIAL_MEDIA = {
     GOOGLE:     1,
@@ -327,6 +337,7 @@ const REQUEST_ERROR_NUM ={
 
 export {
     APPLICATION,
+    DEFAULT_WEEKDAY,
     SOCIAL_MEDIA,
     ACC_USER_GROUP,
     

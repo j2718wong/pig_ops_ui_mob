@@ -7,6 +7,7 @@
 import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
+        DEFAULT_WEEKDAY,
         PAGE_ID,
         PIG_OPERATION_TYPE,
         SOW_BOAR_TYPE,
@@ -470,12 +471,23 @@ export function PageHomeDashBoard(input_settings){
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         
+        let day = dtCurrentDate.getDay();
+        
+        let label_weekday   = DEFAULT_WEEKDAY[day];
+        
+        const translations = navigation.getTranslations();
+        if (translations.common.day_of_week){
+            label_weekday = translations.common.day_of_week[day]
+        }
+        
+        
+        
         const pig_farm = navigation.pigFarm.dataPigFarm.pig_farm;
         elemFarmName.textContent = pig_farm.name;
         
         
         const s_dt_today    = formatDate(dtCurrentDate, FORMAT_COMPACT);
-        elemTodayDate.textContent = s_dt_today;
+        elemTodayDate.textContent = `${s_dt_today}, ${label_weekday}`;
         
         
         
