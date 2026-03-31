@@ -669,18 +669,6 @@ export function PageProdHistoryList(input_settings){
 
     }
     
-    
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
-    }
-         
          
     this.onClickProdHistEntry = function(pig_prod_pid, tab_id){
         if (pig_prod_pid == null){

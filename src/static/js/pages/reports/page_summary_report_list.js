@@ -17,11 +17,12 @@ import {APPLICATION,
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT,
-        sortList}               from '../../utils.js';
+        FORMAT_COMPACT}         from '../../utils.js';
 
 import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
 
+
+const DEFAULT_REPORT_NAME_FARM_SUMMARY = 'Pig Farm Summary';
 
 
 export function PageSummaryReportList(input_settings){
@@ -259,9 +260,9 @@ export function PageSummaryReportList(input_settings){
         
         <table class="data-table table-prod-hist" id="">
             <colgroup>
-                <col style="width: 27%;">
+                <col style="width: 30%;">
                 <col style="width: 40%;">
-                <col style="width: 33%;">
+                <col style="width: 30%;">
             </colgroup>
 
             <thead>
@@ -303,17 +304,33 @@ export function PageSummaryReportList(input_settings){
     this.getHtmlTableRow = function(cur_entry){
         
         
+        const dt_report   = new Date(cur_entry.report.date);
+        const s_dt_report = formatDate(dt_report, FORMAT_COMPACT);
+        
         let notes = '';
-        if (cur_entry.notes){
-            notes = cur_entry.notes;
+        if (cur_entry.report.notes){
+            notes = cur_entry.report.notes;
         }
         
-       
+        
+        
+        let labelreport_name          = DEFAULT_REPORT_NAME_FARM_SUMMARY;
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        labelreport_name        = helper.getSimpleTranslation('page_report_list.labels.rep_type_farm_summary') || labelreport_name;
+      
+        let html_report_name = `
+            <i class="fa-solid fa-file-pdf" style="color: red;"></i>
+            ${labelreport_name}
+        `;
         
         const html = `
             <tr>
-                <td>${html_pid_sow}</td>
-                <td>${html_date_dead}</td>
+                <td>${s_dt_report}</td>
+                <td>${html_report_name}</td>
                 <td>${notes}</td>
             </tr>
         `;
@@ -328,9 +345,6 @@ export function PageSummaryReportList(input_settings){
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
         
-        let pid = cur_entry.production.pig_production.farm_prod_id;
-        
-         
 
         
         // Attach onclick listeners to td
@@ -343,7 +357,7 @@ export function PageSummaryReportList(input_settings){
 
             if (index == 0 || index == 1) {
                 cur_td.onclick = function(){
-                   
+                    thisObj.onClickRowEntry(cur_entry.report.hid);
                 }
             }
             
@@ -361,6 +375,16 @@ export function PageSummaryReportList(input_settings){
     }
     
     
+    this.getEntry = function(entry_hid){
+
+        for (const cur_entry of dataSummaryReportList){
+            if (cur_entry.report.hid == entry_hid){
+                return cur_entry;
+            }
+        }
+        
+        return null;
+    }
 
     
     this.onClickAddEntry = function(){
@@ -386,7 +410,7 @@ export function PageSummaryReportList(input_settings){
     
     
     this.onClickRowEntry = function(entry_hid){
-        const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
+        const row_entry = thisObj.getEntry(entry_hid);   
         
         const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
         const go_back_page = navigation.getPageContainer(go_back_page_id);

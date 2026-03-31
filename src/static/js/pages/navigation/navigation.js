@@ -20,7 +20,11 @@ import {ManagerNavLinks}            from './manager_nav_links.js';
 import {ManagerPublicSections}      from './manager_public_sections.js';
 import {ManagerNavHistory}          from './manager_nav_history.js';
 
+import {ManagerApplicationData}     from './manager_application_data.js';
 import {ManagerTranslations}        from './manager_translations.js';
+import {ManagerAddress}             from '../common/manager_address.js';
+import {ManagerPublicData}          from '../common/manager_public_data.js';
+
 
 
 import {UserControl}                from './user_control.js';
@@ -32,9 +36,6 @@ import {MoreModal}                  from '../common/more_modal.js';
 
 
 
-import {ManagerAddress}             from '../common/manager_address.js';
-import {ManagerPublicData}          from '../common/manager_public_data.js';
-import {ManagerRequest}             from '../common/manager_request.js';
 
 import {PigFarm}                    from '../farm_account/pig_farm.js';
 
@@ -240,20 +241,19 @@ export function Navigation(){
     this.managerPublicSections  = new ManagerPublicSections(this);
     this.managerNavHistory      = new ManagerNavHistory(this);
     
+    this.managerApplicationData = new ManagerApplicationData(this);
+    this.managerTranslations    = new ManagerTranslations(this);
+    this.managerAddress         = new ManagerAddress(this);
+    this.managerPublicData      = new ManagerPublicData(this)
+    
+    
+    
     this.userControl            = new UserControl(this);
     
     this.toastAlert             = new ToastAlert(this);
     this.serverError            = new ServerError(this);
     
     this.moreModal              = new MoreModal(this);
-    
-    
-    this.managerTranslations    = new ManagerTranslations(this);
-    
-    this.managerRequest         = new ManagerRequest(this);
-    this.managerAddress         = new ManagerAddress(this);
-    this.managerPublicData      = new ManagerPublicData(this)
-    
     
     
     this.pigFarm                = new PigFarm(this);
@@ -1071,6 +1071,10 @@ export function Navigation(){
         // This waits for the logged in user for user authentication
         // before request
         this.managerAddress.setCurCountry(country);
+        
+            
+        // Get report languages based by country
+        this.managerApplicationData.requestCountryDetails(country.hid);
         
             
         const account_hid = pig_farm_account.account.account.hid;

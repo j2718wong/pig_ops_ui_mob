@@ -366,8 +366,6 @@ export function PageAllFeedBalanceList(input_settings){
     }
     
     
-    
-    
     this.getElemTableRow = function(cur_entry){
         const elem_row = document.createElement('tr');
         
@@ -406,20 +404,6 @@ export function PageAllFeedBalanceList(input_settings){
     
     
     this.searchEntries = function(key){
-    }
-    
-    
-
-    
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
     }
     
     

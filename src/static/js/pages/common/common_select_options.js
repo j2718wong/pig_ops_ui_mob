@@ -822,5 +822,21 @@ export function CommonSelectOptions(_navigation){
     
     
     
+    this.setDataReportLanguage = function(data, select_elem){
+        
+        
+        const select_data = [];
+        
+        for (const cur_entry of data){
+            
+            select_data.push({value: cur_entry.key, 
+                text: cur_entry.value});
+        }
+        
+        replaceSelectOptions(select_elem, select_data);
+    }
+    
+    
+    
     
 }

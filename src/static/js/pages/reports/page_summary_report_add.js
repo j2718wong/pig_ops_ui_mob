@@ -19,6 +19,7 @@ import {formatDate,
 
 
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
+import {UiSelectWithEntryCount} from '../common/ui/select_with_entry_count.js';
 
 
 import {addValidationClassToElem} from '../common/ui/ui_utils.js';
@@ -54,7 +55,10 @@ export function PageSummaryReportAdd(input_settings){
     let elemIdPigFarm           = null;
     let elemIdDateReport        = null;
     
+    let elemIdLangSingleShow    = null;
+    let elemIdLangSingle        = null;
     
+    let elemUiReportLanguage    = null;
     let elemUiNotes             = null;
     
     let elemIdServerErrorMsg    = null;
@@ -70,13 +74,19 @@ export function PageSummaryReportAdd(input_settings){
     let elemPigFarm             = null;
     let elemDateReport          = null;
     
-    
+    let elemLangSingleShow      = null;
+    let elemLangSingle          = null;
     
     let elemServerErrorMsg      = null;
     
     let elemBtnCancel           = null;
     let elemBtnSave             = null;
     
+    // Needs to overwrtite if not en
+    let singleLanguageOption    = true;
+    let selectedReportLanguage  = 'en';
+    
+    let dtCurrentDate           = null;
     
     
     this.init = function(){
@@ -101,6 +111,10 @@ export function PageSummaryReportAdd(input_settings){
         let label_date_report   = 'Report Date';
         
         
+        let label_language      = 'Report Language';
+        let label_language_help = 'You may want to choose a report language comfortable to all people in your farm as this report is visible to everyone.'
+        
+        
         const helper = navigation.managerTranslations.translationHelper;
 
         
@@ -116,15 +130,30 @@ export function PageSummaryReportAdd(input_settings){
         label_pig_farm_name     = helper.getSimpleTranslation('page_summary_report.labels.pig_farm_name') || label_pig_farm_name;
         label_date_report       = helper.getSimpleTranslation('page_summary_report.labels.date_report') || label_date_report;
         
-
+        label_language          = helper.getSimpleTranslation('page_report_add.labels.report_language') || label_language;
+        label_language_help     = helper.getSimpleTranslation('page_report_add.labels.language_help') || label_language_help;
+        
         
         elemIdPageTitle         = `${settings.uniqueKey}-page-title`;
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
         
+        elemIdLangSingleShow    = `${settings.uniqueKey}-lang-single-show`;
+        elemIdLangSingle        = `${settings.uniqueKey}-lang-single`;
+        
         elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         elemIdPigFarm           = `${settings.uniqueKey}-pig-farm`;
         elemIdDateReport        = `${settings.uniqueKey}-date-report`;
+        
+        
+        elemUiReportLanguage    = new UiSelectWithEntryCount({
+            uniqueKey:          `${settings.uniqueKey}-language`,
+            navigation:         navigation,
+        
+            labelSelect:        label_language,
+            helpText:           label_language_help
+        });
+        
         
         
         elemUiNotes             = new UiInputTextWithCounter({
@@ -139,10 +168,6 @@ export function PageSummaryReportAdd(input_settings){
             helpText:           null  
         });
         
-
-        
-           
-           
         
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
@@ -150,6 +175,7 @@ export function PageSummaryReportAdd(input_settings){
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         
+        const html_language     = elemUiReportLanguage.getHtml();
         
         const html_notes        = elemUiNotes.getHtml();
         
@@ -168,11 +194,12 @@ export function PageSummaryReportAdd(input_settings){
     
     <div class="modal-body">
         
-        <div class="mobile-info-box" style="margin-bottom:10px;">
+        <div class="warning-box" style="margin-bottom:8px;">
             <div class="info-text" id="${elemIdPageInfo}">
                 ${label_add_info}
             </div>
         </div>
+        
         
         <div class="form-group-text">
             <label class="form-label">${label_pig_farm_name}</label>
@@ -185,7 +212,15 @@ export function PageSummaryReportAdd(input_settings){
             <span class="" id="${elemIdDateReport}"></span>
         </div>
     
+    
+        <div class="form-group-text" id="${elemIdLangSingleShow}">
+            <label class="form-label">${label_language}</label>
+            <span class="" id="${elemIdLangSingle}"></span>
+        </div>
+    
+    
         
+        ${html_language}
         
         ${html_notes}
         
@@ -214,7 +249,7 @@ export function PageSummaryReportAdd(input_settings){
     
     
     this.afterHtmlRender = function(){
-        
+        elemUiReportLanguage.afterHtmlRender();
         elemUiNotes.afterHtmlRender();
         
         
@@ -231,6 +266,9 @@ export function PageSummaryReportAdd(input_settings){
         elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
         elemPigFarm             = elemDivContainer.querySelector('#'+elemIdPigFarm);
         elemDateReport          = elemDivContainer.querySelector('#'+elemIdDateReport);
+        
+        elemLangSingleShow      = elemDivContainer.querySelector('#'+elemIdLangSingleShow);
+        elemLangSingle          = elemDivContainer.querySelector('#'+elemLangSingle);    
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
             
@@ -289,11 +327,10 @@ export function PageSummaryReportAdd(input_settings){
         
         thisObj._resetForm();
         
-        let dtCurrentDate           = null;
+        
         
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
-        
         
         
         // Set Current report date to today
@@ -307,6 +344,32 @@ export function PageSummaryReportAdd(input_settings){
         elemPigFarm.textContent = pig_farm.pig_farm.name;
         
         
+        // Set report language
+        // If only 1 language, display read -only
+        // If only more than language, display select option
+        
+        const report_languages = navigation.managerApplicationData.reportLanguageOptions;
+        
+        if (report_languages.length == 1){
+            elemLangSingleShow.style.display = 'block';
+            elemUiReportLanguage.hide();
+            
+            const report_language = report_languages[0];
+            
+            selectedReportLanguage = report_language.key;
+            elemLangSingle.textContent = report_language.value;
+            
+        } else{
+            elemLangSingleShow.style.display = 'none';
+            elemUiReportLanguage.show();
+            
+            thisObj.commonSelectOptions.setDataReportLanguage(report_languages, 
+                elemUiReportLanguage.getElemSelect());
+                
+            singleLanguageOption    = false;
+        }
+        
+
         
     }
     
@@ -318,8 +381,6 @@ export function PageSummaryReportAdd(input_settings){
         let input_val   = null;
         let cur_field   = null;
         let validation  = null;
-        
-
 
     }
     
@@ -331,7 +392,24 @@ export function PageSummaryReportAdd(input_settings){
 
         let input_notes     = elemUiNotes.getValue();
         
-
+        
+        let report_date     = dtCurrentDate.toLocaleDateString('en-CA');
+        
+        let input_lang_key  = elemUiReportLanguage.getValue();
+        
+        let report_lang_key = 'en';
+        
+        if (singleLanguageOption){
+            report_lang_key = selectedReportLanguage;
+        }  
+        else{
+            if (input_lang_key){
+                report_lang_key = input_lang_key;
+            }
+        }
+        
+        
+        
         
         // Final check before sending request
         if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
@@ -342,7 +420,7 @@ export function PageSummaryReportAdd(input_settings){
         const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
 
-        const pig_farm_hid  = navigation.pigFarm.getPigFarmHid;
+        const pig_farm_hid  = navigation.pigFarm.getPigFarmHid();
         
         // send post request
         const post_data = {
@@ -353,7 +431,8 @@ export function PageSummaryReportAdd(input_settings){
             
             'notes':            input_notes,
             
-            'report_date':       dt_mating_s
+            'report_date':      report_date,
+            'language':         report_lang_key
         };
         
         
@@ -369,7 +448,7 @@ export function PageSummaryReportAdd(input_settings){
             },
             
             timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: `${base_url}/report/add`,
+            url: `${base_url}/report/pig_farm/summary/add`,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -380,7 +459,7 @@ export function PageSummaryReportAdd(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const go_back_page_id = PAGE_ID.BOAR_EXT_MATE_LIST;
+                    const go_back_page_id = PAGE_ID.SUMMARY_REPORT_LIST;
                     const go_back_page = navigation.getPageContainer(go_back_page_id);
                     
                     navigation.managerNavHistory.removeFromNavHistoryHead(

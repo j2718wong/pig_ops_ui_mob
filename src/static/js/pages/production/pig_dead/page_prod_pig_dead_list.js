@@ -382,22 +382,6 @@ export function PageProdPigDeadList(input_settings){
     }
     
     
-    
-    
-    
-    
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
-    }
-    
-    
     this.searchEntries = function(key){
         let data_pig_prod_list = dataPigDeadList;
         
