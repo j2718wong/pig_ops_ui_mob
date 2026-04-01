@@ -534,21 +534,6 @@ export function PageTableBasic(){
     
     
     
-    this.attachClickListenerToEachRow = function(){
-        const elem_tbody = thisObj.getElemTableBody();
-        
-        if (elem_tbody){
-            const table_rows = elem_tbody.querySelectorAll('tr');
-            
-            for (const cur_row of table_rows){
-                
-            
-            } 
-            
-        }
-        
-    }
-    
     
     this.addToolTips = function(){
         const with_tooltips  = elemDivContainer.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -568,12 +553,6 @@ export function PageTableBasic(){
     this.setUserLanguage = function(language_key){
         curUserLanguageKey = language_key;
         thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
     }
     
     

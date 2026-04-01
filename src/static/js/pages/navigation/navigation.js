@@ -1038,6 +1038,9 @@ export function Navigation(){
     this.setPageData = function(data){
         // Save this
         dataApplication = data.application;
+        
+        this.managerApplicationData.setDataCompanyApp(data.application);
+        
         this.managerPublicSections.setDataCompanyApp(data.application);
         
         

@@ -466,7 +466,9 @@ export function PageSummaryReportAdd(input_settings){
                         go_back_page);
                     
                     navigation.showThisPage(go_back_page);
-                    navigation.managerNavLinks.onClickNavSummaryReports();
+                    navigation.managerNavLinks.onClickNavSummaryReports(
+                        {refreshList: true}
+                    );
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

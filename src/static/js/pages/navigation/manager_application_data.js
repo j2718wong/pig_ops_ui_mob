@@ -21,6 +21,13 @@ export function ManagerApplicationData(_navigation) {
     this.reportLanguageOptions      = null;
     
     
+    this.dataApplication    = null;
+    
+    this.setDataCompanyApp = function(data){
+        thisObj.dataApplication = data;
+    }
+    
+    
     this.requestCountryDetails = function(country_hid, callback_success, 
             elem_show_error){
         

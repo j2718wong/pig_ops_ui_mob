@@ -1128,7 +1128,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
-    this.onClickNavParentTrace = function(is_mobile){
+    this.onClickNavParentTrace = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.TRACE_PARENTS);
         
         // Push currentPage to NavHistory;
@@ -1142,7 +1142,7 @@ export function ManagerNavLinks(_navigation) {
     
     
     this.onClickNavProdGestaLacta = function(is_mobile, operation_type, 
-            check_data_updates){
+            check_data_updates, show_options){
         
         if (is_mobile == null){ 
             // If not specified use the last known screen state.
@@ -1188,7 +1188,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
-    this.onClickNavProdFattening = function(is_mobile){
+    this.onClickNavProdFattening = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_LIST);
         
         navigation.showThisPage(next_page);
@@ -1196,7 +1196,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
-    this.onClickNavProdHistory = function(is_mobile){
+    this.onClickNavProdHistory = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_LIST);
         
         navigation.showThisPage(next_page);
@@ -1204,7 +1204,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
-    this.onClickNavProdNotPregnant = function(is_mobile){
+    this.onClickNavProdNotPregnant = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.PROD_NOT_PREGNANT_LIST);
         
         navigation.showThisPage(next_page);
@@ -1212,7 +1212,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
         
-    this.onClickNavFeedBalance = function(is_mobile){
+    this.onClickNavFeedBalance = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
         
         // Push currentPage to NavHistory;
@@ -1225,7 +1225,7 @@ export function ManagerNavLinks(_navigation) {
     }
         
         
-    this.onClickNavBoarExternalMate = function(is_mobile){
+    this.onClickNavBoarExternalMate = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_LIST);
         
         // Push currentPage to NavHistory;
@@ -1239,7 +1239,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
-    this.onClickNavPigDead = function(is_mobile){
+    this.onClickNavPigDead = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
         
         // Push currentPage to NavHistory;
@@ -1253,20 +1253,20 @@ export function ManagerNavLinks(_navigation) {
     
     
         
-    this.onClickNavSummaryReports = function(is_mobile){
+    this.onClickNavSummaryReports = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.SUMMARY_REPORT_LIST);
     
         navigation.showThisPage(next_page);
-        navigation.pageSummaryReportList.show();
+        navigation.pageSummaryReportList.show(show_options);
     }
         
         
-    this.onClickNavFeedCalculator = function(is_mobile){
+    this.onClickNavFeedCalculator = function(is_mobile, show_options){
         console.log('onClickNavFeedCalculator not yet implemented; is_mobile=' + is_mobile);
     }
     
     
-    this.onClickNavProdSales = function(is_mobile){
+    this.onClickNavProdSales = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.PROD_SALES_LIST);
         
         // Push currentPage to NavHistory;
@@ -1280,7 +1280,7 @@ export function ManagerNavLinks(_navigation) {
     
         
         
-    this.onClickNavFeedsExpenses = function(is_mobile){
+    this.onClickNavFeedsExpenses = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_LIST);
         
         // Push currentPage to NavHistory;
@@ -1294,7 +1294,7 @@ export function ManagerNavLinks(_navigation) {
     }
         
         
-    this.onClickNavNonFeedsExpenses = function(is_mobile){
+    this.onClickNavNonFeedsExpenses = function(is_mobile, show_options){
         console.log('onClickNavNonFeedsExpenses not yet implemented; is_mobile=' + is_mobile);
     }
         
@@ -1304,33 +1304,33 @@ export function ManagerNavLinks(_navigation) {
         
         
                     
-    this.onClickNavStaff = function(is_mobile){
+    this.onClickNavStaff = function(is_mobile, show_options){
         console.log('onClickNavStaff not yet implemented; is_mobile=' + is_mobile);
     }
         
                 
-    this.onClickNavPigBuyers = function(is_mobile){
+    this.onClickNavPigBuyers = function(is_mobile, show_options){
         console.log('onClickNavPigBuyers not yet implemented; is_mobile=' + is_mobile);
     }
         
             
-    this.onClickNavFeedSuppliers = function(is_mobile){
+    this.onClickNavFeedSuppliers = function(is_mobile, show_options){
         console.log('onClickNavFeedSuppliers not yet implemented; is_mobile=' + is_mobile);
     }
         
         
-    this.onClickNavSemenSuppliers = function(is_mobile){
+    this.onClickNavSemenSuppliers = function(is_mobile, show_options){
         console.log('onClickNavSemenSuppliers not yet implemented; is_mobile=' + is_mobile);
     }
         
         
-    this.onClickNavGiltSuppliers = function(is_mobile){
+    this.onClickNavGiltSuppliers = function(is_mobile, show_options){
         console.log('onClickNavGiltSuppliers not yet implemented; is_mobile=' + is_mobile);
     
     }
         
         
-    this.onClickNavAccOpsSettings = function(is_mobile){
+    this.onClickNavAccOpsSettings = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.ACC_OPS_SETTINGS_EDIT);
         
         // Push currentPage to NavHistory;
@@ -1343,7 +1343,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
         
-    this.onClickNavAccPigOps = function(is_mobile, operation_type){
+    this.onClickNavAccPigOps = function(is_mobile, operation_type, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_LIST);
         
         // Push currentPage to NavHistory;
@@ -1357,7 +1357,7 @@ export function ManagerNavLinks(_navigation) {
         
     
                     
-    this.onClickNavUsers = function(is_mobile){
+    this.onClickNavUsers = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.USER_LIST);
         
         // Push currentPage to NavHistory;
@@ -1370,7 +1370,7 @@ export function ManagerNavLinks(_navigation) {
     }
         
         
-    this.onClickNavAccessCodes = function(is_mobile){
+    this.onClickNavAccessCodes = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.ACCESS_CODE_LIST);
         
         // Push currentPage to NavHistory;

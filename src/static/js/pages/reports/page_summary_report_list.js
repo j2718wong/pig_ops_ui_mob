@@ -66,8 +66,11 @@ export function PageSummaryReportList(input_settings){
     
     let dtCurrentDate           = null;
 
-
-
+    let showOptions             = null;
+    
+    let lastDataVersionNum      = null;
+    
+    
     
     this.init = function(){
 
@@ -186,24 +189,71 @@ export function PageSummaryReportList(input_settings){
     }
     
     
+    // This should return a list to be displayed on the page.
+    // These are the possible common data sources: account, pig_farm, or application
+    // No more hard coding where is the list, but rather use this generic method.
+    this.getListFromDataSource = function(){
+        return navigation.pigFarm.dataSummaryReportList;
+    }
     
-    this.show = function(){
-        thisObj.debugNavHistory(TAG);
+    
+    // Try to find from common data sources: account, pig_farm, or application
+    this.getCurrentDataVersionNum = function(){
+        return null;
+    }
+    
+    
+    this.refreshList = function(options){
+        // Check if to refresh list
+        // Refresh list on these triggers:
+        // 1.) thisObj.getListFromDataSource is null; 
+        //      data not yet requested from server;
+        // 
+        // 2.) options.refreshList is explicitly set; this happens after  
+        //      adding an entry or updating entry or deleting an entry.
+        // 
+        // 3.) the thisObj.getCurrentDataVersionNum() is different from
+        //      lastDataVersionNum; this happens when the business object 
+        //      in the database, is updated by somebody else, not the user;
+        //      So the data is refreshed on list view, not push from server
+        //      to users; (unless this change in the future).
+        //
+        // In every refresh list, the lastDataVersionNum should be updated  
         
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = null;
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        dataSummaryReportList = thisObj.getListFromDataSource();
         
         
-        // Request data if not yet requested
-        dataSummaryReportList = navigation.pigFarm.dataSummaryReportList;
+        let refresh_needed = false;
         if (dataSummaryReportList == null){
+            refresh_needed = true;
+        }
+        else{
+            if (options){
+                if (options.refreshList){refresh_needed = true;}
+            }
+            
+            if (refresh_needed == false){
+                const current_ver_num = thisObj.getCurrentDataVersionNum();
+                
+                if (current_ver_num){
+                    if (current_ver_num != lastDataVersionNum){
+                        refresh_needed = true;
+                    }
+                }
+            } 
+        }   
+        
+        
+        if (refresh_needed){
             
             const callback_success = function(data){
                 dataSummaryReportList = navigation.pigFarm.dataSummaryReportList;
                 
                 thisObj.setDataEntryList(dataSummaryReportList);
                 thisObj.renderTable(dataSummaryReportList);
+                
+                lastDataVersionNum = thisObj.getCurrentDataVersionNum();
             };
             
             
@@ -218,6 +268,19 @@ export function PageSummaryReportList(input_settings){
             thisObj.setDataEntryList(dataSummaryReportList);
             thisObj.renderTable(dataSummaryReportList);
         }
+        
+    }
+    
+    
+    this.show = function(options){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = null;
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
+        thisObj.refreshList(options)
         
     }
     
@@ -412,23 +475,86 @@ export function PageSummaryReportList(input_settings){
     this.onClickRowEntry = function(entry_hid){
         const row_entry = thisObj.getEntry(entry_hid);   
         
-        const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        // Download report
+        
+        const report_hid = row_entry.report.hid;
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/report/download?rhid=${report_hid}`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        const elem_show_error = thisObj.elemServerErrorMsg;
     
-        const options ={
-            operation_type:         curAccPigOpsType,
-            is_add:                 false,   // false is edit
-            callback_after_edit:    thisObj.onSuccessEditEntry,
-            go_back_page:           go_back_page 
-        }
-        navigation.pageAccPigOpsAddEdit.beforeShow(options, data_acc_pig_ops);
-        
-        
-        const goto_page_id   = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
-        const page_container = navigation.getPageContainer(goto_page_id);
-        navigation.showThisPage(page_container);
+        // Use fetch instead of $.ajax for better binary handling
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            }
+        })
+        .then(response => {
+            // Check content type to determine if it's PDF or JSON error
+            const contentType = response.headers.get('content-type');
+            
+            if (contentType && contentType.includes('application/pdf')) {
+                // It's a PDF - download it
+                return response.blob().then(blob => {
+                    return { type: 'pdf', blob: blob, filename: thisObj.getFilenameFromHeaders(response) };
+                });
+            } else {
+                // It's JSON (error response)
+                return response.json().then(data => {
+                    return { type: 'error', data: data };
+                });
+            }
+        })
+        .then(result => {
+            if (result.type === 'pdf') {
+                // Download PDF
+                const downloadUrl = window.URL.createObjectURL(result.blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = result.filename || 'report.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(downloadUrl);
+                
+                // Optional: show success message
+                if (navigation.toastAlert) {
+                    const title   = navigation.managerApplicationData.dataApplication.product_name;
+                    const message = 'Report downloaded successfully';
+                    navigation.toastAlert.showToast(title, message);
+                }
+            } else {
+                // Show error from JSON response
+                navigation.serverError.receivedErrorMessage(result.data, elem_show_error);
+            }
+        })
+        .catch(error => {
+            console.error('Download error:', error);
+            if (elem_show_error) {
+                elem_show_error.textContent = 'Failed to download report';
+                elem_show_error.style.display = 'block';
+            }
+            navigation.serverError.serverErrorThrown(error);
+        });
     }
-  
+    
+    
+    
+    // Helper to extract filename from Content-Disposition header
+    this.getFilenameFromHeaders = function(response) {
+        const contentDisposition = response.headers.get('Content-Disposition');
+        if (contentDisposition) {
+            const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+            if (match && match[1]) {
+                return match[1].replace(/['"]/g, '');
+            }
+        }
+        return 'report.pdf';
+    };
     
     
 }
