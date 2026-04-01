@@ -467,7 +467,7 @@ export function PageSummaryReportAdd(input_settings){
                     
                     navigation.showThisPage(go_back_page);
                     navigation.managerNavLinks.onClickNavSummaryReports(
-                        {refreshList: true}
+                        null, {refreshList: true}
                     );
                 }
                 else{
