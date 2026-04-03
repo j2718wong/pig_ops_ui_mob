@@ -501,7 +501,9 @@ export function PageUserSignUpOrLogin(input_settings){
         <div class="social-list">
             <!-- Google -->
             <div id="social-btn-google" class="social-btn google" role="button" tabindex="0" aria-label="Sign up with Google">
-                <i class="fab fa-google"></i>
+                <img src="static_m/images/logo/google-logo.svg" 
+                    alt="Google" 
+                    width="24" height="24">
                 <span>Google</span>
             </div>
             

@@ -352,7 +352,7 @@ export function ManagerAddress(_navigation){
         
         
         const base_url = window.location.origin;
-        const url = `${base_url}/supplier/list?ahid=${accountHid}&country_id&${param}=1`;
+        const url = `${base_url}/supplier/list?ahid=${accountHid}&${param}=1`;
         
         
         const bearer_token = localStorage.getItem('access_token');

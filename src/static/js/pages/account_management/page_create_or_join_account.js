@@ -490,7 +490,12 @@ export function PageCreateOrJoinAccount(input_settings){
                     let error_code = response.result.code;
                     let error_desc = response.result.desc;
                     
-                    let html = `<span>Sorry Invalid Access Code</span>`;
+                    let s_desc = '';
+                    if (error_desc && error_desc.length > 0){
+                        s_desc  = error_desc;
+                    } 
+                    
+                    let html = `<span>Sorry Invalid Access Code - ${s_desc}</span>`;
                     
 
                     elemInvalidAccCodeShow.style.display = 'block';
