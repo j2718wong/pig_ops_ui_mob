@@ -10,6 +10,7 @@ import {APPLICATION,
         PAGE_ID}                from '../../constants.js';
 
 import {LoadingAnimation}       from './loading_animation.js';
+import {UiLanguageSwitch}       from './comp_language_switch.js';
 
 
 // Add this helper function at the top of your module, after the imports
@@ -195,6 +196,8 @@ export function PageUserSignUpOrLogin(input_settings){
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
     
     // DOM Elements
+    let elemUiLangSwitch        = null; 
+    
     let elemIntroText           = null;
     let elemTermsText           = null;
     let elemTermsOfService      = null;
@@ -461,10 +464,21 @@ export function PageUserSignUpOrLogin(input_settings){
     this.render = function(){
         const html_style = thisObj._writeInlineStyle();
         
+        elemUiLangSwitch = new UiLanguageSwitch({
+            uniqueKey:      'signup_or_login'
+        });
+        
+        
+        const html_lang_switch   = elemUiLangSwitch.getHtml();
+        
+        
         const html = `
 <div class="signup-card">
     ${html_style}
-
+    
+    <!-- Language Switcher -->
+    ${html_lang_switch}
+    
     <!-- 1.) PRODUCT & LOGO: centered -->
     <div class="product-row" onclick="window.location.href='/';">
         <div class="company-logo">J</div>
@@ -581,6 +595,9 @@ export function PageUserSignUpOrLogin(input_settings){
     
     
     this.afterHtmlRender = function(){
+        elemUiLangSwitch.afterHtmlRender();
+        
+        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -1119,6 +1136,8 @@ export function PageUserSignUpOrLogin(input_settings){
     this.show = function(options){
         showOptions = options;
         elemEmailInvalidShow.style.display = 'none';
+    
+        elemUiLangSwitch.beforeShow();
         
         // Reset to owner tab by default
         this.switchTab('owner');
@@ -1137,6 +1156,11 @@ export function PageUserSignUpOrLogin(input_settings){
             elemContinueUsingSocial.textContent = 'Or use your email:';
             elemLoginOrSignUpLink.innerHTML     = 'Already have an account? <span>Log in</span>';
         }
+    }
+    
+    
+    this.populateLanguageOptions = function(){
+        
     }
     
     

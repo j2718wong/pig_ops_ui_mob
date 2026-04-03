@@ -261,6 +261,8 @@ export function PageCreateOrJoinAccount(input_settings){
     }
     
     
+    
+    
     this.populateForm = function(){
         function maskEmail(email) {
             if (!email || !email.includes('@')) return email;

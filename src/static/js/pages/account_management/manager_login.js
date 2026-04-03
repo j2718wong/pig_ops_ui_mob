@@ -140,9 +140,42 @@ export function ManagerLogin(){
     this._bindEventListeners = function(){}
     
     
+    this.getLanguageFromUrl = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('lang');
+    }
+
+
+    this.getLanguageFromCookie = function() {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'user_lang') return value;
+        }
+        return null;
+    }
+
+
+    this.setLanguageCookie = function(lang) {
+        document.cookie = `user_lang=${lang}; path=/; max-age=31536000`;
+    }
+
+    
+    
     
     this.onPageLoad = function(){
         const url_path = window.location.pathname;
+        
+        // Get language from URL or cookie
+        let currentLang = this.getLanguageFromUrl();
+        if (!currentLang) {
+            currentLang = this.getLanguageFromCookie();
+        }
+        if (currentLang && currentLang !== 'default') {
+            this.setLanguageCookie(currentLang);
+            localStorage.setItem('user_language', currentLang);
+        }
+        
         
         if (url_path == '/logout'){
             // Clear cookies and storage
