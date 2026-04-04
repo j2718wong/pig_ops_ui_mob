@@ -277,8 +277,19 @@ export function UserControl(_navigation) {
         // Clear all items from localStorage
         localStorage.clear();
         
-        //     
-        window.location.href = '/login';
+        // Also clear sessionStorage to remove any NF state flags
+        sessionStorage.clear();
+        
+        
+        // Clear cookies (especially user_lang and access_token)
+        document.cookie.split(";").forEach(function(c) {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+        
+        // Use a small delay to ensure storage is cleared before redirect
+        setTimeout(function() {
+            window.location.href = '/login';
+        }, 50);
     }
 
 }
