@@ -101,6 +101,22 @@ export function PageAddFarm(input_settings){
         const html_lang_switch  = elemUiLangSwitch.getHtml();
         
         
+        let label_min_characters    = 'Invalid. Minimum 8 characters';
+        let label_add_pig_farm      = 'Add Pig Farm to Account';
+        let label_enter_farm_name   = 'Enter Farm Name';
+        let label_name_first_farm   = 'Name your first farm — you can add more later';
+        
+        
+        const helper = parentObj.translationHelper;
+
+
+        label_min_characters        = helper.getSimpleTranslation('page_add_farm.min_characters') || label_min_characters;
+        label_add_pig_farm          = helper.getSimpleTranslation('page_add_farm.add_pig_farm') || label_add_pig_farm;
+        label_enter_farm_name       = helper.getSimpleTranslation('page_add_farm.enter_farm_name') || label_enter_farm_name;
+        label_name_first_farm       = helper.getSimpleTranslation('page_add_farm.name_first_farm') || label_name_first_farm;
+        
+        
+        
         const html =`
 
         
@@ -127,7 +143,7 @@ export function PageAddFarm(input_settings){
 
                 <div id="invalid-acc-name-show" class="invalid-feedback" style="display:none;">
                     <i class="fas fa-triangle-exclamation"></i>
-                    <span id="invalid-acc-name-msg">Invalid. Minimum 8 characters</span> 
+                    <span id="invalid-acc-name-msg">${label_min_characters}</span> 
                 </div>
 
                 <!-- account code (always plain text below) -->
@@ -141,21 +157,21 @@ export function PageAddFarm(input_settings){
 
     <!-- ========== FARM SECTION ========== -->
     <div id="farmSection">
-        <div class="option-title" style="justify-content:center;">Add Pig Farm to Account</div>
+        <div class="option-title" style="justify-content:center;">${label_add_pig_farm}</div>
 
         <div class="divider"></div>
         
         <div style="margin-top: 0.2rem;">
-            <div class="section-label">🏡 Enter Farm Name </div>
+            <div class="section-label">🏡 ${label_enter_farm_name} </div>
             
-            <input type="text" id="farmNameInput" class="input-field" placeholder="e.g., North pasture" value="">
+            <input type="text" id="farmNameInput" class="input-field" placeholder="" value="">
             
             <div id="invalid-farm-name-show" class="invalid-feedback" style="display:none;">
                 <i class="fas fa-triangle-exclamation"></i>
-                <span id="invalid-farm-name-msg">Invalid. Minimum 8 characters</span> 
+                <span id="invalid-farm-name-msg">${label_min_characters}</span> 
             </div>
             
-            <div class="field-help">Name your first farm — you can add more later</div>
+            <div class="field-help">${label_name_first_farm}</div>
             
             <!-- Country selection section - minimalist design -->
             <div id="countryContainer" class="country-container">
@@ -439,8 +455,8 @@ export function PageAddFarm(input_settings){
             
             if (matchingCountry) {
                 // Country found in list
-                countryFoundInList = true;
-                selectedCountryHid = matchingCountry.id;
+                countryFoundInList  = true;
+                selectedCountryHid  = matchingCountry.id;
                 selectedCountryName = matchingCountry.name;
                 elemCountryReadOnlyValue.textContent = matchingCountry.name;
                 
@@ -622,16 +638,21 @@ export function PageAddFarm(input_settings){
             'name':             input_name
         };
         
-        // Add country_hid only if selected from list
-        if (selectedCountryHid) {
+        if (countryFoundInList){
             post_data.country_hid = selectedCountryHid;
         }
-        else{
-            post_data.new_country_code = selectedCountryCode;
-            post_data.new_country_name = selectedCountryName;
-        }
         
-
+        else{
+            // Add country_hid only if selected from list
+            if (selectedCountryHid) {
+                post_data.country_hid = selectedCountryHid;
+            }
+            else{
+                post_data.new_country_code = selectedCountryCode;
+                post_data.new_country_name = selectedCountryName;
+            }
+        
+        }
 
         let url = `${base_url}/pig_farm/add`;
 

@@ -48,6 +48,9 @@ export function ManagerLogin(){
     let elemCopyRightYear               = null;
     
     
+    let isProcessingNF = false;
+    
+    
     this.translationHelper          = new TranslationHelper({
         parentObj:                  this
     });
@@ -218,27 +221,36 @@ export function ManagerLogin(){
                 localStorage.setItem('user_language', urlLang);
             }
             
+
             
             if (state) {
             
                 switch (state){
                     case 'NF':{
-                        // This comes now from Navigation redirect. 
+                        // This comes from Navigation class redirect. 
                         // 
                         // window.location.href = "/login?state=NF";
                         
+                        // In normal flow,
+                        // 1.) User (pig_farm owner) use google or any social 
+                        //      media. Or Manual enter email.
+                        // 2.) User is saved into the system. 
+                        // 3.) User creates new account
+                        // 4.) After success creating account, User adds first farm
+                        // 5.) After success adding first pig farm, redirects to "/" 
                         
                         // No Farm state; but the user has bearer token;
                         
                         // This is the case for:
                         //
                         // 1.) The user creates an account, but did not 
-                        //  finish creating a pig_farm. And the user refreshes the page.
-                        //  So the User at this time has an  user_id and account_id
+                        //  finish creating a pig_farm. And the user refreshes 
+                        // the page. Or user switch language.
+                        //  So the User at this time has a user_id and account_id
                         //  which are all valid. At this point also the user 
                         // access_token is already saved in storage.
-                        // The user in this case is cleary a farm owner not staff
-                        // since was able to create account.
+                        // The user in this case is cleary a farm owner 
+                        // not staff since was able to create account.
                         //
                         // In this case the user should go back to the registration 
                         // page where to input first pig farm. 
@@ -250,40 +262,15 @@ export function ManagerLogin(){
                         // It should be checked if user has really no farms
                         // before going to  PAGE_ID.ADD_FARM;
                         
-                        
-                        const callback_success = function(data_user_account){
-                            console.log('data_user_account');
-                            
-                            console.log(data_user_account);
-                            
-                            // Check if user has really no assigned Farm
-                            const user = data_user_account.user;
-                            
-                            if (user.pig_farms){
-                                // User has assigned farms even the URL path tells that user has no farm
-                                // redirect to "/"
-                                // redirect to "/" with language
-                                const savedLang = localStorage.getItem('user_language');
-                                if (savedLang && savedLang !== 'default') {
-                                    window.location.href = '/?lang=' + savedLang;
-                                } else {
-                                    window.location.href = "/";
-                                }
-                                
-                                return;
-                            }
-                            
-                            
-                            const goto_page_id   = PAGE_ID.ADD_FARM;
-                            const page_container = thisObj.getPageContainer(goto_page_id);
-                                
-                            thisObj.showThisPage(page_container);
-                            thisObj.pageAddFarm.show(data_user_account);
-                            
+                        // Prevent multiple simultaneous calls
+                        if (thisObj.isProcessingNF) {
+                            console.log('Already processing NF state, ignoring...');
                             return;
                         }
+                        thisObj.isProcessingNF = true;
+
                         
-                        
+                        const callback_success = thisObj.checkIfUserHasPigFarms;
                         thisObj.requestUserAccount(callback_success);
                         
                         
@@ -294,6 +281,11 @@ export function ManagerLogin(){
                 return;
             }
             
+            
+            // 2026-04-05
+            // It is also possible  that the user already in /login?state=NF
+            // but just delete the ?state=NF and refresh the page again
+            // This needs to be handled as well.
             
             const callback_failure = function(){
                 // Clear all items from localStorage
@@ -317,11 +309,18 @@ export function ManagerLogin(){
             
             const callback_success = function(data_user_account){
                 if (data_user_account.account){
+                    // Check if user has farms
+                    const user_has_farms = thisObj.checkIfUserHasPigFarms(data_user_account);
+                    if (user_has_farms == false){return;}
+                    
+                    
+                    
                     // Redirect to Dashboard if user has account
                     const savedLang = localStorage.getItem('user_language');
                     
+                    window.location.href = '/';
                     
-                    
+                    /*
                     // ALWAYS include language if it exists
                     if (savedLang && savedLang !== 'default'){
                         console.log('Redirecting with language:', savedLang);
@@ -342,6 +341,7 @@ export function ManagerLogin(){
                             window.location.href = '/';
                         }
                     }
+                    */
                     
                     return;
                 }
@@ -387,7 +387,59 @@ export function ManagerLogin(){
         
     }
     
-
+    
+    this.checkIfUserHasPigFarms = function(data_user_account){
+        console.log('checkIfUserHasPigFarms.data_user_account');
+        console.log(data_user_account);
+        
+        thisObj.isProcessingNF = false;
+        
+        // Check if user has really no assigned Farm
+        const user = data_user_account.user;
+        
+        if (user.pig_farms && user.pig_farms.length > 0){
+            // User has assigned farms even the URL path tells that user has no farm
+            // redirect to "/"
+            // redirect to "/" with language
+            
+            
+            const savedLang = localStorage.getItem('user_language');
+            
+            
+            // Build clean URL without duplicate parameters
+            let redirectUrl = '/';
+            /*
+            if (savedLang && savedLang !== 'default') {
+                // Use path-based language, not query parameter
+                const langMap = {'en': 'en', 'fil': 'tag', 'ceb': 'bis', 'zh': 'zh'};
+                const urlLang = langMap[savedLang] || 'en';
+                redirectUrl = `/?lang=${urlLang}`;
+            }
+            */
+            window.location.href = redirectUrl
+            
+            return true;
+        }
+        
+        
+        
+        // IMPORTANT: Remove state=NF from URL to prevent loop
+        // Replace the URL without the state parameter
+        const newUrl = window.location.pathname;  // Just '/login' or '/signup'
+        window.history.replaceState({}, '', newUrl);
+        
+        
+        
+        // Now show the Add Farm page
+        const goto_page_id   = PAGE_ID.ADD_FARM;
+        const page_container = thisObj.getPageContainer(goto_page_id);
+            
+        thisObj.showThisPage(page_container);
+        thisObj.pageAddFarm.show(data_user_account);
+        
+        return false;
+    }
+    
 
     this.getTranslations = function(){
         return window.SUPERPIG_PUBLIC_PAGES;
@@ -484,6 +536,7 @@ export function ManagerLogin(){
                     //return;
                     
                     // Use the stored language for redirect
+                    /*
                     const savedLang = localStorage.getItem('user_language');
                     if (savedLang && savedLang !== 'default') {
                         console.log('Redirecting to home with language:', savedLang);
@@ -499,7 +552,10 @@ export function ManagerLogin(){
                             window.location.href = '/';
                         }
                     }
-                                    
+                    */
+                    
+                    window.location.href = '/';
+                    
                     
                 } else {
                     const goto_page_id = PAGE_ID.ADD_FARM;
