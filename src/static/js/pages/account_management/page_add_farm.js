@@ -12,11 +12,9 @@ import {APPLICATION,
         PIG_OPERATION_TYPE,
         SUPPLIER_TYPE}          from '../../constants.js';
 
+import {UiLanguageSwitch}       from './comp_language_switch.js';
 
 import {getLocationWithFallback} from './page_user_signup_or_login.js';
-
-
-
 
 
 export function PageAddFarm(input_settings){
@@ -38,6 +36,8 @@ export function PageAddFarm(input_settings){
 
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
+        
+    let elemUiLangSwitch        = null;
         
     let elemIdServerErrorMsg    = null;
 
@@ -90,15 +90,23 @@ export function PageAddFarm(input_settings){
     
     
     this.render = function(){
+        elemUiLangSwitch = new UiLanguageSwitch({
+            uniqueKey:      'add_farm'
+        });
+        
         
         elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
+        
+        const html_lang_switch  = elemUiLangSwitch.getHtml();
         
         
         const html =`
 
         
 <div class="signup-card">
+    ${html_lang_switch}
+    
     <!-- 1.) PRODUCT & LOGO: centered -->
     <div class="product-row">
         <div class="company-logo">J</div>
@@ -222,6 +230,7 @@ export function PageAddFarm(input_settings){
     
     
     this.afterHtmlRender = function(){
+        elemUiLangSwitch.afterHtmlRender();
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -344,6 +353,8 @@ export function PageAddFarm(input_settings){
     
     this.show = function(data_user_account){
         dataUserAccount     = data_user_account;
+        
+        elemUiLangSwitch.beforeShow();
         
         thisObj.populateForm();
         

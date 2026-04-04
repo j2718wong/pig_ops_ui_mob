@@ -313,9 +313,16 @@ export function PageCreateOrJoinAccount(input_settings){
     this._resetForm = function(){
         elemInvalidAccNameShow.style.display = 'none';
         
+        let label_valid_name        = 'Please enter valid name.';
+        
+        const helper = parentObj.translationHelper;
+
+        label_valid_name        = helper.getSimpleTranslation('page_create_or_join.valid_name') || label_valid_name;
+        
+        
         const html = `
             <i class="fas fa-triangle-exclamation"></i>
-            <span>Please enter valid name.</span> 
+            <span>${label_valid_name}</span> 
         `;
         
         elemInvalidAccNameShow.innerHTML = html;
