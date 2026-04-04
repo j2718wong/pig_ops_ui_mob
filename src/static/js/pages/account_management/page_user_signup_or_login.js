@@ -217,15 +217,19 @@ export function PageUserSignUpOrLogin(input_settings){
     
     let elemTermsText           = null;
     
+    let elemUseGoogle           = null;
+    let elemUseFacebook         = null;
+    let elemUseTiktok           = null;
+    
+    let elemManualEmail         = null
+    let elemContinueUsingEmail  = null;
     let elemEmail               = null;
     let elemEmailInvalidShow    = null; 
     let elemEmailInvalidMsg     = null;
     let elemBtnSignUpOrLogin    = null;
-    let elemContinueUsingSocial = null;
-    let elemUseGoogle           = null;
-    let elemUseFacebook         = null;
-    let elemUseTiktok           = null;
     let elemLoginOrSignUpLink   = null;
+    
+    
     let showOptions             = null;
     let loadingAnimation        = null;
     
@@ -564,6 +568,8 @@ export function PageUserSignUpOrLogin(input_settings){
         </button>
     </div>
 
+    
+
     <!-- Farm Owner Tab Content -->
     <div id="tab-farm-owner" class="tab-content active">
         <div class="role-description">
@@ -577,7 +583,8 @@ export function PageUserSignUpOrLogin(input_settings){
             ${label_terms_text}
         </div>
 
-
+        <h1 class="intro-text">Sign In With</h1>
+        
         <!-- Social Media login will be the default login  -->
         <div class="social-list">
             <!-- Google -->
@@ -598,29 +605,29 @@ export function PageUserSignUpOrLogin(input_settings){
             
         </div>
 
+        <div id="manual-email" style = "display:none">
 
-        <div class="or-section">
-            <span class="or-line"></span>
-            <span class="login-label" id="continue-using-social">${label_continue_email}</span>
-            <span class="or-line"></span>
-        </div>
+            <div class="or-section">
+                <span class="or-line"></span>
+                <span class="login-label" id="continue-using-email">${label_continue_email}</span>
+                <span class="or-line"></span>
+            </div>
 
-        <label class="login-label" for="email">Email</label>
-        <input type="email" id="email" class="email-input" placeholder="Enter your email" inputmode="email" autocomplete="email">
-        <div id="invalid-email-show" class="invalid-feedback" style="display:none;">
-            <i class="fas fa-triangle-exclamation"></i>
-            <span id="invalid-email-msg">${label_valid_email}</span> 
-        </div>
+            <label class="login-label" for="email">Email</label>
+            <input type="email" id="email" class="email-input" placeholder="Enter your email" inputmode="email" autocomplete="email">
+            <div id="invalid-email-show" class="invalid-feedback" style="display:none;">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span id="invalid-email-msg">${label_valid_email}</span> 
+            </div>
 
-        <button class="signup-btn">${label_signup}</button>
-
-
+            <button class="signup-btn">${label_signup}</button>
         
-        <!-- 4.) Already Have an Account? – ENTIRE LINE CLICKABLE (easy mobile tap) -->
-        <div class="login-redirect">
-            <a href="#" class="login-full-link">
-            Already have an account? <span>Log in</span>
-            </a>
+            <!-- 4.) Already Have an Account? – ENTIRE LINE CLICKABLE (easy mobile tap) -->
+            <div class="login-redirect">
+                <a href="#" class="login-full-link">
+                Already have an account? <span>Log in</span>
+                </a>
+            </div>
         </div>
     </div>
     
@@ -685,15 +692,18 @@ export function PageUserSignUpOrLogin(input_settings){
         elemTermsText           = elemDivContainer.querySelector('.terms-text');
         
         
+        elemUseGoogle           = elemDivContainer.querySelector('#social-btn-google'); 
+        elemUseFacebook         = elemDivContainer.querySelector('#social-btn-facebook');
+        elemUseTiktok           = elemDivContainer.querySelector('#social-btn-tiktok');
         
+        
+        elemManualEmail         = elemDivContainer.querySelector('#manual-email');
+        elemContinueUsingEmail  = elemDivContainer.querySelector('#continue-using-email');
         elemEmail               = elemDivContainer.querySelector('#email');
         elemEmailInvalidShow    = elemDivContainer.querySelector('#invalid-email-show');
         elemEmailInvalidMsg     = elemDivContainer.querySelector('#invalid-email-msg');
         elemBtnSignUpOrLogin    = elemDivContainer.querySelector('.signup-btn');
-        elemContinueUsingSocial = elemDivContainer.querySelector('#continue-using-social');
-        elemUseGoogle           = elemDivContainer.querySelector('#social-btn-google'); 
-        elemUseFacebook         = elemDivContainer.querySelector('#social-btn-facebook');
-        elemUseTiktok           = elemDivContainer.querySelector('#social-btn-tiktok');
+        
         elemLoginOrSignUpLink   = elemDivContainer.querySelector('.login-full-link');
         
         // Tab elements
@@ -1234,14 +1244,14 @@ export function PageUserSignUpOrLogin(input_settings){
             elemIntroText.textContent           = label_login;
             elemTermsText.style.display         = 'none';
             elemBtnSignUpOrLogin.textContent    = 'Continue';
-            elemContinueUsingSocial.textContent = label_continue_email;    
+            elemContinueUsingEmail.textContent  = label_continue_email;    
             elemLoginOrSignUpLink.innerHTML     = label_create_account;
         }
         else{
             elemIntroText.textContent           = label_signup_to_continue;
             elemTermsText.style.display         = 'block';
             elemBtnSignUpOrLogin.textContent    = label_sign_up;
-            elemContinueUsingSocial.textContent = label_continue_email;
+            elemContinueUsingEmail.textContent  = label_continue_email;
             elemLoginOrSignUpLink.innerHTML     = label_have_account;
         }
     }
