@@ -5,7 +5,7 @@
 'use strict';
 
 import {PageTableBasic}         from '../../common/page_table_basic.js';
-import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
+import {calculateNumDaysSinceInsem}  from '../../common/page_view_basic.js';
 
 
 import {APPLICATION,
@@ -54,10 +54,16 @@ export function PageBoarExternalMateList(input_settings){
     let componentNavLeftRight   = null;
     
     let elemIdPageInfo          = null;
+    let elemIdLabelToday        = null;
+    let elemIdDateToday         = null;
+    
     let elemIdTableBody         = null;
     
 
     let elemPageInfo            = null;
+    let elemLabelToday          = null;
+    let elemDateToday           = null;
+    
     let elemTableBody           = null;
     
     
@@ -67,9 +73,6 @@ export function PageBoarExternalMateList(input_settings){
     let searchIncludeInsem      = true;
     
     let dtCurrentDate           = null;
-
-
-    let farmPage                = new PageViewPigFarmPage();
 
     
     this.init = function(){
@@ -94,11 +97,14 @@ export function PageBoarExternalMateList(input_settings){
     this.render = function(){
         let label_page_title    = 'Boar External Mates';
         
+        let label_today         = 'Today';
+        
         
         const helper = navigation.managerTranslations.translationHelper;
         
         
         label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations2') || label_page_title;
+        label_today             = helper.getSimpleTranslation('common_app.labels.today') || label_today;
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({
@@ -109,6 +115,10 @@ export function PageBoarExternalMateList(input_settings){
         
         
         elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
+        
+        elemIdLabelToday        = `${settings.uniqueKey}-label-today`;
+        elemIdDateToday         = `${settings.uniqueKey}-date-today`;
+        
         
         
         const html_nav          = componentNavLeftRight.getHtml();   
@@ -128,6 +138,12 @@ export function PageBoarExternalMateList(input_settings){
         </div>
     </div>
     -->
+    
+    <div style="text-align: center;">
+        <span id="${elemIdLabelToday}">${label_today}</span>
+        <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
+    </div>
+        
     
     ${html_table}
 
@@ -151,6 +167,8 @@ export function PageBoarExternalMateList(input_settings){
     this._findElementsThis = function(){
         elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
         
+        elemLabelToday          = elemDivContainer.querySelector('#'+elemIdLabelToday);
+        elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
         
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
     }
@@ -210,6 +228,18 @@ export function PageBoarExternalMateList(input_settings){
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
+        
+        // So that not to instantiate in every table redraw
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
+        
+        const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
+        
+        // This is only shown in Gesta, Lacta and Wean tabs
+        elemDateToday.textContent = s_dt_current;
+        
+
         
         const callback_success = function(data){
             thisObj.renderTable(data);
@@ -320,13 +350,27 @@ export function PageBoarExternalMateList(input_settings){
         const s_date_exp_birth  = formatDate(dt_expected, FORMAT_COMPACT);
         
         
+         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        
+        // Set important date; 
+        let s_date_important = ''
+        let dt_important = new Date(cur_entry.date_expected_birth);
+        let dt_important_s = formatDate(dt_important, FORMAT_COMPACT);
+        
+        let diff_days = calculateNumDaysSinceInsem(
+                    cur_entry.date_mate, 
+                    dtCurrentDate,
+                    acc_settings_ops);
+                    
+        s_date_important = `${dt_important_s} <span class="nowrap">(Day ${diff_days}</span>)`;
+
         
         const html = `
             <tr>
                 <td>${boar_name}</td>
                 <td>${cur_entry.boar_customer.name}</td>
                 <td>${s_date_mate}</td>
-                <td>${s_date_exp_birth}</td>
+                <td>${s_date_important}</td>
             </tr>
         `;
         

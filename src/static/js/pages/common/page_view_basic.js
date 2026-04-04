@@ -146,7 +146,48 @@ export function PageViewBasic(){
     
 }
     
+  
+
+export function calculateNumDaysSinceInsem(insem_date, dt_current, acc_settings_ops){
+    if (!dt_current){
+        dt_current = new Date();
+        dt_current.setHours(0, 0, 0, 0);
+    }
     
+    const dt_insem            = new Date(insem_date);
+    const diff_msecs          = dt_current - dt_insem;
+    
+    let   diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
+    
+    // Adjust Day 1 on date of insemination/coupling if needed
+    if (acc_settings_ops){
+        if (acc_settings_ops.day_1_on_date_of_insem > 0){
+            diff_days += 1;
+        }
+    }
+    return diff_days;
+}
+
+
+export function calculateNumDaysSinceBirth(date_of_birth, dt_current, acc_settings_ops){
+    if (!dt_current){
+        dt_current = new Date();
+        dt_current.setHours(0, 0, 0, 0);
+    }
+    
+    const dt_birth            = new Date(date_of_birth);
+    const diff_msecs          = dt_current - dt_birth;
+    
+    let   diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
+    
+    // Adjust Day 1 on date of birth if needed
+    if (acc_settings_ops){
+        if (acc_settings_ops.day_1_on_date_of_birth > 0){
+            diff_days += 1;
+        }
+    }
+    return diff_days;
+}
     
 
 export function PageViewPigFarmPage(){  
@@ -161,44 +202,12 @@ export function PageViewPigFarmPage(){
     
     
     this.calculateNumDaysSinceInsem = function(insem_date, dt_current, acc_settings_ops){
-        if (!dt_current){
-            dt_current = new Date();
-            dt_current.setHours(0, 0, 0, 0);
-        }
-        
-        const dt_insem            = new Date(insem_date);
-        const diff_msecs          = dt_current - dt_insem;
-        
-        let   diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
-        
-        // Adjust Day 1 on date of insemination/coupling if needed
-        if (acc_settings_ops){
-            if (acc_settings_ops.day_1_on_date_of_insem > 0){
-                diff_days += 1;
-            }
-        }
-        return diff_days;
+        return calculateNumDaysSinceInsem(insem_date, dt_current, acc_settings_ops);
     }
 
     
     this.calculateNumDaysSinceBirth = function(date_of_birth, dt_current, acc_settings_ops){
-        if (!dt_current){
-            dt_current = new Date();
-            dt_current.setHours(0, 0, 0, 0);
-        }
-        
-        const dt_birth            = new Date(date_of_birth);
-        const diff_msecs          = dt_current - dt_birth;
-        
-        let   diff_days           = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
-        
-        // Adjust Day 1 on date of birth if needed
-        if (acc_settings_ops){
-            if (acc_settings_ops.day_1_on_date_of_birth > 0){
-                diff_days += 1;
-            }
-        }
-        return diff_days;
+        return calculateNumDaysSinceBirth(date_of_birth, dt_current, acc_settings_ops);
     }
     
     
