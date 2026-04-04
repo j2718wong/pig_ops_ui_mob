@@ -514,7 +514,6 @@ export function PageUserSignUpOrLogin(input_settings){
         let label_signup        = 'Sign up';
         
         
-        
         const helper = parentObj.translationHelper;
 
             
@@ -537,9 +536,6 @@ export function PageUserSignUpOrLogin(input_settings){
         label_access_code_enter = helper.getSimpleTranslation('page_signup.access_code_enter') || label_access_code_enter;
         
         
-        
-        
-        
         const html_lang_switch  = elemUiLangSwitch.getHtml();
         
         
@@ -547,7 +543,6 @@ export function PageUserSignUpOrLogin(input_settings){
 <div class="signup-card">
     ${html_style}
     
-    <!-- Language Switcher -->
     ${html_lang_switch}
     
     <!-- 1.) PRODUCT & LOGO: centered -->

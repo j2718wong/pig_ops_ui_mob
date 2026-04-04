@@ -10,7 +10,7 @@ import {APPLICATION,
         PAGE_ID}                from '../../constants.js';
 
 
-
+import {UiLanguageSwitch}       from './comp_language_switch.js';
 
 
 
@@ -30,6 +30,8 @@ export function PageCreateOrJoinAccount(input_settings){
 
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
+        
+    let elemUiLangSwitch        = null;
         
     let elemGreetings           = null;
 
@@ -57,13 +59,83 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     this.render = function(){
+        elemUiLangSwitch = new UiLanguageSwitch({
+            uniqueKey:      'create_or_join'
+        });
         
+        let label_choose_option     = 'Hello, please choose an option';
+        
+        let label_create_account    = 'Create a Pig Farm Account';
+        let label_admin             = 'Admin';
+        let label_owner_or_manager  = 'Are you the owner or manager of a pig farm?';
+        
+        let label_feature_a1        = 'You will be an account admin';
+        let label_feature_a2        = 'You can grant access to other users who wish to access your PigFarm account.';
+        let label_feature_a3        = 'Manage multiple pig farms under one account.';
+        let label_feature_a4        = 'Full access to your data.';
+        
+        let label_create_account_name = 'Create Farm Account Name';
+        let label_valid_name        = 'Please enter valid name.';
+        
+        let label_click_to_continue = 'Click to Continue';
+        
+        
+        let label_join_account      = 'Join a Pig Farm Account';
+        let label_needs_access_code = 'Needs Access Code';
+        let label_staff_desc        = 'You work as staff on a pig farm. Or you want to join a Farm Account.';
+        
+        let label_feature_b1        = 'The PigFarm account admins need to provide you a code.';
+        let label_feature_b2        = 'You may have limited access to the PigFarm account data based on approved role.';
+        
+        let label_enter_access_code = 'Enter Access Code';
+        let label_valid_code        = 'Please enter valid code.';
+        let label_ask_farm_admin    = 'Ask your farm admins for the code.';
+        
+        let label_back_to_signup    = 'Back to Signup';
+        
+        
+        const helper = parentObj.translationHelper;
+
+        
+        label_choose_option     = helper.getSimpleTranslation('page_create_or_join.choose_option') || label_choose_option;
+        
+        label_create_account    = helper.getSimpleTranslation('page_create_or_join.create_account') || label_create_account;
+        label_admin             = helper.getSimpleTranslation('page_create_or_join.admin') || label_admin;
+        label_owner_or_manager  = helper.getSimpleTranslation('page_create_or_join.owner_or_manager_desc') || label_owner_or_manager;
+        
+        label_feature_a1        = helper.getSimpleTranslation('page_create_or_join.feature_a1') || label_feature_a1;
+        label_feature_a2        = helper.getSimpleTranslation('page_create_or_join.feature_a2') || label_feature_a2;
+        label_feature_a3        = helper.getSimpleTranslation('page_create_or_join.feature_a3') || label_feature_a3;
+        label_feature_a4        = helper.getSimpleTranslation('page_create_or_join.feature_a4') || label_feature_a4;
+        
+        label_create_account_name = helper.getSimpleTranslation('page_create_or_join.create_account_name') || label_create_account_name;
+        label_valid_name        = helper.getSimpleTranslation('page_create_or_join.valid_name') || label_valid_name;
+        
+        label_click_to_continue = helper.getSimpleTranslation('page_create_or_join.click_to_continue') || label_click_to_continue;
+        
+        
+        label_join_account      = helper.getSimpleTranslation('page_create_or_join.join_account') || label_join_account;
+        label_needs_access_code = helper.getSimpleTranslation('page_create_or_join.needs_access_code') || label_needs_access_code;
+        label_staff_desc        = helper.getSimpleTranslation('page_create_or_join.staff_desc') || label_staff_desc;
+        
+        label_feature_b1        = helper.getSimpleTranslation('page_create_or_join.feature_b1') || label_feature_b1;
+        label_feature_b2        = helper.getSimpleTranslation('page_create_or_join.feature_b2') || label_feature_b2;
+        
+        label_enter_access_code = helper.getSimpleTranslation('page_create_or_join.enter_access_code') || label_enter_access_code;
+        label_valid_code        = helper.getSimpleTranslation('page_create_or_join.valid_code') || label_valid_code;
+        label_ask_farm_admin    = helper.getSimpleTranslation('page_create_or_join.ask_farm_admin') || label_ask_farm_admin;
+        
+        label_back_to_signup    = helper.getSimpleTranslation('page_create_or_join.back_to_signup') || label_back_to_signup;
+        
+        
+        const html_lang_switch  = elemUiLangSwitch.getHtml();
         
         
         const html =`
-
-        
 <div class="signup-card">
+    
+    ${html_lang_switch}
+    
     <!-- 1.) PRODUCT & LOGO: centered -->
     <div class="product-row" onclick="window.location.href='/';">
         <div class="company-logo">J</div>
@@ -71,27 +143,27 @@ export function PageCreateOrJoinAccount(input_settings){
     </div>
 
     <div style="margin-bottom:0.5rem; font-weight:600;" id="greetings">
-        Hello, please choose an option
+        ${label_choose_option}
     </div>
 
     <!-- two clickable options -->
     <!-- option 1: create (owner/manager) -->
     <div class="option-card">
         <div class="option-title">
-            🐖 Create a Pig Farm Account
-            <span class="create-badge">Admin</span>
+            🐖 ${label_create_account}
+            <span class="create-badge">${label_admin}</span>
         </div>
-        <div class="option-sub">Are you the owner or manager of a pig farm?</div>
+        <div class="option-sub">${label_owner_or_manager}</div>
         <ul class="feature-list">
-            <li>You will be an account admin.</li>
-            <li>You can grant access to other users who wish to access your PigFarm account.</li>
-            <li>Manage multiple pig farms under one account.</li>
-            <li>Full access to your data.</li>
+            <li>${label_feature_a1}</li>
+            <li>${label_feature_a2}</li>
+            <li>${label_feature_a3}</li>
+            <li>${label_feature_a4}</li>
         </ul>
         
         <div class="code-area">
             <div class="code-label">
-                Create Farm Account Name
+                ${label_create_account_name}
             </div>
             <div class="input-wrapper">
                 <input id="account-name" type="text" maxlength="50" autocomplete="off">
@@ -99,50 +171,47 @@ export function PageCreateOrJoinAccount(input_settings){
             
             <div id="invalid-account-name-show" class="invalid-feedback" style="display:none;">
                 <i class="fas fa-triangle-exclamation"></i>
-                <span>Please enter valid name.</span> 
+                <span>${label_valid_name}</span> 
             </div>
         </div>
         
         <div id="create-account" style="font-size:1.3rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
-            👆 Click to Continue
+            👆 ${label_click_to_continue}
         </div>
     </div>
 
     <!-- option 2: join (staff) -->
     <div class="option-card">
         <div class="option-title">
-            🧑‍🌾 Join a Pig Farm Account
-            <span class="join-badge">Needs Access Code</span>
+            🧑‍🌾 ${label_join_account}
+            <span class="join-badge">${label_needs_access_code}</span>
         </div>
-        <div class="option-sub">You work as staff on a pig farm. Or you want to join a Farm Account.</div>
+        <div class="option-sub">${label_staff_desc}</div>
         <ul class="feature-list">
-            <li>The PigFarm account admins need to provide you a code.</li>
-            <li>You may have limited access to the PigFarm account data based on approved role.</li>
+            <li>${label_feature_b1}</li>
+            <li>${label_feature_b2}</li>
         </ul>
         
         
         <div class="code-area">
             <div class="code-label">
-                Enter Access Code
+                ${label_enter_access_code}
             </div>
             <div class="input-wrapper">
                 <input id="account-code" type="text" maxlength="12" autocomplete="off">
             </div>
             <div id="invalid-account-code-show" class="invalid-feedback" style="display:none;">
                 <i class="fas fa-triangle-exclamation"></i>
-                <span id="invalid-account-code-msg">Please enter valid code.</span> 
+                <span id="invalid-account-code-msg">${label_valid_code}</span> 
             </div>
             
             <p style="font-size:1.1rem; margin-top:0.7rem; color:var(--dark-gray);">
-                <span style="color:var(--icon-indigo);">🔐</span> Ask your farm admins for the code.
+                <span style="color:var(--icon-indigo);">🔐</span> ${label_ask_farm_admin}
             </p>
         </div>
 
-        
-        
-        <!-- subtle extra badge recycled -->
         <div id="join-account" style="font-size:1.3rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
-            👆 Click to Continue
+            👆 ${label_click_to_continue}
         </div>
     </div>
     
@@ -163,7 +232,7 @@ export function PageCreateOrJoinAccount(input_settings){
             onmouseover="this.style.textDecoration='underline';"
             onmouseout="this.style.textDecoration='none';"
         >
-            Back to Signup
+            ${label_back_to_signup}
         </button>
     </div>
 
@@ -178,6 +247,7 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     this.afterHtmlRender = function(){
+        elemUiLangSwitch.afterHtmlRender();
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -256,6 +326,8 @@ export function PageCreateOrJoinAccount(input_settings){
     this.show = function(data_user, options){
         this._resetForm();
         
+        elemUiLangSwitch.beforeShow();
+        
         curDataUserAccount = data_user;
         this.populateForm();
     }
@@ -277,6 +349,25 @@ export function PageCreateOrJoinAccount(input_settings){
         }
         
         
+        function replacePlaceHolders(template, params){
+            let result = template;
+    
+            for (const [key, value] of Object.entries(params)) {
+                // Create regex to match {key} and replace with value
+                const regex = new RegExp(`{${key}}`, 'g');
+                result = result.replace(regex, value);
+            }
+            
+            return result;
+        }
+        
+        
+        let label_greet_1 = "Hello, you have registered your email {masked_user_email} to SuperPig. Please choose an option to continue.";
+        let label_greet_2 = "Hello <span>{user_name}</span>, you have registered your email {masked_user_email} to SuperPig. Please choose an option to continue.";
+        
+        
+        const helper = parentObj.translationHelper;
+        
         
         const user = curDataUserAccount.user.user;
         
@@ -293,12 +384,18 @@ export function PageCreateOrJoinAccount(input_settings){
         const masked_user_email = maskEmail(user.email);
         
         let html_greetings;
+        
         // If registered via manual email, there is no user name
         if (is_registered_via_email > 0){
-            html_greetings = `
-            Hello, you have registered your email ${masked_user_email} to SuperPig.  
-            Please choose an option to continue.
-            `;
+            label_greet_1   = helper.getSimpleTranslation('page_create_or_join.greet_1') || label_greet_1;
+            const template  = label_greet_1;
+
+            const params = {
+                masked_user_email:  masked_user_email   
+            };
+
+            
+            html_greetings = replacePlaceHolders(template, params);
         }
         else{
             let user_name = '';
@@ -319,10 +416,17 @@ export function PageCreateOrJoinAccount(input_settings){
             
             switch (user.social_media_id){
                 case  SOCIAL_MEDIA.GOOGLE:{
-                    html_greetings = `
-                    Hello <span>${user_name}</span>, you have registered your email ${masked_user_email} to SuperPig.  
-                    Please choose an option to continue.
-                    `;
+                    
+                    label_greet_2   = helper.getSimpleTranslation('page_create_or_join.greet_2') || label_greet_2;
+                    const template  = label_greet_2;
+        
+                    const params = {
+                        user_name:          user_name,
+                        masked_user_email:  masked_user_email   
+                    };
+        
+                    
+                    html_greetings = replacePlaceHolders(template, params);
                     break;
                 }
                 
