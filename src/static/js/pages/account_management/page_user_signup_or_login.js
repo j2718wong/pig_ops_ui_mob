@@ -195,13 +195,28 @@ export function PageUserSignUpOrLogin(input_settings){
     const settings              = input_settings;
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
     
+    
     // DOM Elements
     let elemUiLangSwitch        = null; 
     
+    let elemIdIntroText         = null; 
+    let elemIdFarmOwner         = null; 
+    let elemIdFarmStaff         = null; 
+    let elemIdFarmOwnerDesc     = null; 
+    let elemIdFarmStaffDesc     = null; 
+    
+    
     let elemIntroText           = null;
+    let elemFarmOwner           = null; 
+    let elemFarmStaff           = null; 
+    let elemFarmOwnerDesc       = null; 
+    let elemFarmStaffDesc       = null; 
+    
+    
+    
+    
     let elemTermsText           = null;
-    let elemTermsOfService      = null;
-    let elemPrivacyPolicy       = null;
+    
     let elemEmail               = null;
     let elemEmailInvalidShow    = null; 
     let elemEmailInvalidMsg     = null;
@@ -469,7 +484,63 @@ export function PageUserSignUpOrLogin(input_settings){
         });
         
         
-        const html_lang_switch   = elemUiLangSwitch.getHtml();
+        elemIdIntroText         = `${settings.uniqueKey}-intro-text`;
+        elemIdFarmOwner         = `${settings.uniqueKey}-farm-owner`;
+        elemIdFarmStaff         = `${settings.uniqueKey}-farm-staff`;
+        elemIdFarmOwnerDesc     = `${settings.uniqueKey}-farm-owner-desc`;
+        elemIdFarmStaffDesc     = `${settings.uniqueKey}-farm-staff-desc`;
+        
+        
+        let label_signup_to_continue  = 'Sign up to Continue';
+        let label_farm_owner    = 'Farm Owner';
+        let label_farm_staff    = 'Farm Staff';
+        
+        let label_farm_owner_desc = '<strong>Farm Owner or Manager</strong> — You own or manage a pig farm and need full access to manage operations, staff, and financial data.';
+        let label_farm_staff_desc = '<strong>Farm Staff</strong> — You work on a pig farm and need to join an existing farm account. Ask the account admin for the access code.';
+        
+        let label_terms_text = `By Signing up, I accept the <a href="/terms">J SysDev Terms of Service</a> 
+            and acknowledge the <a href="/privacy" >Privacy Policy</a>.`
+        
+        let label_continue_email = 'Or use your email';
+        let label_enter_email   = 'Enter your email';
+        let label_valid_email   = 'Please enter a valid email address';
+        
+        let label_first_name    = 'First Name';
+        let label_last_name     = 'Last Name';
+        let label_access_code   = 'Access Code';
+        let label_access_code_enter   = 'Enter your Access Code';
+        
+        let label_login         = 'Login';
+        let label_signup        = 'Sign up';
+        
+        
+        
+        const helper = parentObj.translationHelper;
+
+            
+        label_signup_to_continue= helper.getSimpleTranslation('page_signup.signup_to_continue') || label_signup_to_continue;
+        label_farm_owner        = helper.getSimpleTranslation('page_signup.farm_owner') || label_farm_owner;
+        label_farm_staff        = helper.getSimpleTranslation('page_signup.farm_staff') || label_farm_staff;
+        
+        label_farm_owner_desc   = helper.getSimpleTranslation('page_signup.farm_owner_desc') || label_farm_owner_desc;
+        label_farm_staff_desc   = helper.getSimpleTranslation('page_signup.farm_staff_desc') || label_farm_staff_desc;
+        
+        label_terms_text        = helper.getSimpleTranslation('page_signup.terms_text') || label_terms_text;
+        
+        label_continue_email    = helper.getSimpleTranslation('page_signup.continue_email') || label_continue_email;
+        label_enter_email       = helper.getSimpleTranslation('page_signup.enter_email') || label_enter_email;
+        label_valid_email       = helper.getSimpleTranslation('page_signup.valid_email') || label_valid_email;
+        
+        label_first_name        = helper.getSimpleTranslation('page_signup.first_name') || label_first_name;
+        label_last_name         = helper.getSimpleTranslation('page_signup.last_name') || label_last_name;
+        label_access_code       = helper.getSimpleTranslation('page_signup.access_code') || label_access_code;
+        label_access_code_enter = helper.getSimpleTranslation('page_signup.access_code_enter') || label_access_code_enter;
+        
+        
+        
+        
+        
+        const html_lang_switch  = elemUiLangSwitch.getHtml();
         
         
         const html = `
@@ -486,15 +557,15 @@ export function PageUserSignUpOrLogin(input_settings){
     </div>
 
     <!-- 2.) "Sign up to continue" (centered) -->
-    <h1 class="intro-text">Sign up to continue</h1>
+    <h1 class="intro-text" id="${elemIdIntroText}">${label_signup_to_continue}</h1>
 
     <!-- Tab Navigation -->
     <div class="tab-navigation">
         <button class="tab-btn active" id="tab-owner-btn">
-            <i class="fas fa-user-tie"></i> Farm Owner
+            <i class="fas fa-user-tie"></i> <span id="${elemIdFarmOwner}">${label_farm_owner}</span>
         </button>
         <button class="tab-btn" id="tab-staff-btn">
-            <i class="fas fa-users"></i> Farm Staff
+            <i class="fas fa-users"></i> <span id="${elemIdFarmStaff}">${label_farm_staff}</span>
         </button>
     </div>
 
@@ -502,12 +573,13 @@ export function PageUserSignUpOrLogin(input_settings){
     <div id="tab-farm-owner" class="tab-content active">
         <div class="role-description">
             <i class="fas fa-crown"></i>
-            <strong>Farm Owner or Manager</strong> — You own or manage a pig farm and need full access to manage operations, staff, and financial data.
+            <span id="${elemIdFarmOwnerDesc}">
+                ${label_farm_owner_desc}
+            </span>
         </div>
 
         <div class="terms-text" style="margin-bottom:12px;">
-            By Signing up, I accept the <a href="/terms" id="terms-of-service">J SysDev Terms of Service</a> 
-            and acknowledge the <a href="/privacy" id="privacy-policy">Privacy Policy</a>.
+            ${label_terms_text}
         </div>
 
 
@@ -534,7 +606,7 @@ export function PageUserSignUpOrLogin(input_settings){
 
         <div class="or-section">
             <span class="or-line"></span>
-            <span class="login-label" id="continue-using-social">Or continue using your email</span>
+            <span class="login-label" id="continue-using-social">${label_continue_email}</span>
             <span class="or-line"></span>
         </div>
 
@@ -542,10 +614,10 @@ export function PageUserSignUpOrLogin(input_settings){
         <input type="email" id="email" class="email-input" placeholder="Enter your email" inputmode="email" autocomplete="email">
         <div id="invalid-email-show" class="invalid-feedback" style="display:none;">
             <i class="fas fa-triangle-exclamation"></i>
-            <span id="invalid-email-msg">Please enter a valid email address</span> 
+            <span id="invalid-email-msg">${label_valid_email}</span> 
         </div>
 
-        <button class="signup-btn">Sign up</button>
+        <button class="signup-btn">${label_signup}</button>
 
 
         
@@ -561,27 +633,29 @@ export function PageUserSignUpOrLogin(input_settings){
     <div id="tab-farm-staff" class="tab-content">
         <div class="role-description staff">
             <i class="fas fa-user-check"></i>
-            <strong>Farm Staff</strong> — You work on a pig farm and need to join an existing farm account. Ask the account admin for the access code.
+            <span="${elemIdFarmStaffDesc}">
+                ${label_farm_staff_desc}
+            </span>
         </div>
         
         <div class="staff-form">
             <div class="name-row">
                 <div>
-                    <label for="first-name" class="login-label">First Name</label>
-                    <input type="text" id="first-name" class="staff-input" placeholder="First name" inputmode="text" autocomplete="given-name">
+                    <label for="first-name" class="login-label">${label_first_name}</label>
+                    <input type="text" id="first-name" class="staff-input" placeholder="${label_first_name}" inputmode="text" autocomplete="given-name">
                 </div>
                 <div>
-                    <label for="last-name" class="login-label">Last Name</label>
-                    <input type="text" id="last-name" class="staff-input" placeholder="Last name" inputmode="text" autocomplete="family-name">
+                    <label for="last-name" class="login-label">${label_last_name}</label>
+                    <input type="text" id="last-name" class="staff-input" placeholder="${label_last_name}" inputmode="text" autocomplete="family-name">
                 </div>
             </div>
             
             
-            <label class="login-label" for="access-code" style="margin-top: 20px;">Access Code</label>
-            <input type="text" id="access-code" class="staff-input" placeholder="Enter your access code" inputmode="text" autocomplete="off">
+            <label class="login-label" for="access-code" style="margin-top: 20px;">${label_access_code}</label>
+            <input type="text" id="access-code" class="staff-input" placeholder="${label_access_code_enter}" inputmode="text" autocomplete="off">
             
             <button class="staff-signup-btn" id="staff-signup-btn">
-                Login
+                ${label_login}
             </button>
         </div>
         
@@ -606,10 +680,17 @@ export function PageUserSignUpOrLogin(input_settings){
     
     this._findElements = function(){
         // Existing elements
-        elemIntroText           = elemDivContainer.querySelector('.intro-text');
+        elemIntroText           = elemDivContainer.querySelector('#'+elemIdIntroText);
+        
+        elemFarmOwner           = elemDivContainer.querySelector('#'+elemIdFarmOwner);
+        elemFarmStaff           = elemDivContainer.querySelector('#'+elemIdFarmStaff);
+        elemFarmOwnerDesc       = elemDivContainer.querySelector('#'+elemIdFarmOwnerDesc);
+        elemFarmStaffDesc       = elemDivContainer.querySelector('#'+elemIdFarmStaffDesc);
+        
         elemTermsText           = elemDivContainer.querySelector('.terms-text');
-        elemTermsOfService      = elemDivContainer.querySelector('#terms-of-service');
-        elemPrivacyPolicy       = elemDivContainer.querySelector('#privacy-policy');
+        
+        
+        
         elemEmail               = elemDivContainer.querySelector('#email');
         elemEmailInvalidShow    = elemDivContainer.querySelector('#invalid-email-show');
         elemEmailInvalidMsg     = elemDivContainer.querySelector('#invalid-email-msg');
@@ -670,15 +751,7 @@ export function PageUserSignUpOrLogin(input_settings){
             thisObj.switchTab('staff');
         });
         
-        elemTermsOfService.addEventListener('click', function(event) {
-            // Will now redirect to /terms
-            window.location.href = '/terms';
-        });
         
-        elemPrivacyPolicy.addEventListener('click', function(event) {
-            // Will now redirect to /privacy
-            window.location.href = '/privacy';
-        });
         
         elemLoginOrSignUpLink.addEventListener('click', function(event) {
             if (showOptions.is_login){
@@ -1142,19 +1215,39 @@ export function PageUserSignUpOrLogin(input_settings){
         // Reset to owner tab by default
         this.switchTab('owner');
     
+    
+        let label_signup_to_continue  = 'Sign up to Continue';    
+        let label_login         = 'Login'; 
+        let label_sign_up       = 'Sign up'; 
+        let label_continue_email= 'Or use your email';
+        let label_create_account= '<span>Create Account</span>';
+        let label_have_account  = 'Already have an account? <span>Log in</span>';
+        
+        
+        const helper = parentObj.translationHelper;
+
+            
+        label_signup_to_continue = helper.getSimpleTranslation('page_signup.signup_to_continue') || label_signup_to_continue;
+        label_login         = helper.getSimpleTranslation('page_signup.login') || label_login;
+        label_sign_up       = helper.getSimpleTranslation('page_signup.sign_up') || label_sign_up;
+        label_continue_email= helper.getSimpleTranslation('page_signup.continue_email') || label_continue_email;    
+        label_create_account= helper.getSimpleTranslation('page_signup.create_account') || label_create_account;
+        label_have_account  = helper.getSimpleTranslation('page_signup.have_account') || label_have_account;
+    
+    
         if (showOptions.is_login){
-            elemIntroText.textContent           = 'Login';
+            elemIntroText.textContent           = label_login;
             elemTermsText.style.display         = 'none';
             elemBtnSignUpOrLogin.textContent    = 'Continue';
-            elemContinueUsingSocial.textContent = 'Or use your email:';    
-            elemLoginOrSignUpLink.innerHTML     = '<span>Create Account</span>';
+            elemContinueUsingSocial.textContent = label_continue_email;    
+            elemLoginOrSignUpLink.innerHTML     = label_create_account;
         }
         else{
-            elemIntroText.textContent           = 'Sign up to continue';
+            elemIntroText.textContent           = label_signup_to_continue;
             elemTermsText.style.display         = 'block';
-            elemBtnSignUpOrLogin.textContent    = 'Sign up';
-            elemContinueUsingSocial.textContent = 'Or use your email:';
-            elemLoginOrSignUpLink.innerHTML     = 'Already have an account? <span>Log in</span>';
+            elemBtnSignUpOrLogin.textContent    = label_sign_up;
+            elemContinueUsingSocial.textContent = label_continue_email;
+            elemLoginOrSignUpLink.innerHTML     = label_have_account;
         }
     }
     

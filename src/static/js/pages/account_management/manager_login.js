@@ -18,6 +18,9 @@ import {PageCreateOrJoinAccount}    from './page_create_or_join_account.js';
 import {PageAddFarm}                from './page_add_farm.js';
 import {PageRequestJoinAccountSent} from './page_request_join_account_sent.js';
 
+// This is attaached directly to this object
+import {TranslationHelper}          from '../navigation/translation_helper.js';
+
 
 
 // This is used for signup or login
@@ -43,6 +46,12 @@ export function ManagerLogin(){
 
     
     let elemCopyRightYear               = null;
+    
+    
+    this.translationHelper          = new TranslationHelper({
+        parentObj:                  this
+    });
+    
     
     
     this.pageUserSignUpOrLogin      = new PageUserSignUpOrLogin({
@@ -378,10 +387,13 @@ export function ManagerLogin(){
         
     }
     
-    
-    
-    
-    
+
+
+    this.getTranslations = function(){
+        return window.SUPERPIG_PUBLIC_PAGES;
+    }
+
+
     this.getPageContainer = function(page_id){
         switch(page_id){
             case PAGE_ID.NOT_LOGGED_IN:{
