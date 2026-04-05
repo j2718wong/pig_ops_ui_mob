@@ -433,25 +433,37 @@ const html_2 = `
         // Function to update value
         function updateBalance(feedType, newValue) {
             const inputField = elemDivContainer.querySelector(`.fi-number-input[data-feed="${feedType}"]`);
-            inputField.value = newValue;
-            dataFeedInput[feedType] = newValue;
+            if (inputField) {
+                inputField.value = newValue;
+                dataFeedInput[feedType] = newValue;
+                
+                // Trigger input event for any listeners
+                const event = new Event('input', { bubbles: true });
+                inputField.dispatchEvent(event);
+            }
         }
         
         // Set up up/down buttons
         elemDivContainer.querySelectorAll('.fi-step-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
+            // Handle both click and touch events
+            const handleStep = function(e) {
                 e.preventDefault();
+                e.stopPropagation();
+                
                 const feedType = this.getAttribute('data-feed');
                 const inputField = this.closest('.fi-number-input-container').querySelector('.fi-number-input');
+                if (!inputField) return;
+                
                 let currentValue = parseFloat(inputField.value) || 0;
                 
                 if (this.classList.contains('up')) {
-                    // Increase by step
                     currentValue += step;
                 } else {
-                    // Decrease by step, but not below 0
                     currentValue = Math.max(0, currentValue - step);
                 }
+                
+                // Round to 2 decimal places to avoid floating point issues
+                currentValue = Math.round(currentValue * 100) / 100;
                 
                 updateBalance(feedType, currentValue);
                 
@@ -460,22 +472,25 @@ const html_2 = `
                 setTimeout(() => {
                     this.style.backgroundColor = '';
                 }, 150);
+            };
+            
+            // Add click event (works on desktop)
+            button.addEventListener('click', handleStep);
+            
+            // Add touchstart event for mobile (fires faster than click)
+            button.addEventListener('touchstart', handleStep, { passive: false });
+            
+            // Also add mousedown for better desktop responsiveness
+            button.addEventListener('mousedown', function(e) {
+                this.style.backgroundColor = '#dee2e6';
             });
             
-            // Add touch feedback for mobile
-            button.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                this.style.backgroundColor = '#dee2e6';
-            }, { passive: false });
-            
-            button.addEventListener('touchend', function(e) {
-                e.preventDefault();
+            button.addEventListener('mouseup', function(e) {
                 setTimeout(() => {
                     this.style.backgroundColor = '';
                 }, 150);
-            }, { passive: false });
+            });
         });
-        
         
         // Handle direct input changes
         elemDivContainer.querySelectorAll('.fi-number-input').forEach(input => {
