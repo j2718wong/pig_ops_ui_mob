@@ -55,10 +55,6 @@ export function TablePigProdFeed(input_settings){
 
 
 
-    //let textTranslation         = new TextTranslation();
-    let curUserLanguageKey      = 'en';
-
-
     let showOptions             = null;
     
     let dtCurrentDate           = null;
@@ -280,19 +276,7 @@ export function TablePigProdFeed(input_settings){
         
         return elem_row;
     }
-    
-      
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
-    }
-    
+
     
     this.getEntry = function(entry_hid){
         const data_list = dataPigProd.data_details.list_prod_feed;
