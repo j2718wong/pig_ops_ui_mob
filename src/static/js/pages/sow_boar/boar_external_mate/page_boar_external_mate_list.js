@@ -421,11 +421,11 @@ export function PageBoarExternalMateList(input_settings){
             let u_customer_name     = null;
             
                       
-            if (cur_entry.boar.name){
+            if (cur_entry.sow_boar.name){
                 u_boar_name = cur_entry.sow_boar.name.toUpperCase();
             }
             
-            if (cur_entry.boar.number){
+            if (cur_entry.sow_boar.number){
                 u_boar_number = cur_entry.sow_boar.number.toUpperCase();
             }
             
