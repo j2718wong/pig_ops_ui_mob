@@ -69,8 +69,7 @@ export function PageBoarExternalMateList(input_settings){
     
     let dataBoarExtMateList     = null;
 
-    
-    let searchIncludeInsem      = true;
+
     
     let dtCurrentDate           = null;
 
@@ -242,6 +241,7 @@ export function PageBoarExternalMateList(input_settings){
 
         
         const callback_success = function(data){
+            dataBoarExtMateList = data;
             thisObj.renderTable(data);
         };
 
@@ -249,7 +249,6 @@ export function PageBoarExternalMateList(input_settings){
         // Request BoarExtMate List
         navigation.pigFarm.managerSowBoar.requestBoarExtMateList(
             callback_success, null);
-        
     }
     
 
@@ -339,8 +338,7 @@ export function PageBoarExternalMateList(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
-        
-        
+
         const boar_name = getSowBoarReference(cur_entry.sow_boar);
         
         const dt_mate           = new Date(cur_entry.date_mate);
@@ -411,22 +409,53 @@ export function PageBoarExternalMateList(input_settings){
     
     
     
-    
-    
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
-    }
-    
-    
     this.searchEntries = function(key){
+        let data_list = dataBoarExtMateList;
         
+        const filtered = [];
+        for (const cur_entry of data_list){
+            
+            let u_boar_name         = null;
+            let u_boar_number       = null;
+            
+            let u_customer_name     = null;
+            
+                      
+            if (cur_entry.boar.name){
+                u_boar_name = cur_entry.boar.name.toUpperCase();
+            }
+            
+            if (cur_entry.boar.number){
+                u_boar_number = cur_entry.boar.number.toUpperCase();
+            }
+            
+            
+            u_customer_name = boar_customer.name.toUpperCase();
+            
+            if (u_boar_name){
+                if (u_boar_name.startsWith(key)){
+                    filtered.push(cur_entry);
+                    continue;
+                }
+            }
+            
+            if (u_boar_number){
+                if (u_boar_name.startsWith(key)){
+                    filtered.push(cur_entry);
+                    continue;
+                }
+            }
+            
+            
+            if (u_customer_name.startsWith(key)){
+                filtered.push(cur_entry);
+                continue;
+            }
+            
+        } 
+        
+        
+        return filtered;
     }
     
     

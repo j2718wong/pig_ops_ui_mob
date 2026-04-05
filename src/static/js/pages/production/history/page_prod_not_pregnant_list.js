@@ -387,29 +387,11 @@ export function PageProdNotPregnantList(input_settings){
     }
     
     
-    
-    
-    
-    
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
-    }
-    
-    
     this.searchEntries = function(key){
-        let data_pig_prod_list = dataNotPregnantList;
-        
-        
+        let data_list = dataNotPregnantList;
         
         const filtered = [];
-        for (const cur_entry of data_pig_prod_list){
+        for (const cur_entry of data_list){
             
             let u_sow_name          = null;
             let u_sow_number        = null;
