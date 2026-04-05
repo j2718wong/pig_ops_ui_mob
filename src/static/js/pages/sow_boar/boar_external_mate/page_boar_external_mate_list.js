@@ -422,15 +422,15 @@ export function PageBoarExternalMateList(input_settings){
             
                       
             if (cur_entry.boar.name){
-                u_boar_name = cur_entry.boar.name.toUpperCase();
+                u_boar_name = cur_entry.sow_boar.name.toUpperCase();
             }
             
             if (cur_entry.boar.number){
-                u_boar_number = cur_entry.boar.number.toUpperCase();
+                u_boar_number = cur_entry.sow_boar.number.toUpperCase();
             }
             
             
-            u_customer_name = boar_customer.name.toUpperCase();
+            u_customer_name = cur_entry.boar_customer.name.toUpperCase();
             
             if (u_boar_name){
                 if (u_boar_name.startsWith(key)){
@@ -440,7 +440,7 @@ export function PageBoarExternalMateList(input_settings){
             }
             
             if (u_boar_number){
-                if (u_boar_name.startsWith(key)){
+                if (u_boar_number.startsWith(key)){
                     filtered.push(cur_entry);
                     continue;
                 }

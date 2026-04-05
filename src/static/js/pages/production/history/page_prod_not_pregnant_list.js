@@ -464,7 +464,7 @@ export function PageProdNotPregnantList(input_settings){
             }
             
             if (u_sow_number){
-                if (u_sow_name.startsWith(key)){
+                if (u_sow_number.startsWith(key)){
                     filtered.push(cur_entry);
                     continue;
                 }
