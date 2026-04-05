@@ -26,7 +26,9 @@ import {TableNotes}             from '../../multikey/table_notes.js'
 import {TableHealthIssue}       from '../../multikey/table_health_issue.js'
 
 import {ProdSummary}            from '../summary/prod_summary.js'
-import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed.js'
+//import {TablePigProdFeed}       from '../../feeds/prod_feed/table_prod_feed.js'
+import {ProdFeeds}              from '../../feeds/prod_feed/prod_feeds.js'
+
 import {TableFeedBalance}       from '../../feeds/feed_balance/table_feed_balance.js'
 
 
@@ -272,7 +274,7 @@ export function PageProdFatteningEntry(input_settings){
         });
         this.pigProdSummary.init();
         
-        
+        /* Replace this with ProdFeeds; do not delete until stable
         this.tablePigProdFeed   = new TablePigProdFeed({
             navigation:         settings.navigation,
             parentObj:          this,
@@ -282,6 +284,17 @@ export function PageProdFatteningEntry(input_settings){
             isProdHistory:      isProdHistory
         });
         this.tablePigProdFeed.init();
+        */
+        
+        this.prodFeeds          = new ProdFeeds({
+            navigation:         settings.navigation,
+            parentObj:          this,
+            uniqueKey:          `${settings.uniqueKey}-feed`,
+            elemDivContainer:   elemTabFatProdFeed,
+            parentPageId:       PAGE_ID.PROD_FATTENING_ENTRY,
+            isProdHistory:      isProdHistory
+        });
+        this.prodFeeds.init();
         
         
         this.tableFeedBalance   = new TableFeedBalance({
@@ -527,7 +540,8 @@ export function PageProdFatteningEntry(input_settings){
             
             
             case elemIdTabFatProdFeed:{
-                thisObj.tablePigProdFeed.beforeShow(dataPigProd);
+                //thisObj.tablePigProdFeed.beforeShow(dataPigProd);
+                thisObj.prodFeeds.beforeShow(dataPigProd);
                 
                 curTabFat = thisObj.TAB_FAT_PROD_FEED;
                 break;

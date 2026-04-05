@@ -350,7 +350,7 @@ export function PageBoarExternalMateList(input_settings){
         const s_date_exp_birth  = formatDate(dt_expected, FORMAT_COMPACT);
         
         
-         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         
         // Set important date; 
         let s_date_important = ''
