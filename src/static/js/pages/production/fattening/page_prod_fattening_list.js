@@ -225,7 +225,7 @@ export function PageProdFatteningList(input_settings){
 .modal-close {
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 32px;
     cursor: pointer;
     color: white;
     padding: 0;
@@ -247,7 +247,7 @@ export function PageProdFatteningList(input_settings){
 
 /* Modal Message */
 .modal-message {
-    font-size: 14px;
+    font-size: 1.2rem;
     line-height: 1.5;
     margin-bottom: 12px;
     white-space: pre-line;
@@ -266,7 +266,7 @@ export function PageProdFatteningList(input_settings){
     background: #f5f5f5;
     padding: 10px;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 1.2rem;
     margin-top: 12px;
 }
 
@@ -287,7 +287,7 @@ export function PageProdFatteningList(input_settings){
     padding: 8px 20px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 1.2rem;
 }
 
 .btn-primary:disabled {
@@ -302,7 +302,7 @@ export function PageProdFatteningList(input_settings){
     padding: 8px 20px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 1.2rem;
 }
 
 /* Mobile optimization */
@@ -314,11 +314,11 @@ export function PageProdFatteningList(input_settings){
     
     .btn-primary, .btn-secondary {
         padding: 10px 16px;
-        font-size: 14px;
+        font-size: 1.2rem;
     }
     
     .modal-header h3 {
-        font-size: 16px;
+        font-size: 1.3rem;
     }
     
     .modal-body {
@@ -517,8 +517,8 @@ ${html_style}
                         <div>PID, ${label_sow}</div> 
                         <div><span class="love-icon">❤️</span> ${label_boar}</div>
                     </th>
-                    <th>${label_days}</th>
-                    <th>${label_pigs}</th>
+                    <th style="text-align:center;">${label_days}</th>
+                    <th style="text-align:center;">${label_pigs}</th>
                     <th>${label_date_harvest}</th>
                 </tr>
             </thead>
