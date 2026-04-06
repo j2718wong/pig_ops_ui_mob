@@ -972,53 +972,13 @@ ${html_style}
     
     
     this.onClickCombineToGroup = function(){
-        // This should show a Modal
-        /*
-        1.) Display this page info:
-        
-        This is used to combine Fattening entries into a production group 
-        in 1 pig pen. When the fattening entries are combined into group,
-        the individual fattening entries will not be accessible anymore but 
-        only the group. The individual fattening entries can only be read at 
-        Production History List. This cannot be undone.
-        
-        2.) If the checked rows is less than 2, It should display this another 
-        message:
-        
-        Please select at least two production entries to form a group.
-        
-        3.) If one of the entries is a group, and the others are individual 
-        entries display this message,
-        
-        The following production entries will be combined to Group PID = <group_pid>
-        
-        
-        4.) If more than 1 group in the selection, it should display this mesage:
-        
-        Cannot combine group to group.
-        
-        
-        5.) There should be a Cancel and Save buttons; as willa  Close (X) button 
-        at top of the modal.
-        
-        */
-        
-        console.log('prod_entry')
-        console.log(dataPigProdList[0]);
-        
-        // use this thisObj.checkGroupSelection
-        
-    }
-    
-    
-    this.onClickCombineToGroup = function(){
         let label_min_two_entries   = 'Please select at least two production entries to form a group.';
         let label_no_group_to_group = 'Cannot combine group to group. Please select only individual production entries.';
         
         let label_msg_add_to_group  = `The following PID will be added to existing Group PID {group_pid}:\n\n{list_pid}\n\nThe individual entries will no longer be listed in Fattening List and can only be found in Production History List.`;
         let label_save_add_to_group = 'Add to Group';
         
-        let label_msg_create_group  = `The following PID will be formed into a Group:\n\n{list_pid}\n\nThe individual entries will no longer be listed in Fattening List and can only be found in Production History List.`;
+        let label_msg_create_group  = `The following PID will be formed into a Group:\n\n{list_pid}\n\nThe individual entries will no longer be listed in Fattening List and can only be found in Production History List. The new Group will be listed in Fattening List`;
         let label_save_create_group = 'Create Group';
         
         const helper = navigation.managerTranslations.translationHelper;

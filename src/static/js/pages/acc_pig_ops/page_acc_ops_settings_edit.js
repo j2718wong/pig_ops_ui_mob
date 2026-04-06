@@ -55,6 +55,7 @@ export function PageAccOpsSettingsEdit(input_settings){
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
     
+    let componentNumDaysMoveFarrow = null;
     let componentNumDaysWean    = null;
     let componentNumDaysHarvest = null;
     let componentNumDaysHarvest2= null;
@@ -100,6 +101,18 @@ export function PageAccOpsSettingsEdit(input_settings){
            pageTitle:           'Pig Ops Settings'
         });
         
+        
+        componentNumDaysMoveFarrow = new ComponentPlusMinusInput({
+            uniqueKey:          `${settings.uniqueKey}-move-farrow`,
+            
+            className:          'form-group-number',
+            textLabel:          'NumDays Sow move to Farrowing',
+            minValue:           3,
+            step:               1,
+            isRequired:         true,
+            invalidFeedBack:    null,
+            helpText:           'Number of days to move sow to farrowing before expected birth'
+        });
         
         
         componentNumDaysWean    = new ComponentPlusMinusInput({
@@ -152,6 +165,7 @@ export function PageAccOpsSettingsEdit(input_settings){
         
         const html_nav          = componentNavLeftRight.getHtml();
 
+        const html_move_farrow  = componentNumDaysMoveFarrow.getHtml();
         const html_days_wean    = componentNumDaysWean.getHtml();
         const html_harvest      = componentNumDaysHarvest.getHtml();
         const html_harvest_2    = componentNumDaysHarvest2.getHtml();
@@ -206,6 +220,7 @@ export function PageAccOpsSettingsEdit(input_settings){
                                     
             </div>
             
+            ${html_move_farrow}
             
             ${html_days_wean}
             
@@ -248,6 +263,8 @@ export function PageAccOpsSettingsEdit(input_settings){
     
     this.afterHtmlRender = function(){
         componentNavLeftRight.afterHtmlRender();
+        
+        componentNumDaysMoveFarrow.afterHtmlRender();
         componentNumDaysWean.afterHtmlRender();
         componentNumDaysHarvest.afterHtmlRender();
         componentNumDaysHarvest2.afterHtmlRender();
@@ -301,6 +318,7 @@ export function PageAccOpsSettingsEdit(input_settings){
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
+        componentNumDaysMoveFarrow.reset();
         componentNumDaysWean.reset();
         componentNumDaysHarvest.reset();
         componentNumDaysHarvest2.reset();
@@ -335,6 +353,10 @@ export function PageAccOpsSettingsEdit(input_settings){
         else{
             elemDateBirthDay1.checked = true;
         }
+        
+        
+        
+        componentNumDaysMoveFarrow.setValue(acc_settings_ops.num_days_move_to_farrow);
         
         componentNumDaysWean.setValue(acc_settings_ops.num_days_wean);
         
@@ -377,11 +399,12 @@ export function PageAccOpsSettingsEdit(input_settings){
         let validation      = 0;
         
         
+        let input_num_days_move_farrow  = componentNumDaysMoveFarrow.getValue();
         let input_num_days_wean     = componentNumDaysWean.getValue();
         let input_num_days_harvest  = componentNumDaysHarvest.getValue();
         let input_num_days_harvest_2= componentNumDaysHarvest2.getValue();
         
-        let input_weight_unit       
+        let input_weight_unit;       
         
        
         const checkedRadioMating = elemDivContainer.querySelector('input[name="dateMating"]:checked');
@@ -422,9 +445,23 @@ export function PageAccOpsSettingsEdit(input_settings){
         }
         
         
-        let num_days_wean = 0;
-        let num_days_harvest = 0;
-        let num_days_harvest_2 = 0;
+        let num_days_move_farrow = 0;
+        let num_days_wean       = 0;
+        let num_days_harvest    = 0;
+        let num_days_harvest_2  = 0;
+        
+        
+        input_elem          = componentNumDaysMoveFarrow.getElemText();
+        
+        try{
+            num_days_move_farrow = parseInt(input_num_days_move_farrow)
+        }catch (error){
+            componentNumDaysMoveFarrow.setTextInvalid(INVALID_MSG_NUM_INPUT);
+            validation = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
         
         input_elem          = componentNumDaysWean.getElemText();
         
@@ -482,6 +519,7 @@ export function PageAccOpsSettingsEdit(input_settings){
             'day_1_on_date_insem':      day_1_on_date_of_insem,
             'day_1_on_date_of_birth':   day_1_on_date_of_birth,
             
+            'days_move_farrow':         num_days_move_farrow,
             'days_wean':                num_days_wean,
             'days_harvest_from_birth':  num_days_harvest,
             'days_harvest_from_wean':   num_days_harvest_2,
@@ -516,6 +554,8 @@ export function PageAccOpsSettingsEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    // TODO not yet done;
+                    
                     
                     // Updating acc_ops_settings has a series of updates
                     // 1.) Request the account_settings and replace the existing
@@ -555,6 +595,11 @@ export function PageAccOpsSettingsEdit(input_settings){
                     
                     
                     // Request Account settings
+                    
+                    // For the mena time display this
+                    const title   = navigation.managerApplicationData.dataApplication.product_name;
+                    const message = 'Settings Saved';
+                    navigation.toastAlert.showToast(title, message);
                     
                     
                 } 
