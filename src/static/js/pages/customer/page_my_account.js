@@ -111,7 +111,7 @@ export function PageMyAccount(input_settings){
             uniqueKey:      settings.uniqueKey,
             tableTitle:     'Pig Farm List',
             noSearchAdd:    true,
-            noControlsBar:  true,
+            noRowCount:     true,
             itemsPerPage:   10,
             
             addEntryLink: {

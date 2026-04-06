@@ -399,7 +399,7 @@ export function PageProdFeedAddEdit(input_settings){
             uniqueKey:      settings.uniqueKey,
             noHeader:       true,
             noSearchAdd:    true,
-            noControlsBar:  true,
+            noRowCount:     true,
             itemsPerPage:   20,
             tableTitle:     'Feed Buy Items'
         });

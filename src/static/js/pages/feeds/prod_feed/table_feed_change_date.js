@@ -68,7 +68,7 @@ export function TableFeedChangeDate(input_settings){
         thisObj.setSettingsTable({
             uniqueKey:      `${settings.uniqueKey}-feed-change-date`,
             noSearchAdd:    true,
-            noControlsBar:  true,
+            noRowCount:     true,
             tableTitle:     'Feed Change Date'
         });
         

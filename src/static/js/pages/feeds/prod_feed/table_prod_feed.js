@@ -68,7 +68,7 @@ export function TablePigProdFeed(input_settings){
         thisObj.setSettingsTable({
             uniqueKey:      `${settings.uniqueKey}-table`,
             noSearchAdd:    true,
-            noControlsBar:  true,
+            noRowCount:     true,
             tableTitle:     'Feed Add',
             
             addEntryLink: {

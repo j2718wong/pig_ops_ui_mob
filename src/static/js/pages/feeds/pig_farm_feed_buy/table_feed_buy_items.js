@@ -69,7 +69,7 @@ export function TableFeedBuyItems(input_settings){
             uniqueKey:      settings.uniqueKey,
             noHeader:       false,
             noSearchAdd:    true,
-            noControlsBar:  true,
+            noRowCount:     true,
             itemsPerPage:   20,
             tableTitle:     'Feed Items',
             

@@ -1,4 +1,4 @@
-// Jnauary 12, 2026
+// January 12, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -116,9 +116,11 @@ export function PageTableBasic(){
         noHeader:       false,
         noSearchAdd:    false,
         noAddButton:    true,
-        noControlsBar:  false,
+        noRowCount:     false,
         itemsPerPage:   20,
         tableTitle:     'Sow List',
+        
+        extraHtml:      null,
         
         addEntryLink: {
             label:      'Add Item',
@@ -223,13 +225,22 @@ export function PageTableBasic(){
             html_search_add = '';
         }
         
+        let html_hide_row_count = '';
+        if (settings.noRowCount){
+            html_hide_row_count = 'style="display:none;"'
+        }
+        
         
         let html_controls_bar = `
         <div class="controls-bar" id="${elemIdControlsBar}">
-            <div class="entry-count" id="${elemIdTableRowCount}">
-                0 Entries
+            <div class="entry-count">
+                <span id="${elemIdTableRowCount}" ${html_hide_row_count}>
+                    0 Entries
+                </span>
             </div>
             
+            
+            <!--The pagination controls is hidden until row_count > settings.itemsPerPage --> 
             <div class="pagination-controls" id="${elemIdTablePagination}">
                 <button class="pagination-btn" id="${elemIdTablePrevPage}" disabled>
                     <i class="fas fa-chevron-left"></i>
@@ -244,9 +255,14 @@ export function PageTableBasic(){
         </div>
         `;
         
-        if (settings.noControlsBar){
-            html_controls_bar = '';
+        
+        let html_extra_html = '';
+        if (settings.extraHtml){
+            html_extra_html = `
+            <div>${settings.extraHtml}</div>
+            `;
         }
+        
         
         let html_add_entry_link = '';
         if (settings.addEntryLink){
@@ -257,7 +273,6 @@ export function PageTableBasic(){
                 </a>
             </div>
             `;
-            
         }
         
         
@@ -289,6 +304,8 @@ export function PageTableBasic(){
     
         <div id="${elemIdServerErrorMsg}"></div>
     
+        <!-- Extra HTML for anything to add before the table -->
+        ${html_extra_html}
         
         <!-- Add entry Link instead of button -->
         ${html_add_entry_link}
@@ -320,7 +337,7 @@ export function PageTableBasic(){
     
     
     this._findElements = function(){
-        elemTableContainer      = document.getElementById(elemTableContainer);
+        elemTableContainer      = document.getElementById(elemIdTableContainer);
         
         elemTableTitle          = document.getElementById(elemIdTableTitle);
         elemTableEntryCount     = document.getElementById(elemIdTableEntryCount);
@@ -352,7 +369,7 @@ export function PageTableBasic(){
     
     
     this._processAfterHtmlRender = function(){
-        this.handleWindowResize();
+
     }
     
     
@@ -373,21 +390,6 @@ export function PageTableBasic(){
             });
         }
         
-    }
-    
-    
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        /*
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }*/
     }
     
     
@@ -446,18 +448,17 @@ export function PageTableBasic(){
         paginationManager.init();
         
         
-        if (settings.noControlsBar && settings.noControlsBar == true){}
-        else{
-            // One event handler at a time
-            config.elemPrevPageBtn.onclick = function(){
-                paginationManager.goToPrevPage();
-            }
-            
-            // One event handler at a time
-            config.elemNextPageBtn.onclick = function(){
-                paginationManager.goToNextPage();
-            }
+        
+        // One event handler at a time
+        config.elemPrevPageBtn.onclick = function(){
+            paginationManager.goToPrevPage();
         }
+        
+        // One event handler at a time
+        config.elemNextPageBtn.onclick = function(){
+            paginationManager.goToNextPage();
+        }
+        
     }
     
     
@@ -549,12 +550,7 @@ export function PageTableBasic(){
         return [];
     }
     
-    
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
+
     
     this.writeLabelNoEntries = function(){
         // If language is default or english, the label_no_entries is a 
