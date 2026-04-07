@@ -568,14 +568,13 @@ export function PageTableBasic(){
         // TODO get a random entry from DEFAULT_NO_ENTRIES_TABLE
         let label_no_entries = 'No Entries';
         
-
         
         if(thisObj.navigation){
             const manager_translations = thisObj.navigation.managerTranslations; 
-            const translation_helper = manager_translations.translationHelper;
+            const helper = manager_translations.translationHelper;
 
             const term_path = 'common.labels.no_entries';
-            label_no_entries = translation_helper.getTranslatedText(term_path, 
+            label_no_entries = helper.getTranslatedText(term_path, 
                 DEFAULT_NO_ENTRIES_TABLE);
         }
         

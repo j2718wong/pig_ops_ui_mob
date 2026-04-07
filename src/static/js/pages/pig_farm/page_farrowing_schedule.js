@@ -421,6 +421,79 @@ ${html_style}
         
         let num_days_allow_early_wean = 35;
         
+        
+        // Check conditions
+        const hasCrates = num_farrowing_crates > 0;
+        const hasProductionData = (dataLactatingList && dataLactatingList.length > 0) || 
+                                  (dataGestatingList && dataGestatingList.length > 0);
+            
+        
+        const container = elemFarrowingCalendar;
+        container.innerHTML = '';
+        
+        // Case 1: No farrowing crates
+        if (!hasCrates) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.style.padding          = '40px 20px';
+            emptyDiv.style.textAlign        = 'center';
+            emptyDiv.style.backgroundColor  = '#fff3e0';
+            emptyDiv.style.borderRadius     = '12px';
+            emptyDiv.style.margin           = '20px 0';
+            
+            emptyDiv.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 16px;">🏠</div>
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">No Farrowing Crates</div>
+                <div style="font-size: 14px; color: #666; margin-bottom: 16px;">Please add farrowing crates in Farm Settings</div>
+                <button id="goto-crate-settings" style="background: #2196F3; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                    Go to Farm Settings
+                </button>
+            `;
+            
+            container.appendChild(emptyDiv);
+            
+            const settingsBtn = emptyDiv.querySelector('#goto-crate-settings');
+            if (settingsBtn) {
+                settingsBtn.onclick = () => {
+                    const next_page_id = PAGE_ID.PIG_FARM_ADD_EDIT;
+                    const next_page = navigation.getPageContainer(next_page_id);
+                    navigation.pushCurrentPageToNavHistory(next_page);
+                    navigation.showThisPage(next_page);
+                    
+                    
+                    const go_back_page_id = PAGE_ID.FARROWING_SCHEDULE;
+                    const go_back_page = navigation.getPageContainer(go_back_page_id);
+                    const options = {
+                        is_add: false,
+                        go_back_page: go_back_page 
+                    }
+                    navigation.pagePigFarmAddEdit.show(options);
+                };
+            }
+            return;
+        }
+        
+        // Case 2: No production data
+        if (!hasProductionData) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.style.padding          = '40px 20px';
+            emptyDiv.style.textAlign        = 'center';
+            emptyDiv.style.backgroundColor  = '#e3f2fd';
+            emptyDiv.style.borderRadius     = '12px';
+            emptyDiv.style.margin           = '20px 0';
+            
+            emptyDiv.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 16px;">🐷</div>
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">No Production Data</div>
+                <div style="font-size: 14px; color: #666;">Add gestating entry to see the farrowing schedule</div>
+            `;
+            
+            container.appendChild(emptyDiv);
+            return;
+        }
+            
+        
+        // Normal Case
+        
         const startDate = new Date(dtCurrentDate);
         startDate.setHours(0, 0, 0, 0);
         

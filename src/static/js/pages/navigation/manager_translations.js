@@ -39,7 +39,7 @@ export function ManagerTranslations(_navigation) {
             const translations_language = translations.language;
             
             switch(translations_language){
-                case 'PH-BIS': return TRANSLATION_MODE.ENGLISH_FIRST_THEN_LOCAL
+                case 'bis': return TRANSLATION_MODE.ENGLISH_FIRST_THEN_LOCAL
             
                 default: break;
             }
