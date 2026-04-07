@@ -81,9 +81,7 @@ export function ManagerApplicationData(_navigation) {
                             });
                         }
                         
-                        
-                        console.log('reportLanguageOptions');
-                        console.log(thisObj.reportLanguageOptions);
+
                         
                     }
                     else{

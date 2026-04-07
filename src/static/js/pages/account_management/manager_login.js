@@ -389,9 +389,6 @@ export function ManagerLogin(){
     
     
     this.checkIfUserHasPigFarms = function(data_user_account){
-        console.log('checkIfUserHasPigFarms.data_user_account');
-        console.log(data_user_account);
-        
         thisObj.isProcessingNF = false;
         
         // Check if user has really no assigned Farm
@@ -521,7 +518,6 @@ export function ManagerLogin(){
                 thisObj.pageCreateOrJoinAccount.show(data_user_account);
                 
             } else {
-                console.log('user has account_hid = ' + account_hid);
                 
                 let account_has_farms = 0;
                 if (data_user_account.account.pig_farms){

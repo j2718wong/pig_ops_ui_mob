@@ -21,7 +21,7 @@ import {formatDate,
         sortList}               from '../../utils.js';
 
 import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
-import {ComponentPlusMinusInput} from '../common/ui/comp_plus_minus_input.js';
+
 
 import {getSowBoarReference}    from '../common/common_app.js';
 
@@ -58,6 +58,8 @@ export function PageFarrowingSchedule(input_settings){
     let elemIdLabelToday        = null;
     let elemIdDateToday         = null;
     
+    let elemIdUpdateNumCrates   = null;
+    
     let elemIdFarrowingCalendar = null;
  
     
@@ -65,10 +67,10 @@ export function PageFarrowingSchedule(input_settings){
     let elemLabelToday          = null;
     let elemDateToday           = null;
     
+    let elemUpdateNumCrates     = null;
+    
     let elemFarrowingCalendar   = null;
 
-    let componentNumFarrowingCrate = null; 
-    
     
     let dtCurrentDate           = null;
 
@@ -296,27 +298,15 @@ export function PageFarrowingSchedule(input_settings){
         elemIdLabelToday        = `${settings.uniqueKey}-label-today`;
         elemIdDateToday         = `${settings.uniqueKey}-date-today`;
         
+        elemIdUpdateNumCrates   = `${settings.uniqueKey}-update-crates`;
+        
         elemIdFarrowingCalendar = `${settings.uniqueKey}-farrowing-calendar`;
         
-        
-        componentNumFarrowingCrate = new ComponentPlusMinusInput({
-            uniqueKey:          `${settings.uniqueKey}-num-farrowing-crate`,
-            
-            className:          'form-group-number',
-            textLabel:          'Number of Farrowing Crate in the Farm',
-            minValue:           0,
-            step:               1,
-            isRequired:         false,
-            invalidFeedBack:    null,
-            helpText:           null
-        });
         
         const html_style        = thisObj._writeInlineStyle();
         
         const html_nav          = componentNavLeftRight.getHtml();   
  
-        const html_farrowing_crates = componentNumFarrowingCrate.getHtml();
-
            
         const html = `
 
@@ -337,8 +327,12 @@ ${html_style}
         <span id="${elemIdLabelToday}">${label_today}</span>
         <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
     </div>
-        
-    ${html_farrowing_crates}
+
+    <div style="margin: 8px 0;">
+        <a href="javascript:void(0)" class="text-link" id="${elemIdUpdateNumCrates}">
+            Update Farrowing Crates
+        </a>
+    </div>
     
     <div id="${elemIdFarrowingCalendar}"></div>
 
@@ -352,14 +346,6 @@ ${html_style}
     this.afterHtmlRender = function(){
         componentNavLeftRight.afterHtmlRender();
         
-        componentNumFarrowingCrate.afterHtmlRender();
-        
-        // Set default value to 3
-        const numCratesInput = document.getElementById(`${settings.uniqueKey}-num-farrowing-crate-input`);
-        if (numCratesInput) {
-            numCratesInput.value = 3;
-        }
-        
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -371,6 +357,8 @@ ${html_style}
         
         elemLabelToday          = elemDivContainer.querySelector('#'+elemIdLabelToday);
         elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
+        
+        elemUpdateNumCrates     = elemDivContainer.querySelector('#'+elemIdUpdateNumCrates);
         
         elemFarrowingCalendar   = elemDivContainer.querySelector('#'+elemIdFarrowingCalendar);
     }
@@ -390,18 +378,14 @@ ${html_style}
         
         componentNavLeftRight.bindEventListeners();
         
-        // Listen for crate number changes
-        const numCratesInput = document.getElementById(`${settings.uniqueKey}-num-farrowing-crate-input`);
-        if (numCratesInput) {
-            numCratesInput.addEventListener('change', function() {
-                thisObj.renderFarrowingCalendar();
-            });
-        }
+
     }
     
     
     this._bindEventListeners = function(){
-        
+        elemUpdateNumCrates.addEventListener('click', function() {
+            
+        });
        
     }
     
@@ -435,18 +419,19 @@ ${html_style}
     
     
     this.renderFarrowingCalendar = function(){
-        const accSettingsOps = navigation.pigFarm.getSettingsOperations();
+        const accSettingsOps    = navigation.pigFarm.getSettingsOperations();
         const dataLactatingList = navigation.pigFarm.managerPigProd.dataLactatingList;
         const dataGestatingList = navigation.pigFarm.managerPigProd.dataGestatingList;
         
-        // Get number of farrowing crates from input
-        let num_farrowing_crates = 3;
-        const numCratesInput = document.getElementById(`${settings.uniqueKey}-num-farrowing-crate-input`);
-        if (numCratesInput && numCratesInput.value) {
-            num_farrowing_crates = parseInt(numCratesInput.value) || 3;
-        }
+        const dataPigFarm = navigation.pigFarm.dataPigFarm;
+        
+        
+        let num_farrowing_crates = dataPigFarm.pig_farm.num_farrow_crates;
+        
+        
         
         let num_days_allow_early_wean = 35;
+        
         
         // Calculate date range (today to 115 days ahead)
         const startDate = new Date(dtCurrentDate);

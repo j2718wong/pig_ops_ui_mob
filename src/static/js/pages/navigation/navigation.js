@@ -1063,19 +1063,7 @@ export function Navigation(){
         const user_current_farm = this.userControl.getCurrentFarm();
         const pig_farm_account = data.pig_farm_account;
         
-        
-        console.log('\n\ndataUserAccount');
-        console.log(dataUserAccount);
-        
-        
-        console.log('\n\nuser_current_farm');
-        console.log(user_current_farm);
-        
-        
-        console.log('\n\npig_farm_account');
-        console.log(pig_farm_account);
-        
-        
+                
         this.pigFarm.setDataPigFarm(user_current_farm);
         this.pigFarm.setDataPigFarmAccount(pig_farm_account);
         
@@ -1179,7 +1167,7 @@ export function Navigation(){
         
        
     this.getPageIdFromContainer = function(page_container) {
-        return thisObj.getPageIdFromContainer.getPageContainer(page_id);
+        return thisObj.pageContainers.getPageIdFromContainer(page_container);
     };
         
         

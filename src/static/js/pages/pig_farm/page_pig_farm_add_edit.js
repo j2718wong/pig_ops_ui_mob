@@ -20,7 +20,7 @@ import {addValidationClassToElem} from '../common/ui/ui_utils.js';
 
 import {ComponentAddressLevels} from '../common/ui/comp_address_levels.js'
 import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js'
-
+import {ComponentPlusMinusInput} from '../common/ui/comp_plus_minus_input.js';
 
 
 export function PagePigFarmAddEdit(input_settings){
@@ -88,6 +88,17 @@ export function PagePigFarmAddEdit(input_settings){
     });
     
     
+    const compNumFarrowingCrate = new ComponentPlusMinusInput({
+        uniqueKey:              `${settings.uniqueKey}-num-farrowing-crate`,
+            
+        className:              'form-group-number',
+        textLabel:              'Number of Farrowing Crates in the Farm',
+        minValue:               0,
+        step:                   1,
+        isRequired:             false,
+        invalidFeedBack:        null,
+        helpText:               'This is used for calculating Farrowing Schedule'
+    });
     
     
     
@@ -130,6 +141,7 @@ export function PagePigFarmAddEdit(input_settings){
         
         const html_address_levels   = compAddressLevels.getHtml();
 
+        const html_farrowing_crates = compNumFarrowingCrate.getHtml();
         
         
         const html =`
@@ -157,6 +169,7 @@ export function PagePigFarmAddEdit(input_settings){
         
         ${html_address_levels}
         
+        ${html_farrowing_crates}
 
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
@@ -184,6 +197,8 @@ export function PagePigFarmAddEdit(input_settings){
         elemUiName.afterHtmlRender();
         
         compAddressLevels.afterHtmlRender();
+        
+        compNumFarrowingCrate.afterHtmlRender();
 
         
         this._findElements();
@@ -230,7 +245,7 @@ export function PagePigFarmAddEdit(input_settings){
         elemUiName.reset();
         
         compAddressLevels.reset();
-
+        compNumFarrowingCrate.reset();
         
     }
     
@@ -301,6 +316,7 @@ export function PagePigFarmAddEdit(input_settings){
         
         compAddressLevels.setLocationAddress(pig_farm.location);
         
+        compNumFarrowingCrate.setValue(pig_farm.pig_farm.num_farrow_crates);
     }
     
     
@@ -337,6 +353,7 @@ export function PagePigFarmAddEdit(input_settings){
         
 
         let input_name      = elemUiName.getValue();
+        let input_num_crates= compNumFarrowingCrate.getValue();
         
         
         input_elem          = elemUiName.getElemText();
@@ -352,6 +369,20 @@ export function PagePigFarmAddEdit(input_settings){
         let address_hids = compAddressLevels.getAddressHids();
         
         
+        // Validate number counts
+        let number_crates = 0;
+        
+        input_elem          = compNumFarrowingCrate.getElemText();
+        
+        try{
+            number_crates = parseInt(input_num_crates)
+        }catch (error){
+            validation = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+
         
         // Final check before sending request
         if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
@@ -368,7 +399,7 @@ export function PagePigFarmAddEdit(input_settings){
         const post_data = {
             'uhid':             user_hid,
             'name':             input_name,
-            
+            'num_farrowing_crates': number_crates
         };
         
         if (address_hids){

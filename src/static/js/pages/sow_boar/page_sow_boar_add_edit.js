@@ -17,7 +17,7 @@ import {UiInputDatePicker}          from '../common/ui/input_datepicker.js';
 import {UiInputTextWithCounter}     from '../common/ui/input_text_with_counter.js';
 import {UiSelectWithEntryCount}     from '../common/ui/select_with_entry_count.js';
 import {UiInputCheckBox}            from '../common/ui/input_checkbox.js';
-
+import {ComponentPlusMinusInput}    from '../common/ui/comp_plus_minus_input.js';
 
 import {getSowBoarReference}        from '../common/common_app.js';
 
@@ -80,9 +80,8 @@ export function PageSowBoarAddEdit(input_settings){
     
     let elemIdBirthProdIdShow   = null;
     let elemIdBirthProdId       = null;
-    let elemIdNumNipplesShow    = null;
-    let elemIdNumNipples        = null;
     
+    let compNumNipples          = null;
     let elemUiIsExternal        = null;
     let elemUiIsProdReady       = null;
     let elemUiNotes             = null;
@@ -101,8 +100,6 @@ export function PageSowBoarAddEdit(input_settings){
     let elemDateOfBirth         = null;
     let elemBirthProdIdShow     = null;
     let elemBirthProdId         = null;
-    let elemNumNipplesShow      = null;
-    let elemNumNipples          = null;
     
     let elemServerErrorMsg      = null;
     let elemBtnCancel           = null;
@@ -335,8 +332,17 @@ export function PageSowBoarAddEdit(input_settings){
         });
         
         
-        elemIdNumNipplesShow    = `${settings.uniqueKey}-num-nipples-show`;
-        elemIdNumNipples        = `${settings.uniqueKey}-num-nipples`;
+        compNumNipples          = new ComponentPlusMinusInput({
+            uniqueKey:          `${settings.uniqueKey}-nipples`,
+                
+            className:          'form-group-number',
+            textLabel:          label_num_nipples,
+            minValue:           12,
+            step:               1,
+            isRequired:         false,
+            invalidFeedBack:    null,
+            helpText:           label_num_nipples_help
+        });
         
         
         elemUiIsExternal        = new UiInputCheckBox({
@@ -384,6 +390,7 @@ export function PageSowBoarAddEdit(input_settings){
         const html_parent_sow   = elemUiParentSow.getHtml();
         const html_parent_boar  = elemUiParentBoar.getHtml();
         
+        const html_num_nipples  = compNumNipples.getHtml();
         const html_is_external  = elemUiIsExternal.getHtml();
         const html_is_prod_ready= elemUiIsProdReady.getHtml();
         const html_notes        = elemUiNotes.getHtml();
@@ -440,19 +447,8 @@ export function PageSowBoarAddEdit(input_settings){
             <span class="" id="${elemIdBirthProdId}"></span>
         </div>
         
-        <div class="form-group-number" id="${elemIdNumNipplesShow}">
-            <label for="${elemIdNumNipples}" class="form-label">
-                ${label_num_nipples}
-            </label>
-            <div class="number-input-group">
-                <button class="number-btn minus" data-target="${elemIdNumNipples}">-</button>
-                <input type="number" class="form-control number-input" id="${elemIdNumNipples}" value="14" min="12">
-                <button class="number-btn plus" data-target="${elemIdNumNipples}">+</button>
-            </div>
-            <div class="form-text">${label_num_nipples_help}</div>
         
-        </div>
-        
+        ${html_num_nipples}
         
         ${html_is_external}
         
@@ -501,6 +497,7 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiParentSow.afterHtmlRender();
         elemUiParentBoar.afterHtmlRender();
         
+        compNumNipples.afterHtmlRender();
         
         elemUiIsExternal.afterHtmlRender();
         elemUiIsProdReady.afterHtmlRender();
@@ -523,60 +520,23 @@ export function PageSowBoarAddEdit(input_settings){
         
         elemBirthProdIdShow     = elemDivContainer.querySelector('#'+elemIdBirthProdIdShow);
         elemBirthProdId         = elemDivContainer.querySelector('#'+elemIdBirthProdId);
-        elemNumNipplesShow      = elemDivContainer.querySelector('#'+elemIdNumNipplesShow);
-        elemNumNipples          = elemDivContainer.querySelector('#'+elemIdNumNipples);
         
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         elemBtnCancel           = elemDivContainer.querySelector('#'+elemIdBtnCancel);
         elemBtnSave             = elemDivContainer.querySelector('#'+elemIdBtnSave);
-        
     }
     
     
     this._processAfterHtmlRender = function(){
-        
-        
-        
-        
     }
     
     
     this._bindEventListeners = function(){
-        // Plus/Minus buttons for piglet counts
-        const plusButtons   = elemDivContainer.querySelectorAll('.number-btn.plus');
-        const minusButtons  = elemDivContainer.querySelectorAll('.number-btn.minus');
-        
-        plusButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const target = button.getAttribute('data-target');
-                const input = document.getElementById(target);
-                let value = parseInt(input.value) || 0;
-                input.value = value + 1;
-                input.dispatchEvent(new Event('change'));
-            });
-        });
-        
-        minusButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const target = button.getAttribute('data-target');
-                const input = document.getElementById(target);
-                let value = parseInt(input.value) || 0;
-                if (value > 0) {
-                    input.value = value - 1;
-                    input.dispatchEvent(new Event('change'));
-                }
-            });
-        });
-        
-        
-
         
         elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
         });
-        
-        
              
     }
     
@@ -740,6 +700,7 @@ export function PageSowBoarAddEdit(input_settings){
         elemUiParentSow.reset();
         elemUiParentBoar.reset();
         
+        compNumNipples.reset();
         elemUiIsExternal.reset();
         elemUiIsProdReady.reset();
         elemUiNotes.reset();
@@ -881,7 +842,9 @@ export function PageSowBoarAddEdit(input_settings){
                 
                 // Hide Boar Only info
                 elemUiIsExternal.hide();
-                elemNumNipplesShow.style.display = 'block';
+                
+                // Show Sow info
+                compNumNipples.show();
                 
                 break;
             }
@@ -903,7 +866,8 @@ export function PageSowBoarAddEdit(input_settings){
                 
                 // Boars can be external to the farm
                 elemUiIsExternal.show();
-                elemNumNipplesShow.style.display = 'none';
+                
+                compNumNipples.hide();
                 break;
             }
     
@@ -925,7 +889,8 @@ export function PageSowBoarAddEdit(input_settings){
                 
                 // Hide Boar Only info
                 elemUiIsExternal.hide();
-                elemNumNipplesShow.style.display = 'block';
+                
+                compNumNipples.show();
                 
                 break;
             }
@@ -1013,7 +978,8 @@ export function PageSowBoarAddEdit(input_settings){
         
         
         if (cur_sow_boar.num_nipples ){
-            elemNumNipples.value = cur_sow_boar.num_nipples;
+            compNumNipples.setValue(cur_sow_boar.num_nipples);
+            //elemNumNipples.value = cur_sow_boar.num_nipples;
         }
         
         if (cur_sow_boar.add_notes ){
@@ -1086,7 +1052,7 @@ export function PageSowBoarAddEdit(input_settings){
         let input_name          = elemUiName.getValue().trim();
         let input_number        = elemUiNumber.getValue().trim();
         let input_date_birth    = elemUiDateOfBirth.getValue().trim();
-        let input_num_nipples   = elemNumNipples.value;
+        let input_num_nipples   = compNumNipples.getValue();
         
         let input_parent_sow_id = elemUiParentSow.getValue();
         let input_parent_boar_id= elemUiParentBoar.getValue();
