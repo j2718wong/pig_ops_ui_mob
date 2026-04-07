@@ -626,7 +626,7 @@ ${html_style}
         const endDate = weeklyDates[weeklyDates.length - 1];
         endDate.setDate(endDate.getDate() + 6);
         const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-        const pixelsPerDay = 3.5;
+        const pixelsPerDay = 4;
         
         const scrollDiv = document.createElement('div');
         scrollDiv.style.overflowX = 'auto';
