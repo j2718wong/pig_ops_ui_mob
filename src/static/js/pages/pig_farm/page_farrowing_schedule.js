@@ -748,7 +748,7 @@ ${html_style}
                     block.style.height = 'auto';
                     block.style.minHeight = '76px';
                     block.style.borderRadius = '6px';
-                    block.style.padding = '4px 6px';
+                    block.style.padding = '4px 3px';
                     block.style.overflow = 'hidden';
                     block.style.boxSizing = 'border-box';
                     block.style.cursor = 'pointer';
