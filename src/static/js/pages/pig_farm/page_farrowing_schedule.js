@@ -275,8 +275,9 @@ export function PageFarrowingSchedule(input_settings){
     
     this.render = function(){
         let label_page_title    = 'Farrowing Schedule';
-        
         let label_today         = 'Today';
+        
+        let label_update_crates = 'Update Farrowing Crates';
         
         
         const helper = navigation.managerTranslations.translationHelper;
@@ -284,6 +285,8 @@ export function PageFarrowingSchedule(input_settings){
         
         label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations2') || label_page_title;
         label_today             = helper.getSimpleTranslation('common_app.labels.today') || label_today;
+        
+        label_update_crates     = helper.getSimpleTranslation('page_farrowing_schedule.labels.update_crates') || label_update_crates;
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({
@@ -330,7 +333,7 @@ ${html_style}
 
     <div style="margin: 8px 0;">
         <a href="javascript:void(0)" class="text-link" id="${elemIdUpdateNumCrates}">
-            Update Farrowing Crates
+            ${label_update_crates}
         </a>
     </div>
     
@@ -472,14 +475,16 @@ ${html_style}
         );
         
         // Detect conflicts
-        const conflicts = thisObj.detectCrateConflicts(crateOccupancy, num_farrowing_crates);
+        const conflicts = thisObj.detectCrateConflicts(crateOccupancy, 
+                num_farrowing_crates);
         
         // Find early wean opportunities
         const earlyWeanOptions = thisObj.findEarlyWeanOpportunities(
             crateOccupancy, num_days_allow_early_wean);
         
         // Render the crate-based Gantt chart
-        thisObj.renderCrateGanttChart(weeklyDates, crateOccupancy, conflicts, earlyWeanOptions);
+        thisObj.renderCrateGanttChart(weeklyDates, crateOccupancy, conflicts, 
+            earlyWeanOptions);
     }
     
     
@@ -501,7 +506,9 @@ ${html_style}
     }
     
     
-    this.buildCrateOccupancy = function(lactatingList, gestatingList, accSettingsOps, numCrates) {
+    this.buildCrateOccupancy = function(lactatingList, gestatingList, 
+            accSettingsOps, numCrates) {
+        
         const day1Adjustment = accSettingsOps.day_1_on_date_of_birth === 1 ? 1 : 0;
         const today = new Date(dtCurrentDate);
         today.setHours(0, 0, 0, 0);
@@ -515,12 +522,13 @@ ${html_style}
             
             const birthDate = new Date(sow.birth.date_actual);
             const moveOutDate = new Date(birthDate);
-            moveOutDate.setDate(moveOutDate.getDate() + accSettingsOps.num_days_wean - day1Adjustment);
+            moveOutDate.setDate(moveOutDate.getDate() + 
+                    accSettingsOps.num_days_wean - day1Adjustment);
             
             if (moveOutDate >= today) {
                 events.push({
                     type: 'lactating',
-                    sowId: sow.pig_production.farm_prod_id,
+                    pid: sow.pig_production.farm_prod_id,
                     sowName: sow.sow.name,
                     startDate: new Date(today),
                     endDate: moveOutDate,
@@ -536,15 +544,17 @@ ${html_style}
             
             const expectedBirth = new Date(sow.birth.date_expected);
             const moveInDate = new Date(expectedBirth);
-            moveInDate.setDate(moveInDate.getDate() - accSettingsOps.num_days_move_to_farrow);
+            moveInDate.setDate(moveInDate.getDate() - 
+                    accSettingsOps.num_days_move_to_farrow);
             
             const moveOutDate = new Date(expectedBirth);
-            moveOutDate.setDate(moveOutDate.getDate() + accSettingsOps.num_days_wean - day1Adjustment);
+            moveOutDate.setDate(moveOutDate.getDate() + 
+                    accSettingsOps.num_days_wean - day1Adjustment);
             
             if (moveOutDate >= today) {
                 events.push({
                     type: 'gestating',
-                    sowId: sow.pig_production.farm_prod_id,
+                    pid: sow.pig_production.farm_prod_id,
                     sowName: sow.sow.name,
                     startDate: moveInDate,
                     endDate: moveOutDate,
@@ -574,7 +584,9 @@ ${html_style}
                 // Check if crate has any conflict with existing assignments
                 let hasConflict = false;
                 for (const assignment of crate.assignments) {
-                    if (event.startDate <= assignment.endDate && event.endDate >= assignment.startDate) {
+                    if (event.startDate <= assignment.endDate && 
+                        event.endDate >= assignment.startDate) {
+                        
                         hasConflict = true;
                         break;
                     }
@@ -607,10 +619,10 @@ ${html_style}
                 if (assignment.noCrateAvailable) {
                     conflicts.push({
                         type: 'no_crate',
-                        sowId: assignment.sowId,
+                        pid: assignment.pid,
                         sowName: assignment.sowName,
                         startDate: assignment.startDate,
-                        message: `Gesta Sow ${assignment.sowId} (${assignment.sowName}) has no crate available starting ${thisObj.formatDateShort(assignment.startDate)}`
+                        message: `Gesta Sow ${assignment.pid} (${assignment.sowName}) has no crate available starting ${thisObj.formatDateShort(assignment.startDate)}`
                     });
                 }
             }
@@ -633,11 +645,11 @@ ${html_style}
                     if (daysRemaining <= earlyWeanDays && daysRemaining > 0) {
                         opportunities.push({
                             crateNumber: crate.crateNumber,
-                            sowId: assignment.sowId,
+                            pid: assignment.pid,
                             sowName: assignment.sowName,
                             currentEndDate: assignment.endDate,
                             daysSaved: daysRemaining,
-                            message: `Lacta Sow ${assignment.sowId} (${assignment.sowName}) in Crate ${crate.crateNumber} can be early weaned to free a crate`
+                            message: `Lacta Sow ${assignment.pid} (${assignment.sowName}) in Crate ${crate.crateNumber} can be early weaned to free a crate`
                         });
                     }
                 }
@@ -788,7 +800,7 @@ ${html_style}
                     block.style.cursor = 'pointer';
                     
                     // Add critical class if conflict
-                    const hasConflict = conflicts && conflicts.some(c => c.sowId === assignment.sowId);
+                    const hasConflict = conflicts && conflicts.some(c => c.pid === assignment.pid);
                     
                     if (assignment.type === 'lactating') {
                         block.style.backgroundColor = '#4caf50';
@@ -825,7 +837,7 @@ ${html_style}
                         
                         contentHtml = `
                             <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                🐖 ${assignment.sowId} ${assignment.sowName}
+                                🐖 ${assignment.pid} ${assignment.sowName}
                             </div>
                             <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 ${urgencyIcon} Wean: ${thisObj.formatDateShort(weanDate)} | ${daysRemaining} days left
@@ -850,7 +862,7 @@ ${html_style}
                         
                         contentHtml = `
                             <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                🐖 ${assignment.sowId} ${assignment.sowName}
+                                🐖 ${assignment.pid} ${assignment.sowName}
                             </div>
                             <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 ${moveIcon} Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}
@@ -865,9 +877,9 @@ ${html_style}
                     
                     // Tooltip on hover/tap
                     if (assignment.type === 'lactating') {
-                        block.title = `${assignment.sowId} ${assignment.sowName}\nWeans: ${thisObj.formatDateShort(assignment.endDate)}`;
+                        block.title = `${assignment.pid} ${assignment.sowName}\nWeans: ${thisObj.formatDateShort(assignment.endDate)}`;
                     } else {
-                        block.title = `${assignment.sowId} ${assignment.sowName}\nMove in: ${thisObj.formatDateShort(assignment.startDate)}\nMove out: ${thisObj.formatDateShort(assignment.endDate)}\nDue: ${thisObj.formatDateShort(assignment.expectedBirth)}`;
+                        block.title = `${assignment.pid} ${assignment.sowName}\nMove in: ${thisObj.formatDateShort(assignment.startDate)}\nMove out: ${thisObj.formatDateShort(assignment.endDate)}\nDue: ${thisObj.formatDateShort(assignment.expectedBirth)}`;
                     }
                     
                     timelineTrack.appendChild(block);
@@ -891,6 +903,7 @@ ${html_style}
         const diffDays = Math.ceil((date - startDate) / (1000 * 60 * 60 * 24));
         return Math.max(0, diffDays * pixelsPerDay);
     }
+    
     
     this.renderLegend = function(container) {
         const legendDiv = document.createElement('div');
@@ -970,20 +983,6 @@ ${html_style}
             }
         }
         return weeklyDates.length - 1;
-    }
-    
-    
-    this.getSowByHid = function(hid) {
-        const dataLactatingList = navigation.pigFarm.managerPigProd.dataLactatingList;
-        const dataGestatingList = navigation.pigFarm.managerPigProd.dataGestatingList;
-        
-        for (const sow of dataLactatingList) {
-            if (sow.pig_production.hid === hid) return sow;
-        }
-        for (const sow of dataGestatingList) {
-            if (sow.pig_production.hid === hid) return sow;
-        }
-        return null;
     }
     
 } 
