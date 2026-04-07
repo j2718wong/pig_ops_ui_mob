@@ -98,7 +98,7 @@ export function PageProdPigDeadList(input_settings){
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations3') || label_page_title;
+        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations4') || label_page_title;
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({

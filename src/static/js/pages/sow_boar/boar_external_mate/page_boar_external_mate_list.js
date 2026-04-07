@@ -102,7 +102,7 @@ export function PageBoarExternalMateList(input_settings){
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations2') || label_page_title;
+        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations3') || label_page_title;
         label_today             = helper.getSimpleTranslation('common_app.labels.today') || label_today;
         
         
@@ -176,7 +176,7 @@ export function PageBoarExternalMateList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavFeedBalance();
+            navigation.managerNavLinks.onClickNavFarrowingSchedule();
         };
         
           

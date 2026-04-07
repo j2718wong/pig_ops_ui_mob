@@ -82,6 +82,8 @@ export function NavPageContainers(_navigation){
     
     const elemIdContProdFeedBalAddEdit  = 'container-feed-balance-add-edit';
     
+    const elemIdContFarrowingSchedule   = 'container-farrowing-schedule';
+    
     const elemIdContBoarExtMateList     = 'container-boar-ext-mate-list';
     const elemIdContBoarExtMateAddEdit  = 'container-boar-ext-mate-add-edit';
     
@@ -187,6 +189,8 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.ALL_FEED_BAL_LIST]      = document.getElementById(elemIdContAllFeedBalList);
         this.containers[PAGE_ID.ALL_FEED_BAL_ADD_EDIT]  = document.getElementById(elemIdContAllFeedBalAddEdit);
         
+        this.containers[PAGE_ID.FARROWING_SCHEDULE]     = document.getElementById(elemIdContFarrowingSchedule);
+        
         this.containers[PAGE_ID.BOAR_EXT_MATE_LIST]     = document.getElementById(elemIdContBoarExtMateList);
         this.containers[PAGE_ID.BOAR_EXT_MATE_ADD_EDIT] = document.getElementById(elemIdContBoarExtMateAddEdit);
         
@@ -241,6 +245,7 @@ export function NavPageContainers(_navigation){
         
         CONTAINER_GROUP_OPERATIONS      = [
             this.containers[PAGE_ID.ALL_FEED_BAL_LIST],
+            this.containers[PAGE_ID.FARROWING_SCHEDULE],
             this.containers[PAGE_ID.BOAR_EXT_MATE_LIST],
             this.containers[PAGE_ID.PIG_DEAD_LIST],
             this.containers[PAGE_ID.SUMMARY_REPORT_LIST]
@@ -309,6 +314,8 @@ export function NavPageContainers(_navigation){
                 
             { container: this.containers[PAGE_ID.ALL_FEED_BAL_LIST],      id: PAGE_ID.ALL_FEED_BAL_LIST },
             { container: this.containers[PAGE_ID.ALL_FEED_BAL_ADD_EDIT],  id: PAGE_ID.ALL_FEED_BAL_ADD_EDIT },
+            
+            { container: this.containers[PAGE_ID.FARROWING_SCHEDULE],     id: PAGE_ID.FARROWING_SCHEDULE },
                 
             { container: this.containers[PAGE_ID.BOAR_EXT_MATE_LIST],     id: PAGE_ID.BOAR_EXT_MATE_LIST },
             { container: this.containers[PAGE_ID.BOAR_EXT_MATE_ADD_EDIT], id: PAGE_ID.BOAR_EXT_MATE_ADD_EDIT }, 
@@ -454,6 +461,10 @@ export function NavPageContainers(_navigation){
                 return elemIdContAllFeedBalAddEdit;
                 
                 
+            case PAGE_ID.FARROWING_SCHEDULE:
+                return elemIdContFarrowingSchedule;
+            
+                
             case PAGE_ID.BOAR_EXT_MATE_LIST:
                 return elemIdContBoarExtMateList;
                 
@@ -584,69 +595,70 @@ export function NavPageContainers(_navigation){
             case this.containers[PAGE_ID.TRACE_PARENTS]           :{return "PageContNotesAddEdit";}
                 
                 
-            case this.containers[PAGE_ID.PROD_GESTA_LIST]         :{return"PageContProdGestaList";}
-            case this.containers[PAGE_ID.PROD_GESTA_ADD]          :{return"PageContProdGestaAdd";}
-            case this.containers[PAGE_ID.PROD_GESTA_ENTRY]        :{return"PageContProdGestaEntry";}
+            case this.containers[PAGE_ID.PROD_GESTA_LIST]         :{return "PageContProdGestaList";}
+            case this.containers[PAGE_ID.PROD_GESTA_ADD]          :{return "PageContProdGestaAdd";}
+            case this.containers[PAGE_ID.PROD_GESTA_ENTRY]        :{return "PageContProdGestaEntry";}
+                                                                           
+            case this.containers[PAGE_ID.PROD_LACTA_LIST]         :{return "PageContProdLactaList";}
+            case this.containers[PAGE_ID.PROD_LACTA_ENTRY]        :{return "PageContProdLactaEntry";}
+                                                                           
+            case this.containers[PAGE_ID.PROD_FATTENING_LIST]     :{return "PageContFatteningList";}
+            case this.containers[PAGE_ID.PROD_FATTENING_ADD]      :{return "PageContFatteningAdd";}
+            case this.containers[PAGE_ID.PROD_FATTENING_ENTRY]    :{return "PageContFatteningEntry";}
+                                                                           
+                                                                           
+                                                                           
+            case this.containers[PAGE_ID.PROD_PIG_OPS_EDIT]       :{return "PageContProdPigOpsEdit";}
+            case this.containers[PAGE_ID.PROD_FEED_ADD_EDIT]      :{return "PageContProdFeedAddEdit";}
+            case this.containers[PAGE_ID.PROD_HARVEST_ADD_EDIT]   :{return "PageContProdHarvestAddEdit";}
+                                                                           
+                                                                           
+            case this.containers[PAGE_ID.PROD_HISTORY_LIST]       :{return "PageContProdHistoryList";}
+            case this.containers[PAGE_ID.PROD_HISTORY_ENTRY]      :{return "PageContProdHistoryEntry";}
+                                                                           
+            case this.containers[PAGE_ID.PROD_NOT_PREGNANT_LIST]  :{return "PageContProdNotPregnantList";}
+                                                                           
+                                                                           
+            case this.containers[PAGE_ID.ALL_FEED_BAL_LIST]       :{return "PageContAllFeedBalList";}
+            case this.containers[PAGE_ID.ALL_FEED_BAL_ADD_EDIT]   :{return "PageContAllFeedBalAddEdit";}
+                                                                           
+            case this.containers[PAGE_ID.FARROWING_SCHEDULE]      :{return "PageContFarrowingSchedule";}
+                                                                           
+            case this.containers[PAGE_ID.BOAR_EXT_MATE_LIST]      :{return "PageContBoarExtMateList";}
+            case this.containers[PAGE_ID.BOAR_EXT_MATE_ADD_EDIT]  :{return "PageContBoarExtMateAddEdit";}
+                                                                           
+                                                                           
+            case this.containers[PAGE_ID.PIG_DEAD_LIST]           :{return "PageContPigDeadList";}
+            case this.containers[PAGE_ID.PIG_DEAD_ADD_EDIT]       :{return "PageContPigDeadAddEdit";}
+                                                                           
+                                                                           
+            case this.containers[PAGE_ID.SUMMARY_REPORT_LIST]     :{return "PageContSummaryReportList";}
+            case this.containers[PAGE_ID.SUMMARY_REPORT_ADD_EDIT] :{return "PageContSummaryReportAddEdit";}
+                                                                           
+                                                                           
+            case this.containers[PAGE_ID.FARM_FEED_BUY_LIST]      :{return "PageContFarmFeedBuyList";}
+            case this.containers[PAGE_ID.FARM_FEED_BUY_ADD_EDIT]  :{return "PageContFarmFeedBuyAddEdit";}
+            case this.containers[PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT]:{return "PageContFeedBuyItemAddEdit";}
                                                     
-            case this.containers[PAGE_ID.PROD_LACTA_LIST]         :{return"PageContProdLactaList";}
-            case this.containers[PAGE_ID.PROD_LACTA_ENTRY]        :{return"PageContProdLactaEntry";}
-                                                    
-            case this.containers[PAGE_ID.PROD_FATTENING_LIST]     :{return"PageContFatteningList";}
-            case this.containers[PAGE_ID.PROD_FATTENING_ADD]      :{return"PageContFatteningAdd";}
-            case this.containers[PAGE_ID.PROD_FATTENING_ENTRY]    :{return"PageContFatteningEntry";}
-                                                    
-                                                    
-                                                    
-            case this.containers[PAGE_ID.PROD_PIG_OPS_EDIT]       :{return"PageContProdPigOpsEdit";}
-            case this.containers[PAGE_ID.PROD_FEED_ADD_EDIT]      :{return"PageContProdFeedAddEdit";}
-            case this.containers[PAGE_ID.PROD_HARVEST_ADD_EDIT]   :{return"PageContProdHarvestAddEdit";}
-                                                    
-                                                    
-            case this.containers[PAGE_ID.PROD_HISTORY_LIST]       :{return"PageContProdHistoryList";}
-            case this.containers[PAGE_ID.PROD_HISTORY_ENTRY]      :{return"PageContProdHistoryEntry";}
-                                                    
-            case this.containers[PAGE_ID.PROD_NOT_PREGNANT_LIST]  :{return"PageContProdNotPregnantList";}
-                                     
-                                                    
-            case this.containers[PAGE_ID.ALL_FEED_BAL_LIST]       :{return"PageContAllFeedBalList";}
-            case this.containers[PAGE_ID.ALL_FEED_BAL_ADD_EDIT]   :{return"PageContAllFeedBalAddEdit";}
-            
-            
-            case this.containers[PAGE_ID.BOAR_EXT_MATE_LIST]      :{return"PageContBoarExtMateList";}
-            case this.containers[PAGE_ID.BOAR_EXT_MATE_ADD_EDIT]  :{return"PageContBoarExtMateAddEdit";}
-            
-            
-            case this.containers[PAGE_ID.PIG_DEAD_LIST]           :{return"elemPageContPigDeadList";}
-            case this.containers[PAGE_ID.PIG_DEAD_ADD_EDIT]       :{return"elemPageContPigDeadAddEdit";}
-            
-            
-            case this.containers[PAGE_ID.SUMMARY_REPORT_LIST]     :{return"elemPageContSummaryReportList";}
-            case this.containers[PAGE_ID.SUMMARY_REPORT_ADD_EDIT] :{return"elemPageContSummaryReportAddEdit";}
-            
-            
-            case this.containers[PAGE_ID.FARM_FEED_BUY_LIST]      :{return"elemPageContFarmFeedBuyList";}
-            case this.containers[PAGE_ID.FARM_FEED_BUY_ADD_EDIT]  :{return"elemPageContFarmFeedBuyAddEdit";}
-            case this.containers[PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT]:{return"elemPageContFeedBuyItemAddEdit";}
-                                                    
-            case this.containers[PAGE_ID.PROD_FEED_BAL_ADD_EDIT]  :{return"elemPageContProdFeedBalAddEdit";}
-                                                    
-                                                    
-            case this.containers[PAGE_ID.PROD_SALES_LIST]         :{return"elemPageContProdSalesList";}
-            case this.containers[PAGE_ID.PROD_SALES_ENTRY]        :{return"elemPageContProdSalesEntry";}
-                                                    
-                                                    
-            case this.containers[PAGE_ID.ACC_OPS_SETTINGS_EDIT]   :{return"elemPageContAccOpsSettingsEdit";}
-            case this.containers[PAGE_ID.ACC_PIG_OPS_LIST]        :{return"elemPageContAccPigOpsList";}
-            case this.containers[PAGE_ID.ACC_PIG_OPS_ADD_EDIT]    :{return"elemPageContAccPigOpsAddEdit";}
+            case this.containers[PAGE_ID.PROD_FEED_BAL_ADD_EDIT]  :{return "PageContProdFeedBalAddEdit";}
+                                                                           
+                                                                           
+            case this.containers[PAGE_ID.PROD_SALES_LIST]         :{return "PageContProdSalesList";}
+            case this.containers[PAGE_ID.PROD_SALES_ENTRY]        :{return "PageContProdSalesEntry";}
                                                     
                                                     
-            case this.containers[PAGE_ID.SUPPLIER_ADD_EDIT]       :{return"elemPageContSupplierAddEdit";}
-                                                    
-            case this.containers[PAGE_ID.USER_LIST]               :{return"elemPageContUserList";}
-            case this.containers[PAGE_ID.USER_ADD_EDIT]           :{return"elemPageContUserAddEdit";}
-            
-            case this.containers[PAGE_ID.ACCESS_CODE_LIST]        :{return"elemPageContAccessCodeList";}
-            case this.containers[PAGE_ID.ACCESS_CODE_ADD_EDIT]    :{return"elemPageContAccessCodeAddEdit";}
+            case this.containers[PAGE_ID.ACC_OPS_SETTINGS_EDIT]   :{return "PageContAccOpsSettingsEdit";}
+            case this.containers[PAGE_ID.ACC_PIG_OPS_LIST]        :{return "PageContAccPigOpsList";}
+            case this.containers[PAGE_ID.ACC_PIG_OPS_ADD_EDIT]    :{return "PageContAccPigOpsAddEdit";}
+                                                                           
+                                                                           
+            case this.containers[PAGE_ID.SUPPLIER_ADD_EDIT]       :{return "PageContSupplierAddEdit";}
+                                                                           
+            case this.containers[PAGE_ID.USER_LIST]               :{return "PageContUserList";}
+            case this.containers[PAGE_ID.USER_ADD_EDIT]           :{return "PageContUserAddEdit";}
+                                                                           
+            case this.containers[PAGE_ID.ACCESS_CODE_LIST]        :{return "PageContAccessCodeList";}
+            case this.containers[PAGE_ID.ACCESS_CODE_ADD_EDIT]    :{return "PageContAccessCodeAddEdit";}
             
             default:{return null;}
         }

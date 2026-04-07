@@ -98,7 +98,7 @@ export function PageSummaryReportList(input_settings){
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations4') || label_page_title;
+        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations5') || label_page_title;
       
             
         

@@ -132,14 +132,16 @@ const PAGE_ID = {
     ALL_FEED_BAL_LIST:      50,
     ALL_FEED_BAL_ADD_EDIT:  51,
     
-    BOAR_EXT_MATE_LIST:     52,
-    BOAR_EXT_MATE_ADD_EDIT: 53,
+    FARROWING_SCHEDULE:     52,
     
-    PIG_DEAD_LIST:          54,
-    PIG_DEAD_ADD_EDIT:      55,
+    BOAR_EXT_MATE_LIST:     53,
+    BOAR_EXT_MATE_ADD_EDIT: 54,
     
-    SUMMARY_REPORT_LIST:    56,
-    SUMMARY_REPORT_ADD_EDIT:57,
+    PIG_DEAD_LIST:          55,
+    PIG_DEAD_ADD_EDIT:      56,
+    
+    SUMMARY_REPORT_LIST:    57,
+    SUMMARY_REPORT_ADD_EDIT:58,
     
     
     

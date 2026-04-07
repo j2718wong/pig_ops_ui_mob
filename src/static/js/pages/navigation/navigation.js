@@ -88,6 +88,9 @@ import {PageProdNotPregnantList}    from '../production/history/page_prod_not_pr
 
 import {PageAllFeedBalanceList}     from '../feeds/feed_balance/page_all_feed_balance_list.js';
 import {PageAllFeedBalanceAddEdit}  from '../feeds/feed_balance/page_all_feed_balance_add_edit.js';
+
+import {PageFarrowingSchedule}      from '../pig_farm/page_farrowing_schedule.js';
+
 import {PageProdPigDeadList}        from '../production/pig_dead/page_prod_pig_dead_list.js';
 import {PagePigDeadAddEdit}         from '../production/pig_dead/page_pig_dead_add_edit.js';
 import {PageSummaryReportList}      from '../reports/page_summary_report_list.js';
@@ -522,6 +525,13 @@ export function Navigation(){
     });
 
     
+    this.pageFarrowingSchedule = new PageFarrowingSchedule({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARROWING_SCHEDULE),
+        uniqueKey:              'farrowing-schedule'
+    });
+    
+    
     this.pageBoarExtMateList    = new PageBoarExternalMateList({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.BOAR_EXT_MATE_LIST),
@@ -916,6 +926,8 @@ export function Navigation(){
         
         this.pageBoarExtMateList.init();
         this.pageBoarExtMateAddEdit.init();
+        
+        this.pageFarrowingSchedule.init();
         
         this.pagePigDeadList.init();
         this.pagePigDeadAddEdit.init();

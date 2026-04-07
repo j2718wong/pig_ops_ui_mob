@@ -171,7 +171,7 @@ export function PageAllFeedBalanceList(input_settings){
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavBoarExternalMate();
+            navigation.managerNavLinks.onClickNavFarrowingSchedule();
         };
         
         

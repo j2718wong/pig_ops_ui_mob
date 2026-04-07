@@ -1,0 +1,2635 @@
+Below are the following
+
+1.) PageFarrowingSchedule module
+
+2.) sample test data:
+accSettingsOps
+dataLactatingList
+dataGestatingList
+
+
+Requirements
+============================
+1.) Build a linear Calendar gant chart or similar UI implementation 
+that plots 
+
+-Sows on teh vertical axis
+- days, starting today until  today + 115 days, with every Monday date resolution ;
+
+- there should be a way to scroll the calendar since cellphone screen is very limited
+
+2.) The number of available farrowing crates is temporarily saved in num_farrowing_crates;
+i provide later how to get this number
+
+3.) If the sow is currently lactating
+
+teh sow is assumed in a farrowing crate and will be moved out on 
+date_sow_move_out = cur_entry.birth.date_actual + accSettingsOps.num_days_wean - 
+   adjustment based on accSettingsOps.day_1_on_date_of_birth 
+
+the calendar should show today until that date_sow_move_out
+
+
+4.) if the sow is currently gestating,
+date_sow_move_in = cur_entry.birth.date_expected - accSettings.num_days_move_to_farrow;
+date_sow_move_out = cur_entry.birth.date_expected + accSettingsOps.num_days_wean - 
+   adjustment based on accSettingsOps.day_1_on_date_of_birth 
+
+the calendar should show date_sow_move_in until that date_sow_move_out
+
+
+5.) If a gestating sow cannot find a slot based on date_sow_move_in,
+6.) Find the earliest lactating_sow to move out, and see if it can move out at
+
+num_days_allow_early_wean - sometimes farms allow early wean, but its a risk 
+that farmers would evaluate time to time.
+
+
+7.) There sould be a summary that tells 
+
+- Gesta Sow XXX has no gestating crate available on 04 Jul 2026;
+
+- Lacta Sow YYY need to early wean on 01 Jul 2026 to accomodate Gesta Sow ABC
+
+
+
+Let change a little bit, more challenge;
+
+1.) The x-axis still the day today  to today + 115 days
+2.) The y axis is the number of farrowing crates
+
+each row of the farrowing crate are the sows currently occupying or plan to occupy in teh future
+ 
+In this way it is clear to see per farrowing crate  
+
+
+// April 7, 2026
+// Jack Wong
+// j2718wong@gmail.com
+
+'use strict';
+
+import {PageViewPigFarmPage}         from '../common/page_view_basic.js';
+import {calculateNumDaysSinceInsem}  from '../common/page_view_basic.js';
+
+
+import {APPLICATION,
+        PAGE_ID,
+        PIG_OPERATION_TYPE,
+        PIG_PROD_TYPE,
+        PROD_STATUS}            from '../../constants.js';
+
+import {formatDate,
+        FORMAT_SHORT_MONTH,
+        FORMAT_LONG_MONTH,
+        FORMAT_COMPACT,
+        sortList}               from '../../utils.js';
+
+import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
+
+import {getSowBoarReference}    from '../common/common_app.js';
+
+
+export function PageFarrowingSchedule(input_settings){
+    PageViewPigFarmPage.call(this);
+    
+    const TAG                   = 'PageFarrowingSchedule';
+    
+    const thisObj               = this;
+    const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
+    
+    
+    /*
+    Typical input_settings
+    {
+        navigation:             this,
+        uniqueKey:              'farrowing-schedule' 
+        pageTitle:              'Farrowing Schedule'
+    }   
+    */  
+    let settings                = input_settings;
+    
+    
+    
+    
+    // This is needed as this will be first element to be rendered
+    let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
+    
+    let componentNavLeftRight   = null;
+    
+    let elemIdPageInfo          = null;
+    let elemIdLabelToday        = null;
+    let elemIdDateToday         = null;
+    
+    let elemIdFarrowingCalendar = null;
+ 
+    
+    let elemPageInfo            = null;
+    let elemLabelToday          = null;
+    let elemDateToday           = null;
+    
+    let elemFarrowingCalendar   = null;
+
+
+    
+    let dtCurrentDate           = null;
+
+    
+    this.init = function(){
+        this.render();
+        this.afterHtmlRender();
+    }
+    
+    
+    
+    this.render = function(){
+        let label_page_title    = 'Farrowing Schedule';
+        
+        let label_today         = 'Today';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations2') || label_page_title;
+        label_today             = helper.getSimpleTranslation('common_app.labels.today') || label_today;
+        
+        
+        componentNavLeftRight   = new ComponentNavLeftRight({
+           uniqueKey:           settings.uniqueKey,
+           elemDivContainer:    elemDivContainer,
+           pageTitle:           label_page_title
+        });
+        
+        
+        elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
+        
+        elemIdLabelToday        = `${settings.uniqueKey}-label-today`;
+        elemIdDateToday         = `${settings.uniqueKey}-date-today`;
+        
+        elemIdFarrowingCalendar = `${settings.uniqueKey}-farrowing-calendar`;
+        
+        
+        const html_nav          = componentNavLeftRight.getHtml();   
+ 
+           
+
+           
+        const html = `
+
+<div class="mobile-container">
+    ${html_nav}
+    
+    <!-- Mobile Info Box -->
+    <!--
+    <div class="mobile-info-box">
+        <div class="info-text" id="${elemIdPageInfo}">
+        </div>
+    </div>
+    -->
+    
+    <div style="text-align: center;">
+        <span id="${elemIdLabelToday}">${label_today}</span>
+        <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
+    </div>
+        
+    
+    <div id="${elemIdFarrowingCalendar}"></div>
+
+</div>
+        `;
+        
+        elemDivContainer.innerHTML = html;
+    }
+    
+    
+    this.afterHtmlRender = function(){
+        componentNavLeftRight.afterHtmlRender();
+        
+        
+        this._findElements();
+        this._processAfterHtmlRender();
+        this._bindEventListeners();
+    }
+    
+    
+    this._findElements = function(){
+        elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
+        
+        elemLabelToday          = elemDivContainer.querySelector('#'+elemIdLabelToday);
+        elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
+        
+        elemFarrowingCalendar   = elemDivContainer.querySelector('#'+elemIdFarrowingCalendar);
+    }
+    
+    
+    this._processAfterHtmlRender = function(){
+        
+        componentNavLeftRight.callbackNavLeft = function(){
+            navigation.managerNavLinks.onClickNavFeedBalance();
+        };
+        
+          
+        componentNavLeftRight.callbackNavRight = function(){
+            navigation.managerNavLinks.onClickNavPigDead();
+        };
+        
+        
+        componentNavLeftRight.bindEventListeners();
+        
+    }
+    
+    
+    this._bindEventListeners = function(){
+        
+       
+    }
+    
+    
+    this.renderPage = function(page_data){
+        thisObj.show();
+    }
+    
+    
+    
+    this.show = function(){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = null;
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
+        // So that not to instantiate in every table redraw
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
+        
+        const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
+        
+        // This is only shown in Gesta, Lacta and Wean tabs
+        elemDateToday.textContent = s_dt_current;
+
+        thisObj.renderFarrowingCalendar();
+    }
+    
+    
+    this.renderFarrowingCalendar = function(){
+        const accSettingsOps    = navigation.pigFarm.getSettingsOperations();
+        const dataLactatingList = navigation.pigFarm.managerPigProd.dataLactatingList;
+        const dataGestatingList = navigation.pigFarm.managerPigProd.dataGestatingList;
+        
+        console.log('\n\naccSettingsOps');
+        console.log(accSettingsOps);
+        
+        console.log('\n\ndataLactatingList');
+        console.log(dataLactatingList);
+        
+        
+        console.log('\n\ndataGestatingList');
+        console.log(dataGestatingList);
+        
+        // Temporary;
+        let num_farrowing_crates = 3;
+        
+        // Temporary;
+        let num_days_allow_early_wean = 35;
+        
+        
+        
+    }
+  
+    
+    
+    
+    
+}
+
+
+
+
+
+
+
+
+accSettingsOps = {
+  "weight_unit": "kg",
+  "currency": "PHP",
+  "day_1_on_date_of_birth": 1,
+  "day_1_on_date_of_insem": 0,
+  "num_days_move_to_farrow": 9,
+  "num_days_wean": 42,
+  "num_days_harvest_from_birth": 142,
+  "num_days_harvest_from_wean": 97,
+  "last_update": {
+    "name_last": "Wong",
+    "name_first": "Jack",
+    "dt_update": "2026-04-07 07:26:19"
+  }
+}
+
+
+dataLactatingList = [
+  {
+    "pig_production": {
+      "farm_prod_id": 17,
+      "flag": 0,
+      "prod_status_id": 4,
+      "prod_status_name": "Lactating",
+      "cur_pig_count": 20,
+      "dead_after_birth": 2,
+      "hid": "ZQEY4L9W"
+    },
+    "sow": {
+      "farm_sow_id": 1,
+      "number": "342271",
+      "name": "Shine",
+      "hid": "3QLG0EDV"
+    },
+    "insemination": {
+      "insem_type": "B",
+      "boar": {
+        "farm_sow_id": 1,
+        "number": null,
+        "name": "Joker",
+        "hid": "34RDPRBJ"
+      },
+      "insem_cost": 0,
+      "insem_notes": null,
+      "insem_date": "2025-11-06",
+      "insem_staff_name": "Elmer Paquit",
+      "insem_staff_hid": "N5EP4LPW"
+    },
+    "birth": {
+      "date_expected": "2026-03-01",
+      "date_actual": "2026-02-25",
+      "num_days_actual": 111,
+      "num_dead_at_birth": 0,
+      "pigs_live_m": 11,
+      "pigs_live_f": 11,
+      "birth_staff_name": "Elmer Paquit",
+      "birth_staff_hid": "N5EP4LPW"
+    },
+    "weaning": {
+      "date_weaning": null,
+      "num_pigs_m": null,
+      "num_pigs_f": null,
+      "num_pigs": null,
+      "weight": null,
+      "weight_pp": null
+    },
+    "feeds": {
+      "bought": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "balance": {
+        "date_balance": null,
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "cost": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "date_change_feed": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      }
+    },
+    "data_ver_num": {
+      "pig_prod": 3,
+      "medvac": 0,
+      "health_notes": 0,
+      "prod_feed": 0,
+      "feed_balance": 0,
+      "harvest": 0
+    },
+    "gestating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-02-14",
+          "date_actual": "2026-02-14",
+          "dt_entry": "2025-11-06 09:48:51",
+          "hid": "0KLZKL4D"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 100,
+          "is_medvac": 1,
+          "description": "purga edited",
+          "hid": "W9L96L0N"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "UNILAB",
+            "hid": "N5EP4LPW"
+          },
+          "type": {
+            "name": "DEWORM",
+            "hid": "X0E23RNP"
+          },
+          "acc_medvac": {
+            "name": "Ivermectin",
+            "hid": "GNEB2L1X"
+          },
+          "hid": "4YEN5L5J"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Deworm) done by Elmer Paquit. purga",
+          "hid": "VWLKQ4LD"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-02-17 15:07:20"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-01-25",
+          "date_actual": "2026-01-25",
+          "dt_entry": "2025-11-06 09:48:51",
+          "hid": "ZGR6QR3D"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron",
+          "num_days_since": 80,
+          "is_medvac": 1,
+          "description": "inject iron dextran edited",
+          "hid": "N5EP4LPW"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "VEMEDIM",
+            "hid": "3QLG0EDV"
+          },
+          "type": {
+            "name": "Iron Dextran",
+            "hid": "3QLG0EDV"
+          },
+          "acc_medvac": {
+            "name": "Jectran",
+            "hid": "3QLG0EDV"
+          },
+          "hid": "N5EP4LPW"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Inject Iron) done by Elmer Paquit. inject iron",
+          "hid": "4XE0BEM3"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-01-18 07:53:20"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2025-11-27",
+          "date_actual": "2025-11-27",
+          "dt_entry": "2025-11-06 09:48:51",
+          "hid": "GNRX6EV5"
+        },
+        "account_pig_ops": {
+          "name": "Check Reheat",
+          "num_days_since": 21,
+          "is_medvac": 0,
+          "description": "check buntis",
+          "hid": "3QLG0EDV"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      }
+    ],
+    "lactating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-21",
+          "date_actual": null,
+          "dt_entry": "2026-02-25 08:41:31",
+          "hid": "W9L906L0"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 25,
+          "is_medvac": 1,
+          "description": "Deworm",
+          "hid": "02L57R7B"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-18",
+          "date_actual": null,
+          "dt_entry": "2026-02-25 08:41:31",
+          "hid": "N5EPV4EP"
+        },
+        "account_pig_ops": {
+          "name": "Castration",
+          "num_days_since": 22,
+          "is_medvac": 0,
+          "description": "Castration of Males",
+          "hid": "GPE78RNX"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-17",
+          "date_actual": null,
+          "dt_entry": "2026-02-25 08:41:31",
+          "hid": "3QLGY0LD"
+        },
+        "account_pig_ops": {
+          "name": "Inject Vitamins_2",
+          "num_days_since": 21,
+          "is_medvac": 1,
+          "description": "Inject Vitamins 2",
+          "hid": "3NRWBRM2"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-10",
+          "date_actual": "2026-03-10",
+          "dt_entry": "2026-02-25 08:41:31",
+          "hid": "21RMQ8LP"
+        },
+        "account_pig_ops": {
+          "name": "Inject Vitamins_1",
+          "num_days_since": 14,
+          "is_medvac": 1,
+          "description": "Inject Vitamins 1",
+          "hid": "GNEB2L1X"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "VEMEDIM",
+            "hid": "3QLG0EDV"
+          },
+          "type": {
+            "name": "VITAMINS",
+            "hid": "N5EP4LPW"
+          },
+          "acc_medvac": {
+            "name": "Piglets Vitamins",
+            "hid": "3NRWBRM2"
+          },
+          "hid": "X0E2K3RN"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Inject Vitamins_1) done by Elmer Paquit. natagaan vitamins",
+          "hid": "N5EPV4EP"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-28 20:09:39"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-09",
+          "date_actual": "2026-02-09",
+          "dt_entry": "2026-02-25 08:41:31",
+          "hid": "M7EJK5R1"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron_2",
+          "num_days_since": 13,
+          "is_medvac": 1,
+          "description": "Inject Iron 2",
+          "hid": "34RDPRBJ"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "VEMEDIM",
+            "hid": "3QLG0EDV"
+          },
+          "type": {
+            "name": "Iron Dextran",
+            "hid": "3QLG0EDV"
+          },
+          "acc_medvac": {
+            "name": "Jectran",
+            "hid": "3QLG0EDV"
+          },
+          "hid": "0GL83JEM"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Inject Iron_2) done by Elmer Paquit. injected",
+          "hid": "3QLGY0LD"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-28 20:08:35"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-02-27",
+          "date_actual": "2026-02-27",
+          "dt_entry": "2026-02-25 08:41:31",
+          "hid": "N5R1K8E3"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron_1",
+          "num_days_since": 3,
+          "is_medvac": 1,
+          "description": "Inject Iron 1",
+          "hid": "X0E23RNP"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "VEMEDIM",
+            "hid": "3QLG0EDV"
+          },
+          "type": {
+            "name": "Iron Dextran",
+            "hid": "3QLG0EDV"
+          },
+          "acc_medvac": {
+            "name": "Jectran",
+            "hid": "3QLG0EDV"
+          },
+          "hid": "W9L9Y6R0"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Inject Iron_1) done by Elmer Paquit. injected 2ML",
+          "hid": "M7EJK5R1"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-28 20:07:32"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-02-27",
+          "date_actual": "2026-02-27",
+          "dt_entry": "2026-02-25 08:41:31",
+          "hid": "7WRV2PRV"
+        },
+        "account_pig_ops": {
+          "name": "Cut Tail",
+          "num_days_since": 3,
+          "is_medvac": 0,
+          "description": "Cut piglets Tail",
+          "hid": "0GL8JLMY"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Cut Tail) done by Elmer Paquit. Cur Tail",
+          "hid": "21RMQ8LP"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-28 20:08:01"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 3,
+          "date_target": "2026-02-26",
+          "date_actual": "2026-02-26",
+          "dt_entry": "2026-02-25 08:41:31",
+          "hid": "4XE03BEM"
+        },
+        "account_pig_ops": {
+          "name": "MultiVitamins",
+          "num_days_since": 2,
+          "is_medvac": 1,
+          "description": "Mix Multivitamins to sow feed",
+          "hid": "GNRX6EV5"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "PFISER",
+            "hid": "W9L96L0N"
+          },
+          "type": {
+            "name": "VITAMINS",
+            "hid": "N5EP4LPW"
+          },
+          "acc_medvac": {
+            "name": "Sow Vitamins",
+            "hid": "0GL8JLMY"
+          },
+          "hid": "N5EP94RP"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(MultiVitamins) done by Elmer Paquit. napainom",
+          "hid": "N5R1K8E3"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-28 20:06:46"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-02-25",
+          "date_actual": "2026-02-25",
+          "dt_entry": "2026-02-25 08:41:31",
+          "hid": "2VL4J2EW"
+        },
+        "account_pig_ops": {
+          "name": "Cut Teeth",
+          "num_days_since": 1,
+          "is_medvac": 0,
+          "description": "Cut piglets Teeth",
+          "hid": "ZJRQ4LXW"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Cut Teeth) done by Elmer Paquit. nahuman",
+          "hid": "7WRV2PRV"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-28 20:06:04"
+        }
+      }
+    ]
+  },
+  {
+    "pig_production": {
+      "farm_prod_id": 18,
+      "flag": 0,
+      "prod_status_id": 4,
+      "prod_status_name": "Lactating",
+      "cur_pig_count": 15,
+      "dead_after_birth": 1,
+      "hid": "P9L3KLWN"
+    },
+    "sow": {
+      "farm_sow_id": 3,
+      "number": "342298",
+      "name": "Tanya",
+      "hid": "W9L96L0N"
+    },
+    "insemination": {
+      "insem_type": "B",
+      "boar": {
+        "farm_sow_id": 1,
+        "number": null,
+        "name": "Joker",
+        "hid": "34RDPRBJ"
+      },
+      "insem_cost": 0,
+      "insem_notes": null,
+      "insem_date": "2025-11-06",
+      "insem_staff_name": "Elmer Paquit",
+      "insem_staff_hid": "N5EP4LPW"
+    },
+    "birth": {
+      "date_expected": "2026-03-01",
+      "date_actual": "2026-03-01",
+      "num_days_actual": 115,
+      "num_dead_at_birth": 0,
+      "pigs_live_m": 7,
+      "pigs_live_f": 9,
+      "birth_staff_name": "Elmer Paquit",
+      "birth_staff_hid": "N5EP4LPW"
+    },
+    "weaning": {
+      "date_weaning": null,
+      "num_pigs_m": null,
+      "num_pigs_f": null,
+      "num_pigs": null,
+      "weight": null,
+      "weight_pp": null
+    },
+    "feeds": {
+      "bought": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "balance": {
+        "date_balance": null,
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "cost": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "date_change_feed": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      }
+    },
+    "data_ver_num": {
+      "pig_prod": 2,
+      "medvac": 0,
+      "health_notes": 0,
+      "prod_feed": 0,
+      "feed_balance": 0,
+      "harvest": 0
+    },
+    "gestating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-02-14",
+          "date_actual": "2026-02-14",
+          "dt_entry": "2025-11-07 09:42:38",
+          "hid": "P9L3KLWN"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 100,
+          "is_medvac": 1,
+          "description": "purga edited",
+          "hid": "W9L96L0N"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "PFISER",
+            "hid": "W9L96L0N"
+          },
+          "type": {
+            "name": "DEWORM",
+            "hid": "X0E23RNP"
+          },
+          "acc_medvac": {
+            "name": "Ivermectin",
+            "hid": "GNEB2L1X"
+          },
+          "hid": "0KLZKL4D"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "purga",
+          "hid": "ZJRQW4RX"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-02-17 15:06:10"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-01-25",
+          "date_actual": "2026-01-25",
+          "dt_entry": "2025-11-07 09:42:38",
+          "hid": "ZQEY4L9W"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron",
+          "num_days_since": 80,
+          "is_medvac": 1,
+          "description": "inject iron dextran edited",
+          "hid": "N5EP4LPW"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "VEMEDIM",
+            "hid": "3QLG0EDV"
+          },
+          "type": {
+            "name": "Iron Dextran",
+            "hid": "3QLG0EDV"
+          },
+          "acc_medvac": {
+            "name": "Jectran",
+            "hid": "3QLG0EDV"
+          },
+          "hid": "3QLG0EDV"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Inject Iron",
+          "hid": "P9L3KLWN"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-01-18 07:51:20"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2025-11-27",
+          "date_actual": "2025-11-27",
+          "dt_entry": "2025-11-07 09:42:38",
+          "hid": "4YEN5L5J"
+        },
+        "account_pig_ops": {
+          "name": "Check Reheat",
+          "num_days_since": 21,
+          "is_medvac": 0,
+          "description": "check buntis",
+          "hid": "3QLG0EDV"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      }
+    ],
+    "lactating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-26",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:01:29",
+          "hid": "3NRWG0EM"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 25,
+          "is_medvac": 1,
+          "description": "Deworm",
+          "hid": "02L57R7B"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-23",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:01:29",
+          "hid": "GNEBN4E1"
+        },
+        "account_pig_ops": {
+          "name": "Castration",
+          "num_days_since": 22,
+          "is_medvac": 0,
+          "description": "Castration of Males",
+          "hid": "GPE78RNX"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-22",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:01:29",
+          "hid": "34RDD8RB"
+        },
+        "account_pig_ops": {
+          "name": "Inject Vitamins_2",
+          "num_days_since": 21,
+          "is_medvac": 1,
+          "description": "Inject Vitamins 2",
+          "hid": "3NRWBRM2"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-15",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:01:29",
+          "hid": "X0E2MVEN"
+        },
+        "account_pig_ops": {
+          "name": "Inject Vitamins_1",
+          "num_days_since": 14,
+          "is_medvac": 1,
+          "description": "Inject Vitamins 1",
+          "hid": "GNEB2L1X"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-14",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:01:29",
+          "hid": "0GL8JMLM"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron_2",
+          "num_days_since": 13,
+          "is_medvac": 1,
+          "description": "Inject Iron 2",
+          "hid": "34RDPRBJ"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-04",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:01:29",
+          "hid": "W9L904L0"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron_1",
+          "num_days_since": 3,
+          "is_medvac": 1,
+          "description": "Inject Iron 1",
+          "hid": "X0E23RNP"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-04",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:01:29",
+          "hid": "N5EPVQEP"
+        },
+        "account_pig_ops": {
+          "name": "Cut Tail",
+          "num_days_since": 3,
+          "is_medvac": 0,
+          "description": "Cut piglets Tail",
+          "hid": "0GL8JLMY"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 3,
+          "date_target": "2026-03-03",
+          "date_actual": "2026-03-03",
+          "dt_entry": "2026-03-11 05:01:29",
+          "hid": "21RMQQLP"
+        },
+        "account_pig_ops": {
+          "name": "MultiVitamins",
+          "num_days_since": 2,
+          "is_medvac": 1,
+          "description": "Mix Multivitamins to sow feed",
+          "hid": "GNRX6EV5"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "VEMEDIM",
+            "hid": "3QLG0EDV"
+          },
+          "type": {
+            "name": "VITAMINS",
+            "hid": "N5EP4LPW"
+          },
+          "acc_medvac": {
+            "name": "Sow Vitamins",
+            "hid": "0GL8JLMY"
+          },
+          "hid": "N5R18L3B"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(MultiVitamins) done by Elmer Paquit. given vitamins",
+          "hid": "3NRWZBRM"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-11 06:43:01"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-02",
+          "date_actual": "2026-03-02",
+          "dt_entry": "2026-03-11 05:01:29",
+          "hid": "3QLGY7LD"
+        },
+        "account_pig_ops": {
+          "name": "Cut Teeth",
+          "num_days_since": 1,
+          "is_medvac": 0,
+          "description": "Cut piglets Teeth",
+          "hid": "ZJRQ4LXW"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Cut Teeth) done by Elmer Paquit. done",
+          "hid": "GNEB82L1"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-11 06:41:44"
+        }
+      }
+    ]
+  },
+  {
+    "pig_production": {
+      "farm_prod_id": 28,
+      "flag": 0,
+      "prod_status_id": 4,
+      "prod_status_name": "Lactating",
+      "cur_pig_count": 15,
+      "dead_after_birth": null,
+      "hid": "0GL83JEM"
+    },
+    "sow": {
+      "farm_sow_id": 12,
+      "number": null,
+      "name": "Sheryl",
+      "hid": "P9L3KLWN"
+    },
+    "insemination": {
+      "insem_type": "B",
+      "boar": {
+        "farm_sow_id": 2,
+        "number": null,
+        "name": "Bob",
+        "hid": "3NRWBRM2"
+      },
+      "insem_cost": 0,
+      "insem_notes": "",
+      "insem_date": "2025-11-20",
+      "insem_staff_name": "Elmer Paquit",
+      "insem_staff_hid": "N5EP4LPW"
+    },
+    "birth": {
+      "date_expected": "2026-03-15",
+      "date_actual": "2026-03-16",
+      "num_days_actual": 116,
+      "num_dead_at_birth": 1,
+      "pigs_live_m": 8,
+      "pigs_live_f": 7,
+      "birth_staff_name": "Elmer Paquit",
+      "birth_staff_hid": "N5EP4LPW"
+    },
+    "weaning": {
+      "date_weaning": null,
+      "num_pigs_m": null,
+      "num_pigs_f": null,
+      "num_pigs": null,
+      "weight": null,
+      "weight_pp": null
+    },
+    "feeds": {
+      "bought": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "balance": {
+        "date_balance": null,
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "cost": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "date_change_feed": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      }
+    },
+    "data_ver_num": {
+      "pig_prod": 3,
+      "medvac": 0,
+      "health_notes": 0,
+      "prod_feed": 0,
+      "feed_balance": 0,
+      "harvest": 0
+    },
+    "gestating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-02-28",
+          "date_actual": "2026-03-02",
+          "dt_entry": "2026-03-11 06:27:13",
+          "hid": "ZQEY92R9"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 100,
+          "is_medvac": 1,
+          "description": "purga edited",
+          "hid": "W9L96L0N"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "VEMEDIM",
+            "hid": "3QLG0EDV"
+          },
+          "type": {
+            "name": "DEWORM",
+            "hid": "X0E23RNP"
+          },
+          "acc_medvac": {
+            "name": "Ivermectin",
+            "hid": "GNEB2L1X"
+          },
+          "hid": "7WRVPRV5"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Deworm) done by Elmer Paquit. purga",
+          "hid": "0GL8NJEM"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-11 06:29:42"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-02-08",
+          "date_actual": "2026-02-10",
+          "dt_entry": "2026-03-11 06:27:13",
+          "hid": "4YENY1L5"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron",
+          "num_days_since": 80,
+          "is_medvac": 1,
+          "description": "inject iron dextran edited",
+          "hid": "N5EP4LPW"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "PFISER",
+            "hid": "W9L96L0N"
+          },
+          "type": {
+            "name": "Iron Dextran",
+            "hid": "3QLG0EDV"
+          },
+          "acc_medvac": {
+            "name": "Jectran",
+            "hid": "3QLG0EDV"
+          },
+          "hid": "2VL42EWP"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Inject Iron) done by Elmer Paquit. 2ML injection",
+          "hid": "W9L966L0"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-11 06:29:05"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2025-12-11",
+          "date_actual": "2025-12-13",
+          "dt_entry": "2026-03-11 06:27:13",
+          "hid": "0KLZ5QR4"
+        },
+        "account_pig_ops": {
+          "name": "Check Reheat",
+          "num_days_since": 21,
+          "is_medvac": 0,
+          "description": "check buntis",
+          "hid": "3QLG0EDV"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Check Reheat) done by Elmer Paquit. no reheat",
+          "hid": "N5EP84EP"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-11 06:28:08"
+        }
+      }
+    ],
+    "lactating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-04-09",
+          "date_actual": null,
+          "dt_entry": "2026-03-23 14:19:06",
+          "hid": "GPE7Q7LN"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 25,
+          "is_medvac": 1,
+          "description": "Deworm",
+          "hid": "02L57R7B"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-04-06",
+          "date_actual": null,
+          "dt_entry": "2026-03-23 14:19:06",
+          "hid": "3NRWD0EM"
+        },
+        "account_pig_ops": {
+          "name": "Castration",
+          "num_days_since": 22,
+          "is_medvac": 0,
+          "description": "Castration of Males",
+          "hid": "GPE78RNX"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-04-05",
+          "date_actual": null,
+          "dt_entry": "2026-03-23 14:19:06",
+          "hid": "GNEBW4E1"
+        },
+        "account_pig_ops": {
+          "name": "Inject Vitamins_2",
+          "num_days_since": 21,
+          "is_medvac": 1,
+          "description": "Inject Vitamins 2",
+          "hid": "3NRWBRM2"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-29",
+          "date_actual": null,
+          "dt_entry": "2026-03-23 14:19:06",
+          "hid": "34RDX8EB"
+        },
+        "account_pig_ops": {
+          "name": "Inject Vitamins_1",
+          "num_days_since": 14,
+          "is_medvac": 1,
+          "description": "Inject Vitamins 1",
+          "hid": "GNEB2L1X"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-28",
+          "date_actual": null,
+          "dt_entry": "2026-03-23 14:19:06",
+          "hid": "X0E23VRN"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron_2",
+          "num_days_since": 13,
+          "is_medvac": 1,
+          "description": "Inject Iron 2",
+          "hid": "34RDPRBJ"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-18",
+          "date_actual": null,
+          "dt_entry": "2026-03-23 14:19:06",
+          "hid": "0GL8DMLM"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron_1",
+          "num_days_since": 3,
+          "is_medvac": 1,
+          "description": "Inject Iron 1",
+          "hid": "X0E23RNP"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-18",
+          "date_actual": null,
+          "dt_entry": "2026-03-23 14:19:06",
+          "hid": "W9L9V4R0"
+        },
+        "account_pig_ops": {
+          "name": "Cut Tail",
+          "num_days_since": 3,
+          "is_medvac": 0,
+          "description": "Cut piglets Tail",
+          "hid": "0GL8JLMY"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 3,
+          "date_target": "2026-03-17",
+          "date_actual": "2026-03-17",
+          "dt_entry": "2026-03-23 14:19:06",
+          "hid": "3QLG77RD"
+        },
+        "account_pig_ops": {
+          "name": "MultiVitamins",
+          "num_days_since": 2,
+          "is_medvac": 1,
+          "description": "Mix Multivitamins to sow feed",
+          "hid": "GNRX6EV5"
+        },
+        "pig_medvac": {
+          "brand": {
+            "name": "UNILAB",
+            "hid": "N5EP4LPW"
+          },
+          "type": {
+            "name": "VITAMINS",
+            "hid": "N5EP4LPW"
+          },
+          "acc_medvac": {
+            "name": "Sow Vitamins",
+            "hid": "0GL8JLMY"
+          },
+          "hid": "34RD9PLB"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(MultiVitamins) done by Elmer Paquit. nataag vitamins",
+          "hid": "21RMQQLP"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-28 20:10:51"
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 2,
+          "date_target": "2026-03-16",
+          "date_actual": "2026-03-16",
+          "dt_entry": "2026-03-23 14:19:06",
+          "hid": "N5EPNQRP"
+        },
+        "account_pig_ops": {
+          "name": "Cut Teeth",
+          "num_days_since": 1,
+          "is_medvac": 0,
+          "description": "Cut piglets Teeth",
+          "hid": "ZJRQ4LXW"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Cut Teeth) done by Elmer Paquit. cur teeh",
+          "hid": "W9L906L0"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-28 20:10:15"
+        }
+      }
+    ]
+  }
+]
+
+
+
+dataGestatingList = [
+  {
+    "pig_production": {
+      "farm_prod_id": 29,
+      "flag": 0,
+      "prod_status_id": 1,
+      "prod_status_name": "Gestating",
+      "cur_pig_count": null,
+      "dead_after_birth": null,
+      "hid": "X0E2K3RN"
+    },
+    "sow": {
+      "farm_sow_id": 10,
+      "number": null,
+      "name": "Jennifer",
+      "hid": "0KLZKL4D"
+    },
+    "insemination": {
+      "insem_type": "AI_X",
+      "ai": {
+        "semen_supplier": {
+          "name": "Growbest Agrivet",
+          "semen": {
+            "name": "PIC 337",
+            "hid": "3QLG0EDV"
+          },
+          "hid": "3QLG0EDV"
+        },
+        "internal_boar": {
+          "id": null,
+          "farm_sow_id": null,
+          "number": null,
+          "name": null
+        },
+        "semen_cost": 0
+      },
+      "insem_cost": 0,
+      "insem_notes": null,
+      "insem_date": "2026-01-14",
+      "insem_staff_name": "Elmer Paquit",
+      "insem_staff_hid": "N5EP4LPW"
+    },
+    "birth": {
+      "date_expected": "2026-05-08",
+      "date_actual": null
+    },
+    "weaning": {
+      "date_weaning": null,
+      "num_pigs_m": null,
+      "num_pigs_f": null,
+      "num_pigs": null,
+      "weight": null,
+      "weight_pp": null
+    },
+    "feeds": {
+      "bought": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "balance": {
+        "date_balance": null,
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "cost": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "date_change_feed": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      }
+    },
+    "data_ver_num": {
+      "pig_prod": 0,
+      "medvac": 0,
+      "health_notes": 0,
+      "prod_feed": 0,
+      "feed_balance": 0,
+      "harvest": 0
+    },
+    "gestating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-04-24",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 06:34:31",
+          "hid": "2VL401RW"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 100,
+          "is_medvac": 1,
+          "description": "purga edited",
+          "hid": "W9L96L0N"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-04-04",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 06:34:31",
+          "hid": "4XE0X8RM"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron",
+          "num_days_since": 80,
+          "is_medvac": 1,
+          "description": "inject iron dextran edited",
+          "hid": "N5EP4LPW"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-02-04",
+          "date_actual": "2026-02-04",
+          "dt_entry": "2026-03-11 06:34:31",
+          "hid": "P9L3GDRW"
+        },
+        "account_pig_ops": {
+          "name": "Check Reheat",
+          "num_days_since": 21,
+          "is_medvac": 0,
+          "description": "check buntis",
+          "hid": "3QLG0EDV"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Check Reheat) done by Elmer Paquit. no reheat",
+          "hid": "34RDYPRB"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-11 06:35:03"
+        }
+      }
+    ],
+    "lactating_ops": []
+  },
+  {
+    "pig_production": {
+      "farm_prod_id": 19,
+      "flag": 0,
+      "prod_status_id": 1,
+      "prod_status_name": "Gestating",
+      "cur_pig_count": null,
+      "dead_after_birth": null,
+      "hid": "4XE0BEM3"
+    },
+    "sow": {
+      "farm_sow_id": 6,
+      "number": "1234",
+      "name": "Tifanny",
+      "hid": "GNEB2L1X"
+    },
+    "insemination": {
+      "insem_type": "B",
+      "boar": {
+        "farm_sow_id": 2,
+        "number": null,
+        "name": "Charlie",
+        "hid": "VWLK4ED0"
+      },
+      "insem_cost": 0,
+      "insem_notes": "Pirmerong Takal Desidido+Kurdapya",
+      "insem_date": "2026-01-18",
+      "insem_staff_name": "Elmer Paquit",
+      "insem_staff_hid": "N5EP4LPW"
+    },
+    "birth": {
+      "date_expected": "2026-05-12",
+      "date_actual": null
+    },
+    "weaning": {
+      "date_weaning": null,
+      "num_pigs_m": null,
+      "num_pigs_f": null,
+      "num_pigs": null,
+      "weight": null,
+      "weight_pp": null
+    },
+    "feeds": {
+      "bought": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "balance": {
+        "date_balance": null,
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "cost": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "date_change_feed": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      }
+    },
+    "data_ver_num": {
+      "pig_prod": 0,
+      "medvac": 0,
+      "health_notes": 0,
+      "prod_feed": 0,
+      "feed_balance": 0,
+      "harvest": 0
+    },
+    "gestating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-04-28",
+          "date_actual": null,
+          "dt_entry": "2026-01-05 17:19:23",
+          "hid": "7WRVPRV5"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 100,
+          "is_medvac": 1,
+          "description": "purga edited",
+          "hid": "W9L96L0N"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-04-08",
+          "date_actual": null,
+          "dt_entry": "2026-01-05 17:19:23",
+          "hid": "2VL42EWP"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron",
+          "num_days_since": 80,
+          "is_medvac": 1,
+          "description": "inject iron dextran edited",
+          "hid": "N5EP4LPW"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-02-08",
+          "date_actual": "2026-02-08",
+          "dt_entry": "2026-01-05 17:19:23",
+          "hid": "4XE0BEM3"
+        },
+        "account_pig_ops": {
+          "name": "Check Reheat",
+          "num_days_since": 21,
+          "is_medvac": 0,
+          "description": "check buntis",
+          "hid": "3QLG0EDV"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(CheckBuntis) done by Elmer Paquit. checked",
+          "hid": "X0E2K3RN"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-02-09 07:48:29"
+        }
+      }
+    ],
+    "lactating_ops": []
+  },
+  {
+    "pig_production": {
+      "farm_prod_id": 26,
+      "flag": 0,
+      "prod_status_id": 1,
+      "prod_status_name": "Gestating",
+      "cur_pig_count": null,
+      "dead_after_birth": null,
+      "hid": "N5EP94RP"
+    },
+    "sow": {
+      "farm_sow_id": 6,
+      "number": null,
+      "name": "Fiona",
+      "hid": "GPE78RNX"
+    },
+    "insemination": {
+      "insem_type": "B",
+      "boar": {
+        "farm_sow_id": 4,
+        "number": null,
+        "name": "Randy",
+        "hid": "ZQEY4L9W"
+      },
+      "insem_cost": 0,
+      "insem_notes": null,
+      "insem_date": "2026-01-26",
+      "insem_staff_name": "Elmer Paquit",
+      "insem_staff_hid": "N5EP4LPW"
+    },
+    "birth": {
+      "date_expected": "2026-05-20",
+      "date_actual": null
+    },
+    "weaning": {
+      "date_weaning": null,
+      "num_pigs_m": null,
+      "num_pigs_f": null,
+      "num_pigs": null,
+      "weight": null,
+      "weight_pp": null
+    },
+    "feeds": {
+      "bought": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "balance": {
+        "date_balance": null,
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "cost": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "date_change_feed": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      }
+    },
+    "data_ver_num": {
+      "pig_prod": 0,
+      "medvac": 0,
+      "health_notes": 0,
+      "prod_feed": 0,
+      "feed_balance": 0,
+      "harvest": 0
+    },
+    "gestating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-05-06",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:35:10",
+          "hid": "ZJRQY9EX"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 100,
+          "is_medvac": 1,
+          "description": "purga edited",
+          "hid": "W9L96L0N"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-04-16",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:35:10",
+          "hid": "02L595E7"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron",
+          "num_days_since": 80,
+          "is_medvac": 1,
+          "description": "inject iron dextran edited",
+          "hid": "N5EP4LPW"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-02-16",
+          "date_actual": "2026-02-16",
+          "dt_entry": "2026-03-11 05:35:10",
+          "hid": "GPE727RN"
+        },
+        "account_pig_ops": {
+          "name": "Check Reheat",
+          "num_days_since": 21,
+          "is_medvac": 0,
+          "description": "check buntis",
+          "hid": "3QLG0EDV"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Check Reheat) done by Elmer Paquit. checked",
+          "hid": "4YEN25L5"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-23 14:17:54"
+        }
+      }
+    ],
+    "lactating_ops": []
+  },
+  {
+    "pig_production": {
+      "farm_prod_id": 27,
+      "flag": 0,
+      "prod_status_id": 1,
+      "prod_status_name": "Gestating",
+      "cur_pig_count": null,
+      "dead_after_birth": null,
+      "hid": "W9L9Y6R0"
+    },
+    "sow": {
+      "farm_sow_id": 7,
+      "number": null,
+      "name": "Lala",
+      "hid": "02L57R7B"
+    },
+    "insemination": {
+      "insem_type": "AI_X",
+      "ai": {
+        "semen_supplier": {
+          "name": "Growbest Agrivet",
+          "semen": {
+            "name": "PIC 337",
+            "hid": "3QLG0EDV"
+          },
+          "hid": "3QLG0EDV"
+        },
+        "internal_boar": {
+          "id": null,
+          "farm_sow_id": null,
+          "number": null,
+          "name": null
+        },
+        "semen_cost": 1500
+      },
+      "insem_cost": 0,
+      "insem_notes": null,
+      "insem_date": "2026-01-30",
+      "insem_staff_name": "Elmer Paquit",
+      "insem_staff_hid": "N5EP4LPW"
+    },
+    "birth": {
+      "date_expected": "2026-05-24",
+      "date_actual": null
+    },
+    "weaning": {
+      "date_weaning": null,
+      "num_pigs_m": null,
+      "num_pigs_f": null,
+      "num_pigs": null,
+      "weight": null,
+      "weight_pp": null
+    },
+    "feeds": {
+      "bought": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "balance": {
+        "date_balance": null,
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "cost": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "date_change_feed": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      }
+    },
+    "data_ver_num": {
+      "pig_prod": 0,
+      "medvac": 0,
+      "health_notes": 0,
+      "prod_feed": 0,
+      "feed_balance": 0,
+      "harvest": 0
+    },
+    "gestating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-05-10",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:39:09",
+          "hid": "ZGR6VZE3"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 100,
+          "is_medvac": 1,
+          "description": "purga edited",
+          "hid": "W9L96L0N"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-04-20",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 05:39:09",
+          "hid": "GNRXP4LV"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron",
+          "num_days_since": 80,
+          "is_medvac": 1,
+          "description": "inject iron dextran edited",
+          "hid": "N5EP4LPW"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-02-20",
+          "date_actual": "2026-02-20",
+          "dt_entry": "2026-03-11 05:39:09",
+          "hid": "VWLKYBRD"
+        },
+        "account_pig_ops": {
+          "name": "Check Reheat",
+          "num_days_since": 21,
+          "is_medvac": 0,
+          "description": "check buntis",
+          "hid": "3QLG0EDV"
+        },
+        "staff": {
+          "name": "Elmer Paquit",
+          "hid": "N5EP4LPW"
+        },
+        "notes": {
+          "notes": "Pig operation(Check Reheat) done by Elmer Paquit. cehcked",
+          "hid": "ZQEY74L9"
+        },
+        "last_update": {
+          "name_last": "Wong",
+          "name_first": "Jack",
+          "dt_update": "2026-03-23 14:18:25"
+        }
+      }
+    ],
+    "lactating_ops": []
+  },
+  {
+    "pig_production": {
+      "farm_prod_id": 30,
+      "flag": 0,
+      "prod_status_id": 1,
+      "prod_status_name": "Gestating",
+      "cur_pig_count": null,
+      "dead_after_birth": null,
+      "hid": "34RD9PLB"
+    },
+    "sow": {
+      "farm_sow_id": 11,
+      "number": null,
+      "name": "Gemma",
+      "hid": "4YEN5L5J"
+    },
+    "insemination": {
+      "insem_type": "B",
+      "boar": {
+        "farm_sow_id": 2,
+        "number": null,
+        "name": "Charlie",
+        "hid": "VWLK4ED0"
+      },
+      "insem_cost": 0,
+      "insem_notes": null,
+      "insem_date": "2026-03-03",
+      "insem_staff_name": "Elmer Paquit",
+      "insem_staff_hid": "N5EP4LPW"
+    },
+    "birth": {
+      "date_expected": "2026-06-25",
+      "date_actual": null
+    },
+    "weaning": {
+      "date_weaning": null,
+      "num_pigs_m": null,
+      "num_pigs_f": null,
+      "num_pigs": null,
+      "weight": null,
+      "weight_pp": null
+    },
+    "feeds": {
+      "bought": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "balance": {
+        "date_balance": null,
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "cost": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      },
+      "date_change_feed": {
+        "gestating": null,
+        "lactating": null,
+        "booster": null,
+        "prestarter": null,
+        "starter": null,
+        "grower": null,
+        "finisher": null
+      }
+    },
+    "data_ver_num": {
+      "pig_prod": 0,
+      "medvac": 0,
+      "health_notes": 0,
+      "prod_feed": 0,
+      "feed_balance": 0,
+      "harvest": 0
+    },
+    "gestating_ops": [
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-06-11",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 06:38:08",
+          "hid": "M7EJJKE1"
+        },
+        "account_pig_ops": {
+          "name": "Deworm",
+          "num_days_since": 100,
+          "is_medvac": 1,
+          "description": "purga edited",
+          "hid": "W9L96L0N"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-05-22",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 06:38:08",
+          "hid": "N5R1Q1E3"
+        },
+        "account_pig_ops": {
+          "name": "Inject Iron",
+          "num_days_since": 80,
+          "is_medvac": 1,
+          "description": "inject iron dextran edited",
+          "hid": "N5EP4LPW"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      },
+      {
+        "pig_prod_pig_ops": {
+          "operation_type": 1,
+          "date_target": "2026-03-24",
+          "date_actual": null,
+          "dt_entry": "2026-03-11 06:38:08",
+          "hid": "7WRV79EV"
+        },
+        "account_pig_ops": {
+          "name": "Check Reheat",
+          "num_days_since": 21,
+          "is_medvac": 0,
+          "description": "check buntis",
+          "hid": "3QLG0EDV"
+        },
+        "staff": {
+          "name": null,
+          "hid": null
+        },
+        "notes": {
+          "notes": null,
+          "hid": null
+        }
+      }
+    ],
+    "lactating_ops": []
+  }
+]
