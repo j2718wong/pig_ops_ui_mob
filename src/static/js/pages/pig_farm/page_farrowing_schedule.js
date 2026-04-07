@@ -819,13 +819,13 @@ ${html_style}
                         }
                         
                         contentHtml = `
-                            <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 🐖 ${assignment.sowId} ${assignment.sowName}
                             </div>
-                            <div style="font-size: 13px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 ${urgencyIcon} Wean: ${thisObj.formatDateShort(weanDate)} | ${daysRemaining} days left
                             </div>
-                            ${urgencyText ? `<div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold;">${urgencyText}</div>` : ''}
+                            ${urgencyText ? `<div style="font-size: 10px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold;">${urgencyText}</div>` : ''}
                         `;
                     } else {
                         // Gestating block - show move in, move out, due date, total days
@@ -844,13 +844,13 @@ ${html_style}
                         }
                         
                         contentHtml = `
-                            <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 🐖 ${assignment.sowId} ${assignment.sowName}
                             </div>
-                            <div style="font-size: 13px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 ${moveIcon} Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}
                             </div>
-                            <div style="font-size: 13px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 🤰 Due: ${thisObj.formatDateShort(expectedBirth)} | Stay: ${durationDays} days
                             </div>
                         `;
