@@ -768,22 +768,22 @@ ${html_style}
                 const blockEndX = thisObj.getXPosition(assignment.endDate, startDate, pixelsPerDay);
                 const blockWidth = blockEndX - blockStartX;
                 
-                // Inside renderCrateGanttChart, when creating blocks:
                 if (blockWidth > 2) {
                     const block = document.createElement('div');
                     block.style.position = 'absolute';
                     block.style.left = `${blockStartX}px`;
                     block.style.top = '4px';
                     block.style.width = `${blockWidth}px`;
-                    block.style.height = '72px';
+                    block.style.height = 'auto';
+                    block.style.minHeight = '68px';
                     block.style.borderRadius = '6px';
-                    block.style.padding = '4px 8px';
+                    block.style.padding = '6px 8px';
                     block.style.overflow = 'hidden';
                     block.style.boxSizing = 'border-box';
                     block.style.cursor = 'pointer';
                     
                     // Add critical class if conflict
-                    const hasConflict = conflicts.some(c => c.sowId === assignment.sowId);
+                    const hasConflict = conflicts && conflicts.some(c => c.sowId === assignment.sowId);
                     
                     if (assignment.type === 'lactating') {
                         block.style.backgroundColor = '#4caf50';
@@ -798,41 +798,72 @@ ${html_style}
                         block.style.animation = 'pulse 2s infinite';
                     }
                     
-                    // Block content with high visibility
-                    const moveInDate = assignment.type === 'gestating' ? assignment.startDate : null;
-                    const expectedBirth = assignment.expectedBirth;
+                    const today = new Date(dtCurrentDate);
+                    today.setHours(0, 0, 0, 0);
                     
-                    let contentHtml = `
-                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            ${assignment.sowId} ${assignment.sowName}
-                        </div>
-                    `;
+                    let contentHtml = '';
                     
                     if (assignment.type === 'lactating') {
-                        contentHtml += `
-                            <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                🍼 Weans: ${thisObj.formatDateShort(assignment.endDate)}
+                        // Lactating block - show days remaining
+                        const weanDate = assignment.endDate;
+                        const daysRemaining = Math.ceil((weanDate - today) / (1000 * 60 * 60 * 24));
+                        
+                        let urgencyIcon = '🍼';
+                        let urgencyText = '';
+                        if (daysRemaining <= 3) {
+                            urgencyIcon = '🚨';
+                            urgencyText = 'URGENT!';
+                        } else if (daysRemaining <= 7) {
+                            urgencyIcon = '⚠️';
+                            urgencyText = 'Soon';
+                        }
+                        
+                        contentHtml = `
+                            <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                🐖 ${assignment.sowId} ${assignment.sowName}
                             </div>
+                            <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                ${urgencyIcon} Wean: ${thisObj.formatDateShort(weanDate)} | ${daysRemaining} days left
+                            </div>
+                            ${urgencyText ? `<div style="font-size: 10px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold;">${urgencyText}</div>` : ''}
                         `;
                     } else {
-                        if (moveInDate) {
-                            contentHtml += `
-                                <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    📦 Move: ${thisObj.formatDateShort(moveInDate)}
-                                </div>
-                            `;
+                        // Gestating block - show move in, move out, due date, total days
+                        const moveInDate = assignment.startDate;
+                        const moveOutDate = assignment.endDate;
+                        const expectedBirth = assignment.expectedBirth;
+                        const durationDays = Math.ceil((moveOutDate - moveInDate) / (1000 * 60 * 60 * 24));
+                        
+                        // Check if move in date is approaching
+                        const daysToMoveIn = Math.ceil((moveInDate - today) / (1000 * 60 * 60 * 24));
+                        let moveIcon = '📦';
+                        if (daysToMoveIn <= 3 && daysToMoveIn > 0) {
+                            moveIcon = '🚨';
+                        } else if (daysToMoveIn <= 7 && daysToMoveIn > 0) {
+                            moveIcon = '⚠️';
                         }
-                        contentHtml += `
+                        
+                        contentHtml = `
+                            <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                🐖 ${assignment.sowId} ${assignment.sowName}
+                            </div>
                             <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                🤰 Due: ${thisObj.formatDateShort(expectedBirth)}
+                                ${moveIcon} Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}
+                            </div>
+                            <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                🤰 Due: ${thisObj.formatDateShort(expectedBirth)} | Stay: ${durationDays} days
                             </div>
                         `;
                     }
                     
                     block.innerHTML = contentHtml;
                     
-                    // Add tooltip on hover/tap
-                    block.title = `${assignment.sowId} ${assignment.sowName}\n${assignment.type === 'lactating' ? 'Weans' : 'Move to farrow'}: ${thisObj.formatDateShort(assignment.startDate)} - ${thisObj.formatDateShort(assignment.endDate)}`;
+                    // Tooltip on hover/tap
+                    if (assignment.type === 'lactating') {
+                        block.title = `${assignment.sowId} ${assignment.sowName}\nWeans: ${thisObj.formatDateShort(assignment.endDate)}`;
+                    } else {
+                        block.title = `${assignment.sowId} ${assignment.sowName}\nMove in: ${thisObj.formatDateShort(assignment.startDate)}\nMove out: ${thisObj.formatDateShort(assignment.endDate)}\nDue: ${thisObj.formatDateShort(assignment.expectedBirth)}`;
+                    }
                     
                     timelineTrack.appendChild(block);
                 }
