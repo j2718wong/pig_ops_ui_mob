@@ -120,7 +120,8 @@ export function PageFarrowingSchedule(input_settings){
                 background-color: #f5f5f5;
                 z-index: 2;
                 font-weight: bold;
-                width: 100px;
+                width: 60px;
+                text-align: center;
             }
             
             .gantt-table .crate-cell {
@@ -129,7 +130,9 @@ export function PageFarrowingSchedule(input_settings){
                 background-color: #f5f5f5;
                 z-index: 1;
                 font-weight: bold;
-                vertical-align: top;
+                vertical-align: middle;
+                text-align: center;
+                width: 60px;
             }
             
             /* High visibility timeline blocks */
@@ -137,38 +140,27 @@ export function PageFarrowingSchedule(input_settings){
                 border-radius: 6px;
                 padding: 6px 8px;
                 margin: 2px 0;
-                font-size: 12px;
                 font-weight: bold;
                 box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             }
             
-            /* Lactating blocks - Green background with dark text */
+            /* Lactating blocks - Green background */
             .timeline-block.lactating {
                 background: #4caf50;
                 color: #ffffff;
                 text-shadow: 0 1px 1px rgba(0,0,0,0.2);
             }
             
-            .timeline-block.lactating .timeline-sub {
-                color: #ffffff;
-                opacity: 0.9;
-            }
-            
-            /* Gestating blocks - Orange background with dark text */
+            /* Gestating blocks - Orange background */
             .timeline-block.gestating {
                 background: #ff9800;
                 color: #ffffff;
                 text-shadow: 0 1px 1px rgba(0,0,0,0.2);
             }
             
-            .timeline-block.gestating .timeline-sub {
-                color: #ffffff;
-                opacity: 0.9;
-            }
-            
-            /* Sow ID and name - large and bold */
+            /* Sow ID and name - largest */
             .timeline-sow-name {
-                font-size: 14px;
+                font-size: 13px;
                 font-weight: bold;
                 margin-bottom: 4px;
                 white-space: nowrap;
@@ -176,10 +168,20 @@ export function PageFarrowingSchedule(input_settings){
                 text-overflow: ellipsis;
             }
             
-            /* Sub information - smaller but still readable */
+            /* Sub information - Move, Due, Wean dates - target size 13px */
             .timeline-sub {
-                font-size: 10px;
+                font-size: 13px;
                 font-weight: normal;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 1.4;
+            }
+            
+            /* Urgency text */
+            .timeline-urgency {
+                font-size: 12px;
+                font-weight: bold;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -226,7 +228,7 @@ export function PageFarrowingSchedule(input_settings){
                 gap: 12px;
                 margin-top: 16px;
                 padding: 8px;
-                font-size: 11px;
+                font-size: 13px;
                 background-color: #fafafa;
                 border-radius: 8px;
                 border-top: 1px solid #eee;
@@ -251,21 +253,6 @@ export function PageFarrowingSchedule(input_settings){
                 width: 20px;
                 height: 2px;
                 background: #ccc;
-            }
-            
-            /* Mobile optimization */
-            @media (max-width: 768px) {
-                .timeline-block {
-                    padding: 4px 6px;
-                }
-                
-                .timeline-sow-name {
-                    font-size: 12px;
-                }
-                
-                .timeline-sub {
-                    font-size: 9px;
-                }
             }
         </style>
         `;
@@ -317,14 +304,6 @@ ${html_style}
 
 <div class="mobile-container">
     ${html_nav}
-    
-    <!-- Mobile Info Box -->
-    <!--
-    <div class="mobile-info-box">
-        <div class="info-text" id="${elemIdPageInfo}">
-        </div>
-    </div>
-    -->
     
     <div style="text-align: center;">
         <span id="${elemIdLabelToday}">${label_today}</span>
@@ -387,24 +366,19 @@ ${html_style}
     
     this._bindEventListeners = function(){
         elemUpdateNumCrates.addEventListener('click', function() {
-            // Show Container
             const next_page_id   = PAGE_ID.PIG_FARM_ADD_EDIT;
             const next_page = navigation.getPageContainer(next_page_id);
             
-            // Push currentPage to NavHistory; 
-            // Will also compare current page and  next_page NAV_MENU_GROUP.
             navigation.pushCurrentPageToNavHistory(next_page);
             
             navigation.showThisPage(next_page);
             
-            
-            // Show Page
             const go_back_page_id   = PAGE_ID.FARROWING_SCHEDULE;
             const go_back_page = navigation.getPageContainer(go_back_page_id);
             
         
             const options = {
-                is_add:                 false,   // false is edit
+                is_add:                 false,
                 go_back_page:           go_back_page 
             }
             navigation.pagePigFarmAddEdit.show(options);
@@ -422,19 +396,14 @@ ${html_style}
     this.show = function(){
         thisObj.debugNavHistory(TAG);
         
-        // Update navigation.curPageNavigated
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
-        
-        // So that not to instantiate in every table redraw
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         
-        
         const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
         
-        // This is only shown in Gesta, Lacta and Wean tabs
         elemDateToday.textContent = s_dt_current;
 
         thisObj.renderFarrowingCalendar();
@@ -448,25 +417,18 @@ ${html_style}
         
         const dataPigFarm = navigation.pigFarm.dataPigFarm;
         
-        
         let num_farrowing_crates = dataPigFarm.pig_farm.num_farrow_crates;
-        
-        
         
         let num_days_allow_early_wean = 35;
         
-        
-        // Calculate date range (today to 115 days ahead)
         const startDate = new Date(dtCurrentDate);
         startDate.setHours(0, 0, 0, 0);
         
         const endDate = new Date(startDate);
         endDate.setDate(endDate.getDate() + 115);
         
-        // Generate weekly intervals (Mondays only)
         const weeklyDates = thisObj.getWeeklyMondays(startDate, endDate);
         
-        // Build crate occupancy
         const crateOccupancy = thisObj.buildCrateOccupancy(
             dataLactatingList, 
             dataGestatingList, 
@@ -474,15 +436,12 @@ ${html_style}
             num_farrowing_crates
         );
         
-        // Detect conflicts
         const conflicts = thisObj.detectCrateConflicts(crateOccupancy, 
                 num_farrowing_crates);
         
-        // Find early wean opportunities
         const earlyWeanOptions = thisObj.findEarlyWeanOpportunities(
             crateOccupancy, num_days_allow_early_wean);
         
-        // Render the crate-based Gantt chart
         thisObj.renderCrateGanttChart(weeklyDates, crateOccupancy, conflicts, 
             earlyWeanOptions);
     }
@@ -492,7 +451,6 @@ ${html_style}
         const mondays = [];
         const current = new Date(startDate);
         
-        // Find first Monday
         while (current.getDay() !== 1) {
             current.setDate(current.getDate() + 1);
         }
@@ -513,7 +471,6 @@ ${html_style}
         const today = new Date(dtCurrentDate);
         today.setHours(0, 0, 0, 0);
         
-        // Step 1: Create timeline events for all sows
         const events = [];
         
         // Lactating sows (already in crates)
@@ -564,10 +521,8 @@ ${html_style}
             }
         }
         
-        // Step 2: Sort events by start date
         events.sort((a, b) => a.startDate - b.startDate);
         
-        // Step 3: Assign sows to crates (greedy algorithm)
         const crates = [];
         for (let i = 0; i < numCrates; i++) {
             crates.push({
@@ -579,9 +534,7 @@ ${html_style}
         for (const event of events) {
             let assigned = false;
             
-            // Try to find a crate that's available during this event's period
             for (const crate of crates) {
-                // Check if crate has any conflict with existing assignments
                 let hasConflict = false;
                 for (const assignment of crate.assignments) {
                     if (event.startDate <= assignment.endDate && 
@@ -669,14 +622,12 @@ ${html_style}
             return;
         }
         
-        // Calculate total timeline width in days
         const startDate = weeklyDates[0];
         const endDate = weeklyDates[weeklyDates.length - 1];
-        endDate.setDate(endDate.getDate() + 6); // Extend to end of last week
+        endDate.setDate(endDate.getDate() + 6);
         const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-        const pixelsPerDay = 3.5; // Adjust for mobile readability
+        const pixelsPerDay = 3.5;
         
-        // Create scrollable container
         const scrollDiv = document.createElement('div');
         scrollDiv.style.overflowX = 'auto';
         scrollDiv.style.overflowY = 'auto';
@@ -684,7 +635,7 @@ ${html_style}
         scrollDiv.style.WebkitOverflowScrolling = 'touch';
         scrollDiv.style.position = 'relative';
         
-        // Create fixed header container
+        // Header
         const headerContainer = document.createElement('div');
         headerContainer.style.position = 'sticky';
         headerContainer.style.top = '0';
@@ -692,24 +643,24 @@ ${html_style}
         headerContainer.style.zIndex = '3';
         headerContainer.style.borderBottom = '1px solid #ddd';
         
-        // Header row with dates
         const headerDiv = document.createElement('div');
         headerDiv.style.display = 'flex';
-        headerDiv.style.minWidth = `${totalDays * pixelsPerDay + 100}px`;
+        headerDiv.style.minWidth = `${totalDays * pixelsPerDay + 60}px`;
         
-        // Crate label header
+        // Crate label header - reduced width, centered
         const labelHeader = document.createElement('div');
         labelHeader.textContent = 'Crate';
-        labelHeader.style.width = '80px';
-        labelHeader.style.padding = '8px';
+        labelHeader.style.width = '60px';
+        labelHeader.style.padding = '8px 0';
         labelHeader.style.fontWeight = 'bold';
+        labelHeader.style.textAlign = 'center';
         labelHeader.style.position = 'sticky';
         labelHeader.style.left = '0';
         labelHeader.style.backgroundColor = 'white';
         labelHeader.style.zIndex = '2';
         headerDiv.appendChild(labelHeader);
         
-        // Date markers (Mondays)
+        // Date markers
         for (let i = 0; i < weeklyDates.length; i++) {
             const date = weeklyDates[i];
             const nextDate = i + 1 < weeklyDates.length ? weeklyDates[i + 1] : endDate;
@@ -720,7 +671,7 @@ ${html_style}
             dateDiv.textContent = thisObj.formatShortDate(date);
             dateDiv.style.width = `${width}px`;
             dateDiv.style.textAlign = 'center';
-            dateDiv.style.fontSize = '10px';
+            dateDiv.style.fontSize = '11px';
             dateDiv.style.padding = '8px 0';
             dateDiv.style.borderRight = '1px solid #ccc';
             dateDiv.style.fontWeight = 'bold';
@@ -729,22 +680,24 @@ ${html_style}
         headerContainer.appendChild(headerDiv);
         scrollDiv.appendChild(headerContainer);
         
-        // Body container
+        // Body
         const bodyContainer = document.createElement('div');
         
         for (const crate of crateOccupancy) {
             const crateRow = document.createElement('div');
             crateRow.style.display = 'flex';
-            crateRow.style.minWidth = `${totalDays * pixelsPerDay + 100}px`;
+            crateRow.style.minWidth = `${totalDays * pixelsPerDay + 60}px`;
             crateRow.style.borderBottom = '1px solid #eee';
             crateRow.style.position = 'relative';
             
-            // Crate label (sticky)
+            // Crate number - just the number, centered, no padding
             const crateLabel = document.createElement('div');
-            crateLabel.textContent = `Crate ${crate.crateNumber}`;
-            crateLabel.style.width = '80px';
-            crateLabel.style.padding = '8px';
+            crateLabel.textContent = `${crate.crateNumber}`;
+            crateLabel.style.width = '60px';
+            crateLabel.style.padding = '8px 0';
             crateLabel.style.fontWeight = 'bold';
+            crateLabel.style.textAlign = 'center';
+            crateLabel.style.fontSize = '16px';
             crateLabel.style.position = 'sticky';
             crateLabel.style.left = '0';
             crateLabel.style.backgroundColor = '#fafafa';
@@ -756,10 +709,11 @@ ${html_style}
             const timelineTrack = document.createElement('div');
             timelineTrack.style.flex = '1';
             timelineTrack.style.position = 'relative';
-            timelineTrack.style.height = '80px';
+            timelineTrack.style.height = 'auto';
+            timelineTrack.style.minHeight = '85px';
             timelineTrack.style.backgroundColor = '#f9f9f9';
             
-            // Draw background grid lines (Mondays)
+            // Grid lines
             let currentX = 0;
             for (let i = 0; i < weeklyDates.length; i++) {
                 const date = weeklyDates[i];
@@ -779,7 +733,7 @@ ${html_style}
                 currentX += width;
             }
             
-            // Draw assignment blocks
+            // Assignment blocks
             for (const assignment of crate.assignments) {
                 const blockStartX = thisObj.getXPosition(assignment.startDate, startDate, pixelsPerDay);
                 const blockEndX = thisObj.getXPosition(assignment.endDate, startDate, pixelsPerDay);
@@ -792,14 +746,13 @@ ${html_style}
                     block.style.top = '4px';
                     block.style.width = `${blockWidth}px`;
                     block.style.height = 'auto';
-                    block.style.minHeight = '68px';
+                    block.style.minHeight = '76px';
                     block.style.borderRadius = '6px';
-                    block.style.padding = '6px 8px';
+                    block.style.padding = '4px 6px';
                     block.style.overflow = 'hidden';
                     block.style.boxSizing = 'border-box';
                     block.style.cursor = 'pointer';
                     
-                    // Add critical class if conflict
                     const hasConflict = conflicts && conflicts.some(c => c.pid === assignment.pid);
                     
                     if (assignment.type === 'lactating') {
@@ -821,7 +774,6 @@ ${html_style}
                     let contentHtml = '';
                     
                     if (assignment.type === 'lactating') {
-                        // Lactating block - show days remaining
                         const weanDate = assignment.endDate;
                         const daysRemaining = Math.ceil((weanDate - today) / (1000 * 60 * 60 * 24));
                         
@@ -836,22 +788,16 @@ ${html_style}
                         }
                         
                         contentHtml = `
-                            <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                🐖 ${assignment.pid} ${assignment.sowName}
-                            </div>
-                            <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                ${urgencyIcon} Wean: ${thisObj.formatDateShort(weanDate)} | ${daysRemaining} days left
-                            </div>
-                            ${urgencyText ? `<div style="font-size: 10px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold;">${urgencyText}</div>` : ''}
+                            <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
+                            <div class="timeline-sub">${urgencyIcon} Wean: ${thisObj.formatDateShort(weanDate)} | ${daysRemaining} days left</div>
+                            ${urgencyText ? `<div class="timeline-urgency">${urgencyText}</div>` : ''}
                         `;
                     } else {
-                        // Gestating block - show move in, move out, due date, total days
                         const moveInDate = assignment.startDate;
                         const moveOutDate = assignment.endDate;
                         const expectedBirth = assignment.expectedBirth;
                         const durationDays = Math.ceil((moveOutDate - moveInDate) / (1000 * 60 * 60 * 24));
                         
-                        // Check if move in date is approaching
                         const daysToMoveIn = Math.ceil((moveInDate - today) / (1000 * 60 * 60 * 24));
                         let moveIcon = '📦';
                         if (daysToMoveIn <= 3 && daysToMoveIn > 0) {
@@ -861,21 +807,14 @@ ${html_style}
                         }
                         
                         contentHtml = `
-                            <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                🐖 ${assignment.pid} ${assignment.sowName}
-                            </div>
-                            <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                ${moveIcon} Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}
-                            </div>
-                            <div style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                🤰 Due: ${thisObj.formatDateShort(expectedBirth)} | Stay: ${durationDays} days
-                            </div>
+                            <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
+                            <div class="timeline-sub">${moveIcon} Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}</div>
+                            <div class="timeline-sub">🤰 Due: ${thisObj.formatDateShort(expectedBirth)} | Stay: ${durationDays} days</div>
                         `;
                     }
                     
                     block.innerHTML = contentHtml;
                     
-                    // Tooltip on hover/tap
                     if (assignment.type === 'lactating') {
                         block.title = `${assignment.pid} ${assignment.sowName}\nWeans: ${thisObj.formatDateShort(assignment.endDate)}`;
                     } else {
@@ -893,7 +832,6 @@ ${html_style}
         scrollDiv.appendChild(bodyContainer);
         container.appendChild(scrollDiv);
         
-        // Render legend and conflicts
         this.renderLegend(container);
         this.renderConflictsSummary(container, conflicts, earlyWeanOptions);
     }
@@ -985,4 +923,4 @@ ${html_style}
         return weeklyDates.length - 1;
     }
     
-} 
+}
