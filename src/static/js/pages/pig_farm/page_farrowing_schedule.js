@@ -160,9 +160,9 @@ export function PageFarrowingSchedule(input_settings){
             
             /* Sow ID and name - largest */
             .timeline-sow-name {
-                font-size: 13px;
+                font-size: 15px;
                 font-weight: bold;
-                margin-bottom: 4px;
+                margin-bottom: 3px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -170,7 +170,7 @@ export function PageFarrowingSchedule(input_settings){
             
             /* Sub information - Move, Due, Wean dates - target size 13px */
             .timeline-sub {
-                font-size: 13px;
+                font-size: 14px;
                 font-weight: normal;
                 white-space: nowrap;
                 overflow: hidden;
