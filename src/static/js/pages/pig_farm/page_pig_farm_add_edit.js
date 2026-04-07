@@ -26,6 +26,8 @@ import {ComponentPlusMinusInput} from '../common/ui/comp_plus_minus_input.js';
 export function PagePigFarmAddEdit(input_settings){
     PageViewPigFarmPage.call(this);
     
+    const TAG                   = 'PagePigFarmAddEdit';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
     const managerAddress        = navigation.managerAddress;
@@ -251,6 +253,12 @@ export function PagePigFarmAddEdit(input_settings){
     
     
     this.show = function(options){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = {options: options};
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
         /*
         
         Typical options 

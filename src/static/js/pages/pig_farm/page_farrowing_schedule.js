@@ -323,7 +323,7 @@ ${html_style}
     </div>
     -->
     
-    <div style="text-align: center; margin: 8px 0;">
+    <div style="text-align: center;">
         <span id="${elemIdLabelToday}">${label_today}</span>
         <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
     </div>
@@ -384,7 +384,27 @@ ${html_style}
     
     this._bindEventListeners = function(){
         elemUpdateNumCrates.addEventListener('click', function() {
+            // Show Container
+            const next_page_id   = PAGE_ID.PIG_FARM_ADD_EDIT;
+            const next_page = navigation.getPageContainer(next_page_id);
             
+            // Push currentPage to NavHistory; 
+            // Will also compare current page and  next_page NAV_MENU_GROUP.
+            navigation.pushCurrentPageToNavHistory(next_page);
+            
+            navigation.showThisPage(next_page);
+            
+            
+            // Show Page
+            const go_back_page_id   = PAGE_ID.FARROWING_SCHEDULE;
+            const go_back_page = navigation.getPageContainer(go_back_page_id);
+            
+        
+            const options = {
+                is_add:                 false,   // false is edit
+                go_back_page:           go_back_page 
+            }
+            navigation.pagePigFarmAddEdit.show(options);
         });
        
     }

@@ -710,7 +710,7 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavPigDead(true);
         });
 
-        elemMobileNavOperations4.addEventListener('click', function() {
+        elemMobileNavOperations5.addEventListener('click', function() {
             thisObj.onClickNavSummaryReports(true);
         });
 
