@@ -12,7 +12,7 @@ const APPLICATION = {
     MAX_WIDTH_WINDOW_IS_MOBILE:     768,
     
     
-    DEFAULT_NUM_DAYS_WEAN:          42,
+    DEFAULT_NUM_DAYS_WEAN:          35,
     DEFAULT_NUM_DAYS_MIN_HARVEST:   140,
     
     DEBUG_NAV_HISTORY:              true

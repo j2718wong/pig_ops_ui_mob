@@ -674,14 +674,10 @@ ${html_style}
                 // Add the current pig count
                 num_pigs = cur_entry.pig_production.cur_pig_count;
             }
-            
-        
         } 
-        
-        
+
         
         return num_pigs;
-    
     }
     
     
@@ -831,12 +827,6 @@ ${html_style}
             }
         }
         return null;
-    }
-    
-    
-    this.onClickPageHeaderTitle = function(){
-        
-        
     }
     
     
@@ -1044,8 +1034,6 @@ ${html_style}
             for (let i = 0; i < entries.length; i++) {
                 const entry = entries[i];
                 
-                console.log('test 1');
-                console.log(entry);
                 const pid = entry.pid;
                 pidList += `   PID ${pid}`;
                 if (i < entries.length - 1) pidList += '\n';
@@ -1173,10 +1161,29 @@ ${html_style}
         if (saveBtn) {
             saveBtn.onclick = function(){
                 // TODO: need to populate this
-                const s_date_add = null;
                 const list_selected_hid = [];
                  
-                thisObj.onClickCreateGroup(s_date_add, list_selected_hid);
+                // Populate based on modal type
+                if (options.type === 'confirm_create' && options.entriesToCombine) {
+                    for (const entry of options.entriesToCombine) {
+                        list_selected_hid.push(entry.hid);
+                    }
+                } else if (options.type === 'confirm_add' && options.entriesToAdd) {
+                    for (const entry of options.entriesToAdd) {
+                        list_selected_hid.push(entry.hid);
+                    }
+                }
+                
+                // Also need to include the group itself if adding to existing group?
+                // For add_to_group, the group already exists, so only send the pigs to add
+                
+                if (list_selected_hid.length === 0) {
+                    alert('No entries selected');
+                    return;
+                }
+        
+                thisObj.onClickCreateGroup(list_selected_hid);
+                closeModal();
             };
         }
     }
@@ -1246,7 +1253,7 @@ ${html_style}
             data: JSON.stringify(post_data),
   
             beforeSend: function(){
-                elemServerErrorMsg.style.display = 'none';
+                thisObj.elemServerErrorMsg.style.display = 'none';
             },
   
             success: function(response){
