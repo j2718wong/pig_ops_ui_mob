@@ -599,14 +599,29 @@ export function PageProdEntryCommon(input_settings){
             
             
             case PIG_PROD_TYPE.HARVESTED:{
-                elemNavPrevEntry.onclick = function(){
-                    navigation.pageProdHistoryList.onClickProdHistEntry(
-                        options.prev_prod_pid);
+                    
+                if (options.is_prod_sales){
+                    elemNavPrevEntry.onclick = function(){
+                        navigation.pageProdSalesList.onClickProdHistEntry(
+                            options.prev_prod_pid);
+                    }
+                    
+                    elemNavNextEntry.onclick = function(){
+                        navigation.pageProdSalesList.onClickProdHistEntry(
+                            options.next_prod_pid);
+                    }
+
                 }
-                
-                elemNavNextEntry.onclick = function(){
-                    navigation.pageProdHistoryList.onClickProdHistEntry(
-                        options.next_prod_pid);
+                else{
+                    elemNavPrevEntry.onclick = function(){
+                        navigation.pageProdHistoryList.onClickProdHistEntry(
+                            options.prev_prod_pid);
+                    }
+                    
+                    elemNavNextEntry.onclick = function(){
+                        navigation.pageProdHistoryList.onClickProdHistEntry(
+                            options.next_prod_pid);
+                    }
                 }
                 break;
             }

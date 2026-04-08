@@ -105,11 +105,6 @@ export function PageProdHistoryList(input_settings){
     let elemTableTotalPages     = null;
     let elemTableNextPage       = null;
     
-
-    
-    let dataProdHistoryList     = null;
-
-    
     
     let curDataListView         = null;
     
@@ -506,7 +501,7 @@ export function PageProdHistoryList(input_settings){
         
             const callback_success = function(data){
                 dataProdHistList  = navigation.pigFarm.managerPigProd.dataProdHistoryList;
-                
+
                 if (settings.isProdSalesHistory){
                     tableProdGrossSales.renderTable(dataProdHistList);
                 }
@@ -521,7 +516,7 @@ export function PageProdHistoryList(input_settings){
         
         }
         else{
-            dataProdHistList  = navigation.pigFarm.managerPigProd.dataProdHistoryList;
+            
             if (settings.isProdSalesHistory){
                 tableProdGrossSales.renderTable(dataProdHistList);
             }
@@ -685,7 +680,8 @@ export function PageProdHistoryList(input_settings){
         let prev_entry  = null;
         let next_entry  = null;
         
-        const data_pig_prod_list = dataProdHistList;
+        const data_pig_prod_list = navigation.pigFarm.managerPigProd.dataProdHistoryList;
+        
         
         for (index = 0; index< data_pig_prod_list.length; index++){
             cur_entry = data_pig_prod_list[index];
