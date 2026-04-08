@@ -276,6 +276,10 @@ export function ProdSummary(input_settings){
     this.populateProdSummary = function(){
         const list_harvest      = curDataEntry.data_details.list_harvest;
         
+        let last_harvest        = null;
+        if (list_harvest && list_harvest.length > 0){
+            last_harvest = list_harvest[0];
+        }
         
         // Update account weight_unit and currency
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
@@ -299,7 +303,37 @@ export function ProdSummary(input_settings){
         if (prod_status_id == PROD_STATUS.HARVESTED || prod_status_id == PROD_STATUS.CLOSED){
             elemTdNumDaysLabel.innerHTML  = label_days_birth_to_last_harvest;
             
-            // TODO needs to be computed
+            if (last_harvest){
+                
+                const date_harvest = last_harvest.prod_harvest.date_harvest;
+                
+                if (date_harvest){
+                
+                    let date_start = null;
+                    const pig_production = curDataEntry.pig_production;
+                    
+                    // Check if there is a date_actual_birth;
+                    // piglets bought outside for fattening have no date_actual_birth  
+                    if (curDataEntry.birth.date_actual){
+                        date_start = curDataEntry.birth.date_actual;
+                    }
+                    
+                    if (date_start == null){
+                        date_start = curDataEntry.weaning.date_weaning;
+                    }
+                    
+                    if (date_start){
+                        const dt_harvest    = new Date(date_harvest);
+                        const dt_start      = new Date(date_start);
+                        
+                        const diff_ms       = dt_harvest.getTime() - dt_start.getTime();
+                        const diff_days     = Math.round(diff_ms / (1000 * 60 * 60 * 24));
+                        
+                        elemTdNumDays.innerHTML = `${diff_days}`;
+                    }
+                    
+                }
+            }
         }
         else {
             if (curDataEntry.birth.date_actual){
