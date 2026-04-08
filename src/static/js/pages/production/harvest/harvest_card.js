@@ -83,7 +83,10 @@ export function HarvestCard(input_settings){
             
     
     
-            case HARVEST_TYPE.BOAR_MATE_PAYMENT:{break;}
+            case HARVEST_TYPE.BOAR_MATE_PAYMENT:{
+                return thisObj.getHtmlInternal(data_harvest);
+            }
+            
             case HARVEST_TYPE.INTERNAL_CONSUMPTION:{break;}
             case HARVEST_TYPE.INTERNAL_SALE: {break;}
             
@@ -92,6 +95,114 @@ export function HarvestCard(input_settings){
         
         return null;
     }
+    
+    
+    this.getHtmlInternal = function(data_harvest){
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const weight_unit       = acc_settings_ops.weight_unit;
+        
+        const prod_harvest      = data_harvest.prod_harvest;
+        const date_harvest      = prod_harvest.date_harvest;
+        const dt_harvest        = new Date(date_harvest);
+        const s_dt_harvest      = formatDate(dt_harvest, FORMAT_COMPACT);
+        
+        const harvest_type_hid   = prod_harvest.harvest_type_hid;
+        
+        let harvest_tag         = '';
+        let tag_class           = '';
+        
+        
+        if (harvest_type_hid == HARVEST_TYPE.BOAR_MATE_PAYMENT){
+            harvest_tag         = 'BOAR MATE PAYMENT';
+            tag_class           = 'external';
+        }
+        
+        if (harvest_type_hid == HARVEST_TYPE.INTERNAL_CONSUMPTION){
+            harvest_tag         = 'CONSUMPTION';
+            tag_class           = 'external';
+        }
+        
+        
+        
+        const num_pigs      = prod_harvest.num_pigs;
+        
+        
+        let live_weight         = 'N/A';
+        let live_weight_ave     = 'N/A';
+        let live_weight_unit    = '';
+        
+        let per_pig_weight_csv  = null;
+        
+        if (prod_harvest.live_weight && prod_harvest.live_weight.weight){
+            live_weight         = prod_harvest.live_weight.weight;
+            live_weight_ave     = prod_harvest.live_weight.average;
+            live_weight_unit    = weight_unit;
+            
+            per_pig_weight_csv  = prod_harvest.live_weight.pp_csv;
+        }
+        
+        
+        let num_days            = 'N/A';
+        if (prod_harvest.num_days){
+            num_days = prod_harvest.num_days;
+        }
+        
+        
+        let html_buyer = '';
+        
+        if (prod_harvest.pig_buyer && prod_harvest.pig_buyer.name){
+            html_buyer = `<span class="buyer-name">${prod_harvest.pig_buyer.name}</span>`;
+        }
+        
+        
+        const html = `
+        <div class="card-harvest">
+            <div class="card-harvest-header">
+                <span class="harvest-date">${s_dt_harvest}</span>
+                <span class="harvest-type-tag ${tag_class}">${harvest_tag}</span>
+            </div>
+
+            <div class="metrics-row live-only">
+                <div class="pigs-block">
+                    <span class="label">PIGS</span>
+                    <span class="number">${num_pigs}</span>
+                </div>
+                <div class="live-slaughter">
+                    <div class="metric-item">
+                        <span class="label">LIVE</span>
+                        <div class="value-block">
+                            <span class="number">${live_weight}</span>
+                            <span class="unit">${live_weight_unit}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="label">AVE LIVE</span>
+                    <span class="value">${live_weight_ave}<span class="unit">${weight_unit}</span></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">TYPE</span>
+                    <span class="value">PIGLET</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">DAYS</span>
+                    <span class="value">${num_days}</span>
+                </div>
+            </div>
+            
+            
+            <div class="card-harvest-footer">
+                ${html_buyer}
+            </div>
+        </div>
+        `;
+    
+        return html;
+    }
+    
     
     
     this.getHtmlSaleLiveOrSlaughterPigs = function(data_harvest){
@@ -343,6 +454,8 @@ export function HarvestCard(input_settings){
         
         let s_gilt_boar         = '';
         
+        
+        
         if (harvest_type_hid == HARVEST_TYPE.PIGLETS_SALE){
             harvest_tag         = 'PIGLETS SALE';
             tag_class           = 'external';
@@ -371,6 +484,8 @@ export function HarvestCard(input_settings){
             
             s_gilt_boar         = 'GILT';
         }
+        
+        
         
         
         const num_pigs      = prod_harvest.num_pigs;

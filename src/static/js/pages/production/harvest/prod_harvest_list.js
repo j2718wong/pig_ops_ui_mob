@@ -223,7 +223,6 @@ export function ProdHarvestList(input_settings){
             
         const callback_success = function(data){
             thisObj.renderTable(dataPigProd.data_details.list_harvest);
-            
         };
         
         let elem_show_error = null;
@@ -258,7 +257,6 @@ export function ProdHarvestList(input_settings){
     
     this.renderTable = function(data){
         elemCardContainer.innerHTML = '';
-        
         
         for (const cur_entry of data){
             const cur_card = harvestCard.getElemHarvestCard(dataPigProd, cur_entry);
