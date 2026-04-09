@@ -68,6 +68,9 @@ export function ProdEntryBirth(input_settings){
     
     const elemDivContainer      = settings.elemDivContainer;
     
+    let elemIdWithOutBirthInfo  = null;
+    let elemIdWithBirthInfo     = null;
+    
     let elemIdWarningBox        = null;
     let elemIdCannotUpdate      = null;
     
@@ -86,7 +89,9 @@ export function ProdEntryBirth(input_settings){
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
     
-
+    
+    let elemWithOutBirthInfo    = null;
+    let elemWithBirthInfo       = null;
     
     let elemWarningBox          = null;
     let elemCannotUpdate        = null;
@@ -168,6 +173,10 @@ export function ProdEntryBirth(input_settings){
         label_select_staff_help = helper.getSimpleTranslation('prod_entry_birth.labels.select_staff_help') || label_select_staff_help;
         
         label_warning_1         = helper.getSimpleTranslation('prod_entry_birth.warning_1') || label_warning_1;
+        
+        
+        elemIdWithOutBirthInfo  = `${settings.uniqueKey}-without-birth`;
+        elemIdWithBirthInfo     = `${settings.uniqueKey}-with-birth`;
         
                         
         elemIdWarningBox        = `${settings.uniqueKey}-warning-box`;
@@ -261,51 +270,58 @@ export function ProdEntryBirth(input_settings){
         
         const html = `
 <div class="modal-body">
-    <h2 class="tab-title">
-        ${label_birth_info}
-    </h2>
-    
-    <div class="warning-box" id="${elemIdWarningBox}">
-        ${label_warning_1}
+    <div id="${elemIdWithOutBirthInfo}">
+        No Birth info Available
     </div>
     
-    <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:8px;">
-        ${label_warning_3}
-    </div>
-    
-    
-    <div class="form-group-text">
-        <label class="form-label">${label_sow}</label>
-        <span class="" id="${elemIdSow}"></span>
-    </div>
-    
-    
-    <div class="form-group-text">
-        <label for="${elemIdDateExpected}" class="form-label">${label_date_expected}</label>
-        <span class="" id="${elemIdDateExpected}"></span>
-    </div>
-    
-    ${html_date_birth}
-    
-    <!-- Number of Female Piglets with plus/minus buttons -->
-    ${html_num_female}
-    
-    <!-- Number of Male Piglets with plus/minus buttons -->
-    ${html_num_male}
-            
-    <!-- Number of Stillbirth Piglets with plus/minus buttons -->
-    ${html_num_dead}
-            
-    <!-- 7. Staff -->
-    ${html_staff}
+    <div id="${elemIdWithBirthInfo}">
 
-    <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
-    
-    <!-- Footer Buttons -->
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-            <i class="fas fa-save me-2"></i>${label_save_changes}
-        </button>
+        <h2 class="tab-title">
+            ${label_birth_info}
+        </h2>
+        
+        <div class="warning-box" id="${elemIdWarningBox}">
+            ${label_warning_1}
+        </div>
+        
+        <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:8px;">
+            ${label_warning_3}
+        </div>
+        
+        
+        <div class="form-group-text">
+            <label class="form-label">${label_sow}</label>
+            <span class="" id="${elemIdSow}"></span>
+        </div>
+        
+        
+        <div class="form-group-text">
+            <label for="${elemIdDateExpected}" class="form-label">${label_date_expected}</label>
+            <span class="" id="${elemIdDateExpected}"></span>
+        </div>
+        
+        ${html_date_birth}
+        
+        <!-- Number of Female Piglets with plus/minus buttons -->
+        ${html_num_female}
+        
+        <!-- Number of Male Piglets with plus/minus buttons -->
+        ${html_num_male}
+                
+        <!-- Number of Stillbirth Piglets with plus/minus buttons -->
+        ${html_num_dead}
+                
+        <!-- 7. Staff -->
+        ${html_staff}
+
+        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+        
+        <!-- Footer Buttons -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
+                <i class="fas fa-save me-2"></i>${label_save_changes}
+            </button>
+        </div>
     </div>
 </div>
         `;
@@ -331,6 +347,9 @@ export function ProdEntryBirth(input_settings){
     
     
     this._findElements = function(){
+        elemWithOutBirthInfo    = elemDivContainer.querySelector('#'+elemIdWithOutBirthInfo);
+        elemWithBirthInfo       = elemDivContainer.querySelector('#'+elemIdWithBirthInfo);   
+        
         elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
         elemCannotUpdate        = elemDivContainer.querySelector('#'+elemIdCannotUpdate);
         
@@ -380,7 +399,19 @@ export function ProdEntryBirth(input_settings){
         
         curDataPigProd = data_pig_prod;
         
+        // Check if if there is a sow info
+        
         const data_sow = curDataPigProd.sow;
+        
+        if (!data_sow){
+            elemWithOutBirthInfo.style.display = 'block';
+            elemWithBirthInfo.style.display = 'none';
+            return;
+        }
+        
+        
+        elemWithOutBirthInfo.style.display = 'none';
+        elemWithBirthInfo.style.display = 'block';   
         
         
         // Set sow_name and create a link to open SowBoarPage

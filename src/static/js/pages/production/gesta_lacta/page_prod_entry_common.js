@@ -9,7 +9,8 @@ import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 import {PAGE_ID,
         SOW_STATUS,
         PIG_OPERATION_TYPE,
-        PIG_PROD_TYPE}          from '../../../constants.js';
+        PIG_PROD_TYPE,
+        FLAG_BITS}              from '../../../constants.js';
 
 
 import {ComponentTabsWithMore}  from '../../common/ui/comp_tabs_with_more.js';
@@ -53,6 +54,7 @@ export function PageProdEntryCommon(input_settings){
     
     let elemIdPidOnly           = null;
     let elemIdPigProdPid2       = null;
+    let elemIdPidOnlyDesc       = null;
         
     let elemIdTabsContainer     = null;
     let elemIdTabContentArea    = null;
@@ -75,6 +77,7 @@ export function PageProdEntryCommon(input_settings){
     
     let elemPidOnly             = null;
     let elemPigProdPid2         = null;
+    let elemPidOnlyDesc         = null;
     
     let elemTabsContainer       = null;
     
@@ -304,6 +307,7 @@ export function PageProdEntryCommon(input_settings){
         
         elemIdPidOnly           = `${settings.uniqueKey}-pid-only`;
         elemIdPigProdPid2       = `${settings.uniqueKey}-pig-prod-pid2`;
+        elemIdPidOnlyDesc       = `${settings.uniqueKey}-pid-only-desc`;
         
         elemIdTabsContainer     = `${settings.uniqueKey}-tabs-container`;
         elemIdTabContentArea    = `${settings.uniqueKey}-tab-content`;
@@ -350,7 +354,10 @@ export function PageProdEntryCommon(input_settings){
                 </div>
                 
                 <div class="sow-name" id="${elemIdPidOnly}" style="display:none">
-                    <span>PID <span id="${elemIdPigProdPid2}">1</span></span>
+                    <span>
+                        PID <span id="${elemIdPigProdPid2}">1</span>
+                        <span id="${elemIdPidOnlyDesc}" style="margin-left:8px;"></span>
+                    </span>
                 </div>
             </div>
         </div>
@@ -396,6 +403,7 @@ export function PageProdEntryCommon(input_settings){
         
         elemPidOnly             = elemDivContainer.querySelector('#'+elemIdPidOnly);
         elemPigProdPid2         = elemDivContainer.querySelector('#'+elemIdPigProdPid2);
+        elemPidOnlyDesc         = elemDivContainer.querySelector('#'+elemIdPidOnlyDesc);
         
         elemTabsContainer       = elemDivContainer.querySelector('#'+elemIdTabsContainer);
         this.elemTabContentArea = elemDivContainer.querySelector('#'+elemIdTabContentArea);
@@ -499,6 +507,22 @@ export function PageProdEntryCommon(input_settings){
         const pid = data_pig_prod.pig_production.farm_prod_id;
         elemPigProdPid.textContent = pid;
         elemPigProdPid2.textContent = pid;
+        
+        
+        // Get pig_production.flag
+        let prod_flag = data_pig_prod.pig_production.flag;
+        
+        
+        console.log('data_pig_prod.pig_production test 1 prod_flag = ' + prod_flag);
+        console.log(data_pig_prod.pig_production);
+        
+        if ((prod_flag & FLAG_BITS.PIG_PROD.FLAG_BIT_IS_A_GROUP) > 0){
+            console.log('Test 2');
+            elemPidOnlyDesc.textContent = 'Group';
+        }
+        else{
+            elemPidOnlyDesc.textContent = '';
+        }
         
         
         // Production Entries that the piglets are brought from outside

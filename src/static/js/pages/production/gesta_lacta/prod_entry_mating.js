@@ -49,6 +49,9 @@ export function ProdEntryMating(input_settings){
 
     const MAXCHAR_INSEM_NOTES   = 160;
     
+    let elemIdWithOutMatingInfo = null;
+    let elemIdWithMatingInfo    = null;
+    
     let elemIdCannotUpdate      = null;
     
     let elemIdSow               = null;
@@ -76,6 +79,10 @@ export function ProdEntryMating(input_settings){
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
     
+    
+    
+    let elemWithOutMatingInfo   = null;
+    let elemWithMatingInfo      = null;
     
     let elemCannotUpdate        = null;
     
@@ -118,6 +125,9 @@ export function ProdEntryMating(input_settings){
     
     
     this.getHtml = function(){
+        elemIdWithOutMatingInfo = `${settings.uniqueKey}-without-mating`;
+        elemIdWithMatingInfo    = `${settings.uniqueKey}-with-mating`;
+        
         elemIdCannotUpdate      = `${settings.uniqueKey}-cannot-update`;
         
         elemIdSow               = `${settings.uniqueKey}-sow`;
@@ -229,101 +239,108 @@ export function ProdEntryMating(input_settings){
         
         const html = `
 <div class="modal-body">
-    <h2 class="tab-title">
-        Mating Information
-    </h2>
-    
-    <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:8px;">
-        Gestating info of a production entry that is already in 
-        <b>Lactating Stage</b> or later cannot be updated.
+    <div id="${elemIdWithOutMatingInfo}">
+        No Mating info Available
     </div>
-    
-    <!-- 1. Sow Field cannot be edited. -->
-    <div class="form-group-text">
-        <label class="form-label">Sow Name</label>
-        <span class="" id="${elemIdSow}"></span>
-    </div>
-    
-    <!-- 2. Date Mating -->
-    <div class="form-group-date">
-        <div class="warning-box" id="${elemIdDateMatingWarning}" style="display: none;">
-            Changing the Date Mating will recalculate <b>Gestating Operations</b>
-            scheduled for this entry.
-        </div>
-        <label for="${elemIdDateMating}" class="form-label">Date Mating</label>
-        <input type="text" class="form-control" id="${elemIdDateMating}">
-        <div class="invalid-feedback">
-            Please enter a valid date.
+
+    <div id="${elemIdWithMatingInfo}">
+        <h2 class="tab-title">
+            Mating Information
+        </h2>
+        
+        <div class="warning-box" id="${elemIdCannotUpdate}" style="margin-bottom:8px;">
+            Gestating info of a production entry that is already in 
+            <b>Lactating Stage</b> or later cannot be updated.
         </div>
         
-    </div>
-    
-    <!-- 3. Insemination Type cannot be edited. -->
-    <div class="form-group-select">
-        <label for="${elemIdInsemType}" class="form-label">
-            Insemination Type
-        </label>
+        <!-- 1. Sow Field cannot be edited. -->
+        <div class="form-group-text">
+            <label class="form-label">Sow Name</label>
+            <span class="" id="${elemIdSow}"></span>
+        </div>
         
-        <span class="" id="${elemIdInsemType}"></span>
-    </div>
-    
-    
-    <!-- Boar Mating Section -->
-    ${html_select_boar}
-    
-    
-    <div id="${elemIdAiShow}" class="ai-section" style="display: none;">
-        <!-- 1. Semen Supplier -->
-        ${html_semen_supplier}
+        <!-- 2. Date Mating -->
+        <div class="form-group-date">
+            <div class="warning-box" id="${elemIdDateMatingWarning}" style="display: none;">
+                Changing the Date Mating will recalculate <b>Gestating Operations</b>
+                scheduled for this entry.
+            </div>
+            <label for="${elemIdDateMating}" class="form-label">Date Mating</label>
+            <input type="text" class="form-control" id="${elemIdDateMating}">
+            <div class="invalid-feedback">
+                Please enter a valid date.
+            </div>
+            
+        </div>
         
-        <!-- 2. Semen Type -->
-        ${html_semen_type}
-        
-        <!-- 3. Semen Cost -->
-        <div class="form-group-number">
-            <label for="${elemIdSemenCost}" class="form-label">
-                Semen Cost
+        <!-- 3. Insemination Type cannot be edited. -->
+        <div class="form-group-select">
+            <label for="${elemIdInsemType}" class="form-label">
+                Insemination Type
             </label>
             
-            <input type="text" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0">
+            <span class="" id="${elemIdInsemType}"></span>
+        </div>
+        
+        
+        <!-- Boar Mating Section -->
+        ${html_select_boar}
+        
+        
+        <div id="${elemIdAiShow}" class="ai-section" style="display: none;">
+            <!-- 1. Semen Supplier -->
+            ${html_semen_supplier}
+            
+            <!-- 2. Semen Type -->
+            ${html_semen_type}
+            
+            <!-- 3. Semen Cost -->
+            <div class="form-group-number">
+                <label for="${elemIdSemenCost}" class="form-label">
+                    Semen Cost
+                </label>
+                
+                <input type="text" class="form-control" id="${elemIdSemenCost}" placeholder="0.00" step="0.1" min="0">
+                <div class="invalid-feedback">
+                    Please enter numeric value.
+                </div>
+            </div>
+        </div>
+        
+        
+        ${html_select_boar_int}
+            
+            
+        <!-- 5. Other Cost -->
+        <div class="form-group-number">
+            <label for="${elemIdOtherCost}" class="form-label">
+                Other Cost
+            </label>
+                
+            <input type="text" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">
             <div class="invalid-feedback">
                 Please enter numeric value.
             </div>
         </div>
-    </div>
-    
-    
-    ${html_select_boar_int}
-        
-        
-    <!-- 5. Other Cost -->
-    <div class="form-group-number">
-        <label for="${elemIdOtherCost}" class="form-label">
-            Other Cost
-        </label>
             
-        <input type="text" class="form-control" id="${elemIdOtherCost}" placeholder="0.00" step="0.1" min="0">
-        <div class="invalid-feedback">
-            Please enter numeric value.
+        
+        <!-- 6. Notes -->
+        ${html_notes}
+        
+        ${html_staff}
+        
+        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+        
+        <!-- Footer Buttons -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
+                <i class="fas fa-save me-2"></i>Save Changes
+            </button>
         </div>
     </div>
-        
     
-    <!-- 6. Notes -->
-    ${html_notes}
-    
-    ${html_staff}
-    
-    <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
-    
-    <!-- Footer Buttons -->
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-            <i class="fas fa-save me-2"></i>Save Changes
-        </button>
-    </div>
 </div>
-        `;
+            `;
         
         return html
     }
@@ -349,6 +366,9 @@ export function ProdEntryMating(input_settings){
     
     
     this._findElements = function(){
+        elemWithOutMatingInfo   = elemDivContainer.querySelector('#'+elemIdWithOutMatingInfo);
+        elemWithMatingInfo      = elemDivContainer.querySelector('#'+elemIdWithMatingInfo);
+        
         elemCannotUpdate        = elemDivContainer.querySelector('#'+elemIdCannotUpdate);
         
         elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);
@@ -381,8 +401,6 @@ export function ProdEntryMating(input_settings){
         }).on('show', function(e) {
             $('.datepicker').addClass('datepicker-material');
         });
-        
-
     }
     
     
@@ -433,6 +451,18 @@ export function ProdEntryMating(input_settings){
         curDataPigProd = data_pig_prod;
         
         const data_sow = curDataPigProd.sow;
+
+        // Check if if there is a sow info
+        
+        if (!data_sow){
+            elemWithOutMatingInfo.style.display = 'block';
+            elemWithMatingInfo.style.display = 'none';
+            return;
+        }
+        
+        
+        elemWithOutMatingInfo.style.display = 'none';
+        elemWithMatingInfo.style.display = 'block'; 
 
         
         // Set sow_name and create a link to open SowBoarPage

@@ -60,6 +60,8 @@ export function ProdEntryWean(input_settings){
     
     const elemDivContainer      = settings.elemDivContainer;
 
+    let elemIdWithOutWeanInfo   = null;
+    let elemIdWithWeanInfo      = null;
     
     let elemIdWarningBox        = null;
     let elemIdSow               = null;
@@ -88,6 +90,9 @@ export function ProdEntryWean(input_settings){
     let elemIdServerErrorMsg    = null;
     let elemIdBtnSave           = null;
     
+    
+    let elemWithOutWeanInfo     = null;
+    let elemWithWeanInfo        = null;
     
     let elemWarningBox          = null;
     let elemSow                 = null;
@@ -129,6 +134,11 @@ export function ProdEntryWean(input_settings){
     
     
     this.getHtml = function(){
+        
+        elemIdWithOutWeanInfo   = `${settings.uniqueKey}-without-wean`;
+        elemIdWithWeanInfo      = `${settings.uniqueKey}-with-wean`;
+        
+        
         elemIdWarningBox        = `${settings.uniqueKey}-cannot-update`;
         
         elemIdSow               = `${settings.uniqueKey}-sow`;
@@ -239,106 +249,113 @@ export function ProdEntryWean(input_settings){
         
         const html = `
 <div class="modal-body">
-    <h2 class="tab-title">
-        Weaning Information
-    </h2>
-    
-    <div class="warning-box" id="${elemIdWarningBox}">
-        Setting the <b>Date Wean</b> will update this production entry from 
-        Lactating Status to Fattening Status and will be removed from Production 
-        Lactating List. Will be put in Production Fattening List. 
-        <b>This cannot be undone.</b>
+    <div id="${elemIdWithOutWeanInfo}">
+        No Wean info Available
     </div>
-    
-    <!-- 1. Sow Field cannot be edited. -->
-    <div class="form-group-text">
-        <label class="form-label" style="margin-bottom:0;">Sow Name</label>
-        <span class="" id="${elemIdSow}"></span>
-    </div>
-    
-    
-    <div class="form-group-text">
-        <label for="${elemIdDaysSinceBirth}" class="form-label" style="margin-bottom:0;">Days since Birth</label>
-        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-            <span class="read-only-field" id="${elemIdDaysSinceBirth}"></span>
-            <span class="" id="${elemIdDobIsDay1}" style="color:var(--dark-gray)">Day of Birth is Day 1</span>
-        </div>
-    </div>
-    
-    ${html_date_wean}
-    
-    <!-- Radio buttons -->
-    <div class="mb-3" style="padding-left:5px;">
-        <label class="form-label d-block">Weaned Piglets Count</label>
+
+    <div id="${elemIdWithWeanInfo}">
+        <h2 class="tab-title">
+            Weaning Information
+        </h2>
         
-        <div class="form-check mb-2">
-            <input class="form-check-input" type="radio" 
-                name="${settings.uniqueKey}-countWean" 
-                id="${elemIdRdoCombinedCount}" 
-                value="${COUNT_PIGLETS_COMBINED}">
+        <div class="warning-box" id="${elemIdWarningBox}">
+            Setting the <b>Date Wean</b> will update this production entry from 
+            Lactating Status to Fattening Status and will be removed from Production 
+            Lactating List. Will be put in Production Fattening List. 
+            <b>This cannot be undone.</b>
+        </div>
+        
+        <!-- 1. Sow Field cannot be edited. -->
+        <div class="form-group-text">
+            <label class="form-label" style="margin-bottom:0;">Sow Name</label>
+            <span class="" id="${elemIdSow}"></span>
+        </div>
+        
+        
+        <div class="form-group-text">
+            <label for="${elemIdDaysSinceBirth}" class="form-label" style="margin-bottom:0;">Days since Birth</label>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                <span class="read-only-field" id="${elemIdDaysSinceBirth}"></span>
+                <span class="" id="${elemIdDobIsDay1}" style="color:var(--dark-gray)">Day of Birth is Day 1</span>
+            </div>
+        </div>
+        
+        ${html_date_wean}
+        
+        <!-- Radio buttons -->
+        <div class="mb-3" style="padding-left:5px;">
+            <label class="form-label d-block">Weaned Piglets Count</label>
             
-            <label class="form-check-label" for="${elemIdRdoCombinedCount}">
-                Combined Count
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" 
+                    name="${settings.uniqueKey}-countWean" 
+                    id="${elemIdRdoCombinedCount}" 
+                    value="${COUNT_PIGLETS_COMBINED}">
+                
+                <label class="form-check-label" for="${elemIdRdoCombinedCount}">
+                    Combined Count
+                </label>
+            </div>
+            
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" 
+                    name="${settings.uniqueKey}-countWean" 
+                    id="${elemIdRdoSeparateCount}" 
+                    value="${COUNT_PIGLETS_SEPARATE}">
+                
+                <label class="form-check-label" for="${elemIdRdoSeparateCount}">
+                    Separate Male and Female count
+                </label>
+            </div>
+            
+        </div>
+        
+        
+        <!-- Number of Total Piglets with plus/minus buttons -->
+        ${html_num_total}
+        
+        <div id="${elemIdSeparateCountShow}">
+            <!-- Number of Female Piglets with plus/minus buttons -->
+            ${html_num_female}
+            
+            <!-- Number of Male Piglets with plus/minus buttons -->
+            ${html_num_male}
+        </div>
+        
+        <div class="form-group-number">
+            <label class="form-label">
+                Wean Weight
             </label>
-        </div>
-        
-        <div class="form-check mb-2">
-            <input class="form-check-input" type="radio" 
-                name="${settings.uniqueKey}-countWean" 
-                id="${elemIdRdoSeparateCount}" 
-                value="${COUNT_PIGLETS_SEPARATE}">
             
-            <label class="form-check-label" for="${elemIdRdoSeparateCount}">
-                Separate Male and Female count
-            </label>
-        </div>
         
-    </div>
-    
-    
-    <!-- Number of Total Piglets with plus/minus buttons -->
-    ${html_num_total}
-    
-    <div id="${elemIdSeparateCountShow}">
-        <!-- Number of Female Piglets with plus/minus buttons -->
-        ${html_num_female}
-        
-        <!-- Number of Male Piglets with plus/minus buttons -->
-        ${html_num_male}
-    </div>
-    
-    <div class="form-group-number">
-        <label class="form-label">
-            Wean Weight
-        </label>
-        
-    
-        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-            <span>
-                Total:  
-                <span class="read-only-field" id="${elemIdTotalWeight}">----</span>
-            </span>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                <span>
+                    Total:  
+                    <span class="read-only-field" id="${elemIdTotalWeight}">----</span>
+                </span>
+                
+                <span>
+                    Average:
+                    <span class="read-only-field" id="${elemIdAverageWeight}">----</span>
+                </span>
+            </div>
             
-            <span>
-                Average:
-                <span class="read-only-field" id="${elemIdAverageWeight}">----</span>
-            </span>
         </div>
         
+        ${html_weights_pp}
+        
+        ${html_num_xsmall}
+        
+        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+        
+        <!-- Footer Buttons -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
+                <i class="fas fa-save me-2"></i>Save Changes
+            </button>
+        </div>
     </div>
     
-    ${html_weights_pp}
-    
-    ${html_num_xsmall}
-    
-    <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
-    
-    <!-- Footer Buttons -->
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
-            <i class="fas fa-save me-2"></i>Save Changes
-        </button>
-    </div>
 </div>
         `;
         
@@ -365,6 +382,9 @@ export function ProdEntryWean(input_settings){
     
     
     this._findElements = function(){
+        elemWithOutWeanInfo     = elemDivContainer.querySelector('#'+elemIdWithOutWeanInfo);
+        elemWithWeanInfo        = elemDivContainer.querySelector('#'+elemIdWithWeanInfo);
+        
         elemWarningBox          = elemDivContainer.querySelector('#'+elemIdWarningBox);
         elemSow                 = elemDivContainer.querySelector('#'+elemIdSow);
         elemDaysSinceBirth      = elemDivContainer.querySelector('#'+elemIdDaysSinceBirth);
@@ -454,6 +474,23 @@ export function ProdEntryWean(input_settings){
         
         
         const data_sow = curDataPigProd.sow;
+        
+        // TODO Need to check if production entries with piglets bought outside
+        // Needs to display wean info 
+
+        // Check if if there is a sow info
+        
+        if (!data_sow){
+            elemWithOutWeanInfo.style.display = 'block';
+            elemWithWeanInfo.style.display = 'none';
+            return;
+        }
+        
+        
+        elemWithOutWeanInfo.style.display = 'none';
+        elemWithWeanInfo.style.display = 'block'; 
+
+        
         
         
         // Set sow_name and create a link to open SowBoarPage

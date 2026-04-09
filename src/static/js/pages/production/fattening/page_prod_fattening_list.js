@@ -95,11 +95,21 @@ export function PageProdFatteningList(input_settings){
         elemIdGroupTextLinkShow = `${settings.uniqueKey}-combine-to-group-show`;
         elemIdGroupTextLink     = `${settings.uniqueKey}-combine-to-group`;
         
+        let label_combine_to_1_pen = 'Combine to 1 Pig Pen';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_combine_to_1_pen  = helper.getSimpleTranslation('page_fattening_list.labels.combine_to_1_pen') || label_combine_to_1_pen;
+        
+        
+        
         // Create combine link HTML
         const combineLinkHtml = `
             <div id="${elemIdGroupTextLinkShow}" style="margin: 8px 0;">
                 <a href="javascript:void(0)" class="text-link" id="${elemIdGroupTextLink}">
-                    Combine to 1 Pig Pen
+                    ${label_combine_to_1_pen}
                 </a>
             </div>
         `;
@@ -934,7 +944,7 @@ ${html_style}
                 cur_entry_flag = cur_entry.pig_production.flag;
             }  
             
-            if (cur_entry_flag & FLAG_BIT_IS_A_GROUP > 0){
+            if ((cur_entry_flag & FLAG_BIT_IS_A_GROUP) > 0){
                 list_group.push({
                     'hid': cur_entry.pig_production.hid,
                     'pid': cur_entry.pig_production.farm_prod_id 
