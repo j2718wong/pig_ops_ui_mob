@@ -881,8 +881,8 @@ ${html_style}
                         
                         contentHtml = `
                             <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
-                            <div class="timeline-sub">${moveIcon} Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}</div>
-                            <div class="timeline-sub">🤰 Due: ${thisObj.formatDateShort(expectedBirth)} | Stay: ${durationDays} days</div>
+                            <div class="timeline-sub">Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}</div>
+                            <div class="timeline-sub">Due: ${thisObj.formatDateShort(expectedBirth)} | Stay: ${durationDays} days</div>
                         `;
                     }
                     
