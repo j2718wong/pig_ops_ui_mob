@@ -667,7 +667,12 @@ export function PageProdHistoryList(input_settings){
          
     this.onClickProdHistEntry = function(pig_prod_pid, tab_id){
         if (pig_prod_pid == null){
-            navigation.managerNavLinks.onClickNavProdHistory(null);
+            if (settings.isProdSalesHistory){
+                navigation.managerNavLinks.onClickNavProdSales(null);
+            }
+            else{
+                navigation.managerNavLinks.onClickNavProdHistory(null);
+            }
             return;
         }
         
