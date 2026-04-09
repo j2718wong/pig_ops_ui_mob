@@ -7,7 +7,8 @@
 
 import {CommonSelectOptions}    from './common_select_options.js';
 
-import {APPLICATION}            from '../../constants.js';
+import {APPLICATION,
+        FLAG_BITS}              from '../../constants.js';
 
 import {formatDate,
         FORMAT_COMPACT}         from '../../utils.js';
@@ -359,41 +360,82 @@ export function PageViewPigFarmPage(){
     this.getHtmlPidSowLoveBoar = function(data_pig_prod, exclude_boar_name){
         const pig_production = data_pig_prod.pig_production;
         
-        // PID, Sow ❤ Boar column
-        const s_pid = `<span>${pig_production.farm_prod_id}</span>`; 
+        // 2026-04-09 Notes:
+        // 1.) Production Groups are introduced on this date;
+        //     Normally, the PidSowLoveBoar column is use to identify a 
+        //     production entry; 
+        //
+        // 2.) With Groups, there is no Sow and Boar Mating info; but there is 
+        //     always a PID info as Production Group is treated as Fattening
+        //     production entry; These groups will be written as "30, Group"
+        //     where 30 is the PID;
+        //
+        // 3.) To know if the production entry is a group, it has to check 
+        //      the (pig_production.flag & FLAG_BIT_IS_A_GROUP) > 0
         
-        let sow_name = thisObj.getSowBoarReference(data_pig_prod.sow);
+        const FLAG_BIT_IS_A_GROUP   = FLAG_BITS.PIG_PROD.FLAG_BIT_IS_A_GROUP;
+        
+        // Check if flag exists and if this is a production group
+        let isGroup = false;
+        if (pig_production.flag !== undefined && pig_production.flag !== null) {
+            isGroup = (pig_production.flag & FLAG_BIT_IS_A_GROUP) > 0;
+        }
+        
+        // PID column
+        const s_pid = `<span>${pig_production.farm_prod_id}</span>`;
+        
+        // If it's a group, show as "PID, Group" without sow/boar info
+        if (isGroup) {
+            return `
+                <div>${s_pid}, Group</div>
+            `;
+        }
+        
+        // Normal production entry (not a group)
+        let sow_name = '';
+        if (data_pig_prod.sow) {
+            sow_name = thisObj.getSowBoarReference(data_pig_prod.sow);
+        } else {
+            sow_name = 'Unknown';
+        }
+        
         let boar_name = '';
-        
-        
         const insemination = data_pig_prod.insemination;
-        switch (insemination.insem_type){
-            case 'B': {
-                boar_name = thisObj.getSowBoarReference(insemination.boar);
-                break;
-            }
-            
-            case 'AI_X':{
-                boar_name = `<span class="sow-boar-name">${insemination.ai.semen_supplier.semen.name}</span>`;
-                break;
-            }
-            
-            case 'AI_N':{
-                boar_name = thisObj.getSowBoarReference(insemination.ai.internal_boar);
-                break;
+        
+        if (insemination) {
+            switch (insemination.insem_type){
+                case 'B': {
+                    if (insemination.boar) {
+                        boar_name = thisObj.getSowBoarReference(insemination.boar);
+                    }
+                    break;
+                }
+                
+                case 'AI_X':{
+                    if (insemination.ai && insemination.ai.semen_supplier && insemination.ai.semen_supplier.semen) {
+                        boar_name = `<span class="sow-boar-name">${insemination.ai.semen_supplier.semen.name}</span>`;
+                    }
+                    break;
+                }
+                
+                case 'AI_N':{
+                    if (insemination.ai && insemination.ai.internal_boar) {
+                        boar_name = thisObj.getSowBoarReference(insemination.ai.internal_boar);
+                    }
+                    break;
+                }
             }
         }
         
-        
-        let html_boar_name = `<div><span class="love-icon">❤️</span> ${boar_name}</div>`;
-        if (exclude_boar_name){html_boar_name = '';}
+        let html_boar_name = '';
+        if (boar_name && !exclude_boar_name) {
+            html_boar_name = `<div><span class="love-icon">❤️</span> ${boar_name}</div>`;
+        }
         
         return `
-            <div>${s_pid}, ${sow_name} </div>
+            <div>${s_pid}, ${sow_name}</div>
             ${html_boar_name}
         `;
-        
-        
     }
-    
+        
 }

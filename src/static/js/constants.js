@@ -336,6 +336,13 @@ const REQUEST_ERROR_NUM ={
 };
 
 
+const FLAG_BITS ={
+    PIG_PROD:{
+        FLAG_BIT_IS_A_GROUP:        2
+    }
+
+};
+
 
 export {
     APPLICATION,
@@ -367,5 +374,7 @@ export {
     
     REPORT_TYPE,
     
-    REQUEST_ERROR_NUM
+    REQUEST_ERROR_NUM,
+    
+    FLAG_BITS
 };

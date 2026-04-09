@@ -81,7 +81,8 @@ export function ProdEntryWean(input_settings){
     let elemIdAverageWeight     = null;
     
     
-    let componentLWPerPig        = null;
+    let componentLWPerPig       = null;
+    let componentNumXSmall      = null;
 
     
     let elemIdServerErrorMsg    = null;
@@ -157,7 +158,7 @@ export function ProdEntryWean(input_settings){
             step:               1,
             isRequired:         true,
             invalidFeedBack:    null,
-            helpText:           null
+            helpText:           'Include counting extra small piglets'
         });
         
         
@@ -171,7 +172,7 @@ export function ProdEntryWean(input_settings){
             step:               1,
             isRequired:         true,
             invalidFeedBack:    null,
-            helpText:           null
+            helpText:           'Include counting extra small piglets'
         });
         
         
@@ -184,7 +185,7 @@ export function ProdEntryWean(input_settings){
             step:               1,
             isRequired:         false,
             invalidFeedBack:    null,
-            helpText:           null
+            helpText:           'Include counting extra small piglets'
         });
         
         
@@ -204,7 +205,20 @@ export function ProdEntryWean(input_settings){
         
             
             labelText:          'Weight Per Pig (Optional)',
-            helpText:           ''
+            helpText:           'Do not extra small piglets.'
+        });
+        
+        
+        componentNumXSmall       = new ComponentPlusMinusInput({
+            uniqueKey:          `${settings.uniqueKey}-num-xsmall`,
+            
+            className:          'form-group-number',
+            textLabel:          'Number of Extra Small Piglets',
+            minValue:           0,
+            step:               1,
+            isRequired:         false,
+            invalidFeedBack:    null,
+            helpText:           'Record for number of extra small piglets.'
         });
         
         
@@ -219,6 +233,7 @@ export function ProdEntryWean(input_settings){
         const html_num_male     = componentNumMale.getHtml();
         const html_num_total    = componentNumTotal.getHtml();
         const html_weights_pp   = componentLWPerPig.getHtml();
+        const html_num_xsmall   = componentNumXSmall.getHtml();
 
 
         
@@ -314,6 +329,8 @@ export function ProdEntryWean(input_settings){
     
     ${html_weights_pp}
     
+    ${html_num_xsmall}
+    
     <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
     
     <!-- Footer Buttons -->
@@ -338,6 +355,7 @@ export function ProdEntryWean(input_settings){
         
         componentLWPerPig.afterHtmlRender();
         
+        componentNumXSmall.afterHtmlRender();
        
         
         this._findElements();
@@ -486,39 +504,58 @@ export function ProdEntryWean(input_settings){
         const weaning       = curDataPigProd.weaning;
         const date_weaning  = weaning.date_weaning;
        
-        elemUiDateWean.setDate(date_weaning );
+        elemUiDateWean.setDate(date_weaning);
         
+        console.log('weaning');
+        console.log(weaning);
         
-        // Set Number Weaned pigs
-        if (weaning.num_pigs) {
+        // Set Number Weaned pigs based on existing data
+        if (weaning.num_pigs !== null && weaning.num_pigs !== undefined && 
+            weaning.num_pigs > 0) {
+            
+            // Has combined count
             componentNumTotal.setValue(weaning.num_pigs);
             curCountPiglets = COUNT_PIGLETS_COMBINED;
-        }
-        else{
-            if (weaning.num_pigs_f){
-               componentNumFemale.setValue(weaning.num_pigs_f)
-            }
+            elemRdoCombinedCount.checked = true;
+            elemRdoSeparateCount.checked = false;
             
-            if (weaning.num_pigs_m){
-               componentNumMale.setValue(weaning.num_pigs_m)
+        } else if ((weaning.num_pigs_f !== null && weaning.num_pigs_f > 0) || 
+                   (weaning.num_pigs_m !== null && weaning.num_pigs_m > 0)) {
+            // Has separate counts
+            if (weaning.num_pigs_f) {
+                componentNumFemale.setValue(weaning.num_pigs_f);
             }
-            
+            if (weaning.num_pigs_m) {
+                componentNumMale.setValue(weaning.num_pigs_m);
+            }
             curCountPiglets = COUNT_PIGLETS_SEPARATE;
-        }
-       
-
-        if (curCountPiglets == COUNT_PIGLETS_SEPARATE){
-            elemRdoSeparateCount.dispatchEvent(new Event('change', {bubbles:true}));
-        }
-        else{
-            elemRdoCombinedCount.dispatchEvent(new Event('change', {bubbles:true}));
+            elemRdoSeparateCount.checked = true;
+            elemRdoCombinedCount.checked = false;
+            
+        } else {
+            // No weaning data yet - default to Separate count with radio checked
+            curCountPiglets = COUNT_PIGLETS_SEPARATE;
+            elemRdoSeparateCount.checked = true;   // ← CHECKED by default
+            elemRdoCombinedCount.checked = false;
         }
         
+        // Trigger the change event to show/hide appropriate input fields
+        if (curCountPiglets == COUNT_PIGLETS_SEPARATE){
+            elemRdoSeparateCount.dispatchEvent(new Event('change', {bubbles:true}));
+        } else if (curCountPiglets == COUNT_PIGLETS_COMBINED){
+            elemRdoCombinedCount.dispatchEvent(new Event('change', {bubbles:true}));
+        }
         
         
         // Set weight per pig if there is any
         if (weaning.weight_pp){
             componentLWPerPig.setPigWeights(weaning.weight_pp);
+        }
+        
+        
+        // Set number of number of extra small pigs if there is any
+        if (weaning.num_pigs_xsmall){
+            componentNumXSmall.setValue(weaning.num_pigs_xsmall);
         }
     }
     
@@ -593,7 +630,7 @@ export function ProdEntryWean(input_settings){
         let input_num_total     = componentNumTotal.getValue();
         let input_num_male      = componentNumMale.getValue();
         let input_num_female    = componentNumFemale.getValue();
-        
+        let input_num_xsmall    = componentNumXSmall.getValue();
         
         
         input_elem          = elemUiDateWean.getElemText();
@@ -617,6 +654,7 @@ export function ProdEntryWean(input_settings){
         let number_male     = 0;
         let number_female   = 0;
         let number_total    = 0;
+        let number_xsmall   = 0;
         
         
         if (curCountPiglets == COUNT_PIGLETS_SEPARATE) {
@@ -679,6 +717,20 @@ export function ProdEntryWean(input_settings){
         }
         
         
+        input_elem          = componentNumXSmall.getElemText();
+        
+        try{
+            number_xsmall = parseInt(input_num_xsmall)
+        }catch (error){
+            componentNumXSmall.setTextInvalid(INVALID_MSG_NUM_INPUT);
+            validation = -1;
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+        }
+        
+        
+        
+        
         let weight_pp = null;
         const pig_weights = componentLWPerPig.getPigWeights();
         if (pig_weights && pig_weights.length > 0){
@@ -727,6 +779,11 @@ export function ProdEntryWean(input_settings){
         
         if (weight_pp){
             post_data.weight_pp = weight_pp;
+        }
+        
+        
+        if (number_xsmall > 0){
+            post_data.num_pigs_xsmall = number_xsmall
         }
         
         
@@ -786,9 +843,11 @@ export function ProdEntryWean(input_settings){
         //  - open to Fattening List Page; not to Fattening Entry page; 
         //      this is to show that a new Fattening entry has been added.
         //
-        // 2.) Case 2: curDataPigProd has date_weaning (PROD_STATUS.WEANING)
+        // 2.) Case 2: curDataPigProd has date_weaning (PROD_STATUS.WEANING);
+        // Weaning info has been updated;
         // The sequence of steps that should happen is
-        
+        // 
+        //
         
         const cur_prod_status = curDataPigProd.pig_production.prod_status_id;
         
@@ -819,7 +878,7 @@ export function ProdEntryWean(input_settings){
         }
         else{
             const pig_prod_hid = curDataPigProd.pig_production.hid;
-            const prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
+            const prod_list = navigation.pigFarm.managerPigProd.dataFatteningList;
             
             const callback_success = function(data){
                 navigation.pigFarm.managerPigProd.replaceInProdList(
@@ -832,6 +891,11 @@ export function ProdEntryWean(input_settings){
                 
             //go back to Lactating Page showing PigOps List;
             
+            // Show Toast message 
+            const title   = navigation.managerApplicationData.dataApplication.product_name;
+            const message = 'Weaning Info Saved';
+            navigation.toastAlert.showToast(title, message);
+    
         }
         
     }

@@ -12,7 +12,8 @@ import {APPLICATION,
         PAGE_ID,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
-        PROD_STATUS}            from '../../../constants.js';
+        PROD_STATUS,
+        FLAG_BITS}              from '../../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -46,7 +47,7 @@ export function PageProdFatteningList(input_settings){
     const DEFAULT_NUM_DAYS_HARVEST_FROM_BIRTH   = 145;
     const DEFAULT_NUM_DAYS_HARVEST_FROM_WEAN    = 100;
     
-    const FLAG_BIT_IS_A_GROUP                   = 2;
+    const FLAG_BIT_IS_A_GROUP   = FLAG_BITS.PIG_PROD.FLAG_BIT_IS_A_GROUP;
     
     
     // This is needed as this will be first element to be rendered
@@ -643,15 +644,9 @@ ${html_style}
         
         
         for (const cur_entry of fattening_list){
+            const target_harvest = farmPage.calculateDateTargetHarvest(
+                cur_entry, dtCurrentDate, acc_settings_ops);
             
-        
-            const target_harvest = farmPage.calculateDateTargetHarvest(cur_entry, 
-                dtCurrentDate, acc_settings_ops);
-            
-            
-            const html_pid_sow_boar = farmPage.getHtmlPidSowLoveBoar(cur_entry);
-            
-        
             
             if (target_harvest.days_since_birth) {
                 // The current fattening entry has date of birth
@@ -1160,8 +1155,9 @@ ${html_style}
         
         if (saveBtn) {
             saveBtn.onclick = function(){
-                // TODO: need to populate this
+
                 const list_selected_hid = [];
+                let group_hid = null;
                  
                 // Populate based on modal type
                 if (options.type === 'confirm_create' && options.entriesToCombine) {
@@ -1169,20 +1165,26 @@ ${html_style}
                         list_selected_hid.push(entry.hid);
                     }
                 } else if (options.type === 'confirm_add' && options.entriesToAdd) {
+                    // For adding to existing group, the group is separate
+                    // The group is in options.groupInfo, not in entriesToAdd
                     for (const entry of options.entriesToAdd) {
                         list_selected_hid.push(entry.hid);
                     }
+                    
+                    // Get the group_hid from groupInfo
+                    if (options.groupInfo && options.groupInfo.hid) {
+                        group_hid = options.groupInfo.hid;
+                    }
                 }
                 
-                // Also need to include the group itself if adding to existing group?
-                // For add_to_group, the group already exists, so only send the pigs to add
-                
+                       
                 if (list_selected_hid.length === 0) {
                     alert('No entries selected');
                     return;
                 }
-        
-                thisObj.onClickCreateGroup(list_selected_hid);
+                
+                
+                thisObj.onClickCreateGroup(list_selected_hid, group_hid);
                 closeModal();
             };
         }
@@ -1209,7 +1211,7 @@ ${html_style}
     }
     
     
-    this.onClickCreateGroup = function(list_selected_hid){
+    this.onClickCreateGroup = function(list_selected_hid, group_hid){
         let input_elem      = null;
         let validation      = 0;
         
@@ -1228,9 +1230,12 @@ ${html_style}
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'pig_prod_hids':    list_selected_hid
+            'list_prod_hid':    list_selected_hid
         };
         
+        if (group_hid){
+            post_data.group_hid = group_hid;
+        }
         
         let url = `${base_url}/production_group/add`;
         
@@ -1258,11 +1263,22 @@ ${html_style}
   
             success: function(response){
                 if (response.result.num == 0){
-                    // Ill do later
+                    // This should request Fattening list and refresh page
+                    const callback_success = function(){
+                        thisObj.show();
+                    };
+                    
+                    const pig_prod_type     = PIG_PROD_TYPE.FATTENING;
+                    const elem_show_error   = thisObj.elemServerErrorMsg;
+                    
+                    navigation.pigFarm.managerPigProd.requestPigProdList(
+                        pig_prod_type, callback_success, elem_show_error
+                    );
+                    
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(
-                        response, elemServerErrorMsg);
+                        response, thisObj.elemServerErrorMsg);
                 }
             },
   

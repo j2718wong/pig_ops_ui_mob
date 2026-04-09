@@ -596,7 +596,7 @@ export function PageAccOpsSettingsEdit(input_settings){
                     
                     // Request Account settings
                     
-                    // For the mena time display this
+                    // For the mean time display this
                     const title   = navigation.managerApplicationData.dataApplication.product_name;
                     const message = 'Settings Saved';
                     navigation.toastAlert.showToast(title, message);
