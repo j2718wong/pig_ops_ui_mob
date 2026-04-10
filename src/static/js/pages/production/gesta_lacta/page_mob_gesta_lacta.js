@@ -222,6 +222,7 @@ export function PageMobGestaLacta(input_settings){
            
         let html_prod_tables    = '';
         
+        let page_info           = '';
         
         let label_prod_gesta    = 'Prod Gestating';
         let label_prod_lacta    = 'Prod Lactating';
@@ -238,12 +239,25 @@ export function PageMobGestaLacta(input_settings){
         let label_dead_at_birth = 'Dead at Birth';
         let label_dead_b4_wean  = 'Dead before Wean';
         
+        let page_info_gesta   = `
+            This is a list of Gestating Sows. This is the entry point for pig production.
+        `;
+        
+        let page_info_lacta   = `
+            This is a list of Lactating entries. This is auto generated. When a 
+            Gesta Entry Birth Information is updated, the production entry 
+            will be updated from Gesta to Lacta status.
+        `;
+        
         
         const helper = navigation.managerTranslations.translationHelper;
         
         
         label_prod_gesta    = helper.getSimpleTranslation('page_gesta_lacta_list.labels.prod_gestating') || label_prod_gesta;
         label_prod_lacta    = helper.getSimpleTranslation('page_gesta_lacta_list.labels.prod_lactating') || label_prod_lacta;
+        
+        page_info_gesta     = helper.getSimpleTranslation('page_info.gesta_list') || page_info_gesta;
+        page_info_lacta     = helper.getSimpleTranslation('page_info.gesta_list') || page_info_lacta;
         
         
         label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
@@ -264,11 +278,12 @@ export function PageMobGestaLacta(input_settings){
         
         // The settings.pageTitle will be overriden using the translated PageTitle
         if (settings.isGesta){
-            page_title = label_prod_gesta;
+            page_title      = label_prod_gesta;
+            page_info       = page_info_gesta;
         } else{
-            page_title = label_prod_lacta;
+            page_title      = label_prod_lacta;
+            page_info       = page_info_lacta;
         }
-        
         
            
         let style_hide_add_button = '';
@@ -400,12 +415,10 @@ ${html_style}
     </div>
     
 
-    <!--
-    <div class="mobile-info-box">
-        <div class="info-text" id="${elemIdPageInfo}">
-        </div>
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
+        ${page_info}
     </div>
-    -->
+    
     
     <div id="${elemIdPigProdList}">
         <!-- Search and Add Entry Controls -->
@@ -480,10 +493,7 @@ ${html_style}
     
     
     this._processAfterHtmlRender = function(){
-        
-        this.handleWindowResize();
-    
-        
+
     }
     
     
@@ -614,21 +624,6 @@ ${html_style}
     
 
     
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        /*
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }*/
-    }
-    
-    
     this.show = function(){
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
@@ -739,10 +734,29 @@ ${html_style}
         elemPigOpsAlarmTable.style.display = 'none';
         
         
+        // Set Entry Count
         let prod_count = 0;
         if (dataPigProdList){prod_count = dataPigProdList.length;}
         
         elemEntryCount.innerHTML = `${prod_count}`;
+        
+        
+        thisObj._isToShowInfoBox();
+    }
+    
+    
+    this._isToShowInfoBox = function(){
+        if (dataPigProdList){
+            if (dataPigProdList.length == 0){
+                elemPageInfo.style.display = 'block';
+            }
+            else{
+                elemPageInfo.style.display = 'none';
+            }
+        }
+        else{
+            elemPageInfo.style.display = 'block';
+        }
     }
     
     
