@@ -338,7 +338,7 @@ export function PageProdFatteningList(input_settings){
         
         let page_info   = `
             This is a list of Fattening batches. This is auto generated. When  
-            the wean date of a Lacta Production Entry is updated, that entry will be 
+            the Wean Date of a Lacta Production Entry is updated, that entry will be 
             updated to Fattening entry. The Add Entry is provided if you buy the
             piglets from outside.
         `;
