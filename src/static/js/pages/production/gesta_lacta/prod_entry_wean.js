@@ -19,6 +19,9 @@ import {formatDate,
 
 import {getSowBoarReference}        from '../../common/common_app.js';
 
+import {ProdEntryWeanHistory}       from './prod_entry_wean_history.js';
+
+
 import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 import {UiInputDatePickerGesta}     from './components/input_datepicker_gesta.js';
@@ -60,6 +63,11 @@ export function ProdEntryWean(input_settings){
     
     const elemDivContainer      = settings.elemDivContainer;
 
+
+    let elemIdWeanActive        = null;    
+    let elemIdWeanHistory       = null;
+    
+    
     let elemIdWithOutWeanInfo   = null;
     let elemIdWithWeanInfo      = null;
     
@@ -91,6 +99,9 @@ export function ProdEntryWean(input_settings){
     let elemIdBtnSave           = null;
     
     
+    let elemWeanActive          = null;    
+    let elemWeanHistory         = null;
+    
     let elemWithOutWeanInfo     = null;
     let elemWithWeanInfo        = null;
     
@@ -121,6 +132,13 @@ export function ProdEntryWean(input_settings){
     let totalWeanWeight         = null;
     
     
+    let weanHistory             = new ProdEntryWeanHistory({
+        navigation:             navigation,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              settings.uniqueKey
+    });
+    
+    
     this.init = function(){
         this.render();
         this.afterHtmlRender();
@@ -134,6 +152,29 @@ export function ProdEntryWean(input_settings){
     
     
     this.getHtml = function(){
+        elemIdWeanActive        = `${settings.uniqueKey}-wean-active`;
+        elemIdWeanHistory       = `${settings.uniqueKey}-wean-history`;
+        
+        const html_active       = thisObj.getHtmlActive();
+        const html_history      = weanHistory.getHtml();
+        
+        const html = `
+        <div class="modal-body">
+            <div id="${elemIdWeanActive}">
+                ${html_active}
+            </div>
+            
+            <div id="${elemIdWeanHistory}">
+                ${html_history}
+            </div>
+        </div>
+        `;
+        
+        return html;        
+    }
+    
+    
+    this.getHtmlActive = function(){
         
         elemIdWithOutWeanInfo   = `${settings.uniqueKey}-without-wean`;
         elemIdWithWeanInfo      = `${settings.uniqueKey}-with-wean`;
@@ -362,8 +403,10 @@ export function ProdEntryWean(input_settings){
         return html
     }
     
-    
+        
     this.afterHtmlRender = function(){
+        weanHistory.afterHtmlRender();
+        
         elemUiDateWean.afterHtmlRender();
         
         componentNumFemale.afterHtmlRender();
@@ -382,6 +425,9 @@ export function ProdEntryWean(input_settings){
     
     
     this._findElements = function(){
+        elemWeanActive          = elemDivContainer.querySelector('#'+elemIdWeanActive);
+        elemWeanHistory         = elemDivContainer.querySelector('#'+elemIdWeanHistory);
+        
         elemWithOutWeanInfo     = elemDivContainer.querySelector('#'+elemIdWithOutWeanInfo);
         elemWithWeanInfo        = elemDivContainer.querySelector('#'+elemIdWithWeanInfo);
         
@@ -473,9 +519,72 @@ export function ProdEntryWean(input_settings){
         curDataPigProd = data_pig_prod;
         
         
+        // Check if production entry weaning info is still active or
+        // should be already history;
+        //
+        // 2026-04-10
+        // 1.) If the production entry is a normal entry, not a group, 
+        //     not piglets bought from outside:
+        //
+        //     The way this is determined is not via production status but the 
+        //     actual date of weaning + APPLICATION.MIN_DAYS_WEANING_BECOME_HISTORY;
+        //     Beyond this date, the weaning becomes history and not editable
+        //     anymore.   
+        //
+        // 2.) If the production entry is a group, or piglets bought from outside,
+        //     it should display the elemWithOutWeanInfo
+        //      
+        // 3.) If the weaning is still active, it should display elemWeanActive
+        //     and hide elemWeanHistory; If the weaning is already history, 
+        //     it should hide elemWeanActive and display elemWeanHistory.
+        //
+        // 4.) Under normal cases, the entry has not yet weaned or has been weaned
+        //     but less than APPLICATION.MIN_DAYS_WEANING_BECOME_HISTORY, 
+        //     it should display elemWeanActive.
+        
+        
+        const weaning       = curDataPigProd.weaning;
+        const date_weaning  = weaning.date_weaning;
+       
+        
+        
+        let is_historical   = 0;
+        
+        // Compute for is_historical 
+        // Check if weaning date exists and is beyond the history threshold
+        if (date_weaning && date_weaning !== null) {
+            const dt_wean = new Date(date_weaning);
+            
+            // Calculate days since weaning
+            const diff_days = Math.ceil((dtCurrentDate - dt_wean) / (1000 * 60 * 60 * 24));
+            
+            // If days since weaning exceeds the threshold, mark as historical
+            if (diff_days > APPLICATION.MIN_DAYS_WEANING_BECOME_HISTORY) {
+                is_historical = 1;
+            }
+        }
+        
+        
+        if (is_historical) {
+            // Weaning is historical - read only
+            elemWeanActive.style.display    = 'none';
+            elemWeanHistory.style.display   = 'block';
+            
+            weanHistory.show(data_pig_prod);
+            return;
+        }    
+
+          
+        // Weaning is active - editable
+        elemWeanActive.style.display    = 'block';
+        elemWeanHistory.style.display   = 'none';
+        
+        
+        
+        
         const data_sow = curDataPigProd.sow;
         
-        // TODO Need to check if production entries with piglets bought outside
+        // TODO_2 Need to check if production entries with piglets bought outside
         // Needs to display wean info 
 
         // Check if if there is a sow info
@@ -543,8 +652,6 @@ export function ProdEntryWean(input_settings){
        
         elemUiDateWean.setDate(date_weaning);
         
-        console.log('weaning');
-        console.log(weaning);
         
         // Set Number Weaned pigs based on existing data
         if (weaning.num_pigs !== null && weaning.num_pigs !== undefined && 
@@ -630,6 +737,12 @@ export function ProdEntryWean(input_settings){
             elemTotalWeight.textContent = '----';
         }
         
+    }
+    
+    
+    this.populateFormHistory = function(){
+        
+    
     }
     
     

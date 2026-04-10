@@ -15,6 +15,11 @@ const APPLICATION = {
     DEFAULT_NUM_DAYS_WEAN:          35,
     DEFAULT_NUM_DAYS_MIN_HARVEST:   140,
     
+    
+    MIN_DAYS_MATING_BECOME_HISTORY: 30,
+    MIN_DAYS_WEANING_BECOME_HISTORY:15,
+    
+    
     DEBUG_NAV_HISTORY:              true
 };
 

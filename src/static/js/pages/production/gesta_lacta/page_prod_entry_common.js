@@ -511,13 +511,9 @@ export function PageProdEntryCommon(input_settings){
         
         // Get pig_production.flag
         let prod_flag = data_pig_prod.pig_production.flag;
-        
-        
-        console.log('data_pig_prod.pig_production test 1 prod_flag = ' + prod_flag);
-        console.log(data_pig_prod.pig_production);
+
         
         if ((prod_flag & FLAG_BITS.PIG_PROD.FLAG_BIT_IS_A_GROUP) > 0){
-            console.log('Test 2');
             elemPidOnlyDesc.textContent = 'Group';
         }
         else{
