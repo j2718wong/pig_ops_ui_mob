@@ -50,6 +50,12 @@ export function ProdEntryWean(input_settings){
     const COUNT_PIGLETS_COMBINED    = 'combined';
     const COUNT_PIGLETS_SEPARATE    = 'separate';
     
+    /* Pigs weigh below this number are considered extra small;
+     * Will not be computed in total wean weight and average weight'
+     * 
+     * in kilograms
+     * */
+    const MAX_WEIGHT_CAT_XSMALL     = 7.0;
     
     /*
     Typical settings = {
@@ -135,7 +141,7 @@ export function ProdEntryWean(input_settings){
     let weanHistory             = new ProdEntryWeanHistory({
         navigation:             navigation,
         elemDivContainer:       elemDivContainer,
-        uniqueKey:              settings.uniqueKey
+        uniqueKey:              `${settings.uniqueKey}-wean`
     });
     
     
@@ -256,7 +262,7 @@ export function ProdEntryWean(input_settings){
         
             
             labelText:          'Weight Per Pig (Optional)',
-            helpText:           'Do not extra small piglets.'
+            helpText:           `The average weight will not include extra small piglets with weight less than ${MAX_WEIGHT_CAT_XSMALL} kg.`
         });
         
         
@@ -289,7 +295,7 @@ export function ProdEntryWean(input_settings){
 
         
         const html = `
-<div class="modal-body">
+<div>
     <div id="${elemIdWithOutWeanInfo}">
         No Wean info Available
     </div>
@@ -711,10 +717,19 @@ export function ProdEntryWean(input_settings){
         
         const pig_weights = componentLWPerPig.getPigWeights();
         
+        let counted_for_average = 0;
+        
         if (pig_weights.length > 0){
             let total_weight = 0;
             for (const cur_entry of pig_weights){
-                total_weight += parseFloat(cur_entry);
+                
+                
+                const cur_weight = parseFloat(cur_entry);
+                
+                if (cur_weight > MAX_WEIGHT_CAT_XSMALL){ 
+                    total_weight += cur_weight;
+                    counted_for_average += 1;
+                }
             }
             
             // Fix for crazy decimals
@@ -722,12 +737,21 @@ export function ProdEntryWean(input_settings){
             
             totalWeanWeight = total_weight;
             
+            let average     = null; 
+            let s_average   = '';
             
-            const average   = total_weight / pig_weights.length;
+            if (counted_for_average > 0){
+                average   = total_weight / counted_for_average;
             
-            const s_average = Math.round(average * 10) / 10;
-            elemAverageWeight.textContent   = `  ${s_average} ${weight_unit}`;
-            elemTotalWeight.textContent     = `  ${total_weight} ${weight_unit}`;
+                s_average = Math.round(average * 10) / 10;
+                elemAverageWeight.textContent   = `  ${s_average} ${weight_unit}`;
+                elemTotalWeight.textContent     = `  ${total_weight} ${weight_unit}`;
+            }
+            else{
+                elemAverageWeight.textContent = '----';
+                elemTotalWeight.textContent = '----';
+            }
+            
 
         }
         else{

@@ -19,6 +19,8 @@ import {formatDate,
 
 import {getSowBoarReference}        from '../../common/common_app.js';
 
+import {ProdEntryBirthHistory}      from './prod_entry_birth_history.js';
+
 import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 import {UiInputDatePickerGesta}     from './components/input_datepicker_gesta.js';
@@ -68,6 +70,10 @@ export function ProdEntryBirth(input_settings){
     
     const elemDivContainer      = settings.elemDivContainer;
     
+    
+    let elemIdBirthActive       = null;
+    let elemIdBirthHistory      = null;
+    
     let elemIdWithOutBirthInfo  = null;
     let elemIdWithBirthInfo     = null;
     
@@ -90,6 +96,10 @@ export function ProdEntryBirth(input_settings){
     let elemIdBtnSave           = null;
     
     
+    let elemBirthActive         = null;
+    let elemBirthHistory        = null;
+    
+    
     let elemWithOutBirthInfo    = null;
     let elemWithBirthInfo       = null;
     
@@ -106,6 +116,14 @@ export function ProdEntryBirth(input_settings){
     
     let curDataPigProd          = null;
     
+    let dtCurrentDate           = null;
+    
+    let birthHistory            = new ProdEntryBirthHistory({
+        navigation:             navigation,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              `${settings.uniqueKey}-birth`
+    });
+    
     
     
     this.init = function(){
@@ -121,6 +139,29 @@ export function ProdEntryBirth(input_settings){
     
     
     this.getHtml = function(){
+        elemIdBirthActive       = `${settings.uniqueKey}-birth-active`;
+        elemIdBirthHistory      = `${settings.uniqueKey}-birth-history`;
+        
+        const html_active       = thisObj.getHtmlActive();
+        const html_history      = birthHistory.getHtml();
+        
+        const html = `
+        <div class="modal-body">
+            <div id="${elemIdBirthActive}">
+                ${html_active}
+            </div>
+            
+            <div id="${elemIdBirthHistory}">
+                ${html_history}
+            </div>
+        </div>
+        `;
+        
+        return html;        
+    }
+    
+    
+    this.getHtmlActive = function(){
         
         let label_save_changes      = 'Save Changes';
             
@@ -269,7 +310,7 @@ export function ProdEntryBirth(input_settings){
         const html_staff        = componentStaff.getHtml();
         
         const html = `
-<div class="modal-body">
+<div>
     <div id="${elemIdWithOutBirthInfo}">
         No Birth info Available
     </div>
@@ -331,6 +372,8 @@ export function ProdEntryBirth(input_settings){
     
     
     this.afterHtmlRender = function(){
+        birthHistory.afterHtmlRender();
+        
         elemUiDateBirth.afterHtmlRender();
         
         componentNumFemale.afterHtmlRender();
@@ -347,6 +390,9 @@ export function ProdEntryBirth(input_settings){
     
     
     this._findElements = function(){
+        elemBirthActive         = elemDivContainer.querySelector('#'+elemIdBirthActive);
+        elemBirthHistory        = elemDivContainer.querySelector('#'+elemIdBirthHistory);
+        
         elemWithOutBirthInfo    = elemDivContainer.querySelector('#'+elemIdWithOutBirthInfo);
         elemWithBirthInfo       = elemDivContainer.querySelector('#'+elemIdWithBirthInfo);   
         
@@ -397,11 +443,19 @@ export function ProdEntryBirth(input_settings){
     this.beforeShow = function(data_pig_prod, options){
         thisObj._resetForm();
         
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
         curDataPigProd = data_pig_prod;
+        
         
         // Check if if there is a sow info
         
         const data_sow = curDataPigProd.sow;
+        
+        // Assume that elemBirthActive is active 
+        elemBirthActive.style.display = 'block';
+        elemBirthHistory.style.display = 'none';
         
         if (!data_sow){
             elemWithOutBirthInfo.style.display = 'block';
@@ -412,6 +466,35 @@ export function ProdEntryBirth(input_settings){
         
         elemWithOutBirthInfo.style.display = 'none';
         elemWithBirthInfo.style.display = 'block';   
+        
+        
+        const pig_prod_birth = curDataPigProd.birth;
+        
+        
+        let is_historical   = 0;
+        
+        // Check if there is already an date actual birth
+        if (pig_prod_birth.date_actual){
+            const dt_birth = new Date(pig_prod_birth.date_actual);
+            
+            // Calculate days since weaning
+            const diff_days = Math.ceil((dtCurrentDate - dt_birth) / (1000 * 60 * 60 * 24));
+            
+            // If days since weaning exceeds the threshold, mark as historical
+            if (diff_days > APPLICATION.MIN_DAYS_BIRTH_BECOME_HISTORY) {
+                is_historical = 1;
+            }
+        }
+        
+        
+        if (is_historical) {
+            // Birth is historical - read only
+            elemBirthActive.style.display    = 'none';
+            elemBirthHistory.style.display   = 'block';
+            
+            birthHistory.show(data_pig_prod);
+            return;
+        }    
         
         
         // Set sow_name and create a link to open SowBoarPage
@@ -429,8 +512,6 @@ export function ProdEntryBirth(input_settings){
         
         
         
-        
-        const pig_prod_birth  = curDataPigProd.birth;
         
         const dt_expected      = new Date(pig_prod_birth.date_expected);
         elemDateExpected.textContent = formatDate(dt_expected);

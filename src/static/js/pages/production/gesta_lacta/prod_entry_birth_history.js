@@ -127,55 +127,47 @@ export function ProdEntryBirthHistory(input_settings){
             <tbody>
                 <tr>
                     <td>${label_sow}</td>
-                    <td id="${elemIdTdSowName}">--</td>
+                    <td id="${elemIdTdSowName}"></td>
                 </tr>
                 
                 <tr>
                     <td>${label_date_expected}</td>
-                    <td id="${elemIdTdDateExpected}">--</td>
+                    <td id="${elemIdTdDateExpected}"></td>
                 </tr>
                 
                 <tr>
                     <td>${label_date_actual}</td>
-                    <td id="${elemIdTdDateActual}">--</td>
+                    <td id="${elemIdTdDateActual}"></td>
                 </tr>
                 
                 <tr>
                     <td>${label_gestation_days}</td>
-                    <td id="${elemIdTdGestationDays}">--</td>
-                </tr>
-                
-                <tr class="tr-separator">
-                    <td colspan="2" style="padding: 0;"><hr style="margin: 8px 0;"></td>
+                    <td id="${elemIdTdGestationDays}"></td>
                 </tr>
                 
                 <tr>
                     <td>${label_num_pigs_total}</td>
-                    <td id="${elemIdTdNumPigsTotal}">--</td>
+                    <td id="${elemIdTdNumPigsTotal}"></td>
                 </tr>
                 
                 <tr>
                     <td>${label_num_pigs_female}</td>
-                    <td id="${elemIdTdNumPigsFemale}">--</td>
+                    <td id="${elemIdTdNumPigsFemale}"></td>
                 </tr>
                 
                 <tr>
                     <td>${label_num_pigs_male}</td>
-                    <td id="${elemIdTdNumPigsMale}">--</td>
+                    <td id="${elemIdTdNumPigsMale}"></td>
                 </tr>
                 
                 <tr>
                     <td>${label_num_dead_birth}</td>
-                    <td id="${elemIdTdNumDeadBirth}">--</td>
-                </tr>
-                
-                <tr class="tr-separator">
-                    <td colspan="2" style="padding: 0;"><hr style="margin: 8px 0;"></td>
+                    <td id="${elemIdTdNumDeadBirth}"></td>
                 </tr>
                 
                 <tr>
                     <td>${label_birth_staff}</td>
-                    <td id="${elemIdTdBirthStaff}">--</td>
+                    <td id="${elemIdTdBirthStaff}"></td>
                 </tr>
             </tbody>
         </table>
@@ -214,15 +206,15 @@ export function ProdEntryBirthHistory(input_settings){
     
     
     this._resetForm = function(){
-        elemTdSowName.textContent       = '--';
-        elemTdDateExpected.textContent  = '--';
-        elemTdDateActual.textContent    = '--';
-        elemTdGestationDays.textContent = '--';
-        elemTdNumPigsFemale.textContent = '--';
-        elemTdNumPigsMale.textContent   = '--';
-        elemTdNumPigsTotal.textContent  = '--';
-        elemTdNumDeadBirth.textContent  = '--';
-        elemTdBirthStaff.textContent    = '--';
+        elemTdSowName.textContent       = '';
+        elemTdDateExpected.textContent  = '';
+        elemTdDateActual.textContent    = '';
+        elemTdGestationDays.textContent = '';
+        elemTdNumPigsFemale.textContent = '';
+        elemTdNumPigsMale.textContent   = '';
+        elemTdNumPigsTotal.textContent  = '';
+        elemTdNumDeadBirth.textContent  = '';
+        elemTdBirthStaff.textContent    = '';
     }
     
     

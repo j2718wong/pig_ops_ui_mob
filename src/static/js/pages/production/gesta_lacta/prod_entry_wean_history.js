@@ -95,7 +95,7 @@ export function ProdEntryWeanHistory(input_settings){
         elemIdTdNumPigsFemale   = `${settings.uniqueKey}-history-num-pigs-female`;
         elemIdTdNumPigsMale     = `${settings.uniqueKey}-history-num-pigs-male`;
         elemIdTdNumPigsXSmall   = `${settings.uniqueKey}-history-num-pigs-xsmall`;
-        elemIdTdDeadBeforeWean  =`${settings.uniqueKey}-history-num-dead-before-wean`;
+        elemIdTdDeadBeforeWean  = `${settings.uniqueKey}-history-num-dead-before-wean`;
         elemIdTdTotalWeight     = `${settings.uniqueKey}-history-total-weight`;
         elemIdTdAvgWeight       = `${settings.uniqueKey}-history-avg-weight`;
         elemIdTdWeightPerPig    = `${settings.uniqueKey}-history-weight-per-pig`;
