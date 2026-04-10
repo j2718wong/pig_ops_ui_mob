@@ -1034,7 +1034,8 @@ p {
 }
 
 .nowrap {
-    white-space: nowrap;
+    white-space: nowrap !important;
+    display: inline-block;
 }
 
 .required{

@@ -35,6 +35,7 @@ import {CommonSelectOptions}        from '../../common/common_select_options.js'
 
 
 
+
 export function ProdEntryWean(input_settings){
     PageViewPigFarmPage.call(this);
     
@@ -50,12 +51,7 @@ export function ProdEntryWean(input_settings){
     const COUNT_PIGLETS_COMBINED    = 'combined';
     const COUNT_PIGLETS_SEPARATE    = 'separate';
     
-    /* Pigs weigh below this number are considered extra small;
-     * Will not be computed in total wean weight and average weight'
-     * 
-     * in kilograms
-     * */
-    const MAX_WEIGHT_CAT_XSMALL     = 7.0;
+    
     
     /*
     Typical settings = {
@@ -262,7 +258,7 @@ export function ProdEntryWean(input_settings){
         
             
             labelText:          'Weight Per Pig (Optional)',
-            helpText:           `The average weight will not include extra small piglets with weight less than ${MAX_WEIGHT_CAT_XSMALL} kg.`
+            helpText:           `The average weight will not include extra small piglets with weight less than ${APPLICATION.MAX_WEIGHT_CATEGORY_XSMALL} kg.`
         });
         
         
@@ -733,10 +729,10 @@ export function ProdEntryWean(input_settings){
         //     including extra small piglets;
         //
         // 2.) The extra small piglets are defined as piglets less than 
-        //      MAX_WEIGHT_CAT_XSMALL kg weight.
+        //      APPLICATION.MAX_WEIGHT_CATEGORY_XSMALL kg weight.
         //
-        // 3.) The average weight are only those for non extra small piglets;
-        //      This is because, it maybe compared ib future breeding which
+        // 3.) The average weight are only those for not extra small piglets;
+        //      This is because, it maybe compared in future breeding which
         //      sow-boar combination produces the maximum wean weight.
         
         
@@ -749,7 +745,7 @@ export function ProdEntryWean(input_settings){
                 total_weight += cur_weight;
                 
                 
-                if (cur_weight > MAX_WEIGHT_CAT_XSMALL){ 
+                if (cur_weight > APPLICATION.MAX_WEIGHT_CATEGORY_XSMALL){ 
                     weight_for_average += cur_weight;
                     counted_for_average += 1;
                 }

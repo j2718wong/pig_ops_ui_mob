@@ -195,8 +195,14 @@ export function ProdEntryWeanHistory(input_settings){
                 </tr>
                 
                 <tr>
-                    <td>${label_weight_per_pig}</td>
-                    <td id="${elemIdTdWeightPerPig}"></td>
+                    <td>${label_weight_per_pig}, kg</td>
+                    <td id="${elemIdTdWeightPerPig}" 
+                        style="white-space: normal !important; 
+                               word-break: break-all !important; 
+                               overflow-wrap: break-word !important;
+                               text-overflow: clip !important;
+                               overflow: visible !important;">
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -259,9 +265,6 @@ export function ProdEntryWeanHistory(input_settings){
         
         curDataPigProd = data_pig_prod;
         
-        console.log(`curDataPigProd`);
-        console.log(curDataPigProd);
-        
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         
@@ -275,7 +278,6 @@ export function ProdEntryWeanHistory(input_settings){
         const weight_unit = acc_settings_ops.weight_unit;
         
         const date_birth = curDataPigProd.birth.date_actual;
-        
         
         elemTdSowName.innerHTML =  thisObj.getSowBoarReference(curDataPigProd.sow);
         
@@ -340,18 +342,81 @@ export function ProdEntryWeanHistory(input_settings){
         
         
         // Total weight
-        if (weaning.weight_total) {
-            elemTdTotalWeight.textContent = `${weaning.weight_total} ${weight_unit}`;
+        if (weaning.weight) {
+            elemTdTotalWeight.textContent = `${weaning.weight} ${weight_unit}`;
         }
         
-        // Average weight
-        if (weaning.weight_avg) {
-            elemTdAvgWeight.textContent = `${weaning.weight_avg} ${weight_unit}`;
-        }
         
         // Weight per pig (comma-separated list)
         if (weaning.weight_pp) {
-            elemTdWeightPerPig.textContent = weaning.weight_pp;
+            // split by comma 
+            const pig_weights = weaning.weight_pp.split(",");
+            
+            let html = '';
+            let count = 0;
+            for (const cur_entry of pig_weights){
+                // Trim whitespace from each weight
+                const trimmedWeight = cur_entry.trim();
+                
+                // Add comma back except for the last one
+                if (count < pig_weights.length - 1) {
+                    html += `<span class="nowrap">${trimmedWeight}, </span>`;
+                } else {
+                    html += `<span class="nowrap">${trimmedWeight}</span>`;
+                }
+                
+                count += 1;
+            }
+            
+            elemTdWeightPerPig.innerHTML = html;
+            
+            
+            // Compute average weight; this is not saved in database
+            let counted_for_average = 0;
+            let weight_for_average  = 0;
+        
+        
+            // 2026-04-10 Notes:
+            // 1.) The totalWeanWeight is the total weight of all piglets at wean
+            //     including extra small piglets;
+            //
+            // 2.) The extra small piglets are defined as piglets less than 
+            //      APPLICATION.MAX_WEIGHT_CATEGORY_XSMALL kg weight.
+            //
+            // 3.) The average weight are only those for not extra small piglets;
+            //      This is because, it maybe compared in future breeding which
+            //      sow-boar combination produces the maximum wean weight.
+            
+        
+            if (pig_weights.length > 0){
+                let total_weight = 0;
+                for (const cur_entry of pig_weights){
+                    
+                    
+                    const cur_weight = parseFloat(cur_entry);
+                    total_weight += cur_weight;
+                    
+                    
+                    if (cur_weight > APPLICATION.MAX_WEIGHT_CATEGORY_XSMALL){ 
+                        weight_for_average += cur_weight;
+                        counted_for_average += 1;
+                    }
+                }
+                
+                let average     = null; 
+                let s_average   = '';
+                
+                if (counted_for_average > 0){
+                    average   = weight_for_average / counted_for_average;
+                    
+                    s_average = Math.round(average * 10) / 10;
+                    
+                    // Average weight
+                    elemTdAvgWeight.textContent = `${s_average} ${weight_unit}`;
+                }
+            
+            }
+            
         }
     }
 }

@@ -15,6 +15,12 @@ const APPLICATION = {
     DEFAULT_NUM_DAYS_WEAN:          35,
     DEFAULT_NUM_DAYS_MIN_HARVEST:   140,
     
+    // Pigs weigh below this number are considered extra small;
+    // Will not be computed in average weight'
+    // 
+    // in kilograms
+    MAX_WEIGHT_CATEGORY_XSMALL:     7.0,
+    
     
     MIN_DAYS_MATING_BECOME_HISTORY: 30,
     MIN_DAYS_BIRTH_BECOME_HISTORY:  15,
