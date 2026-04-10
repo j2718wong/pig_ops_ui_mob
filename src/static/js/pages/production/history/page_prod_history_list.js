@@ -287,7 +287,7 @@ export function PageProdHistoryList(input_settings){
     
     
     <div class="mobile-info-box" id="${elemIdPageInfo}">
-        {page_info}
+        ${page_info}
     </div>
     
     
