@@ -718,6 +718,19 @@ export function ProdEntryWean(input_settings){
         const pig_weights = componentLWPerPig.getPigWeights();
         
         let counted_for_average = 0;
+        let weight_for_average  = 0;
+        
+        // 2026-04-10 Notes:
+        // 1.) The totalWeanWeight is the total weight of all piglets at wean
+        //     including extra small piglets;
+        //
+        // 2.) The extra small piglets are defined as piglets less than 
+        //      MAX_WEIGHT_CAT_XSMALL kg weight.
+        //
+        // 3.) The average weight are only those for non extra small piglets;
+        //      This is because, it maybe compared ib future breeding which
+        //      sow-boar combination produces the maximum wean weight.
+        
         
         if (pig_weights.length > 0){
             let total_weight = 0;
@@ -725,9 +738,11 @@ export function ProdEntryWean(input_settings){
                 
                 
                 const cur_weight = parseFloat(cur_entry);
+                total_weight += cur_weight;
+                
                 
                 if (cur_weight > MAX_WEIGHT_CAT_XSMALL){ 
-                    total_weight += cur_weight;
+                    weight_for_average += cur_weight;
                     counted_for_average += 1;
                 }
             }
@@ -741,7 +756,7 @@ export function ProdEntryWean(input_settings){
             let s_average   = '';
             
             if (counted_for_average > 0){
-                average   = total_weight / counted_for_average;
+                average   = weight_for_average / counted_for_average;
             
                 s_average = Math.round(average * 10) / 10;
                 elemAverageWeight.textContent   = `  ${s_average} ${weight_unit}`;
