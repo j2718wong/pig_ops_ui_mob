@@ -452,9 +452,6 @@ export function PageProdFatteningEntry(input_settings){
         else{
             thisObj.switchTab(curTabFat);
         }
-        
-        
-        
     }
     
 
@@ -513,7 +510,7 @@ export function PageProdFatteningEntry(input_settings){
                 break;
             }
             
-            case thisObj.TAB_GESTA_MATING:{
+            case thisObj.TAB_FAT_MATING:{
                 thisObj.componentTabsWithMore.switchTab(elemIdTabFatMating);
                 break;
             }

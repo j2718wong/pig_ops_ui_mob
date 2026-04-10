@@ -245,7 +245,6 @@ export function PageBoarExtMateAddEdit(input_settings){
             navigation.showThisPage(showOptions.go_back_page);
             
             if (APPLICATION.DEBUG_NAV_HISTORY){
-                console.log('\n\nBack to Boar Ext Mate List ')
                 thisObj.debugNavHistory(TAG);
             }
         });
@@ -261,7 +260,6 @@ export function PageBoarExtMateAddEdit(input_settings){
             navigation.showThisPage(showOptions.go_back_page);
             
             if (APPLICATION.DEBUG_NAV_HISTORY){
-                console.log('\n\nBack to Boar Ext Mate List ')
                 thisObj.debugNavHistory(TAG);
             }
         });

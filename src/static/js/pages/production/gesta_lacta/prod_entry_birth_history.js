@@ -91,27 +91,34 @@ export function ProdEntryBirthHistory(input_settings){
         elemIdTdNumDeadBirth    = `${settings.uniqueKey}-history-num-dead-birth`;
         elemIdTdBirthStaff      = `${settings.uniqueKey}-history-birth-staff`;
         
-        let label_sow                = 'Sow';
-        let label_date_expected      = 'Date Expected';
-        let label_date_actual        = 'Date Actual';
-        let label_gestation_days     = 'Gestation Days';
-        let label_num_pigs_female    = 'Female Piglets';
-        let label_num_pigs_male      = 'Male Piglets';
-        let label_num_pigs_total     = 'Total Live Birth';
-        let label_num_dead_birth     = 'Stillbirth';
-        let label_birth_staff        = 'Attending Staff';
+        let label_sow               = 'Sow';
+        let label_date_expected     = 'Date Expected';
+        let label_date_actual       = 'Date Actual';
+        let label_gestation_days    = 'Gestation Days';
+        
+        let label_num_live_total    = 'Total Live Birth';
+        let label_num_live_female   = 'Number of Live Female Piglets';
+        let label_num_live_male     = 'Number of Live Male Piglets';
+        let label_num_still_birth   = 'Number of Stillbirth Piglets';
+        
+        
+        let label_birth_staff       = 'Attending Staff';
         
         const helper = navigation.managerTranslations.translationHelper;
         
-        label_sow                = helper.getSimpleTranslation('birth_history.labels.sow') || label_sow;
-        label_date_expected      = helper.getSimpleTranslation('birth_history.labels.date_expected') || label_date_expected;
-        label_date_actual        = helper.getSimpleTranslation('birth_history.labels.date_actual') || label_date_actual;
-        label_gestation_days     = helper.getSimpleTranslation('birth_history.labels.gestation_days') || label_gestation_days;
-        label_num_pigs_female    = helper.getSimpleTranslation('birth_history.labels.num_pigs_female') || label_num_pigs_female;
-        label_num_pigs_male      = helper.getSimpleTranslation('birth_history.labels.num_pigs_male') || label_num_pigs_male;
-        label_num_pigs_total     = helper.getSimpleTranslation('birth_history.labels.num_pigs_total') || label_num_pigs_total;
-        label_num_dead_birth     = helper.getSimpleTranslation('birth_history.labels.num_dead_birth') || label_num_dead_birth;
-        label_birth_staff        = helper.getSimpleTranslation('birth_history.labels.birth_staff') || label_birth_staff;
+        label_sow               = helper.getSimpleTranslation('common_app.labels.sow') || label_sow;
+        
+        label_date_expected     = helper.getSimpleTranslation('prod_entry_birth.labels.date_expected') || label_date_expected;
+        label_date_actual       = helper.getSimpleTranslation('prod_entry_birth.labels.date_birth') || label_date_actual;
+        label_gestation_days    = helper.getSimpleTranslation('prod_entry_birth.labels.gestation_days') || label_gestation_days;
+        
+        label_num_live_total    = helper.getSimpleTranslation('prod_entry_birth.labels.num_live_total') || label_num_live_total;
+        label_num_live_female   = helper.getSimpleTranslation('prod_entry_birth.labels.num_live_female') || label_num_live_female;
+        label_num_live_male     = helper.getSimpleTranslation('prod_entry_birth.labels.num_live_male') || label_num_live_male;
+        label_num_still_birth   = helper.getSimpleTranslation('prod_entry_birth.labels.num_still_birth') || label_num_still_birth;
+        
+        
+        label_birth_staff       = helper.getSimpleTranslation('prod_entry_birth.labels.select_staff') || label_birth_staff;
         
         const html = `
         <h2 class="tab-title">
@@ -146,22 +153,22 @@ export function ProdEntryBirthHistory(input_settings){
                 </tr>
                 
                 <tr>
-                    <td>${label_num_pigs_total}</td>
+                    <td>${label_num_live_total}</td>
                     <td id="${elemIdTdNumPigsTotal}"></td>
                 </tr>
                 
                 <tr>
-                    <td>${label_num_pigs_female}</td>
+                    <td>${label_num_live_female}</td>
                     <td id="${elemIdTdNumPigsFemale}"></td>
                 </tr>
                 
                 <tr>
-                    <td>${label_num_pigs_male}</td>
+                    <td>${label_num_live_male}</td>
                     <td id="${elemIdTdNumPigsMale}"></td>
                 </tr>
                 
                 <tr>
-                    <td>${label_num_dead_birth}</td>
+                    <td>${label_num_still_birth}</td>
                     <td id="${elemIdTdNumDeadBirth}"></td>
                 </tr>
                 
@@ -222,9 +229,6 @@ export function ProdEntryBirthHistory(input_settings){
         this._resetForm();
         
         curDataPigProd = data_pig_prod;
-        
-        console.log(`curDataPigProd`);
-        console.log(curDataPigProd);
         
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);

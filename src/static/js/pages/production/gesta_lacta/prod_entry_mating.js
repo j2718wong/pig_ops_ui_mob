@@ -10,6 +10,9 @@ import {APPLICATION,
         SOW_STATUS,
         PIG_OPERATION_TYPE}     from '../../../constants.js';
 
+
+import {ProdEntryMatingHistory} from './prod_entry_mating_history.js';
+
 import {UiInputTextWithCounter} from '../../common/ui/input_text_with_counter.js';
 import {ComponentStaffFormGroup} from '../../common/ui/comp_staff_form_group.js';
 
@@ -49,6 +52,9 @@ export function ProdEntryMating(input_settings){
 
     const MAXCHAR_INSEM_NOTES   = 160;
     
+    let elemIdMatingActive      = null;
+    let elemIdMatingHistory     = null;
+    
     let elemIdWithOutMatingInfo = null;
     let elemIdWithMatingInfo    = null;
     
@@ -80,6 +86,8 @@ export function ProdEntryMating(input_settings){
     let elemIdBtnSave           = null;
     
     
+    let elemMatingActive        = null;
+    let elemMatingHistory       = null;
     
     let elemWithOutMatingInfo   = null;
     let elemWithMatingInfo      = null;
@@ -111,6 +119,16 @@ export function ProdEntryMating(input_settings){
     let insemType               = null;
     
     
+    let dtCurrentDate           = null;
+    
+    let matingHistory           = new ProdEntryMatingHistory({
+        navigation:             navigation,
+        elemDivContainer:       elemDivContainer,
+        uniqueKey:              `${settings.uniqueKey}-mating`
+    });
+    
+    
+    
     
     this.init = function(){
         this.render();
@@ -125,6 +143,30 @@ export function ProdEntryMating(input_settings){
     
     
     this.getHtml = function(){
+        elemIdMatingActive       = `${settings.uniqueKey}-mating-active`;
+        elemIdMatingHistory      = `${settings.uniqueKey}-mating-history`;
+        
+        const html_active       = thisObj.getHtmlActive();
+        const html_history      = matingHistory.getHtml();
+        
+        const html = `
+        <div class="modal-body">
+            <div id="${elemIdMatingActive}">
+                ${html_active}
+            </div>
+            
+            <div id="${elemIdMatingHistory}">
+                ${html_history}
+            </div>
+        </div>
+        `;
+        
+        return html;        
+    }
+    
+    
+    
+    this.getHtmlActive = function(){
         elemIdWithOutMatingInfo = `${settings.uniqueKey}-without-mating`;
         elemIdWithMatingInfo    = `${settings.uniqueKey}-with-mating`;
         
@@ -238,7 +280,7 @@ export function ProdEntryMating(input_settings){
         
         
         const html = `
-<div class="modal-body">
+<div>
     <div id="${elemIdWithOutMatingInfo}">
         No Mating info Available
     </div>
@@ -347,6 +389,8 @@ export function ProdEntryMating(input_settings){
     
     
     this.afterHtmlRender = function(){
+        matingHistory.afterHtmlRender();
+        
         componentSelectBoar.afterHtmlRender();
         
         componentSemenSupplier.afterHtmlRender();
@@ -366,6 +410,9 @@ export function ProdEntryMating(input_settings){
     
     
     this._findElements = function(){
+        elemMatingActive        = elemDivContainer.querySelector('#'+elemIdMatingActive);
+        elemMatingHistory       = elemDivContainer.querySelector('#'+elemIdMatingHistory);
+        
         elemWithOutMatingInfo   = elemDivContainer.querySelector('#'+elemIdWithOutMatingInfo);
         elemWithMatingInfo      = elemDivContainer.querySelector('#'+elemIdWithMatingInfo);
         
@@ -448,11 +495,20 @@ export function ProdEntryMating(input_settings){
     this.beforeShow = function(data_pig_prod, options){
         thisObj._resetForm();
         
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
         curDataPigProd = data_pig_prod;
         
         const data_sow = curDataPigProd.sow;
 
         // Check if if there is a sow info
+        
+        
+        // Assume that elemMatingActive is active 
+        elemMatingActive.style.display = 'block';
+        elemMatingHistory.style.display = 'none';
+        
         
         if (!data_sow){
             elemWithOutMatingInfo.style.display = 'block';
@@ -460,10 +516,37 @@ export function ProdEntryMating(input_settings){
             return;
         }
         
-        
+
         elemWithOutMatingInfo.style.display = 'none';
         elemWithMatingInfo.style.display = 'block'; 
-
+        
+        const insemination = curDataPigProd.insemination;
+        
+        let is_historical   = 0;
+        
+        
+        const dt_insem = new Date(insemination.insem_date);
+        
+        // Calculate days since mating
+        const diff_days = Math.ceil((dtCurrentDate - dt_insem) / (1000 * 60 * 60 * 24));
+        
+        // If days since mating exceeds the threshold, mark as historical
+        if (diff_days > APPLICATION.MIN_DAYS_MATING_BECOME_HISTORY) {
+            is_historical = 1;
+        }
+    
+        
+        if (is_historical) {
+            // Mating is historical - read only
+            elemMatingActive.style.display    = 'none';
+            elemMatingHistory.style.display   = 'block';
+            
+            matingHistory.show(data_pig_prod);
+            return;
+        }    
+        
+        
+        
         
         // Set sow_name and create a link to open SowBoarPage
         const sow_boar_name = getSowBoarReference(data_sow, true);
@@ -484,11 +567,6 @@ export function ProdEntryMating(input_settings){
         componentSelectBoarInt.beforeShow();
         
         
-        
-        // Set Insemination date
-        const insemination  = curDataPigProd.insemination;
-        
-        const dt_insem      = new Date(insemination.insem_date);
         const $elemDateMating = $(elemDateMating);
         $elemDateMating.datepicker('setDate', dt_insem);
         

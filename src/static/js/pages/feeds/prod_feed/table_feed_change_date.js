@@ -101,8 +101,6 @@ export function TableFeedChangeDate(input_settings){
         dataPigProd     = data_pig_prod;
         showOptions     = options;
         
-        console.log('Feed Change date');
-        console.log(dataPigProd);
         
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         const date_of_birth     = dataPigProd.birth.date_actual_birth;

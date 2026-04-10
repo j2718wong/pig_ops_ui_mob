@@ -338,7 +338,6 @@ export function PagePigDeadAddEdit(input_settings){
             navigation.showThisPage(showOptions.go_back_page);
             
             if (APPLICATION.DEBUG_NAV_HISTORY){
-                console.log('\n\nBack to Pig Dead List ')
                 thisObj.debugNavHistory(TAG);
             }
         };
@@ -354,10 +353,8 @@ export function PagePigDeadAddEdit(input_settings){
 
             
             if (APPLICATION.DEBUG_NAV_HISTORY){
-                console.log('\n\nBack to Pig Dead List ')
                 thisObj.debugNavHistory(TAG);
             }
-
         };
     }
     
