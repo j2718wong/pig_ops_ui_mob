@@ -257,7 +257,7 @@ export function PageMobGestaLacta(input_settings){
         label_prod_lacta    = helper.getSimpleTranslation('page_gesta_lacta_list.labels.prod_lactating') || label_prod_lacta;
         
         page_info_gesta     = helper.getSimpleTranslation('page_info.gesta_list') || page_info_gesta;
-        page_info_lacta     = helper.getSimpleTranslation('page_info.gesta_list') || page_info_lacta;
+        page_info_lacta     = helper.getSimpleTranslation('page_info.lacta_list') || page_info_lacta;
         
         
         label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
