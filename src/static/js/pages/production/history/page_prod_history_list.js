@@ -182,12 +182,28 @@ export function PageProdHistoryList(input_settings){
         let label_sales_list    = 'Prod Sales List';
         let label_history_list  = 'Prod History List';
         
+        let page_info           = '';
+        let page_info_prod_history   = `
+            This is a list of Production batches already harvested. This is auto generated.
+            When all pigs in a Fattening batch entry are harvested, the Fattening
+            entry will me updated to Production History entry. 
+        `;
+        
+        let page_info_sales_history   = `
+            This is a list of Production batches already harvested. This is auto generated.
+            This contains harvest and financial info only of a Production History entry. 
+        `;
+        
+        
         
         const helper = navigation.managerTranslations.translationHelper;
         
         
         label_sales_list        = helper.getSimpleTranslation('navigation.nav_links.Financials1') || label_sales_list;
         label_history_list      = helper.getSimpleTranslation('navigation.nav_links.Production4') || label_history_list;
+        
+        page_info_prod_history  = helper.getSimpleTranslation('page_info.prod_history') || page_info_prod_history;
+        page_info_sales_history = helper.getSimpleTranslation('page_info.sales_history') || page_info_sales_history;
         
         
         const settings_nav = {
@@ -198,9 +214,11 @@ export function PageProdHistoryList(input_settings){
         
         if (settings.isProdSalesHistory){
             settings_nav.pageTitle = label_sales_list; 
+            page_info   = page_info_sales_history;
         }
         else{
             settings_nav.pageTitle = label_history_list;
+            page_info   = page_info_prod_history;
         }
         
         
@@ -267,13 +285,10 @@ export function PageProdHistoryList(input_settings){
 <div class="mobile-container">
     ${html_nav}
     
-    <!-- Mobile Info Box -->
-        <!--
-        <div class="mobile-info-box">
-            <div class="info-text" id="${elemIdPageInfo}">
-            </div>
-        </div>
-        -->
+    
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
+        {page_info}
+    </div>
     
     
     <div>
@@ -508,6 +523,7 @@ export function PageProdHistoryList(input_settings){
                 else{
                     tableProdHistAll.renderTable(dataProdHistList);
                 }
+                thisObj.showInfoBox(dataProdHistList, elemPageInfo);
             };
             
             // Request ProdHistory List
@@ -523,6 +539,8 @@ export function PageProdHistoryList(input_settings){
             else{
                 tableProdHistAll.renderTable(dataProdHistList);
             }
+            
+            thisObj.showInfoBox(dataProdHistList, elemPageInfo);
         }
 
 

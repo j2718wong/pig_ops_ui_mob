@@ -741,22 +741,7 @@ ${html_style}
         elemEntryCount.innerHTML = `${prod_count}`;
         
         
-        thisObj._isToShowInfoBox();
-    }
-    
-    
-    this._isToShowInfoBox = function(){
-        if (dataPigProdList){
-            if (dataPigProdList.length == 0){
-                elemPageInfo.style.display = 'block';
-            }
-            else{
-                elemPageInfo.style.display = 'none';
-            }
-        }
-        else{
-            elemPageInfo.style.display = 'block';
-        }
+        thisObj.showInfoBox(dataPigProdList, elemPageInfo);
     }
     
     
@@ -1130,21 +1115,6 @@ ${html_style}
         
         return elem_row;
         
-    }
-    
-    
-    
-    
-    
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
     }
     
     
