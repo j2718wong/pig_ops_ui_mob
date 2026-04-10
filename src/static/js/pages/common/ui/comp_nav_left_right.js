@@ -48,7 +48,7 @@ export function ComponentNavLeftRight(input_settings){
     
     this.getHtml = function(){
         elemIdNavLeftEntry      = `${settings.uniqueKey}-prev`;
-        elemIdNavRightEntry      = `${settings.uniqueKey}-next`;
+        elemIdNavRightEntry     = `${settings.uniqueKey}-next`;
         
         elemIdPageTitle         = `${settings.uniqueKey}-page-title`;
         elemIdEntryCount        = `${settings.uniqueKey}-entry-count`;
@@ -72,10 +72,6 @@ export function ComponentNavLeftRight(input_settings){
         return html;
     }
     
-    
-    
-    
-    
        
     this._findElements = function(){
         elemNavLeftEntry        = elemDivContainer.querySelector('#'+elemIdNavLeftEntry);
@@ -89,7 +85,7 @@ export function ComponentNavLeftRight(input_settings){
     this._bindEventListeners = function(){}
     
     
-    // This is called after elemenst are instantiated
+    // This is called after elements are instantiated
     this.bindEventListeners = function(){
         elemNavLeftEntry.onclick = function(){
             if(thisObj.callbackNavLeft){thisObj.callbackNavLeft();}
@@ -104,11 +100,12 @@ export function ComponentNavLeftRight(input_settings){
         elemPageTitle.onclick = function(){
             if(thisObj.callbackClickTitle){thisObj.callbackClickTitle();}
         };
-        
-    
     }
     
     
+    this.setEntryCount = function(entry_count){
+        elemEntryCount.innerHTML = entry_count;
+    }
    
     
 }

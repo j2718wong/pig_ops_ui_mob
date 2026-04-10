@@ -21,7 +21,7 @@ import {formatDate,
         FORMAT_COMPACT,
         sortList}               from '../../../utils.js';
 
-
+import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
 
 
 
@@ -53,12 +53,8 @@ export function PageProdFatteningList(input_settings){
     // This is needed as this will be first element to be rendered
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
     
-    let elemIdNavPrevEntry      = null;
-    let elemIdNavNextEntry      = null;
-
-    let elemIdPageTitle         = null;
-    let elemIdPageHeaderAlarm   = null;
-    let elemIdEntryCount        = null;
+    let componentNavLeftRight   = null;
+    
     let elemIdPageInfo          = null;
     
     let elemIdGroupTextLinkShow = null;
@@ -67,12 +63,6 @@ export function PageProdFatteningList(input_settings){
     let elemIdTableBody         = null;
     
 
-    let elemNavPrevEntry        = null;
-    let elemNavNextEntry        = null;
-
-    let elemPageTitle           = null;
-    let elemPageHeaderAlarm     = null;
-    let elemEntryCount          = null;
     let elemPageInfo            = null;
 
     let elemGroupTextLinkShow   = null;
@@ -344,17 +334,35 @@ export function PageProdFatteningList(input_settings){
     
     
     this.render = function(){
-        elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
-        elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
+        let page_title          = settings.pageTitle;
         
-        elemIdPageTitle         = `${settings.uniqueKey}-page-title-list`;
-        elemIdPageHeaderAlarm   = `${settings.uniqueKey}-page-title-alarm`;
-        elemIdEntryCount        = `${settings.uniqueKey}-page-title-entry-count`;
+        let page_info   = `
+            This is a list of Fattening batches. This is auto generated. When  
+            the wean date of a Lacta Production Entry is updated, that entry will be 
+            updated to Fattening entry. The Add Entry is provided if you buy the
+            piglets from outside.
+        `;
+        
+        const helper = navigation.managerTranslations.translationHelper;
+
+        page_title      = helper.getSimpleTranslation('navigation.nav_links.Production3') || page_title;
+        page_info       = helper.getSimpleTranslation('page_info.fattening_list') || page_info;
+        
+        
+        componentNavLeftRight   = new ComponentNavLeftRight({
+           uniqueKey:           settings.uniqueKey,
+           elemDivContainer:    elemDivContainer,
+           pageTitle:           page_title
+        });
+
+        
         elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         
         
         
         const html_style        = thisObj._writeInlineStyle();
+         
+        const html_nav          = componentNavLeftRight.getHtml();    
            
         const html_table        = thisObj.getHtml();
            
@@ -366,31 +374,15 @@ ${html_style}
         
 
 <div class="mobile-container">
-    <div class="nav-left-right">
-        <button class="nav-button blue" id="${elemIdNavPrevEntry}"><i class="fa-solid fa-arrow-left"></i></button>
-            
-        <span>
-            <span class="nav-title blue" id="${elemIdEntryCount}"></span>
-            <span class="nav-title blue" id="${elemIdPageTitle}" style="margin-right:8px;">${settings.pageTitle}</span>
-        </span>
-        
-        <button class="nav-button blue" id="${elemIdNavNextEntry}"><i class="fa-solid fa-arrow-right"></i></button>
-            
+    ${html_nav}
+    
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
+        ${page_info}
     </div>
     
-    <!-- Mobile Info Box -->
-    <!--
-    <div class="mobile-info-box">
-        <div class="info-text" id="${elemIdPageInfo}">
-        </div>
-    </div>
-    -->
-   
     
     ${html_table}
 
-    
-    
 </div>
         `;
         
@@ -399,6 +391,8 @@ ${html_style}
     
     
     this.afterHtmlRenderThis = function(){
+        componentNavLeftRight.afterHtmlRender();
+        
         this._findElementsThis();
         this._processAfterHtmlRenderThis();
         this._bindEventListenersThis();
@@ -406,52 +400,37 @@ ${html_style}
     
     
     this._findElementsThis = function(){
-        elemNavPrevEntry        = elemDivContainer.querySelector('#'+elemIdNavPrevEntry);
-        elemNavNextEntry        = elemDivContainer.querySelector('#'+elemIdNavNextEntry);
-        
-        elemPageTitle           = elemDivContainer.querySelector('#'+elemIdPageTitle);
-        elemPageHeaderAlarm     = elemDivContainer.querySelector('#'+elemIdPageHeaderAlarm);
-        elemEntryCount          = elemDivContainer.querySelector('#'+elemIdEntryCount);
         elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
         
         elemGroupTextLinkShow   = elemDivContainer.querySelector('#'+elemIdGroupTextLinkShow);
         elemGroupTextLink       = elemDivContainer.querySelector('#'+elemIdGroupTextLink);
         
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
-
     }
     
     
     this._processAfterHtmlRenderThis = function(){
-
-
+        componentNavLeftRight.callbackNavLeft = function(){
+            navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
+                PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+        };
+        
+          
+        componentNavLeftRight.callbackNavRight = function(){
+            navigation.managerNavLinks.onClickNavProdHistory();
+        };
+        
+        
+        componentNavLeftRight.bindEventListeners();
     }
     
     
     this._bindEventListenersThis = function(){
         
-        elemPageTitle.addEventListener('click', function() {
-
-        });
-        
-        
         elemGroupTextLink.addEventListener('click', function() {
             thisObj.onClickCombineToGroup();
         });
         
-
-        
-        // Set up listeners for navigation arrows
-        elemNavPrevEntry.onclick = function(){
-            navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
-                PIG_OPERATION_TYPE.LACTATING_PIGLETS);
-        }
-
-        elemNavNextEntry.onclick = function(){
-            navigation.managerNavLinks.onClickNavProdHistory();
-        }
-        
-             
     }
     
 
@@ -468,8 +447,10 @@ ${html_style}
         let prod_count = 0;
         if (dataPigProdList){prod_count = dataPigProdList.length;}
         
-        elemEntryCount.innerHTML = `${prod_count}`;
+        componentNavLeftRight.setEntryCount(prod_count);
         
+        
+        // Set elemGroupTextLinkShow visibility 
         if (prod_count < 2){
             elemGroupTextLinkShow.style.display = 'none';
         }
