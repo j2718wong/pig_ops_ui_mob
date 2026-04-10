@@ -102,6 +102,21 @@ export function PageViewBasic(){
     }
     
     
+    this.showInfoBox = function(data_list, elem_page_info){
+        if (data_list){
+            if (data_list.length == 0){
+                elem_page_info.style.display = 'block';
+            }
+            else{
+                elem_page_info.style.display = 'none';
+            }
+        }
+        else{
+            elem_page_info.style.display = 'block';
+        }
+    }
+    
+    
     this.setClickListenersOnCloseAndCancelButtons = function(options){
         // Update Close and cancel button on click
         

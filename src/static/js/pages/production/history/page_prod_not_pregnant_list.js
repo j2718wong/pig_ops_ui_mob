@@ -185,7 +185,7 @@ export function PageProdNotPregnantList(input_settings){
         
             const callback_success = function(data){
                 dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
-                thisObj._isToShowInfoBox();
+                thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
                 thisObj.renderTable(dataNotPregnantList);
             };
             
@@ -196,27 +196,12 @@ export function PageProdNotPregnantList(input_settings){
         }
         else{
             dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
-            thisObj._isToShowInfoBox();
+            thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
             thisObj.renderTable(dataNotPregnantList);
         }
     }
     
     
-    this._isToShowInfoBox = function(){
-        if (dataNotPregnantList){
-            if (dataNotPregnantList.length == 0){
-                elemPageInfo.style.display = 'block';
-            }
-            else{
-                elemPageInfo.style.display = 'none';
-            }
-        }
-        else{
-            elemPageInfo.style.display = 'block';
-        }
-    }
-    
-
     this._writeInlineStyle = function(){
         const html = `
         <style>

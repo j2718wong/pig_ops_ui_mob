@@ -459,6 +459,8 @@ ${html_style}
         }
         
         thisObj.renderTable(dataPigProdList);
+        
+        thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
     }
     
 
