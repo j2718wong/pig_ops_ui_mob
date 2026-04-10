@@ -460,7 +460,7 @@ ${html_style}
         
         thisObj.renderTable(dataPigProdList);
         
-        thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
+        thisObj.showInfoBox(dataPigProdList, elemPageInfo);
     }
     
 
