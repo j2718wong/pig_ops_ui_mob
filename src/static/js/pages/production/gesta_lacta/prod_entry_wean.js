@@ -606,6 +606,14 @@ export function ProdEntryWean(input_settings){
         elemWithWeanInfo.style.display = 'block'; 
 
         
+        // Check prod_status
+        const prod_status_id = curDataPigProd.pig_production.prod_status_id;
+        if (prod_status_id  == PROD_STATUS.LACTATING){
+            elemWarningBox.style.display = 'block';
+        }
+        else{
+            elemWarningBox.style.display = 'none';
+        }
         
         
         // Set sow_name and create a link to open SowBoarPage
