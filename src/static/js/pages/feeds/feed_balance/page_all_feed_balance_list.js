@@ -103,12 +103,17 @@ export function PageAllFeedBalanceList(input_settings){
     this.render = function(){
         let label_page_title    = 'Feed Balance List';
         
+        let page_info   = `
+            This is a list of Feed Balance. You can record periodic feed balance
+            for each individual Production entry or for the whole farm. 
+        `;
+        
         
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title  = helper.getSimpleTranslation('navigation.nav_links.Operations1') || label_page_title;
-        
+        label_page_title    = helper.getSimpleTranslation('navigation.nav_links.Operations1') || label_page_title;
+        page_info           = helper.getSimpleTranslation('page_info.feed_balance') || page_info;
                 
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
@@ -130,13 +135,9 @@ export function PageAllFeedBalanceList(input_settings){
 <div class="mobile-container">
     ${html_nav}
     
-    <!-- Mobile Info Box -->
-    <!--
-    <div class="mobile-info-box">
-        <div class="info-text" id="${elemIdPageInfo}">
-        </div>
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
+        ${page_info}
     </div>
-    -->
     
     ${html_table}
 
@@ -231,6 +232,7 @@ export function PageAllFeedBalanceList(input_settings){
         
         const callback_success = function(data){
             thisObj.renderTable(data);
+            thisObj.showInfoBox(data, elemPageInfo);
         };
         
         navigation.pigFarm.requestDataPigFarmFeedBalance(null, callback_success);
