@@ -935,29 +935,17 @@ p {
 }
 
 
-/* Mobile Info Box */
 .mobile-info-box {
-    background-color: #e8f4fc;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-left: 4px solid #3498db;
-    border-radius: 0;
-}
-
-.mobile-info-box .info-title {
-    font-weight: 600;
-    color: #2c3e50;
+    margin-top: 8px;
     margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border: 2px solid #ffc107;
+    animation: fadeIn 0.5s ease-out;
 }
 
-.mobile-info-box .info-text {
-    color: #5a6c7d;
-    font-size: 0.95rem;
-    line-height: 1.5;
-}
 
 
 .add-btn:hover {

@@ -92,11 +92,16 @@ export function PageProdNotPregnantList(input_settings){
     this.render = function(){
         let page_title          = 'Not Pregnant';
         
+        let page_info   = `
+            This is a list of Sow reheat. This is auto generated. When a Sow is 
+            breeded again and has a Gesta Entry, that entry will be 
+            updated as <b>Not Pregnant</b>.
+        `;
         
         const helper = navigation.managerTranslations.translationHelper;
 
-        page_title     = helper.getSimpleTranslation('navigation.nav_links.Production5') || page_title;
-        
+        page_title      = helper.getSimpleTranslation('navigation.nav_links.Production5') || page_title;
+        page_info       = helper.getSimpleTranslation('page_info.nav_links.not_pregnant') || page_info;
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({
@@ -119,13 +124,10 @@ export function PageProdNotPregnantList(input_settings){
 <div class="mobile-container">
     ${html_nav}
     
-    <!-- Mobile Info Box -->
-    <!--
-    <div class="mobile-info-box">
-        <div class="info-text" id="${elemIdPageInfo}">
-        </div>
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
+        ${page_info} 
     </div>
-    -->
+    
     
     ${html_table}
 
@@ -176,22 +178,6 @@ export function PageProdNotPregnantList(input_settings){
     }
     
     
-    
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        /*
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }*/
-    }
-    
-    
     this.show = function(){
         dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
 
@@ -199,6 +185,7 @@ export function PageProdNotPregnantList(input_settings){
         
             const callback_success = function(data){
                 dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+                thisObj._isToShowInfoBox();
                 thisObj.renderTable(dataNotPregnantList);
             };
             
@@ -209,10 +196,24 @@ export function PageProdNotPregnantList(input_settings){
         }
         else{
             dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+            thisObj._isToShowInfoBox();
             thisObj.renderTable(dataNotPregnantList);
         }
-        
-        
+    }
+    
+    
+    this._isToShowInfoBox = function(){
+        if (dataNotPregnantList){
+            if (dataNotPregnantList.length == 0){
+                elemPageInfo.style.display = 'block';
+            }
+            else{
+                elemPageInfo.style.display = 'none';
+            }
+        }
+        else{
+            elemPageInfo.style.display = 'block';
+        }
     }
     
 
