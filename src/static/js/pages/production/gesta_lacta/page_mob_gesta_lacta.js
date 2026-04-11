@@ -762,10 +762,12 @@ ${html_style}
             }
         }
         else{
+            let label_no_entries    = 'No Entries';
+            
             const helper = navigation.managerTranslations.translationHelper;
             
             
-            const label_no_entries = helper.getSimpleTranslation('common.labels.no_entries') || label_no_entries;
+            label_no_entries = helper.getSimpleTranslation('common.labels.no_entries') || label_no_entries;
             
             
             const html = `
