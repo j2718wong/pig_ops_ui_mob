@@ -99,8 +99,8 @@ export function PageBoarExternalMateList(input_settings){
         let label_today         = 'Today';
         
         let page_info   = `
-            This is a list of External Mates of your Boars. This is used if your 
-            boars are used to breed your neighbor sows.
+            This is a list of External Mates of your Boars. This is used to record 
+            if your boars are used to breed your neighbor sows.
         `;
         
         
@@ -110,7 +110,7 @@ export function PageBoarExternalMateList(input_settings){
         label_page_title    = helper.getSimpleTranslation('navigation.nav_links.Operations3') || label_page_title;
         label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
         
-        page_info           = helper.getSimpleTranslation('page_info.external_boar') || page_info;
+        page_info           = helper.getSimpleTranslation('page_info.boar_ext_mate') || page_info;
         
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
