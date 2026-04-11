@@ -94,11 +94,18 @@ export function PageProdPigDeadList(input_settings){
     this.render = function(){
         let label_page_title    = 'Dead Pigs';
         
+        let page_info   = `
+            This is a list of Dead pigs after birth. It is important
+            to record dead pigs so that teh atual pig count per production entry
+            is accurate. 
+        `;
+        
         
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations4') || label_page_title;
+        label_page_title    = helper.getSimpleTranslation('navigation.nav_links.Operations4') || label_page_title;
+        page_info           = helper.getSimpleTranslation('page_info.dead_pigs') || page_info;
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({
@@ -121,13 +128,9 @@ export function PageProdPigDeadList(input_settings){
 <div class="mobile-container">
     ${html_nav}
     
-    <!-- Mobile Info Box -->
-    <!--
-    <div class="mobile-info-box">
-        <div class="info-text" id="${elemIdPageInfo}">
-        </div>
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
+        ${page_info}
     </div>
-    -->
     
     ${html_table}
 
@@ -214,6 +217,8 @@ export function PageProdPigDeadList(input_settings){
         const callback_success = function(data){
             dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
             thisObj.renderTable(dataPigDeadList);
+            
+            thisObj.showPageInfo(dataPigDeadList, elemPageInfo);
         };
 
    
