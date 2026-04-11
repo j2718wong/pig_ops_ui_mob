@@ -131,7 +131,7 @@ export function PageSummaryReportList(input_settings){
 <div class="mobile-container">
     ${html_nav}
     
-    <div class="mobile-info-box" id="${elemIdPageInfo}>
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
         ${page_info}
     </div>
     
@@ -190,9 +190,12 @@ export function PageSummaryReportList(input_settings){
     
     this._bindEventListenersThis = function(){
         elemShowSample.addEventListener('click', function() {
-            thisObj.onClickShowSample();
+            thisObj.onClickShowSample({
+                title:      'Sample Farm Summary Report',
+                img_src:    '/static_m/images/mar/mar_report.png',
+                img_alt:    'Sample Farm Summary Report'
+            });
         });
-       
     }
     
     
@@ -267,6 +270,8 @@ export function PageSummaryReportList(input_settings){
                 thisObj.setDataEntryList(dataSummaryReportList);
                 thisObj.renderTable(dataSummaryReportList);
                 
+                thisObj.showInfoBox(dataSummaryReportList, elemPageInfo);
+                
                 lastDataVersionNum = thisObj.getCurrentDataVersionNum();
             };
             
@@ -281,6 +286,8 @@ export function PageSummaryReportList(input_settings){
         else{
             thisObj.setDataEntryList(dataSummaryReportList);
             thisObj.renderTable(dataSummaryReportList);
+            
+            thisObj.showInfoBox(dataSummaryReportList, elemPageInfo);
         }
         
     }
@@ -297,6 +304,28 @@ export function PageSummaryReportList(input_settings){
         thisObj.refreshList(options)
         
     }
+    
+    
+    this.showSeeSampleLink = function(data_list){
+        let show_link = 0;
+        
+        if (data_list){
+            if (data_list.length == 0){
+                show_link = 1;
+            }
+        }
+        else{
+            show_link = 1;
+        }
+        
+        if (show_link == 0){
+            elemShowSample.style.display = 'block';
+            return;
+        }
+        
+        elemShowSample.style.display = 'none';
+    }
+    
     
 
     this._writeInlineStyle = function(){

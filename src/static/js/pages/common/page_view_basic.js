@@ -171,9 +171,9 @@ export function PageViewBasic(){
          * Typical config_sample
          * 
          * config_sample = {
-         *      title:
-         *      img_src:
-         *      img_alt:
+         *      title:      'Sample Farrowing Schedule',
+         *      img_src:    '/static_m/images/mar/mar_farrowing.png',
+         *      img_alt:    'Sample Farrowing Schedule'
          *  }
          * 
          * */
