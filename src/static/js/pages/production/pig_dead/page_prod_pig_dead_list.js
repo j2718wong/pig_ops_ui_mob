@@ -218,7 +218,7 @@ export function PageProdPigDeadList(input_settings){
             dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
             thisObj.renderTable(dataPigDeadList);
             
-            thisObj.showPageInfo(dataPigDeadList, elemPageInfo);
+            thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
         };
 
    

@@ -246,7 +246,7 @@ export function PageBoarExternalMateList(input_settings){
             dataBoarExtMateList = data;
             thisObj.renderTable(data);
             
-            thisObj.showPageInfo(data, elemPageInfo);
+            thisObj.showInfoBox(data, elemPageInfo);
         };
 
    

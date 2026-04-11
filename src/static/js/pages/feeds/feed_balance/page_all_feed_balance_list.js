@@ -160,6 +160,8 @@ export function PageAllFeedBalanceList(input_settings){
     
     
     this._findElementsThis = function(){
+        elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
+        
         elemTableBody           = document.getElementById(elemIdTableBody);
     }
     

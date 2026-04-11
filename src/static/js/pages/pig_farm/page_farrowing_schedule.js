@@ -59,6 +59,7 @@ export function PageFarrowingSchedule(input_settings){
     let elemIdDateToday         = null;
     
     let elemIdUpdateNumCrates   = null;
+    let elemIdShowSample        = null;
     
     let elemIdFarrowingCalendar = null;
  
@@ -68,6 +69,7 @@ export function PageFarrowingSchedule(input_settings){
     let elemDateToday           = null;
     
     let elemUpdateNumCrates     = null;
+    let elemShowSample          = null;
     
     let elemFarrowingCalendar   = null;
 
@@ -265,12 +267,13 @@ export function PageFarrowingSchedule(input_settings){
         let label_today         = 'Today';
         
         let label_update_crates = 'Update Farrowing Crates';
+        let label_see_sample    = 'See Sample Schedule';
         
         
         let page_info   = `
             This is a Farrowing scheduler that automatically plots your 
             Lactating and Gestating Sows against the Farrowing crates in your farm. 
-            It schedules 115 days in advance starting to today. This is to check 
+            It schedules 115 days in advance starting today. This is to check 
             if your Farrowing crates are enough for the lactating and pregnant sows.
         `;
         
@@ -283,6 +286,7 @@ export function PageFarrowingSchedule(input_settings){
         label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
         
         label_update_crates = helper.getSimpleTranslation('page_farrowing_schedule.labels.update_crates') || label_update_crates;
+        label_see_sample    = helper.getSimpleTranslation('page_farrowing_schedule.labels.see_sample') || label_see_sample;
         
         page_info           = helper.getSimpleTranslation('page_info.farrowing_sched') || page_info;
         
@@ -300,6 +304,7 @@ export function PageFarrowingSchedule(input_settings){
         elemIdDateToday         = `${settings.uniqueKey}-date-today`;
         
         elemIdUpdateNumCrates   = `${settings.uniqueKey}-update-crates`;
+        elemIdShowSample        = `${settings.uniqueKey}-see-sample`;
         
         elemIdFarrowingCalendar = `${settings.uniqueKey}-farrowing-calendar`;
         
@@ -329,6 +334,10 @@ ${html_style}
         <a href="javascript:void(0)" class="text-link" id="${elemIdUpdateNumCrates}">
             ${label_update_crates}
         </a>
+        
+        <a href="javascript:void(0)" class="text-link" id="${elemIdShowSample}">
+            ${label_see_sample}
+        </a>
     </div>
     
     <div id="${elemIdFarrowingCalendar}"></div>
@@ -356,6 +365,7 @@ ${html_style}
         elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
         
         elemUpdateNumCrates     = elemDivContainer.querySelector('#'+elemIdUpdateNumCrates);
+        elemShowSample          = elemDivContainer.querySelector('#'+elemIdShowSample);
         
         elemFarrowingCalendar   = elemDivContainer.querySelector('#'+elemIdFarrowingCalendar);
     }
@@ -398,6 +408,11 @@ ${html_style}
             }
             navigation.pagePigFarmAddEdit.show(options);
         });
+
+
+        elemShowSample.addEventListener('click', function() {
+            thisObj.onClickSeeSample();
+        });
        
     }
     
@@ -425,6 +440,41 @@ ${html_style}
     }
     
     
+    this.showSeeSampleLink = function(total_prod, num_crates){
+        // This will controls the visibility of the  See Sample Link;
+        // 1.) This is provided so people can check what this page look like
+        //    if there is a valid data. 
+        //
+        // 2.) If there are zero crates, 
+        //      hide elemUpdateNumCrates (because there is also a button to update crates)
+        //      show elemShowSample     
+        //
+        // 3.) If num_crates > 0 and total_prod = 0
+        //      hide elemUpdateNumCrates
+        //      show elemShowSample 
+        //
+        // 4.) If num_crates > 0 and total_prod > 0
+        //      show elemUpdateNumCrates
+        //      hide elemShowSample
+        
+        if (num_crates == 0){
+            elemUpdateNumCrates.style.display = 'none';
+            elemShowSample.style.display = 'block';
+            return;
+        }
+        
+        if (total_prod == 0){
+            elemUpdateNumCrates.style.display = 'none';
+            elemShowSample.style.display = 'block';
+            return;
+        }
+        
+        elemUpdateNumCrates.style.display = 'block';
+        elemShowSample.style.display = 'none';
+        
+    }
+    
+    
     this.renderFarrowingCalendar = function(){
         const accSettingsOps    = navigation.pigFarm.getSettingsOperations();
         const dataLactatingList = navigation.pigFarm.managerPigProd.dataLactatingList;
@@ -449,6 +499,9 @@ ${html_style}
             elemPageInfo.style.display = 'none';
         }
         
+        
+        // Show SeeSampleLink if needed
+        thisObj.showSeeSampleLink(total_prod, num_farrowing_crates);
         
         
         // Check conditions
@@ -1025,4 +1078,175 @@ ${html_style}
         return weeklyDates.length - 1;
     }
     
+    
+    this.onClickSeeSample = function(){
+        // This should show a modal of of an image of a sample farrowing schedule
+        // The modal should be simple with a close button and a simple title
+        // The modal should be maximum width, small paddings because the image
+        // needs to be as large as possible.
+        
+
+        // Create modal overlay
+        const modalOverlay = document.createElement('div');
+        modalOverlay.style.position = 'fixed';
+        modalOverlay.style.top = '0';
+        modalOverlay.style.left = '0';
+        modalOverlay.style.right = '0';
+        modalOverlay.style.bottom = '0';
+        modalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.85)';
+        modalOverlay.style.zIndex = '10000';
+        modalOverlay.style.display = 'flex';
+        modalOverlay.style.alignItems = 'center';
+        modalOverlay.style.justifyContent = 'center';
+        
+        // Modal container
+        const modalContainer = document.createElement('div');
+        modalContainer.style.backgroundColor = 'white';
+        modalContainer.style.borderRadius = '12px';
+        modalContainer.style.maxWidth = '95%';
+        modalContainer.style.maxHeight = '90vh';
+        modalContainer.style.width = 'auto';
+        modalContainer.style.overflow = 'hidden';
+        modalContainer.style.display = 'flex';
+        modalContainer.style.flexDirection = 'column';
+        
+        // Modal header
+        const modalHeader = document.createElement('div');
+        modalHeader.style.display = 'flex';
+        modalHeader.style.justifyContent = 'space-between';
+        modalHeader.style.alignItems = 'center';
+        modalHeader.style.padding = '12px 16px';
+        modalHeader.style.borderBottom = '1px solid #eee';
+        modalHeader.style.backgroundColor = 'white';
+        
+        const title = document.createElement('h3');
+        title.textContent = 'Sample Farrowing Schedule';
+        title.style.margin = '0';
+        title.style.fontSize = '16px';
+        title.style.fontWeight = '600';
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.background = 'none';
+        closeBtn.style.border = 'none';
+        closeBtn.style.fontSize = '28px';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.color = '#999';
+        closeBtn.style.padding = '0';
+        closeBtn.style.width = '32px';
+        closeBtn.style.height = '32px';
+        closeBtn.style.display = 'flex';
+        closeBtn.style.alignItems = 'center';
+        closeBtn.style.justifyContent = 'center';
+        
+        modalHeader.appendChild(title);
+        modalHeader.appendChild(closeBtn);
+        
+        // Image container (scrollable)
+        const imageContainer = document.createElement('div');
+        imageContainer.style.overflow = 'auto';
+        imageContainer.style.padding = '16px';
+        imageContainer.style.backgroundColor = '#f5f5f5';
+        imageContainer.style.textAlign = 'center';
+        
+        // Sample image
+        const sampleImg = document.createElement('img');
+        sampleImg.src = '/static_m/images/mar/mar_farrowing.png';
+        sampleImg.alt = 'Sample Farrowing Schedule';
+        sampleImg.style.maxWidth = '100%';
+        sampleImg.style.height = 'auto';
+        sampleImg.style.borderRadius = '8px';
+        sampleImg.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+        
+        // Fallback if image doesn't exist yet
+        sampleImg.onerror = function() {
+            this.style.display = 'none';
+            const fallbackText = document.createElement('div');
+            fallbackText.style.padding = '40px 20px';
+            fallbackText.style.textAlign = 'center';
+            fallbackText.style.color = '#666';
+            fallbackText.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
+                <div style="font-size: 16px; margin-bottom: 8px;">Sample schedule preview</div>
+                <div style="font-size: 13px;">Add farrowing crates and gestating sows to see your actual schedule</div>
+            `;
+            imageContainer.appendChild(fallbackText);
+        };
+        
+        imageContainer.appendChild(sampleImg);
+        
+        // Modal footer
+        const modalFooter = document.createElement('div');
+        modalFooter.style.padding = '12px 16px';
+        modalFooter.style.borderTop = '1px solid #eee';
+        modalFooter.style.textAlign = 'center';
+        modalFooter.style.backgroundColor = 'white';
+        
+        const closeFooterBtn = document.createElement('button');
+        closeFooterBtn.textContent = 'Close';
+        closeFooterBtn.style.background = '#2196F3';
+        closeFooterBtn.style.color = 'white';
+        closeFooterBtn.style.border = 'none';
+        closeFooterBtn.style.padding = '8px 24px';
+        closeFooterBtn.style.borderRadius = '6px';
+        closeFooterBtn.style.fontSize = '14px';
+        closeFooterBtn.style.cursor = 'pointer';
+        
+        modalFooter.appendChild(closeFooterBtn);
+        
+        modalContainer.appendChild(modalHeader);
+        modalContainer.appendChild(imageContainer);
+        modalContainer.appendChild(modalFooter);
+        modalOverlay.appendChild(modalContainer);
+        
+        // Close modal function
+        const closeModal = function() {
+            modalOverlay.remove();
+        };
+        
+        // Event listeners
+        closeBtn.onclick = closeModal;
+        closeFooterBtn.onclick = closeModal;
+        modalOverlay.onclick = function(e) {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        };
+        
+        // Add to body
+        document.body.appendChild(modalOverlay);
+        
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
+        
+        // Restore scroll when modal closes
+        const restoreScroll = function() {
+            document.body.style.overflow = '';
+        };
+        
+        // Override closeModal to restore scroll
+        const originalClose = closeModal;
+        window.closeModal = function() {
+            restoreScroll();
+            originalClose();
+            delete window.closeModal;
+        };
+        
+        closeBtn.onclick = function() {
+            restoreScroll();
+            originalClose();
+        };
+        
+        closeFooterBtn.onclick = function() {
+            restoreScroll();
+            originalClose();
+        };
+        
+        modalOverlay.onclick = function(e) {
+            if (e.target === modalOverlay) {
+                restoreScroll();
+                originalClose();
+            }
+        };
+    }
 }
