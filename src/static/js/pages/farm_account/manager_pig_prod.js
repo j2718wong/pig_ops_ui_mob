@@ -719,7 +719,7 @@ export function ManagerPigProd(input_settings){
         this.dataLactatingList
         this.dataFatteningList
     
-    
+        this.dataProdHistoryList -- not allowed; history cannot be removed
     */
     this.removeFromProdList = function(pig_prod_hid, prod_list){
         let index;
@@ -736,6 +736,13 @@ export function ManagerPigProd(input_settings){
     }
     
     
+    /* Will replace a pig_prod_entry with a new_prod_entry for a given prod_list.
+     * This is used, when an entry is updated and does need to refresh the whole
+     * prod_list; The previous production details that were previously requested
+     * for the production entry will still be lost. There is a plan to transfer 
+     * the production  details of the entry about to be replaced to 
+     * the new_prod_entry.
+     * */
     this.replaceInProdList = function(pig_prod_hid, prod_list, new_prod_entry){
         let index;
         let cur_entry;
@@ -894,13 +901,13 @@ export function ManagerPigProd(input_settings){
 
             
             if (parentObj.dataVerNum.prod_history != data_ver_num_prod_history){
-                const callback_success_boar = function(){
+                const callback_success_history = function(){
                     parentObj.dataVerNum.prod_history = data_ver_num_prod_history;
                 };
                 
                 // This should update navigation.pigFarm.managerPigProd.dataProdHistoryList
                 thisObj.requestPigProdList(PIG_PROD_TYPE.HARVESTED, 
-                    callback_success, elem_show_error);
+                    callback_success_history, elem_show_error);
             }
 
 
