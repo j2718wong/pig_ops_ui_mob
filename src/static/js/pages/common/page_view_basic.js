@@ -245,8 +245,8 @@ export function PageViewBasic(){
         
         // Sample image
         const sampleImg = document.createElement('img');
-        sampleImg.src = config_title.img_src;
-        sampleImg.alt = config_title.img_alt;
+        sampleImg.src = config_sample.img_src;
+        sampleImg.alt = config_sample.img_alt;
         sampleImg.style.maxWidth = '100%';
         sampleImg.style.height = 'auto';
         sampleImg.style.borderRadius = '8px';
