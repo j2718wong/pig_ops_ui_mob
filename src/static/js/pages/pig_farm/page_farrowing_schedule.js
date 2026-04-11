@@ -267,13 +267,24 @@ export function PageFarrowingSchedule(input_settings){
         let label_update_crates = 'Update Farrowing Crates';
         
         
+        let page_info   = `
+            This is a Farrowing scheduler that automatically plots your 
+            Lactating and Gestating Sows against the Farrowing crates in your farm. 
+            It schedules 115 days in advance starting to today. This is to check 
+            if your Farrowing crates are enough for the pregnant sows.
+        `;
+        
+        
+        
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations2') || label_page_title;
-        label_today             = helper.getSimpleTranslation('common_app.labels.today') || label_today;
+        label_page_title    = helper.getSimpleTranslation('navigation.nav_links.Operations2') || label_page_title;
+        label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
         
-        label_update_crates     = helper.getSimpleTranslation('page_farrowing_schedule.labels.update_crates') || label_update_crates;
+        label_update_crates = helper.getSimpleTranslation('page_farrowing_schedule.labels.update_crates') || label_update_crates;
+        
+        page_info           = helper.getSimpleTranslation('page_info.farrowing_sched') || page_info;
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({
@@ -304,6 +315,10 @@ ${html_style}
 
 <div class="mobile-container">
     ${html_nav}
+    
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
+        ${page_info}
+    </div>
     
     <div style="text-align: center;">
         <span id="${elemIdLabelToday}">${label_today}</span>
@@ -420,6 +435,20 @@ ${html_style}
         let num_farrowing_crates = dataPigFarm.pig_farm.num_farrow_crates;
         
         let num_days_allow_early_wean = 35;
+        
+        
+        // Show info box if needed
+        let total_prod = 0;
+        if (dataLactatingList){total_prod += dataLactatingList.length;}
+        if (dataGestatingList){total_prod += dataGestatingList.length;}
+        
+        if (total_prod == 0){
+            elemPageInfo.style.display = 'block';
+        }
+        else{
+            elemPageInfo.style.display = 'none';
+        }
+        
         
         
         // Check conditions
