@@ -271,7 +271,7 @@ export function PageFarrowingSchedule(input_settings){
             This is a Farrowing scheduler that automatically plots your 
             Lactating and Gestating Sows against the Farrowing crates in your farm. 
             It schedules 115 days in advance starting to today. This is to check 
-            if your Farrowing crates are enough for the pregnant sows.
+            if your Farrowing crates are enough for the lactating and pregnant sows.
         `;
         
         

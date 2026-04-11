@@ -98,13 +98,19 @@ export function PageBoarExternalMateList(input_settings){
         
         let label_today         = 'Today';
         
+        let page_info   = `
+            This is a list of External Mates of your Boars. This is used if your 
+            boars are used to breed your neighbor sows.
+        `;
+        
         
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Operations3') || label_page_title;
-        label_today             = helper.getSimpleTranslation('common_app.labels.today') || label_today;
+        label_page_title    = helper.getSimpleTranslation('navigation.nav_links.Operations3') || label_page_title;
+        label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
         
+        page_info           = helper.getSimpleTranslation('page_info.external_boar') || page_info;
         
         componentNavLeftRight   = new ComponentNavLeftRight({
            uniqueKey:           settings.uniqueKey,
@@ -130,13 +136,9 @@ export function PageBoarExternalMateList(input_settings){
 <div class="mobile-container">
     ${html_nav}
     
-    <!-- Mobile Info Box -->
-    <!--
-    <div class="mobile-info-box">
-        <div class="info-text" id="${elemIdPageInfo}">
-        </div>
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
+        ${page_info}
     </div>
-    -->
     
     <div style="text-align: center;">
         <span id="${elemIdLabelToday}">${label_today}</span>
@@ -243,6 +245,8 @@ export function PageBoarExternalMateList(input_settings){
         const callback_success = function(data){
             dataBoarExtMateList = data;
             thisObj.renderTable(data);
+            
+            thisObj.showPageInfo(data, elemPageInfo);
         };
 
    
