@@ -1267,45 +1267,9 @@ export function PageProdHarvestAddEdit(input_settings){
             },
   
             success: function(response){
-                /** The prod_harvest add or update entry can cause to update
-                 * pig_production.pig_prod_status_id into PROD_STATUS.HARVESTED.
-                 * If pig_prod_status_id is PROD_STATUS.HARVESTED, 
-                 * production entry should remove production list 
-                 * and should go back to production list page and not to 
-                 * production entry page.
-                 * */
-                
-                
                 if (response.result.num == 0){
-                    if (response.prod_harvest.prod_status_id == PROD_STATUS.HARVESTED){
-                        // Remove production entry from list
-                        const pig_prod_hid = dataPigProd.pig_production.hid;
-                        const prod_list = navigation.pigFarm.managerPigProd.dataFatteningList;
-            
-                        navigation.pigFarm.managerPigProd.removeFromProdList(
-                                pig_prod_hid, prod_list);
-                                    
-                        // Goto Fattening List Page
-                        navigation.managerNavLinks.onClickNavProdFattening();
-                    }
-                    
-                    else{
-                        if (showOptions.is_add == true){
-                            navigation.showThisPage(showOptions.go_back_page);
-                            
-                            if (showOptions.callback_after_add){
-                                showOptions.callback_after_add();
-                            }
-                        }
-                        
-                        else{
-                            navigation.showThisPage(showOptions.go_back_page);
-                            
-                            if (showOptions.callback_after_edit){
-                                showOptions.callback_after_edit();
-                            }
-                        }
-                    }
+                    const prod_status_id = response.prod_harvest.prod_status_id;
+                    thisObj.onSuccessAddOrEditEntry(prod_status_id);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(
@@ -1320,6 +1284,57 @@ export function PageProdHarvestAddEdit(input_settings){
                 navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
+    }
+    
+    
+    this.onSuccessAddOrEditEntry = function(prod_status_id){
+        /** The prod_harvest add or update entry can cause to update
+         * pig_production.pig_prod_status_id into PROD_STATUS.HARVESTED
+         * if all pigs of the entry are harvested.
+         * 
+         * If pig_prod_status_id is PROD_STATUS.HARVESTED, 
+         * production entry should be removed production list 
+         * and should go back to production list page and not to 
+         * production entry page.
+         * 
+         * A partial harvest will not update status to PROD_STATUS.HARVESTED;
+         * but should update the production entry as the pig_count has 
+         * changed.
+         * 
+         * */
+        
+        
+        
+        if (prod_status_id == PROD_STATUS.HARVESTED){
+            // Remove production entry from list
+            const pig_prod_hid = dataPigProd.pig_production.hid;
+            const prod_list = navigation.pigFarm.managerPigProd.dataFatteningList;
+
+            navigation.pigFarm.managerPigProd.removeFromProdList(
+                    pig_prod_hid, prod_list);
+                        
+            // Goto Fattening List Page
+            navigation.managerNavLinks.onClickNavProdFattening();
+        }
+        
+        else{
+            if (showOptions.is_add == true){
+                navigation.showThisPage(showOptions.go_back_page);
+                
+                if (showOptions.callback_after_add){
+                    showOptions.callback_after_add();
+                }
+            }
+            
+            else{
+                navigation.showThisPage(showOptions.go_back_page);
+                
+                if (showOptions.callback_after_edit){
+                    showOptions.callback_after_edit();
+                }
+            }
+        }
+
     }
     
     
