@@ -55,11 +55,11 @@ export function PageSummaryReportList(input_settings){
     
     let elemIdPageInfo          = null;
     let elemIdTableBody         = null;
-    
+    let elemIdShowSample        = null;
 
     let elemPageInfo            = null;
     let elemTableBody           = null;
-    
+    let elemShowSample          = null;
     
     let dataSummaryReportList   = null;
 
@@ -92,7 +92,14 @@ export function PageSummaryReportList(input_settings){
     
     
     this.render = function(){
-        let label_page_title          = 'Summary Report';
+        let label_page_title    = 'Summary Report';
+        
+        let label_see_sample    = 'See Sample Report';
+        
+        let page_info   = `
+            This is a list Farm Reports Generated. A Farm report is a summary
+            of what is happening in your farm. You can generate reports anytime.  
+        `;
         
         
         const helper = navigation.managerTranslations.translationHelper;
@@ -111,6 +118,8 @@ export function PageSummaryReportList(input_settings){
         
         elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         
+        elemIdShowSample        = `${settings.uniqueKey}-show-sample`;
+
         
         const html_nav          = componentNavLeftRight.getHtml();   
         const html_table        = thisObj.getHtml();
@@ -122,16 +131,17 @@ export function PageSummaryReportList(input_settings){
 <div class="mobile-container">
     ${html_nav}
     
-    <!-- Mobile Info Box -->
-    <!--
-    <div class="mobile-info-box">
-        <div class="info-text" id="${elemIdPageInfo}">
-        </div>
+    <div class="mobile-info-box" id="${elemIdPageInfo}>
+        ${page_info}
     </div>
-    -->
     
     ${html_table}
-
+    
+    <div style="margin: 8px 0;">
+        <a href="javascript:void(0)" class="text-link" id="${elemIdShowSample}">
+            ${label_see_sample}
+        </a>
+    </div>
 </div>
         `;
         
@@ -154,6 +164,8 @@ export function PageSummaryReportList(input_settings){
         
         
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
+        elemShowSample          = elemDivContainer.querySelector('#'+elemIdShowSample);
+        
     }
     
     
@@ -177,7 +189,9 @@ export function PageSummaryReportList(input_settings){
     
     
     this._bindEventListenersThis = function(){
-        
+        elemShowSample.addEventListener('click', function() {
+            thisObj.onClickShowSample();
+        });
        
     }
     
