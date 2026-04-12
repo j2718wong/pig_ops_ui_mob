@@ -17,11 +17,8 @@ export function ManagerBusiness(_navigation) {
             elem_show_error){
         
         
-        
-        
-        
         // Get the country_hid of the account
-        //const country_hid = navigation.pigFarm.
+        const country_hid = navigation.account.getCountryHid();
         
         const base_url = window.location.origin;
         let url = `${base_url}/b/pricing/current?chid=${country_hid}`;
@@ -49,39 +46,9 @@ export function ManagerBusiness(_navigation) {
   
             success: function(response){
                 if (response.result.num == 0){
-                    const country_data = response.data;
-                    
-                    if (country_data.report_languages){
-                        const report_languages = country_data.report_languages.split(',');
-                        
-                        thisObj.reportLanguageOptions = [];
-                        for (let cur_entry of report_languages){
-                            const cur_key = cur_entry.trim();
-                            const cur_value = REPORT_LANGUAGE[cur_key];
-                            
-                            if (cur_value){
-                                thisObj.reportLanguageOptions.push({
-                                    key: cur_key, value:  cur_value
-                                });
-                            }
-                        }
-                        
-                        if (thisObj.reportLanguageOptions.length == 0){
-                            thisObj.reportLanguageOptions.push({
-                                key: 'en', value:  'English'
-                            });
-                        }
-                        
-
-                        
+                    if (callback_success) {
+                        callback_success(response.data);
                     }
-                    else{
-                        thisObj.reportLanguageOptions = [];
-                        thisObj.reportLanguageOptions.push({
-                            key: 'en', value:  'English'
-                        });
-                    }
-                    
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(

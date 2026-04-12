@@ -25,7 +25,7 @@ import {ManagerTranslations}        from './manager_translations.js';
 import {ManagerAddress}             from '../common/manager_address.js';
 import {ManagerPublicData}          from '../common/manager_public_data.js';
 
-
+import {ManagerBusiness}            from '../business/manager_business.js';
 
 import {UserControl}                from './user_control.js';
 
@@ -247,8 +247,9 @@ export function Navigation(){
     this.managerApplicationData = new ManagerApplicationData(this);
     this.managerTranslations    = new ManagerTranslations(this);
     this.managerAddress         = new ManagerAddress(this);
-    this.managerPublicData      = new ManagerPublicData(this)
+    this.managerPublicData      = new ManagerPublicData(this);
     
+    this.managerBusiness        = new ManagerBusiness(this);
     
     
     this.userControl            = new UserControl(this);

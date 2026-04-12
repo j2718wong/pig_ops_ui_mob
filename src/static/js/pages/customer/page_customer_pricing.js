@@ -26,6 +26,9 @@ export function PageCustomerPricing(input_settings){
     this.setNavigation(navigation);
     
     
+    const FLAG_BIT_TAXES_INCLUDED   = 1;
+    
+    
     /*
     Typical settings = {
         navigation:             this,
@@ -44,10 +47,20 @@ export function PageCustomerPricing(input_settings){
     let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
     
+    let elemIdCountryName       = null;
+    let elemIdCurrencyCode      = null;
+    let elemIdPricePerHead      = null;
+    let elemIdTaxNote           = null;
+    
     
     
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;
+    
+    let elemCountryName         = null;
+    let elemCurrencyCode        = null;
+    let elemPricePerHead        = null;
+    let elemTaxNote             = null;
     
     
     
@@ -68,9 +81,10 @@ export function PageCustomerPricing(input_settings){
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
-    
-
-
+        elemIdCountryName       = `${settings.uniqueKey}-country-name`;
+        elemIdCurrencyCode      = `${settings.uniqueKey}-cur-code`;
+        elemIdPricePerHead      = `${settings.uniqueKey}-cur-code`;
+        elemIdTaxNote           = `${settings.uniqueKey}-tax-note`;
         
         
         const html =`
@@ -112,14 +126,17 @@ export function PageCustomerPricing(input_settings){
                     </thead>
                     <tbody>
                         <tr>
-                            <td id="countryName">Philippines</td>
-                            <td id="currencyCode">PHP</td>
-                            <td id="ratePerHead" class="value-number">200.0</td>
+                            <td id="${elemIdCountryName}">Philippines</td>
+                            <td id="${elemIdCurrencyCode}">PHP</td>
+                            <td id="${elemIdPricePerHead}" class="value-number">120.0</td>
                         </tr>
                     </tbody>
                 </table>
                 
             </div>
+            
+            <div id="${elemIdTaxNote}"></div>
+            
 
             <!-- billing & notifications – as plain list, no pills, no background, no radius -->
             <ul class="reminder-list">
@@ -173,6 +190,10 @@ export function PageCustomerPricing(input_settings){
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
 
+        elemCountryName         = elemDivContainer.querySelector('#'+elemIdCountryName);           
+        elemCurrencyCode        = elemDivContainer.querySelector('#'+elemIdCurrencyCode);
+        elemPricePerHead        = elemDivContainer.querySelector('#'+elemIdPricePerHead);
+        elemTaxNote             = elemDivContainer.querySelector('#'+elemIdTaxNote);
     }
     
     
@@ -193,9 +214,6 @@ export function PageCustomerPricing(input_settings){
         });
 
     }
-    
-    
-    
     
    
     this._resetForm = function(){
@@ -222,28 +240,67 @@ export function PageCustomerPricing(input_settings){
         
         
         showOptions = options;
-        
-        console.log('\n\nnavigation.userControl.dataUserAccount');
-        console.log(navigation.userControl.dataUserAccount);
-        
-        
-        console.log('\n\nnavigation.pigFarm.dataPigFarm');
-        console.log(navigation.pigFarm.dataPigFarm);
-        
+
         console.log('\n\nnavigation.pigFarm.dataPigFarmAccount');
-        console.log(navigation.pigFarm.dataPigFarmAccount);
-        
-       
-        thisObj.populateForm();
+        console.log(navigation.account.accountInfo);
         
         
-                
+        
+        const callback_success = function(data){
+            console.log('\n\nPrice dATA');
+            console.log(data);
+            thisObj.populateForm(data);
+        };
+        
+        navigation.managerBusiness.requestDataPricing(callback_success);        
         
     }
     
     
-    this.populateForm = function(){
+    this.populateForm = function(data){
+        // Get Account
+        const account = navigation.account.accountInfo.account;
 
+        // Get the country_pricing
+        let country_pricing = null;
+        
+        const account_country_hid = account.country_hid;
+       
+        
+        for (const cur_entry of data){
+            if (cur_entry.pricing.country_hid == account_country_hid){
+                country_pricing = cur_entry;
+                break;
+            }
+        }
+        
+        if (country_pricing == null){
+            country_pricing = data[0]; // This is the default pricing
+        }
+        
+        if(country_pricing){
+            const pricing = country_pricing.pricing;
+            
+            elemCountryName.textContent     = pricing.country_name;  
+            elemCurrencyCode.textContent    = pricing.currency_code;  
+            elemPricePerHead.textContent    = pricing.price_per_head;  
+            
+            let are_taxes_included = 0;
+            
+            if ((pricing.flag & FLAG_BIT_TAXES_INCLUDED) > 0){
+                are_taxes_included = 1;
+            }
+            
+            let s = '';
+            if (are_taxes_included >0){
+                s = 'All taxes included.'
+            }
+            else{
+                s = 'Taxes not yet included.'
+            }
+            
+            elemTaxNote.textContent    = s;
+        }
         
     }
     
