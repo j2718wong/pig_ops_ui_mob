@@ -298,12 +298,20 @@ export function ManagerPigProd(input_settings){
     
     
     
-    this.requestPigProdEntry = function(pig_prod_hid, callback_success, 
-            elem_show_error){
+    this.requestPigProdEntry = function(pig_prod_hid, inc_pig_ops,
+            callback_success, elem_show_error){
         
         const base_url = window.location.origin;
-        const url = `${base_url}/pig_prod/entry/${pig_prod_hid}`;
+        let url;
         
+        if (inc_pig_ops == null){
+            // This will always include pig_ops
+            url = `${base_url}/pig_prod/entry/${pig_prod_hid}`;
+        }
+        else{
+            // Has an option to not include
+            url = `${base_url}/pig_prod/entry/${pig_prod_hid}?inc_pig_ops=${inc_pig_ops}`;
+        }
         
         const bearer_token = localStorage.getItem('access_token');
         
@@ -327,7 +335,6 @@ export function ManagerPigProd(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    
                     
                     if (callback_success){
                         callback_success(response.data);

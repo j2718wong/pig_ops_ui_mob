@@ -950,7 +950,7 @@ export function ProdEntryMating(input_settings){
         
         const pig_prod_hid = curDataPigProd.pig_production.hid;
         navigation.pigFarm.managerPigProd.requestPigProdEntry(pig_prod_hid, 
-            callback_success, elemServerErrorMsg);
+            null, callback_success, elemServerErrorMsg);
     }
     
 }

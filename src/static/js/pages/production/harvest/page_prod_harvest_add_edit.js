@@ -1306,33 +1306,74 @@ export function PageProdHarvestAddEdit(input_settings){
         
         
         if (prod_status_id == PROD_STATUS.HARVESTED){
-            // Remove production entry from list
+            // Remove production entry from Fattening list
             const pig_prod_hid = dataPigProd.pig_production.hid;
             const prod_list = navigation.pigFarm.managerPigProd.dataFatteningList;
 
             navigation.pigFarm.managerPigProd.removeFromProdList(
                     pig_prod_hid, prod_list);
-                        
-            // Goto Fattening List Page
-            navigation.managerNavLinks.onClickNavProdFattening();
+            
+            
+            const callback_success = function(){
+                // Goto Fattening List Page
+                navigation.managerNavLinks.onClickNavProdFattening();
+            };
+            
+                    
+            // Need to udpate prod_history list
+            const pig_prod_type = PIG_PROD_TYPE.HARVESTED;
+            navigation.pigFarm.managerPigProd.requestPigProdList(
+                pig_prod_type, callback_success, elemServerErrorMsg
+            );
         }
         
         else{
-            if (showOptions.is_add == true){
-                navigation.showThisPage(showOptions.go_back_page);
+            // Partial harvest; status should still be PROD_STATUS.GROWING
+            // or PROD_STATUS.WEANING incase for piglets sold
+            // 
+            // The pig_count may have changed;
+            // Request prod_entry data without pig_ops
+
+            const callback_success = function(data_pig_prod){
+                // Dont replace dataPigProd with data_pig_prod as this is used in 
+                //  showOptions.callback_after_add and 
+                //  showOptions.callback_after_edit 
+                //
+                // Instead, update these data blocks
+                // dataPigProd.pig_production 
+                // dataPigProd.feeds 
+                // dataPigProd.data_ver_num
+                // 
+                // leaving the other data intact.
+                dataPigProd.pig_production = data_pig_prod.pig_production;
+                dataPigProd.feeds        = data_pig_prod.feeds;
+                dataPigProd.data_ver_num = data_pig_prod.data_ver_num;
                 
-                if (showOptions.callback_after_add){
-                    showOptions.callback_after_add();
+                if (showOptions.is_add == true){
+                    navigation.showThisPage(showOptions.go_back_page);
+                    
+                    if (showOptions.callback_after_add){
+                        showOptions.callback_after_add();
+                    }
                 }
-            }
+                
+                else{
+                    navigation.showThisPage(showOptions.go_back_page);
+                    
+                    if (showOptions.callback_after_edit){
+                        showOptions.callback_after_edit();
+                    }
+                }
+            };
+
+
+            // Request updated prod_entry data 
+            // Exclude requesting gestating, lactating pig_ops
+            const pig_prod_hid = dataPigProd.pig_production.hid;
+            const inc_pig_ops = 0;
             
-            else{
-                navigation.showThisPage(showOptions.go_back_page);
-                
-                if (showOptions.callback_after_edit){
-                    showOptions.callback_after_edit();
-                }
-            }
+            navigation.pigFarm.managerPigProd.requestPigProdEntry(pig_prod_hid, 
+                inc_pig_ops, callback_success, elemServerErrorMsg);
         }
 
     }

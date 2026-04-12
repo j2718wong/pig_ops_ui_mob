@@ -899,7 +899,7 @@ export function ProdEntryBirth(input_settings){
             
             //request updated prod_entry data and replace curDataPigProd;
             navigation.pigFarm.managerPigProd.requestPigProdEntry(pig_prod_hid, 
-                callback_success, elemServerErrorMsg);
+                null, callback_success, elemServerErrorMsg);
                 
         }
         

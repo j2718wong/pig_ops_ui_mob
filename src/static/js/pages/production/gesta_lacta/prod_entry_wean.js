@@ -1036,15 +1036,21 @@ export function ProdEntryWean(input_settings){
         //  - open to Fattening List Page; not to Fattening Entry page; 
         //      this is to show that a new Fattening entry has been added.
         //
-        // 2.) Case 2: curDataPigProd has date_weaning (PROD_STATUS.WEANING);
+        // 2.) Case 2: curDataPigProd has date_weaning (PROD_STATUS.WEANING or 
+        // PROD_STATUS.GROWING); All pig gestating and lactating pig operations
+        // are now closed(cannot be edited) regardless it was done or not;
+        // 
         // Weaning info has been updated;
         // The sequence of steps that should happen is
-        // 
-        //
+        //  - request pig_production info without the pig_operations;
+        //  - copy the pig operations and data details from curDataPigProd to 
+        //     updated pig_production
         
         const cur_prod_status = curDataPigProd.pig_production.prod_status_id;
         
         if (cur_prod_status == PROD_STATUS.LACTATING){
+            // Case 1: First time weaning (LACTATING → FATTENING)
+            
             // Remove from curDataPigProd from lactating List
             const pig_prod_hid = curDataPigProd.pig_production.hid;
             const prod_list = navigation.pigFarm.managerPigProd.dataLactatingList;
@@ -1065,24 +1071,34 @@ export function ProdEntryWean(input_settings){
             // Request Fattening List
             navigation.pigFarm.managerPigProd.requestPigProdList(
                 PIG_PROD_TYPE.FATTENING, callback_success, elemServerErrorMsg);
-        
-        
-            
         }
         else{
+            // Case 2: Updating existing weaning info (WEANING or GROWING)
+            
             const pig_prod_hid = curDataPigProd.pig_production.hid;
             const prod_list = navigation.pigFarm.managerPigProd.dataFatteningList;
             
-            const callback_success = function(data){
+            const callback_success = function(data_pig_prod){
+                // 1.) Copy the current gestating_ops and lactating_ops to
+                //     data_pig_prod
+                data_pig_prod.gestating_ops = curDataPigProd.gestating_ops;
+                data_pig_prod.lactating_ops = curDataPigProd.lactating_ops;
+                
+                // 2.) Copy all production data_details
+                data_pig_prod.data_details  = curDataPigProd.data_details;
+                
                 navigation.pigFarm.managerPigProd.replaceInProdList(
-                        pig_prod_hid, prod_list, data);
+                        pig_prod_hid, prod_list, data_pig_prod);
             };
             
-            //request updated prod_entry data and replace curDataPigProd;
+            
+            // Request updated prod_entry data and replace curDataPigProd;
+            // Exclude requesting gestating, lactating pig_ops
+            const inc_pig_ops = 0;
+            
             navigation.pigFarm.managerPigProd.requestPigProdEntry(pig_prod_hid, 
-                callback_success, elemServerErrorMsg);
+                inc_pig_ops, callback_success, elemServerErrorMsg);
                 
-            //go back to Lactating Page showing PigOps List;
             
             // Show Toast message 
             const title   = navigation.managerApplicationData.dataApplication.product_name;
