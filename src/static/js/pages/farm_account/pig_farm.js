@@ -204,6 +204,8 @@ export function PigFarm(_navigation){
     }
     
     
+
+    
     this.getAccountHid = function(){
         if (thisObj.dataPigFarmAccount == null){return null;}
         return thisObj.dataPigFarmAccount.account.account.hid;

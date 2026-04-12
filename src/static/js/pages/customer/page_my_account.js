@@ -100,7 +100,7 @@ export function PageMyAccount(input_settings){
     let showOptions             = null;
     
     
-    let dataUserAccount         = null;
+    let accountInfo             = null;
     
     let pigFarmTable            = new PageTableBasic();
     
@@ -393,14 +393,14 @@ export function PageMyAccount(input_settings){
     
     this._bindEventListeners = function(){
         elemAccountNameDisplay.addEventListener('click', function(event){
-            if (!dataUserAccount) return; // safety
+            if (!accountInfo) return; // safety
             
-            const data_user     = dataUserAccount.user;
             
             // switch to edit mode
-            const data_account  = dataUserAccount.account;
-            const account_name  = data_account.account.name;
+            const account_name  = accountInfo.account.name;
             
+            
+            const data_user     = navigation.userControl.dataUserAccount.user;
             
             
             // Only account admins can change account name
@@ -475,7 +475,7 @@ export function PageMyAccount(input_settings){
         
 
         
-        dataUserAccount  = navigation.userControl.dataUserAccount;
+        accountInfo  = navigation.account.accountInfo;
         
         
         /*
@@ -506,22 +506,22 @@ export function PageMyAccount(input_settings){
     
     
     this.refreshAccountName =  function(){
-        const account_name  = dataUserAccount.account.account.name;
-        const account_hid   = dataUserAccount.account.account.hid;
+        const account_name  = accountInfo.account.name;
+        const account_hid   = accountInfo.account.hid;
             
-        elemAccountNameDisplay.textContent = account_name;
-        elemAccountNameEditInput.value = account_name;
-        elemAccountCodeDisplay.textContent = `Account Code: ${account_hid}`;
+        elemAccountNameDisplay.textContent  = account_name;
+        elemAccountNameEditInput.value      = account_name;
+        elemAccountCodeDisplay.textContent  = `Account Code: ${account_hid}`;
     }
     
     
     this.populateForm = function(){
         this.refreshAccountName();
         
-        if (dataUserAccount.account.account.date_trial_end){
+        if (accountInfo.account.date_trial_end){
             elemFreeTrialSection.classList.remove('hidden-section');
             
-            const dt_expiry     = new Date(dataUserAccount.account.account.date_trial_end);
+            const dt_expiry     = new Date(accountInfo.account.date_trial_end);
             const s_dt_expiry   = formatDate(dt_expiry, FORMAT_COMPACT) 
             
             elemFreeTrialExpiry.textContent = s_dt_expiry; 
@@ -532,13 +532,13 @@ export function PageMyAccount(input_settings){
         }
         
         
-        const data_farm_list =  dataUserAccount.account.pig_farms;
+        const data_farm_list =  accountInfo.pig_farms;
         pigFarmTable.setDataEntryList(data_farm_list);
         pigFarmTable.renderTable(data_farm_list);
         
         
         // Show/Hide AddTextLink based on user role
-        const data_user     = dataUserAccount.user;
+        const data_user     = navigation.userControl.dataUserAccount.user;
             
             
         // Only account admins can add farms
@@ -556,7 +556,7 @@ export function PageMyAccount(input_settings){
     
     
     this.exitEditAccAndSave = function(){
-        if (!dataUserAccount) return;
+        if (!accountInfo) return;
         
         // already not editing
         if (elemAccountNameEditInput.classList.contains('hidden-section')) return; 
@@ -569,12 +569,12 @@ export function PageMyAccount(input_settings){
         }
         
         
-        if (newName !== dataUserAccount.account.account.name) {
+        if (newName !== accountInfo.account.name) {
             thisObj.onSaveAccountName(newName);
         }
         
         
-        const account_name  = dataUserAccount.account.account.name;
+        const account_name  = accountInfo.account.name;
         
 
         // always switch back to read-only display (even if same or empty we revert display)
@@ -586,7 +586,7 @@ export function PageMyAccount(input_settings){
 
     
     this.onSaveAccountName = function(new_acc_name){
-        const user_hid      = dataUserAccount.user.user.hid;
+        const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
 
         
@@ -622,7 +622,7 @@ export function PageMyAccount(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    dataUserAccount.account.account = response.account;
+                    accountInfo.account = response.account;
                     
                     thisObj.refreshAccountName();
                     

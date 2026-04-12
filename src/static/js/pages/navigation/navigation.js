@@ -36,7 +36,7 @@ import {MoreModal}                  from '../common/more_modal.js';
 
 
 
-
+import {Account}                    from '../farm_account/account.js';
 import {PigFarm}                    from '../farm_account/pig_farm.js';
 
 
@@ -219,7 +219,7 @@ export function Navigation(){
     let elemMobilePigFarmName   = null;
     
     let dataApplication         = null;
-    let dataUserAccount         = null;
+
     
     
     this.curScreenIsMobile      = null;
@@ -259,6 +259,7 @@ export function Navigation(){
     this.moreModal              = new MoreModal(this);
     
     
+    this.account                = new Account(this);
     this.pigFarm                = new PigFarm(this);
     
     
@@ -1048,24 +1049,37 @@ export function Navigation(){
     
     
     this.setPageData = function(data){
+        
+        console.log('\n\nEntryPoint setPageData');
+        console.log(data);
+        
+        
         // Save this
         dataApplication = data.application;
         
-        this.managerApplicationData.setDataCompanyApp(data.application);
         
+        // Set DataCompanyApp
+        this.managerApplicationData.setDataCompanyApp(data.application);
         this.managerPublicSections.setDataCompanyApp(data.application);
         
         
-        // Save this
-        dataUserAccount = data.user_account;
-        this.setDataUserAccount(data.user_account);
+        // Set UserAccount
+        this.userControl.setDataUserAccount(data.user_account);
+        this.updatePigFarmName();
         
+        
+        // Set Account; this will be read from data.user_account.account
+        this.account.setAccount(data.user_account.account)
+        
+        
+        
+        // Set Pig Farm
         const user_current_farm = this.userControl.getCurrentFarm();
         const pig_farm_account = data.pig_farm_account;
         
-                
         this.pigFarm.setDataPigFarm(user_current_farm);
         this.pigFarm.setDataPigFarmAccount(pig_farm_account);
+        
         
         
         const country   = user_current_farm.location.country;
@@ -1102,16 +1116,8 @@ export function Navigation(){
 
 
     
-    this.setDataUserAccount = function(data){
-        this.userControl.setDataUserAccount(data);
-        
-        this.updatePigFarmName();
-    }
-    
-    
     this.addDataToSaveBeforePageUnload = function(app_data_to_save){
-        app_data_to_save.data_application   = dataApplication;
-        app_data_to_save.user_account       = setDataUserAccount;      
+        app_data_to_save.data_application   = dataApplication;      
     }
     
 

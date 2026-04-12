@@ -223,6 +223,15 @@ export function PageCustomerPricing(input_settings){
         
         showOptions = options;
         
+        console.log('\n\nnavigation.userControl.dataUserAccount');
+        console.log(navigation.userControl.dataUserAccount);
+        
+        
+        console.log('\n\nnavigation.pigFarm.dataPigFarm');
+        console.log(navigation.pigFarm.dataPigFarm);
+        
+        console.log('\n\nnavigation.pigFarm.dataPigFarmAccount');
+        console.log(navigation.pigFarm.dataPigFarmAccount);
         
        
         thisObj.populateForm();

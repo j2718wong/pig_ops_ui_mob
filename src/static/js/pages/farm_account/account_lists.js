@@ -193,7 +193,6 @@ export function AccountLists(_navigation){
     }
     
  
- 
     this.requestDataJoinAccReqList = function(callback_success, elem_show_error){
         
         const base_url = window.location.origin;

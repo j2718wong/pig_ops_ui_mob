@@ -404,9 +404,6 @@ export function PageProdFatteningEntry(input_settings){
     this.show = function(data_pig_prod, options){
         dataPigProd = data_pig_prod;
         
-        console.log('dataPigProd');
-        console.log(dataPigProd);
-        
         // Change options only if there is a given options
         if (options){
             showOptions = options;
