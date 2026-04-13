@@ -213,12 +213,12 @@ export function SowBoarTableSowWean(input_settings){
             dtCurrentDate.setHours(0, 0, 0, 0);
         }
                     
-        const diff_msecs    = dt_wean - dtCurrentDate;
+        const diff_msecs    = dtCurrentDate - dt_wean;
         const diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
         
         const s_dt_wean     = formatDate(dt_wean, FORMAT_COMPACT); 
         
-        const html_date_wean = `${s_dt_wean} <span class="nowrap">${diff_days}</span>`;
+        const html_date_wean = `${s_dt_wean} <span class="nowrap">${diff_days} Days</span>`;
         
         const html = `
         <tr>
