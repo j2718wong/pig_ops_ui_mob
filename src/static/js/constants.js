@@ -349,8 +349,13 @@ const REQUEST_ERROR_NUM ={
 
 
 const FLAG_BITS ={
+    ACCOUNT:{
+        ENABLE:                 1,
+        FREE_TRIAL_STARTED:     2
+    },
+    
     PIG_PROD:{
-        FLAG_BIT_IS_A_GROUP:        2
+        IS_A_GROUP:             2
     }
 
 };

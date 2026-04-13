@@ -450,13 +450,17 @@ export function PageTableBasic(){
         
         
         // One event handler at a time
-        config.elemPrevPageBtn.onclick = function(){
-            paginationManager.goToPrevPage();
+        if (config.elemPrevPageBtn){
+            config.elemPrevPageBtn.onclick = function(){
+                paginationManager.goToPrevPage();
+            }
         }
         
         // One event handler at a time
-        config.elemNextPageBtn.onclick = function(){
-            paginationManager.goToNextPage();
+        if (config.elemNextPageBtn){
+            config.elemNextPageBtn.onclick = function(){
+                paginationManager.goToNextPage();
+            }
         }
         
     }

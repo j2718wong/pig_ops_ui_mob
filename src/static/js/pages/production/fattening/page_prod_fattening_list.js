@@ -47,7 +47,7 @@ export function PageProdFatteningList(input_settings){
     const DEFAULT_NUM_DAYS_HARVEST_FROM_BIRTH   = 145;
     const DEFAULT_NUM_DAYS_HARVEST_FROM_WEAN    = 100;
     
-    const FLAG_BIT_IS_A_GROUP   = FLAG_BITS.PIG_PROD.FLAG_BIT_IS_A_GROUP;
+    const FLAG_BIT_IS_A_GROUP   = FLAG_BITS.PIG_PROD.IS_A_GROUP;
     
     
     // This is needed as this will be first element to be rendered

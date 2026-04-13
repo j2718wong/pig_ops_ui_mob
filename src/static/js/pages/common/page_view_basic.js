@@ -572,7 +572,7 @@ export function PageViewPigFarmPage(){
         // 3.) To know if the production entry is a group, it has to check 
         //      the (pig_production.flag & FLAG_BIT_IS_A_GROUP) > 0
         
-        const FLAG_BIT_IS_A_GROUP   = FLAG_BITS.PIG_PROD.FLAG_BIT_IS_A_GROUP;
+        const FLAG_BIT_IS_A_GROUP   = FLAG_BITS.PIG_PROD.IS_A_GROUP;
         
         // Check if flag exists and if this is a production group
         let isGroup = false;

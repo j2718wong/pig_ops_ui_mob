@@ -8,6 +8,7 @@ import {PageViewBasic}              from '../common/page_view_basic.js';
 import {PageTableBasic}             from '../common/page_table_basic.js';
 
 import {APPLICATION,
+        FLAG_BITS,
         ACC_USER_GROUP,
         PAGE_ID,
         SOW_STATUS,
@@ -25,6 +26,7 @@ import {formatDate,
 
 
 import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
+
 
 
 
@@ -77,8 +79,10 @@ export function PageMyAccount(input_settings){
     
     let elemAccountCodeDisplay  = null;
     
-    
     let elemFreeTrialSection    = null;
+    let elemFreeTrialNotStarted = null;
+    let elemFreeTrialStarted    = null;
+    
     let elemFreeTrialExpiry     = null;
     let elemFreeTrialLink       = null;
     
@@ -324,10 +328,17 @@ export function PageMyAccount(input_settings){
         </div>
         
         <!-- ========== FREE TRIAL EXPIRY SECTION ========== -->
-        <div id="freeTrialSection" class="free-trial-section">
+        <div id="free-trial-section" class="free-trial-section">
             <div class="free-trial-container">
-                <div class="free-trial-expiry-text">Your 90 days free trial will expire on</div>
-                <div id="freeTrialExpiry" class="free-trial-expiry-date">02 June 2026</div> 
+                <div id="free-trial-not-started">
+                    Your free  trial will start after recording your first sow, boar or gilt.
+                    Feel free to explore first the features of this application.
+                </div>
+                
+                <div id="free-trial-started">
+                    <div class="free-trial-expiry-text">Your 90 days free trial will expire on</div>
+                    <div id="freeTrialExpiry" class="free-trial-expiry-date">02 June 2026</div> 
+                </div>
                 <a href="#" id="freeTrialLearnMore" class="free-trial-link">What happens after free trial?</a>
             </div>
         </div>
@@ -373,7 +384,10 @@ export function PageMyAccount(input_settings){
         elemAccountCodeDisplay  = elemDivContainer.querySelector('#accountCodeDisplay');
         
         // New elements for free trial
-        elemFreeTrialSection    = elemDivContainer.querySelector('#freeTrialSection');
+        elemFreeTrialSection    = elemDivContainer.querySelector('#free-trial-section');
+        
+        elemFreeTrialNotStarted = elemDivContainer.querySelector('#free-trial-not-started');
+        elemFreeTrialStarted    = elemDivContainer.querySelector('#free-trial-started');
         elemFreeTrialExpiry     = elemDivContainer.querySelector('#freeTrialExpiry');
         elemFreeTrialLink       = elemDivContainer.querySelector('#freeTrialLearnMore');
         
@@ -477,6 +491,20 @@ export function PageMyAccount(input_settings){
         
         accountInfo  = navigation.account.accountInfo;
         
+        console.log(`accountInfo`);
+        console.log(accountInfo);
+        
+        const account_flag = accountInfo.account.flag;
+        
+        if ((account_flag & FLAG_BITS.ACCOUNT.FREE_TRIAL_STARTED) > 0){
+            elemFreeTrialStarted.style.display      = 'block';   
+            elemFreeTrialNotStarted.style.display   = 'none';
+        }
+        else{
+            elemFreeTrialStarted.style.display      = 'none';
+            elemFreeTrialNotStarted.style.display   = 'block';
+        }
+            
         
         /*
         Typical options
@@ -518,18 +546,11 @@ export function PageMyAccount(input_settings){
     this.populateForm = function(){
         this.refreshAccountName();
         
-        if (accountInfo.account.date_trial_end){
-            elemFreeTrialSection.classList.remove('hidden-section');
-            
-            const dt_expiry     = new Date(accountInfo.account.date_trial_end);
-            const s_dt_expiry   = formatDate(dt_expiry, FORMAT_COMPACT) 
-            
-            elemFreeTrialExpiry.textContent = s_dt_expiry; 
-            
-        }
-        else{
-            elemFreeTrialSection.classList.add('hidden-section');
-        }
+        const dt_expiry     = new Date(accountInfo.account.date_trial_end);
+        const s_dt_expiry   = formatDate(dt_expiry, FORMAT_COMPACT) 
+        
+        elemFreeTrialExpiry.textContent = s_dt_expiry; 
+        
         
         
         const data_farm_list =  accountInfo.pig_farms;

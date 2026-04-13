@@ -513,7 +513,7 @@ export function PageProdEntryCommon(input_settings){
         let prod_flag = data_pig_prod.pig_production.flag;
 
         
-        if ((prod_flag & FLAG_BITS.PIG_PROD.FLAG_BIT_IS_A_GROUP) > 0){
+        if ((prod_flag & FLAG_BITS.PIG_PROD.IS_A_GROUP) > 0){
             elemPidOnlyDesc.textContent = 'Group';
         }
         else{
