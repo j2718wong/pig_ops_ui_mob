@@ -218,7 +218,7 @@ export function SowBoarTableSowWean(input_settings){
         
         const s_dt_wean     = formatDate(dt_wean, FORMAT_COMPACT); 
         
-        const html_date_wean = `${s_dt_wean} <span class="nowrap">${diff_days} Days</span>`;
+        const html_date_wean = `${s_dt_wean} <span class="nowrap">(Day ${diff_days})</span>`;
         
         const html = `
         <tr>
