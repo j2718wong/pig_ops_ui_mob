@@ -585,8 +585,26 @@ export function PageViewPigFarmPage(){
         
         // If it's a group, show as "PID, Group" without sow/boar info
         if (isGroup) {
+            let s_members = '';
+            
+            if (data_pig_prod.group_members){
+                s_members = '(PID ';
+
+                let count = 0;
+                for (cur_entry of data_pig_prod.group_members){
+                    if (count >0) {s_members+= ',';}
+                    
+                    s_members += `${cur_entry.farm_prod_id}`;
+                    
+                    count += 1;
+                }
+                
+                s_members += ')';
+            }
+            
+            
             return `
-                <div>${s_pid}, Group</div>
+                <div>${s_pid}, Group${s_members}</div>
             `;
         }
         
