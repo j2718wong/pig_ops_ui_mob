@@ -533,14 +533,17 @@ export function ProdEntryWean(input_settings){
         //     Beyond this date, the weaning becomes history and not editable
         //     anymore.   
         //
-        // 2.) If the production entry is a group, or piglets bought from outside,
+        // 2.) If a production entry status is PROD_STATUS.COMBINED it should 
+        //      display elemWeanHistory and hide elemWeanActive 
+        //
+        // 3.) If the production entry is a group, or piglets bought from outside,
         //     it should display the elemWithOutWeanInfo
         //      
-        // 3.) If the weaning is still active, it should display elemWeanActive
+        // 4.) If the weaning is still active, it should display elemWeanActive
         //     and hide elemWeanHistory; If the weaning is already history, 
         //     it should hide elemWeanActive and display elemWeanHistory.
         //
-        // 4.) Under normal cases, the entry has not yet weaned or has been weaned
+        // 5.) Under normal cases, the entry has not yet weaned or has been weaned
         //     but less than APPLICATION.MIN_DAYS_WEANING_BECOME_HISTORY, 
         //     it should display elemWeanActive.
         
@@ -555,14 +558,20 @@ export function ProdEntryWean(input_settings){
         // Compute for is_historical 
         // Check if weaning date exists and is beyond the history threshold
         if (date_weaning && date_weaning !== null) {
-            const dt_wean = new Date(date_weaning);
             
-            // Calculate days since weaning
-            const diff_days = Math.ceil((dtCurrentDate - dt_wean) / (1000 * 60 * 60 * 24));
-            
-            // If days since weaning exceeds the threshold, mark as historical
-            if (diff_days > APPLICATION.MIN_DAYS_WEANING_BECOME_HISTORY) {
+            if (curDataPigProd.pig_production.prod_status_id == PROD_STATUS.COMBINED){
                 is_historical = 1;
+            } else{
+            
+                const dt_wean = new Date(date_weaning);
+                
+                // Calculate days since weaning
+                const diff_days = Math.ceil((dtCurrentDate - dt_wean) / (1000 * 60 * 60 * 24));
+                
+                // If days since weaning exceeds the threshold, mark as historical
+                if (diff_days > APPLICATION.MIN_DAYS_WEANING_BECOME_HISTORY) {
+                    is_historical = 1;
+                }
             }
         }
         
