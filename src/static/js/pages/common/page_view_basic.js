@@ -588,11 +588,11 @@ export function PageViewPigFarmPage(){
             let s_members = '';
             
             if (data_pig_prod.group_members){
-                s_members = '(PID ';
+                s_members = ' (PID ';
 
                 let count = 0;
-                for (cur_entry of data_pig_prod.group_members){
-                    if (count >0) {s_members+= ',';}
+                for (const cur_entry of data_pig_prod.group_members){
+                    if (count >0) {s_members+= ', ';}
                     
                     s_members += `${cur_entry.farm_prod_id}`;
                     
