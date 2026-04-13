@@ -186,7 +186,7 @@ export function PageProdHistoryList(input_settings){
         let page_info_prod_history   = `
             This is a list of Production batches already harvested. This is auto generated.
             When all pigs in a Fattening batch entry are harvested, the Fattening
-            entry will me updated to Production History entry. 
+            entry will be updated to Production History entry. 
         `;
         
         let page_info_sales_history   = `
