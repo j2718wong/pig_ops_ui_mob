@@ -331,7 +331,7 @@ export function PageMyAccount(input_settings){
         <div id="free-trial-section" class="free-trial-section">
             <div class="free-trial-container">
                 <div id="free-trial-not-started">
-                    Your free  trial will start after recording your first sow, boar or gilt.
+                    Your 90-day free  trial will start after recording your first sow, boar or gilt.
                     Feel free to explore first the features of this application.
                 </div>
                 

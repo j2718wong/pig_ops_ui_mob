@@ -83,7 +83,7 @@ export function PageCustomerPricing(input_settings){
         
         elemIdCountryName       = `${settings.uniqueKey}-country-name`;
         elemIdCurrencyCode      = `${settings.uniqueKey}-cur-code`;
-        elemIdPricePerHead      = `${settings.uniqueKey}-cur-code`;
+        elemIdPricePerHead      = `${settings.uniqueKey}-price-per-head`;
         elemIdTaxNote           = `${settings.uniqueKey}-tax-note`;
         
         
@@ -128,7 +128,7 @@ export function PageCustomerPricing(input_settings){
                         <tr>
                             <td id="${elemIdCountryName}">Philippines</td>
                             <td id="${elemIdCurrencyCode}">PHP</td>
-                            <td id="${elemIdPricePerHead}" class="value-number">120.0</td>
+                            <td id="${elemIdPricePerHead}" class="value-number">150.0</td>
                         </tr>
                     </tbody>
                 </table>
@@ -241,14 +241,9 @@ export function PageCustomerPricing(input_settings){
         
         showOptions = options;
 
-        console.log('\n\nnavigation.pigFarm.dataPigFarmAccount');
-        console.log(navigation.account.accountInfo);
-        
-        
+
         
         const callback_success = function(data){
-            console.log('\n\nPrice dATA');
-            console.log(data);
             thisObj.populateForm(data);
         };
         
