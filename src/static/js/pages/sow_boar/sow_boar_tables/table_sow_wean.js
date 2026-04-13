@@ -51,6 +51,8 @@ export function SowBoarTableSowWean(input_settings){
     let elemTableShow           = null;
     let elemTableBody           = null;
     
+    let dtCurrentDate           = null;
+    
     
     this._writeInlineStyle = function(){
         const html = `
@@ -166,6 +168,9 @@ export function SowBoarTableSowWean(input_settings){
     
     
     this.show = function(){
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
         elemTableShow.style.display = 'block';
     }
     
@@ -202,13 +207,23 @@ export function SowBoarTableSowWean(input_settings){
         const weaning       = sow_boar.cur_pig_production.weaning;
         const date_wean     = weaning.date_weaning;
         const dt_wean       = new Date(date_wean)
-        const s_dt_wean     = formatDate(dt_wean, FORMAT_COMPACT); 
                     
+        if (dtCurrentDate == null){
+            dtCurrentDate = new Date();
+            dtCurrentDate.setHours(0, 0, 0, 0);
+        }
+                    
+        const diff_msecs    = dt_wean - dtCurrentDate;
+        const diff_days     = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
+        
+        const s_dt_wean     = formatDate(dt_wean, FORMAT_COMPACT); 
+        
+        const html_date_wean = `${s_dt_wean} <span class="nowrap">${diff_days}</span>`;
         
         const html = `
         <tr>
             <td><span>${sow_reference}</span></td>
-            <td>${s_dt_wean}</td>
+            <td>${html_date_wean}</td>
             <td></td>
         </tr>
         `;
