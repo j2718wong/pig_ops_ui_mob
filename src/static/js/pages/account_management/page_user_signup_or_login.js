@@ -11,6 +11,7 @@ import {APPLICATION,
 
 import {LoadingAnimation}       from './loading_animation.js';
 import {UiLanguageSwitch}       from './comp_language_switch.js';
+import {PageUserSignUpGoogle}   from './page_user_signup_google.js'
 
 
 // Add this helper function at the top of your module, after the imports
@@ -217,17 +218,8 @@ export function PageUserSignUpOrLogin(input_settings){
     
     let elemTermsText           = null;
     
-    let elemUseGoogle           = null;
     let elemUseFacebook         = null;
     let elemUseTiktok           = null;
-    
-    let elemManualEmail         = null
-    let elemContinueUsingEmail  = null;
-    let elemEmail               = null;
-    let elemEmailInvalidShow    = null; 
-    let elemEmailInvalidMsg     = null;
-    let elemBtnSignUpOrLogin    = null;
-    let elemLoginOrSignUpLink   = null;
     
     
     let showOptions             = null;
@@ -241,56 +233,50 @@ export function PageUserSignUpOrLogin(input_settings){
     let elemFarmOwnerContent    = null;
     let elemFarmStaffContent    = null;
     
+    // Owner form elements
+    
+    let elemManualEmail         = null
+    let elemContinueUsingEmail  = null;
+    let elemEmail               = null;
+    let elemEmailInvalidShow    = null; 
+    let elemEmailInvalidMsg     = null;
+    let elemBtnSignUpOrLogin    = null;
+    let elemLoginOrSignUpLink   = null;
+    
+    let elemUserLoginNoSignUp   = null;
+    
+    let elemUserFirstNameShow   = null; 
+    let elemUserFirstName       = null;
+    let elemUserFirstNameInv    = null;
+                                
+    let elemUserLastNameShow    = null;
+    let elemUserLastName        = null;
+    let elemUserLastNameInv     = null;
+    
+    
     // Staff form elements
-    let elemFirstName           = null;
-    let elemLastName            = null;
+    let elemStaffFirstName      = null;
+    let elemStaffLastName       = null;
     let elemAccessCode          = null;
-    let elemStaffEmail          = null;
-    let elemStaffEmailInvalidShow = null;
-    let elemStaffEmailInvalidMsg = null;
+
     let elemStaffBtnSignUp      = null;
     
-    // Google Sign-In configuration
-    // This is the first Google Client ID used; working but the problem is cannot
-    // create token for sending email using port 443
-    // This project is from jsysdev.contact@gmail.com, SuperPig project 
-    //const GOOGLE_CLIENT_ID = "466858490005-irmhmqrbnmtkmah0baa27sgorivueu6g.apps.googleusercontent.com";
     
-    // 2026-03-20: New project created from jsysdev.contact@gmail.com, SuperPig2 project
-    const GOOGLE_CLIENT_ID = "528524387884-cgehid63a3k9813421ajctmf280p2o7c.apps.googleusercontent.com"
-    
-    const API_BASE_URL = window.location.origin;
-    const REDIRECT_URI = window.location.origin + '/auth/google/callback'; 
-    
-    
-    
-    // Flags to manage Google Sign-In state
-    let isGoogleInitialized     = false;
-    let isGoogleLoginInProgress = false;
-    
-    // Track popup window reference
-    let googlePopupWindow       = null;
-
 
     
     this.init = function(){
         this.render();
         this.afterHtmlRender();
-        this.loadGoogleScript();
-        this.initLoadingAnimation();
-        this.setupMessageListener(); // NEW: Listen for popup messages
-    }
-    
-    
-    this.initLoadingAnimation = function() {
-        loadingAnimation = new LoadingAnimation('google-login-loading', {
-            size: '50px',
-            color: '#4285f4',
-            message: 'Authenticating with Google...',
-            type: 'spinner'
+        
+        this.googleLogin = new PageUserSignUpGoogle({
+            parentObj:          this,
+            managerLogin:       parentObj,
+            elemDivContainer:   elemDivContainer
         });
+        
+        this.googleLogin.init();
     }
-    
+   
     
     this._writeInlineStyle  = function(){
         // write style here
@@ -605,7 +591,7 @@ export function PageUserSignUpOrLogin(input_settings){
             
         </div>
 
-        <div id="manual-email" style = "display:none">
+        <div id="manual-email" style="display:none;">
 
             <div class="or-section">
                 <span class="or-line"></span>
@@ -613,12 +599,38 @@ export function PageUserSignUpOrLogin(input_settings){
                 <span class="or-line"></span>
             </div>
 
-            <label class="login-label" for="email">Email</label>
-            <input type="email" id="email" class="email-input" placeholder="Enter your email" inputmode="email" autocomplete="email">
-            <div id="invalid-email-show" class="invalid-feedback" style="display:none;">
-                <i class="fas fa-triangle-exclamation"></i>
-                <span id="invalid-email-msg">${label_valid_email}</span> 
+            <div>
+                <label class="login-label" for="email">Email</label>
+                <input type="email" id="email" class="email-input" placeholder="Enter your email" inputmode="email" autocomplete="email">
+                <div id="invalid-email-show" class="invalid-feedback" style="display:none;">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span id="invalid-email-msg">${label_valid_email}</span> 
+                </div>
             </div>
+
+            <!--Should show up only when user directly login withour previous signup. -->
+            <div  id="user-login-no-signup" style="margin-top:8px; display:none">
+                We can signup you after providing your name. 
+            </div>
+
+            <div style="margin-top:8px;" id="user-first-name-show">
+                <label class="login-label" for="user-first-name">${label_first_name}</label>
+                <input type="text" id="user-first-name" class="email-input" placeholder="Enter your First Name">
+                <div id="invalid-first-name-show" class="invalid-feedback" style="display:none;">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span id="invalid-first-name-msg">Please Enter a valid a name</span> 
+                </div>
+            </div>
+            
+            <div style="margin-top:8px;" id="user-last-name-show">
+                <label class="login-label" for="user-last-name">${label_last_name}</label>
+                <input type="text" id="user-last-name" class="email-input" placeholder="Enter your Last Name">
+                <div id="invalid-last-name-show" class="invalid-feedback" style="display:none;">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span id="invalid-last-name-msg">Please Enter a valid a name</span> 
+                </div>
+            </div>
+            
 
             <button class="signup-btn">${label_signup}</button>
         
@@ -643,12 +655,12 @@ export function PageUserSignUpOrLogin(input_settings){
         <div class="staff-form">
             <div class="name-row">
                 <div>
-                    <label for="first-name" class="login-label">${label_first_name}</label>
-                    <input type="text" id="first-name" class="staff-input" placeholder="${label_first_name}" inputmode="text" autocomplete="given-name">
+                    <label for="staff-first-name" class="login-label">${label_first_name}</label>
+                    <input type="text" id="staff-first-name" class="staff-input" placeholder="${label_first_name}" inputmode="text" autocomplete="given-name">
                 </div>
                 <div>
-                    <label for="last-name" class="login-label">${label_last_name}</label>
-                    <input type="text" id="last-name" class="staff-input" placeholder="${label_last_name}" inputmode="text" autocomplete="family-name">
+                    <label for="staff-last-name" class="login-label">${label_last_name}</label>
+                    <input type="text" id="staff-last-name" class="staff-input" placeholder="${label_last_name}" inputmode="text" autocomplete="family-name">
                 </div>
             </div>
             
@@ -692,7 +704,6 @@ export function PageUserSignUpOrLogin(input_settings){
         elemTermsText           = elemDivContainer.querySelector('.terms-text');
         
         
-        elemUseGoogle           = elemDivContainer.querySelector('#social-btn-google'); 
         elemUseFacebook         = elemDivContainer.querySelector('#social-btn-facebook');
         elemUseTiktok           = elemDivContainer.querySelector('#social-btn-tiktok');
         
@@ -702,6 +713,19 @@ export function PageUserSignUpOrLogin(input_settings){
         elemEmail               = elemDivContainer.querySelector('#email');
         elemEmailInvalidShow    = elemDivContainer.querySelector('#invalid-email-show');
         elemEmailInvalidMsg     = elemDivContainer.querySelector('#invalid-email-msg');
+        
+        elemUserLoginNoSignUp   = elemDivContainer.querySelector('#user-login-no-signup');
+        
+        elemUserFirstNameShow   = elemDivContainer.querySelector('#user-first-name-show');
+        elemUserFirstName       = elemDivContainer.querySelector('#user-first-name');
+        elemUserFirstNameInv    = elemDivContainer.querySelector('#invalid-first-name-show');
+        
+        elemUserLastNameShow    = elemDivContainer.querySelector('#user-last-name-show');
+        elemUserLastName        = elemDivContainer.querySelector('#user-last-name');
+        elemUserLastNameInv     = elemDivContainer.querySelector('#invalid-last-name-show');
+        
+        
+        
         elemBtnSignUpOrLogin    = elemDivContainer.querySelector('.signup-btn');
         
         elemLoginOrSignUpLink   = elemDivContainer.querySelector('.login-full-link');
@@ -713,11 +737,8 @@ export function PageUserSignUpOrLogin(input_settings){
         elemFarmStaffContent    = elemDivContainer.querySelector('#tab-farm-staff');
         
         // Staff form elements
-        elemFirstName           = elemDivContainer.querySelector('#first-name');
-        elemLastName            = elemDivContainer.querySelector('#last-name');
-        elemStaffEmail          = elemDivContainer.querySelector('#staff-email');
-        elemStaffEmailInvalidShow = elemDivContainer.querySelector('#staff-invalid-email-show');
-        elemStaffEmailInvalidMsg = elemDivContainer.querySelector('#staff-invalid-email-msg');
+        elemStaffFirstName      = elemDivContainer.querySelector('#staff-first-name');
+        elemStaffLastName       = elemDivContainer.querySelector('#staff-last-name');
         elemAccessCode          = elemDivContainer.querySelector('#access-code');
         elemStaffBtnSignUp      = elemDivContainer.querySelector('#staff-signup-btn');
     }
@@ -768,24 +789,6 @@ export function PageUserSignUpOrLogin(input_settings){
         });
         
         
-        // In your page_user_signup_or_login.js, update the Google click handler
-        elemUseGoogle.addEventListener('click', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            // Visual feedback
-            const btn = event.currentTarget;
-            btn.style.transform = 'scale(0.98)';
-            setTimeout(() => btn.style.transform = '', 120);
-            
-            // Get viewport dimensions
-            const viewport_width = window.innerWidth;
-            const viewport_height = window.innerHeight;
-            
-            // Redirect to Google login endpoint with viewport data
-            window.location.href = `/auth/google/login?viewport_width=${viewport_width}&viewport_height=${viewport_height}`;
-        });
-        
           
         elemUseFacebook.addEventListener('click', function(event) {
             event.preventDefault();
@@ -835,17 +838,17 @@ export function PageUserSignUpOrLogin(input_settings){
     this.onClickStaffSignUp = async function() {
         // Validate first name
         
-        if (!elemFirstName.value || elemFirstName.value.trim().length === 0) {
-            elemFirstName.classList.add('error');
-            setTimeout(() => elemFirstName.classList.remove('error'), 2000);
+        if (!elemStaffFirstName.value || elemStaffFirstName.value.trim().length === 0) {
+            elemStaffFirstName.classList.add('error');
+            setTimeout(() => elemStaffFirstName.classList.remove('error'), 2000);
             this.showError('Please enter your first name');
             return;
         }
         
         // Validate last name
-        if (!elemLastName.value || elemLastName.value.trim().length === 0) {
-            elemLastName.classList.add('error');
-            setTimeout(() => elemLastName.classList.remove('error'), 2000);
+        if (!elemStaffLastName.value || elemStaffLastName.value.trim().length === 0) {
+            elemStaffLastName.classList.add('error');
+            setTimeout(() => elemStaffLastName.classList.remove('error'), 2000);
             this.showError('Please enter your last name');
             return;
         }
@@ -859,8 +862,8 @@ export function PageUserSignUpOrLogin(input_settings){
             return;
         }
         
-        let firstName   = elemFirstName.value.trim();
-        let lastName    = elemLastName.value.trim();
+        let firstName   = elemStaffFirstName.value.trim();
+        let lastName    = elemStaffLastName.value.trim();
         let accessCode  = elemAccessCode.value.trim();
         
 
@@ -945,273 +948,16 @@ export function PageUserSignUpOrLogin(input_settings){
         });
     }
     
-    
-    // =============================================
-    // NEW: Setup message listener for Google popup
-    // =============================================
-    this.setupMessageListener = function() {
-        window.addEventListener('message', (event) => {
-            // Verify the origin for security
-            if (event.origin !== 'https://accounts.google.com') {
-                return;
-            }
-            
-            console.log('📨 Message from Google popup:', event.data);
-            
-            // If this is a close message or we detect the popup should close
-            if (event.data === 'close' || event.data?.type === 'credential_returned') {
-                console.log('Closing Google popup');
-                if (googlePopupWindow && !googlePopupWindow.closed) {
-                    googlePopupWindow.close();
-                    googlePopupWindow = null;
-                }
-            }
-        });
-    }
-    
-    
-    // =============================================
-    // GOOGLE SIGN-IN METHODS (REDIRECT MODE)
-    // =============================================
-
-    this.loadGoogleScript = function() {
-        // Check if script already loaded
-        if (document.querySelector('script[src="https://accounts.google.com/gsi/client"]')) {
-            this.initializeGoogleSignIn();
-            return;
-        }
-        
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = () => this.initializeGoogleSignIn();
-        script.onerror = () => {
-            console.error('Failed to load Google Sign-In script');
-            this.showError('Failed to load Google Sign-In. Please refresh the page.');
-        };
-        document.head.appendChild(script);
-    }
-
-
-    // Initialize Google Sign-In with redirect mode
-    this.initializeGoogleSignIn = function() {
-        if (window.google && window.google.accounts) {
-            try {
-                // Use the newer OAuth2 client for redirect mode
-                window.google.accounts.oauth2.initCodeClient({
-                    client_id: GOOGLE_CLIENT_ID,
-                    scope: 'email profile openid',
-                    ux_mode: 'redirect',  // CRITICAL: Use redirect instead of popup
-                    redirect_uri: REDIRECT_URI,
-                    callback: (response) => {
-                        // This won't be called in redirect mode
-                        // The redirect will handle the response
-                        console.log('Redirect callback (should not happen)');
-                    }
-                });
-                
-                isGoogleInitialized = true;
-                console.log('✅ Google Sign-In initialized with REDIRECT mode');
-                console.log('   Redirect URI:', REDIRECT_URI);
-                
-            } catch (error) {
-                console.error('❌ Error initializing Google Sign-In:', error);
-            }
-        }
-    }
-
-
-    // Initiate Google login - triggers full-page redirect
-    this.initiateGoogleLogin = function() {
-        if (isGoogleLoginInProgress) {
-            console.log('Login already in progress');
-            return;
-        }
-        
-        if (!isGoogleInitialized) {
-            console.log('Google not initialized, waiting...');
-            setTimeout(() => this.initiateGoogleLogin(), 500);
-            return;
-        }
-        
-        try {
-            console.log('🚀 Redirecting to Google for authentication...');
-            isGoogleLoginInProgress = true;
-            
-            // Store current page to return after login
-            sessionStorage.setItem('pre_login_page', window.location.href);
-            
-            // Trigger the Google redirect
-            window.google.accounts.oauth2.initCodeClient({
-                client_id: GOOGLE_CLIENT_ID,
-                scope: 'email profile openid',
-                ux_mode: 'redirect',
-                redirect_uri: REDIRECT_URI,
-                state: window.location.pathname // Optional: store where to redirect after
-            }).requestCode();
-            
-        } catch (error) {
-            console.error('❌ Error during Google redirect:', error);
-            this.showError('Failed to initiate Google login. Please try again.');
-            isGoogleLoginInProgress = false;
-        }
-    }   
-
- 
-    // NEW: Simplified login trigger (removed fallback button complexity)
-    this.triggerGoogleLogin = function() {
-        if (!window.google || !window.google.accounts) {
-            console.error('Google Sign-In not available');
-            this.showError('Google Sign-In is not available. Please try again later.');
-            return;
-        }
-        
-        try {
-            console.log('🚀 Opening Google login popup...');
-            
-            // Track the popup window
-            googlePopupWindow = window.open('about:blank', '_blank');
-            
-            // Request Google login
-            window.google.accounts.id.prompt((notification) => {
-                console.log('Google prompt notification:', notification);
-                
-                if (notification.isNotDisplayed()) {
-                    console.log('Prompt not displayed - popup may be blocked');
-                    this.showError('Popup was blocked. Please allow popups for this site.');
-                    isGoogleLoginInProgress = false;
-                }
-                
-                if (notification.getDismissedReason()) {
-                    console.log('Prompt dismissed:', notification.getDismissedReason());
-                    isGoogleLoginInProgress = false;
-                }
-            });
-            
-            // Set a timeout to reset if popup doesn't appear
-            setTimeout(() => {
-                if (googlePopupWindow && googlePopupWindow.closed) {
-                    console.log('Popup was closed without authentication');
-                    isGoogleLoginInProgress = false;
-                }
-            }, 30000); // 30 second timeout
-            
-        } catch (error) {
-            console.error('Error during Google login:', error);
-            this.showError('Failed to open Google login. Please check if popups are blocked.');
-            isGoogleLoginInProgress = false;
-        }
-    }
-    
-    
-
-    this.handleGoogleCredential = async function(response) {
-        // Prevent multiple simultaneous calls
-        if (isGoogleLoginInProgress) {
-            console.log('Google login already in progress');
-            return;
-        }
-        
-        isGoogleLoginInProgress = true;
-        
-        try {
-            console.log("✅ Google ID token received");
-            console.log("Token preview:", response.credential.substring(0, 50) + "...");
-            
-            // Close the popup immediately
-            if (googlePopupWindow && !googlePopupWindow.closed) {
-                googlePopupWindow.close();
-                googlePopupWindow = null;
-                console.log('Popup closed after receiving token');
-            }
-            
-            
-            // Also tell Google to clean up
-            if (window.google?.accounts?.id) {
-                google.accounts.id.cancel();
-            }
-            
-            
-            // Show loading state
-            elemUseGoogle.classList.add('loading');
-            elemUseGoogle.querySelector('span').textContent = 'Processing...';
-            loadingAnimation.show('Verifying credentials...');
-            
-            
-            // Get location and viewport data
-            const viewport_width    = window.innerWidth;
-            const viewport_height   = window.innerHeight;
-            let locationData        = await getLocationWithFallback();
-            
-            
-            // Send to backend
-            const backendResponse = await fetch(`${API_BASE_URL}/api/auth/google`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', // Important for cookies
-                body: JSON.stringify({
-                    token:              response.credential, // Google token
-                    viewport_width:     viewport_width,
-                    viewport_height:    viewport_height,
-                    login_country_code: locationData.login_country_code,
-                    login_country_name: locationData.login_country_name,
-                    login_city:         locationData.login_city,
-                    login_region:       locationData.login_region
-                })
-            });
-
-            if (!backendResponse.ok) {
-                const errorData = await backendResponse.json().catch(() => ({}));
-                throw new Error(errorData.detail || 'Authentication failed');
-            }
-
-            const data = await backendResponse.json();
-            console.log("✅ Backend response received");
-            
-            // Store token
-            localStorage.setItem('access_token', data.bearer_token);
-            localStorage.setItem('user_picture', data.user_picture);
-            
-            // Capture language from URL or localStorage before redirect
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlLang = urlParams.get('lang');
-            if (urlLang) {
-                localStorage.setItem('user_language', urlLang);
-            }
-            
-            
-            // Hide loading and proceed
-            loadingAnimation.hide();
-            parentObj.handlePostLoginFlow(data.user_account);
-            
-        } catch (error) {
-            console.error('❌ Google authentication error:', error);
-            loadingAnimation.hide();
-            this.showError('Failed to authenticate with Google. Please try again.');
-        } finally {
-            // Reset state
-            isGoogleLoginInProgress = false;
-            elemUseGoogle.classList.remove('loading');
-            elemUseGoogle.querySelector('span').textContent = 'Google';
-            
-            // Ensure popup is closed
-            if (googlePopupWindow && !googlePopupWindow.closed) {
-                googlePopupWindow.close();
-                googlePopupWindow = null;
-            }
-        }
-    }
-    
-    
+     
+  
     this._resetForm = function(){
         // Reset form if needed
     }
     
     
     this.show = function(options){
+        thisObj._resetForm();
+        
         showOptions = options;
         elemEmailInvalidShow.style.display = 'none';
     
@@ -1246,6 +992,10 @@ export function PageUserSignUpOrLogin(input_settings){
             elemBtnSignUpOrLogin.textContent    = 'Continue';
             elemContinueUsingEmail.textContent  = label_continue_email;    
             elemLoginOrSignUpLink.innerHTML     = label_create_account;
+            
+            // Hide manual email login, user name 
+            elemUserFirstNameShow.style.display = 'none';
+            elemUserLastNameShow.style.display  = 'none';
         }
         else{
             elemIntroText.textContent           = label_signup_to_continue;
@@ -1253,6 +1003,10 @@ export function PageUserSignUpOrLogin(input_settings){
             elemBtnSignUpOrLogin.textContent    = label_sign_up;
             elemContinueUsingEmail.textContent  = label_continue_email;
             elemLoginOrSignUpLink.innerHTML     = label_have_account;
+        
+            // Hide manual email login, user name 
+            elemUserFirstNameShow.style.display = 'block';
+            elemUserLastNameShow.style.display  = 'block';
         }
     }
     
@@ -1302,37 +1056,6 @@ export function PageUserSignUpOrLogin(input_settings){
     }
     
     
-    this.showSuccess = function(message) {
-        const successDiv = document.createElement('div');
-        successDiv.className = 'success-message';
-        successDiv.textContent = message;
-        successDiv.style.cssText = `
-            color: #155724;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #c3e6cb;
-            border-radius: 4px;
-            background-color: #d4edda;
-            font-size: 14px;
-            text-align: center;
-        `;
-        
-        const socialList = elemDivContainer.querySelector('.social-list');
-        if (socialList) {
-            const existingMessages = elemDivContainer.querySelectorAll('.success-message');
-            existingMessages.forEach(el => el.remove());
-            
-            socialList.parentNode.insertBefore(successDiv, socialList);
-            
-            setTimeout(() => {
-                if (successDiv.parentNode) {
-                    successDiv.remove();
-                }
-            }, 5000);
-        }
-    }
-    
-    
     this.onClickSignUpOrLogin = async function(){
         function isValidEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -1352,6 +1075,36 @@ export function PageUserSignUpOrLogin(input_settings){
             return;
         }
     
+    
+        // Get user name_last, name_first is signup 
+        let input_name_first    = null;
+        let input_name_last     = null;
+
+        
+        if (showOptions.is_login){}
+        else{
+            input_name_first    = elemUserFirstName.value.trim();
+            input_name_last     = elemUserLastName.value.trim();
+            
+            if (input_name_first.length == 0){
+                elemUserFirstNameInv.style.display = 'block';
+                return;
+            }
+            else{
+                elemUserFirstNameInv.style.display = 'none';
+            }
+            
+            if (input_name_last.length == 0){
+                elemUserLastNameInv.style.display = 'block';
+                return;
+            }
+            else{
+                elemUserLastNameInv.style.display = 'none';
+            }
+            
+            
+        }
+        
     
         // Get location and viewport data
         const viewport_width    = window.innerWidth;
@@ -1373,6 +1126,13 @@ export function PageUserSignUpOrLogin(input_settings){
             login_city:         locationData.login_city,
             login_region:       locationData.login_region
         };
+        
+        if (showOptions.is_login){}
+        else{
+            post_data.name_last     = input_name_last;
+            post_data.name_first    = input_name_first;
+        }
+        
         
         loadingAnimation.show(showOptions.is_login ? 'Logging in...' : 'Signing you up...');
         
@@ -1430,7 +1190,18 @@ export function PageUserSignUpOrLogin(input_settings){
                     console.log('\n\n\nonClickSignUpOrLogin; no bearer_token');
                     
                 } else {
-                    thisObj.showError(response.result.msg || 'An error occurred');
+                    // Process response.result.num
+                    if (response.result.code == 'RES_NUM_EMAIL_HAS_NO_NAME'){
+                        // A manual email signup or login has no user name_first
+                        // or name_last
+                        loadingAnimation.hide();
+                        
+                        elemUserLoginNoSignUp.style.display = 'block';
+                        elemUserFirstNameShow.style.display = 'block';
+                        elemUserLastNameShow.style.display  = 'block';
+                        
+                        return;
+                    }
                 }
             },
   
@@ -1443,17 +1214,10 @@ export function PageUserSignUpOrLogin(input_settings){
     
     
     
-    
-    // =============================================
-    // SOCIAL MEDIA METHODS (Facebook, TikTok)
-    // =============================================
-    
-    this.onClickUseGoogle = function(){
-        this.initiateGoogleLogin();
-    }
-    
+  
     
     this.onClickUseFacebook = function(){
+        console.log('Facebook login clicked - to be implemented');
         const data = {
             social_media_id: SOCIAL_MEDIA.FACEBOOK,
             email: 'dwong@gmail.com',

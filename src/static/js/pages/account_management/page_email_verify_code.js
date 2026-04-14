@@ -843,7 +843,6 @@ ${html_style}
   
             error: function(jqXHR, textStatus, errorThrown){
                 thisObj._showMessage('Server error. Please try again.');
-                loadingAnimation.hide();
             }
         });
         
