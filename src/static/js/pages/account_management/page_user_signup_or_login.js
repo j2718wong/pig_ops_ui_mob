@@ -261,7 +261,6 @@ export function PageUserSignUpOrLogin(input_settings){
 
     let elemStaffBtnSignUp      = null;
     
-    
 
     
     this.init = function(){
@@ -275,8 +274,10 @@ export function PageUserSignUpOrLogin(input_settings){
         });
         
         this.googleLogin.init();
+        
+        
     }
-   
+    
     
     this._writeInlineStyle  = function(){
         // write style here
@@ -744,8 +745,18 @@ export function PageUserSignUpOrLogin(input_settings){
     }
     
     
+    this.initLoadingAnimation = function() {
+        loadingAnimation = new LoadingAnimation('google-login-loading', {
+            size: '50px',
+            color: '#4285f4',
+            message: 'Authenticating...',
+            type: 'spinner'
+        });
+    }
+    
+    
     this._processAfterHtmlRender = function(){
-        // Any post-render processing
+        this.initLoadingAnimation();
     }
     
     
