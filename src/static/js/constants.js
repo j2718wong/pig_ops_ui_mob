@@ -178,9 +178,12 @@ const PAGE_ID = {
     ACCESS_CODE_LIST:       102,
     ACCESS_CODE_ADD_EDIT:   103,
     
+    ACC_REFERRAL_LIST:      104,
+    ACC_REFERRAL_ENTRY:     105,
     
-    JOIN_ACC_REQ_LIST:      104,
-    JOIN_ACC_REQ_APPROVE:   105
+    
+    JOIN_ACC_REQ_LIST:      106,
+    JOIN_ACC_REQ_APPROVE:   107
 };
 
 

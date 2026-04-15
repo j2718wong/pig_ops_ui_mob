@@ -110,9 +110,9 @@ import {PageAccPigOpsAddEdit}       from '../acc_pig_ops/page_acc_pig_ops_add_ed
 
 import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_edit.js';
 
-import {PageUserList}               from '../a_user_control/page_user_list.js';
-import {PageAccessCodeList}         from '../a_user_control/page_acc_access_code_list.js';
-import {PageAccessCodeAddEdit}      from '../a_user_control/page_acc_access_code_add_edit.js';
+import {PageUserList}               from '../admin/page_user_list.js';
+import {PageAccessCodeList}         from '../admin/page_acc_access_code_list.js';
+import {PageAccessCodeAddEdit}      from '../admin/page_acc_access_code_add_edit.js';
 
 
 // Get IP trace location

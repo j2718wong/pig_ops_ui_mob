@@ -487,6 +487,7 @@ export function ManagerNavLinks(_navigation) {
     
     
     this._processAfterHtmlRender = function(){
+        this.showHideNavLinks();
         this.onChangeLanguage();
         
     }
@@ -810,6 +811,19 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
+    this.showHideNavLinks = function(){
+        if (window.SUPERPIG_UI_SETTINGS.enable_referral > 0){
+            elemDesktopNavAdmin3.style.display  = 'block';
+            elemMobileNavAdmin3.style.display   = 'block';
+        }
+        else{
+            elemDesktopNavAdmin3.style.display  = 'none';
+            elemMobileNavAdmin3.style.display   = 'none';
+
+        }
+    }
+    
+    
     this.onChangeLanguage = function(){
         const translations = navigation.getTranslations();
         
@@ -955,7 +969,7 @@ export function ManagerNavLinks(_navigation) {
             elemDesktopNavLabelAdmin2.textContent = translated_nav_links.Admin2 || "Access Codes";
         }
         if (elemDesktopNavLabelAdmin3) {
-            elemDesktopNavLabelAdmin3.textContent = translated_nav_links.Admin3 || "";
+            elemDesktopNavLabelAdmin3.textContent = translated_nav_links.Admin3 || "Referrals";
         }
         
         // Mobile parent menu labels
@@ -1088,7 +1102,7 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelAdmin2.textContent = translated_nav_links.Admin2 || "Access Codes";
         }
         if (elemMobileNavLabelAdmin3) {
-            elemMobileNavLabelAdmin3.textContent = translated_nav_links.Admin3 || "";
+            elemMobileNavLabelAdmin3.textContent = translated_nav_links.Admin3 || "Referrals";
         }
     }
     

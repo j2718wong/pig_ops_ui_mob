@@ -143,7 +143,12 @@ export function PageUserList(input_settings){
     
     this._processAfterHtmlRenderThis = function(){
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavAccessCodes();
+            if (window.SUPERPIG_UI_SETTINGS.enable_referral > 0){
+                // TODO
+            }
+            else{
+                navigation.managerNavLinks.onClickNavAccessCodes();
+            }
         };
         
           
