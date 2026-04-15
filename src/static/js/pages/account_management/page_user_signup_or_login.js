@@ -470,6 +470,12 @@ export function PageUserSignUpOrLogin(input_settings){
     this.render = function(){
         const html_style = thisObj._writeInlineStyle();
         
+        let html_show_manual_email = 'display:none;';
+        if (window.SUPERPIG_UI_SETTINGS.enable_manual_email > 0){
+            html_show_manual_email = '';
+        }
+        
+        
         elemUiLangSwitch = new UiLanguageSwitch({
             uniqueKey:      'signup_or_login'
         });
@@ -592,7 +598,7 @@ export function PageUserSignUpOrLogin(input_settings){
             
         </div>
 
-        <div id="manual-email" style="display:none;">
+        <div id="manual-email" style="${html_show_manual_email}">
 
             <div class="or-section">
                 <span class="or-line"></span>
