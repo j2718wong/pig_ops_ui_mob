@@ -298,8 +298,8 @@ export function PageBoarExternalMateList(input_settings){
             <colgroup>
                 <col style="width: 25%;">
                 <col style="width: 25%;">
-                <col style="width: 25%;">
-                <col style="width: 25%;">
+                <col style="width: 22%;">
+                <col style="width: 28%;">
 
                
             </colgroup>
