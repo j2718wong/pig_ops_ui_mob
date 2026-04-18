@@ -354,7 +354,7 @@ export function PageMobGestaLacta(input_settings){
                     </tbody>
                 </table>
                 
-                <div style="display:none;">
+                <div>
                     <a href="javascript:void(0)" class="text-link" id="${elemIdPigOpsSeeSample}">
                         See sample Data
                     </a>                    
@@ -386,7 +386,7 @@ export function PageMobGestaLacta(input_settings){
                     </tbody>
                 </table>
                 
-                <div style="display:none;">
+                <div>
                     <a href="javascript:void(0)" class="text-link" id="${elemIdPigCountSeeSample}">
                         See sample Data
                     </a>                    
@@ -620,12 +620,24 @@ ${html_style}
                 
                 thisObj.onClickShowSample({
                     title:      'Sample Lacta List',
-                    img_src:    '/static_m/images/mar/mar_lacta.png',
+                    img_src:    '/static_m/images/mar/sample_lacta_list.png',
                     img_alt:    'Sample Lacta List'
                 });
             });
 
-            
+
+            elemPigCountSeeSample.addEventListener('click', function() {
+                
+                thisObj.onClickShowSample({
+                    title:      'Sample Lacta Pig Count',
+                    img_src:    '/static_m/images/mar/sample_lacta_pig_count.png',
+                    img_alt:    'Sample Lacta Pig Count'
+                });
+            });
+
+
+
+
             
             
             // Set up listeners for navigation arrows
