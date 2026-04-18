@@ -76,15 +76,19 @@ export function PageMobGestaLacta(input_settings){
     let elemIdLactaPigCount     = null;
     let elemIdLactaFeeds        = null;
     
+    let elemIdTablePigOpsShow   = null;
     let elemIdTablePigOps       = null;
+    let elemIdPigOpsSeeSample   = null;
+    
+    let elemIdTablePigCountShow = null;
     let elemIdTablePigCount     = null;
+    let elemIdPigCountSeeSample = null;
     
     let elemIdLabelToday        = null;
     let elemIdDateToday         = null;
     
-    
     let elemIdProdTableContainer= null;
-    let elemIdPigProdTableBody  = null;
+    let elemIdPigOpsTableBody  = null;
     let elemIdPigCountTableBody = null;
     
     let elemIdPigOpsAlarmTable  = null;
@@ -109,15 +113,27 @@ export function PageMobGestaLacta(input_settings){
     let elemLactaPigCount       = null;
     let elemLactaFeeds          = null;
     
+    
+    let elemTablePigOpsShow     = null;
     let elemTablePigOps         = null;
+    let elemPigOpsSeeSample     = null;
+    
+
+    let elemTablePigCountShow   = null;
     let elemTablePigCount       = null;
+    let elemPigCountSeeSample   = null;
+    
+    
     
     let elemLabelToday          = null;    
     let elemDateToday           = null;
     
+      
+    
+    
     
     let elemProdTableContainer  = null;
-    let elemPigProdTableBody    = null;
+    let elemPigOpsTableBody    = null;
     let elemPigCountTableBody   = null;
     
     
@@ -201,17 +217,23 @@ export function PageMobGestaLacta(input_settings){
         elemIdLactaPigCount     = `${settings.uniqueKey}-lacta-piglets`;
         elemIdLactaFeeds        = `${settings.uniqueKey}-lacta-feeds`;
         
+        elemIdTablePigOpsShow   = `${settings.uniqueKey}-table-pigops-show`;
         elemIdTablePigOps       = `${settings.uniqueKey}-table-pigops`;
-        elemIdTablePigCount     = `${settings.uniqueKey}-table-pig-count`;
+        elemIdPigOpsSeeSample   = `${settings.uniqueKey}-pigops-see-sample`;
         
+        elemIdTablePigCountShow = `${settings.uniqueKey}-table-pig-count-show`;
+        elemIdTablePigCount     = `${settings.uniqueKey}-table-pig-count`;
+        elemIdPigCountSeeSample = `${settings.uniqueKey}-pig-count-see-sample`;
         
         elemIdLabelToday        = `${settings.uniqueKey}-label-today`;
         elemIdDateToday         = `${settings.uniqueKey}-date-today`;
         
         
         elemIdProdTableContainer= `${settings.uniqueKey}-mobile-pig-prod-table`;
-        elemIdPigProdTableBody  = `${settings.uniqueKey}-mobile-pig-prod-tbody`;
+        elemIdPigOpsTableBody  = `${settings.uniqueKey}-mobile-pig-prod-tbody`;
         elemIdPigCountTableBody = `${settings.uniqueKey}-mobile-pig-count-tbody`;
+        
+        
         
         elemIdPigOpsAlarmTable  = `${settings.uniqueKey}-alarm-table`;
         
@@ -309,57 +331,73 @@ export function PageMobGestaLacta(input_settings){
             
             
             <!-- PigProd Lacta Table -->
-            <table class="data-table table-gesta-lacta" id="${elemIdTablePigOps}">
-                <colgroup>
-                    <col style="width: 34%;">
-                    <col style="width: 30%;">
-                    <col style="width: 36%;">
-                </colgroup>
-  
-                <thead>
-                    <tr>
-                        <th>
-                            <div>PID, ${label_sow}</div> 
-                            <div><span class="love-icon">❤️</span> ${label_boar}</div>
-                        </th>
-                        <th>${label_wean}</th>
-                        <th>${label_operation}</th>
-                    </tr>
-                </thead>
+            <div id="${elemIdTablePigOpsShow}">
+                <table class="data-table table-gesta-lacta" id="${elemIdTablePigOps}">
+                    <colgroup>
+                        <col style="width: 34%;">
+                        <col style="width: 30%;">
+                        <col style="width: 36%;">
+                    </colgroup>
+      
+                    <thead>
+                        <tr>
+                            <th>
+                                <div>PID, ${label_sow}</div> 
+                                <div><span class="love-icon">❤️</span> ${label_boar}</div>
+                            </th>
+                            <th>${label_wean}</th>
+                            <th>${label_operation}</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody id="${elemIdPigOpsTableBody}">
+                    </tbody>
+                </table>
                 
-                <tbody id="${elemIdPigProdTableBody}">
-                </tbody>
-            </table>
-            
-            
-            <table class="data-table table-gesta-lacta" id="${elemIdTablePigCount}">
-                <colgroup>
-                    <col style="width: 35%;">
-                    <col style="width: 15%;">
-                    <col style="width: 22%;">
-                </colgroup>
-  
-                <thead>
-                    <tr>
-                        <th>
-                            <div>PID, ${label_sow}</div> 
-                            <div><span class="love-icon">❤️</span> ${label_boar}</div>
-                        </th>
-                        <th>${label_num_pigs}</th>
-                        <th>${label_dead_at_birth}</th>
-                        <th>${label_dead_b4_wean}</th>
-                    </tr>
-                </thead>
+                <div style="display:none;">
+                    <a href="javascript:void(0)" class="text-link" id="${elemIdPigOpsSeeSample}">
+                        See sample Data
+                    </a>                    
+                </div>
                 
-                <tbody id="${elemIdPigCountTableBody}">
-                </tbody>
-            </table>
+            </div>
+            
+            <div id="${elemIdTablePigCountShow}">
+                <table class="data-table table-gesta-lacta" id="${elemIdTablePigCount}">
+                    <colgroup>
+                        <col style="width: 35%;">
+                        <col style="width: 15%;">
+                        <col style="width: 22%;">
+                    </colgroup>
+      
+                    <thead>
+                        <tr>
+                            <th>
+                                <div>PID, ${label_sow}</div> 
+                                <div><span class="love-icon">❤️</span> ${label_boar}</div>
+                            </th>
+                            <th>${label_num_pigs}</th>
+                            <th>${label_dead_at_birth}</th>
+                            <th>${label_dead_b4_wean}</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody id="${elemIdPigCountTableBody}">
+                    </tbody>
+                </table>
+                
+                <div style="display:none;">
+                    <a href="javascript:void(0)" class="text-link" id="${elemIdPigCountSeeSample}">
+                        See sample Data
+                    </a>                    
+                </div>
+            </div>
             `;
         }
         
         else{
             html_prod_tables = `
-            <!-- PogProd Gesta Table -->
+            <!-- PigProd Gesta Table -->
             <div>
                 <span id="${elemIdLabelToday}">${label_today}</span>
                 <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
@@ -383,9 +421,15 @@ export function PageMobGestaLacta(input_settings){
                     </tr>
                 </thead>
                 
-                <tbody id="${elemIdPigProdTableBody}">
+                <tbody id="${elemIdPigOpsTableBody}">
                 </tbody>
             </table>
+            
+            <div>
+                <a href="javascript:void(0)" class="text-link" id="${elemIdPigOpsSeeSample}">
+                    See sample Data
+                </a>                    
+            </div>
             `;
         }
            
@@ -437,7 +481,6 @@ ${html_style}
         <div class="card-container-pig-prod" id="${elemIdProdCardsContainer}" style="display:none;"></div>
         
         <div id="${elemIdProdTableContainer}">
-            
             ${html_prod_tables}
         </div>
     </div>
@@ -477,14 +520,22 @@ ${html_style}
         elemLactaPigCount       = elemDivContainer.querySelector('#'+elemIdLactaPigCount);
         elemLactaFeeds          = elemDivContainer.querySelector('#'+elemIdLactaFeeds);
         
+        
+        elemTablePigOpsShow     = elemDivContainer.querySelector('#'+elemIdTablePigOpsShow);
         elemTablePigOps         = elemDivContainer.querySelector('#'+elemIdTablePigOps);
+        elemPigOpsSeeSample     = elemDivContainer.querySelector('#'+elemIdPigOpsSeeSample);
+        
+        
+        elemTablePigCountShow   = elemDivContainer.querySelector('#'+elemIdTablePigCountShow);
         elemTablePigCount       = elemDivContainer.querySelector('#'+elemIdTablePigCount);
+        elemPigCountSeeSample   = elemDivContainer.querySelector('#'+elemIdPigCountSeeSample);
+        
         
         elemLabelToday          = elemDivContainer.querySelector('#'+elemIdLabelToday);
         elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
         
         elemProdTableContainer  = elemDivContainer.querySelector('#'+elemIdProdTableContainer);
-        elemPigProdTableBody    = elemDivContainer.querySelector('#'+elemIdPigProdTableBody);
+        elemPigOpsTableBody    = elemDivContainer.querySelector('#'+elemIdPigOpsTableBody);
         elemPigCountTableBody   = elemDivContainer.querySelector('#'+elemIdPigCountTableBody);
         
         elemPigOpsAlarmTable    = elemDivContainer.querySelector('#'+elemIdPigOpsAlarmTable);
@@ -528,6 +579,14 @@ ${html_style}
                     PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             }
         
+            elemPigOpsSeeSample.addEventListener('click', function() {
+                thisObj.onClickShowSample({
+                    title:      'Sample Gesta List',
+                    img_src:    '/static_m/images/mar/mar_gesta.png',
+                    img_alt:    'Sample Gesta List'
+                });
+            });
+        
         }
         
         else{
@@ -557,6 +616,15 @@ ${html_style}
             });
             
             
+            elemPigOpsSeeSample.addEventListener('click', function() {
+                
+                thisObj.onClickShowSample({
+                    title:      'Sample Lacta List',
+                    img_src:    '/static_m/images/mar/mar_lacta.png',
+                    img_alt:    'Sample Lacta List'
+                });
+            });
+
             
             
             
@@ -588,8 +656,8 @@ ${html_style}
         switch(lacta_table){
             
             case LACTA_TABLE_PIGOPS:{
-                elemTablePigOps.style.display = 'table';
-                elemTablePigCount.style.display = 'none';
+                elemTablePigOpsShow.style.display   = 'block';
+                elemTablePigCountShow.style.display = 'none';
                 
                 thisObj.renderGestaLactaTable(pig_prod_list);
                 curLactaTable = LACTA_TABLE_PIGOPS;
@@ -597,8 +665,8 @@ ${html_style}
             }
             
             case LACTA_TABLE_PIG_COUNT:{
-                elemTablePigOps.style.display = 'none';
-                elemTablePigCount.style.display = 'table';
+                elemTablePigOpsShow.style.display   = 'none';
+                elemTablePigCountShow.style.display = 'block';
                 
                 thisObj.renderLactaPigCountTable();
                 curLactaTable = LACTA_TABLE_PIG_COUNT;
@@ -611,8 +679,8 @@ ${html_style}
             }
             
             default:{
-                elemTablePigOps.style.display = 'table';
-                elemTablePigCount.style.display = 'none';
+                elemTablePigOpsShow.style.display   = 'block';
+                elemTablePigCountShow.style.display = 'none';
                 
                 thisObj.renderGestaLactaTable(pig_prod_list);
                 curLactaTable = LACTA_TABLE_PIGOPS;
@@ -659,16 +727,28 @@ ${html_style}
         
         
         
-        // Render HTML in elemProdCardsContainer
+        // Shwo/Hide see sample
         if ((dataPigProdList == null) || (dataPigProdList.length == 0)){
             elemSearchInput.setAttribute("placeholder", label_no_entries); 
+            elemPigOpsSeeSample.style.display   = 'block';
+            
+            if (settings.isGesta == false){
+                elemPigCountSeeSample.style.display = 'block';
+            }
         }
         else{
             elemSearchInput.setAttribute("placeholder", `${label_sow} or PID`);
+            elemPigOpsSeeSample.style.display   = 'none';
+            
+            if (settings.isGesta == false){
+                elemPigCountSeeSample.style.display = 'none';
+            }
         }
+        
         
         let html = '';
         
+        // Render HTML in elemProdCardsContainer
         if (dataPigProdList != null){
             for (const cur_entry of dataPigProdList){
                 const cardElement = thisObj.gestaLactaCards.getElemPigProdCard(cur_entry);
@@ -707,7 +787,7 @@ ${html_style}
         });
         
         
-        // Render HTML in elemPigProdTableBody
+        // Render HTML in elemPigOpsTableBody
         const is_gesta = settings.isGesta;
         
         if (settings.isGesta){
@@ -746,7 +826,7 @@ ${html_style}
     
     
     this.renderGestaLactaTable = function(pig_prod_list){
-        elemPigProdTableBody.innerHTML = '';
+        elemPigOpsTableBody.innerHTML = '';
         
         if (pig_prod_list){}
         else{
@@ -758,7 +838,7 @@ ${html_style}
 
             for (const cur_entry of pig_prod_list){
                 const elem_row = thisObj.getElemTableRowGestaLacta(cur_entry)
-                elemPigProdTableBody.appendChild(elem_row);
+                elemPigOpsTableBody.appendChild(elem_row);
             }
         }
         else{
@@ -779,7 +859,7 @@ ${html_style}
             const elem_row = document.createElement('tr');
             elem_row.innerHTML = html;
             
-            elemPigProdTableBody.appendChild(elem_row);
+            elemPigOpsTableBody.appendChild(elem_row);
         }
     }
     
@@ -834,7 +914,7 @@ ${html_style}
         // Set important date; 
         // gesta: expected date of birth 
         // lacta: date of weaning
-        s_date_important = ''
+        s_date_important = '';
         if (settings.isGesta){
             dt_important = new Date(cur_entry.birth.date_expected);
             dt_important_s = formatDate(dt_important, FORMAT_COMPACT);
