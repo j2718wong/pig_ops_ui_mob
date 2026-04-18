@@ -18,6 +18,8 @@ import {formatDate,
         FORMAT_COMPACT,
         createPaginationManager}    from '../../utils.js';
 
+import {onClickShowSample}          from './page_view_basic.js';
+
 import {DEFAULT_NO_ENTRIES_TABLE}   from './page_table_basic.js';
 
 
@@ -156,5 +158,10 @@ export function TableBasic(input_settings){
         }
         
         return label_no_entries;
+    }
+
+
+    this.onClickShowSample = function(config_sample){
+        onClickShowSample(config_sample);
     }
 } 

@@ -64,6 +64,190 @@ export function updateCharCounter(input_elem, counter_elem, max_length) {
 
 
 
+export function onClickShowSample(config_sample){
+    // This should show a modal of an image.
+    // The modal should be simple with a close button and a simple title.
+    // The modal should be maximum width, small paddings because the image
+    // needs to be as large as possible.
+    
+    /**
+     * Typical config_sample
+     * 
+     * config_sample = {
+     *      title:      'Sample Farrowing Schedule',
+     *      img_src:    '/static_m/images/mar/mar_farrowing.png',
+     *      img_alt:    'Sample Farrowing Schedule'
+     *  }
+     * 
+     * */
+    
+    
+
+    // Create modal overlay
+    const modalOverlay = document.createElement('div');
+    modalOverlay.style.position = 'fixed';
+    modalOverlay.style.top = '0';
+    modalOverlay.style.left = '0';
+    modalOverlay.style.right = '0';
+    modalOverlay.style.bottom = '0';
+    modalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.85)';
+    modalOverlay.style.zIndex = '10000';
+    modalOverlay.style.display = 'flex';
+    modalOverlay.style.alignItems = 'center';
+    modalOverlay.style.justifyContent = 'center';
+    
+    // Modal container
+    const modalContainer = document.createElement('div');
+    modalContainer.style.backgroundColor = 'white';
+    modalContainer.style.borderRadius = '12px';
+    modalContainer.style.maxWidth = '95%';
+    modalContainer.style.maxHeight = '90vh';
+    modalContainer.style.width = 'auto';
+    modalContainer.style.overflow = 'hidden';
+    modalContainer.style.display = 'flex';
+    modalContainer.style.flexDirection = 'column';
+    
+    // Modal header
+    const modalHeader = document.createElement('div');
+    modalHeader.style.display = 'flex';
+    modalHeader.style.justifyContent = 'space-between';
+    modalHeader.style.alignItems = 'center';
+    modalHeader.style.padding = '12px 16px';
+    modalHeader.style.borderBottom = '1px solid #eee';
+    modalHeader.style.backgroundColor = 'white';
+    
+    const title = document.createElement('h3');
+    title.textContent = config_sample.title;
+    title.style.margin = '0';
+    title.style.fontSize = '16px';
+    title.style.fontWeight = '600';
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.style.background = 'none';
+    closeBtn.style.border = 'none';
+    closeBtn.style.fontSize = '28px';
+    closeBtn.style.cursor = 'pointer';
+    closeBtn.style.color = '#999';
+    closeBtn.style.padding = '0';
+    closeBtn.style.width = '32px';
+    closeBtn.style.height = '32px';
+    closeBtn.style.display = 'flex';
+    closeBtn.style.alignItems = 'center';
+    closeBtn.style.justifyContent = 'center';
+    
+    modalHeader.appendChild(title);
+    modalHeader.appendChild(closeBtn);
+    
+    // Image container (scrollable)
+    const imageContainer = document.createElement('div');
+    imageContainer.style.overflow = 'auto';
+    imageContainer.style.padding = '16px';
+    imageContainer.style.backgroundColor = '#f5f5f5';
+    imageContainer.style.textAlign = 'center';
+    
+    // Sample image
+    const sampleImg = document.createElement('img');
+    sampleImg.src = config_sample.img_src;
+    sampleImg.alt = config_sample.img_alt;
+    sampleImg.style.maxWidth = '100%';
+    sampleImg.style.height = 'auto';
+    sampleImg.style.borderRadius = '8px';
+    sampleImg.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+    
+    // Fallback if image doesn't exist yet
+    sampleImg.onerror = function() {
+        this.style.display = 'none';
+        const fallbackText = document.createElement('div');
+        fallbackText.style.padding = '40px 20px';
+        fallbackText.style.textAlign = 'center';
+        fallbackText.style.color = '#666';
+        fallbackText.innerHTML = `
+            <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
+            <div style="font-size: 16px; margin-bottom: 8px;">Sample schedule preview</div>
+            <div style="font-size: 13px;">Add farrowing crates and gestating sows to see your actual schedule</div>
+        `;
+        imageContainer.appendChild(fallbackText);
+    };
+    
+    imageContainer.appendChild(sampleImg);
+    
+    // Modal footer
+    const modalFooter = document.createElement('div');
+    modalFooter.style.padding = '12px 16px';
+    modalFooter.style.borderTop = '1px solid #eee';
+    modalFooter.style.textAlign = 'center';
+    modalFooter.style.backgroundColor = 'white';
+    
+    const closeFooterBtn = document.createElement('button');
+    closeFooterBtn.textContent = 'Close';
+    closeFooterBtn.style.background = '#2196F3';
+    closeFooterBtn.style.color = 'white';
+    closeFooterBtn.style.border = 'none';
+    closeFooterBtn.style.padding = '8px 24px';
+    closeFooterBtn.style.borderRadius = '6px';
+    closeFooterBtn.style.fontSize = '14px';
+    closeFooterBtn.style.cursor = 'pointer';
+    
+    modalFooter.appendChild(closeFooterBtn);
+    
+    modalContainer.appendChild(modalHeader);
+    modalContainer.appendChild(imageContainer);
+    modalContainer.appendChild(modalFooter);
+    modalOverlay.appendChild(modalContainer);
+    
+    // Close modal function
+    const closeModal = function() {
+        modalOverlay.remove();
+    };
+    
+    // Event listeners
+    closeBtn.onclick = closeModal;
+    closeFooterBtn.onclick = closeModal;
+    modalOverlay.onclick = function(e) {
+        if (e.target === modalOverlay) {
+            closeModal();
+        }
+    };
+    
+    // Add to body
+    document.body.appendChild(modalOverlay);
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    
+    // Restore scroll when modal closes
+    const restoreScroll = function() {
+        document.body.style.overflow = '';
+    };
+    
+    // Override closeModal to restore scroll
+    const originalClose = closeModal;
+    window.closeModal = function() {
+        restoreScroll();
+        originalClose();
+        delete window.closeModal;
+    };
+    
+    closeBtn.onclick = function() {
+        restoreScroll();
+        originalClose();
+    };
+    
+    closeFooterBtn.onclick = function() {
+        restoreScroll();
+        originalClose();
+    };
+    
+    modalOverlay.onclick = function(e) {
+        if (e.target === modalOverlay) {
+            restoreScroll();
+            originalClose();
+        }
+    };
+}
+
+
 
 export function PageViewBasic(){
     const thisObj           = this;
@@ -162,186 +346,7 @@ export function PageViewBasic(){
     
     
     this.onClickShowSample = function(config_sample){
-        // This should show a modal of an image.
-        // The modal should be simple with a close button and a simple title.
-        // The modal should be maximum width, small paddings because the image
-        // needs to be as large as possible.
-        
-        /**
-         * Typical config_sample
-         * 
-         * config_sample = {
-         *      title:      'Sample Farrowing Schedule',
-         *      img_src:    '/static_m/images/mar/mar_farrowing.png',
-         *      img_alt:    'Sample Farrowing Schedule'
-         *  }
-         * 
-         * */
-        
-        
-
-        // Create modal overlay
-        const modalOverlay = document.createElement('div');
-        modalOverlay.style.position = 'fixed';
-        modalOverlay.style.top = '0';
-        modalOverlay.style.left = '0';
-        modalOverlay.style.right = '0';
-        modalOverlay.style.bottom = '0';
-        modalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.85)';
-        modalOverlay.style.zIndex = '10000';
-        modalOverlay.style.display = 'flex';
-        modalOverlay.style.alignItems = 'center';
-        modalOverlay.style.justifyContent = 'center';
-        
-        // Modal container
-        const modalContainer = document.createElement('div');
-        modalContainer.style.backgroundColor = 'white';
-        modalContainer.style.borderRadius = '12px';
-        modalContainer.style.maxWidth = '95%';
-        modalContainer.style.maxHeight = '90vh';
-        modalContainer.style.width = 'auto';
-        modalContainer.style.overflow = 'hidden';
-        modalContainer.style.display = 'flex';
-        modalContainer.style.flexDirection = 'column';
-        
-        // Modal header
-        const modalHeader = document.createElement('div');
-        modalHeader.style.display = 'flex';
-        modalHeader.style.justifyContent = 'space-between';
-        modalHeader.style.alignItems = 'center';
-        modalHeader.style.padding = '12px 16px';
-        modalHeader.style.borderBottom = '1px solid #eee';
-        modalHeader.style.backgroundColor = 'white';
-        
-        const title = document.createElement('h3');
-        title.textContent = config_sample.title;
-        title.style.margin = '0';
-        title.style.fontSize = '16px';
-        title.style.fontWeight = '600';
-        
-        const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '&times;';
-        closeBtn.style.background = 'none';
-        closeBtn.style.border = 'none';
-        closeBtn.style.fontSize = '28px';
-        closeBtn.style.cursor = 'pointer';
-        closeBtn.style.color = '#999';
-        closeBtn.style.padding = '0';
-        closeBtn.style.width = '32px';
-        closeBtn.style.height = '32px';
-        closeBtn.style.display = 'flex';
-        closeBtn.style.alignItems = 'center';
-        closeBtn.style.justifyContent = 'center';
-        
-        modalHeader.appendChild(title);
-        modalHeader.appendChild(closeBtn);
-        
-        // Image container (scrollable)
-        const imageContainer = document.createElement('div');
-        imageContainer.style.overflow = 'auto';
-        imageContainer.style.padding = '16px';
-        imageContainer.style.backgroundColor = '#f5f5f5';
-        imageContainer.style.textAlign = 'center';
-        
-        // Sample image
-        const sampleImg = document.createElement('img');
-        sampleImg.src = config_sample.img_src;
-        sampleImg.alt = config_sample.img_alt;
-        sampleImg.style.maxWidth = '100%';
-        sampleImg.style.height = 'auto';
-        sampleImg.style.borderRadius = '8px';
-        sampleImg.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-        
-        // Fallback if image doesn't exist yet
-        sampleImg.onerror = function() {
-            this.style.display = 'none';
-            const fallbackText = document.createElement('div');
-            fallbackText.style.padding = '40px 20px';
-            fallbackText.style.textAlign = 'center';
-            fallbackText.style.color = '#666';
-            fallbackText.innerHTML = `
-                <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
-                <div style="font-size: 16px; margin-bottom: 8px;">Sample schedule preview</div>
-                <div style="font-size: 13px;">Add farrowing crates and gestating sows to see your actual schedule</div>
-            `;
-            imageContainer.appendChild(fallbackText);
-        };
-        
-        imageContainer.appendChild(sampleImg);
-        
-        // Modal footer
-        const modalFooter = document.createElement('div');
-        modalFooter.style.padding = '12px 16px';
-        modalFooter.style.borderTop = '1px solid #eee';
-        modalFooter.style.textAlign = 'center';
-        modalFooter.style.backgroundColor = 'white';
-        
-        const closeFooterBtn = document.createElement('button');
-        closeFooterBtn.textContent = 'Close';
-        closeFooterBtn.style.background = '#2196F3';
-        closeFooterBtn.style.color = 'white';
-        closeFooterBtn.style.border = 'none';
-        closeFooterBtn.style.padding = '8px 24px';
-        closeFooterBtn.style.borderRadius = '6px';
-        closeFooterBtn.style.fontSize = '14px';
-        closeFooterBtn.style.cursor = 'pointer';
-        
-        modalFooter.appendChild(closeFooterBtn);
-        
-        modalContainer.appendChild(modalHeader);
-        modalContainer.appendChild(imageContainer);
-        modalContainer.appendChild(modalFooter);
-        modalOverlay.appendChild(modalContainer);
-        
-        // Close modal function
-        const closeModal = function() {
-            modalOverlay.remove();
-        };
-        
-        // Event listeners
-        closeBtn.onclick = closeModal;
-        closeFooterBtn.onclick = closeModal;
-        modalOverlay.onclick = function(e) {
-            if (e.target === modalOverlay) {
-                closeModal();
-            }
-        };
-        
-        // Add to body
-        document.body.appendChild(modalOverlay);
-        
-        // Prevent body scroll when modal is open
-        document.body.style.overflow = 'hidden';
-        
-        // Restore scroll when modal closes
-        const restoreScroll = function() {
-            document.body.style.overflow = '';
-        };
-        
-        // Override closeModal to restore scroll
-        const originalClose = closeModal;
-        window.closeModal = function() {
-            restoreScroll();
-            originalClose();
-            delete window.closeModal;
-        };
-        
-        closeBtn.onclick = function() {
-            restoreScroll();
-            originalClose();
-        };
-        
-        closeFooterBtn.onclick = function() {
-            restoreScroll();
-            originalClose();
-        };
-        
-        modalOverlay.onclick = function(e) {
-            if (e.target === modalOverlay) {
-                restoreScroll();
-                originalClose();
-            }
-        };
+        onClickShowSample(config_sample);
     }
     
 }

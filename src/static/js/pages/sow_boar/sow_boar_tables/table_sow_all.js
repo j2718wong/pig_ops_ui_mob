@@ -46,10 +46,12 @@ export function SowBoarTableSowAll(input_settings){
     
     let elemIdTableShow         = null;
     let elemIdTableBody         = null;
+    let elemIdSowSeeSample      = null;
     
     
     let elemTableShow           = null;
     let elemTableBody           = null;
+    let elemSowSeeSample        = null;
     
     
     let htmlSowDueWarning       = null;
@@ -61,6 +63,8 @@ export function SowBoarTableSowAll(input_settings){
         
         elemIdTableShow         = `${settings.uniqueKey}-sow-all-show`;
         elemIdTableBody         = `${settings.uniqueKey}-sow-all-tbody`;
+        
+        elemIdSowSeeSample      = `${settings.uniqueKey}-sow-all-see-sample`;
         
         
         const translations      = navigation.getTranslations();
@@ -134,6 +138,13 @@ export function SowBoarTableSowAll(input_settings){
             </table>
             
             <div>${label_output_at_wean} (${label_number_births})</div>
+            
+            <div>
+                <a href="javascript:void(0)" class="text-link" id="${elemIdSowSeeSample}">
+                    See sample Data
+                </a>                    
+            </div>
+            
         </div>
         `;
         
@@ -144,15 +155,31 @@ export function SowBoarTableSowAll(input_settings){
     
 
     this._findElements = function(){
+        console.log('table sow all _findElements');
+        
         elemTableShow           = elemDivContainer.querySelector('#'+elemIdTableShow);
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
+        
+        elemSowSeeSample        = elemDivContainer.querySelector('#'+elemIdSowSeeSample);
     }
     
     
     this._processAfterHtmlRender = function(){}
     
     
-    this._bindEventListeners = function(){}
+    this._bindEventListeners = function(){
+        elemSowSeeSample.addEventListener('click', function() {
+            
+            console.log('to show sample')
+            
+            thisObj.onClickShowSample({
+                title:      'Sample Sow List',
+                img_src:    '/static_m/images/mar/mar_sow_list.png',
+                img_alt:    'Sample Sow List'
+            });
+        });
+    
+    }
 
 
     this.getElemTableBody = function(){
