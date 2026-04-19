@@ -115,7 +115,7 @@ export function NavPageContainers(_navigation){
     const elemIdContReferralList        = 'container-referral-list';
     const elemIdContReferralEntry       = 'container-referral-entry';
     
-    const elemIdContSysAdmin            = 'container-sys-admin';
+    const elemIdContSystemStats         = 'container-system-stats';
     
     
     let CONTAINER_GROUP_PRODUCTION      = null;
@@ -233,7 +233,7 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.ACC_REFERRAL_LIST]      = document.getElementById(elemIdContReferralList);
         this.containers[PAGE_ID.ACC_REFERRAL_ENTRY]     = document.getElementById(elemIdContReferralEntry);
         
-        this.containers[PAGE_ID.SYS_ADMIN]              = document.getElementById(elemIdContSysAdmin);
+        this.containers[PAGE_ID.SYSTEM_STATS]           = document.getElementById(elemIdContSystemStats);
         
         
         
@@ -283,7 +283,7 @@ export function NavPageContainers(_navigation){
             this.containers[PAGE_ID.USER_LIST],
             this.containers[PAGE_ID.ACCESS_CODE_LIST],
             this.containers[PAGE_ID.ACC_REFERRAL_LIST],
-            this.containers[PAGE_ID.SYS_ADMIN]
+            this.containers[PAGE_ID.SYSTEM_STATS]
         ];
         
         
@@ -362,7 +362,7 @@ export function NavPageContainers(_navigation){
             { container: this.containers[PAGE_ID.ACC_REFERRAL_LIST],      id: PAGE_ID.ACC_REFERRAL_LIST },
             { container: this.containers[PAGE_ID.ACC_REFERRAL_ENTRY],     id: PAGE_ID.ACC_REFERRAL_ENTRY },
             
-            { container: this.containers[PAGE_ID.SYS_ADMIN],              id: PAGE_ID.SYS_ADMIN }
+            { container: this.containers[PAGE_ID.SYSTEM_STATS],           id: PAGE_ID.SYSTEM_STATS }
     
         ]
     
@@ -561,8 +561,8 @@ export function NavPageContainers(_navigation){
                 return elemIdContReferralEntry;
             
             
-            case PAGE_ID.SYS_ADMIN:
-                return elemIdContSysAdmin;
+            case PAGE_ID.SYSTEM_STATS:
+                return elemIdContSystemStats;
                 
         
                 
@@ -694,7 +694,7 @@ export function NavPageContainers(_navigation){
             case this.containers[PAGE_ID.ACC_REFERRAL_LIST]         :{return "PageContReferralList";}
             case this.containers[PAGE_ID.ACC_REFERRAL_ENTRY]        :{return "PageContReferralEntry";}
             
-            case this.containers[PAGE_ID.SYS_ADMIN]                 :{return "PageContSysAdmin";}
+            case this.containers[PAGE_ID.SYSTEM_STATS]              :{return "PageContSystemStats";}
             
             default:{return null;}
         }

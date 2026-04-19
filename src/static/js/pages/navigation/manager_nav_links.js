@@ -658,7 +658,10 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavUsersRequest(false);
         });
         */
-
+        elemDesktopNavAdmin4.addEventListener('click', function() {
+            thisObj.onClickNavSystemStats(false);
+        });
+        
 
         elemMobileNavProduction1.addEventListener('click', function() {
              thisObj.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING, true);
@@ -800,6 +803,12 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavUsersRequest(true);
         });
         */        
+        
+        
+        elemMobileNavAdmin4.addEventListener('click', function() {
+            thisObj.onClickNavSystemStats(true);
+        });
+        
     }
     
     
@@ -1457,6 +1466,18 @@ export function ManagerNavLinks(_navigation) {
     }
         
         
+    this.onClickNavSystemStats = function(is_mobile, show_options){
+        const next_page = navigation.getPageContainer(PAGE_ID.SYSTEM_STATS);
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pageSystemStats.show();
+    }
+
 
     
     

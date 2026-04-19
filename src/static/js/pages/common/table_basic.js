@@ -106,15 +106,18 @@ export function TableBasic(input_settings){
         
 
         // One event handler at a time
-        parentObj.elemTablePrevPage.onclick = function(){
-            paginationManager.goToPrevPage();
+        if (parentObj.elemTablePrevPage){
+            parentObj.elemTablePrevPage.onclick = function(){
+                paginationManager.goToPrevPage();
+            }
         }
-        
+    
         // One event handler at a time
-        parentObj.elemTableNextPage.onclick = function(){
-            paginationManager.goToNextPage();
+        if (parentObj.elemTableNextPage){
+            parentObj.elemTableNextPage.onclick = function(){
+                paginationManager.goToNextPage();
+            }
         }
-        
     }
     
     

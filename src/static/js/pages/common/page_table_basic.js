@@ -102,7 +102,6 @@ export function PageTableBasic(){
     
     
     this.init = function(){
-        //textTranslation.setTranslations(TRANSLATION_PAGE_ACC_PIG_OPS);
         
         this.render();
         this.afterHtmlRender();

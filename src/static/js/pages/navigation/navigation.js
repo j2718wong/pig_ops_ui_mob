@@ -27,6 +27,8 @@ import {ManagerPublicData}          from '../common/manager_public_data.js';
 
 import {ManagerBusiness}            from '../business/manager_business.js';
 
+import {ManagerSystem}              from './manager_system.js';
+
 import {UserControl}                from './user_control.js';
 
 
@@ -113,6 +115,9 @@ import {PageCommonSupplierAddEdit}  from '../supplier/page_common_supplier_add_e
 import {PageUserList}               from '../admin/page_user_list.js';
 import {PageAccessCodeList}         from '../admin/page_acc_access_code_list.js';
 import {PageAccessCodeAddEdit}      from '../admin/page_acc_access_code_add_edit.js';
+
+import {PageSystemStats}            from '../system/page_system_stats.js';
+
 
 
 // Get IP trace location
@@ -250,6 +255,8 @@ export function Navigation(){
     this.managerPublicData      = new ManagerPublicData(this);
     
     this.managerBusiness        = new ManagerBusiness(this);
+    
+    this.managerSystem          = new ManagerSystem(this);
     
     
     this.userControl            = new UserControl(this);
@@ -641,6 +648,13 @@ export function Navigation(){
     });
     
     
+    this.pageSystemStats        = new PageSystemStats({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SYSTEM_STATS),
+        uniqueKey:              'system-stats'
+    });
+    
+    
     
     // Helper function to get language parameter for URLs
     function getLanguageParam() {
@@ -954,6 +968,7 @@ export function Navigation(){
         this.pageAccessCodeList.init();
         this.pageAccessCodeAddEdit.init();
         
+        this.pageSystemStats.init();
     }
     
     
