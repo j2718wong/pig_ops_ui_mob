@@ -1113,6 +1113,10 @@ export function Navigation(){
         // This is the entry point on page load. The first page must be the dashboard.
         this.curPageNavigated.pageContainer = container_home;
         
+        
+        // More nav links visibility after user is set
+        this.managerNavLinks.showHideNavLinksAfterUserSet();
+        
     }
 
 

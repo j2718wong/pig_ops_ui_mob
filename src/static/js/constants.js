@@ -354,6 +354,19 @@ const REQUEST_ERROR_NUM ={
 
 
 const FLAG_BITS ={
+    USER:{
+        IS_ACTIVE:              1,
+        EMAIL_VERIFIED:         2,
+        MOBILE_NUM_VERIFIED:    4,
+        IS_DELETED:             8,
+        
+        IS_ACCOUNT_ADMIN1:      6,
+        
+        IS_TEST_USER:           7,
+        
+        IS_SYS_ADMIN:           256
+    },
+    
     ACCOUNT:{
         ENABLE:                 1,
         FREE_TRIAL_STARTED:     2

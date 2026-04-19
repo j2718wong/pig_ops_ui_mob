@@ -5,6 +5,7 @@
 'use strict';
 
 import {ACC_USER_GROUP,
+        FLAG_BITS,
         PIG_OPERATION_TYPE,
         PAGE_ID,
         SOW_BOAR_TYPE,
@@ -81,7 +82,7 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavAdmin1            = null;
     let elemDesktopNavAdmin2            = null;
     let elemDesktopNavAdmin3            = null;
-
+    let elemDesktopNavAdmin4            = null;
 
 
     let elemMobileNavProduction1        = null;
@@ -128,7 +129,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavAdmin1             = null;
     let elemMobileNavAdmin2             = null;
     let elemMobileNavAdmin3             = null;
-    
+    let elemMobileNavAdmin4             = null;
     
     
     // Desktop menu labels (parent menu items)
@@ -179,6 +180,8 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavLabelAdmin1           = null;
     let elemDesktopNavLabelAdmin2           = null;
     let elemDesktopNavLabelAdmin3           = null;
+    let elemDesktopNavLabelAdmin4           = null;
+    
 
     // Mobile menu labels (parent menu items)
     let elemMobileNavLabelProduction        = null;
@@ -228,6 +231,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavLabelAdmin1            = null;
     let elemMobileNavLabelAdmin2            = null;
     let elemMobileNavLabelAdmin3            = null;
+    let elemMobileNavLabelAdmin4            = null;
     
     
     
@@ -318,6 +322,7 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavAdmin1            = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-1');
         elemDesktopNavAdmin2            = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-2');
         elemDesktopNavAdmin3            = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-3');
+        elemDesktopNavAdmin4            = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-4');
         
         
         elemMobileNavProduction1        = elemMobileNavProduction.querySelector('#mobile-subnav-production-1');
@@ -364,6 +369,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavAdmin1             = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-1');
         elemMobileNavAdmin2             = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-2');
         elemMobileNavAdmin3             = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-3');
+        elemMobileNavAdmin4             = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-4');
         
         
         this._findTranslatedElements();
@@ -426,6 +432,8 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavLabelAdmin1           = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-1 .nav-label');
         elemDesktopNavLabelAdmin2           = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-2 .nav-label');
         elemDesktopNavLabelAdmin3           = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-3 .nav-label');
+        elemDesktopNavLabelAdmin4           = elemDesktopNavAdmin.querySelector('#desktop-nav-admin-4 .nav-label');
+        
         
         // Mobile menu labels (parent menu items)
         elemMobileNavLabelProduction        = document.querySelector('#mobile-nav-production .nav-label');
@@ -482,6 +490,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavLabelAdmin1            = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-1 .nav-label');
         elemMobileNavLabelAdmin2            = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-2 .nav-label');
         elemMobileNavLabelAdmin3            = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-3 .nav-label');
+        elemMobileNavLabelAdmin4            = elemMobileNavAdmin.querySelector('#mobile-subnav-admin-4 .nav-label');
         
     }
     
@@ -821,6 +830,21 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavAdmin3.style.display   = 'none';
 
         }
+    }
+    
+    
+    this.showHideNavLinksAfterUserSet = function(){
+        const user = navigation.userControl.dataUserAccount.user.user;
+        
+        
+        if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
+            elemDesktopNavAdmin4.style.display  = 'block';
+            elemMobileNavAdmin4.style.display   = 'block';
+        } else{
+            elemDesktopNavAdmin4.style.display  = 'none';
+            elemMobileNavAdmin4.style.display   = 'none';
+        }
+        
     }
     
     
