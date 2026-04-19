@@ -750,9 +750,13 @@ ${html_style}
                 
                 if (entry_count == 0){
                     elemFilterControls.style.display = 'none';
+                    
+                    tableSowAll.showHideSeeSampleLink(true);
                 }
                 else{
                     elemFilterControls.style.display = 'block';
+                    
+                    tableSowAll.showHideSeeSampleLink(false);
                 }
                 
                 

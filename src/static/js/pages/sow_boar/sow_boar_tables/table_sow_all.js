@@ -155,7 +155,6 @@ export function SowBoarTableSowAll(input_settings){
     
 
     this._findElements = function(){
-        console.log('table sow all _findElements');
         
         elemTableShow           = elemDivContainer.querySelector('#'+elemIdTableShow);
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
@@ -169,8 +168,6 @@ export function SowBoarTableSowAll(input_settings){
     
     this._bindEventListeners = function(){
         elemSowSeeSample.addEventListener('click', function() {
-            
-            console.log('to show sample')
             
             thisObj.onClickShowSample({
                 title:      'Sample Sow List',
@@ -194,6 +191,16 @@ export function SowBoarTableSowAll(input_settings){
     
     this.hide = function(){
         elemTableShow.style.display = 'none';
+    }
+    
+    
+    this.showHideSeeSampleLink = function(is_to_show){
+        if (is_to_show){
+            elemSowSeeSample.style.display = 'block';
+        }
+        else{
+            elemSowSeeSample.style.display = 'none';
+        }
     }
     
     

@@ -47,16 +47,20 @@ export function SowBoarTableBoar(input_settings){
     let elemIdTableShow         = null;
     let elemIdTableBody         = null;
     
+    let elemIdBoarSeeSample     = null;
+    
     
     let elemTableShow           = null;
     let elemTableBody           = null;
     
+    let elemBoarSeeSample       = null;
     
     
     this.getHtml = function(){
         
         elemIdTableShow         = `${settings.uniqueKey}-boar-table`;
         elemIdTableBody         = `${settings.uniqueKey}-boar-tbody`;
+        elemIdBoarSeeSample     = `${settings.uniqueKey}-boar-see-sample`;
         
         
         const translations      = navigation.getTranslations();
@@ -122,6 +126,12 @@ export function SowBoarTableBoar(input_settings){
                 <tbody id="${elemIdTableBody}">
                 </tbody>
             </table>
+            
+            <div>
+                <a href="javascript:void(0)" class="text-link" id="${elemIdBoarSeeSample}">
+                    See sample Data
+                </a>                    
+            </div>
         </div>
         `;
         
@@ -132,6 +142,8 @@ export function SowBoarTableBoar(input_settings){
     this._findElements = function(){
         elemTableShow           = elemDivContainer.querySelector('#'+elemIdTableShow);
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
+        
+        elemBoarSeeSample       = elemDivContainer.querySelector('#'+elemIdBoarSeeSample);
     }
     
     

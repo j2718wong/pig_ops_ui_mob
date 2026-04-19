@@ -183,7 +183,9 @@ const PAGE_ID = {
     
     
     JOIN_ACC_REQ_LIST:      106,
-    JOIN_ACC_REQ_APPROVE:   107
+    JOIN_ACC_REQ_APPROVE:   107,
+    
+    SYS_ADMIN:              108
 };
 
 
