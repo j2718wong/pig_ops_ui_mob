@@ -61,8 +61,8 @@ export function TableLatestUsers(input_settings){
         
             <table class="data-table" id="">
                 <colgroup>
-                    <col style="width: 70%;">
-                    <col style="width: 40%;">
+                    <col style="width: 75%;">
+                    <col style="width: 25%;">
                 </colgroup>
 
                 <thead>
