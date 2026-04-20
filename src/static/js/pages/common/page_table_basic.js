@@ -124,7 +124,9 @@ export function PageTableBasic(){
         addEntryLink: {
             label:      'Add Item',
             onclickAddEntry:    function
-        }
+        },
+        
+        refreshFunc:    null
     }
     */
     this.setSettingsTable = function(input_settings){

@@ -35,11 +35,15 @@ export function PageSystemStats(input_settings){
     
     let elemDivContainer        = document.getElementById(settings.elemIdDivContainer);
 
+    let elemIdPageTitle         = null;
+
     let elemIdTdCountUsers      = null;
     let elemIdTdUsersNoAccount  = null;
     let elemIdTdCountAccount    = null;
     let elemIdTdAccNotStarted   = null;
 
+
+    let elemPageTitle           = null;
     
     let elemTdCountUsers        = null;
     let elemTdUsersNoAccount    = null;
@@ -124,6 +128,8 @@ export function PageSystemStats(input_settings){
     
     
     this._findElements = function(){
+        elemPageTitle           = elemDivContainer.querySelector('#'+elemIdPageTitle); 
+        
         elemTdCountUsers        = elemDivContainer.querySelector('#'+elemIdTdCountUsers);    
         elemTdUsersNoAccount    = elemDivContainer.querySelector('#'+elemIdTdUsersNoAccount);
         elemTdCountAccount      = elemDivContainer.querySelector('#'+elemIdTdCountAccount);  
@@ -133,11 +139,19 @@ export function PageSystemStats(input_settings){
     
     
     this._processAfterHtmlRender= function(){}
-    this._bindEventListeners= function(){}
+    
+    
+    this._bindEventListeners= function(){
+        elemPageTitle.addEventListener('click', function() {
+            thisObj.show(); // refresh page
+        });
+    }
     
     
     
     this.getHtmlSystemStats = function(){
+        elemIdPageTitle         = `${settings.uniqueKey}-page-title`;
+        
         elemIdTdCountUsers      = `${settings.uniqueKey}-count-users`;
         elemIdTdUsersNoAccount  = `${settings.uniqueKey}-users-no-account`;
         elemIdTdCountAccount    = `${settings.uniqueKey}-count-account`;
@@ -147,7 +161,7 @@ export function PageSystemStats(input_settings){
         
         const html = `
         <h2>
-            <span class="nav-title blue">System Stats</span>
+            <span class="nav-title blue" id="${elemIdPageTitle}" >System Stats</span>
         </h2>
         
         

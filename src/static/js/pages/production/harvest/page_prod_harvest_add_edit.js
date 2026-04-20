@@ -23,6 +23,7 @@ import {PageTableBasic}             from '../../common/page_table_basic.js';
 import {APPLICATION,
         PAGE_ID,
         SOW_BOAR_TYPE,
+        PIG_PROD_TYPE,
         SOW_STATUS,
         MULTIKEY_OBJ_TYPE,
         PROD_STATUS}            from '../../../constants.js';
@@ -655,6 +656,8 @@ export function PageProdHarvestAddEdit(input_settings){
         
         elemUiDateHarvest.reset();
         
+        componentHarvestType.reset();
+        
         componentLWPerPig.reset();
         componentSWPerPig.reset();
         
@@ -994,17 +997,33 @@ export function PageProdHarvestAddEdit(input_settings){
         
         input_elem          = componentHarvestType.getElemSelect();
         if (input_harvest_type == '0' || input_harvest_type == '-1'){
-            validation          = 0;
+            validation          = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
         
         
-        
+        input_elem          = componentNumPigs.getElemText();
         let num_pigs = 0;
         try{
             num_pigs= parseInt(input_num_pigs)
         } catch(error){
+        }
+        
+        if (num_pigs == 0){
+            validation          = -1;
+            addValidationClassToElem(input_elem, validation);
+            input_elem.setTextInvalid('Number of pigs cannot be 0');
+            if (validation != 0) {return;}
+        }
+        
+        const num_pigs_current = dataPigProd.pig_production.num_pigs_current;
+        if (num_pigs > num_pigs_current){
+            validation          = -1;
+            addValidationClassToElem(input_elem, validation);
+            const s = `The number of pigs cannot be more than the curent number of pigs in the production batch: ${num_pigs_current}`;
+            input_elem.setTextInvalid(s);
+            if (validation != 0) {return;}
         }
         
         
