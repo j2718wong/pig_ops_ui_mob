@@ -1059,11 +1059,11 @@ export function PageSowBoarAddEdit(input_settings){
         
         let input_notes         = elemUiNotes.getValue().trim();
         
-        if (input_parent_sow_id == '0' || input_parent_sow_id == '1'){
+        if (input_parent_sow_id == '0' || input_parent_sow_id == '-1'){
             input_parent_sow_id = null;
         }
         
-        if (input_parent_boar_id == '0' || input_parent_boar_id == '1'){
+        if (input_parent_boar_id == '0' || input_parent_boar_id == '-1'){
             input_parent_boar_id = null;
         }
         
