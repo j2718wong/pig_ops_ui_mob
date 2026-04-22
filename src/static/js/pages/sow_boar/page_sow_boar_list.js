@@ -817,6 +817,15 @@ ${html_style}
                     entry_count = dataBoarList.length; 
                 }
                 
+                if (entry_count == 0){
+                    tableBoar.showHideSeeSampleLink(true);
+                }
+                else{
+                    tableBoar.showHideSeeSampleLink(false);
+                }
+                
+                
+                
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavSowBoar(null, 

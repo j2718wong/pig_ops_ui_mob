@@ -150,7 +150,16 @@ export function SowBoarTableBoar(input_settings){
     this._processAfterHtmlRender= function(){}
     
     
-    this._bindEventListeners= function(){}
+    this._bindEventListeners= function(){
+        elemBoarSeeSample.addEventListener('click', function() {
+            
+            thisObj.onClickShowSample({
+                title:      'Sample Boar List',
+                img_src:    '/static_m/images/mar/sample_boar_list.png',
+                img_alt:    'Sample Boar List'
+            });
+        });
+    }
 
     
     this.getElemTableBody = function(){
@@ -168,6 +177,15 @@ export function SowBoarTableBoar(input_settings){
     }
     
 
+    this.showHideSeeSampleLink = function(is_to_show){
+        if (is_to_show){
+            elemBoarSeeSample.style.display = 'block';
+        }
+        else{
+            elemBoarSeeSample.style.display = 'none';
+        }
+    }
+    
     
     this.getHtmlTableRowEmpty = function(){
         let label_no_entries = thisObj.writeLabelNoEntries();
