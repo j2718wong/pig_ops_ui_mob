@@ -353,7 +353,7 @@ export function PageHomeDashBoard(input_settings){
         </div>
         
         
-        <div id="${elemIdDebug}" hidden>
+        <div id="${elemIdDebug}" style="display:none;">
         </div>
         
     </div>
@@ -656,9 +656,9 @@ export function PageHomeDashBoard(input_settings){
         
         
         if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
-            elemDebug.hidden = false;
+            elemDebug.style.display = 'block';
         } else{
-            elemDebug.hidden = true;
+            elemDebug.style.display = 'none';
         }
         
         
