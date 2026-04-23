@@ -634,22 +634,23 @@ export function PageHomeDashBoard(input_settings){
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
-        // Register service worker
+
+        // Register service worker IMMEDIATELY (no load event)
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service_worker.js')
-                    .then(registration => {
-                        elemDebug.textContent ='Service Worker registered';
-                    })
-                    .catch(err => {
-                        elemDebug.textContent =`Service Worker registration failed: ${err}`;
-                    });
-            });
+            navigator.serviceWorker.register('/service_worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered:', registration);
+                    elemDebug.textContent = 'Service Worker registered: ' + registration.scope;
+                })
+                .catch(err => {
+                    console.log('Service Worker registration failed:', err);
+                    elemDebug.textContent = 'Service Worker failed: ' + err.message;
+                });
+        } else {
+            console.log('Service Worker not supported');
+            elemDebug.textContent = 'Service Worker not supported in this browser';
         }
-        else{
-            elemDebug.textContent = 'serviceWorker not in navigator';
-        }
-        
+    
         
         // Show/ Hide debug  elemnts
         const user = navigation.userControl.dataUserAccount.user.user;
