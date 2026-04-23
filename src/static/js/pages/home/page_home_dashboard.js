@@ -7,6 +7,7 @@
 import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
+        FLAG_BITS,
         DEFAULT_WEEKDAY,
         PAGE_ID,
         PIG_OPERATION_TYPE,
@@ -96,6 +97,7 @@ export function PageHomeDashBoard(input_settings){
     let elemIdDateFeedBalance   = null;
     let elemIdFeedBalanceText   = null;
     
+    let elemIdDebug             = null;
     
     
     let elemFarmName            = null;
@@ -154,6 +156,7 @@ export function PageHomeDashBoard(input_settings){
     let elemDateFeedBalance     = null;
     let elemFeedBalanceText     = null;
     
+    let elemDebug               = null;
     
     
     let dtCurrentDate           = null;
@@ -200,6 +203,8 @@ export function PageHomeDashBoard(input_settings){
         elemIdLabelFeedBalance  = `${settings.uniqueKey}-feed-balance-label`;
         elemIdDateFeedBalance   = `${settings.uniqueKey}-feed-balance-date`;
         elemIdFeedBalanceText   = `${settings.uniqueKey}-feed-balance-text`;
+        
+        elemIdDebug             = `${settings.uniqueKey}-debug`;
         
         
         const html_install_btn = `
@@ -347,6 +352,10 @@ export function PageHomeDashBoard(input_settings){
             </div>
         </div>
         
+        
+        <div id="${elemIdDebug}" hidden>
+        </div>
+        
     </div>
     `
         ;
@@ -425,6 +434,8 @@ export function PageHomeDashBoard(input_settings){
         elemLabelFeedBalance    = elemDivContainer.querySelector('#'+elemIdLabelFeedBalance);
         elemDateFeedBalance     = elemDivContainer.querySelector('#'+elemIdDateFeedBalance);
         elemFeedBalanceText     = elemDivContainer.querySelector('#'+elemIdFeedBalanceText);
+    
+        elemDebug               = elemDivContainer.querySelector('#'+elemIdDebug);
     
     }
     
@@ -628,13 +639,29 @@ export function PageHomeDashBoard(input_settings){
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service_worker.js')
                     .then(registration => {
-                        console.log('Service Worker registered');
+                        elemDebug.textContent ='Service Worker registered';
                     })
                     .catch(err => {
-                        console.log('Service Worker registration failed:', err);
+                        elemDebug.textContent =`Service Worker registration failed: ${err}`;
                     });
             });
         }
+        else{
+            elemDebug.textContent = 'serviceWorker not in navigator';
+        }
+        
+        
+        // Show/ Hide debug  elemnts
+        const user = navigation.userControl.dataUserAccount.user.user;
+        
+        
+        if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
+            elemDebug.hidden = false;
+        } else{
+            elemDebug.hidden = true;
+        }
+        
+        
         
         
         // Check if app is already installed (running in standalone mode)
