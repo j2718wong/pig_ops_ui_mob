@@ -22,7 +22,23 @@ import {formatDate,
         FORMAT_COMPACT,
         FORMAT_MONTH_DATE_ONLY} from '../../utils.js';
         
-        
+
+
+function isAppInstalled() {
+    // For Chrome, Edge, Samsung Internet (modern Android)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    // For iOS Safari
+    const isIOSStandalone = window.navigator.standalone === true;
+    
+    return isStandalone || isIOSStandalone;
+}
+
+
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+}
+
+
         
 
 export function PageHomeDashBoard(input_settings){
@@ -85,6 +101,7 @@ export function PageHomeDashBoard(input_settings){
     let elemFarmName            = null;
     let elemTodayDate           = null;
     
+    let elemInstallBtn          = null;
     
     let elemCardLactaPiglets    = null;
     let elemCardFatteningPigs   = null;
@@ -145,6 +162,10 @@ export function PageHomeDashBoard(input_settings){
     let lastVerNumFeedBalance   = null;
     
     
+    // PWA Installation
+    let deferredPrompt;
+    
+    
     this.init = function(){
 
         this.render();
@@ -181,6 +202,33 @@ export function PageHomeDashBoard(input_settings){
         elemIdFeedBalanceText   = `${settings.uniqueKey}-feed-balance-text`;
         
         
+        const html_install_btn = `
+        <button id="install-superpig-btn" hidden style="
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+            cursor: pointer;
+        ">
+
+            📱 Install SuperPig
+        </button>
+        `;
+
+        
+        
+        
         
         const html = `
     <div class="dashboard">
@@ -189,6 +237,10 @@ export function PageHomeDashBoard(input_settings){
             <div class="farm-name" id="${elemIdFarmName}"></div>
         </div>
         <div class="today-date" id="${elemIdTodayDate}"></div>
+
+
+        ${html_install_btn}
+
 
         <!-- grid rows: only label + number, centered -->
         <div class="stats-grid">
@@ -316,6 +368,9 @@ export function PageHomeDashBoard(input_settings){
         elemFarmName            = elemDivContainer.querySelector('#'+elemIdFarmName);        
         elemTodayDate           = elemDivContainer.querySelector('#'+elemIdTodayDate);       
         
+        
+        elemInstallBtn          = elemDivContainer.querySelector('#install-superpig-btn'); 
+        
                
         elemCardLactaPiglets    = elemDivContainer.querySelector('#'+elemIdCardLactaPiglets); 
         elemCardFatteningPigs   = elemDivContainer.querySelector('#'+elemIdCardFatteningPigs);
@@ -381,6 +436,64 @@ export function PageHomeDashBoard(input_settings){
     
     
     this._bindEventListeners = function(){
+        
+        // Listen for beforeinstallprompt event (Chrome, Edge, Samsung Internet)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('beforeinstallprompt event fired');
+            
+            // Prevent Chrome's mini-infobar from appearing
+            e.preventDefault();
+            
+            // Stash the event for later use
+            deferredPrompt = e;
+            
+            // Show install button
+            if (elemInstallBtn) {
+                elemInstallBtn.hidden = false;
+            }
+        });
+
+        
+        elemInstallBtn.addEventListener('click', async function(){
+            if (!deferredPrompt) {
+                console.log('No deferred prompt available');
+                return;
+            }
+            
+            // Show the native install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for user response
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User install choice: ${outcome}`);
+            
+            // Reset the deferred prompt variable (can only be used once)
+            deferredPrompt = null;
+            
+            // Hide the install button
+            elemInstallBtn.hidden = true;
+            
+        });
+
+        
+        window.addEventListener('appinstalled', () => {
+            console.log('SuperPig was successfully installed');
+            
+            // Hide the install button permanently
+            elemInstallBtn.hidden = true;
+            
+            // Optional: Send analytics event
+            // trackEvent('pwa_installed');
+        });
+
+
+
+        // If already installed, hide button
+        if (isAppInstalled()) {
+            elemInstallBtn.hidden = true;
+        }
+
+        
         
         elemCardLactaPiglets.addEventListener('click', function() {
             navigation.managerNavLinks.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
@@ -509,6 +622,15 @@ export function PageHomeDashBoard(input_settings){
         // Update navigation.curPageNavigated
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
+        // Check if app is already installed (running in standalone mode)
+        if (isAppInstalled()) {
+            if (elemInstallBtn) {
+                elemInstallBtn.hidden = true;
+            }
+        }
+        
         
         
         dtCurrentDate = new Date();

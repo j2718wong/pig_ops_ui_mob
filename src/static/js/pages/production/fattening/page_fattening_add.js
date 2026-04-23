@@ -125,9 +125,18 @@ export function PageFatteningAdd(input_settings){
         elemIdBtnCancel         = `${settings.uniqueKey}-cancel`;
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
     
+        elemUiDateBirth         = new UiInputDatePicker({
+            uniqueKey:          `${settings.uniqueKey}-date-birth`,
+        
+            textLabel:          'Date Birth',
+            isRequired:         true,
+            invalidFeedBack:    'Please input date.',
+            helpText:           'Can be blank'
+        });
+    
     
         elemUiDateWean          = new UiInputDatePicker({
-            uniqueKey:          `${settings.uniqueKey}-date-dead`,
+            uniqueKey:          `${settings.uniqueKey}-date-wean`,
         
             textLabel:          'Date Wean',
             isRequired:         true,
@@ -140,10 +149,10 @@ export function PageFatteningAdd(input_settings){
             uniqueKey:          `${settings.uniqueKey}-num-dead`,
             
             className:          'form-group-number',
-            textLabel:          'Number Dead Pigs',
+            textLabel:          'Number of Pigs',
             minValue:           0,
             step:               1,
-            isRequired:         false,
+            isRequired:         true,
             invalidFeedBack:    null,
             helpText:           null
         });
@@ -163,12 +172,10 @@ export function PageFatteningAdd(input_settings){
         
         const html_breadcrumb   = componentBreadcrumb.getHtml();
         
-        const html_date_dead    = elemUiDateWean.getHtml();
-        const html_production   = elemUiCurrentProduction.getHtml();
-        const html_num_dead     = componentNumPigs.getHtml();
-        const html_dead_type    = componentDeadType.getHtml();
+        const html_date_birth   = elemUiDateBirth.getHtml();
+        const html_date_wean    = elemUiDateWean.getHtml();
+        const html_num_pigs     = componentNumPigs.getHtml();
         const html_notes        = elemUiNotes.getHtml();
-        
         
         
         const html =`
@@ -177,19 +184,17 @@ export function PageFatteningAdd(input_settings){
         
         <div class="modal-header">
             <h5 class="modal-title">
-                <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Add Pig Dead</span>
+                <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Pigs From Outside</span>
             </h5>
             <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
         </div>
         
         <div class="modal-body">
-            ${html_date_dead}
+            ${html_date_birth}
             
-            ${html_production}
+            ${html_date_wean}
             
-            ${html_num_dead}
-            
-            ${html_dead_type}
+            ${html_num_pigs}
             
             ${html_notes}
             
@@ -217,10 +222,9 @@ export function PageFatteningAdd(input_settings){
     this.afterHtmlRender = function(){
         componentBreadcrumb.afterHtmlRender();
         
-        elemUiDateWean.afterHtmlRender();         
-        elemUiCurrentProduction.afterHtmlRender();
+        elemUiDateBirth.afterHtmlRender();
+        elemUiDateWean.afterHtmlRender();        
         componentNumPigs.afterHtmlRender();   
-        componentDeadType.afterHtmlRender();    
         elemUiNotes.afterHtmlRender();            
         
         
