@@ -656,11 +656,12 @@ export function PageHomeDashBoard(input_settings){
         const user = navigation.userControl.dataUserAccount.user.user;
         
         
+        /*
         if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
             elemDebug.style.display = 'block';
         } else{
             elemDebug.style.display = 'none';
-        }
+        }*/
         
         
         
