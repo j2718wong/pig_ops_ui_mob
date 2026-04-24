@@ -286,28 +286,6 @@ export function PageFatteningAdd(input_settings){
         
         
         let html;
-        if (showOptions.is_add){
-            html    = `<i class="fas fa-plus me-2"></i>Add Pig Dead`;
-        }
-        else {
-            html    = `<i class="fas fa-edit me-2"></i>Edit Pig Dead`;
-        }
-        elemHeaderTitle.innerHTML = html;
-        
-        
-        // Populate Dead Type
-        componentDeadType.beforeShow();
-        
-        
-        // Populate current production
-        thisObj.populateCurrentProduction();
-        
-        
-        
-        // Populate form if edit
-        if (showOptions.is_add == 0){
-            thisObj.populateForm(data_acc_pig_ops);
-        }
         
         
         // Update Close and cancel button on click
@@ -342,46 +320,8 @@ export function PageFatteningAdd(input_settings){
         };
     }
     
-    
-    this.populateCurrentProduction = function(){
-        let prod_list = [];
-        
-        const prod_lactating = navigation.pigFarm.managerPigProd.dataLactatingList;
-        const prod_fattening = navigation.pigFarm.managerPigProd.dataFatteningList;    
-        
-        if (prod_lactating){
-            if (prod_lactating.length > 0){
-                prod_list = prod_list.concat(prod_lactating);
-            }
-        }
-        
-        if (prod_fattening){
-            if (prod_fattening.length > 0){
-                prod_list = prod_list.concat(prod_fattening);
-            }
-        }
-        
-        const elem_select = elemUiCurrentProduction.getElemSelect();
-        
-        elemUiCurrentProduction.setEntryCount(prod_list);
-        thisObj.commonSelectOptions.setDataPigProdList(prod_list, elem_select); 
-        
-        
-    }
-    
-    
+     
     this.populateForm = function(data_acc_pig_ops){
-        elemUiName.setValue(data_acc_pig_ops.acc_pig_ops.name);
-        elemUiNotes.setValue(data_acc_pig_ops.acc_pig_ops.desc);
-        
-        elemDayNumber.value = data_acc_pig_ops.acc_pig_ops.num_days_since;
-        
-        if (data_acc_pig_ops.acc_pig_ops.is_medvac && data_acc_pig_ops.acc_pig_ops.is_medvac > 0) {
-            elemUiIsMedVac.getElemCheckBox().checked = true;
-        }
-        else{
-            elemUiIsMedVac.getElemCheckBox().checked = false;
-        }
     }
     
     

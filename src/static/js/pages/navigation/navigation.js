@@ -74,6 +74,7 @@ import {PageProdLactatingEntry}     from '../production/gesta_lacta/page_prod_la
 
 import {PageProdFatteningList}      from '../production/fattening/page_prod_fattening_list.js'
 import {PageProdFatteningEntry}     from '../production/fattening/page_prod_fattening_entry.js'
+import {PageProdFatteningAdd}       from '../production/fattening/page_fattening_add.js'
 
 import {PagePigFarmFeedBuyList}     from '../feeds/pig_farm_feed_buy/page_pig_farm_feed_buy_list.js';
 import {PagePfFeedBuyAddEdit}       from '../feeds/pig_farm_feed_buy/page_pf_feed_buy_add_edit.js';
@@ -451,10 +452,16 @@ export function Navigation(){
     this.pageProdFatteningEntry = new PageProdFatteningEntry({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_FATTENING_ENTRY),
-        uniqueKey:              'prod-fattening'
+        uniqueKey:              'prod-fattening-entry'
     });
 
-
+    
+    this.pageProdFatteningAdd   = new PageProdFatteningAdd({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_FATTENING_ADD),
+        uniqueKey:              'prod-fattening-add'
+    });
+    
 
 
     this.pagePigFarmFeedBuyList = new PagePigFarmFeedBuyList({
@@ -923,7 +930,7 @@ export function Navigation(){
         
         this.pageProdFatteningList.init();
         this.pageProdFatteningEntry.init();
-        
+        this.pageProdFatteningAdd.init();
         
         this.pagePigFarmFeedBuyList.init();
         this.pagePfFeedBuyAddEdit.init();

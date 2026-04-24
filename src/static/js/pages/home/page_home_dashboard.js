@@ -665,7 +665,7 @@ export function PageHomeDashBoard(input_settings){
                 })
                 .catch(err => {
                     console.log('Service Worker registration failed:', err);
-                    const msg =  = 'Service Worker failed: ' + err.message;
+                    const msg = 'Service Worker failed: ' + err.message;
                     thisObj.addDebugMessage(msg);
                 });
         } else {
