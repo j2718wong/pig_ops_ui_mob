@@ -1053,7 +1053,7 @@ export function PageHomeDashBoard(input_settings){
             
             elemDebug.appendChild(msg);
             // Auto-scroll to bottom
-            elemDebug.scrollTop = debugDiv.scrollHeight;
+            elemDebug.scrollTop = elemDebug.scrollHeight;
         }
         console.log(message);
     }
