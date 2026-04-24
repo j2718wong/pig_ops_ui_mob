@@ -695,6 +695,24 @@ export function PageHomeDashBoard(input_settings){
         
         
         
+        setTimeout( function(){
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                // Already installed
+                return;
+            }
+            
+            // Check if beforeinstallprompt has fired
+            if (deferredPrompt) {
+                elemInstallBtn.hidden = false;
+            } else {
+                // Event hasn't fired yet, wait a bit longer
+                console.log('Waiting for beforeinstallprompt...');
+            }
+        }, 3000);
+        
+        
+        
+        
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         
