@@ -660,15 +660,18 @@ export function PageHomeDashBoard(input_settings){
             navigator.serviceWorker.register('/service_worker.js')
                 .then(registration => {
                     console.log('Service Worker registered:', registration);
-                    elemDebug.textContent = 'Service Worker registered: ' + registration.scope;
+                    const msg = 'Service Worker registered: ' + registration.scope;
+                    thisObj.addDebugMessage(msg);
                 })
                 .catch(err => {
                     console.log('Service Worker registration failed:', err);
-                    elemDebug.textContent = 'Service Worker failed: ' + err.message;
+                    const msg =  = 'Service Worker failed: ' + err.message;
+                    thisObj.addDebugMessage(msg);
                 });
         } else {
             console.log('Service Worker not supported');
-            elemDebug.textContent = 'Service Worker not supported in this browser';
+            const msg = 'Service Worker not supported in this browser';
+            thisObj.addDebugMessage(msg);
         }
     
         
