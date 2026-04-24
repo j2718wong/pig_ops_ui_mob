@@ -40,6 +40,26 @@ function isMobileDevice() {
 }
 
 
+function showInstallSuccessModal() {
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div style="background: white; border-radius: 20px; max-width: 300px; width: 85%; padding: 24px; text-align: center;">
+                <div style="font-size: 48px;">🎉</div>
+                <h3 style="margin: 12px 0 8px; color: #1e3a8a;">SuperPig Installed!</h3>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+                    SuperPig has been added to your home screen.
+                </p>
+                <button id="close-install-modal" style="background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 30px; font-size: 16px;">Got it</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    document.getElementById('close-install-modal').onclick = () => modal.remove();
+}
+
+
         
 
 export function PageHomeDashBoard(input_settings){
@@ -210,30 +230,28 @@ export function PageHomeDashBoard(input_settings){
         const html_install_btn = `
         <button id="install-superpig-btn" hidden style="
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 320px;
             background: #1e3a8a;
             color: white;
             border: none;
-            border-radius: 40px;
-            padding: 12px 20px;
-            font-size: 14px;
+            border-radius: 60px;
+            padding: 16px 20px;
+            font-size: 18px;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 1000;
             cursor: pointer;
+            letter-spacing: 0.5px;
         ">
-
-            📱 Install SuperPig
+            📱 Install SuperPig App
         </button>
         `;
 
-        
-        
-        
         
         const html = `
     <div class="dashboard">
@@ -488,13 +506,15 @@ export function PageHomeDashBoard(input_settings){
 
         
         window.addEventListener('appinstalled', () => {
-            console.log('SuperPig was successfully installed');
+            console.log('SuperPig was installed');
+            
+            // Show success modal
+            showInstallSuccessModal();
             
             // Hide the install button permanently
-            elemInstallBtn.hidden = true;
-            
-            // Optional: Send analytics event
-            // trackEvent('pwa_installed');
+            if (elemInstallBtn) {
+                elemInstallBtn.style.display = 'none';
+            }
         });
 
 
