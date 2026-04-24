@@ -690,7 +690,11 @@ export function PageHomeDashBoard(input_settings){
         if (isAppInstalled()) {
             if (elemInstallBtn) {
                 elemInstallBtn.hidden = true;
+                thisObj.addDebugMessage('App is installed and isntall button is hidden;');
             }
+        }
+        else{
+            thisObj.addDebugMessage('App not installed;');
         }
         
         
@@ -1036,4 +1040,22 @@ export function PageHomeDashBoard(input_settings){
             }
         }
     }
+    
+    
+    this.addDebugMessage = function(message) {
+       
+        if (elemDebug) {
+            const msg = document.createElement('div');
+            msg.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            msg.style.fontSize = '11px';
+            msg.style.padding = '2px 0';
+            msg.style.borderBottom = '1px solid #eee';
+            
+            elemDebug.appendChild(msg);
+            // Auto-scroll to bottom
+            elemDebug.scrollTop = debugDiv.scrollHeight;
+        }
+        console.log(message);
+    }
+        
 }
