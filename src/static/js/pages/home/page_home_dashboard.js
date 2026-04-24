@@ -655,6 +655,9 @@ export function PageHomeDashBoard(input_settings){
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
+        // Show/ Hide debug  elemnts
+        const user = navigation.userControl.dataUserAccount.user.user;
+        
         if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
             elemDebug.style.display = 'block';
         } else{
@@ -681,16 +684,6 @@ export function PageHomeDashBoard(input_settings){
             thisObj.addDebugMessage(msg);
         }
     
-        
-        // Show/ Hide debug  elemnts
-        const user = navigation.userControl.dataUserAccount.user.user;
-        
-        
-        
-        
-        
-        
-        
         
         // Check if app is already installed (running in standalone mode)
         if (isAppInstalled()) {
