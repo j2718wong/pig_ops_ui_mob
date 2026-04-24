@@ -235,12 +235,12 @@ export function PageHomeDashBoard(input_settings){
             transform: translateX(-50%);
             width: 85%;
             max-width: 320px;
-            background: #1e3a8a;
+            background: var(--gestating-color);
             color: white;
             border: none;
             border-radius: 60px;
             padding: 16px 20px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
