@@ -654,6 +654,13 @@ export function PageHomeDashBoard(input_settings){
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
+        
+        if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
+            elemDebug.style.display = 'block';
+        } else{
+            elemDebug.style.display = 'none';
+        }
+        
 
         // Register service worker IMMEDIATELY (no load event)
         if ('serviceWorker' in navigator) {
@@ -680,11 +687,7 @@ export function PageHomeDashBoard(input_settings){
         
         
         
-        if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
-            elemDebug.style.display = 'block';
-        } else{
-            elemDebug.style.display = 'none';
-        }
+        
         
         
         
@@ -693,7 +696,7 @@ export function PageHomeDashBoard(input_settings){
         if (isAppInstalled()) {
             if (elemInstallBtn) {
                 elemInstallBtn.hidden = true;
-                thisObj.addDebugMessage('App is installed and isntall button is hidden;');
+                thisObj.addDebugMessage('App is installed and install button is hidden;');
             }
         }
         else{
@@ -1056,7 +1059,7 @@ export function PageHomeDashBoard(input_settings){
             
             elemDebug.appendChild(msg);
             // Auto-scroll to bottom
-            elemDebug.scrollTop = elemDebug.scrollHeight;
+            //elemDebug.scrollTop = elemDebug.scrollHeight;
         }
         console.log(message);
     }
