@@ -18,13 +18,12 @@ import {UiSelectWithEntryCount}     from '../../common/ui/select_with_entry_coun
 import {UiInputTextWithCounter}     from '../../common/ui/input_text_with_counter.js';
 import {ComponentPlusMinusInput}    from '../../common/ui/comp_plus_minus_input.js';
 
-import {ComponentPigDeadType}       from './comp_pig_dead_type.js';
 
 import {addValidationClassToElem}   from '../../common/ui/ui_utils.js';
 
 
 
-export function PageFatteningAdd(input_settings){
+export function PageProdFatteningAdd(input_settings){
     PageViewPigFarmPage.call(this);
     
     const TAG                   = 'PageFatteningAdd';
