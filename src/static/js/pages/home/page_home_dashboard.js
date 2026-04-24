@@ -527,7 +527,8 @@ export function PageHomeDashBoard(input_settings){
         
         
         elemCardLactaPiglets.addEventListener('click', function() {
-            navigation.managerNavLinks.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation.managerNavLinks.onClickNavProdGestaLacta(true, 
+                PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             navigation.pageMobLactatingList.clickLactaPigCount();
         });
     
@@ -538,12 +539,14 @@ export function PageHomeDashBoard(input_settings){
         
         
         elemCardLactaSows.addEventListener('click', function() {
-            navigation.managerNavLinks.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+            navigation.managerNavLinks.onClickNavProdGestaLacta(true, 
+                PIG_OPERATION_TYPE.LACTATING_PIGLETS);
             navigation.pageMobLactatingList.clickLactaPigOps();
         });
         
         elemCardGestaSows.addEventListener('click', function() {
-             navigation.managerNavLinks.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING);
+             navigation.managerNavLinks.onClickNavProdGestaLacta(true, 
+                PIG_OPERATION_TYPE.GESTATING);
         }); 
         
         
