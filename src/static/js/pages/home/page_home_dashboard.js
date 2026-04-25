@@ -59,8 +59,28 @@ function showInstallSuccessModal() {
     document.getElementById('close-install-modal').onclick = () => modal.remove();
 }
 
+/* PWA events tracking
+Event	                When to Track	                Why
+pwa_ready	            beforeinstallprompt fires	    Install is possible
+pwa_button_shown	    Your install button becomes     visible	User saw the option
+pwa_install_clicked	    User clicks install button	    User wants to install
+pwa_install_accepted	User accepts native prompt	    Installation started
+pwa_install_dismissed	User dismisses native prompt	User declined
+pwa_installed	        appinstalled event fires	    
 
-        
+*/
+
+
+const PWA_EVENT ={
+    READY:              "PWA_READY",
+    INSTALL_BTN_SHOWN:  "PWA_BTN_SHOWN",
+    INSTALL_CLICKED:    "PWA_INSTALL_CLICKED",
+    INSTALL_ACCEPTED:   "PWA_INSTALL_ACCEPTED",
+    INSTALL_DISMISSED:  "PWA_INSTALL_DISMISSED",
+    INSTALLED:          "PWA_INSTALLED"
+}; 
+
+
 
 export function PageHomeDashBoard(input_settings){
     PageViewPigFarmPage.call(this);
@@ -117,6 +137,7 @@ export function PageHomeDashBoard(input_settings){
     let elemIdDateFeedBalance   = null;
     let elemIdFeedBalanceText   = null;
     
+    let elemIdServerErrorMsg    = null;
     let elemIdDebug             = null;
     
     
@@ -176,6 +197,7 @@ export function PageHomeDashBoard(input_settings){
     let elemDateFeedBalance     = null;
     let elemFeedBalanceText     = null;
     
+    let elemServerErrorMsg      = null;
     let elemDebug               = null;
     
     
@@ -223,6 +245,8 @@ export function PageHomeDashBoard(input_settings){
         elemIdLabelFeedBalance  = `${settings.uniqueKey}-feed-balance-label`;
         elemIdDateFeedBalance   = `${settings.uniqueKey}-feed-balance-date`;
         elemIdFeedBalanceText   = `${settings.uniqueKey}-feed-balance-text`;
+        
+        elemIdServerErrorMsg    = `${settings.uniqueKey}-server-error-msg`;
         
         elemIdDebug             = `${settings.uniqueKey}-debug`;
         
@@ -370,6 +394,7 @@ export function PageHomeDashBoard(input_settings){
             </div>
         </div>
         
+        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
         <div id="${elemIdDebug}" style="display:none;">
         </div>
@@ -453,6 +478,7 @@ export function PageHomeDashBoard(input_settings){
         elemDateFeedBalance     = elemDivContainer.querySelector('#'+elemIdDateFeedBalance);
         elemFeedBalanceText     = elemDivContainer.querySelector('#'+elemIdFeedBalanceText);
     
+        elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         elemDebug               = elemDivContainer.querySelector('#'+elemIdDebug);
     
     }
@@ -469,6 +495,13 @@ export function PageHomeDashBoard(input_settings){
         // Listen for beforeinstallprompt event (Chrome, Edge, Samsung Internet)
         window.addEventListener('beforeinstallprompt', (e) => {
             console.log('beforeinstallprompt event fired');
+            
+            const data_pwa_track = {
+                event:          PWA_EVENT.READY,
+                screen_width:   window.innerWidth,
+                screen_height:  window.innerHeight
+            };
+            thisObj.addUserTrackAppInstall(data_pwa_track);
             
             // Prevent Chrome's mini-infobar from appearing
             e.preventDefault();
@@ -492,9 +525,30 @@ export function PageHomeDashBoard(input_settings){
             // Show the native install prompt
             deferredPrompt.prompt();
             
+            
+            let data_pwa_track = {
+                event:          PWA_EVENT.INSTALL_CLICKED,
+                screen_width:   window.innerWidth,
+                screen_height:  window.innerHeight
+
+            };
+
+            thisObj.addUserTrackAppInstall(data_pwa_track);
+            
+            
             // Wait for user response
             const { outcome } = await deferredPrompt.userChoice;
             console.log(`User install choice: ${outcome}`);
+            
+            // Track the outcome
+            const eventType = outcome === 'accepted' ? PWA_EVENT.INSTALL_ACCEPTED : PWA_EVENT.INSTALL_DISMISSED;
+            data_pwa_track = {
+                event:          eventType,
+                screen_width:   window.innerWidth,
+                screen_height:  window.innerHeight
+            };
+            thisObj.addUserTrackAppInstall(data_pwa_track);
+                    
             
             // Reset the deferred prompt variable (can only be used once)
             deferredPrompt = null;
@@ -505,11 +559,19 @@ export function PageHomeDashBoard(input_settings){
         });
 
         
-        window.addEventListener('appinstalled', () => {
+        window.addEventListener('appinstalled', function(){
             console.log('SuperPig was installed');
             
             // Show success modal
             showInstallSuccessModal();
+            
+            const data_pwa_track = {
+                event:          PWA_EVENT.INSTALLED
+            };
+
+            thisObj.addUserTrackAppInstall(data_pwa_track);
+            
+            
             
             // Hide the install button permanently
             if (elemInstallBtn) {
@@ -710,6 +772,16 @@ export function PageHomeDashBoard(input_settings){
             // Check if beforeinstallprompt has fired
             if (deferredPrompt) {
                 elemInstallBtn.hidden = false;
+                
+                const data_pwa_track = {
+                    event:          PWA_EVENT.INSTALL_BTN_SHOWN,
+                    screen_width:   window.innerWidth,
+                    screen_height:  window.innerHeight
+                };
+                
+                thisObj.addUserTrackAppInstall(data_pwa_track);
+                
+                
             } else {
                 // Event hasn't fired yet, wait a bit longer
                 console.log('Waiting for beforeinstallprompt...');
@@ -927,9 +999,8 @@ export function PageHomeDashBoard(input_settings){
             elemDashboard.style.overflow = 'auto';
             
         }, 100);
-        
-        
     }
+    
     
     
     this.displayFeedBalance = function(data){
@@ -1041,6 +1112,73 @@ export function PageHomeDashBoard(input_settings){
                 thisObj.displayFeedBalance(farmLastBalance);
             }
         }
+    }
+    
+    
+    this.addUserTrackAppInstall = function(data, callback_success){
+        const user_hid      = navigation.userControl.getUserHid();
+        const base_url      = window.location.origin;
+        
+        
+        
+        // send post request
+        const post_data = {
+            'uhid':             user_hid,
+            'event':            data.event
+        };
+        
+        
+        if (data.screen_width){
+            post_data.screen_width = data.screen_width;
+        }
+        
+        if (data.screen_height){
+            post_data.screen_height = data.screen_height;
+        }
+        
+        
+        let url = `${base_url}/user/track_app_install`;
+
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (callback_success){
+                        callback_success();
+                    }
+                }
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elemServerErrorMsg);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
     }
     
     
