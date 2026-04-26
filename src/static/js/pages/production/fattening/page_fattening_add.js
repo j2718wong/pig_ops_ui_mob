@@ -8,7 +8,8 @@ import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
     
 import {APPLICATION,    
         PAGE_ID,    
-        PIG_OPERATION_TYPE}         from '../../../constants.js';
+        PIG_OPERATION_TYPE,
+        PIG_PROD_TYPE}              from '../../../constants.js';
     
 import {ComponentBreadCrumbs}       from '../../common/ui/comp_breadcrumb.js';
     
@@ -496,14 +497,25 @@ export function PageProdFatteningAdd(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const go_back_page_id = PAGE_ID.PROD_FATTENING_LIST;
-                    const go_back_page = navigation.getPageContainer(go_back_page_id);
+
+                    const callback_success = function(data){
+                        const go_back_page_id = PAGE_ID.PROD_FATTENING_LIST;
+                        const go_back_page = navigation.getPageContainer(go_back_page_id);
+                        
+                        navigation.managerNavHistory.removeFromNavHistoryHead(
+                            go_back_page);
+                        
+                        navigation.showThisPage(go_back_page);
+                        navigation.pageProdFatteningList.show();
                     
-                    navigation.managerNavHistory.removeFromNavHistoryHead(
-                        go_back_page);
+                    };
+            
+                    // Request Fattening List
+                    navigation.pigFarm.managerPigProd.requestPigProdList(
+                        PIG_PROD_TYPE.FATTENING, callback_success, elemServerErrorMsg);
+                            
                     
-                    navigation.showThisPage(go_back_page);
-                    navigation.pageProdFatteningList.show();
+                    
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(
