@@ -68,6 +68,7 @@ export function PageProdFatteningAdd(input_settings){
     let elemIdBtnClose          = null;
     
 
+    let elemUiDateBirth         = null;
     let elemUiDateWean          = null;
     let componentNumPigs        = null;
     let componentDeadType       = null;
@@ -112,6 +113,12 @@ export function PageProdFatteningAdd(input_settings){
     
     this.render = function(){
         
+        let page_info   = `
+            This is used when piglets are coming from outside your farm. 
+        `;
+        
+        
+        
         componentBreadcrumb     = new ComponentBreadCrumbs(settingsBreadcrumb);
         
         
@@ -128,7 +135,7 @@ export function PageProdFatteningAdd(input_settings){
             uniqueKey:          `${settings.uniqueKey}-date-birth`,
         
             textLabel:          'Date Birth',
-            isRequired:         true,
+            isRequired:         false,
             invalidFeedBack:    'Please input date.',
             helpText:           'Can be blank'
         });
@@ -140,12 +147,12 @@ export function PageProdFatteningAdd(input_settings){
             textLabel:          'Date Wean',
             isRequired:         true,
             invalidFeedBack:    'Please input date.',
-            helpText:           null
+            helpText:           'If this is blank, it will be set today'
         });
         
         
         componentNumPigs        = new ComponentPlusMinusInput({
-            uniqueKey:          `${settings.uniqueKey}-num-dead`,
+            uniqueKey:          `${settings.uniqueKey}-num-birth`,
             
             className:          'form-group-number',
             textLabel:          'Number of Pigs',
@@ -162,10 +169,10 @@ export function PageProdFatteningAdd(input_settings){
             
             isTextArea:         true,
             className:          'form-group-text-area',
-            textLabel:          'Description',
+            textLabel:          'Notes',
             textMaxChars:       160,
             rows:               3,
-            helpText:           'Describe what happen to pig.' 
+            helpText:           null 
         });
         
         
@@ -181,6 +188,10 @@ export function PageProdFatteningAdd(input_settings){
     <div class="form-container">
         ${html_breadcrumb}
         
+        <div class="mobile-info-box" id="">
+            ${page_info}
+        </div>
+            
         <div class="modal-header">
             <h5 class="modal-title">
                 <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Pigs From Outside</span>
@@ -221,6 +232,7 @@ export function PageProdFatteningAdd(input_settings){
     this.afterHtmlRender = function(){
         componentBreadcrumb.afterHtmlRender();
         
+        elemUiDateBirth.afterHtmlRender();
         elemUiDateBirth.afterHtmlRender();
         elemUiDateWean.afterHtmlRender();        
         componentNumPigs.afterHtmlRender();   
@@ -270,7 +282,7 @@ export function PageProdFatteningAdd(input_settings){
     }
     
     
-    // Reset add form
+
     this.show = function(options){
         thisObj.debugNavHistory(TAG);
         
@@ -350,47 +362,61 @@ export function PageProdFatteningAdd(input_settings){
         let validation      = 0;
         
         
-        let input_date_dead         = elemUiDateWean.getValue();
-        let input_prod_hid          = elemUiCurrentProduction.getValue();
-        let input_num_dead          = componentNumPigs.getValue();
-        let input_dead_type_hid     = componentDeadType.getValue();
+        let input_date_birth        = elemUiDateBirth.getValue();
+        let input_date_wean         = elemUiDateWean.getValue();
+        let input_num_pigs          = componentNumPigs.getValue();
         let input_notes             = elemUiNotes.getValue().trim();
         
+        let dt_birth_s      = null;
+        let dt_wean_s       = null; 
         
         
-        input_elem          = elemUiDateWean.getElemText();
+        // Validate date bor
+        if (input_date_birth && input_date_birth.length > 0){
+            input_elem          = elemUiDateBirth.getElemText();
+            
+            // Convert date to YYYY-MM-DD format
+            const dt_birth       = new Date(input_date_birth);
+            if (isNaN(dt_birth.getTime())){
+                validation      = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+            
+            dt_birth_s   = dt_birth.toLocaleDateString('en-CA');
+            validation          = 0
+            addValidationClassToElem(input_elem, validation);
+            if (validation != 0) {return;}
+            
+        }
         
-        // Convert date to YYYY-MM-DD format
-        const dt_dead       = new Date(input_date_dead);
-        if (isNaN(dt_dead.getTime())){
-            validation      = -1;
+        
+        
+        if (input_date_wean && input_date_wean.length > 0){
+            input_elem          = elemUiDateWean.getElemText();
+            
+            // Convert date to YYYY-MM-DD format
+            const dt_wean       = new Date(input_date_wean);
+            if (isNaN(dt_wean.getTime())){
+                validation      = -1;
+                addValidationClassToElem(input_elem, validation);
+                if (validation != 0) {return;}
+            }
+            
+            dt_wean_s   = dt_wean.toLocaleDateString('en-CA');
+            validation          = 0
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
-        
-        const dt_dead_s   = dt_dead.toLocaleDateString('en-CA');
-        validation          = 0
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        // Validate pig_prod
-        input_elem          = elemUiCurrentProduction.getElemSelect;
-        if (input_prod_hid == '0' || input_prod_hid == '-1'){
-            validation      = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
-        
         
         
         // Validate number counts
-        let number_dead = 0;
+        let number_pigs = 0;
         
         input_elem          = componentNumPigs.getElemText();
         
         try{
-            number_dead = parseInt(input_num_dead)
+            number_pigs = parseInt(input_num_pigs)
         }catch (error){
             componentNumPigs.setTextInvalid(INVALID_MSG_NUM_INPUT);
             validation = -1;
@@ -399,16 +425,14 @@ export function PageProdFatteningAdd(input_settings){
         }
         
         
-        
-        // Validate pig_prod
-        input_elem          = componentDeadType.getElemSelect;
-        if (input_dead_type_hid == '0' || input_dead_type_hid == '-1'){
-            validation      = -1;
+        if (number_pigs <= 0){
+            componentNumPigs.setTextInvalid(INVALID_MSG_NUM_INPUT);
+            validation = -1;
             addValidationClassToElem(input_elem, validation);
             if (validation != 0) {return;}
         }
-        
-        
+    
+
         
         // Final check before sending request
         if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
@@ -421,16 +445,25 @@ export function PageProdFatteningAdd(input_settings){
         const base_url      = window.location.origin;
         
         
+        const pig_farm_hid  = navigation.pigFarm.getPigFarmHid();       
+        
         
         // send post request
         const post_data = {
             'uhid':             user_hid,
-            'pig_prod_hid':     input_prod_hid,
-            'pig_dead_type_hid':input_dead_type_hid,
-            
-            'date_dead':        dt_dead_s,
-            'num_pigs_dead':    input_num_dead
+            'pig_farm_hid':     pig_farm_hid,
+            'num_pigs':         number_pigs
         };
+        
+        
+        if (dt_birth_s){
+            post_data.date_birth = dt_birth_s;
+        }
+        
+        
+        if (dt_wean_s){
+            post_data.date_weaning = dt_wean_s;
+        }
         
         if (input_notes.length > 0){
             post_data.notes = input_notes;
@@ -438,21 +471,7 @@ export function PageProdFatteningAdd(input_settings){
         
         
         
-        
-        if (showOptions.is_add == true){}
-        else {
-            
-        }
-
-        
-        let url;
-        
-        if (showOptions.is_add == true){
-            url = `${base_url}/prod_pig_dead/add`;
-        }
-        else{
-            url = `${base_url}/prod_pig_dead/update`;
-        }
+        let url = `${base_url}/pig_prod/fattening/add`;
         
         
         const bearer_token = localStorage.getItem('access_token');
@@ -477,14 +496,14 @@ export function PageProdFatteningAdd(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const go_back_page_id = PAGE_ID.PIG_DEAD_LIST;
+                    const go_back_page_id = PAGE_ID.PROD_FATTENING_LIST;
                     const go_back_page = navigation.getPageContainer(go_back_page_id);
                     
                     navigation.managerNavHistory.removeFromNavHistoryHead(
                         go_back_page);
                     
                     navigation.showThisPage(go_back_page);
-                    navigation.pagePigDeadList.show();
+                    navigation.pageProdFatteningList.show();
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

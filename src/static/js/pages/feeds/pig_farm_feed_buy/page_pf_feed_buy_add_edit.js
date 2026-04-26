@@ -541,7 +541,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
         
-        const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
+        const pig_farm_hid  = navigation.pigFarm.getPigFarmHid();
         
         
         // send post request

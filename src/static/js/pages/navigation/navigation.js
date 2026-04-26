@@ -456,14 +456,13 @@ export function Navigation(){
     });
 
     
-    /*
+    
     this.pageProdFatteningAdd   = new PageProdFatteningAdd({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_FATTENING_ADD),
         uniqueKey:              'prod-fattening-add'
     });
-    */
-
+    
 
     this.pagePigFarmFeedBuyList = new PagePigFarmFeedBuyList({
         navigation:             this,
@@ -931,7 +930,7 @@ export function Navigation(){
         
         this.pageProdFatteningList.init();
         this.pageProdFatteningEntry.init();
-        //this.pageProdFatteningAdd.init();
+        this.pageProdFatteningAdd.init();
         
         this.pagePigFarmFeedBuyList.init();
         this.pagePfFeedBuyAddEdit.init();

@@ -421,6 +421,9 @@ ${html_style}
         
         
         componentNavLeftRight.bindEventListeners();
+        
+        
+        thisObj.setOnClickAddEntry(thisObj.onClickAddEntry);
     }
     
     
@@ -1282,6 +1285,30 @@ ${html_style}
             }
         });
         
+    }
+    
+    
+    this.onClickAddEntry = function(){
+        // Show Container
+        const next_page = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_ADD);
+        
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        navigation.showThisPage(next_page);
+        
+        
+        // Show Page
+        const go_back_page_id = PAGE_ID.PROD_FATTENING_LIST;
+        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        
+        const options ={
+            is_add:                 true,   // false is edit
+            callback_after_add:     thisObj.onSuccessAddEntry,
+            go_back_page:           go_back_page   
+        }
+        navigation.pageProdFatteningAdd.show(options);
     }
     
 }

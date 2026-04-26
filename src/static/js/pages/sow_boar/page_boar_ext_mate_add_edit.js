@@ -662,7 +662,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         
         const user_hid      = navigation.userControl.getUserHid();
-        const pig_farm_hid  = navigation.userControl.getCurrentFarmHid();
+        const pig_farm_hid  = navigation.pigFarm.getPigFarmHid();
         const base_url      = window.location.origin;
         
         

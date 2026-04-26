@@ -373,7 +373,8 @@ const FLAG_BITS ={
     },
     
     PIG_PROD:{
-        IS_A_GROUP:             2
+        IS_A_GROUP:             2,
+        EXTERNAL_PIGLETS:       4
     }
 
 };

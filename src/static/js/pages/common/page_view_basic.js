@@ -471,7 +471,7 @@ export function PageViewPigFarmPage(){
             // No cur_entry.birth.date_actual are fatteners brought from outside
             
             if (data_pig_prod.weaning.date_weaning){
-                const dt_wean   = new Date(cur_entry.weaning.date_weaning);
+                const dt_wean   = new Date(data_pig_prod.weaning.date_weaning);
                 
                 diff_msecs      = dt_current - dt_wean;
                 diff_days_wean  = Math.round(diff_msecs / APPLICATION.NUM_MSECS_1DAY);
@@ -576,14 +576,25 @@ export function PageViewPigFarmPage(){
         //
         // 3.) To know if the production entry is a group, it has to check 
         //      the (pig_production.flag & FLAG_BIT_IS_A_GROUP) > 0
+        //
+        // 2026-04-26 Notes:
+        // 4.) Piglets from outside are introduced on this date.
         
-        const FLAG_BIT_IS_A_GROUP   = FLAG_BITS.PIG_PROD.IS_A_GROUP;
+        const FLAG_BIT_IS_A_GROUP       = FLAG_BITS.PIG_PROD.IS_A_GROUP;
+        const FLAG_BIT_EXTERNAL_PIGLETS = FLAG_BITS.PIG_PROD.EXTERNAL_PIGLETS;
         
-        // Check if flag exists and if this is a production group
-        let isGroup = false;
+        // Check if flag exists 
+        let isGroup     = false;
+        let isExternal  = false;
+        
         if (pig_production.flag !== undefined && pig_production.flag !== null) {
-            isGroup = (pig_production.flag & FLAG_BIT_IS_A_GROUP) > 0;
+            // Check if this is a production group
+            isGroup     = (pig_production.flag & FLAG_BIT_IS_A_GROUP) > 0;
+            
+            // Check if piglets are external
+            isExternal  = (pig_production.flag & FLAG_BIT_EXTERNAL_PIGLETS) > 0;
         }
+        
         
         // PID column
         const s_pid = `<span>${pig_production.farm_prod_id}</span>`;
@@ -612,6 +623,14 @@ export function PageViewPigFarmPage(){
                 <div>${s_pid}, Group${s_members}</div>
             `;
         }
+        
+        
+        if (isExternal){
+            return `
+                <div>${s_pid}, External</div>
+            `;
+        }
+        
         
         // Normal production entry (not a group)
         let sow_name = '';
