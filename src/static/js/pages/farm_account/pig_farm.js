@@ -25,6 +25,8 @@ export function PigFarm(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
     
+    const STORAGE_KEY           = 'superpig_pig_farm';  
+    
     this.accountLists           = new AccountLists(_navigation);
     
     this.dataVerNum             = {
@@ -37,11 +39,123 @@ export function PigFarm(_navigation){
         feed_balance:           0,
         not_pregnant:           0
     };
+
     
-    
+    /** 
+     * This is a typical data in dataPigFarm; just farm information and data version numbers.
+    {
+      "pig_farm": {
+        "flag": 0,
+        "name": "Jackson Farm",
+        "num_farrow_crates": 3,
+        "hid": "3QLG0EDV"
+      },
+      "location": {
+        "country": {
+          "name": "Philippines",
+          "hid": "3QLG0EDV"
+        },
+        "address": {
+          "level_1": {
+            "name": "Cebu",
+            "hid": "3QLGX0RD"
+          },
+          "level_2": {
+            "name": "City of Naga",
+            "hid": "NRX2XBLV"
+          },
+          "level_3": {
+            "name": "Tagjaguimit",
+            "hid": "PE70558L"
+          }
+        }
+      },
+      "data_ver_num": {
+        "sow": 3,
+        "boar": 1,
+        "pig_prod": 15,
+        "prod_history": 3,
+        "staff": 1,
+        "feed_buy": 0,
+        "feed_balance": 0,
+        "not_pregnant": 0
+      }
+    }
+    */
     this.dataPigFarm            = null;
+    
+    
+    /**
+     * This is the typical data of dataPigFarmAccount;
+     * This is requested on page load.
+     * 
+     
+    Object { acc_pig_ops: (13) […], sow_list: (14) […], boar_list: (4) […], staff_list: (4) […], account: {…} }
+​
+    acc_pig_ops: Array(13) [ {…}, {…}, {…}, … ]
+    ​
+    account: Object { account: {…}, settings_operations: {…} }
+    ​
+    boar_list: Array(4) [ {…}, {…}, {…}, … ]
+    ​
+    sow_list: Array(14) [ {…}, {…}, {…}, … ]
+    ​
+    staff_list: Array(4) [ {…}, {…}, {…}, … ]
+    ​
+    <prototype>: Object { … }
+    pig_farm.js:161:17
+    
+    
+    This is what inside of account block; This is a bare minimum account 
+    information used for operations.
+    
+    {
+        "account": {
+            "name": "Jackson Farm",
+            "hid": "NKD2NR9X"
+        },
+        
+        "settings_operations": {
+            "weight_unit": "kg",
+            "currency": "PHP",
+            "day_1_on_date_of_birth": 0,
+            "day_1_on_date_of_insem": 0,
+            "num_days_move_to_farrow": 9,
+            "num_days_wean": 42,
+            "num_days_harvest_from_birth": 142,
+            "num_days_harvest_from_wean": 97,
+            
+            "last_update": {
+                "name_last": "Wong",
+                "name_first": "Jack",
+                "dt_update": "2026-04-07 07:26:19"
+            }
+        }
+    }
+    * 
+    */
     this.dataPigFarmAccount     = null;
     
+    
+    /**
+     * TODO: What should be done with this?
+     * 
+     * This is technically an account data; not a pig_farm data;
+     * This is the list of operations need to copied for each production entry;
+     * This is a list of combined pig operations and being decomposed in 
+     * navigation.pageAccPigOpsList.setDataAccPigOpsList() method; This list is 
+     * decomposed into 
+     * 
+     *      dataAccGestatingOps     
+     *      dataAccLactatingPigletOps
+     *      dataAccLactatingSowOps  
+     *      dataAccWeaningSowOps    
+     *      dataAccGiltOps          
+     * 
+     * Any changes of the decomposed list will not update this.dataAccPigOpsList
+     * 
+     *   
+     * */
     this.dataAccPigOpsList      = null;
     
     this.dataStaffList          = null;
@@ -72,6 +186,57 @@ export function PigFarm(_navigation){
     let accountDueBillHid       = null;
     
     
+    
+    this.getDataToSaveToStorage = function(){
+        return {
+            verNum:             thisObj.dataVerNum,
+            pigFarm:            thisObj.dataPigFarm,
+            pigFarmAccount:     thisObj.dataPigFarmAccount,
+            
+            accPigOpsList:      thisObj.dataAccPigOpsList,
+            
+            staffList:          thisObj.dataStaffList,
+            farmFeedBuyList:    thisObj.dataFarmFeedBuyList,
+            summaryReportList:  thisObj.dataSummaryReportList
+        }
+    }
+    
+    
+    
+    this.saveToStorage = function() {
+        const data = thisObj.getDataToSaveToStorage();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    
+    this.getDataVerNumFromStorage = function(){
+        const cached = localStorage.getItem(STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            return data.verNum;
+        }
+        
+        return null;
+    }
+    
+    
+    this.loadDataFromStorage = function(){
+        const cached = localStorage.getItem(STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            thisObj.dataVerNum              = data.verNum;     
+            
+            
+            thisObj.dataStaffList           = data.staffList;      
+            thisObj.dataFarmFeedBuyList     = data.farmFeedBuyList;
+            thisObj.dataSummaryReportList   = data.summaryReportList;
+        }
+    }
+    
+    
+    
     this.getPigFarmAccountHid = function(){
         return thisObj.dataPigFarmAccount.account.account.hid;
     }
@@ -100,8 +265,6 @@ export function PigFarm(_navigation){
     
     this.setDataPigFarmAccount = function(data){
         thisObj.dataPigFarmAccount = data;
-        
-        
             
         if ('acc_pig_ops' in data){
             this.dataAccPigOpsList = data.acc_pig_ops;

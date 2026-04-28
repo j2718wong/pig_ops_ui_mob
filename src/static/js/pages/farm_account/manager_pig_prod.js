@@ -19,8 +19,7 @@ export function ManagerPigProd(input_settings){
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj
     
-    
-    this.dataPigProdList        = null;           
+    const STORAGE_KEY           = 'superpig_manager_pig_prod';
     
     
     this.dataGestatingList      = null;
@@ -34,10 +33,50 @@ export function ManagerPigProd(input_settings){
     this.dataBoarExtMateList    = null;
     
     
+    this.getDataToSaveToStorage = function(){
+        return {
+            gestatingList:      thisObj.dataGestatingList,
+            lactatingtList:     thisObj.dataLactatingList,
+            fatteningList:      thisObj.dataFatteningList,
+            
+            prodHistoryList:    thisObj.dataProdHistoryList,
+            
+            notPregnantList:    thisObj.dataNotPregnantList,
+            prodPigDeadList:    thisObj.dataProdPigDeadList,
+            boarExtMateList:    thisObj.dataBoarExtMateList
+        }
+    }
+    
+    
+    
+    this.saveToStorage = function() {
+        const data = thisObj.getDataToSaveToStorage();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+
+    
+    this.loadDataFromStorage = function(){
+        const cached = localStorage.getItem(STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            thisObj.dataGestatingList       = data.gestatingList;      
+            thisObj.dataLactatingList       = data.lactatingtList;     
+            thisObj.dataFatteningList       = data.fatteningList;    
+                                            
+            thisObj.dataProdHistoryList     = data.prodHistoryList;   
+                                            
+            thisObj.dataNotPregnantList     = data.notPregnantList;    
+            thisObj.dataProdPigDeadList     = data.prodPigDeadList;    
+            thisObj.dataBoarExtMateList     = data.boarExtMateList;  
+        }
+    }
+    
+    
     
     this.setDataPigProdList = function(data){
-        thisObj.dataPigProdList     = data;
-        
+
         thisObj.dataGestatingList   = [];
         thisObj.dataLactatingList   = [];
         thisObj.dataFatteningList   = [];
@@ -164,6 +203,7 @@ export function ManagerPigProd(input_settings){
                         }
                     }
                     
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -221,6 +261,8 @@ export function ManagerPigProd(input_settings){
                 if (response.result.num == 0){
                     thisObj.dataNotPregnantList = response.data;
                     
+                    thisObj.saveToStorage();
+                    
                     if (callback_success){callback_success(response.data);}
                 }
                 else {
@@ -276,6 +318,8 @@ export function ManagerPigProd(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataProdPigDeadList = response.data;
+                    
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -465,6 +509,8 @@ export function ManagerPigProd(input_settings){
                     // attach data to data_pig_prod
                     data_pig_prod.data_details = response.data;
                     
+                    thisObj.saveToStorage();
+                    
                     if (callback_success){callback_success(response.data);}
                 }    
                 else{
@@ -520,6 +566,8 @@ export function ManagerPigProd(input_settings){
                     // attach data to data_pig_prod
                     if(data_pig_prod.data_details){ 
                         data_pig_prod.data_details.list_prod_feed = response.data;
+                        
+                        thisObj.saveToStorage();
                     }
                     
                     if (callback_success){callback_success(response.data);}
@@ -592,6 +640,8 @@ export function ManagerPigProd(input_settings){
                     data_pig_prod.data_details.list_notes        = notes;
                     
                     
+                    thisObj.saveToStorage();
+                    
                     if (callback_success){callback_success(response.data);}
                 }    
                 else{
@@ -643,7 +693,9 @@ export function ManagerPigProd(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                   data_pig_prod.data_details.list_feed_balance = response.data;
+                    data_pig_prod.data_details.list_feed_balance = response.data;
+                    
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -696,7 +748,9 @@ export function ManagerPigProd(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                   data_pig_prod.data_details.list_harvest = response.data;
+                    data_pig_prod.data_details.list_harvest = response.data;
+                    
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -737,6 +791,9 @@ export function ManagerPigProd(input_settings){
             
             if (cur_entry.pig_production.hid == pig_prod_hid){
                 prod_list.splice(index, 1);
+                
+                thisObj.saveToStorage();
+                
                 return;
             }
         }
@@ -759,6 +816,9 @@ export function ManagerPigProd(input_settings){
             
             if (cur_entry.pig_production.hid == pig_prod_hid){
                 prod_list.splice(index, 1, new_prod_entry);
+                
+                thisObj.saveToStorage();
+                
                 return;
             }
         }
@@ -798,6 +858,10 @@ export function ManagerPigProd(input_settings){
                 
                 if (old_prod_status == new_prod_status){
                     thisObj.dataGestatingList.splice(index, 1, new_prod_entry);
+                    
+                    // It is updating the thisObj.dataGestatingList 
+                    thisObj.saveToStorage();
+                    
                     return;
                 }
                 

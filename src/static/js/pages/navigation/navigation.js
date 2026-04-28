@@ -1103,6 +1103,10 @@ export function Navigation(){
         const pig_farm_account = data.pig_farm_account;
         
         this.pigFarm.setDataPigFarm(user_current_farm);
+        
+        // The pig_farm_account is the data coming from server;
+        // This is broken down into several list as each list maybe updated
+        // by user independently.
         this.pigFarm.setDataPigFarmAccount(pig_farm_account);
         
         
@@ -1123,7 +1127,7 @@ export function Navigation(){
         this.pigFarm.accountLists.setPigFarmAccountHid(account_hid);
         
         // Request account feed supplier
-        this.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.FEED);
+        //this.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.FEED);
         
         
         

@@ -18,6 +18,7 @@ export function ManagerSowBoar(input_settings){
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj
     
+    const STORAGE_KEY           = 'superpig_manager_sowboar';
     
     this.dataSowList            = null;
     this.dataGiltList           = null;
@@ -30,6 +31,37 @@ export function ManagerSowBoar(input_settings){
     this.dataFarmPigletsOutput  = null;
     
     
+    this.getDataToSaveToStorage = function(){
+        return {
+            sowList:            thisObj.dataSowList,
+            giltList:           thisObj.dataGiltList,
+            boarList:           thisObj.dataBoarList,
+            farmPigLetsOutput:  thisObj.dataFarmPigletsOutput
+        }
+    }
+    
+    
+    
+    this.saveToStorage = function() {
+        const data = thisObj.getDataToSaveToStorage();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+
+    
+    this.loadDataFromStorage = function(){
+        const cached = localStorage.getItem(STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            thisObj.dataSowList             = data.sowList;
+            thisObj.dataGiltList            = data.giltList;
+            thisObj.dataBoarList            = data.boarList;
+            thisObj.dataFarmPigletsOutput   = data.farmPigLetsOutput;
+        }
+    }
+    
+
     this.setDataSowList = function(data){
         // When this is set, the data includes the gilts (SOW_STATUS.GROWING)
         // Need to seperate gilts data  
@@ -67,6 +99,7 @@ export function ManagerSowBoar(input_settings){
         thisObj.dataBoarList = data;
     }
     
+    
     this.getDataSowBoar = function(sex, sow_boar_hid){
         let sow_boar_list  = thisObj.dataSowList;
         if (sex == 'M'){
@@ -80,7 +113,6 @@ export function ManagerSowBoar(input_settings){
         }
         return null;
     }
-    
     
     
     this.requestSowBoarList = function(is_sow, callback_success, elem_show_error){
@@ -128,6 +160,8 @@ export function ManagerSowBoar(input_settings){
                     else{
                         thisObj.setDataBoarList(response.data);
                     }
+                    
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -293,6 +327,8 @@ export function ManagerSowBoar(input_settings){
                     // attach data to data_sow_boar
                     data_sow_boar.data_details = response.data;
                     
+                    thisObj.saveToStorage();
+                    
                     if (callback_success){callback_success(response.data);}
                 }    
                 else{
@@ -362,6 +398,8 @@ export function ManagerSowBoar(input_settings){
                     
                     data_sow_boar.data_details.list_health_issues = health_issues;
                     data_sow_boar.data_details.list_notes        = notes;
+                    
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }    
