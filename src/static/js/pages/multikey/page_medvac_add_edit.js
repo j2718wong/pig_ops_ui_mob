@@ -603,21 +603,31 @@ export function PageMedVacAddEdit(input_settings){
         
         if (cur_medvac == null){return;}
         
+        console.log(`cur_medvac`);
+        console.log(cur_medvac);
+        
 
         // Set the datepicker to this date
         elemUiDateMedVac.setDate(cur_medvac.medvac.date_medvac);
         
         
-        // Set MedVac brand
-        componentMedVacBrand.setValue(cur_medvac.medvac.brand.hid);
+        setTimeout(function(){
+            // Set MedVac brand
+            if (cur_medvac.medvac.brand){
+                componentMedVacBrand.setValue(cur_medvac.medvac.brand.hid);
+            }
+            
+            // Set MedVac type
+            componentMedVacType.setValue(cur_medvac.medvac.type.hid);
+            
+            
+            // Set MedVac AccMedVac
+            componentAccMedVac.setValue(cur_medvac.medvac.acc_medvac.hid);
+                
+            }, 200
+        );
         
         
-        // Set MedVac type
-        componentMedVacType.setValue(cur_medvac.medvac.type.hid);
-        
-        
-        // Set MedVac AccMedVac
-        componentAccMedVac.setValue(cur_medvac.medvac.acc_medvac.hid);
         
         
         // Set Notes
@@ -625,7 +635,9 @@ export function PageMedVacAddEdit(input_settings){
         
         
         // Set Staff 
-        componentStaff.setValue(cur_medvac.medvac.staff.hid)
+        componentStaff.setValue(cur_medvac.medvac.staff.hid);
+        
+        
     }
     
     

@@ -270,10 +270,25 @@ export function TableMedVac(input_settings){
     
 
     this.getHtmlTableRow = function(cur_entry){
+        let medvac_type     = '';
+        let medvac_brand    = '';
+        
+        if (cur_entry.medvac.type){
+            if (cur_entry.medvac.type.name){
+                medvac_type = cur_entry.medvac.type.name;
+            }
+        }
+
+        if (cur_entry.medvac.brand){
+            if (cur_entry.medvac.brand.name){
+                medvac_brand = cur_entry.medvac.brand.name;
+            }
+        }
+
 
         const s_medvac = `
-            <span class="medvac-type"><b>${cur_entry.medvac.type.name}</b></span>
-            <span class="medvac-brand">${cur_entry.medvac.brand.name}</span><br>
+            <span class="medvac-type"><b>${medvac_type}</b></span>
+            <span class="medvac-brand">${medvac_brand}</span><br>
         `;
         
         const s_desc = `
