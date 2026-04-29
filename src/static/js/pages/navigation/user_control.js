@@ -18,7 +18,7 @@ export function UserControl(_navigation) {
     const thisObj                   = this;
     const navigation                = _navigation;
     
-    const STORAGE_KEY               = 'superpig_user_control';
+    this.STORAGE_KEY                = 'superpig_user_control';
     
     let elemDesktopUserControl          = null;
     let elemDesktopUserDropdown         = null;
@@ -97,6 +97,7 @@ export function UserControl(_navigation) {
     }
     
     
+    
     this.getDataToSaveToStorage = function(){
         return {
             userAccount:            thisObj.dataUserAccount
@@ -107,12 +108,12 @@ export function UserControl(_navigation) {
     
     this.saveToStorage = function() {
         const data = thisObj.getDataToSaveToStorage();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
     }
     
     
     this.loadDataFromStorage = function(){
-        const cached = localStorage.getItem(STORAGE_KEY);
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
         if (cached) {
             const data = JSON.parse(cached);
             

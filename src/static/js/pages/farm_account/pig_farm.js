@@ -25,7 +25,7 @@ export function PigFarm(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
     
-    const STORAGE_KEY           = 'superpig_pig_farm';  
+    this.STORAGE_KEY            = 'superpig_pig_farm';  
     
     this.accountLists           = new AccountLists(_navigation);
     
@@ -167,11 +167,6 @@ export function PigFarm(_navigation){
     let accountDueBillHid       = null;
     
     
-    this.getStorageKey = function(){
-        return STORAGE_KEY;
-    }
-    
-    
     this.getDataToSaveToStorage = function(){
         return {
             verNum:             thisObj.dataVerNum,
@@ -188,12 +183,12 @@ export function PigFarm(_navigation){
     
     this.saveToStorage = function() {
         const data = thisObj.getDataToSaveToStorage();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
     }
 
     
     this.getDataVerNumFromStorage = function(){
-        const cached = localStorage.getItem(STORAGE_KEY);
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
         if (cached) {
             const data = JSON.parse(cached);
             
@@ -205,7 +200,7 @@ export function PigFarm(_navigation){
     
     
     this.loadDataFromStorage = function(){
-        const cached = localStorage.getItem(STORAGE_KEY);
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
         if (cached) {
             const data = JSON.parse(cached);
             
@@ -242,12 +237,22 @@ export function PigFarm(_navigation){
     
     this.setDataPigFarm = function(data){
         this.dataPigFarm = data;
+        
+        console.log('\n\nsetDataPigFarm');
+        console.log(data);
+        
     }
     
     
     
     this.setDataPigFarmAccount = function(data){
         thisObj.dataPigFarmAccount = data;
+
+        console.log('\n\nsetDataPigFarmAccount');
+        console.log(data);
+
+        thisObj.saveToStorage();
+
             
         if ('acc_pig_ops' in data){
             navigation.pageAccPigOpsList.setDataAccPigOpsList(data.acc_pig_ops);
@@ -311,7 +316,7 @@ export function PigFarm(_navigation){
             const callback_success = function(data){
                 thisObj.managerPigProd.setDataPigProdList(data);
                 
-                thisObj.requestPigFarmDataVerNum(
+                thisObj.requestPigFarmDataVerNum(null,
                     callback_set_pig_farm_data_ver_num);
             };
             
@@ -376,12 +381,26 @@ export function PigFarm(_navigation){
     }
  
  
-    this.requestPigFarmDataVerNum = function(callback_success, callback_timeout, 
-                elem_show_error){
+    /**
+     * Will request pigFarmdata version number; 
+     * 
+     * It is possible to specify pig_farm_hid; if not specified, will read
+     * current this.getPigFarmHid();
+     * */
+    this.requestPigFarmDataVerNum = function(pig_farm_hid, callback_success, 
+            callback_timeout, elem_show_error){
+        
+        let pfhid = null;
+        
+        if (pig_farm_hid){
+            pfhid = pig_farm_hid;
+        }
+        else{
+            pfhid = thisObj.getPigFarmHid();
+        }
         
         const base_url = window.location.origin;
-        const pig_farm_hid = thisObj.getPigFarmHid();
-        const url = `${base_url}/pig_farm/data_ver_num?pfhid=${pig_farm_hid}&r=1`;
+        const url = `${base_url}/pig_farm/data_ver_num?pfhid=${pfhid}&r=1`;
         
         
         const bearer_token = localStorage.getItem('access_token');

@@ -91,6 +91,10 @@ export function ManagerApplicationData(_navigation) {
                         });
                     }
                     
+                    if (callback_success){
+                        callback_success();
+                    }
+                    
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(

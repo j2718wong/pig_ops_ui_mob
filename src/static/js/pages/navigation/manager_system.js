@@ -89,11 +89,11 @@ export function ManagerSystem(_navigation) {
         })
         .then(() => {
             testResults.hasInternet = true;
-            console.log('Internet: HEAD request successful - 0 bytes');
+            console.log('Check Internet connection: HEAD request successful - 0 bytes');
         })
         .catch(() => {
             testResults.hasInternet = false;
-            console.log('Internet: HEAD request failed');
+            console.log('Check Internet connection: HEAD request failed');
         })
         .finally(() => {
             testsCompleted++;
@@ -108,11 +108,11 @@ export function ManagerSystem(_navigation) {
         })
         .then(() => {
             testResults.serverReachable = true;
-            console.log('Server: favicon.ico HEAD request successful - 0 bytes');
+            console.log('Check Server Connection: favicon.ico GET request successful');
         })
         .catch((error) => {
             testResults.serverReachable = false;
-            console.log('Server: favicon.ico HEAD request failed -', error.message);
+            console.log('Check Server Connection: favicon.ico GET request failed -', error.message);
         })
         .finally(() => {
             testsCompleted++;

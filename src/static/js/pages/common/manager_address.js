@@ -10,6 +10,8 @@ export function ManagerAddress(_navigation){
     const thisObj           = this;
     const navigation        = _navigation;
     
+    this.STORAGE_KEY        = 'superpig_manager_address';
+    
     
     // This will be ordered by what? for faster search
     let addressLevel1List   = null;
@@ -18,9 +20,54 @@ export function ManagerAddress(_navigation){
     let curCountry          = null;
     
     
+    this.getDataToSaveToStorage = function(){
+        return {
+            level1List:         addressLevel1List,
+            curCountry:         curCountry
+        }
+    }
+    
+    
+    
+    this.saveToStorage = function() {
+        const data = thisObj.getDataToSaveToStorage();
+        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
+    }
+
+
+    
+    this.loadDataFromStorage = function(){
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            addressLevel1List               = data.level1List;
+            curCountry                      = data.curCountry;
+        }
+    }
+    
+    
     this.setCurCountry      = function(country){
         curCountry = country;
-        thisObj.requestDataAddressLevel1(curCountry.hid);
+        
+        let to_request_level_1 = 1;
+        
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+
+            // Same country as saved in local storage;
+            if (curCountry.hid == data.curCountry.hid){
+            
+                addressLevel1List   = data.level1List;
+                
+                to_request_level_1  = 0;
+            }
+        }
+        
+        if (to_request_level_1 > 0) {
+            thisObj.requestDataAddressLevel1(curCountry.hid);
+        }
     }
     
     
@@ -146,6 +193,9 @@ export function ManagerAddress(_navigation){
                 if (response.result.num == 0){
                     // Set managerAddress.setAddressLevel1List
                     thisObj.setAddressLevel1List(response.data);
+                    
+                    // Update local storage
+                    thisObj.saveToStorage();
                   
                     if (callback_success){
                         callback_success(response.data);
@@ -200,6 +250,9 @@ export function ManagerAddress(_navigation){
                    
                     // Set address_level_1.level2 data; 
                     thisObj.setLevel2Addresses(address_level_1, response.data);
+                    
+                    // Update local storage
+                    thisObj.saveToStorage();
                                         
                     if (callback_success){
                         callback_success(response.data);
@@ -254,6 +307,9 @@ export function ManagerAddress(_navigation){
                     // Set address_level_2.level3 data; 
                     thisObj.setLevel3Addresses(address_level_2, response.data);
                     
+                    // Update local storage
+                    thisObj.saveToStorage();
+                    
                     if (callback_success){
                         callback_success(response.data);
                     }
@@ -307,7 +363,8 @@ export function ManagerAddress(_navigation){
                    
                     // Set address_level_2.list_supplier data; 
                     address_level_2.list_supplier = response.data;
-                                        
+                    
+ 
                     if (callback_success){
                         callback_success(response.data);
                     }

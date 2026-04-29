@@ -344,11 +344,36 @@ export function PageSummaryReportAdd(input_settings){
         elemPigFarm.textContent = pig_farm.pig_farm.name;
         
         
+        // Get report language options
+        let lang_options = navigation.managerApplicationData.reportLanguageOptions;
+        
+        if (lang_options == null){
+            // request report lang_options based on farm country
+            const user_current_farm = navigation.userControl.getCurrentFarm(); 
+            const country   = user_current_farm.location.country;
+            
+            
+            const callback_success = function(){
+                lang_options = navigation.managerApplicationData.reportLanguageOptions;
+                thisObj.populateReportLanguageOptions(lang_options);
+            };
+            
+            
+            // Get report languages based by country
+            navigation.managerApplicationData.requestCountryDetails(country.hid,
+                callback_success);
+        }
+        else{
+            thisObj.populateReportLanguageOptions(lang_options);
+        }
+        
+    }
+    
+    
+    this.populateReportLanguageOptions = function(report_languages){
         // Set report language
         // If only 1 language, display read -only
         // If only more than language, display select option
-        
-        const report_languages = navigation.managerApplicationData.reportLanguageOptions;
         
         if (report_languages.length == 1){
             elemLangSingleShow.style.display = 'block';
@@ -363,14 +388,12 @@ export function PageSummaryReportAdd(input_settings){
             elemLangSingleShow.style.display = 'none';
             elemUiReportLanguage.show();
             
-            thisObj.commonSelectOptions.setDataReportLanguage(report_languages, 
-                elemUiReportLanguage.getElemSelect());
+            const elem_select  = elemUiReportLanguage.getElemSelect();
+            thisObj.commonSelectOptions.setDataReportLanguage(
+                report_languages, elem_select);
                 
             singleLanguageOption    = false;
         }
-        
-
-        
     }
     
         

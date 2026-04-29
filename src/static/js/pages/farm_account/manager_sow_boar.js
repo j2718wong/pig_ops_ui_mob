@@ -18,7 +18,7 @@ export function ManagerSowBoar(input_settings){
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj
     
-    const STORAGE_KEY           = 'superpig_manager_sowboar';
+    this.STORAGE_KEY            = 'superpig_manager_sowboar';
     
     this.dataSowList            = null;
     this.dataGiltList           = null;
@@ -33,11 +33,6 @@ export function ManagerSowBoar(input_settings){
     
     // Boar external mates
     this.dataBoarExtMateList    = null;
-    
-    
-    this.getStorageKey = function(){
-        return STORAGE_KEY;
-    }
     
     
     this.getDataToSaveToStorage = function(){
@@ -55,13 +50,13 @@ export function ManagerSowBoar(input_settings){
     
     this.saveToStorage = function() {
         const data = thisObj.getDataToSaveToStorage();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
     }
 
 
     
     this.loadDataFromStorage = function(){
-        const cached = localStorage.getItem(STORAGE_KEY);
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
         if (cached) {
             const data = JSON.parse(cached);
             

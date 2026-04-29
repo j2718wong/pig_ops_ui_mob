@@ -19,7 +19,7 @@ export function ManagerPigProd(input_settings){
     const navigation            = input_settings.navigation;
     const parentObj             = input_settings.parentObj
     
-    const STORAGE_KEY           = 'superpig_manager_pig_prod';
+    this.STORAGE_KEY            = 'superpig_manager_pig_prod';
     
     
     this.dataGestatingList      = null;
@@ -30,11 +30,6 @@ export function ManagerPigProd(input_settings){
     
     this.dataNotPregnantList    = null;
     this.dataProdPigDeadList    = null;
-    
-    
-    this.getStorageKey = function(){
-        return STORAGE_KEY;
-    }
     
     
     this.getDataToSaveToStorage = function(){
@@ -54,12 +49,12 @@ export function ManagerPigProd(input_settings){
     
     this.saveToStorage = function() {
         const data = thisObj.getDataToSaveToStorage();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
     }
 
 
     this.loadDataFromStorage = function(){
-        const cached = localStorage.getItem(STORAGE_KEY);
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
         if (cached) {
             const data = JSON.parse(cached);
             
@@ -1034,8 +1029,8 @@ export function ManagerPigProd(input_settings){
         };
         
         
-        parentObj.requestPigFarmDataVerNum(callback_success_ver_num, null, 
-            elem_show_error);
+        parentObj.requestPigFarmDataVerNum(null, callback_success_ver_num, 
+            null, elem_show_error);
         
     }
 

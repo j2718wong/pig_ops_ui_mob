@@ -30,6 +30,14 @@ const APPLICATION = {
     DEBUG_NAV_HISTORY:              true
 };
 
+const SERVER_CONNECTION = {
+    NORMAL:         0,
+    NO_INTERNET:    1,
+    SERVER_DOWN:    2
+    
+};
+
+
 const DEFAULT_WEEKDAY = [
     "Sunday",
     "Monday",
@@ -382,6 +390,7 @@ const FLAG_BITS ={
 
 export {
     APPLICATION,
+    SERVER_CONNECTION,
     DEFAULT_WEEKDAY,
     SOCIAL_MEDIA,
     ACC_USER_GROUP,

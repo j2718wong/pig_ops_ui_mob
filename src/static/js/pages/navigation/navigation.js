@@ -5,6 +5,7 @@
 'use strict';
 
 import {APPLICATION,
+        SERVER_CONNECTION,
         NAV_MENU_GROUP,
         ACC_USER_GROUP,
         PIG_OPERATION_TYPE,
@@ -218,7 +219,7 @@ export function Navigation(){
     const thisObj               = this;
 
 
-    const STORAGE_KEY           = 'superpig_navigation';
+    this.STORAGE_KEY            = 'superpig_navigation';
 
     const elemPageLoading       = document.getElementById('loading-page');
     
@@ -228,6 +229,9 @@ export function Navigation(){
     let elemMobilePigFarmName   = null;
     
     let dataApplication         = null;
+
+    // Timestamp when the last pig farm data is requested from server
+    let tsLastReqPigFarmData    = null;
 
     
     
@@ -695,7 +699,9 @@ export function Navigation(){
     this.init = function(){
         
         // Check if there is a access_token stored
-        const bearer_token = localStorage.getItem('access_token');
+        const bearer_token  = localStorage.getItem('access_token');
+        const local_data    = thisObj.managerLocalData.getSavedLocalData();
+        
         
         // Check if there is a connection to server
         this.managerSystem.connectionTest(function(status){
@@ -706,14 +712,28 @@ export function Navigation(){
                 console.log('\n\nServer down - 0 bytes transferred');
           
             } else {
-                console.log('\n\nHas internet and Server online - 0 bytes transferred');
-              
+                console.log('\n\nHas internet and Server online');
+                
+                if (bearer_token){
+                    console.log('Test A');
+                    const is_to_request = thisObj.managerLocalData
+                                .checkIfToRequestPigFarmData(local_data);
+                    
+                    
+                    
+                    thisObj.requestPigFarmData(bearer_token);
+                }
+                else{
+                    const langParam = getLanguageParam();
+                    window.location.href = '/login' + langParam;
+                }
                 
             }
             
         });
         
         
+        /** Original code
         if (bearer_token){
             thisObj.requestPigFarmData(bearer_token);
         }
@@ -721,7 +741,7 @@ export function Navigation(){
             const langParam = getLanguageParam();
             window.location.href = '/login' + langParam;
         }
-        
+        */
     }
     
     
@@ -873,6 +893,10 @@ export function Navigation(){
                         return;
                     }
                     
+                    
+                    
+                    // At this point, the response.data is valid;
+                    tsLastReqPigFarmData = Math.floor(Date.now() / 1000);
                     
                     thisObj.initComponents();
                     thisObj.afterHtmlRender();
@@ -1095,19 +1119,10 @@ export function Navigation(){
     }
     
     
-    this.getStorageKey = function(){
-        return STORAGE_KEY;
-    }
-    
-    
     this.getDataToSaveToStorage = function(){
         return {
-            sowList:            thisObj.dataSowList,
-            giltList:           thisObj.dataGiltList,
-            boarList:           thisObj.dataBoarList,
-            
-            farmPigLetsOutput:  thisObj.dataFarmPigletsOutput,
-            boarExtMateList:    thisObj.dataBoarExtMateList
+            tsLastReqPigFarmData:   tsLastReqPigFarmData,
+            dataApplication:        dataApplication
         }
     }
     
@@ -1115,23 +1130,17 @@ export function Navigation(){
     
     this.saveToStorage = function() {
         const data = thisObj.getDataToSaveToStorage();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
     }
 
 
     
-    this.loadDataFromStorage = function(){
-        const cached = localStorage.getItem(STORAGE_KEY);
-        if (cached) {
-            const data = JSON.parse(cached);
-            
-            thisObj.dataSowList             = data.sowList;
-            thisObj.dataGiltList            = data.giltList;
-            thisObj.dataBoarList            = data.boarList;
-            thisObj.dataFarmPigletsOutput   = data.farmPigLetsOutput;
-            
-            thisObj.dataBoarExtMateList     = data.boarExtMateList;
-        }
+    this.loadDataFromStorage = function(data){
+        let cur_data;
+        
+        tsLastReqPigFarmData    = data.tsLastReqPigFarmData;
+        
+        cur_data    = data.dataApplication;
     }
     
     
@@ -1143,6 +1152,7 @@ export function Navigation(){
         
         // Save this
         dataApplication = data.application;
+        this.saveToStorage();
         
         
         // Set DataCompanyApp
@@ -1165,12 +1175,12 @@ export function Navigation(){
         const pig_farm_account = data.pig_farm_account;
         
         this.pigFarm.setDataPigFarm(user_current_farm);
+
         
         // The pig_farm_account is the data coming from server;
         // This is broken down into several list as each list maybe updated
         // by user independently.
         this.pigFarm.setDataPigFarmAccount(pig_farm_account);
-        
         
         
         const country   = user_current_farm.location.country;
@@ -1179,10 +1189,6 @@ export function Navigation(){
         // This waits for the logged in user for user authentication
         // before request
         this.managerAddress.setCurCountry(country);
-        
-            
-        // Get report languages based by country
-        this.managerApplicationData.requestCountryDetails(country.hid);
         
             
         const account_hid = pig_farm_account.account.account.hid;
@@ -1216,7 +1222,6 @@ export function Navigation(){
     }
     
 
-    // Update pig farm name on resize for responsive centering
     this.updatePigFarmName = function() {
         // Set Farm name
         const cur_user_farm = thisObj.userControl.getCurrentFarm();
