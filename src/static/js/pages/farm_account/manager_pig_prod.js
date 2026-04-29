@@ -30,7 +30,11 @@ export function ManagerPigProd(input_settings){
     
     this.dataNotPregnantList    = null;
     this.dataProdPigDeadList    = null;
-    this.dataBoarExtMateList    = null;
+    
+    
+    this.getStorageKey = function(){
+        return STORAGE_KEY;
+    }
     
     
     this.getDataToSaveToStorage = function(){
@@ -42,8 +46,7 @@ export function ManagerPigProd(input_settings){
             prodHistoryList:    thisObj.dataProdHistoryList,
             
             notPregnantList:    thisObj.dataNotPregnantList,
-            prodPigDeadList:    thisObj.dataProdPigDeadList,
-            boarExtMateList:    thisObj.dataBoarExtMateList
+            prodPigDeadList:    thisObj.dataProdPigDeadList
         }
     }
     
@@ -55,7 +58,6 @@ export function ManagerPigProd(input_settings){
     }
 
 
-    
     this.loadDataFromStorage = function(){
         const cached = localStorage.getItem(STORAGE_KEY);
         if (cached) {
@@ -69,7 +71,6 @@ export function ManagerPigProd(input_settings){
                                             
             thisObj.dataNotPregnantList     = data.notPregnantList;    
             thisObj.dataProdPigDeadList     = data.prodPigDeadList;    
-            thisObj.dataBoarExtMateList     = data.boarExtMateList;  
         }
     }
     
@@ -922,6 +923,9 @@ export function ManagerPigProd(input_settings){
             const data_ver_num_feed_buy     = data[5];
             const data_ver_num_feed_balance = data[6];
             const data_ver_num_not_pregnant = data[7];
+            const data_ver_num_boar_ext_mate= data[8];
+            const data_ver_num_pig_dead     = data[9];
+            
             
             /*
             parentObj.dataVerNum = {
@@ -932,12 +936,11 @@ export function ManagerPigProd(input_settings){
                 staff:                  data_ver_num_staff,
                 feed_buy:               data_ver_num_feed_buy,
                 feed_balance:           data_ver_num_feed_balance,
-                not_pregnant:           data_ver_num_not_pregnant
+                not_pregnant:           data_ver_num_not_pregnant,
+                boar_ext_mate:          data_ver_num_boar_ext_mate,
+                pig_dead:               data_ver_num_pig_dead 
             };
             */
-            
-            
-            
             
             
             /**
@@ -1031,7 +1034,7 @@ export function ManagerPigProd(input_settings){
         };
         
         
-        parentObj.requestPigFarmDataVerNum(callback_success_ver_num, 
+        parentObj.requestPigFarmDataVerNum(callback_success_ver_num, null, 
             elem_show_error);
         
     }

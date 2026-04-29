@@ -28,6 +28,7 @@ import {ManagerPublicData}          from '../common/manager_public_data.js';
 import {ManagerBusiness}            from '../business/manager_business.js';
 
 import {ManagerSystem}              from './manager_system.js';
+import {ManagerLocalData}           from './manager_local_data.js';
 
 import {UserControl}                from './user_control.js';
 
@@ -216,10 +217,11 @@ export async function getLocationWithFallback() {
 export function Navigation(){
     const thisObj               = this;
 
-    
-    let elemSubnavSummary       = null;
+
+    const STORAGE_KEY           = 'superpig_navigation';
 
     const elemPageLoading       = document.getElementById('loading-page');
+    
 
     let elemNavLeftProductName  = null;
     let elemDesktopPigFarmName  = null;
@@ -260,6 +262,7 @@ export function Navigation(){
     this.managerBusiness        = new ManagerBusiness(this);
     
     this.managerSystem          = new ManagerSystem(this);
+    this.managerLocalData       = new ManagerLocalData(this);
     
     
     this.userControl            = new UserControl(this);
@@ -694,13 +697,31 @@ export function Navigation(){
         // Check if there is a access_token stored
         const bearer_token = localStorage.getItem('access_token');
         
+        // Check if there is a connection to server
+        this.managerSystem.connectionTest(function(status){
+            if (!status.hasInternet) {
+                console.log('\n\nNo internet - 0 bytes transferred');
+          
+            } else if (!status.serverReachable) {
+                console.log('\n\nServer down - 0 bytes transferred');
+          
+            } else {
+                console.log('\n\nHas internet and Server online - 0 bytes transferred');
+              
+                
+            }
+            
+        });
+        
+        
         if (bearer_token){
-            this.requestPigFarmData(bearer_token);
+            thisObj.requestPigFarmData(bearer_token);
         }
         else{
             const langParam = getLanguageParam();
             window.location.href = '/login' + langParam;
         }
+        
     }
     
     
@@ -862,7 +883,6 @@ export function Navigation(){
                     elemPageLoading.classList.add('fade-out');
                     setTimeout(() => {
                         elemPageLoading.style.display = 'none';
-                        //appContent.style.display = 'block';
                     }, 300); // Match fade-out transition time
                                 
                 }
@@ -888,6 +908,8 @@ export function Navigation(){
         this.managerNavLinks.init();
         this.managerPublicSections.init();
         this.managerNavHistory.init();
+        this.managerSystem.init();
+        
         
         this.userControl.init();
         
@@ -1073,6 +1095,46 @@ export function Navigation(){
     }
     
     
+    this.getStorageKey = function(){
+        return STORAGE_KEY;
+    }
+    
+    
+    this.getDataToSaveToStorage = function(){
+        return {
+            sowList:            thisObj.dataSowList,
+            giltList:           thisObj.dataGiltList,
+            boarList:           thisObj.dataBoarList,
+            
+            farmPigLetsOutput:  thisObj.dataFarmPigletsOutput,
+            boarExtMateList:    thisObj.dataBoarExtMateList
+        }
+    }
+    
+    
+    
+    this.saveToStorage = function() {
+        const data = thisObj.getDataToSaveToStorage();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+
+    
+    this.loadDataFromStorage = function(){
+        const cached = localStorage.getItem(STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            thisObj.dataSowList             = data.sowList;
+            thisObj.dataGiltList            = data.giltList;
+            thisObj.dataBoarList            = data.boarList;
+            thisObj.dataFarmPigletsOutput   = data.farmPigLetsOutput;
+            
+            thisObj.dataBoarExtMateList     = data.boarExtMateList;
+        }
+    }
+    
+    
     this.setPageData = function(data){
         
         console.log('\n\nEntryPoint setPageData');
@@ -1214,6 +1276,9 @@ export function Navigation(){
 
         const container_home    = thisObj.pageContainers.getPageContainer(PAGE_ID.HOME);
         const hidden_containers = thisObj.pageContainers.hiddenContainers;
+        
+        // Hide this Global message
+        thisObj.managerSystem.hideMsgNoConnection();
         
         
         // Perform user and account control checks.

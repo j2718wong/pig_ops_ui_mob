@@ -37,7 +37,9 @@ export function PigFarm(_navigation){
         staff:                  0,
         feed_buy:               0,
         feed_balance:           0,
-        not_pregnant:           0
+        not_pregnant:           0,
+        boar_ext_mate:          0,
+        pig_dead:               0
     };
 
     
@@ -137,27 +139,6 @@ export function PigFarm(_navigation){
     this.dataPigFarmAccount     = null;
     
     
-    /**
-     * TODO: What should be done with this?
-     * 
-     * This is technically an account data; not a pig_farm data;
-     * This is the list of operations need to copied for each production entry;
-     * This is a list of combined pig operations and being decomposed in 
-     * navigation.pageAccPigOpsList.setDataAccPigOpsList() method; This list is 
-     * decomposed into 
-     * 
-     *      dataAccGestatingOps     
-     *      dataAccLactatingPigletOps
-     *      dataAccLactatingSowOps  
-     *      dataAccWeaningSowOps    
-     *      dataAccGiltOps          
-     * 
-     * Any changes of the decomposed list will not update this.dataAccPigOpsList
-     * 
-     *   
-     * */
-    this.dataAccPigOpsList      = null;
-    
     this.dataStaffList          = null;
     
     this.dataFarmFeedBuyList    = null;
@@ -186,14 +167,16 @@ export function PigFarm(_navigation){
     let accountDueBillHid       = null;
     
     
+    this.getStorageKey = function(){
+        return STORAGE_KEY;
+    }
+    
     
     this.getDataToSaveToStorage = function(){
         return {
             verNum:             thisObj.dataVerNum,
             pigFarm:            thisObj.dataPigFarm,
             pigFarmAccount:     thisObj.dataPigFarmAccount,
-            
-            accPigOpsList:      thisObj.dataAccPigOpsList,
             
             staffList:          thisObj.dataStaffList,
             farmFeedBuyList:    thisObj.dataFarmFeedBuyList,
@@ -267,8 +250,6 @@ export function PigFarm(_navigation){
         thisObj.dataPigFarmAccount = data;
             
         if ('acc_pig_ops' in data){
-            this.dataAccPigOpsList = data.acc_pig_ops;
-            
             navigation.pageAccPigOpsList.setDataAccPigOpsList(data.acc_pig_ops);
         }
         else{
@@ -317,7 +298,9 @@ export function PigFarm(_navigation){
                     staff:                  data[4],
                     feed_buy:               data[5],
                     feed_balance:           data[6],
-                    not_pregnant:           data[7]
+                    not_pregnant:           data[7],
+                    boar_ext_mate:          data[8],
+                    pig_dead:               data[9]
                 };
                 
                 
@@ -393,9 +376,12 @@ export function PigFarm(_navigation){
     }
  
  
-    this.requestPigFarmDataVerNum = function(callback_success, elem_show_error){
+    this.requestPigFarmDataVerNum = function(callback_success, callback_timeout, 
+                elem_show_error){
+        
         const base_url = window.location.origin;
-        let url = `${base_url}/pig_farm/data_ver_num?pfhid=${thisObj.getPigFarmHid()}&r=1`;
+        const pig_farm_hid = thisObj.getPigFarmHid();
+        const url = `${base_url}/pig_farm/data_ver_num?pfhid=${pig_farm_hid}&r=1`;
         
         
         const bearer_token = localStorage.getItem('access_token');
@@ -433,8 +419,21 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
+                // Check for timeout error
+                if (textStatus === 'timeout') {
+                    if (callback_timeout) {
+                        callback_timeout();
+                    } else {
+                        // Default timeout handling
+                        if (elem_show_error){
+                            elem_show_error.style.display = 'block';
+                            elem_show_error.innerHTML = 'Server no reply. Please try again later.';
+                        }
+                    }
+                } else {
+                    navigation.serverError.serverErrorThrown(jqXHR, 
+                        textStatus, errorThrown);
+                }
             }
         });
         
@@ -468,12 +467,11 @@ export function PigFarm(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
-                    thisObj.dataAccPigOpsList = response.data;
-            
-                    navigation.pageAccPigOpsList.setDataAccPigOpsList(
-                        thisObj.dataAccPigOpsList);
                     
-                    if (callback_success){callback_success(thisObj.dataAccPigOpsList);}
+                    navigation.pageAccPigOpsList.setDataAccPigOpsList(
+                        response.data);
+                    
+                    if (callback_success){callback_success(response.data);}
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(
@@ -520,6 +518,8 @@ export function PigFarm(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataStaffList = response.data;
+                    
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -569,6 +569,8 @@ export function PigFarm(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataFarmFeedBuyList = response.data;
+                    
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -623,7 +625,9 @@ export function PigFarm(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
-                   pig_farm_feed_buy.feed_items = response.data;
+                    pig_farm_feed_buy.feed_items = response.data;
+                    
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }

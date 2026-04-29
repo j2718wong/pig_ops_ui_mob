@@ -13,6 +13,113 @@ export function ManagerSystem(_navigation) {
     const navigation                = _navigation;
     
     
+    let elemNoConnection            = null;
+    
+    
+    this.init = function(){
+        this.afterHtmlRender();
+    }
+    
+    
+    this.afterHtmlRender = function(){
+        this._findElements();
+        this._processAfterHtmlRender();
+        this._bindEventListeners();
+    }
+    
+    
+    this._findElements  = function(){
+        
+         
+        elemNoConnection                = document.getElementById('container-no-connection');
+        
+        
+    }
+    
+    
+    
+    this._processAfterHtmlRender = function(){}
+    
+    this._bindEventListeners = function(){}
+
+    
+    this.hideMsgNoConnection = function(){
+        elemNoConnection.style.display = 'none';
+    }
+    
+    
+    this.showMsgNoConnection = function(){
+        elemNoConnection.style.display = 'block';
+    }
+    
+    
+    /**
+     * Will check connection test; To use:
+     * 
+     * // Usage
+     * navigation.managerSystem.connectionTest((status) => {
+     *     if (!status.hasInternet) {
+     *         console.log('No internet - 0 bytes transferred');
+     *         showNoInternetMessage();
+     *     } else if (!status.serverReachable) {
+     *         console.log('Server down - 0 bytes transferred');
+     *         showServerDownMessage();
+     *     } else {
+     *         console.log('Both working - 0 bytes transferred');
+     *         proceedWithRequest();
+     *     }
+     * });
+     * 
+     * */
+    this.connectionTest = function(callback) {
+        const testResults = {
+            hasInternet: false,
+            serverReachable: false,
+            bytesTransferred: 0,
+            timestamp: Date.now()
+        };
+        
+        let testsCompleted = 0;
+        
+        // Test 1: HEAD request to reliable CDN (tests internet connectivity)
+        fetch('https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js', {
+            method: 'HEAD',
+            cache: 'no-store',
+            timeout: 3000
+        })
+        .then(() => {
+            testResults.hasInternet = true;
+            console.log('Internet: HEAD request successful - 0 bytes');
+        })
+        .catch(() => {
+            testResults.hasInternet = false;
+            console.log('Internet: HEAD request failed');
+        })
+        .finally(() => {
+            testsCompleted++;
+            if (testsCompleted === 2) callback(testResults);
+        });
+        
+        // Test 2: HEAD request to favicon.ico (tests if server is reachable)
+        fetch(`${window.location.origin}/favicon.ico?t=${Date.now()}`, {
+            method: 'HEAD',
+            cache: 'no-store',
+            timeout: 3000
+        })
+        .then(() => {
+            testResults.serverReachable = true;
+            console.log('Server: favicon.ico HEAD request successful - 0 bytes');
+        })
+        .catch((error) => {
+            testResults.serverReachable = false;
+            console.log('Server: favicon.ico HEAD request failed -', error.message);
+        })
+        .finally(() => {
+            testsCompleted++;
+            if (testsCompleted === 2) callback(testResults);
+        });
+    };
+    
     
     this.requestSystemStats = function(callback_success, 
             elem_show_error){

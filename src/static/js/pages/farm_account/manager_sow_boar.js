@@ -31,12 +31,23 @@ export function ManagerSowBoar(input_settings){
     this.dataFarmPigletsOutput  = null;
     
     
+    // Boar external mates
+    this.dataBoarExtMateList    = null;
+    
+    
+    this.getStorageKey = function(){
+        return STORAGE_KEY;
+    }
+    
+    
     this.getDataToSaveToStorage = function(){
         return {
             sowList:            thisObj.dataSowList,
             giltList:           thisObj.dataGiltList,
             boarList:           thisObj.dataBoarList,
-            farmPigLetsOutput:  thisObj.dataFarmPigletsOutput
+            
+            farmPigLetsOutput:  thisObj.dataFarmPigletsOutput,
+            boarExtMateList:    thisObj.dataBoarExtMateList
         }
     }
     
@@ -58,6 +69,8 @@ export function ManagerSowBoar(input_settings){
             thisObj.dataGiltList            = data.giltList;
             thisObj.dataBoarList            = data.boarList;
             thisObj.dataFarmPigletsOutput   = data.farmPigLetsOutput;
+            
+            thisObj.dataBoarExtMateList     = data.boarExtMateList;
         }
     }
     
@@ -449,7 +462,8 @@ export function ManagerSowBoar(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataFarmPigletsOutput = response.data;
-
+                    
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -517,6 +531,10 @@ export function ManagerSowBoar(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    thisObj.dataBoarExtMateList = response.data;
+                    
+                    thisObj.saveToStorage();
+                    
                     if (callback_success){callback_success(response.data);}
                 }
                 else {

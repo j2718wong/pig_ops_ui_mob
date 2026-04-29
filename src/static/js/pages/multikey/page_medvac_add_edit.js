@@ -730,13 +730,14 @@ export function PageMedVacAddEdit(input_settings){
         if (validation != 0) {return;}
         
         
+        /* 2026-04-29: Medvac Brand is optional now
         input_elem = componentMedVacBrand.getElemSelect();
         if (input_medvac_brand == '0'  || input_medvac_brand == '-1'){
             validation = -1;
         }
         addValidationClassToElem(input_elem, validation);
         if (validation != 0) {return;}
-        
+        */
         
         input_elem = componentMedVacType.getElemSelect();
         if (input_medvac_type == '0'  || input_medvac_type == '-1'){
@@ -805,6 +806,10 @@ export function PageMedVacAddEdit(input_settings){
             'staff_hid':        input_staff
             
         };
+        
+        if (input_medvac_brand == '0'  || input_medvac_brand == '-1'){
+            delete post_data.medvac_brand_hid;
+        }
         
         if (showOptions.is_add == true){
             // Add Key

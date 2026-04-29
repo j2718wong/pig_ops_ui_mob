@@ -18,6 +18,7 @@ export function UserControl(_navigation) {
     const thisObj                   = this;
     const navigation                = _navigation;
     
+    const STORAGE_KEY               = 'superpig_user_control';
     
     let elemDesktopUserControl          = null;
     let elemDesktopUserDropdown         = null;
@@ -96,8 +97,38 @@ export function UserControl(_navigation) {
     }
     
     
+    this.getDataToSaveToStorage = function(){
+        return {
+            userAccount:            thisObj.dataUserAccount
+        }
+    }
+    
+    
+    
+    this.saveToStorage = function() {
+        const data = thisObj.getDataToSaveToStorage();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+    
+    
+    this.loadDataFromStorage = function(){
+        const cached = localStorage.getItem(STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            const data_user_account = data.userAccount;  
+            
+            thisObj.setDataUserAccount(data_user_account);  
+        }
+    }
+
+    
+    
     this.setDataUserAccount = function(data){
         this.dataUserAccount= data;
+        
+        this.saveToStorage();
+        
         
         function capitalizeFirst(str) {
             if (!str) return str;
@@ -226,10 +257,6 @@ export function UserControl(_navigation) {
         return userCurrentFarmHid;
     }
     
-    
-    this.getCurrentLanguage = function(){
-        
-    }
     
     
     this.hideNewBillAvailable = function(){

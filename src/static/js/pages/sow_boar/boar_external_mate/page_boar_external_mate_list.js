@@ -241,18 +241,30 @@ export function PageBoarExternalMateList(input_settings){
         elemDateToday.textContent = s_dt_current;
         
 
+        dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
         
-        const callback_success = function(data){
-            dataBoarExtMateList = data;
-            thisObj.renderTable(data);
-            
-            thisObj.showInfoBox(data, elemPageInfo);
-        };
+        if (dataBoarExtMateList == null){
+        
+            const callback_success = function(data){
+                dataBoarExtMateList = data;
+                thisObj.renderTable(data);
+                
+                thisObj.showInfoBox(data, elemPageInfo);
+            };
 
-   
-        // Request BoarExtMate List
-        navigation.pigFarm.managerSowBoar.requestBoarExtMateList(
-            callback_success, null);
+       
+            // Request BoarExtMate List
+            navigation.pigFarm.managerSowBoar.requestBoarExtMateList(
+                callback_success, null);
+        }
+        else{
+            // Ways to refresh navigation.pigFarm.managerSowBoar.dataBoarExtMateList
+            // 1.) Add/edit BoarExtMate entry; 
+            // 2.) navigation.pigFarm.dataVerNum.boar_ext_mate has changed
+            
+            thisObj.renderTable(dataBoarExtMateList);
+            thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
+        }
     }
     
 

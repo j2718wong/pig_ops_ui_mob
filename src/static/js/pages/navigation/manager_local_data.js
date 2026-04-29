@@ -5,7 +5,7 @@
 'use strict';
 
 
-export function ManagerSession(_navigation) {
+export function ManagerLocalData(_navigation) {
     const thisObj                   = this;
     const navigation                = _navigation;
     
