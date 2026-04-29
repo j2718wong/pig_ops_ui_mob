@@ -610,7 +610,8 @@ export function PageMedVacAddEdit(input_settings){
         // Set the datepicker to this date
         elemUiDateMedVac.setDate(cur_medvac.medvac.date_medvac);
         
-        
+        // This is needed as is it needed for the UI to show the dropdown first
+        // Before populating; Otherwise the dropdown are not set
         setTimeout(function(){
             // Set MedVac brand
             if (cur_medvac.medvac.brand){

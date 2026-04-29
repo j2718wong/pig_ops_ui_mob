@@ -102,7 +102,7 @@ export function ManagerSystem(_navigation) {
         
         // Test 2: HEAD request to favicon.ico (tests if server is reachable)
         fetch(`${window.location.origin}/favicon.ico?t=${Date.now()}`, {
-            method: 'HEAD',
+            method: 'GET',
             cache: 'no-store',
             timeout: 3000
         })
