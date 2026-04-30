@@ -146,12 +146,11 @@ export function PageMobGestaLacta(input_settings){
     // if false, current  pig prod view is table
     let curPigProdViewIsCards   = false;
     
+    // Store the previous view state before switching to alarms
+    let previousViewWasCards    = false;
+    
     
     let dataPigProdList         = null;
-
-
-    //let textTranslation         = new TextTranslation();
-    let curUserLanguageKey      = 'en';
 
 
     this.showPageHeaderAlarm     = false;
@@ -1369,45 +1368,52 @@ ${html_style}
         
         // Hide alarms table
         elemPigOpsAlarmTable.style.display = 'none';
+    
+        // Don't force curViewIsPigProdList - respect actual state
+        // Instead, just show the main view
+        elemPigProdList.style.display = 'block';
         curViewIsPigProdList = true;
         
-        
-        // Toggle Cards or Table View`
+        // Toggle Cards or Table View (keep existing logic)
         if (curPigProdViewIsCards == true){
-            console.log('Test 1');
             elemProdCardsContainer.style.display = 'none';
             elemProdTableContainer.style.display = 'block';
-            
             curPigProdViewIsCards = false;
         } else {
-            console.log('Test 2');
             elemProdCardsContainer.style.display = 'block';
             elemProdTableContainer.style.display = 'none';
-            
             curPigProdViewIsCards = true;
         }
-    
+        
         
     }
     
     
     this.onClickPageHeaderAlarm = function(){
-        curPigProdViewIsCards = false;
+        // Save current view state before switching to alarms
+        previousViewWasCards = curPigProdViewIsCards;
         
         if (curViewIsPigProdList == true){
+            // Currently showing list, switch to alarms
             elemPigProdList.style.display = 'none';
             elemPigOpsAlarmTable.style.display = 'block';
-        
             curViewIsPigProdList = false;
-        }
-        else{
+        } else {
+            // Currently showing alarms, switch back to list
             elemPigProdList.style.display = 'block';
             elemPigOpsAlarmTable.style.display = 'none';
-            
-            elemProdCardsContainer.style.display = 'block';
-            elemProdTableContainer.style.display = 'none';
-            
             curViewIsPigProdList = true;
+            
+            // Restore previous card/table state
+            if (previousViewWasCards) {
+                elemProdCardsContainer.style.display = 'block';
+                elemProdTableContainer.style.display = 'none';
+                curPigProdViewIsCards = true;
+            } else {
+                elemProdCardsContainer.style.display = 'none';
+                elemProdTableContainer.style.display = 'block';
+                curPigProdViewIsCards = false;
+            }
         }
     }
     

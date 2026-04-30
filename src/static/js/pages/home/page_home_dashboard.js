@@ -91,6 +91,7 @@ export function PageHomeDashBoard(input_settings){
     const navigation            = input_settings.navigation;
     this.setNavigation(navigation);
     
+    this.STORAGE_KEY            = 'superpig_dashboard';
     
     /*
     Typical settings = {
@@ -204,6 +205,7 @@ export function PageHomeDashBoard(input_settings){
     let dtCurrentDate           = null;
 
     
+    let lastDataFeedBalance     = null;
     let lastVerNumFeedBalance   = null;
     
     
@@ -707,6 +709,35 @@ export function PageHomeDashBoard(input_settings){
     }
     
     
+    this.getDataToSaveToStorage = function(){
+        return {
+            dataFeedBalance:    lastDataFeedBalance,  
+            verNumFeedBalance:  lastVerNumFeedBalance
+        }
+    }
+    
+    
+    
+    this.saveToStorage = function() {
+        const data = thisObj.getDataToSaveToStorage();
+        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
+    }
+
+
+    
+    this.loadDataFromStorage = function(){
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            
+        }
+    }
+    
+    
+    
+    
+    
     this.renderPage = function(page_data){
         thisObj.show();
     }
@@ -1087,7 +1118,9 @@ export function PageHomeDashBoard(input_settings){
             
             // Set last version from pigFarm
             // This verison number increments when there is a chnage in farm feed balance
-            lastVerNumFeedBalance = navigation.pigFarm.dataVerNum.feed_balance;
+            lastVerNumFeedBalance   = navigation.pigFarm.dataVerNum.feed_balance;
+            
+            lastDataFeedBalance     = data;
             
         };
         

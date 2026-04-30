@@ -40,6 +40,8 @@ export function PageAccPigOpsList(input_settings){
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
 
 
+    this.STORAGE_KEY            = 'superpig_acc_pig_ops';
+    
 
     let elemIdNavPrevEntry      = null;
     let elemIdNavNextEntry      = null;
@@ -229,6 +231,9 @@ export function PageAccPigOpsList(input_settings){
                 }
             }
         }
+        
+        // Update local storage
+        thisObj.saveToStorage();
     }
     
     
@@ -236,6 +241,39 @@ export function PageAccPigOpsList(input_settings){
     this.handleWindowResize = function() {
         const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
     
+    }
+    
+    
+    this.getDataToSaveToStorage = function(){
+        return {
+            accGestatingOps:        dataAccGestatingOps,
+            accLactatingPigletOps:  dataAccLactatingPigletOps,
+            accLactatingSowOps:     dataAccLactatingSowOps,
+            accWeaningSowOps:       dataAccWeaningSowOps,
+            accGiltOps:             dataAccGiltOps
+        }
+    }
+    
+    
+    
+    this.saveToStorage = function() {
+        const data = thisObj.getDataToSaveToStorage();
+        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
+    }
+
+
+    
+    this.loadDataFromStorage = function(){
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            dataAccGestatingOps         = data.accGestatingOps;
+            dataAccLactatingPigletOps   = data.accLactatingPigletOps;
+            dataAccLactatingSowOps      = data.accLactatingSowOps;
+            dataAccWeaningSowOps        = data.accWeaningSowOps;
+            dataAccGiltOps              = data.accGiltOps;
+        }
     }
     
     

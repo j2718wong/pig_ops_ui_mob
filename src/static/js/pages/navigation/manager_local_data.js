@@ -108,7 +108,7 @@ export function ManagerLocalData(_navigation) {
      * Will return true if needed to request data; returns false otherwise.
      * */
     this.checkIfToRequestPigFarmData = function(local_data){
-        
+        /*
         console.log('checkIfToRequestPigFarmData; local_data');
         console.log(local_data);
         
@@ -128,26 +128,95 @@ export function ManagerLocalData(_navigation) {
         
         
         // At this point, the navigation.pigFarm.getDataToSaveToStorage() data
-        // is available and saved in storage.
+        // is available and saved in storage. But not yet loaded to app
         const data_pig_farm = local_data[navigation.pigFarm.STORAGE_KEY];
         
-        console.log(`data_pig_farm from storage`);
+        console.log(`\n\ndata_pig_farm from storage`);
         console.log(data_pig_farm);
         
         
+        // Get pig_farm_hid saved in storage
+        let saved_pig_farm_hid = data_pig_farm.pigFarm.pig_farm.hid;
+        */
         
-        // Request 
+        
+        /* Typical navigation.pigFarm.dataVerNum
+        navigation.pigFarm.dataVerNum             = {
+            sow:                    0,
+            boar:                   0,
+            pig_prod:               0,
+            prod_history:           0,
+            staff:                  0,
+            feed_buy:               0,
+            feed_balance:           0,
+            not_pregnant:           0,
+            boar_ext_mate:          0,
+            pig_dead:               0
+        };
+        */
+        
+        /*
+        let saved_pig_farm_ver_num = data_pig_farm.verNum;
+        
+        
+        const callback_success = function(data){
+            // The data structure is should be same to navigation.pigFarm.dataVerNum ;
+            
+            console.log('requestPigFarmDataVerNum data');
+            console.log(data)
+            
+            // Compare data to navigation.pigFarm.dataVerNum 
+            // Only the objects are compared;
+            //
+            // sow
+            // boar
+            
+            
+             
+            
+            
+        };
+        
+        
+        // Request pig_farm data version numbers
+        navigation.pigFarm.requestPigFarmDataVerNum(saved_pig_farm_hid, 
+            callback_success);
+        
+        
         
         return false;
+        * 
+        * */
     }
     
     
     
-    /** Will load data from storage to application;*/
+    /** 
+     * Will load data from storage to application;
+     * This assumes the follwoing:
+     * 1.) the app has no data yet
+     * 2.) verified no internet
+     * 3.) the bearer token is available but not vefiried if still valid.
+     * 4.) The loading of data manually execute what navigation.setPageData() is doing.
+     * 5.) Note the data saved in storage is already processed not the raw data 
+     *      passed from server to client. Therefore cannot call 
+     *      navigation.setPageData().
+     * 
+     * See the individual getDataToSaveToStorage() method, what data is actually
+     * saved to storage. 
+     * */
     this.loadDataFromStorageToApp = function(local_data){
         let cur_data = null;
         
+        // Load data to navigation
         cur_data = local_data[navigation.STORAGE_KEY];
+        navigation.setDataApplication(cur_data.dataApplication);
+        
+        
+        // Load data to navigation.userControl
+        cur_data = local_data[navigation.userControl.STORAGE_KEY];
+        navigation.setDataUserAccount(cur_data.userAccount);
+        
         
         
     }

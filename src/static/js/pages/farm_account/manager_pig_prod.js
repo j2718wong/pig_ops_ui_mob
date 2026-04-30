@@ -101,6 +101,9 @@ export function ManagerPigProd(input_settings){
             }
         } 
         
+        // Update local storage
+        thisObj.saveToStorage();
+        
     }
     
     
@@ -199,6 +202,7 @@ export function ManagerPigProd(input_settings){
                         }
                     }
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -257,6 +261,7 @@ export function ManagerPigProd(input_settings){
                 if (response.result.num == 0){
                     thisObj.dataNotPregnantList = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -315,6 +320,7 @@ export function ManagerPigProd(input_settings){
                 if (response.result.num == 0){
                     thisObj.dataProdPigDeadList = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -505,6 +511,7 @@ export function ManagerPigProd(input_settings){
                     // attach data to data_pig_prod
                     data_pig_prod.data_details = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -563,6 +570,7 @@ export function ManagerPigProd(input_settings){
                     if(data_pig_prod.data_details){ 
                         data_pig_prod.data_details.list_prod_feed = response.data;
                         
+                        // Update local storage
                         thisObj.saveToStorage();
                     }
                     
@@ -635,7 +643,7 @@ export function ManagerPigProd(input_settings){
                     data_pig_prod.data_details.list_health_issues = health_issues;
                     data_pig_prod.data_details.list_notes        = notes;
                     
-                    
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -691,6 +699,7 @@ export function ManagerPigProd(input_settings){
                 if (response.result.num == 0){
                     data_pig_prod.data_details.list_feed_balance = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -746,6 +755,7 @@ export function ManagerPigProd(input_settings){
                 if (response.result.num == 0){
                     data_pig_prod.data_details.list_harvest = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -788,6 +798,7 @@ export function ManagerPigProd(input_settings){
             if (cur_entry.pig_production.hid == pig_prod_hid){
                 prod_list.splice(index, 1);
                 
+                // Update local storage
                 thisObj.saveToStorage();
                 
                 return;
@@ -813,6 +824,7 @@ export function ManagerPigProd(input_settings){
             if (cur_entry.pig_production.hid == pig_prod_hid){
                 prod_list.splice(index, 1, new_prod_entry);
                 
+                // Update local storage
                 thisObj.saveToStorage();
                 
                 return;
@@ -856,6 +868,8 @@ export function ManagerPigProd(input_settings){
                     thisObj.dataGestatingList.splice(index, 1, new_prod_entry);
                     
                     // It is updating the thisObj.dataGestatingList 
+                    
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     return;

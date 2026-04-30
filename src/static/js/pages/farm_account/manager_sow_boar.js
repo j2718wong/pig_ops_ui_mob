@@ -169,6 +169,7 @@ export function ManagerSowBoar(input_settings){
                         thisObj.setDataBoarList(response.data);
                     }
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -335,6 +336,7 @@ export function ManagerSowBoar(input_settings){
                     // attach data to data_sow_boar
                     data_sow_boar.data_details = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -407,6 +409,7 @@ export function ManagerSowBoar(input_settings){
                     data_sow_boar.data_details.list_health_issues = health_issues;
                     data_sow_boar.data_details.list_notes        = notes;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -458,6 +461,7 @@ export function ManagerSowBoar(input_settings){
                 if (response.result.num == 0){
                     thisObj.dataFarmPigletsOutput = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -528,6 +532,7 @@ export function ManagerSowBoar(input_settings){
                 if (response.result.num == 0){
                     thisObj.dataBoarExtMateList = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}

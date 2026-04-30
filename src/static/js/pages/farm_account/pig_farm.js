@@ -175,7 +175,9 @@ export function PigFarm(_navigation){
             
             staffList:          thisObj.dataStaffList,
             farmFeedBuyList:    thisObj.dataFarmFeedBuyList,
-            summaryReportList:  thisObj.dataSummaryReportList
+            summaryReportList:  thisObj.dataSummaryReportList,
+            
+            lastFeedBalance:    thisObj.dataLastFeedBalance
         }
     }
     
@@ -210,6 +212,8 @@ export function PigFarm(_navigation){
             thisObj.dataStaffList           = data.staffList;      
             thisObj.dataFarmFeedBuyList     = data.farmFeedBuyList;
             thisObj.dataSummaryReportList   = data.summaryReportList;
+            
+            thisObj.dataLastFeedBalance     = data.lastFeedBalance;
         }
     }
     
@@ -251,6 +255,7 @@ export function PigFarm(_navigation){
         console.log('\n\nsetDataPigFarmAccount');
         console.log(data);
 
+        // Update local storage
         thisObj.saveToStorage();
 
             
@@ -538,6 +543,7 @@ export function PigFarm(_navigation){
                 if (response.result.num == 0){
                     thisObj.dataStaffList = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -589,6 +595,7 @@ export function PigFarm(_navigation){
                 if (response.result.num == 0){
                     thisObj.dataFarmFeedBuyList = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
@@ -646,6 +653,7 @@ export function PigFarm(_navigation){
                 if (response.result.num == 0){
                     pig_farm_feed_buy.feed_items = response.data;
                     
+                    // Update local storage
                     thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}

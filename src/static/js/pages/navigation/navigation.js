@@ -715,12 +715,6 @@ export function Navigation(){
                 console.log('\n\nHas internet and Server online');
                 
                 if (bearer_token){
-                    console.log('Test A');
-                    const is_to_request = thisObj.managerLocalData
-                                .checkIfToRequestPigFarmData(local_data);
-                    
-                    
-                    
                     thisObj.requestPigFarmData(bearer_token);
                 }
                 else{
@@ -901,6 +895,7 @@ export function Navigation(){
                     thisObj.initComponents();
                     thisObj.afterHtmlRender();
                     
+                    // Set PageData
                     thisObj.setPageData(response.data);
                     
                     // Hide loading page and show content
@@ -1144,30 +1139,22 @@ export function Navigation(){
     }
     
     
+    /**
+     * This is used in processing result of navigation.requestPigFarmData();
+     * 
+     * */
     this.setPageData = function(data){
         
         console.log('\n\nEntryPoint setPageData');
         console.log(data);
         
         
-        // Save this
-        dataApplication = data.application;
-        this.saveToStorage();
-        
-        
-        // Set DataCompanyApp
-        this.managerApplicationData.setDataCompanyApp(data.application);
-        this.managerPublicSections.setDataCompanyApp(data.application);
+        // Set Data application 
+        this.setDataApplication(data.application);
         
         
         // Set UserAccount
-        this.userControl.setDataUserAccount(data.user_account);
-        this.updatePigFarmName();
-        
-        
-        // Set Account; this will be read from data.user_account.account
-        this.account.setAccount(data.user_account.account)
-        
+        this.setDataUserAccount(data.user_account);
         
         
         // Set Pig Farm
@@ -1215,6 +1202,27 @@ export function Navigation(){
         
     }
 
+
+    this.setDataApplication = function(data_application){
+        // Save this
+        dataApplication = data_application;
+        this.saveToStorage();
+        
+        
+        // Set DataCompanyApp
+        this.managerApplicationData.setDataCompanyApp(data_application);
+        this.managerPublicSections.setDataCompanyApp(data_application);
+    }
+
+
+    this.setDataUserAccount = function(data_user_account){
+        this.userControl.setDataUserAccount(data_user_account);
+        this.updatePigFarmName();
+        
+        
+        // Set Account; this will be read from data.user_account.account
+        this.account.setAccount(data_user_account.account);
+    }
 
     
     this.addDataToSaveBeforePageUnload = function(app_data_to_save){

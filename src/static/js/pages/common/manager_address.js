@@ -55,7 +55,7 @@ export function ManagerAddress(_navigation){
         const cached = localStorage.getItem(thisObj.STORAGE_KEY);
         if (cached) {
             const data = JSON.parse(cached);
-
+            
             // Same country as saved in local storage;
             if (curCountry.hid == data.curCountry.hid){
             
@@ -68,6 +68,7 @@ export function ManagerAddress(_navigation){
         if (to_request_level_1 > 0) {
             thisObj.requestDataAddressLevel1(curCountry.hid);
         }
+        
     }
     
     
