@@ -715,7 +715,7 @@ export function Navigation(){
                 console.log('\n\nHas internet and Server online');
                 
                 if (bearer_token){
-                    thisObj.requestPigFarmData(bearer_token);
+                    thisObj.requestInitialPigFarmData(bearer_token);
                 }
                 else{
                     const langParam = getLanguageParam();
@@ -729,7 +729,7 @@ export function Navigation(){
         
         /** Original code
         if (bearer_token){
-            thisObj.requestPigFarmData(bearer_token);
+            thisObj.requestInitialPigFarmData(bearer_token);
         }
         else{
             const langParam = getLanguageParam();
@@ -779,7 +779,7 @@ export function Navigation(){
     
     
     // This is first request if there is a token saved in client browser
-    this.requestPigFarmData = async function(bearer_token){
+    this.requestInitialPigFarmData = async function(bearer_token){
         //thisObj.testGPS();
         
         const base_url = window.location.origin;
@@ -854,7 +854,7 @@ export function Navigation(){
                     
                     
                     
-                    // The data.pig_farm_account is normally  not null.
+                    // The data.initial_farm_data is normally  not null.
                     // This can be null from these cases.
                     // 
                     // 1.) The user creates an account, but did not 
@@ -880,9 +880,9 @@ export function Navigation(){
                     //      - revoke the access_code of the user (
                     //          the user account will be set to null
                     //          and the access token becomes invalid); 
-                    const pig_farm_account = response.data.pig_farm_account;
+                    const initial_farm_data = response.data.initial_farm_data;
                     
-                    if (pig_farm_account == null){
+                    if (initial_farm_data == null){
                         window.location.href = "/login?state=NF";
                         return;
                     }
@@ -1140,7 +1140,7 @@ export function Navigation(){
     
     
     /**
-     * This is used in processing result of navigation.requestPigFarmData();
+     * This is used in processing result of navigation.requestInitialPigFarmData();
      * 
      * */
     this.setPageData = function(data){
@@ -1159,15 +1159,14 @@ export function Navigation(){
         
         // Set Pig Farm
         const user_current_farm = this.userControl.getCurrentFarm();
-        const pig_farm_account = data.pig_farm_account;
-        
         this.pigFarm.setDataPigFarm(user_current_farm);
 
         
         // The pig_farm_account is the data coming from server;
         // This is broken down into several list as each list maybe updated
         // by user independently.
-        this.pigFarm.setDataPigFarmAccount(pig_farm_account);
+        const initial_farm_data = data.initial_farm_data;
+        this.pigFarm.initializeFarmData(initial_farm_data);
         
         
         const country   = user_current_farm.location.country;
@@ -1178,7 +1177,7 @@ export function Navigation(){
         this.managerAddress.setCurCountry(country);
         
             
-        const account_hid = pig_farm_account.account.account.hid;
+        const account_hid = initial_farm_data.account.account.hid;
         this.pigFarm.accountLists.setPigFarmAccountHid(account_hid);
         
         // Request account feed supplier
@@ -1304,7 +1303,7 @@ export function Navigation(){
             }
             
 
-            const pig_farm_account = thisObj.pigFarm.dataPigFarmAccount.account.account;
+            const pig_farm_account = thisObj.pigFarm.dataPigFarmAccount.account;
             const options = {
                 account_code:   pig_farm_account.hid,   
                 account_name:   pig_farm_account.name   

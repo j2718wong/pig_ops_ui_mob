@@ -100,7 +100,7 @@ export function ManagerLocalData(_navigation) {
      * call was already successful.
      * 
      * 
-     * If this returns true, the method navigation.requestPigFarmData(bearer_token)
+     * If this returns true, the method navigation.requestInitialPigFarmData(bearer_token)
      * will be called and will perform the normal process of requesting pig farm 
      * data from server.
      * 
@@ -196,7 +196,7 @@ export function ManagerLocalData(_navigation) {
      * This assumes the follwoing:
      * 1.) the app has no data yet
      * 2.) verified no internet
-     * 3.) the bearer token is available but not vefiried if still valid.
+     * 3.) the bearer token is available but not verified if still valid.
      * 4.) The loading of data manually execute what navigation.setPageData() is doing.
      * 5.) Note the data saved in storage is already processed not the raw data 
      *      passed from server to client. Therefore cannot call 
@@ -218,6 +218,11 @@ export function ManagerLocalData(_navigation) {
         navigation.setDataUserAccount(cur_data.userAccount);
         
         
+        // Set Pig Farm
+        const user_current_farm = navigation.userControl.getCurrentFarm();
+        navigation.pigFarm.setDataPigFarm(user_current_farm);
+        
+        // Load data to navigation.userControl
         
     }
 

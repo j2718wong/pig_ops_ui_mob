@@ -220,7 +220,7 @@ export function PigFarm(_navigation){
     
     
     this.getPigFarmAccountHid = function(){
-        return thisObj.dataPigFarmAccount.account.account.hid;
+        return thisObj.dataPigFarmAccount.account.hid;
     }
     
     
@@ -239,25 +239,85 @@ export function PigFarm(_navigation){
     }
     
     
+    /**
+     * Will set basic pig_farm data.
+     * 
+     * Typical data:
+     * {
+          "pig_farm": {
+            "flag": 0,
+            "name": "J Pig Farm",
+            "num_farrow_crates": 3,
+            "hid": "3QLG0EDV"
+          },
+          "location": {
+            "country": {
+              "name": "Philippines",
+              "hid": "3QLG0EDV"
+            },
+            "address": {
+              "level_1": {
+                "name": "Cebu",
+                "hid": "3QLGX0RD"
+              },
+              "level_2": {
+                "name": "City of Naga",
+                "hid": "NRX2XBLV"
+              },
+              "level_3": {
+                "name": "Tagjaguimit",
+                "hid": "PE70558L"
+              }
+            }
+          },
+          "data_ver_num": {
+            "sow": 1,
+            "boar": 1,
+            "pig_prod": 7,
+            "prod_history": 1,
+            "staff": 0,
+            "feed_buy": 138,
+            "feed_balance": 20,
+            "not_pregnant": 2,
+            "boar_ext_mate": 0,
+            "pig_dead": 0
+          }
+        }
+     * 
+     * */
     this.setDataPigFarm = function(data){
         this.dataPigFarm = data;
         
         console.log('\n\nsetDataPigFarm');
         console.log(data);
-        
     }
     
     
-    
-    this.setDataPigFarmAccount = function(data){
-        thisObj.dataPigFarmAccount = data;
+    /**
+     * This will save minimum pig farm objects
+     * 
+     * Typical data:
+     * 
+    Object { acc_pig_ops: (11) […], sow_list: (8) […], boar_list: (3) […], staff_list: (1) […], account: {…} }
+​
+    acc_pig_ops: Array(11) [ {…}, {…}, {…}, … ]
+    ​
+    account: Object { account: {…}, settings_operations: {…} }
+    ​
+    boar_list: Array(3) [ {…}, {…}, {…} ]
+    ​
+    sow_list: Array(8) [ {…}, {…}, {…}, … ]
+    ​
+    staff_list: Array [ {…} ]
+    ​
+    */
+    this.initializeFarmData = function(data){
+        
 
-        console.log('\n\nsetDataPigFarmAccount');
+        console.log('\n\ninitializeFarmData');
         console.log(data);
 
-        // Update local storage
-        thisObj.saveToStorage();
-
+        
             
         if ('acc_pig_ops' in data){
             navigation.pageAccPigOpsList.setDataAccPigOpsList(data.acc_pig_ops);
@@ -286,12 +346,20 @@ export function PigFarm(_navigation){
             }
         }
         
-        thisObj.dataStaffList = data.staff_list;
+        thisObj.dataPigFarmAccount = data.account;
         
+        thisObj.dataStaffList = data.staff_list;
+
+
+        // Update local storage
+        thisObj.saveToStorage();
+
         
         thisObj.managerSowBoar.setDataSowList(data.sow_list);
         thisObj.managerSowBoar.setDataBoarList(data.boar_list);
+
             
+
             
         if ('pig_production' in data){
             thisObj.managerPigProd.setDataPigProdList(data.pig_production);
@@ -356,17 +424,10 @@ export function PigFarm(_navigation){
     
     this.getSettingsOperations  = function(){
         if (thisObj.dataPigFarmAccount == null){return null;}
-        return thisObj.dataPigFarmAccount.account.settings_operations;
+        return thisObj.dataPigFarmAccount.settings_operations;
     }
     
     
-
-    
-    this.getAccountHid = function(){
-        if (thisObj.dataPigFarmAccount == null){return null;}
-        return thisObj.dataPigFarmAccount.account.account.hid;
-    }
-     
     
     /**
     Will return true if user is alowed to add or edit;
@@ -466,7 +527,8 @@ export function PigFarm(_navigation){
     
     this.requestDataAccPigOpsList = function(callback_success, elem_show_error){
         const base_url = window.location.origin;
-        let url = `${base_url}/account_pig_ops/list?ahid=${thisObj.getAccountHid()}`;
+        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
+        let url = `${base_url}/account_pig_ops/list?ahid=${farm_account_hid}`;
         
         
         const bearer_token = localStorage.getItem('access_token');
