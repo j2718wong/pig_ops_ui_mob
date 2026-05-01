@@ -707,6 +707,11 @@ export function Navigation(){
         this.managerSystem.connectionTest(function(status){
             if (!status.hasInternet) {
                 console.log('\n\nNo internet - 0 bytes transferred');
+                
+                if (bearer_token){
+                    thisObj.managerLocalData.loadDataFromStorageToApp();
+                    
+                }
           
             } else if (!status.serverReachable) {
                 console.log('\n\nServer down - 0 bytes transferred');
@@ -1162,7 +1167,7 @@ export function Navigation(){
         this.pigFarm.setDataPigFarm(user_current_farm);
 
         
-        // The pig_farm_account is the data coming from server;
+        // The initial_farm_data is the data coming from server;
         // This is broken down into several list as each list maybe updated
         // by user independently.
         const initial_farm_data = data.initial_farm_data;

@@ -89,27 +89,8 @@ export function PigFarm(_navigation){
     
     /**
      * This is the typical data of dataPigFarmAccount;
-     * This is requested on page load.
-     * 
-     
-    Object { acc_pig_ops: (13) […], sow_list: (14) […], boar_list: (4) […], staff_list: (4) […], account: {…} }
-​
-    acc_pig_ops: Array(13) [ {…}, {…}, {…}, … ]
-    ​
-    account: Object { account: {…}, settings_operations: {…} }
-    ​
-    boar_list: Array(4) [ {…}, {…}, {…}, … ]
-    ​
-    sow_list: Array(14) [ {…}, {…}, {…}, … ]
-    ​
-    staff_list: Array(4) [ {…}, {…}, {…}, … ]
-    ​
-    <prototype>: Object { … }
-    pig_farm.js:161:17
-    
-    
-    This is what inside of account block; This is a bare minimum account 
-    information used for operations.
+     * This is requested on page load. This is a bare minimum account 
+      information used for operations.
     
     {
         "account": {
@@ -208,6 +189,7 @@ export function PigFarm(_navigation){
             
             thisObj.dataVerNum              = data.verNum;     
             
+            thisObj.dataPigFarmAccount      = data.pigFarmAccount;
             
             thisObj.dataStaffList           = data.staffList;      
             thisObj.dataFarmFeedBuyList     = data.farmFeedBuyList;
@@ -294,7 +276,7 @@ export function PigFarm(_navigation){
     
     
     /**
-     * This will save minimum pig farm objects
+     * This will initialize pig farm data.
      * 
      * Typical data:
      * 

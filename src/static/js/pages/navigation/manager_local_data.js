@@ -222,7 +222,22 @@ export function ManagerLocalData(_navigation) {
         const user_current_farm = navigation.userControl.getCurrentFarm();
         navigation.pigFarm.setDataPigFarm(user_current_farm);
         
-        // Load data to navigation.userControl
+        
+        // Load data to navigation.pigFarm
+        navigation.pigFarm.loadDataFromStorage();
+        
+        
+        // Load data to navigation.pigFarm.managerSowBoar
+        navigation.pigFarm.managerSowBoar.loadDataFromStorage();
+        
+        
+        // Load data to navigation.pigFarm.managerPigProd
+        navigation.pigFarm.managerPigProd.loadDataFromStorage();
+        
+        
+        // Load data to navigation.pageAccPigOpsList
+        navigation.pageAccPigOpsList.loadDataFromStorage();
+        
         
     }
 
