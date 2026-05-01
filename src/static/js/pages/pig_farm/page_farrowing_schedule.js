@@ -608,16 +608,34 @@ ${html_style}
     
     this.getWeeklyMondays = function(startDate, endDate) {
         const mondays = [];
-        const current = new Date(startDate);
         
-        while (current.getDay() !== 1) {
-            current.setDate(current.getDate() + 1);
+        
+        // Normalize dates to UTC midnight to avoid timezone issues
+        const start = new Date(Date.UTC(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate()
+        ));
+        
+        const end = new Date(Date.UTC(
+            endDate.getFullYear(),
+            endDate.getMonth(),
+            endDate.getDate()
+        ));
+        
+        // Find first Monday on or after start
+        const current = new Date(start);
+        while (current.getUTCDay() !== 1) {
+            current.setUTCDate(current.getUTCDate() + 1);
         }
         
-        while (current <= endDate) {
-            mondays.push(new Date(current));
-            current.setDate(current.getDate() + 7);
+        // Keep adding weeks until we exceed end
+        while (current <= end) {
+            const monday = new Date(current);
+            mondays.push(monday);
+            current.setUTCDate(current.getUTCDate() + 7);
         }
+        
         
         return mondays;
     }
@@ -782,7 +800,7 @@ ${html_style}
         }
         
         const startDate = weeklyDates[0];
-        const endDate = weeklyDates[weeklyDates.length - 1];
+        const endDate = new Date(weeklyDates[weeklyDates.length - 1]);  // Create a copy
         endDate.setDate(endDate.getDate() + 6);
         const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
         const pixelsPerDay = 4;
