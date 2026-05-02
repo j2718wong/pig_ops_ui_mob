@@ -39,6 +39,8 @@ export function PageMyAccount(input_settings){
     const navigation            = input_settings.navigation;
     this.setNavigation(navigation);
     
+    const DEFAULT_ACC_MAX_NUM_SOW_BOAR_FREE = 3;
+    
       
     /*
     Typical settings = {
@@ -56,9 +58,20 @@ export function PageMyAccount(input_settings){
     
     let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
-    let elemIdInfoBox           = null;
     
+    let elemIdAccountNameDisplay    = null;
+    let elemIdAccountNameEditInput  = null;
+    let elemIdInvalidAccNameShow    = null;
+    let elemIdAccountCodeDisplay    = null;
     
+    let elemIdAccountNotStarted = null;
+    
+    let elemIdMaxSowBoarGilt    = null;
+    
+    let elemIdFreeTrialSection  = null;
+    let elemIdFreeTrialStarted  = null;
+    let elemIdFreeTrialExpiry   = null;
+    let elemIdAfterFreeTrialLink= null;
     
     let elemIdServerErrorMsg    = null;
     
@@ -70,21 +83,22 @@ export function PageMyAccount(input_settings){
     
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;
-    let elemInfoBox             = null;
-    
+
     
     let elemAccountNameDisplay  = null;
     let elemAccountNameEditInput= null;
     let elemInvalidAccNameShow  = null;
-    
     let elemAccountCodeDisplay  = null;
     
-    let elemFreeTrialSection    = null;
-    let elemFreeTrialNotStarted = null;
-    let elemFreeTrialStarted    = null;
     
+    let elemAccountNotStarted   = null;
+    
+    let elemMaxSowBoarGilt      = null;
+    
+    let elemFreeTrialSection    = null;
+    let elemFreeTrialStarted    = null;
     let elemFreeTrialExpiry     = null;
-    let elemFreeTrialLink       = null;
+    let elemAfterFreeTrialLink  = null;
     
     
     let elemServerErrorMsg      = null;
@@ -284,17 +298,112 @@ export function PageMyAccount(input_settings){
     
     
     
+    this._writeInlineStyle = function(){
+        const html = `
+        <style>
+            
+            .limit-info {
+                background: #e3f2fd;
+                border-radius: 12px;
+                padding: 0.8rem 0.8rem;
+                margin-bottom: 1rem;
+            }
+            
+            .limit-number {
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: #1565c0;
+                background: white;
+                padding: 0.2rem 0.75rem;
+                border-radius: 20px;
+                display: inline-block;
+            }
+            
+            .billing-info-compact {
+                background: #f0f7f4;
+                border-radius: 10px;
+                padding: 0.75rem 1rem;
+                margin: 0.75rem 0;
+            }
+            
+            .billing-compact-title {
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: #2e7d64;
+                margin-bottom: 0.5rem;
+            }
+            
+            .billing-compact-items {
+                display: flex;
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+            
+            .billing-item {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.8rem;
+                color: #333;
+            }
+            
+            .billing-bullet {
+                width: 18px;
+                font-size: 0.75rem;
+                color: #2e7d64;
+            }
+            
+            .limit-badge {
+                display: inline-block;
+                background: #2e7d64;
+                color: white;
+                font-weight: 700;
+                font-size: 0.7rem;
+                padding: 0.05rem 0.4rem;
+                border-radius: 16px;
+                min-width: 24px;
+                text-align: center;
+            }
+            
+            .billing-item strong {
+                color: #1a5c4a;
+            }
+        </style>
+        `;
+        return html;
+        
+    }
+    
+    
     this.render = function(){
         
-        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
-        elemIdBtnClose          = `${settings.uniqueKey}-close`;
+        elemIdHeaderTitle           = `${settings.uniqueKey}-title`;
+        elemIdBtnClose              = `${settings.uniqueKey}-close`;
         
+        elemIdAccountNameDisplay    = `${settings.uniqueKey}-acc-name-display`;
+        elemIdAccountNameEditInput  = `${settings.uniqueKey}-acc-name-edit`;
+        elemIdInvalidAccNameShow    = `${settings.uniqueKey}-inv-account-show`;
+        elemIdAccountCodeDisplay    = `${settings.uniqueKey}-acc-code-display`;
+        
+        elemIdAccountNotStarted     = `${settings.uniqueKey}-acc-not-started`;
+        
+        elemIdMaxSowBoarGilt        = `${settings.uniqueKey}-max-sow-boar-gilt`;
+        
+        
+        elemIdFreeTrialSection      = `${settings.uniqueKey}-free-trial-section`;
+        elemIdFreeTrialStarted      = `${settings.uniqueKey}-free-trial-started`;
+        elemIdFreeTrialExpiry       = `${settings.uniqueKey}-free-trial-expiry`;
+        elemIdAfterFreeTrialLink    = `${settings.uniqueKey}-after-free-trial`;
+        
+        
+        const html_style        = thisObj._writeInlineStyle();
         
         const html_table_farm   =  pigFarmTable.getHtml();
     
         
         const html =`
 
+${html_style}
         
 <div class="form-container">
 
@@ -308,40 +417,65 @@ export function PageMyAccount(input_settings){
     
     <div class="modal-body">
         <!-- ========== ACCOUNT SECTION ========== -->
-        <div id="accountPlainGroup">
-            <div class="account-plain">
+        <div>
+            <div>
                 <!-- editable account name (read-only text by default) -->
-                <div id="accountNameDisplay" class="account-name-text"></div>
+                <div id="${elemIdAccountNameDisplay}" class="account-name-text"></div>
             
                 <!-- inline input for editing (hidden by default) -->
-                <input type="text" id="accountNameEditInput" class="account-name-input hidden-section" value="" placeholder="Account name">
+                <input type="text" id="${elemIdAccountNameEditInput}" 
+                    class="account-name-input hidden-section" 
+                    value="" placeholder="Account name">
 
-                <div id="invalid-acc-name-show" class="invalid-feedback" style="display:none;">
+                <div id="${elemIdInvalidAccNameShow}" class="invalid-feedback" style="display:none;">
                     <i class="fas fa-triangle-exclamation"></i>
                     <span id="invalid-acc-name-msg">Invalid. Minimum 8 characters</span> 
                 </div>
 
-                <!-- account code (always plain text below) -->
-                <div id="accountCodeDisplay" class="account-code">Account Code: 0000</div>
+                <div id="${elemIdAccountCodeDisplay}" class="account-code">Account Code: 0000</div>
             </div>
           
         </div>
         
-        <!-- ========== FREE TRIAL EXPIRY SECTION ========== -->
-        <div id="free-trial-section" class="free-trial-section">
-            <div class="free-trial-container">
-                <div id="free-trial-not-started">
-                    Your 90-day free  trial will start after recording your first sow, boar or gilt.
-                    Feel free to explore first the features of this application.
-                </div>
-                
-                <div id="free-trial-started">
-                    <div class="free-trial-expiry-text">Your 90 days free trial will expire on</div>
-                    <div id="freeTrialExpiry" class="free-trial-expiry-date">02 June 2026</div> 
-                </div>
-                <a href="#" id="freeTrialLearnMore" class="free-trial-link">What happens after free trial?</a>
-            </div>
+        
+        <!-- INFO BANNER - New Account -->
+        <div id="${elemIdAccountNotStarted}">
+            <h4>Welcome to SuperPig!</h4>
+            
+            <p>Your account is ready. Start adding sows, boars, and gilts 
+            to unlock farm insights and activate your free trial.
+            Please feel free to explore how to use Superpig.</p>
         </div>
+
+        
+        <!-- FREE TRIAL INFO -->
+        <div class="limit-info">
+            <h2 style="margin: 0 0 0.5rem 0;">Free Tier Limit</h2>
+            <p style="margin: 0 0 0.5rem 0;">Your account remains <strong>completely free</strong> 
+            as long as your sow/boar/gilt count stays at or below</p>
+            <div class="limit-number">
+                MAX: <span id="${elemIdMaxSowBoarGilt}">${DEFAULT_ACC_MAX_NUM_SOW_BOAR_FREE}</span> pigs
+            </div>
+            
+            <p> 
+                Once your account exceed this limit, the 90-day free trial will begin automatically.
+            </p>
+            
+            <a href="#" id="${elemIdAfterFreeTrialLink}" class="free-trial-link">What happens after free trial?</a>
+        </div>
+        
+        <!-- FREE TRIAL EXPIRY SECTION -->
+        <div id="${elemFreeTrialSection}" class="free-trial-section">
+                
+            <div id="${elemIdFreeTrialStarted}">
+                <div class="free-trial-expiry-text">Your 90 days free trial will expire on</div>
+                <div id="${elemIdFreeTrialExpiry}" class="free-trial-expiry-date">02 June 2026</div> 
+            </div>
+            
+            
+        </div>
+        
+        
         
         <div style = "margin-top:1rem;">
         ${html_table_farm}
@@ -377,19 +511,21 @@ export function PageMyAccount(input_settings){
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         
         
-        elemAccountNameDisplay  = elemDivContainer.querySelector('#accountNameDisplay');
-        elemAccountNameEditInput= elemDivContainer.querySelector('#accountNameEditInput');
-        elemInvalidAccNameShow  = elemDivContainer.querySelector('#invalid-acc-name-show');
+        elemAccountNameDisplay  = elemDivContainer.querySelector('#'+elemIdAccountNameDisplay);
+        elemAccountNameEditInput= elemDivContainer.querySelector('#'+elemIdAccountNameEditInput);
+        elemInvalidAccNameShow  = elemDivContainer.querySelector('#'+elemIdInvalidAccNameShow);
+        elemAccountCodeDisplay  = elemDivContainer.querySelector('#'+elemIdAccountCodeDisplay);
         
-        elemAccountCodeDisplay  = elemDivContainer.querySelector('#accountCodeDisplay');
+        elemAccountNotStarted   = elemDivContainer.querySelector('#'+elemIdAccountNotStarted);
+
+
+        elemMaxSowBoarGilt      = elemDivContainer.querySelector('#'+elemIdMaxSowBoarGilt);
+
+        elemFreeTrialSection    = elemDivContainer.querySelector('#'+elemIdFreeTrialSection);
         
-        // New elements for free trial
-        elemFreeTrialSection    = elemDivContainer.querySelector('#free-trial-section');
-        
-        elemFreeTrialNotStarted = elemDivContainer.querySelector('#free-trial-not-started');
-        elemFreeTrialStarted    = elemDivContainer.querySelector('#free-trial-started');
-        elemFreeTrialExpiry     = elemDivContainer.querySelector('#freeTrialExpiry');
-        elemFreeTrialLink       = elemDivContainer.querySelector('#freeTrialLearnMore');
+        elemFreeTrialStarted    = elemDivContainer.querySelector('#'+elemIdFreeTrialStarted);
+        elemFreeTrialExpiry     = elemDivContainer.querySelector('#'+elemIdFreeTrialExpiry);
+        elemAfterFreeTrialLink  = elemDivContainer.querySelector('#'+elemIdAfterFreeTrialLink);
         
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
         
@@ -433,9 +569,9 @@ export function PageMyAccount(input_settings){
         
         elemAccountNameEditInput.addEventListener('blur', thisObj.exitEditAccAndSave);
         
-        // Bind free trial link click event
-        if (elemFreeTrialLink) {
-            elemFreeTrialLink.addEventListener('click', function(event) {
+        // Bind after free trial link click event
+        if (elemAfterFreeTrialLink) {
+            elemAfterFreeTrialLink.addEventListener('click', function(event) {
                 event.preventDefault();
                 
                 let go_back_page    = navigation.curPageNavigated.pageContainer;
@@ -494,17 +630,40 @@ export function PageMyAccount(input_settings){
         console.log(`accountInfo`);
         console.log(accountInfo);
         
+        
         const account_flag = accountInfo.account.flag;
         
-        if ((account_flag & FLAG_BITS.ACCOUNT.FREE_TRIAL_STARTED) > 0){
+        if (accountInfo.account.count_sow_boar == 0){
+            elemAccountNotStarted.style.display      = 'block';
+        }
+        else{
+            elemAccountNotStarted.style.display      = 'none';
+        }
+        
+        
+        let to_show_free_trial_started = 0; 
+        
+        
+        // Do not show free trial has started if account is IS_BILL_EXEMPTED > 0  
+        if ((account_flag & FLAG_BITS.ACCOUNT.IS_BILL_EXEMPTED) == 0){
+            if ((account_flag & FLAG_BITS.ACCOUNT.FREE_TRIAL_STARTED) > 0){
+                to_show_free_trial_started = 1;
+            }
+        }
+        
+        
+        
+        elemFreeTrialExpiry.textContent = '';
+        
+        
+        
+        if (to_show_free_trial_started > 0){
             elemFreeTrialStarted.style.display      = 'block';   
-            elemFreeTrialNotStarted.style.display   = 'none';
         }
         else{
             elemFreeTrialStarted.style.display      = 'none';
-            elemFreeTrialNotStarted.style.display   = 'block';
         }
-            
+        
         
         /*
         Typical options
@@ -526,10 +685,28 @@ export function PageMyAccount(input_settings){
             navigation.showThisPage(showOptions.go_back_page);
         };
         
+        
+        this.populateFreeTrialValues();
     
 
         this.populateForm();
        
+    }
+    
+    
+    this.populateFreeTrialValues = function(){
+        const callback_success = function(data){
+            
+            let  max_num_sow_boar_free = data.ACC_MAX_NUM_SOW_BOAR_FREE;
+            
+            if (max_num_sow_boar_free >= DEFAULT_ACC_MAX_NUM_SOW_BOAR_FREE){
+                elemMaxSowBoarGilt.textContent = max_num_sow_boar_free;
+            }
+            
+        };
+        
+        navigation.managerBusiness.requestListOfValues(callback_success);
+        
     }
     
     

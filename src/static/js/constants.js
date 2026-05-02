@@ -377,7 +377,9 @@ const FLAG_BITS ={
     
     ACCOUNT:{
         ENABLE:                 1,
-        FREE_TRIAL_STARTED:     2
+        FREE_TRIAL_STARTED:     2,
+        
+        IS_BILL_EXEMPTED:       16    
     },
     
     PIG_PROD:{
