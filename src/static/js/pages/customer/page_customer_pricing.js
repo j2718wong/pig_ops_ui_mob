@@ -140,7 +140,7 @@ export function PageCustomerPricing(input_settings){
 
             <!-- billing & notifications – as plain list, no pills, no background, no radius -->
             <ul class="reminder-list">
-                <li><strong>Bills are sent by email</strong> — to account admins only. You can also add farm managers to receive them.</li>
+                <li><strong>Bills are sent by email</strong> — to account admins only. We also send instructions how to settle your bill.</li>
                 <li><strong>In-app notice</strong> — visible for admins and managers (not shown to operations users).</li>
                 <li><strong>15 days to pay</strong> — grace period after each invoice. We will send payment options and instructions how to pay.</li>
             </ul>
