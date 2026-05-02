@@ -214,6 +214,25 @@ export function PageHomeDashBoard(input_settings){
     
     
     this.init = function(){
+        // Register service worker IMMEDIATELY (no load event)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service_worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered:', registration);
+                    const msg = 'Service Worker registered: ' + registration.scope;
+                    thisObj.addDebugMessage(msg);
+                })
+                .catch(err => {
+                    console.log('Service Worker registration failed:', err);
+                    const msg = 'Service Worker failed: ' + err.message;
+                    thisObj.addDebugMessage(msg);
+                });
+        } else {
+            console.log('Service Worker not supported');
+            const msg = 'Service Worker not supported in this browser';
+            thisObj.addDebugMessage(msg);
+        }
+        
 
         this.render();
         this.afterHtmlRender();
@@ -763,25 +782,6 @@ export function PageHomeDashBoard(input_settings){
         */
         
 
-        // Register service worker IMMEDIATELY (no load event)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service_worker.js')
-                .then(registration => {
-                    console.log('Service Worker registered:', registration);
-                    const msg = 'Service Worker registered: ' + registration.scope;
-                    thisObj.addDebugMessage(msg);
-                })
-                .catch(err => {
-                    console.log('Service Worker registration failed:', err);
-                    const msg = 'Service Worker failed: ' + err.message;
-                    thisObj.addDebugMessage(msg);
-                });
-        } else {
-            console.log('Service Worker not supported');
-            const msg = 'Service Worker not supported in this browser';
-            thisObj.addDebugMessage(msg);
-        }
-    
         
         // Check if app is already installed (running in standalone mode)
         if (isAppInstalled()) {
