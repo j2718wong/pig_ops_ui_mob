@@ -214,26 +214,6 @@ export function PageHomeDashBoard(input_settings){
     
     
     this.init = function(){
-        // Register service worker IMMEDIATELY (no load event)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service_worker.js')
-                .then(registration => {
-                    console.log('Service Worker registered:', registration);
-                    const msg = 'Service Worker registered: ' + registration.scope;
-                    thisObj.addDebugMessage(msg);
-                })
-                .catch(err => {
-                    console.log('Service Worker registration failed:', err);
-                    const msg = 'Service Worker failed: ' + err.message;
-                    thisObj.addDebugMessage(msg);
-                });
-        } else {
-            console.log('Service Worker not supported');
-            const msg = 'Service Worker not supported in this browser';
-            thisObj.addDebugMessage(msg);
-        }
-        
-
         this.render();
         this.afterHtmlRender();
     }
@@ -513,38 +493,33 @@ export function PageHomeDashBoard(input_settings){
     
     this._bindEventListeners = function(){
         
-        // Listen for beforeinstallprompt event (Chrome, Edge, Samsung Internet)
-        window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('beforeinstallprompt event fired');
-            
-            const data_pwa_track = {
-                event:          PWA_EVENT.READY,
-                screen_width:   window.innerWidth,
-                screen_height:  window.innerHeight
-            };
-            thisObj.addUserTrackAppInstall(data_pwa_track);
-            
-            // Prevent Chrome's mini-infobar from appearing
-            e.preventDefault();
-            
-            // Stash the event for later use
-            deferredPrompt = e;
-            
-            // Show install button
+        // Check if PWA was already ready before login
+        if (localStorage.getItem('pwa_ready') === 'true' && window.deferredPrompt) {
+            console.log('PWA: using saved event from before login');
+            deferredPrompt = window.deferredPrompt;
+            if (elemInstallBtn) {
+                elemInstallBtn.hidden = false;
+            }
+            localStorage.removeItem('pwa_ready');
+        }
+        
+        // Listen for custom pwa-ready event (if PWA becomes ready after login)
+        window.addEventListener('pwa-ready', (e) => {
+            console.log('PWA: ready event received');
+            deferredPrompt = e.detail;
             if (elemInstallBtn) {
                 elemInstallBtn.hidden = false;
             }
         });
 
-        
+            
         elemInstallBtn.addEventListener('click', async function(){
-            if (!deferredPrompt) {
+            const prompt = deferredPrompt || window.deferredPrompt;
+            if (!prompt) {
                 console.log('No deferred prompt available');
                 return;
             }
-            
-            // Show the native install prompt
-            deferredPrompt.prompt();
+            prompt.prompt();
             
             
             let data_pwa_track = {
@@ -558,7 +533,7 @@ export function PageHomeDashBoard(input_settings){
             
             
             // Wait for user response
-            const { outcome } = await deferredPrompt.userChoice;
+            const { outcome } = await prompt.userChoice;
             console.log(`User install choice: ${outcome}`);
             
             // Track the outcome
@@ -576,7 +551,6 @@ export function PageHomeDashBoard(input_settings){
             
             // Hide the install button
             elemInstallBtn.hidden = true;
-            
         });
 
         
@@ -783,44 +757,22 @@ export function PageHomeDashBoard(input_settings){
         
 
         
-        // Check if app is already installed (running in standalone mode)
-        if (isAppInstalled()) {
-            if (elemInstallBtn) {
-                elemInstallBtn.hidden = true;
-                thisObj.addDebugMessage('App is installed and install button is hidden;');
-            }
+        if (!isAppInstalled()) {
+            setTimeout(function() {
+                const promptToUse = deferredPrompt || window.deferredPrompt;
+                if (promptToUse) {
+                    elemInstallBtn.hidden = false;
+                    
+                    const data_pwa_track = {
+                        event: PWA_EVENT.INSTALL_BTN_SHOWN,
+                        screen_width: window.innerWidth,
+                        screen_height: window.innerHeight
+                    };
+                    thisObj.addUserTrackAppInstall(data_pwa_track);
+                }
+            }, 100);
         }
-        else{
-            thisObj.addDebugMessage('App not installed;');
-        }
-        
-        
-        
-        setTimeout( function(){
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                // Already installed
-                return;
-            }
-            
-            // Check if beforeinstallprompt has fired
-            if (deferredPrompt) {
-                elemInstallBtn.hidden = false;
                 
-                const data_pwa_track = {
-                    event:          PWA_EVENT.INSTALL_BTN_SHOWN,
-                    screen_width:   window.innerWidth,
-                    screen_height:  window.innerHeight
-                };
-                
-                thisObj.addUserTrackAppInstall(data_pwa_track);
-                
-                
-            } else {
-                // Event hasn't fired yet, wait a bit longer
-                console.log('Waiting for beforeinstallprompt...');
-            }
-        }, 3000);
-        
         
         
         
