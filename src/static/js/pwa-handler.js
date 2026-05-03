@@ -17,7 +17,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 
-let appInstalledTracked = false;
+var appInstalledTracked = false;
 
 window.addEventListener('appinstalled', () => {
     if (appInstalledTracked) return;
