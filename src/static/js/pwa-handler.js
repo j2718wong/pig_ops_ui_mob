@@ -16,7 +16,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
     }
 });
 
+
+let appInstalledTracked = false;
+
 window.addEventListener('appinstalled', () => {
+    if (appInstalledTracked) return;
+    appInstalledTracked = true;
+    
     console.log('PWA: app installed');
     localStorage.removeItem('pwa_ready');
     window.deferredPrompt = null;
