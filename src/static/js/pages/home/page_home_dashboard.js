@@ -770,7 +770,7 @@ export function PageHomeDashBoard(input_settings){
                     };
                     thisObj.addUserTrackAppInstall(data_pwa_track);
                 }
-            }, 100);
+            }, 500);
         }
                 
         
