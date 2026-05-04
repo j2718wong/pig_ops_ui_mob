@@ -71,7 +71,7 @@ export function ManagerBusiness(_navigation) {
         
         
         // Get the country_hid of the account
-        const country_hid = navigation.account.getCountryHid();
+        const country_hid = navigation.pigFarm.getCountryHid();
         
         const base_url = window.location.origin;
         let url = `${base_url}/b/pricing/current?chid=${country_hid}`;

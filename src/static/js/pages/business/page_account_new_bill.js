@@ -63,6 +63,23 @@ export function PageAccountNewBill(input_settings){
               
     let elemIdTdAmountDue       = null;
     
+    
+    let elemIdPaymentInstructions   = null; 
+    let elemIdPaymentUpload         = null;
+                                    
+    let elemIdPayGCashShow          = null;
+    let elemIdPayGCashNumber        = null;
+                                    
+    let elemIdPayBankTransferShow   = null;
+    let elemIdPayBankTransferNumber = null;
+    let elemIdPayBankTransferAccount= null;
+                                    
+    let elemIdReferenceInput        = null;
+    let elemIdScreenshotInput       = null;
+    let elemIdSubmitPaymentBtn      = null;
+    let elemIdPaymentStatus         = null;
+    
+    
 
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;   
@@ -87,6 +104,23 @@ export function PageAccountNewBill(input_settings){
     let elemTdTaxAmount         = null;
                
     let elemTdAmountDue         = null;
+    
+    
+    let elemPaymentInstructions     = null; 
+    let elemPaymentUpload           = null;
+                                    
+    let elemPayGCashShow            = null;
+    let elemPayGCashNumber          = null;
+                                    
+    let elemPayBankTransferShow     = null;
+    let elemPayBankTransferNumber   = null;
+    let elemPayBankTransferAccount  = null;
+                                    
+    let elemReferenceInput          = null;
+    let elemScreenshotInput         = null;
+    let elemSubmitPaymentBtn        = null;
+    let elemPaymentStatus           = null;
+    
     
 
 
@@ -116,6 +150,82 @@ export function PageAccountNewBill(input_settings){
     }
     
        
+    this._writeInlineStyle = function(){
+        
+        const html = `
+            <style>
+                
+                .form-group {
+                    margin-bottom: 12px;
+                }
+                .form-group label {
+                    display: block;
+                    margin-bottom: 4px;
+                    font-weight: 500;
+                    font-size: 0.85rem;
+                }
+                .form-control {
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    font-size: 0.85rem;
+                    box-sizing: border-box;
+                }
+                .btn-primary {
+                    background: #2e7d64;
+                    color: white;
+                    border: none;
+                    padding: 10px 16px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    width: 100%;
+                }
+                .btn-primary:hover {
+                    background: #1a5c4a;
+                }
+                .payment-status {
+                    margin-top: 10px;
+                    padding: 8px;
+                    border-radius: 4px;
+                    text-align: center;
+                    font-size: 0.85rem;
+                }
+                .payment-status.success {
+                    background: #d4edda;
+                    color: #155724;
+                }
+                .payment-status.error {
+                    background: #f8d7da;
+                    color: #721c24;
+                }
+                .payment-status.info {
+                    background: #d1ecf1;
+                    color: #0c5460;
+                }
+                .payment-instructions {
+                    background: #e3f2fd;
+                    padding: 12px;
+                    border-radius: 4px;
+                    margin-bottom: 10px;
+                }
+                .payment-number {
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    margin: 8px 0;
+                }
+                hr {
+                    margin: 12px 0;
+                    border: none;
+                    border-top: 1px solid #eee;
+                }
+            </style>
+            `;
+            
+        return html;
+    }
+       
     
     this.getHtml = function(){
         
@@ -124,11 +234,16 @@ export function PageAccountNewBill(input_settings){
         
         elemIdAccountBillMsg        = `${settings.uniqueKey}-bill-msg`;
         
-        let html_bill_info          = this.getHtmlBillInfo();
         
+        let html_style              = thisObj._writeInlineStyle();
         
+        let html_bill_info          = thisObj.getHtmlBillInfo();
+        
+        let html_payment_section    = thisObj.getHtmlPaymentSections();
         
         const html = `
+
+${html_style}
         
 <div class="form-container">
 
@@ -143,6 +258,8 @@ export function PageAccountNewBill(input_settings){
         <div id="${elemIdAccountBillMsg}"></div>
     
         ${html_bill_info}
+        
+        ${html_payment_section}
 
     </div>
 </div>    
@@ -187,11 +304,29 @@ export function PageAccountNewBill(input_settings){
         elemTdTaxAmount         = elemDivContainer.querySelector('#'+elemIdTdTaxAmount); 
                                                                                            
         elemTdAmountDue         = elemDivContainer.querySelector('#'+elemIdTdAmountDue); 
+        
+        
+        elemPaymentInstructions     = elemDivContainer.querySelector('#'+elemIdPaymentInstructions); 
+        elemPaymentUpload           = elemDivContainer.querySelector('#'+elemIdPaymentUpload);
+                                                                                                     
+        elemPayGCashShow            = elemDivContainer.querySelector('#'+elemIdPayGCashShow);
+        elemPayGCashNumber          = elemDivContainer.querySelector('#'+elemIdPayGCashNumber);
+                                                                                                     
+        elemPayBankTransferShow     = elemDivContainer.querySelector('#'+elemIdPayBankTransferShow);
+        elemPayBankTransferNumber   = elemDivContainer.querySelector('#'+elemIdPayBankTransferNumber);
+        elemPayBankTransferAccount  = elemDivContainer.querySelector('#'+elemIdPayBankTransferAccount);
+                                                                                                     
+        elemReferenceInput          = elemDivContainer.querySelector('#'+elemIdReferenceInput);
+        elemScreenshotInput         = elemDivContainer.querySelector('#'+elemIdScreenshotInput);
+        elemSubmitPaymentBtn        = elemDivContainer.querySelector('#'+elemIdSubmitPaymentBtn);
+        elemPaymentStatus           = elemDivContainer.querySelector('#'+elemIdPaymentStatus);
     }
 
     
     
-    this._processAfterHtmlRender= function(){}
+    this._processAfterHtmlRender= function(){
+        
+    }
     
     
     this._bindEventListeners= function(){
@@ -302,6 +437,88 @@ export function PageAccountNewBill(input_settings){
     this.getHtmlPaymentMethods = function(){
         
     }
+    
+    
+    this.getHtmlPaymentSections = function(){
+        elemIdPaymentInstructions   = `${settings.uniqueKey}-payment-instructions`;
+        elemIdPaymentUpload         = `${settings.uniqueKey}-payment-upload`;
+            
+        elemIdPayGCashShow          = `${settings.uniqueKey}-pay-gcash-show`;
+        elemIdPayGCashNumber        = `${settings.uniqueKey}-pay-gcash-number`;
+        
+        elemIdPayBankTransferShow   = `${settings.uniqueKey}-pay-bank-transfer-show`;
+        elemIdPayBankTransferNumber = `${settings.uniqueKey}-pay-bank-transfer-number`;
+        elemIdPayBankTransferAccount= `${settings.uniqueKey}-pay-bank-transfer-account`;
+        
+            
+        elemIdReferenceInput        = `${settings.uniqueKey}-payment-reference`;
+        elemIdScreenshotInput       = `${settings.uniqueKey}-payment-screenshot`;
+        elemIdSubmitPaymentBtn      = `${settings.uniqueKey}-submit-payment`;
+        elemIdPaymentStatus         = `${settings.uniqueKey}-payment-status`;
+        
+        
+        // Store for later use
+        this.elemIdReferenceInput   = elemIdReferenceInput;
+        this.elemIdScreenshotInput  = elemIdScreenshotInput;
+        this.elemIdSubmitPaymentBtn = elemIdSubmitPaymentBtn;
+        this.elemIdPaymentStatus    = elemIdPaymentStatus;
+        
+        
+        const html = `
+            <div class="collapsible-panel mb-4" id="${elemIdPaymentInstructions}" style = "margin-top:1rem;">
+                <div class="collapsible-header">
+                    <span>Payment Instructions</span>
+                </div>
+                
+                <div class="collapsible-body">
+                    <div class="payment-instructions">
+                        <div id="${elemIdPayGCashShow}">
+                            <div>1.) GCash</div>
+                            <div class="payment-number" id="${elemIdPayGCashNumber}">0912 345 6789</div>
+                            <div>Send payment to this number.</div>
+                        </div>
+                        
+                        <hr>
+                        <div id="${elemIdPayBankTransferShow}">
+                            <div>2.) Bank Transfer</div>
+                            <div class="payment-number" id="${elemIdPayBankTransferNumber}">BDO: 0012 3456 7890</div>
+                            <div id="${elemIdPayBankTransferAccount}">Account Name: J Systems Development</div>
+                        </div>
+                        
+                        <hr>
+                        <div><strong>Important:</strong> Use your <b>Bill Reference</b> as payment reference.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="collapsible-panel" id="${elemIdPaymentUpload}">
+                <div class="collapsible-header">
+                    <span>Submit Payment Proof</span>
+                </div>
+                
+                <div class="collapsible-body">
+                    <div class="warning-box">
+                        We will verify your payment after you upload the payment screenshot.
+                        It may take some few business days to verify your payment. 
+                    </div>
+                
+                    
+                    <div class="form-group">
+                        <label>Screenshot</label>
+                        <input type="file" id="${elemIdScreenshotInput}" class="form-control" accept="image/*">
+                    </div>
+                    
+                    <button id="${elemIdSubmitPaymentBtn}" class="btn-primary">Submit Payment Proof</button>
+                    
+                    <div id="${elemIdPaymentStatus}" class="payment-status"></div>
+                </div>
+            </div>
+        `;
+        
+        return html;
+    }
+    
+    
     
           
     this.show = function(options){

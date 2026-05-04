@@ -370,7 +370,7 @@ export function PageProdEntryCommon(input_settings){
     </div>
     
     
-    <!-- Tab Content Area Gesta-->
+    <!-- Tab Content Area-->
     <div class="tab-content-area" id="${elemIdTabContentArea}" style="margin-top:0;">
         ${html_tab_contents}
     </div>
