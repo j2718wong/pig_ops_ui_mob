@@ -259,7 +259,7 @@ export function PageCustomerPricing(input_settings){
         // Get the country_pricing
         let country_pricing = null;
         
-        const account_country_hid = account.country_hid;
+        const account_country_hid = account.country.hid;
        
         
         for (const cur_entry of data){
