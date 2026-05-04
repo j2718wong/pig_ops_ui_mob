@@ -20,6 +20,7 @@ export function NavPageContainers(_navigation){
     // Container ID strings
     const elemIdContMyAccount           = 'container-my-account';
     const elemIdContCustomerPricing     = 'container-customer-pricing';
+    const elemIdContNewBill             = 'container-new-bill';
     
     
     const elemIdContAccountDisabled     = 'container-account-disabled';
@@ -143,6 +144,7 @@ export function NavPageContainers(_navigation){
         // Account & Billing
         this.containers[PAGE_ID.MY_ACCOUNT]             = document.getElementById(elemIdContMyAccount);
         this.containers[PAGE_ID.CUSTOMER_PRICING]       = document.getElementById(elemIdContCustomerPricing);
+        this.containers[PAGE_ID.BILL_NEW]               = document.getElementById(elemIdContNewBill);
         
         
         this.containers[PAGE_ID.ACCOUNT_DISABLED]       = document.getElementById(elemIdContAccountDisabled);
@@ -290,6 +292,9 @@ export function NavPageContainers(_navigation){
         containerToPageIdMap = [
             { container: this.containers[PAGE_ID.MY_ACCOUNT],             id: PAGE_ID.MY_ACCOUNT },
             { container: this.containers[PAGE_ID.CUSTOMER_PRICING],       id: PAGE_ID.CUSTOMER_PRICING },
+            { container: this.containers[PAGE_ID.BILL_NEW],               id: PAGE_ID.BILL_NEW },
+            
+            
             { container: this.containers[PAGE_ID.HOME],                   id: PAGE_ID.HOME },
             { container: this.containers[PAGE_ID.FEEDBACK_US],            id: PAGE_ID.FEEDBACK_US },
             { container: this.containers[PAGE_ID.PIG_FARM_ADD_EDIT],      id: PAGE_ID.PIG_FARM_ADD_EDIT },
@@ -378,6 +383,10 @@ export function NavPageContainers(_navigation){
                 
             case PAGE_ID.CUSTOMER_PRICING:
                 return elemIdContCustomerPricing;
+                
+            case PAGE_ID.BILL_NEW:
+                return elemIdContNewBill;
+                
                 
                 
             case PAGE_ID.ACCOUNT_DISABLED:
@@ -599,6 +608,7 @@ export function NavPageContainers(_navigation){
         
             case this.containers[PAGE_ID.MY_ACCOUNT]                :{return "PageContMyAccount";}
             case this.containers[PAGE_ID.CUSTOMER_PRICING]          :{return "PageContCustomerPricing";}
+            case this.containers[PAGE_ID.BILL_NEW]                  :{return "PageContNewBill";}
                                                         
                                                         
             case this.containers[PAGE_ID.ACCOUNT_DISABLED]          :{return "PageContAccountDisabled";}

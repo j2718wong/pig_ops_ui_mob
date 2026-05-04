@@ -104,7 +104,7 @@ const PAGE_ID = {
     
     
     BILL_HISTORY_LIST:      18,
-    BILL_CURRENT:           19,
+    BILL_NEW:               19,
     
     PIG_FARM_ADD_EDIT:      20,
     

@@ -90,6 +90,11 @@ export function UserControl(_navigation) {
         });
         
         
+        elemDesktopBillNew.addEventListener('click', function() {
+            thisObj.onClickBillNew();
+        });
+        
+        
         elemDesktopUserLogout.addEventListener('click', function() {
             thisObj.userLogout();
         });
@@ -175,9 +180,23 @@ export function UserControl(_navigation) {
             elemDesktopBillHistory.remove();
         }
 
-
+       
+        
         // Hide this first
         this.hideNewBillAvailable();
+        
+        if (group_num == ACC_USER_GROUP.ADMIN || group_num == ACC_USER_GROUP.MANAGEMENT){
+            const account  = this.dataUserAccount.account.account;
+            
+            if (account.current_bill){
+                // Show button
+                this.showNewBillAvailable();
+            }
+        }
+
+        
+
+        
         
         // TODO this
         elemDesktopBillHistory.style.display ='none';
@@ -267,7 +286,7 @@ export function UserControl(_navigation) {
     }
     
     
-    this.hideShowBillAvailable = function(){
+    this.showNewBillAvailable = function(){
         if (elemDesktopBillNew){
             elemDesktopBillNew.style.display = 'block';
         }
@@ -296,6 +315,38 @@ export function UserControl(_navigation) {
             go_back_page:   go_back_page,
         };
         navigation.pageMyAccount.show(options);
+        
+        elemDesktopUserDropdown.classList.remove('active');
+    }
+    
+    
+    this.onClickBillNew = function(){
+        console.log('onClickBillNew');
+        
+        console.log(`test dataUserAccount`);
+        console.log(this.dataUserAccount);
+        
+        let go_back_page    = navigation.curPageNavigated.pageContainer;
+        if (go_back_page == null){
+            go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
+        } 
+        
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.BILL_NEW);
+        
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        
+        
+        const options ={
+            go_back_page:   go_back_page,
+        };
+        navigation.pageAccountNewBill.show(options);
         
         elemDesktopUserDropdown.classList.remove('active');
     }

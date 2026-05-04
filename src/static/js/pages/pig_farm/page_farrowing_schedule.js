@@ -17,8 +17,7 @@ import {APPLICATION,
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT,
-        sortList}               from '../../utils.js';
+        FORMAT_COMPACT}         from '../../utils.js';
 
 import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
 
