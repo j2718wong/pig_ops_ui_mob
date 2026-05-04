@@ -403,8 +403,11 @@ ${html_style}
         
             const options = {
                 is_add:                 false,
-                go_back_page:           go_back_page 
-            }
+                go_back_page:           go_back_page,
+                nav_page_obj:           thisObj 
+            };
+            
+            
             navigation.pagePigFarmAddEdit.show(options);
         });
 
@@ -538,7 +541,7 @@ ${html_style}
             
             const settingsBtn = emptyDiv.querySelector('#goto-crate-settings');
             if (settingsBtn) {
-                settingsBtn.onclick = () => {
+                settingsBtn.onclick = function(){
                     const next_page_id = PAGE_ID.PIG_FARM_ADD_EDIT;
                     const next_page = navigation.getPageContainer(next_page_id);
                     navigation.pushCurrentPageToNavHistory(next_page);
@@ -548,8 +551,9 @@ ${html_style}
                     const go_back_page_id = PAGE_ID.FARROWING_SCHEDULE;
                     const go_back_page = navigation.getPageContainer(go_back_page_id);
                     const options = {
-                        is_add: false,
-                        go_back_page: go_back_page 
+                        is_add:                 false,
+                        go_back_page:           go_back_page,
+                        nav_page_obj:           thisObj 
                     }
                     navigation.pagePigFarmAddEdit.show(options);
                 };

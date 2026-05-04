@@ -277,6 +277,7 @@ export function PagePigFarmAddEdit(input_settings){
         
         showOptions = options;
         
+
         
         // Set title
         let title = 'Edit Pig Farm';
@@ -484,12 +485,29 @@ export function PagePigFarmAddEdit(input_settings){
                     
                     const go_back_page_id = navigation.getPageIdFromContainer(showOptions.go_back_page);
                     
-                    if (go_back_page_id == PAGE_ID.MY_ACCOUNT){
-                        navigation.pageMyAccount.show();
+                    
+                    switch (go_back_page_id){
+                        case PAGE_ID.MY_ACCOUNT:{
+                            navigation.pageMyAccount.show();
+                            break;
+                        }
+                        
+                        case PAGE_ID.HOME:{
+                            navigation.pageHomeDashBoard.show();
+                            break;
+                        }
+                        
+                        default:{
+                            if (showOptions.nav_page_obj){
+                                showOptions.nav_page_obj.show();
+                            }
+                            
+                            break;
+                        }
+                    
                     }
-                    else{
-                        navigation.pageHomeDashBoard.show();
-                    }
+                    
+                    
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

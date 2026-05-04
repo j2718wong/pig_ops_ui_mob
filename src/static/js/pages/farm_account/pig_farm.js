@@ -268,10 +268,7 @@ export function PigFarm(_navigation){
      * 
      * */
     this.setDataPigFarm = function(data){
-        this.dataPigFarm = data;
-        
-        console.log('\n\nsetDataPigFarm');
-        console.log(data);
+        thisObj.dataPigFarm = data;
     }
     
     
