@@ -361,6 +361,12 @@ const REQUEST_ERROR_NUM ={
 };
 
 
+const ACCOUNT_BILL_STATUS = {
+    PENDING_PAYMENT_VERIFY:     1,
+    VERIFIED_PAID:              2
+};
+
+
 const FLAG_BITS ={
     USER:{
         IS_ACTIVE:              1,
@@ -422,6 +428,8 @@ export {
     REPORT_TYPE,
     
     REQUEST_ERROR_NUM,
+    
+    ACCOUNT_BILL_STATUS,
     
     FLAG_BITS
 };

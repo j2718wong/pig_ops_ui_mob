@@ -330,7 +330,9 @@ ${html_style}
     
     
     this._bindEventListeners= function(){
-        
+        elemSubmitPaymentBtn.addEventListener('click', function() {
+            thisObj.onClickSubmitPaymentProof();
+        });
         
     }
     
@@ -503,14 +505,23 @@ ${html_style}
                     </div>
                 
                     
+                    <!-- If there is an already uploaded image for the current bill, 
+                    it will overwrite that image; no need for image deletion; However this si save as 
+                    separate entries in database.
+                    -->
                     <div class="form-group">
-                        <label>Screenshot</label>
+                        <label>Payment Screenshot</label>
                         <input type="file" id="${elemIdScreenshotInput}" class="form-control" accept="image/*">
                     </div>
                     
                     <button id="${elemIdSubmitPaymentBtn}" class="btn-primary">Submit Payment Proof</button>
                     
                     <div id="${elemIdPaymentStatus}" class="payment-status"></div>
+                    
+                    <!-- Should display Image of the uploaded receipt-->
+                    <div>
+                    </div>
+                    
                 </div>
             </div>
         `;
@@ -555,14 +566,15 @@ ${html_style}
         const account = navigation.userControl.dataUserAccount.account.account;
         const current_bill = account.current_bill;
         
+        console.log('\n\ncurrent_bill');
+        console.log(current_bill);
+        
         this.populateBill(current_bill);
     }
     
     
     
     this.populateBill = function(data){
-        console.log('populate bill');
-        console.log(data);
         
         const dt_issue      = new Date(data.date_issue);
         const dt_issue_s    = formatDate(dt_issue, FORMAT_COMPACT);
@@ -601,6 +613,85 @@ ${html_style}
             
         elemTdAmountDue.innerHTML           = `<b>${s_amount_due}</b>`;     
         
+    }
+    
+    
+    // In your PageAccountNewBill.js
+    this.onClickSubmitPaymentProof = async function() {
+        const screenshot = elemScreenshotInput ? elemScreenshotInput.files[0] : null;
+        
+        if (!screenshot) {
+            this.showPaymentStatus('Please upload a screenshot of your payment', 'error');
+            return;
+        }
+        
+        // Get the current bill
+        const account = navigation.userControl.dataUserAccount.account.account;
+        const current_bill = account.current_bill;
+        
+        
+        if (!current_bill || !current_bill.hid) {
+            this.showPaymentStatus('No active bill found', 'error');
+            return;
+        }
+        
+        // Create FormData object
+        const formData = new FormData();
+        formData.append('uhid', navigation.userControl.getUserHid());
+        formData.append('account_bill_hid', current_bill.hid);
+        formData.append('screenshot', screenshot);
+        
+        this.showPaymentStatus('Submitting payment proof...', 'info');
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        try {
+            const response = await fetch('/account_bill/payment_proof/submit', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`
+                    // Do NOT set Content-Type header - browser sets it automatically with boundary for FormData
+                },
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.result.num === 0) {
+                this.showPaymentStatus('Payment proof submitted. We will verify within 24 hours.', 'success');
+                if (elemScreenshotInput) elemScreenshotInput.value = '';
+            } else {
+                this.showPaymentStatus(result.result.desc || 'Submission failed', 'error');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            this.showPaymentStatus('Network error. Please try again.', 'error');
+        }
+    }
+
+
+
+    this.showPaymentStatus = function(message, type) {
+        if (!elemPaymentStatus) return;
+        
+        // Clear any existing timeout
+        if (this.paymentStatusTimeout) {
+            clearTimeout(this.paymentStatusTimeout);
+        }
+        
+        // Set the message and style based on type
+        elemPaymentStatus.textContent = message;
+        elemPaymentStatus.className = `payment-status ${type}`;
+        
+        // Auto-hide success and info messages after 5 seconds
+        if (type === 'success' || type === 'info') {
+            this.paymentStatusTimeout = setTimeout(function() {
+                if (elemPaymentStatus) {
+                    elemPaymentStatus.textContent = '';
+                    elemPaymentStatus.className = 'payment-status';
+                }
+            }, 5000);
+        }
     }
 
 }
