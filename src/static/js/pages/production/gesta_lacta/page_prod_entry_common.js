@@ -160,6 +160,7 @@ export function PageProdEntryCommon(input_settings){
             border-right: none;
             border-radius: 0;
             font-weight: 600;
+            font-size: 1.2rem;
         }
 
 

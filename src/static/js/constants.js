@@ -362,6 +362,7 @@ const REQUEST_ERROR_NUM ={
 
 
 const ACCOUNT_BILL_STATUS = {
+    ISSUED:                     0,
     PENDING_PAYMENT_VERIFY:     1,
     VERIFIED_PAID:              2
 };

@@ -7,7 +7,9 @@
 
 
 import {APPLICATION,
-        PAGE_ID}                from '../../constants.js';
+        PAGE_ID,
+        ACCOUNT_BILL_STATUS,
+        ACC_USER_GROUP}    from '../../constants.js';
 
 
 import {formatDate,
@@ -65,6 +67,7 @@ export function PageAccountNewBill(input_settings){
     
     
     let elemIdPaymentInstructions   = null; 
+    let elemIdUploadedReceipt       = null; 
     let elemIdPaymentUpload         = null;
                                     
     let elemIdPayGCashShow          = null;
@@ -73,7 +76,14 @@ export function PageAccountNewBill(input_settings){
     let elemIdPayBankTransferShow   = null;
     let elemIdPayBankTransferNumber = null;
     let elemIdPayBankTransferAccount= null;
-                                    
+    
+    
+    let elemIdReceiptImage          = null;
+    let elemIdUploadedBy            = null;
+    let elemIdUploadedDate          = null;
+    let elemIdReplaceReceiptBtn     = null;                    
+    
+    
     let elemIdReferenceInput        = null;
     let elemIdScreenshotInput       = null;
     let elemIdSubmitPaymentBtn      = null;
@@ -107,6 +117,7 @@ export function PageAccountNewBill(input_settings){
     
     
     let elemPaymentInstructions     = null; 
+    let elemUploadedReceipt         = null; 
     let elemPaymentUpload           = null;
                                     
     let elemPayGCashShow            = null;
@@ -115,6 +126,14 @@ export function PageAccountNewBill(input_settings){
     let elemPayBankTransferShow     = null;
     let elemPayBankTransferNumber   = null;
     let elemPayBankTransferAccount  = null;
+                     
+                     
+    let elemReceiptImage            = null;
+    let elemUploadedBy              = null;
+    let elemUploadedDate            = null;
+    let elemReplaceReceiptBtn       = null;                    
+    
+    
                                     
     let elemReferenceInput          = null;
     let elemScreenshotInput         = null;
@@ -154,6 +173,41 @@ export function PageAccountNewBill(input_settings){
         
         const html = `
             <style>
+                /* Bill Message Box Styles */
+                .bill-message {
+                    padding: 5px 5px;
+                    border-radius: 8px;
+                    margin-bottom: 16px;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    text-align: center;
+                }
+                
+                .bill-message.pending {
+                    background: #fff3cd;
+                    border-left: 4px solid #ff9800;
+                    color: #856404;
+                }
+                
+                .bill-message.verified {
+                    background: #d4edda;
+                    border-left: 4px solid #28a745;
+                    color: #155724;
+                }
+                
+                .bill-message.overdue {
+                    background: #f8d7da;
+                    border-left: 4px solid #dc3545;
+                    color: #721c24;
+                }
+                
+                .bill-message.info {
+                    background: #d1ecf1;
+                    border-left: 4px solid #17a2b8;
+                    color: #0c5460;
+                }
+
+            
                 
                 .form-group {
                     margin-bottom: 12px;
@@ -220,6 +274,54 @@ export function PageAccountNewBill(input_settings){
                     border: none;
                     border-top: 1px solid #eee;
                 }
+                
+                
+                /* Receipt Display Styles */
+                .receipt-container {
+                    text-align: center;
+                    padding: 10px;
+                }
+                
+                .receipt-image {
+                    max-width: 100%;
+                    max-height: 300px;
+                    border-radius: 8px;
+                    border: 1px solid #ddd;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                
+                .receipt-info {
+                    margin-top: 8px;
+                    font-size: 0.75rem;
+                    color: #666;
+                }
+                
+                .receipt-info .uploader {
+                    font-weight: 600;
+                    color: #333;
+                }
+                
+                .receipt-info .date {
+                    color: #888;
+                }
+                
+                .btn-replace {
+                    background: #6c757d;
+                    color: white;
+                    border: none;
+                    padding: 6px 12px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 0.8rem;
+                    margin-top: 8px;
+                    width: auto;
+                    display: inline-block;
+                }
+                
+                .btn-replace:hover {
+                    background: #5a6268;
+                }
+                
             </style>
             `;
             
@@ -307,6 +409,7 @@ ${html_style}
         
         
         elemPaymentInstructions     = elemDivContainer.querySelector('#'+elemIdPaymentInstructions); 
+        elemUploadedReceipt         = elemDivContainer.querySelector('#'+elemIdUploadedReceipt);
         elemPaymentUpload           = elemDivContainer.querySelector('#'+elemIdPaymentUpload);
                                                                                                      
         elemPayGCashShow            = elemDivContainer.querySelector('#'+elemIdPayGCashShow);
@@ -315,6 +418,13 @@ ${html_style}
         elemPayBankTransferShow     = elemDivContainer.querySelector('#'+elemIdPayBankTransferShow);
         elemPayBankTransferNumber   = elemDivContainer.querySelector('#'+elemIdPayBankTransferNumber);
         elemPayBankTransferAccount  = elemDivContainer.querySelector('#'+elemIdPayBankTransferAccount);
+        
+        
+        elemReceiptImage            = elemDivContainer.querySelector('#'+elemIdReceiptImage);
+        elemUploadedBy              = elemDivContainer.querySelector('#'+elemIdUploadedBy);  
+        elemUploadedDate            = elemDivContainer.querySelector('#'+elemIdUploadedDate);  
+        elemReplaceReceiptBtn       = elemDivContainer.querySelector('#'+elemIdReplaceReceiptBtn);
+                 
                                                                                                      
         elemReferenceInput          = elemDivContainer.querySelector('#'+elemIdReferenceInput);
         elemScreenshotInput         = elemDivContainer.querySelector('#'+elemIdScreenshotInput);
@@ -443,6 +553,7 @@ ${html_style}
     
     this.getHtmlPaymentSections = function(){
         elemIdPaymentInstructions   = `${settings.uniqueKey}-payment-instructions`;
+        elemIdUploadedReceipt       = `${settings.uniqueKey}-payment-uploaded-receipt`;
         elemIdPaymentUpload         = `${settings.uniqueKey}-payment-upload`;
             
         elemIdPayGCashShow          = `${settings.uniqueKey}-pay-gcash-show`;
@@ -451,6 +562,12 @@ ${html_style}
         elemIdPayBankTransferShow   = `${settings.uniqueKey}-pay-bank-transfer-show`;
         elemIdPayBankTransferNumber = `${settings.uniqueKey}-pay-bank-transfer-number`;
         elemIdPayBankTransferAccount= `${settings.uniqueKey}-pay-bank-transfer-account`;
+        
+        
+        elemIdReceiptImage          = `${settings.uniqueKey}-receipt-image`;
+        elemIdUploadedBy            = `${settings.uniqueKey}-receipt-uploaded-by`;
+        elemIdUploadedDate          = `${settings.uniqueKey}-receipt-uploaded-date`;
+        elemIdReplaceReceiptBtn     = `${settings.uniqueKey}-receipt-replace`;
         
             
         elemIdReferenceInput        = `${settings.uniqueKey}-payment-reference`;
@@ -493,6 +610,27 @@ ${html_style}
                 </div>
             </div>
             
+            <div class="collapsible-panel" id="${elemIdUploadedReceipt}" style="display:none;">
+                <div class="collapsible-header">
+                    <span>Receipt Uploaded</span>
+                </div>
+                
+                <div class="collapsible-body">
+                    <div class="receipt-container">
+                    
+                    <img id="${elemIdReceiptImage}" class="receipt-image" src="" alt="Payment Receipt">
+                    
+                    <div class="receipt-info">
+                        <span>Uploaded by: <span id="${elemIdUploadedBy}" class="uploader"></span></span>
+                        <span> on <span id="${elemIdUploadedDate}" class="date"></span></span>
+                    </div>
+                    
+                    <button id="${elemIdReplaceReceiptBtn}" class="btn-replace" style="display: none;">Replace Receipt</button>
+                    
+                </div>
+            </div>
+            
+            
             <div class="collapsible-panel" id="${elemIdPaymentUpload}">
                 <div class="collapsible-header">
                     <span>Submit Payment Proof</span>
@@ -518,9 +656,7 @@ ${html_style}
                     
                     <div id="${elemIdPaymentStatus}" class="payment-status"></div>
                     
-                    <!-- Should display Image of the uploaded receipt-->
-                    <div>
-                    </div>
+                   
                     
                 </div>
             </div>
@@ -569,9 +705,53 @@ ${html_style}
         console.log('\n\ncurrent_bill');
         console.log(current_bill);
         
+        // Populate AccountBill message
+        this.populateBillMessage(current_bill);
+        
         this.populateBill(current_bill);
+        
+        this.populateUploadedReceipt(current_bill);
     }
     
+    
+    this.populateBillMessage = function(data){
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        const bill_status_id = data.status_id;
+        
+        let bill_msg    = '';
+        let msg_class   = '';
+        
+        
+        switch(bill_status_id){
+            case ACCOUNT_BILL_STATUS.PENDING_PAYMENT_VERIFY:{
+                elemAccountBillMsg.style.display = 'block';
+                bill_msg    = 'Pending Payment Verification';
+                msg_class   = 'pending';
+                
+                break;
+            }
+            
+            case ACCOUNT_BILL_STATUS.VERIFIED_PAID:{
+                elemAccountBillMsg.style.display = 'block';
+                bill_msg = 'Verified Payment';
+                msg_class = 'verified';
+                
+                break;
+            }
+            
+            default:{
+                elemAccountBillMsg.style.display = 'none';
+                break;
+            }
+            
+        }
+        
+        elemAccountBillMsg.innerHTML = `<div class="bill-message ${msg_class}">${bill_msg}</div>`;
+        
+        
+    }
     
     
     this.populateBill = function(data){
@@ -612,6 +792,84 @@ ${html_style}
         elemTdTaxAmount.textContent         = s_tax_amount;     
             
         elemTdAmountDue.innerHTML           = `<b>${s_amount_due}</b>`;     
+        
+    }
+    
+    
+    this.populateUploadedReceipt = function(data){
+        /** this is a sample data
+        {
+          "status_id": 1,
+          "flag": 0,
+          "bill_reference": "260505-1130-6",
+          "date_issue": "2026-05-05",
+          "date_due": "2026-05-20",
+          "num_billed": 8,
+          "num_sow": 8,
+          "num_boar": 3,
+          "currency_code": "PHP",
+          "tax_rate": 12,
+          "charge_per_pig": 120,
+          "amount": 960,
+          "deduction": null,
+          "taxes": 115.2,
+          "taxable_amount": 844.8,
+          "total_amount_due": 960,
+          "uploaded_receipt": {
+            "path": "account/2026/payment_upload/0001/20260505_122949.png",
+            "dt_entry": "2026-05-05 12:29:49",
+            "name_last": "Wong",
+            "name_first": "Jack"
+          },
+          "hid": "W9L96L0N"
+        }
+        */
+        
+        if (data && data.uploaded_receipt && data.uploaded_receipt.path) {
+            const receipt = data.uploaded_receipt;
+            
+            console.log('Test 1');
+            
+            // Show the receipt section
+            if (elemUploadedReceipt) elemUploadedReceipt.style.display = 'block';
+            
+            // Hide the upload section (since receipt already exists)
+            if (elemPaymentUpload) elemPaymentUpload.style.display = 'none';
+            
+            // Set the image source
+            if (elemReceiptImage) {
+                // Construct full URL for the image
+                const imageUrl = `/data/${receipt.path}`; console.log('imageUrl = ' + imageUrl);
+                elemReceiptImage.src = imageUrl;
+            }
+            
+            // Set uploader info
+            if (elemUploadedBy && receipt.name_last && receipt.name_first) {
+                elemUploadedBy.textContent = `${receipt.name_first} ${receipt.name_last}`;
+            }
+            
+            // Set upload date
+            if (elemUploadedDate && receipt.dt_entry) {
+                const uploadDate = new Date(receipt.dt_entry);
+                elemUploadedDate.textContent = formatDate(uploadDate, FORMAT_COMPACT);
+            }
+            
+            // Show replace button for admin/owner
+            const cur_user = navigation.userControl.dataUserAccount.user;
+            const user_group_num = cur_user.user_group.group_num;
+            const isAdmin = (user_group_num == ACC_USER_GROUP.ADMIN || 
+                             user_group_num == ACC_USER_GROUP.MANAGEMENT);
+            
+            if (elemReplaceReceiptBtn) {
+                elemReplaceReceiptBtn.style.display = isAdmin ? 'inline-block' : 'none';
+            }
+            
+        } else {
+            // No receipt uploaded yet
+            if (elemUploadedReceipt) elemUploadedReceipt.style.display = 'none';
+            if (elemPaymentUpload) elemPaymentUpload.style.display = 'block';
+        }
+        
         
     }
     

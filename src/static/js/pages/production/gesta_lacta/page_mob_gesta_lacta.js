@@ -79,6 +79,7 @@ export function PageMobGestaLacta(input_settings){
     let elemIdTablePigOpsShow   = null;
     let elemIdTablePigOps       = null;
     let elemIdPigOpsSeeSample   = null;
+    let elemIdCheckFarrowing    = null;
     
     let elemIdTablePigCountShow = null;
     let elemIdTablePigCount     = null;
@@ -117,7 +118,8 @@ export function PageMobGestaLacta(input_settings){
     let elemTablePigOpsShow     = null;
     let elemTablePigOps         = null;
     let elemPigOpsSeeSample     = null;
-    
+    let elemCheckFarrowing      = null;
+
 
     let elemTablePigCountShow   = null;
     let elemTablePigCount       = null;
@@ -219,6 +221,8 @@ export function PageMobGestaLacta(input_settings){
         elemIdTablePigOpsShow   = `${settings.uniqueKey}-table-pigops-show`;
         elemIdTablePigOps       = `${settings.uniqueKey}-table-pigops`;
         elemIdPigOpsSeeSample   = `${settings.uniqueKey}-pigops-see-sample`;
+        elemIdCheckFarrowing    = `${settings.uniqueKey}-check-farrowing`;
+        
         
         elemIdTablePigCountShow = `${settings.uniqueKey}-table-pig-count-show`;
         elemIdTablePigCount     = `${settings.uniqueKey}-table-pig-count`;
@@ -229,7 +233,7 @@ export function PageMobGestaLacta(input_settings){
         
         
         elemIdProdTableContainer= `${settings.uniqueKey}-mobile-pig-prod-table`;
-        elemIdPigOpsTableBody  = `${settings.uniqueKey}-mobile-pig-prod-tbody`;
+        elemIdPigOpsTableBody   = `${settings.uniqueKey}-mobile-pig-prod-tbody`;
         elemIdPigCountTableBody = `${settings.uniqueKey}-mobile-pig-count-tbody`;
         
         
@@ -388,7 +392,11 @@ export function PageMobGestaLacta(input_settings){
                 <div>
                     <a href="javascript:void(0)" class="text-link" id="${elemIdPigCountSeeSample}">
                         See sample Data
-                    </a>                    
+                    </a> 
+                    
+                    <a href="javascript:void(0)" class="text-link" id="${elemIdCheckFarrowing}">
+                        Check Farrowing Schedule
+                    </a>                   
                 </div>
             </div>
             `;
@@ -427,6 +435,10 @@ export function PageMobGestaLacta(input_settings){
             <div>
                 <a href="javascript:void(0)" class="text-link" id="${elemIdPigOpsSeeSample}">
                     See sample Data
+                </a>
+                
+                <a href="javascript:void(0)" class="text-link" id="${elemIdCheckFarrowing}">
+                    Check Farrowing Schedule
                 </a>                    
             </div>
             `;
@@ -523,6 +535,7 @@ ${html_style}
         elemTablePigOpsShow     = elemDivContainer.querySelector('#'+elemIdTablePigOpsShow);
         elemTablePigOps         = elemDivContainer.querySelector('#'+elemIdTablePigOps);
         elemPigOpsSeeSample     = elemDivContainer.querySelector('#'+elemIdPigOpsSeeSample);
+        elemCheckFarrowing      = elemDivContainer.querySelector('#'+elemIdCheckFarrowing);
         
         
         elemTablePigCountShow   = elemDivContainer.querySelector('#'+elemIdTablePigCountShow);
@@ -649,6 +662,11 @@ ${html_style}
                 navigation.managerNavLinks.onClickNavProdFattening(null);
             }
         }
+        
+        
+        elemCheckFarrowing.addEventListener('click', function() {
+            navigation.managerNavLinks.onClickNavFarrowingSchedule(null);
+        });
              
     }
     
@@ -738,7 +756,7 @@ ${html_style}
         
         
         
-        // Shwo/Hide see sample
+        // Show/Hide see sample
         if ((dataPigProdList == null) || (dataPigProdList.length == 0)){
             elemSearchInput.setAttribute("placeholder", label_no_entries); 
             elemPigOpsSeeSample.style.display   = 'block';
@@ -746,6 +764,9 @@ ${html_style}
             if (settings.isGesta == false){
                 elemPigCountSeeSample.style.display = 'block';
             }
+            
+            elemCheckFarrowing.style.display    = 'none';
+            
         }
         else{
             elemSearchInput.setAttribute("placeholder", `${label_sow} or PID`);
@@ -754,6 +775,8 @@ ${html_style}
             if (settings.isGesta == false){
                 elemPigCountSeeSample.style.display = 'none';
             }
+            
+            elemCheckFarrowing.style.display    = 'block';
         }
         
         
