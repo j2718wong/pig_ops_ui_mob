@@ -817,6 +817,8 @@ ${html_style}
           "total_amount_due": 960,
           "uploaded_receipt": {
             "path": "account/2026/payment_upload/0001/20260505_122949.png",
+            "status_id": null,
+            "flag": 0,
             "dt_entry": "2026-05-05 12:29:49",
             "name_last": "Wong",
             "name_first": "Jack"
@@ -828,51 +830,82 @@ ${html_style}
         if (data && data.uploaded_receipt && data.uploaded_receipt.path) {
             const receipt = data.uploaded_receipt;
             
-            console.log('Test 1');
+            // Parse the path: "account/2026/payment_upload/0001/20260505_122949.png"
+            // Extract: year, upload_type, account_id, filename
+            const pathParts = receipt.path.split('/');
+            // pathParts = ["account", "2026", "payment_upload", "0001", "20260505_122949.png"]
             
-            // Show the receipt section
-            if (elemUploadedReceipt) elemUploadedReceipt.style.display = 'block';
-            
-            // Hide the upload section (since receipt already exists)
-            if (elemPaymentUpload) elemPaymentUpload.style.display = 'none';
-            
-            // Set the image source
-            if (elemReceiptImage) {
-                // Construct full URL for the image
-                const imageUrl = `/data/${receipt.path}`; console.log('imageUrl = ' + imageUrl);
-                elemReceiptImage.src = imageUrl;
-            }
-            
-            // Set uploader info
-            if (elemUploadedBy && receipt.name_last && receipt.name_first) {
-                elemUploadedBy.textContent = `${receipt.name_first} ${receipt.name_last}`;
-            }
-            
-            // Set upload date
-            if (elemUploadedDate && receipt.dt_entry) {
-                const uploadDate = new Date(receipt.dt_entry);
-                elemUploadedDate.textContent = formatDate(uploadDate, FORMAT_COMPACT);
-            }
-            
-            // Show replace button for admin/owner
-            const cur_user = navigation.userControl.dataUserAccount.user;
-            const user_group_num = cur_user.user_group.group_num;
-            const isAdmin = (user_group_num == ACC_USER_GROUP.ADMIN || 
-                             user_group_num == ACC_USER_GROUP.MANAGEMENT);
-            
-            if (elemReplaceReceiptBtn) {
-                elemReplaceReceiptBtn.style.display = isAdmin ? 'inline-block' : 'none';
+            if (pathParts.length >= 5) {
+                const year = pathParts[1];           // "2026"
+                const uploadType = pathParts[2];     // "payment_upload"
+                const accountId = pathParts[3];      // "0001"
+                const filename = pathParts[4];       // "20260505_122949.png"
+                
+                // Construct URL using your FastAPI route
+                const imageUrl = `/account_bill/receipt/${year}/${uploadType}/${accountId}/${filename}`;
+                
+                console.log('Receipt image URL:', imageUrl);
+                
+                // Show the receipt section
+                if (elemUploadedReceipt) elemUploadedReceipt.style.display = 'block';
+                
+                // Hide the upload section (since receipt already exists)
+                if (elemPaymentUpload) elemPaymentUpload.style.display = 'none';
+                
+                // Set the image source
+                if (elemReceiptImage) {
+                    elemReceiptImage.src = imageUrl;
+                    elemReceiptImage.onload = function() {
+                        console.log('Receipt image loaded successfully');
+                    };
+                    elemReceiptImage.onerror = function() {
+                        console.error('Failed to load receipt image:', imageUrl);
+                        // Show fallback message
+                        if (elemReceiptImage) {
+                            elemReceiptImage.alt = 'Receipt image not available';
+                        }
+                    };
+                }
+                
+                // Set uploader info
+                if (elemUploadedBy && receipt.name_last && receipt.name_first) {
+                    elemUploadedBy.textContent = `${receipt.name_first} ${receipt.name_last}`;
+                }
+                
+                // Set upload date
+                if (elemUploadedDate && receipt.dt_entry) {
+                    const uploadDate = new Date(receipt.dt_entry);
+                    elemUploadedDate.textContent = formatDate(uploadDate, FORMAT_COMPACT);
+                }
+                
+                // Show replace button for admin/owner
+                const cur_user = navigation.userControl.dataUserAccount.user;
+                const user_group_num = cur_user.user_group.group_num;
+                const isAdmin = (user_group_num === ACC_USER_GROUP.ADMIN || 
+                                 user_group_num === ACC_USER_GROUP.MANAGEMENT);
+                
+                if (elemReplaceReceiptBtn) {
+                    elemReplaceReceiptBtn.style.display = isAdmin ? 'inline-block' : 'none';
+                }
+            } else {
+                console.error('Invalid receipt path format:', receipt.path);
+                this.showNoReceiptMessage();
             }
             
         } else {
             // No receipt uploaded yet
-            if (elemUploadedReceipt) elemUploadedReceipt.style.display = 'none';
-            if (elemPaymentUpload) elemPaymentUpload.style.display = 'block';
+            this.showNoReceiptMessage();
         }
         
         
     }
     
+    
+    this.showNoReceiptMessage = function() {
+        if (elemUploadedReceipt) elemUploadedReceipt.style.display = 'none';
+        if (elemPaymentUpload) elemPaymentUpload.style.display = 'block';
+    }
+
     
     // In your PageAccountNewBill.js
     this.onClickSubmitPaymentProof = async function() {
