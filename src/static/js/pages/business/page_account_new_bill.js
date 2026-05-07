@@ -218,14 +218,7 @@ export function PageAccountNewBill(input_settings){
                     font-weight: 500;
                     font-size: 0.85rem;
                 }
-                .form-control {
-                    width: 100%;
-                    padding: 8px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    font-size: 0.85rem;
-                    box-sizing: border-box;
-                }
+                
                 .btn-primary {
                     background: #2e7d64;
                     color: white;

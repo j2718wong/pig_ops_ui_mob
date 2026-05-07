@@ -565,7 +565,7 @@ export function PageCustomerFeedback(input_settings){
             </div>
 
             <!-- subtle note about response time -->
-            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--dark-gray); text-align: center;">
+            <p style="margin-top: 1.5rem; font-size: 1.1rem; color: var(--dark-gray); text-align: center;">
                 <i class="fas fa-clock" style="color: var(--warning-orange);"></i> 
                 We check feedback daily — expect a response within 2-3 days
             </p>
