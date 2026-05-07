@@ -223,50 +223,57 @@ export function ComponentAddressLevels(input_settings){
     }
     
     
-    this.setLocationAddress = function(location){
+    this.setLocationAddress = function(location) {
         const country_hid = location.country.hid;
         elemCountry.textContent = location.country.name;
 
         const address = location.address;
         
-        if (address.level_1 && address.level_1.hid){
+        if (address.level_1 && address.level_1.hid) {
             const level_1_hid = address.level_1.hid;
             
-            // Set the level 1 select element
+            // Set the level 1 select element (options should already exist)
             elemAddressLevel1.value = level_1_hid;
             
             // Get address_level_1 from managerAddress
             this.curAddressLevel1 = navigation.managerAddress.getAddressLevel1(level_1_hid);
             
             if (this.curAddressLevel1) {
+                
                 // Check if level 2 data is already loaded
                 let level_2_addresses = navigation.managerAddress.getLevel2Addresses(
                                             this.curAddressLevel1);
                 
-                if (level_2_addresses) {
-                    // Level 2 data is already loaded, set the level 2 select
+                if (level_2_addresses && level_2_addresses.length > 0) {
+                    // Level 2 data is already loaded, populate dropdown first
+                    commonSelectOptions.setDataAddressLevelList(level_2_addresses, elemAddressLevel2);
+                    elemAddressLevel2.disabled = false;
+                    
+                    // Now set the value
                     this._setAddressLevel2(location);
                 } else {
                     // Need to load level 2 data first
-                    this.requestDataAddressLevel2(this.curAddressLevel1, function() {
+                    this.requestDataAddressLevel2(this.curAddressLevel1, function(data) {
+                        // Data loaded, now populate dropdown
+                        commonSelectOptions.setDataAddressLevelList(data, elemAddressLevel2);
+                        elemAddressLevel2.disabled = false;
+                        
+                        // Now set the value
                         thisObj._setAddressLevel2(location);
                     });
                 }
-            }
+            } 
         }
     }
     
     
     this._setAddressLevel2 = function(location) {
         const address = location.address;
-        
-        elemAddressLevel2.disabled = false;
-            
-        
+    
         if (address.level_2 && address.level_2.hid) {
             const level_2_hid = address.level_2.hid;
             
-            // Set the level 2 select element
+            // Set the level 2 select element (options should now exist)
             elemAddressLevel2.value = level_2_hid;
             
             // Get level_2 from curAddressLevel1
@@ -278,12 +285,21 @@ export function ComponentAddressLevels(input_settings){
                 let level_3_addresses = navigation.managerAddress.getLevel3Addresses(
                                             this.curAddressLevel2);
                 
-                if (level_3_addresses) {
-                    // Level 3 data is already loaded, set the level 3 select
+                if (level_3_addresses && level_3_addresses.length > 0) {
+                    // Level 3 data is already loaded, populate dropdown first
+                    commonSelectOptions.setDataAddressLevelList(level_3_addresses, elemAddressLevel3);
+                    elemAddressLevel3.disabled = false;
+                    
+                    // Now set the value
                     this._setAddressLevel3(location);
                 } else {
                     // Need to load level 3 data first
-                    this.requestDataAddressLevel3(this.curAddressLevel2, function() {
+                    this.requestDataAddressLevel3(this.curAddressLevel2, function(data) {
+                        // Data loaded, now populate dropdown
+                        commonSelectOptions.setDataAddressLevelList(data, elemAddressLevel3);
+                        elemAddressLevel3.disabled = false;
+                        
+                        // Now set the value
                         thisObj._setAddressLevel3(location);
                     });
                 }
@@ -294,18 +310,13 @@ export function ComponentAddressLevels(input_settings){
     
     this._setAddressLevel3 = function(location) {
         const address = location.address;
-        
-        elemAddressLevel3.disabled = false;
-        
+    
         if (address.level_3 && address.level_3.hid) {
             const level_3_hid = address.level_3.hid;
             
-            // Set the level 3 select element
+            // Set the level 3 select element (options should now exist)
             elemAddressLevel3.value = level_3_hid;
-            
-            // Since there is an level_3_hid, user can edit this
             elemAddressLevel3.disabled = false;
-            
             
             // Get level_3 from curAddressLevel2
             this.curAddressLevel3 = navigation.managerAddress.getAddressLevel3(

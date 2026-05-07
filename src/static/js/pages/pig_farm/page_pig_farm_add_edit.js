@@ -322,6 +322,7 @@ export function PagePigFarmAddEdit(input_settings){
             }
         }
         
+
         
         compAddressLevels.setLocationAddress(pig_farm.location);
         
