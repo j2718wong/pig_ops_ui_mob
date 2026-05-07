@@ -677,6 +677,7 @@ ${html_style}
         }
         
         
+        // Attach Listener to Close button
         elemBtnClose.onclick = function(){
             // Remove NavHistoryHead if same with go_back_page
             navigation.managerNavHistory.removeFromNavHistoryHead(

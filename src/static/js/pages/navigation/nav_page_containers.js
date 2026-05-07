@@ -21,6 +21,7 @@ export function NavPageContainers(_navigation){
     const elemIdContMyAccount           = 'container-my-account';
     const elemIdContCustomerPricing     = 'container-customer-pricing';
     const elemIdContNewBill             = 'container-new-bill';
+    const elemIdContUserSettings        = 'container-user-settings';
     
     
     const elemIdContAccountDisabled     = 'container-account-disabled';
@@ -145,6 +146,7 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.MY_ACCOUNT]             = document.getElementById(elemIdContMyAccount);
         this.containers[PAGE_ID.CUSTOMER_PRICING]       = document.getElementById(elemIdContCustomerPricing);
         this.containers[PAGE_ID.BILL_NEW]               = document.getElementById(elemIdContNewBill);
+        this.containers[PAGE_ID.USER_SETTINGS]               = document.getElementById(elemIdContUserSettings);
         
         
         this.containers[PAGE_ID.ACCOUNT_DISABLED]       = document.getElementById(elemIdContAccountDisabled);
@@ -293,6 +295,7 @@ export function NavPageContainers(_navigation){
             { container: this.containers[PAGE_ID.MY_ACCOUNT],             id: PAGE_ID.MY_ACCOUNT },
             { container: this.containers[PAGE_ID.CUSTOMER_PRICING],       id: PAGE_ID.CUSTOMER_PRICING },
             { container: this.containers[PAGE_ID.BILL_NEW],               id: PAGE_ID.BILL_NEW },
+            { container: this.containers[PAGE_ID.USER_SETTINGS],               id: PAGE_ID.USER_SETTINGS },
             
             
             { container: this.containers[PAGE_ID.HOME],                   id: PAGE_ID.HOME },
@@ -386,6 +389,9 @@ export function NavPageContainers(_navigation){
                 
             case PAGE_ID.BILL_NEW:
                 return elemIdContNewBill;
+                
+            case PAGE_ID.USER_SETTINGS:
+                return elemIdContUserSettings;
                 
                 
                 
@@ -609,7 +615,8 @@ export function NavPageContainers(_navigation){
             case this.containers[PAGE_ID.MY_ACCOUNT]                :{return "PageContMyAccount";}
             case this.containers[PAGE_ID.CUSTOMER_PRICING]          :{return "PageContCustomerPricing";}
             case this.containers[PAGE_ID.BILL_NEW]                  :{return "PageContNewBill";}
-                                                        
+            case this.containers[PAGE_ID.USER_SETTINGS]             :{return "PageContUserSettings";}
+            
                                                         
             case this.containers[PAGE_ID.ACCOUNT_DISABLED]          :{return "PageContAccountDisabled";}
             case this.containers[PAGE_ID.USER_DISABLED]             :{return "PageContUserDisabled";}

@@ -31,6 +31,7 @@ export function UserControl(_navigation) {
     let elemDesktopMyAccount            = null;
     let elemDesktopBillNew              = null;
     let elemDesktopBillHistory          = null;
+    let elemDesktopSettings             = null;
     let elemDesktopUserLogout           = null;
     
 
@@ -72,8 +73,8 @@ export function UserControl(_navigation) {
         elemDesktopMyAccount            = document.getElementById('desktop-my-account');
         elemDesktopBillNew              = document.getElementById('desktop-bill-new');
         elemDesktopBillHistory          = document.getElementById('desktop-bill-history');
+        elemDesktopSettings             = document.getElementById('desktop-settings');
         elemDesktopUserLogout           = document.getElementById('desktop-user-logout');
-        
 
     }
     
@@ -92,6 +93,11 @@ export function UserControl(_navigation) {
         
         elemDesktopBillNew.addEventListener('click', function() {
             thisObj.onClickBillNew();
+        });
+        
+        
+        elemDesktopSettings.addEventListener('click', function() {
+            thisObj.onClickSettings();
         });
         
         
@@ -321,7 +327,6 @@ export function UserControl(_navigation) {
     
     
     this.onClickBillNew = function(){
-        console.log('onClickBillNew');
         
         console.log(`test dataUserAccount`);
         console.log(this.dataUserAccount);
@@ -349,6 +354,36 @@ export function UserControl(_navigation) {
         navigation.pageAccountNewBill.show(options);
         
         elemDesktopUserDropdown.classList.remove('active');
+    }
+    
+    
+    this.onClickSettings = function(){
+        console.log(`test on click settings`);
+        
+        let go_back_page    = navigation.curPageNavigated.pageContainer;
+        if (go_back_page == null){
+            go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
+        } 
+        
+        
+        const next_page = navigation.getPageContainer(PAGE_ID.USER_SETTINGS);
+        
+        
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        
+        
+        const options ={
+            go_back_page:   go_back_page,
+        };
+        navigation.pageUserSettings.show(options);
+        
+        elemDesktopUserDropdown.classList.remove('active');
+
     }
     
     

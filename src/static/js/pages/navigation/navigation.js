@@ -47,6 +47,7 @@ import {PigFarm}                    from '../farm_account/pig_farm.js';
 import {PageMyAccount}              from '../customer/page_my_account.js';
 import {PageCustomerPricing}        from '../customer/page_customer_pricing.js';
 import {PageAccountNewBill}         from '../business/page_account_new_bill.js';
+import {PageUserSettings}           from '../customer/page_user_settings.js';
 import {PageCustomerFeedback}       from '../customer/page_customer_feedback.js';
 
 import {PageAccountDisabled}        from '../a_user_control/page_account_disabled.js';
@@ -313,6 +314,14 @@ export function Navigation(){
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.BILL_NEW),
         uniqueKey:              'customer-bill-new'
     });
+
+    
+    this.pageUserSettings       = new PageUserSettings({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.USER_SETTINGS),
+        uniqueKey:              'user-settings'
+    });
+    
 
 
 
@@ -955,7 +964,9 @@ export function Navigation(){
         this.pageMyAccount.init();
         this.pageCustomerPricing.init();
         this.pageAccountNewBill.init();
+        this.pageUserSettings.init();
         this.pageCustomerFeedback.init();
+        
         
         this.pageAccountDisabled.init();
         this.pageUserDisabled.init();

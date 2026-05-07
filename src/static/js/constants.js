@@ -97,10 +97,11 @@ const PAGE_ID = {
     
     MY_ACCOUNT:             10,
     CUSTOMER_PRICING:       11,
+    USER_SETTINGS:          12,
     
     
-    HOME:                   12,
-    FEEDBACK_US:            13,
+    HOME:                   14,
+    FEEDBACK_US:            15,
     
     
     BILL_HISTORY_LIST:      18,
