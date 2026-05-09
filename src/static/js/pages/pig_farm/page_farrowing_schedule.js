@@ -486,6 +486,11 @@ ${html_style}
         const dataLactatingList = navigation.pigFarm.managerPigProd.dataLactatingList;
         const dataGestatingList = navigation.pigFarm.managerPigProd.dataGestatingList;
         
+        console.log(`dataGestatingList`);
+        console.log(dataGestatingList);
+        
+        
+        
         const dataPigFarm = navigation.pigFarm.dataPigFarm;
         
         let num_farrowing_crates = dataPigFarm.pig_farm.num_farrow_crates;
@@ -587,7 +592,7 @@ ${html_style}
         startDate.setHours(0, 0, 0, 0);
         
         const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 115);
+        endDate.setDate(endDate.getDate() + 125);
         
         const weeklyDates = thisObj.getWeeklyMondays(startDate, endDate);
         
@@ -645,8 +650,8 @@ ${html_style}
     
     
     this.buildCrateOccupancy = function(lactatingList, gestatingList, 
-            accSettingsOps, numCrates) {
-        
+        accSettingsOps, numCrates) {
+
         const day1Adjustment = accSettingsOps.day_1_on_date_of_birth === 1 ? 1 : 0;
         const today = new Date(dtCurrentDate);
         today.setHours(0, 0, 0, 0);
@@ -670,7 +675,7 @@ ${html_style}
                     startDate: new Date(today),
                     endDate: moveOutDate,
                     expectedBirth: birthDate,
-                    isOccupying: true
+                    isExisting: true
                 });
             }
         }
@@ -696,13 +701,18 @@ ${html_style}
                     startDate: moveInDate,
                     endDate: moveOutDate,
                     expectedBirth: expectedBirth,
-                    isOccupying: false
+                    originalStartDate: new Date(moveInDate),
+                    isExisting: false,
+                    isAdjusted: false,
+                    adjustedStartDate: null
                 });
             }
         }
         
+        // Sort by start date
         events.sort((a, b) => a.startDate - b.startDate);
         
+        // Initialize crates
         const crates = [];
         for (let i = 0; i < numCrates; i++) {
             crates.push({
@@ -711,17 +721,37 @@ ${html_style}
             });
         }
         
+        // Assign events to crates
         for (const event of events) {
             let assigned = false;
             
             for (const crate of crates) {
                 let hasConflict = false;
+                let conflictingAssignment = null;
+                
+                // Check for overlap
                 for (const assignment of crate.assignments) {
                     if (event.startDate <= assignment.endDate && 
                         event.endDate >= assignment.startDate) {
-                        
                         hasConflict = true;
+                        conflictingAssignment = assignment;
                         break;
+                    }
+                }
+                
+                // Try to resolve conflict by adjusting move-in date
+                if (hasConflict && !event.isExisting && conflictingAssignment) {
+                    // Adjust move-in date to start after the conflicting assignment ends
+                    const adjustedStartDate = new Date(conflictingAssignment.endDate);
+                    adjustedStartDate.setDate(adjustedStartDate.getDate() + 1);
+                    
+                    // Make sure the adjusted start is before expected birth
+                    if (adjustedStartDate < event.expectedBirth) {
+                        event.startDate = adjustedStartDate;
+                        event.isAdjusted = true;
+                        event.adjustedStartDate = adjustedStartDate;
+                        event.adjustmentReason = `Moved in ${thisObj.formatDateShort(adjustedStartDate)} (was ${thisObj.formatDateShort(event.originalStartDate)})`;
+                        hasConflict = false; // Resolved
                     }
                 }
                 
@@ -737,12 +767,36 @@ ${html_style}
             
             if (!assigned) {
                 event.noCrateAvailable = true;
+                if (crates[0]) {
+                    crates[0].assignments.push({
+                        ...event,
+                        assignedCrate: 1,
+                        isConflict: true
+                    });
+                }
+            }
+        }
+        
+        // Sort assignments within each crate by start date
+        for (const crate of crates) {
+            crate.assignments.sort((a, b) => a.startDate - b.startDate);
+            
+            // Detect overlaps
+            for (let i = 0; i < crate.assignments.length - 1; i++) {
+                const current = crate.assignments[i];
+                const next = crate.assignments[i + 1];
+                
+                if (current.endDate >= next.startDate) {
+                    current.hasOverlap = true;
+                    next.hasOverlap = true;
+                    next.overlapWith = current.sowName;
+                }
             }
         }
         
         return crates;
     }
-    
+
     
     this.detectCrateConflicts = function(crateOccupancy, numCrates) {
         const conflicts = [];
@@ -803,7 +857,7 @@ ${html_style}
         }
         
         const startDate = weeklyDates[0];
-        const endDate = new Date(weeklyDates[weeklyDates.length - 1]);  // Create a copy
+        const endDate = new Date(weeklyDates[weeklyDates.length - 1]);
         endDate.setDate(endDate.getDate() + 6);
         const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
         const pixelsPerDay = 4;
@@ -827,7 +881,7 @@ ${html_style}
         headerDiv.style.display = 'flex';
         headerDiv.style.minWidth = `${totalDays * pixelsPerDay + 60}px`;
         
-        // Crate label header - reduced width, centered
+        // Crate label header
         const labelHeader = document.createElement('div');
         labelHeader.textContent = 'Crate';
         labelHeader.style.width = '60px';
@@ -870,7 +924,7 @@ ${html_style}
             crateRow.style.borderBottom = '1px solid #eee';
             crateRow.style.position = 'relative';
             
-            // Crate number - just the number, centered, no padding
+            // Crate number
             const crateLabel = document.createElement('div');
             crateLabel.textContent = `${crate.crateNumber}`;
             crateLabel.style.width = '60px';
@@ -915,8 +969,11 @@ ${html_style}
             
             // Assignment blocks
             for (const assignment of crate.assignments) {
-                const blockStartX = thisObj.getXPosition(assignment.startDate, startDate, pixelsPerDay);
-                const blockEndX = thisObj.getXPosition(assignment.endDate, startDate, pixelsPerDay);
+                const startDateToUse = assignment.startDate;
+                const endDateToUse = assignment.endDate;
+                
+                const blockStartX = thisObj.getXPosition(startDateToUse, startDate, pixelsPerDay);
+                const blockEndX = thisObj.getXPosition(endDateToUse, startDate, pixelsPerDay);
                 const blockWidth = blockEndX - blockStartX;
                 
                 if (blockWidth > 2) {
@@ -933,19 +990,30 @@ ${html_style}
                     block.style.boxSizing = 'border-box';
                     block.style.cursor = 'pointer';
                     
-                    const hasConflict = conflicts && conflicts.some(c => c.pid === assignment.pid);
-                    
-                    if (assignment.type === 'lactating') {
-                        block.style.backgroundColor = '#4caf50';
+                    // Determine block color based on status
+                    if (assignment.isConflict || assignment.noCrateAvailable || assignment.hasOverlap) {
+                        // Red - Conflict
+                        block.style.backgroundColor = '#f44336';
                         block.style.color = '#ffffff';
-                    } else {
+                        block.style.border = '2px solid #b71c1c';
+                        block.style.animation = 'pulse 2s infinite';
+                    } 
+                    else if (assignment.isAdjusted) {
+                        // Orange striped - Early wean required
                         block.style.backgroundColor = '#ff9800';
                         block.style.color = '#ffffff';
-                    }
-                    
-                    if (hasConflict) {
-                        block.style.backgroundColor = '#f44336';
-                        block.style.animation = 'pulse 2s infinite';
+                        block.style.border = '2px solid #e65100';
+                        block.style.backgroundImage = 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.2) 10px, rgba(255,255,255,0.2) 20px)';
+                    } 
+                    else if (assignment.type === 'lactating') {
+                        // Green - Lactating (in crate)
+                        block.style.backgroundColor = '#4caf50';
+                        block.style.color = '#ffffff';
+                    } 
+                    else {
+                        // Blue - Normal gestating
+                        block.style.backgroundColor = '#2196F3';
+                        block.style.color = '#ffffff';
                     }
                     
                     const today = new Date(dtCurrentDate);
@@ -953,8 +1021,34 @@ ${html_style}
                     
                     let contentHtml = '';
                     
-                    if (assignment.type === 'lactating') {
-                        const weanDate = assignment.endDate;
+                    // Build content based on type and status
+                    if (assignment.isConflict || assignment.noCrateAvailable || assignment.hasOverlap) {
+                        let overlapMessage = '';
+                        if (assignment.overlapWith) {
+                            overlapMessage = `⚠️ Conflicts with ${assignment.overlapWith}`;
+                        } else if (assignment.noCrateAvailable) {
+                            overlapMessage = '⚠️ NO CRATE AVAILABLE';
+                        } else {
+                            overlapMessage = '⚠️ CRATE CONFLICT';
+                        }
+                        contentHtml = `
+                            <div class="timeline-sow-name" style="font-size: 11px;">${overlapMessage}</div>
+                            <div class="timeline-sow-name" style="font-size: 12px;">🐖 ${assignment.pid} ${assignment.sowName}</div>
+                        `;
+                    }
+                    else if (assignment.isAdjusted && assignment.adjustmentReason) {
+                        contentHtml = `
+                            <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
+                            <div class="timeline-sub" style="font-size: 11px; background: rgba(0,0,0,0.3); border-radius: 4px; padding: 2px 4px; display: inline-block;">
+                                ${assignment.adjustmentReason}
+                            </div>
+                            <div class="timeline-sub" style="font-size: 11px; margin-top: 2px;">
+                                Due: ${thisObj.formatDateShort(assignment.expectedBirth)}
+                            </div>
+                        `;
+                    }
+                    else if (assignment.type === 'lactating') {
+                        const weanDate = endDateToUse;
                         const daysRemaining = Math.ceil((weanDate - today) / (1000 * 60 * 60 * 24));
                         
                         let urgencyIcon = '🍼';
@@ -972,13 +1066,14 @@ ${html_style}
                             <div class="timeline-sub">${urgencyIcon} Wean: ${thisObj.formatDateShort(weanDate)} | ${daysRemaining} days left</div>
                             ${urgencyText ? `<div class="timeline-urgency">${urgencyText}</div>` : ''}
                         `;
-                    } else {
-                        const moveInDate = assignment.startDate;
-                        const moveOutDate = assignment.endDate;
+                    } 
+                    else {
+                        const moveInDate = startDateToUse;
+                        const moveOutDate = endDateToUse;
                         const expectedBirth = assignment.expectedBirth;
                         const durationDays = Math.ceil((moveOutDate - moveInDate) / (1000 * 60 * 60 * 24));
                         
-                        const daysToMoveIn = Math.ceil((moveInDate - today) / (1000 * 60 * 60 * 24));
+                        let daysToMoveIn = Math.ceil((moveInDate - today) / (1000 * 60 * 60 * 24));
                         let moveIcon = '📦';
                         if (daysToMoveIn <= 3 && daysToMoveIn > 0) {
                             moveIcon = '🚨';
@@ -986,20 +1081,42 @@ ${html_style}
                             moveIcon = '⚠️';
                         }
                         
-                        contentHtml = `
-                            <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
-                            <div class="timeline-sub">Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}</div>
-                            <div class="timeline-sub">Due: ${thisObj.formatDateShort(expectedBirth)} | Stay: ${durationDays} days</div>
-                        `;
+                        // Show original move in date if adjusted
+                        if (assignment.originalStartDate && assignment.isAdjusted) {
+                            const originalMoveIn = assignment.originalStartDate;
+                            contentHtml = `
+                                <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
+                                <div class="timeline-sub">Move: ${thisObj.formatDateShort(moveInDate)} (was ${thisObj.formatDateShort(originalMoveIn)})</div>
+                                <div class="timeline-sub">Out: ${thisObj.formatDateShort(moveOutDate)} | Due: ${thisObj.formatDateShort(expectedBirth)}</div>
+                            `;
+                        } else {
+                            contentHtml = `
+                                <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
+                                <div class="timeline-sub">Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}</div>
+                                <div class="timeline-sub">Due: ${thisObj.formatDateShort(expectedBirth)} | Stay: ${durationDays} days</div>
+                            `;
+                        }
                     }
                     
                     block.innerHTML = contentHtml;
                     
-                    if (assignment.type === 'lactating') {
-                        block.title = `${assignment.pid} ${assignment.sowName}\nWeans: ${thisObj.formatDateShort(assignment.endDate)}`;
+                    // Set title for hover tooltip
+                    if (assignment.isAdjusted) {
+                        block.title = `${assignment.pid} ${assignment.sowName}\nMove in: ${thisObj.formatDateShort(assignment.startDate)} (adjusted)\nOriginal move in: ${thisObj.formatDateShort(assignment.originalStartDate)}\nDue: ${thisObj.formatDateShort(assignment.expectedBirth)}\n⚠️ Previous sow needs early wean`;
+                    } else if (assignment.type === 'lactating') {
+                        block.title = `${assignment.pid} ${assignment.sowName}\nWeans: ${thisObj.formatDateShort(endDateToUse)}`;
                     } else {
-                        block.title = `${assignment.pid} ${assignment.sowName}\nMove in: ${thisObj.formatDateShort(assignment.startDate)}\nMove out: ${thisObj.formatDateShort(assignment.endDate)}\nDue: ${thisObj.formatDateShort(assignment.expectedBirth)}`;
+                        block.title = `${assignment.pid} ${assignment.sowName}\nMove in: ${thisObj.formatDateShort(startDateToUse)}\nMove out: ${thisObj.formatDateShort(endDateToUse)}\nDue: ${thisObj.formatDateShort(assignment.expectedBirth)}`;
                     }
+                    
+                    if (assignment.isConflict || assignment.noCrateAvailable || assignment.hasOverlap) {
+                        block.title += '\n⚠️ CRATE CONFLICT - Needs attention';
+                    }
+                    
+                    // Add click handler to show more details
+                    block.onclick = function() {
+                        thisObj.showAssignmentDetails(assignment);
+                    };
                     
                     timelineTrack.appendChild(block);
                 }
@@ -1015,8 +1132,88 @@ ${html_style}
         this.renderLegend(container);
         this.renderConflictsSummary(container, conflicts, earlyWeanOptions);
     }
+    
+    
+    this.showAssignmentDetails = function(assignment) {
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.right = '0';
+        modal.style.bottom = '0';
+        modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        modal.style.zIndex = '10000';
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        
+        let statusColor = '#4caf50';
+        let statusText = 'Normal';
+        let recommendations = '';
+        
+        if (assignment.noCrateAvailable || assignment.isOverlap) {
+            statusColor = '#f44336';
+            statusText = '⚠️ CRITICAL - No Crate Available';
+            recommendations = `
+                <div style="margin-top: 12px; padding: 10px; background: #ffebee; border-radius: 8px;">
+                    <strong>Recommendations:</strong><br>
+                    • Consider early weaning of conflicting sow<br>
+                    • Add more farrowing crates<br>
+                    • Check if any sow can be moved to another crate
+                </div>
+            `;
+        } else if (assignment.isAdjusted) {
+            statusColor = '#ff9800';
+            statusText = '⚠️ Adjusted - Early Wean Recommended';
+            recommendations = `
+                <div style="margin-top: 12px; padding: 10px; background: #fff3e0; border-radius: 8px;">
+                    <strong>Recommendation:</strong><br>
+                    • Early wean to ${thisObj.formatDateShort(assignment.assignedEndDate)} to avoid conflict
+                </div>
+            `;
+        }
+        
+        modal.innerHTML = `
+            <div style="background: white; border-radius: 12px; max-width: 400px; width: 90%; padding: 20px;">
+                <h3 style="margin: 0 0 8px 0; color: ${statusColor};">${statusText}</h3>
+                <div style="border-bottom: 1px solid #eee; margin-bottom: 12px;"></div>
+                <div style="margin-bottom: 12px;">
+                    <strong>Sow:</strong> ${assignment.pid} - ${assignment.sowName || 'Unknown'}
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <strong>Crate:</strong> ${assignment.assignedCrate || 'Not assigned'}
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <strong>Expected Birth:</strong> ${thisObj.formatDateShort(assignment.expectedBirth)}
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <strong>Move In:</strong> ${thisObj.formatDateShort(assignment.assignedStartDate || assignment.startDate)}
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <strong>Wean Date:</strong> ${thisObj.formatDateShort(assignment.assignedEndDate || assignment.endDate)}
+                </div>
+                ${recommendations}
+                <button id="closeModal" style="margin-top: 16px; width: 100%; padding: 10px; background: #2196F3; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer;">
+                    Close
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        const closeBtn = modal.querySelector('#closeModal');
+        closeBtn.onclick = function() {
+            modal.remove();
+        };
+        
+        modal.onclick = function(e) {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        };
+    }
 
-
+    
     this.getXPosition = function(date, startDate, pixelsPerDay) {
         const diffDays = Math.ceil((date - startDate) / (1000 * 60 * 60 * 24));
         return Math.max(0, diffDays * pixelsPerDay);
@@ -1029,12 +1226,20 @@ ${html_style}
         
         legendDiv.innerHTML = `
             <div class="legend-item">
-                <div class="legend-color lactating"></div>
+                <div class="legend-color" style="background: #4caf50;"></div>
                 <span>Lactating (in crate)</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color gestating"></div>
-                <span>Gestating (needs crate)</span>
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span>Gestating (normal)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff9800; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.3) 10px, rgba(255,255,255,0.3) 20px);"></div>
+                <span>Gestating (adjusted / early wean needed)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f44336;"></div>
+                <span>Crate conflict / overlap</span>
             </div>
             <div class="legend-item">
                 <div class="legend-line"></div>

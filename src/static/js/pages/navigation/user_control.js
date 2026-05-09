@@ -102,7 +102,7 @@ export function UserControl(_navigation) {
         
         
         elemDesktopUserLogout.addEventListener('click', function() {
-            thisObj.userLogout();
+            thisObj.onClickLogout();
         });
 
     }
@@ -299,6 +299,29 @@ export function UserControl(_navigation) {
     }
     
     
+    /** Returns viewed bills saved in localStorage.*/
+    this.getViewedBills = function() {
+        const viewed = localStorage.getItem('viewed_bills');
+        return viewed ? JSON.parse(viewed) : [];
+    }
+
+
+    this.markBillAsViewed = function(billReference) {
+        const viewed = this.getViewedBills();
+        if (!viewed.includes(billReference)) {
+            viewed.push(billReference);
+            localStorage.setItem('viewed_bills', JSON.stringify(viewed));
+        }
+    }
+
+
+    this.isBillViewed = function(billReference) {
+        return this.getViewedBills().includes(billReference);
+    }
+    
+
+
+    
     this.onClickMyAccount = function(){
         let go_back_page    = navigation.curPageNavigated.pageContainer;
         if (go_back_page == null){
@@ -387,7 +410,7 @@ export function UserControl(_navigation) {
     }
     
     
-    this.userLogout = function(){
+    this.onClickLogout = function(){
         // Clear all items from localStorage
         localStorage.clear();
         
