@@ -743,6 +743,7 @@ export function PageHomeDashBoard(input_settings){
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
+        console.log('dashboard.show()');
         
         // Show/ Hide debug  elemnts
         const user = navigation.userControl.dataUserAccount.user.user;
@@ -756,7 +757,7 @@ export function PageHomeDashBoard(input_settings){
         */
         
 
-        
+        // Show PWA install button
         if (!isAppInstalled()) {
             setTimeout(function() {
                 const promptToUse = deferredPrompt || window.deferredPrompt;
@@ -773,7 +774,6 @@ export function PageHomeDashBoard(input_settings){
             }, 500);
         }
                 
-        
         
         
         dtCurrentDate = new Date();
@@ -800,7 +800,36 @@ export function PageHomeDashBoard(input_settings){
         elemTodayDate.textContent = `${s_dt_today}, ${label_weekday}`;
         
         
+        // Pig Farm Metrics
+        thisObj.populatePigFarmMetrics();
         
+        
+        // Populate Expecting sows next MIN_DAYS_SHOW_EXPECTING days
+        thisObj.populateExpectingSows();
+        
+        
+        // Populate last Farm Feed Balance
+        thisObj.populateLastFeedBalance();
+        
+        
+        // Set Editable PigFarm
+        thisObj.setEditablePigFarm(); 
+        
+        
+        // Force a reflow to recalculate height
+        setTimeout(function() {
+            // Force a reflow
+            elemDashboard.style.overflow = 'hidden';
+            elemDashboard.offsetHeight; // Force reflow
+            elemDashboard.style.overflow = 'auto';
+            
+        }, 100);
+        
+
+    }
+    
+    
+    this.populatePigFarmMetrics = function(){
         // Populate Lacta Piglets / sows
         let data_prod_list = navigation.pigFarm.managerPigProd.dataLactatingList;
     
@@ -873,11 +902,12 @@ export function PageHomeDashBoard(input_settings){
         num_pigs = navigation.pageProdFatteningList.getNumPigsToHarvest();
         elemNumToHarvest.textContent = num_pigs;
         
-        
-        
-        // Populate Expecting sows next MIN_DAYS_SHOW_EXPECTING days
+    }
+    
+    
+    this.populateExpectingSows = function(){
         const expecting_sows = [];
-        data_prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
+        const data_prod_list = navigation.pigFarm.managerPigProd.dataGestatingList;
         
         for (const cur_entry of data_prod_list){
             const date_expected = cur_entry.birth.date_expected
@@ -935,57 +965,7 @@ export function PageHomeDashBoard(input_settings){
         else{
             elemExpectingSowsShow.style.display = 'none';
         }
-        
-        
-        
-        // Populate last Farm Feed Balance
-        thisObj.populateLastFeedBalance();
-        
-        
-        // Get user.user_group.group_num
-
-        const cur_user = navigation.userControl.dataUserAccount.user;
-        const user_group_num = cur_user.user_group.group_num;
-        
-        if (user_group_num == ACC_USER_GROUP.ADMIN || 
-            user_group_num == ACC_USER_GROUP.MANAGEMENT){
-            elemFarmName.onclick = function() {
-                // Show Container
-                const next_page_id   = PAGE_ID.PIG_FARM_ADD_EDIT;
-                const next_page = navigation.getPageContainer(next_page_id);
-                
-                // Push currentPage to NavHistory; 
-                // Will also compare current page and  next_page NAV_MENU_GROUP.
-                navigation.pushCurrentPageToNavHistory(next_page);
-                
-                navigation.showThisPage(next_page);
-                
-                
-                // Show Page
-                const go_back_page_id   = PAGE_ID.HOME;
-                const go_back_page = navigation.getPageContainer(go_back_page_id);
-                
-            
-                const options = {
-                    is_add:                 false,   // false is edit
-                    go_back_page:           go_back_page 
-                }
-                navigation.pagePigFarmAddEdit.show(options);
-                
-            };
-        } 
-        
-        
-        // Force a reflow to recalculate height
-        setTimeout(function() {
-            // Force a reflow
-            elemDashboard.style.overflow = 'hidden';
-            elemDashboard.offsetHeight; // Force reflow
-            elemDashboard.style.overflow = 'auto';
-            
-        }, 100);
     }
-    
     
     
     this.displayFeedBalance = function(data){
@@ -1098,6 +1078,43 @@ export function PageHomeDashBoard(input_settings){
             else{
                 thisObj.displayFeedBalance(farmLastBalance);
             }
+        }
+    }
+    
+    
+    this.setEditablePigFarm = function(){
+        // Get user.user_group.group_num
+        const cur_user = navigation.userControl.dataUserAccount.user;
+        const user_group_num = cur_user.user_group.group_num;
+        
+        
+        // Pig Farm name is editable only for Admin and managers
+        if (user_group_num == ACC_USER_GROUP.ADMIN || 
+            user_group_num == ACC_USER_GROUP.MANAGEMENT){
+            elemFarmName.onclick = function() {
+                // Show Container
+                const next_page_id   = PAGE_ID.PIG_FARM_ADD_EDIT;
+                const next_page = navigation.getPageContainer(next_page_id);
+                
+                // Push currentPage to NavHistory; 
+                // Will also compare current page and  next_page NAV_MENU_GROUP.
+                navigation.pushCurrentPageToNavHistory(next_page);
+                
+                navigation.showThisPage(next_page);
+                
+                
+                // Show Page
+                const go_back_page_id   = PAGE_ID.HOME;
+                const go_back_page = navigation.getPageContainer(go_back_page_id);
+                
+            
+                const options = {
+                    is_add:                 false,   // false is edit
+                    go_back_page:           go_back_page 
+                }
+                navigation.pagePigFarmAddEdit.show(options);
+                
+            };
         }
     }
     

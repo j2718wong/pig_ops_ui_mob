@@ -1081,6 +1081,8 @@ export function Navigation(){
     
         this.pageMobGestatingList.setNavigation(thisObj);
         this.pageMobLactatingList.setNavigation(thisObj);
+        
+        this.setNotificationsData();
     }
     
     
@@ -1229,6 +1231,8 @@ export function Navigation(){
         // More nav links visibility after user is set
         this.managerNavLinks.showHideNavLinksAfterUserSet();
         
+        // The ending of this.pigFarm.initializeFarmData() is calling
+        //this.showHomeDashBoard()
     }
 
 
@@ -1463,6 +1467,57 @@ export function Navigation(){
         thisObj.showThisPage(next_page);
         thisObj.pageHomeDashBoard.show();
     }
+    
+    
+    this.setNotificationsData = function(){
+        // Listen for messages from service worker
+        
+        console.log('setNotificationsData');
+        
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                const { action, payload } = event.data;
+                
+                switch (action) {
+                    case 'OPEN_BILL':
+                        console.log('acttion OPEN BILL');
+                        let go_back_page = navigation.getPageContainer(PAGE_ID.HOME);
+                        
+                        const next_page = navigation.getPageContainer(PAGE_ID.BILL_NEW);
+                        
+                        
+                        // Push currentPage to NavHistory;
+                        // Will also compare current page and next_page NAV_MENU_GROUP. 
+                        navigation.pushCurrentPageToNavHistory(next_page);
+                        
+                        
+                        navigation.showThisPage(next_page);
+                        
+                        
+                        const options ={
+                            go_back_page:   go_back_page,
+                        };
+                        navigation.pageAccountNewBill.show(options);
+                        
+                        break;
+                        
+                    case 'OPEN_SOW':
+                        console.log('acttion OPEN SOW');
+                        break;
+                        
+                    case 'SHOW_ALERT':
+                        console.log('acttion SHOW ALERT')
+                        break;
+                        
+                    default:
+                        console.log('Unknown action:', action);
+                }
+            });
+        }        
+        
+
+    }
+    
     
 
     this.onClickProdGestatingEntry = function(pig_prod_pid){
