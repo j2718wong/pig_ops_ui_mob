@@ -81,10 +81,17 @@ export function onClickShowSample(config_sample){
      * 
      * */
     
+    // Check if modal already exists to prevent duplicates
+    if (document.getElementById('sampleModalOverlay')) {
+        return;
+    }
     
-
+    // Push a history state so back button closes modal first
+    history.pushState({ modalOpen: true }, '');
+    
     // Create modal overlay
     const modalOverlay = document.createElement('div');
+    modalOverlay.id = 'sampleModalOverlay';
     modalOverlay.style.position = 'fixed';
     modalOverlay.style.top = '0';
     modalOverlay.style.left = '0';
@@ -198,8 +205,27 @@ export function onClickShowSample(config_sample){
     
     // Close modal function
     const closeModal = function() {
+        // Remove the history state we added
+        window.removeEventListener('popstate', popStateHandler);
+        
+        // Go back to previous history state (remove our modal state)
+        if (history.state && history.state.modalOpen) {
+            history.back();
+        }
+        
         modalOverlay.remove();
+        document.body.style.overflow = '';
     };
+    
+    // Handle back button press
+    const popStateHandler = function(event) {
+        if (modalOverlay && document.getElementById('sampleModalOverlay')) {
+            event.preventDefault();
+            closeModal();
+        }
+    };
+    
+    window.addEventListener('popstate', popStateHandler);
     
     // Event listeners
     closeBtn.onclick = closeModal;
@@ -215,36 +241,6 @@ export function onClickShowSample(config_sample){
     
     // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
-    
-    // Restore scroll when modal closes
-    const restoreScroll = function() {
-        document.body.style.overflow = '';
-    };
-    
-    // Override closeModal to restore scroll
-    const originalClose = closeModal;
-    window.closeModal = function() {
-        restoreScroll();
-        originalClose();
-        delete window.closeModal;
-    };
-    
-    closeBtn.onclick = function() {
-        restoreScroll();
-        originalClose();
-    };
-    
-    closeFooterBtn.onclick = function() {
-        restoreScroll();
-        originalClose();
-    };
-    
-    modalOverlay.onclick = function(e) {
-        if (e.target === modalOverlay) {
-            restoreScroll();
-            originalClose();
-        }
-    };
 }
 
 
