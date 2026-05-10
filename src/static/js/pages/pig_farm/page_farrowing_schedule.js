@@ -750,7 +750,7 @@ ${html_style}
                         event.startDate = adjustedStartDate;
                         event.isAdjusted = true;
                         event.adjustedStartDate = adjustedStartDate;
-                        event.adjustmentReason = `Move in ${thisObj.formatDateShort(adjustedStartDate)} (was ${thisObj.formatDateShort(event.originalStartDate)})`;
+                        event.adjustmentReason = `Move: ${thisObj.formatDateShort(adjustedStartDate)} (was ${thisObj.formatDateShort(event.originalStartDate)})`;
                         hasConflict = false; // Resolved
                     }
                 }
@@ -1039,7 +1039,7 @@ ${html_style}
                     else if (assignment.isAdjusted && assignment.adjustmentReason) {
                         contentHtml = `
                             <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
-                            <div class="timeline-sub" style="display: inline-block;">
+                            <div class="timeline-sub">
                                 ${assignment.adjustmentReason}
                             </div>
                             <div class="timeline-sub">
@@ -1206,7 +1206,7 @@ ${html_style}
             modal.remove();
         };
         
-        modal.onclick = fundction(e) {
+        modal.onclick = function(e) {
             if (e.target === modal) {
                 modal.remove();
             }
