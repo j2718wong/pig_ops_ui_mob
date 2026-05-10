@@ -263,6 +263,11 @@ ${html_style}
         thisObj._resetForm();
         
         
+        if (options) {
+            showOptions = options;
+        }
+        
+        
         // Attach Listener to Close button
         elemBtnClose.onclick = function(){
             // Remove NavHistoryHead if same with go_back_page

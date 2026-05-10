@@ -351,9 +351,6 @@ export function ManagerAlerts(_navigation) {
                 });
                 
                 html += '<div class="alert-item clickable" data-alert-key="' + alert.uniqueKey + '">';
-                html += '<div class="alert-icon-small" style="color: var(--warning-color, #ff9800);">';
-                html += '<i class="fas fa-file-invoice-dollar"></i>';
-                html += '</div>';
                 html += '<div class="alert-content">';
                 html += '<div>';
                 html += '<span class="alert-category ' + dueClass + '">' + dueText + '</span>';
