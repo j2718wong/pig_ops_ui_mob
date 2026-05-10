@@ -30,7 +30,7 @@ import {ManagerBusiness}            from '../business/manager_business.js';
 
 import {ManagerSystem}              from './manager_system.js';
 import {ManagerLocalData}           from './manager_local_data.js';
-import {ManagerAlarm}               from './manager_alarm.js';
+import {ManagerAlerts}              from './manager_alerts.js';
 
 import {UserControl}                from './user_control.js';
 
@@ -269,7 +269,7 @@ export function Navigation(){
     
     this.managerSystem          = new ManagerSystem(this);
     this.managerLocalData       = new ManagerLocalData(this);
-    this.managerAlarm           = new ManagerAlarm(this);
+    this.managerAlerts          = new ManagerAlerts(this);
     
     
     this.userControl            = new UserControl(this);
@@ -957,7 +957,7 @@ export function Navigation(){
         this.managerPublicSections.init();
         this.managerNavHistory.init();
         this.managerSystem.init();
-        this.managerAlarm.init();
+        this.managerAlerts.init();
         
         
         this.userControl.init();

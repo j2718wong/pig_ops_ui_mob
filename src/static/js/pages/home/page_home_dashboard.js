@@ -825,7 +825,9 @@ export function PageHomeDashBoard(input_settings){
             
         }, 100);
         
-
+        
+        // Refresh alerts
+        navigation.managerAlerts.refreshAlerts();
     }
     
     

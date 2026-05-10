@@ -369,6 +369,12 @@ const ACCOUNT_BILL_STATUS = {
 };
 
 
+const ALERT_TYPE = {
+    NEW_BILL:                   1
+    
+};
+
+
 const FLAG_BITS ={
     USER:{
         IS_ACTIVE:              1,
@@ -432,6 +438,8 @@ export {
     REQUEST_ERROR_NUM,
     
     ACCOUNT_BILL_STATUS,
+    
+    ALERT_TYPE,
     
     FLAG_BITS
 };
