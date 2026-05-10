@@ -370,7 +370,8 @@ const ACCOUNT_BILL_STATUS = {
 
 
 const ALERT_TYPE = {
-    NEW_BILL:                   1
+    NEW_BILL:                   1,
+    PIG_OPS_MEDVAC_PREP:        2
     
 };
 

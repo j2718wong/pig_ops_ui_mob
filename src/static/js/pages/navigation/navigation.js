@@ -1218,7 +1218,12 @@ export function Navigation(){
         // Request account feed supplier
         //this.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.FEED);
         
+        // Request Gesta Alerts
+        const callback_success = function (data){
+            thisObj.managerAlerts.addGestaPigOpsPrepListToAlerts(data);
+        };
         
+        this.managerAlerts.requestDataGestaPigOpsPrepList(callback_success);
         
         
         // Create initial history entry
@@ -1233,6 +1238,8 @@ export function Navigation(){
         
         // More nav links visibility after user is set
         this.managerNavLinks.showHideNavLinksAfterUserSet();
+        
+        
         
         // The ending of this.pigFarm.initializeFarmData() is calling
         //this.showHomeDashBoard()

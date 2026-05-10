@@ -17,11 +17,10 @@ import {formatDate,
 export function ManagerAlerts(_navigation) {
     const thisObj               = this;
     const navigation            = _navigation;
-        
     
     const STORAGE_KEY_VIEWED_BILLS = 'superpig_viewed_bills';
+    const STORAGE_KEY_VIEWED_PREP_ALERTS = 'superpig_viewed_prep_alerts';
     
-        
     let elemAlertContainer      = null;
     let elemAlertIcon           = null;
     let elemAlertCount          = null;
@@ -31,21 +30,18 @@ export function ManagerAlerts(_navigation) {
     let elemBtnCloseModal       = null;
     let elemAlertModalBody      = null;
     
-    
     let dataAlertList           = [];
-    
+    let dataPrepAlertsList      = [];
     
     this.init = function(){
         this.afterHtmlRender();
     }
-    
     
     this.afterHtmlRender = function(){
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
     }
-    
     
     this._findElements  = function(){
         elemAlertContainer      = document.getElementById('alertContainer');
@@ -60,10 +56,7 @@ export function ManagerAlerts(_navigation) {
         }
     }
     
-    
-    
     this._processAfterHtmlRender = function(){}
-    
     
     this._bindEventListeners = function(){
         if (elemAlertIcon) {
@@ -88,7 +81,6 @@ export function ManagerAlerts(_navigation) {
             });
         }
         
-        // Close alert modal when clicking outside
         if (elemAlertModal) {
             elemAlertModal.addEventListener('click', function(event) {
                 if (event.target === elemAlertModal) {
@@ -99,7 +91,6 @@ export function ManagerAlerts(_navigation) {
         }
     }
 
-
     this.checkAndShowNotificationBell = function(){
         if (dataAlertList.length === 0) {
             if (elemAlertContainer) elemAlertContainer.style.display = 'none';
@@ -109,11 +100,8 @@ export function ManagerAlerts(_navigation) {
         }
     }
 
-
     this.addAlertEntry = function(alert_entry){
-        // make sure there is no duplicate
-        
-        let is_duplicate = 0;
+        let is_duplicate = false;
         
         for (let i = 0; i < dataAlertList.length; i++) {
             let cur_entry = dataAlertList[i];
@@ -137,7 +125,6 @@ export function ManagerAlerts(_navigation) {
         return true;
     }
 
-    
     this.removeAlertEntry = function(uniqueKey) {
         const newList = [];
         for (let i = 0; i < dataAlertList.length; i++) {
@@ -148,7 +135,6 @@ export function ManagerAlerts(_navigation) {
         dataAlertList = newList;
         this.checkAndShowNotificationBell();
     }
-    
     
     this.clearAlertsByType = function(alertType) {
         const newList = [];
@@ -161,14 +147,13 @@ export function ManagerAlerts(_navigation) {
         this.checkAndShowNotificationBell();
     }
     
-    
     this.refreshAlerts = function(){
         this.checkForNewBillAlert();
-        
+        this.checkForGestaPigOpsPrepAlert();
         this.renderAlerts();
     }
 
-
+    // Bill notification methods
     this.getViewedBills = function() {
         const viewed = localStorage.getItem(STORAGE_KEY_VIEWED_BILLS);
         if (viewed) {
@@ -176,7 +161,6 @@ export function ManagerAlerts(_navigation) {
         }
         return [];
     }
-
 
     this.markBillAsViewed = function(billReference) {
         const viewed = this.getViewedBills();
@@ -194,10 +178,8 @@ export function ManagerAlerts(_navigation) {
             localStorage.setItem(STORAGE_KEY_VIEWED_BILLS, JSON.stringify(viewed));
         }
         
-        // Remove alert for this bill
         this.removeAlertEntry(billReference);
     }
-
 
     this.isBillViewed = function(billReference) {
         const viewed = this.getViewedBills();
@@ -208,7 +190,6 @@ export function ManagerAlerts(_navigation) {
         }
         return false;
     }
-
 
     this.checkForNewBillAlert = function() {
         let account = null;
@@ -225,7 +206,6 @@ export function ManagerAlerts(_navigation) {
         const current_bill = account.current_bill;
         
         if (current_bill && current_bill.bill_reference) {
-            // Check user role; only admin and manager should be alerted
             const cur_user = navigation.userControl.dataUserAccount.user;
             let user_group_num = null;
             
@@ -237,13 +217,10 @@ export function ManagerAlerts(_navigation) {
                 user_group_num === ACC_USER_GROUP.MANAGEMENT) {
                 
                 const bill_reference = current_bill.bill_reference;
-                
-                // Check if this bill is already viewed by user
                 const is_bill_viewed = this.isBillViewed(bill_reference);
                 
                 if (!is_bill_viewed) {
                     const onclick_alert = function() {
-                        // Mark as viewed when clicked
                         thisObj.markBillAsViewed(bill_reference);
                         
                         let go_back_page = navigation.curPageNavigated.pageContainer;
@@ -261,7 +238,6 @@ export function ManagerAlerts(_navigation) {
                         };
                         navigation.pageAccountNewBill.show(options);
                         
-                        // Close modal if open
                         if (elemAlertModal && elemAlertModal.classList.contains('active')) {
                             elemAlertModal.classList.remove('active');
                             document.body.style.overflow = 'auto';
@@ -279,11 +255,147 @@ export function ManagerAlerts(_navigation) {
                 }
             }
         } else {
-            // If there is no current bill, remove any existing new bill alerts
             this.clearAlertsByType(ALERT_TYPE.NEW_BILL);
         }
     }
 
+    // Gesta PigOps Prep Alert methods
+    this.getViewedPrepAlerts = function() {
+        const viewed = localStorage.getItem(STORAGE_KEY_VIEWED_PREP_ALERTS);
+        if (viewed) {
+            return JSON.parse(viewed);
+        }
+        return [];
+    }
+
+    this.markPrepAlertAsViewed = function(uniqueKey) {
+        const viewed = this.getViewedPrepAlerts();
+        let alreadyViewed = false;
+        
+        for (let i = 0; i < viewed.length; i++) {
+            if (viewed[i] === uniqueKey) {
+                alreadyViewed = true;
+                break;
+            }
+        }
+        
+        if (!alreadyViewed) {
+            viewed.push(uniqueKey);
+            localStorage.setItem(STORAGE_KEY_VIEWED_PREP_ALERTS, JSON.stringify(viewed));
+        }
+        
+        this.removeAlertEntry(uniqueKey);
+    }
+
+    this.isPrepAlertViewed = function(uniqueKey) {
+        const viewed = this.getViewedPrepAlerts();
+        for (let i = 0; i < viewed.length; i++) {
+            if (viewed[i] === uniqueKey) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    this.addGestaPigOpsPrepListToAlerts = function(data) {
+        console.log('addGestaPigOpsPrepListToAlerts');
+        console.log(data);
+        
+        if (!data || data.length === 0) {
+            return;
+        }
+        
+        for (let i = 0; i < data.length; i++) {
+            const cur_entry = data[i];
+            const pig_ops_hid = cur_entry.pig_prod_pig_ops.hid;
+            const unique_key = 'pig_ops_prep_' + pig_ops_hid;
+            
+            // Check if already viewed
+            const is_viewed = this.isPrepAlertViewed(unique_key);
+            if (is_viewed) {
+                continue;
+            }
+            
+            const onclick_alert = function() {
+                thisObj.markPrepAlertAsViewed(unique_key);
+                
+                // Navigate to gestating list
+                const next_page = navigation.getPageContainer(PAGE_ID.PROD_GESTA_LIST);
+                navigation.showThisPage(next_page);
+                navigation.pageMobGestatingList.show();
+                
+                if (elemAlertModal && elemAlertModal.classList.contains('active')) {
+                    elemAlertModal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            };
+        
+            const cur_alert = {
+                type:       ALERT_TYPE.PIG_OPS_MEDVAC_PREP,
+                uniqueKey:  unique_key,
+                data:       cur_entry,
+                onClick:    onclick_alert
+            };
+            
+            thisObj.addAlertEntry(cur_alert);
+        }
+    }
+    
+    this.checkForGestaPigOpsPrepAlert = function() {
+        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
+        
+        if (!farm_account_hid) {
+            return;
+        }
+        
+        const callback_success = function(data) {
+            thisObj.addGestaPigOpsPrepListToAlerts(data);
+            thisObj.renderAlerts();
+        };
+        
+        this.requestDataGestaPigOpsPrepList(callback_success, null);
+    }
+    
+    this.requestDataGestaPigOpsPrepList = function(callback_success, elem_show_error) {
+        const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
+        
+        const base_url = window.location.origin;
+        let url = base_url + '/gesta_pig_ops_medvac/prep_list?ahid=' + farm_account_hid;
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + bearer_token
+            },
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+            beforeSend: function() {
+                if (elem_show_error) {
+                    elem_show_error.style.display = 'none';
+                }
+            },
+            success: function(response) {
+                if (response.result.num === 0) {
+                    if (callback_success) {
+                        callback_success(response.data);
+                    }
+                } else {
+                    if (navigation.serverError && elem_show_error) {
+                        navigation.serverError.receivedErrorMessage(response, elem_show_error);
+                    }
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if (navigation.serverError) {
+                    navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+                }
+            }
+        });
+    }
 
     this.renderAlerts = function() {
         if (dataAlertList.length === 0) {
@@ -300,24 +412,27 @@ export function ManagerAlerts(_navigation) {
             elemAlertCount.textContent = dataAlertList.length;
         }
         
-        // Build alert modal content
         if (!elemAlertModalBody) {
             return;
         }
         
         let html = '';
         
-        // Separate alerts by type for better organization
+        // Separate alerts by type
         const billAlerts = [];
+        const prepAlerts = [];
+        
         for (let i = 0; i < dataAlertList.length; i++) {
             if (dataAlertList[i].type === ALERT_TYPE.NEW_BILL) {
                 billAlerts.push(dataAlertList[i]);
+            } else if (dataAlertList[i].type === ALERT_TYPE.PIG_OPS_MEDVAC_PREP) {
+                prepAlerts.push(dataAlertList[i]);
             }
         }
         
-        // Critical Alerts section
+        // Bill Alerts section
         if (billAlerts.length > 0) {
-            html += '<h3 style="color: var(--critical-color, #f44336); margin-bottom: 15px;">';
+            html += '<h3 style="color: var(--critical-color, #f44336);">';
             html += '<i class="fas fa-exclamation-circle"></i> New Bills';
             html += '</h3>';
             
@@ -367,6 +482,44 @@ export function ManagerAlerts(_navigation) {
             }
         }
         
+        // Gesta PigOps Preparation Alerts section
+        if (prepAlerts.length > 0) {
+            html += '<h3 style="color: var(--gestating-color); margin-top: 20px; margin-bottom: 15px;">';
+            html += '<i class="fas fa-syringe"></i> Gesta Sow MedVac';
+            html += '</h3>';
+            
+            for (let j = 0; j < prepAlerts.length; j++) {
+                const alert = prepAlerts[j];
+                const entry = alert.data;
+                const pigOps = entry.pig_prod_pig_ops;
+                const pigProduction = entry.pig_production;
+                const pigOpsName = pigOps.pig_ops ? pigOps.pig_ops.name : 'Procedure';
+                const sowName = pigProduction.sow ? pigProduction.sow.name : 'Unknown Sow';
+                const dateTarget = pigOps.date_target;
+                
+                let dateDisplay = '';
+                if (dateTarget) {
+                    const targetDate = new Date(dateTarget);
+                    const today = new Date();
+                    const daysRemaining = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+                    dateDisplay = ' in ' + daysRemaining + ' days';
+                }
+                
+                html += '<div class="alert-item clickable" data-alert-key="' + alert.uniqueKey + '">';
+                html += '<div class="alert-content">';
+                html += '<div>';
+                html += '<span class="alert-category alert-warning">Prepare Now</span>';
+                html += '<span class="alert-title">' + pigOpsName + ' for ' + sowName + '</span>';
+                html += '</div>';
+                html += '<div class="alert-description">';
+                html += 'Scheduled for ' + formatDate(new Date(dateTarget), FORMAT_COMPACT) + dateDisplay;
+                html += '</div>';
+                html += '<div class="alert-time">Prepare supplies in advance</div>';
+                html += '</div>';
+                html += '</div>';
+            }
+        }
+        
         // If no alerts
         if (html === '') {
             html = '<div style="text-align: center; padding: 40px 20px;">';
@@ -397,16 +550,11 @@ export function ManagerAlerts(_navigation) {
         }
     }
     
-    
     this.onBillPaid = function(billReference) {
         this.removeAlertEntry(billReference);
     }
-    
     
     this.onBillViewed = function(billReference) {
         this.markBillAsViewed(billReference);
     }
 }
-
-
-
