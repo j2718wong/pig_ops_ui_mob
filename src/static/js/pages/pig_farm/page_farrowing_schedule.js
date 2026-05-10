@@ -750,7 +750,7 @@ ${html_style}
                         event.startDate = adjustedStartDate;
                         event.isAdjusted = true;
                         event.adjustedStartDate = adjustedStartDate;
-                        event.adjustmentReason = `Moved in ${thisObj.formatDateShort(adjustedStartDate)} (was ${thisObj.formatDateShort(event.originalStartDate)})`;
+                        event.adjustmentReason = `Move in ${thisObj.formatDateShort(adjustedStartDate)} (was ${thisObj.formatDateShort(event.originalStartDate)})`;
                         hasConflict = false; // Resolved
                     }
                 }
@@ -1039,10 +1039,10 @@ ${html_style}
                     else if (assignment.isAdjusted && assignment.adjustmentReason) {
                         contentHtml = `
                             <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
-                            <div class="timeline-sub" style="font-size: 11px; background: rgba(0,0,0,0.3); border-radius: 4px; padding: 2px 4px; display: inline-block;">
+                            <div class="timeline-sub" style="display: inline-block;">
                                 ${assignment.adjustmentReason}
                             </div>
-                            <div class="timeline-sub" style="font-size: 11px; margin-top: 2px;">
+                            <div class="timeline-sub">
                                 Due: ${thisObj.formatDateShort(assignment.expectedBirth)}
                             </div>
                         `;
@@ -1206,7 +1206,7 @@ ${html_style}
             modal.remove();
         };
         
-        modal.onclick = function(e) {
+        modal.onclick = fundction(e) {
             if (e.target === modal) {
                 modal.remove();
             }
