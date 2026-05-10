@@ -484,7 +484,7 @@ export function ManagerAlerts(_navigation) {
         
         // Gesta PigOps Preparation Alerts section
         if (prepAlerts.length > 0) {
-            html += '<h3 style="color: var(--gestating-color); margin-top: 20px; margin-bottom: 15px;">';
+            html += '<h3 style="color: var(--gestating-color);">';
             html += '<i class="fas fa-syringe"></i> Gesta Sow MedVac';
             html += '</h3>';
             

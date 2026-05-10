@@ -1085,6 +1085,7 @@ export function Navigation(){
         this.pageMobGestatingList.setNavigation(thisObj);
         this.pageMobLactatingList.setNavigation(thisObj);
         
+        this.autoUpdateServiceWorker();
         this.setNotificationsData();
     }
     
@@ -1479,18 +1480,45 @@ export function Navigation(){
     }
     
     
+    this.autoUpdateServiceWorker = function(){
+        
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                // Listen for a new worker that is waiting to become active
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    if (!newWorker) return;
+
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.location.reload();
+                            
+                            /*// A new version is available! Show a prompt to your user.
+                            if (confirm('A new version of SuperPig is available. Update now?')) {
+                                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                window.location.reload();
+                            }
+                            */ 
+                        }
+                    });
+                });
+               
+            });
+        }
+    }
+    
+    
     this.setNotificationsData = function(){
         // Listen for messages from service worker
         
-        console.log('setNotificationsData');
         
-        if (navigator.serviceWorker) {
+        if ('serviceWorker' in navigator) {
             navigator.serviceWorker.addEventListener('message', (event) => {
                 const { action, payload } = event.data;
                 
                 switch (action) {
                     case 'OPEN_BILL':
-                        console.log('acttion OPEN BILL');
+                        console.log('action OPEN BILL');
                         let go_back_page = navigation.getPageContainer(PAGE_ID.HOME);
                         
                         const next_page = navigation.getPageContainer(PAGE_ID.BILL_NEW);
@@ -1511,8 +1539,12 @@ export function Navigation(){
                         
                         break;
                         
-                    case 'OPEN_SOW':
-                        console.log('acttion OPEN SOW');
+                    case 'GESTA_PIG_OPS_REMINDER':
+                        console.log('GESTA_PIG_OPS_REMINDER');
+                        
+                        const operation_type = PIG_OPERATION_TYPE.GESTATING
+                        navigation.managerNavLinks.onClickNavProdGestaLacta(
+                            null, operation_type, null, null);
                         break;
                         
                     case 'SHOW_ALERT':
