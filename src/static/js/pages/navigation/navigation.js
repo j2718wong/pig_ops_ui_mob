@@ -1522,6 +1522,16 @@ export function Navigation(){
                 const { action, payload } = event.data;
                 
                 switch (action) {
+                    case 'NO_SOW_BOAR_REMINDER':
+                        console.log('NO_SOW_BOAR_REMINDER');
+                        
+                        const sow_boar_type = SOW_BOAR_TYPE.SOW;
+                        navigation.managerNavLinks.onClickNavSowBoar(null, 
+                            sow_boar_type, null);
+                        
+                        break;
+                    
+                    
                     case 'OPEN_BILL':
                         console.log('action OPEN BILL');
                         let go_back_page = navigation.getPageContainer(PAGE_ID.HOME);
