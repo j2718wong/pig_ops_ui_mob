@@ -1514,6 +1514,11 @@ export function Navigation(){
         
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.addEventListener('message', (event) => {
+                console.log('📨 Message received from service worker:', event.data);
+                console.log('Action:', event.data.action);
+                console.log('Payload:', event.data.payload);
+                    
+                
                 const { action, payload } = event.data;
                 
                 switch (action) {

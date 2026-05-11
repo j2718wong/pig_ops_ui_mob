@@ -114,6 +114,8 @@ export function ManagerAlerts(_navigation) {
         
         if (!is_duplicate) {
             dataAlertList.push(alert_entry);
+            console.log('Alert is added');
+            console.log(alert_entry);
         }
         
         if (elemAlertCount) {
@@ -297,6 +299,7 @@ export function ManagerAlerts(_navigation) {
         return false;
     }
 
+
     this.addGestaPigOpsPrepListToAlerts = function(data) {
         console.log('addGestaPigOpsPrepListToAlerts');
         console.log(data);
@@ -313,6 +316,7 @@ export function ManagerAlerts(_navigation) {
             // Check if already viewed
             const is_viewed = this.isPrepAlertViewed(unique_key);
             if (is_viewed) {
+                console.log('Alert is already viewed; unique_key: ' + unique_key);
                 continue;
             }
             

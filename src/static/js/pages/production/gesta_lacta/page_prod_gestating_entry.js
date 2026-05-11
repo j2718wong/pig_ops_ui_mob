@@ -69,7 +69,7 @@ export function PageProdGestatingEntry(input_settings){
     labelTabGestaPigOps         = helper.getSimpleTranslation('common_app.label_tabs.pigops') || labelTabGestaPigOps;
     labelTabGestaBirth          = helper.getSimpleTranslation('common_app.label_tabs.birth')   || labelTabGestaBirth;
     labelTabGestaMating         = helper.getSimpleTranslation('common_app.label_tabs.mating') || labelTabGestaMating;
-    labelTabGestaStatus         = helper.getSimpleTranslation('common_app.label_tabs.status') || labelTabGestaMating;
+    labelTabGestaStatus         = helper.getSimpleTranslation('common_app.label_tabs.status') || labelTabGestaStatus;
  
     
     let tabsProdGesta = [
