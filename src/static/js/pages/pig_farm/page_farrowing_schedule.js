@@ -1087,13 +1087,13 @@ ${html_style}
                             contentHtml = `
                                 <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
                                 <div class="timeline-sub">Move: ${thisObj.formatDateShort(moveInDate)} (was ${thisObj.formatDateShort(originalMoveIn)})</div>
-                                <div class="timeline-sub">Out: ${thisObj.formatDateShort(moveOutDate)} | Due: ${thisObj.formatDateShort(expectedBirth)}</div>
+                                <div class="timeline-sub">Out: ${thisObj.formatDateShort(moveOutDate)}; Due: ${thisObj.formatDateShort(expectedBirth)}</div>
                             `;
                         } else {
                             contentHtml = `
                                 <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
-                                <div class="timeline-sub">Move: ${thisObj.formatDateShort(moveInDate)} | Out: ${thisObj.formatDateShort(moveOutDate)}</div>
-                                <div class="timeline-sub">Due: ${thisObj.formatDateShort(expectedBirth)} | Stay: ${durationDays} days</div>
+                                <div class="timeline-sub">Move: ${thisObj.formatDateShort(moveInDate)}; Out: ${thisObj.formatDateShort(moveOutDate)}</div>
+                                <div class="timeline-sub">Due: ${thisObj.formatDateShort(expectedBirth)}; Stay: ${durationDays} days</div>
                             `;
                         }
                     }
