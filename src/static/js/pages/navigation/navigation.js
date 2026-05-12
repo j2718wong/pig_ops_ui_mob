@@ -1224,7 +1224,7 @@ export function Navigation(){
             thisObj.managerAlerts.addGestaPigOpsPrepListToAlerts(data);
         };
         
-        this.managerAlerts.requestDataGestaPigOpsPrepList(callback_success);
+        //this.managerAlerts.requestDataGestaPigOpsPrepList(callback_success);
         
         
         // Create initial history entry
