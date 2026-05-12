@@ -41,6 +41,7 @@ export function PageSystemStats(input_settings){
     let elemIdTdUsersNoAccount  = null;
     let elemIdTdCountAccount    = null;
     let elemIdTdAccNotStarted   = null;
+    let elemIdTdAccNoSowBoar    = null;
 
 
     let elemPageTitle           = null;
@@ -49,6 +50,7 @@ export function PageSystemStats(input_settings){
     let elemTdUsersNoAccount    = null;
     let elemTdCountAccount      = null;
     let elemTdAccNotStarted     = null;
+    let elemTdAccNoSowBoar      = null;
 
 
     let showOptions             = null;
@@ -134,6 +136,7 @@ export function PageSystemStats(input_settings){
         elemTdUsersNoAccount    = elemDivContainer.querySelector('#'+elemIdTdUsersNoAccount);
         elemTdCountAccount      = elemDivContainer.querySelector('#'+elemIdTdCountAccount);  
         elemTdAccNotStarted     = elemDivContainer.querySelector('#'+elemIdTdAccNotStarted); 
+        elemTdAccNoSowBoar      = elemDivContainer.querySelector('#'+elemIdTdAccNoSowBoar); 
     }
 
     
@@ -156,7 +159,7 @@ export function PageSystemStats(input_settings){
         elemIdTdUsersNoAccount  = `${settings.uniqueKey}-users-no-account`;
         elemIdTdCountAccount    = `${settings.uniqueKey}-count-account`;
         elemIdTdAccNotStarted   = `${settings.uniqueKey}-acc-not-started`;
-
+        elemIdTdAccNoSowBoar    = `${settings.uniqueKey}-acc-no-sow-boar`;
 
         
         const html = `
@@ -192,6 +195,11 @@ export function PageSystemStats(input_settings){
                 <tr>
                     <td>Acc Not Started</td>
                     <td id="${elemIdTdAccNotStarted}"></td>
+                </tr>
+                
+                <tr>
+                    <td>Acc No Sow/Boar</td>
+                    <td id="${elemIdTdAccNoSowBoar}"></td>
                 </tr>
                                 
             </tbody>
@@ -234,7 +242,7 @@ export function PageSystemStats(input_settings){
         elemTdUsersNoAccount.textContent    = data.sys.user_no_account;
         elemTdCountAccount.textContent      = data.sys.count_account;
         elemTdAccNotStarted.textContent     = data.sys.acc_not_started;
-        
+        elemTdAccNoSowBoar.textContent      = data.sys.acc_no_sow_boar;
     }
 
 }
