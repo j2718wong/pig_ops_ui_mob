@@ -611,15 +611,16 @@ ${html_style}
                 <div class="collapsible-body">
                     <div class="receipt-container">
                     
-                    <img id="${elemIdReceiptImage}" class="receipt-image" src="" alt="Payment Receipt">
-                    
-                    <div class="receipt-info">
-                        <span>Uploaded by: <span id="${elemIdUploadedBy}" class="uploader"></span></span>
-                        <span> on <span id="${elemIdUploadedDate}" class="date"></span></span>
+                        <img id="${elemIdReceiptImage}" class="receipt-image" src="" alt="Payment Receipt">
+                        
+                        <div class="receipt-info">
+                            <span>Uploaded by: <span id="${elemIdUploadedBy}" class="uploader"></span></span>
+                            <span> on <span id="${elemIdUploadedDate}" class="date"></span></span>
+                        </div>
+                        
+                        <button id="${elemIdReplaceReceiptBtn}" class="btn-replace" style="display: none;">Replace Receipt</button>
+                        
                     </div>
-                    
-                    <button id="${elemIdReplaceReceiptBtn}" class="btn-replace" style="display: none;">Replace Receipt</button>
-                    
                 </div>
             </div>
             
@@ -719,6 +720,9 @@ ${html_style}
         
         switch(bill_status_id){
             case ACCOUNT_BILL_STATUS.PENDING_PAYMENT_VERIFY:{
+                console.log('Bill status = PENDING_PAYMENT_VERIFY');
+                
+                
                 elemAccountBillMsg.style.display = 'block';
                 bill_msg    = 'Pending Payment Verification';
                 msg_class   = 'pending';
@@ -727,6 +731,8 @@ ${html_style}
             }
             
             case ACCOUNT_BILL_STATUS.VERIFIED_PAID:{
+                console.log('Bill status = VERIFIED_PAID');
+                
                 elemAccountBillMsg.style.display = 'block';
                 bill_msg = 'Verified Payment';
                 msg_class = 'verified';
@@ -735,6 +741,8 @@ ${html_style}
             }
             
             default:{
+                console.log('Bill status = Not uploaded receipt; still sattus issued;');
+                
                 elemAccountBillMsg.style.display = 'none';
                 break;
             }
@@ -821,7 +829,13 @@ ${html_style}
         */
         
         if (data && data.uploaded_receipt && data.uploaded_receipt.path) {
+            console.log('Has uploaded receipt; ');
+            
             const receipt = data.uploaded_receipt;
+            
+            console.log('Has uploaded receipt; ');
+            console.log(receipt);
+            
             
             // Parse the path: "account/2026/payment_upload/0001/20260505_122949.png"
             // Extract: year, upload_type, account_id, filename

@@ -1216,17 +1216,6 @@ export function Navigation(){
         const account_hid = initial_farm_data.account.account.hid;
         this.pigFarm.accountLists.setPigFarmAccountHid(account_hid);
         
-        // Request account feed supplier
-        //this.pigFarm.accountLists.requestDataSupplier(SUPPLIER_TYPE.FEED);
-        
-        // Request Gesta Alerts
-        const callback_success = function (data){
-            thisObj.managerAlerts.addGestaPigOpsPrepListToAlerts(data);
-        };
-        
-        //this.managerAlerts.requestDataGestaPigOpsPrepList(callback_success);
-        
-        
         // Create initial history entry
         history.pushState({inApp: true}, '', window.location.href);
         console.log('\n\n\nCreated initial history entry');
