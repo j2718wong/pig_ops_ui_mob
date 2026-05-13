@@ -348,9 +348,6 @@ export function PageHomeDashBoard(input_settings){
         elemFarmName            = elemDivContainer.querySelector('#'+elemIdFarmName);        
         elemTodayDate           = elemDivContainer.querySelector('#'+elemIdTodayDate);       
         
-        
-        elemInstallBtn          = elemDivContainer.querySelector('#install-superpig-btn'); 
-        
                
         elemCardLactaPiglets    = elemDivContainer.querySelector('#'+elemIdCardLactaPiglets); 
         elemCardFatteningPigs   = elemDivContainer.querySelector('#'+elemIdCardFatteningPigs);

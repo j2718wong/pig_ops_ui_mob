@@ -954,7 +954,15 @@ export function PageUserSignUpOrLogin(input_settings){
                     console.log('\n\n\nonClickStaffSignUp; no bearer_token');
                     
                 } else {
-                    thisObj.showError(response.result.msg || 'An error occurred');
+                    if (response.result.code == 'ERROR_USER_REQUEST_INVALID_ACCESS_CODE'){
+                        thisObj.showError('Invalid access code');
+                    }
+                    else{
+                        thisObj.showError(response.result.code);
+                    }
+                    
+                    
+                    loadingAnimation.hide();
                 }
             },
   
