@@ -25,6 +25,7 @@ ENTRY_POINTS = {
         'name': 'Login Bundle',
         'type': 'js'
     },
+    
     'core': {
         'path': "src/static/js/app_core.js",
         'output_base': "static/js/bundle.core.min.js",
@@ -33,6 +34,18 @@ ENTRY_POINTS = {
         'name': 'Core Navigation Bundle',
         'type': 'js'
     },
+    
+    'receipt_data_entry': {
+        'path': "src/static/js/admin_receipt_data_entry.js",
+        'output_base': "static/js/bundle.receipt_data_entry.min.js",
+        'output_name': "bundle.receipt_data_entry",
+        'bundle_key': 'receipt_data_entry',
+        'name': 'Receipt Data Entry',
+        'type': 'js'
+    },
+    
+    
+    
     # Add CSS entry point
     'main_css': {
         'path': "src/static/css/main.css",
@@ -43,6 +56,7 @@ ENTRY_POINTS = {
         'type': 'css'
     }
 }
+
 
 class BuildProgress:
     """Progress indicator with spinner for builds"""
@@ -84,6 +98,7 @@ class BuildProgress:
             self.spinner_idx += 1
             time.sleep(0.1)
     
+    
     def stop(self, success=True, output_file=None):
         self.running = False
         time.sleep(0.1)  # Give time for final spinner update
@@ -110,6 +125,7 @@ class BuildProgress:
             size /= 1024.0
         return f"{size:.1f}GB"
 
+
 def check_dependencies():
     """Check if required dependencies are installed"""
     try:
@@ -134,6 +150,7 @@ def check_dependencies():
     
     return True
 
+
 def calculate_file_hash(filepath):
     """Calculate MD5 hash of a file"""
     hash_md5 = hashlib.md5()
@@ -141,6 +158,7 @@ def calculate_file_hash(filepath):
         for chunk in iter(lambda: f.read(4096), b""):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()[:8]  # First 8 chars
+
 
 def minify_css(css_content):
     """Minify CSS using csscompressor"""
@@ -151,12 +169,13 @@ def minify_css(css_content):
         print("⚠️  csscompressor not found, skipping CSS minification")
         return css_content
 
+
 def build_css_entry(entry_config, enable_versioning=False):
     """Build CSS entry point with minification and versioning"""
     entry_point = entry_config['path']
     output_base = entry_config['output_base']
     output_name = entry_config['output_name']
-    bundle_key = entry_config['bundle_key']
+    bundle_key  = entry_config['bundle_key']
     bundle_name = entry_config['name']
     
     print(f"\n📝 Building: {bundle_name}")
@@ -231,12 +250,13 @@ def build_css_entry(entry_config, enable_versioning=False):
         'hash': file_hash if enable_versioning else None
     }
 
+
 def build_js_entry(entry_config, enable_versioning=False):
     """Build JS entry point with esbuild and versioning"""
     entry_point = entry_config['path']
     output_base = entry_config['output_base']
     output_name = entry_config['output_name']
-    bundle_key = entry_config['bundle_key']
+    bundle_key  = entry_config['bundle_key']
     bundle_name = entry_config['name']
     
     print(f"\n📝 Building: {bundle_name}")
@@ -357,12 +377,14 @@ def build_js_entry(entry_config, enable_versioning=False):
         print(f"\n   ❌ Error: {e}")
         return None
 
+
 def build_entry_point(entry_config, enable_versioning=False):
     """Route to appropriate builder based on type"""
     if entry_config.get('type') == 'css':
         return build_css_entry(entry_config, enable_versioning)
     else:
         return build_js_entry(entry_config, enable_versioning)
+
 
 def save_manifest(bundle_infos, enable_versioning=False):
     """Save manifest JSON file"""
@@ -399,83 +421,78 @@ def save_manifest(bundle_infos, enable_versioning=False):
     if enable_versioning:
         print(f"   Version info included")
 
+
 def clean_old_versions(keep_last=2):
     """
     Clean up old versioned files, keeping only the most recent 'keep_last' versions
-    Also removes non-versioned min files if versioned ones exist
+    Automatically discovers bundles from filename patterns.
     """
     print(f"\n🧹 Cleaning old versioned files (keeping last {keep_last})...")
     
     # Process JS directory
     js_dir = Path("static/js")
     if js_dir.exists():
-        # Group files by bundle type (core, main/login)
-        js_bundles = {}
-        for f in js_dir.glob("bundle*.min.js"):
-            # Skip non-versioned min files for now
-            if f.name.count('.') >= 3:  # Has hash pattern
-                # Extract bundle type (core or main)
-                if 'core' in f.name:
-                    bundle_type = 'core'
-                else:
-                    bundle_type = 'main'
-                
-                if bundle_type not in js_bundles:
-                    js_bundles[bundle_type] = []
-                js_bundles[bundle_type].append(f)
+        # Find all versioned JS files (pattern: name.hash.min.js)
+        versioned_js_files = {}
         
-        # Sort and keep only last 'keep_last' for each bundle type
-        for bundle_type, files in js_bundles.items():
-            # Sort by modification time (newest first)
+        for f in js_dir.glob("*.min.js"):
+            parts = f.name.split('.')
+            # Versioned files have 4 parts: bundle.hash.min.js
+            if len(parts) >= 4 and len(parts[1]) == 8:  # hash is 8 chars
+                bundle_name = parts[0]  # bundle, bundle.core, etc.
+                if bundle_name not in versioned_js_files:
+                    versioned_js_files[bundle_name] = []
+                versioned_js_files[bundle_name].append(f)
+        
+        # Clean up each bundle group
+        for bundle_name, files in versioned_js_files.items():
             files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
             
-            # Keep only the newest 'keep_last'
             if len(files) > keep_last:
                 for old_file in files[keep_last:]:
-                    print(f"   🗑️  Removing old {bundle_type} bundle: {old_file.name}")
+                    print(f"   🗑️  Removing old {bundle_name} bundle: {old_file.name}")
                     old_file.unlink()
             
-            # Show what's being kept
-            print(f"\n   📌 Keeping {bundle_type} bundles:")
+            print(f"\n   📌 Keeping {bundle_name} bundles ({len(files[:keep_last])} files):")
             for f in files[:keep_last]:
                 size_kb = f.stat().st_size / 1024
                 mtime = time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))
                 print(f"      • {f.name} ({size_kb:.1f}KB) - {mtime}")
-        
-        # Remove non-versioned min files if versioned ones exist
-        for pattern in ["bundle.min.js", "bundle.core.min.js"]:
-            non_versioned = js_dir / pattern
+            
+            # Remove non-versioned version if exists
+            non_versioned = js_dir / f"{bundle_name}.min.js"
             if non_versioned.exists():
-                # Check if any versioned file exists for this bundle
-                versioned_exists = False
-                if 'core' in pattern:
-                    versioned_exists = len(list(js_dir.glob("bundle.core.*.min.js"))) > 0
-                else:
-                    versioned_exists = len(list(js_dir.glob("bundle.[0-9a-f]*.min.js"))) - \
-                                      len(list(js_dir.glob("bundle.core.*.min.js"))) > 0
-                
-                if versioned_exists:
-                    print(f"\n   🗑️  Removing non-versioned fallback: {pattern}")
-                    non_versioned.unlink()
+                print(f"\n   🗑️  Removing non-versioned: {non_versioned.name}")
+                non_versioned.unlink()
     
-    # Process CSS directory
+    # Process CSS directory similarly
     css_dir = Path("static/css")
     if css_dir.exists():
-        css_files = list(css_dir.glob("main.*.min.css"))
-        if css_files:
-            css_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
-            if len(css_files) > keep_last:
-                for old_file in css_files[keep_last:]:
-                    print(f"   🗑️  Removing old CSS: {old_file.name}")
+        css_versioned = {}
+        for f in css_dir.glob("*.min.css"):
+            parts = f.name.split('.')
+            if len(parts) >= 3 and len(parts[1]) == 8:
+                bundle_name = parts[0]
+                if bundle_name not in css_versioned:
+                    css_versioned[bundle_name] = []
+                css_versioned[bundle_name].append(f)
+        
+        for bundle_name, files in css_versioned.items():
+            files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            
+            if len(files) > keep_last:
+                for old_file in files[keep_last:]:
+                    print(f"   🗑️  Removing old CSS {bundle_name} bundle: {old_file.name}")
                     old_file.unlink()
             
-            print(f"\n   📌 Keeping CSS bundles:")
-            for f in css_files[:keep_last]:
+            print(f"\n   📌 Keeping CSS {bundle_name} bundles ({len(files[:keep_last])} files):")
+            for f in files[:keep_last]:
                 size_kb = f.stat().st_size / 1024
                 mtime = time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))
                 print(f"      • {f.name} ({size_kb:.1f}KB) - {mtime}")
     
     print("\n   ✅ Cleanup complete")
+
 
 def quick_scan():
     """Quick scan to estimate build time"""
@@ -511,6 +528,7 @@ def quick_scan():
     total_size = sum(size for size, _ in js_files) / (1024 * 1024)
     total_size += sum(size for size, _ in css_files) / (1024 * 1024)
     print(f"\n📈 Total assets: {total_size:.1f}MB")
+
 
 def run_all_builds(enable_versioning=False):
     """Run all configured builds with optional versioning"""
@@ -570,6 +588,7 @@ def run_all_builds(enable_versioning=False):
     
     return all_successful
 
+
 def watch_mode():
     """Run in watch mode - simplified version"""
     print("\n👀 Watch mode enabled (without versioning)")
@@ -582,6 +601,8 @@ def watch_mode():
         print("   npx esbuild src/static/js/app.js --bundle --watch --outfile=static/js/bundle.min.js")
         print("   npx esbuild src/static/js/app_core.js --bundle --watch --outfile=static/js/bundle.core.min.js")
 
+
+
 def main():
     print("🐷 SuperPig UI Builder with Versioning")
     print("=" * 60)
@@ -592,44 +613,61 @@ def main():
     if len(sys.argv) > 1:
         if sys.argv[1] in ["--version", "-v"]:
             enable_versioning = True
+        
         elif sys.argv[1] in ["--watch", "-w"]:
             watch_mode()
             return
+        
         elif sys.argv[1] in ["--scan", "-s"]:
             quick_scan()
             return
+        
         elif sys.argv[1] in ["--clean"]:
             clean_old_versions(keep_last=2)
             return
+        
         elif sys.argv[1] in ["--build-login"]:
             # Build just login
             bundle_info = build_js_entry(ENTRY_POINTS['login'], enable_versioning)
             if bundle_info:
                 save_manifest([bundle_info], enable_versioning)
             sys.exit(0 if bundle_info else 1)
+        
         elif sys.argv[1] in ["--build-core"]:
             # Build just core
             bundle_info = build_js_entry(ENTRY_POINTS['core'], enable_versioning)
             if bundle_info:
                 save_manifest([bundle_info], enable_versioning)
             sys.exit(0 if bundle_info else 1)
+        
+        elif sys.argv[1] in ["--build-receipt"]:
+            # Build just receipt data entry
+            bundle_info = build_js_entry(ENTRY_POINTS['receipt_data_entry'], enable_versioning)
+            if bundle_info:
+                save_manifest([bundle_info], enable_versioning)
+            sys.exit(0 if bundle_info else 1)
+        
+        
         elif sys.argv[1] in ["--build-css"]:
             # Build just CSS
             bundle_info = build_css_entry(ENTRY_POINTS['main_css'], enable_versioning)
             if bundle_info:
                 save_manifest([bundle_info], enable_versioning)
             sys.exit(0 if bundle_info else 1)
+        
         elif sys.argv[1] in ["--help", "-h"]:
             print("Usage: python build.py [options]")
             print("Options:")
-            print("  --version, -v     Enable versioned outputs (hash in filename)")
+            print("  --version, -v      Enable versioned outputs (hash in filename)")
             print("  --watch, -w        Build once (simplified watch)")
             print("  --scan, -s         Scan and analyze files")
             print("  --clean            Clean old versioned files (keeps last 2)")
             print("  --build-login      Build only login bundle")
             print("  --build-core       Build only core bundle")
+            print("  --build-receipt    Build only receipt data entry bundle")
             print("  --build-css        Build only CSS")
             print("  --help, -h         Show this help")
+            
             print("\nEnvironment:")
             print("  ENABLE_VERSIONING=true    Enable versioned outputs")
             print("  SUPERPIG_ENV=development  Enable source maps")

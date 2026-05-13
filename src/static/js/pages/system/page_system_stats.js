@@ -42,6 +42,7 @@ export function PageSystemStats(input_settings){
     let elemIdTdCountAccount    = null;
     let elemIdTdAccNotStarted   = null;
     let elemIdTdAccNoSowBoar    = null;
+    let elemIdTdCountPWAInstall = null;
 
 
     let elemPageTitle           = null;
@@ -51,6 +52,7 @@ export function PageSystemStats(input_settings){
     let elemTdCountAccount      = null;
     let elemTdAccNotStarted     = null;
     let elemTdAccNoSowBoar      = null;
+    let elemTdCountPWAInstall   = null;
 
 
     let showOptions             = null;
@@ -137,6 +139,8 @@ export function PageSystemStats(input_settings){
         elemTdCountAccount      = elemDivContainer.querySelector('#'+elemIdTdCountAccount);  
         elemTdAccNotStarted     = elemDivContainer.querySelector('#'+elemIdTdAccNotStarted); 
         elemTdAccNoSowBoar      = elemDivContainer.querySelector('#'+elemIdTdAccNoSowBoar); 
+        
+        elemIdCountPWAInstall   = elemDivContainer.querySelector('#'+elemIdTdCountPWAInstall); 
     }
 
     
@@ -160,7 +164,8 @@ export function PageSystemStats(input_settings){
         elemIdTdCountAccount    = `${settings.uniqueKey}-count-account`;
         elemIdTdAccNotStarted   = `${settings.uniqueKey}-acc-not-started`;
         elemIdTdAccNoSowBoar    = `${settings.uniqueKey}-acc-no-sow-boar`;
-
+        
+        elemIdTdCountPWAInstall = `${settings.uniqueKey}-count-pwa-install`;
         
         const html = `
         <h2>
@@ -200,6 +205,11 @@ export function PageSystemStats(input_settings){
                 <tr>
                     <td>Acc No Sow/Boar</td>
                     <td id="${elemIdTdAccNoSowBoar}"></td>
+                </tr>
+                
+                <tr>
+                    <td>Count PWA install</td>
+                    <td id="${elemIdTdCountPWAInstall}"></td>
                 </tr>
                                 
             </tbody>
@@ -243,6 +253,8 @@ export function PageSystemStats(input_settings){
         elemTdCountAccount.textContent      = data.sys.count_account;
         elemTdAccNotStarted.textContent     = data.sys.acc_not_started;
         elemTdAccNoSowBoar.textContent      = data.sys.acc_no_sow_boar;
+        
+        elemTdCountPWAInstall.textContent   = data.sys.count_pwa_install;
     }
 
 }

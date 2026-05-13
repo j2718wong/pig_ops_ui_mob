@@ -24,12 +24,17 @@ import {formatDate,
         FORMAT_MONTH_DATE_ONLY} from '../../utils.js';
         
 
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
 
 function isAppInstalled() {
     // For Chrome, Edge, Samsung Internet (modern Android)
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isStandalone      = window.matchMedia('(display-mode: standalone)').matches;
+    
     // For iOS Safari
-    const isIOSStandalone = window.navigator.standalone === true;
+    const isIOSStandalone   = window.navigator.standalone === true;
     
     return isStandalone || isIOSStandalone;
 }
@@ -38,6 +43,43 @@ function isAppInstalled() {
 function isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
 }
+
+
+function showIOSInstallInstructions() {
+    // Check if modal already exists
+    if (document.getElementById('ios-instructions-modal')) return;
+    
+    const modal = document.createElement('div');
+    modal.id = 'ios-instructions-modal';
+    modal.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div style="background: white; border-radius: 20px; max-width: 320px; width: 85%; padding: 24px; text-align: center;">
+                <div style="font-size: 48px;">📱</div>
+                <h3 style="margin: 12px 0 8px; color: #1e3a8a;">Add to Home Screen</h3>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px; text-align: left;">
+                    To install SuperPig on your iPhone:
+                </p>
+                <ol style="text-align: left; color: #666; font-size: 14px; margin-bottom: 20px; padding-left: 20px;">
+                    <li>Tap the Share button <span style="font-size: 18px;">📤</span> at the bottom of Safari</li>
+                    <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+                    <li>Tap <strong>"Add"</strong> in the top right corner</li>
+                </ol>
+                <img src="/static_m/images/ios-add-to-home.png" style="max-width: 200px; margin: 10px 0; border-radius: 12px;" onerror="this.style.display='none'">
+                <button id="close-ios-modal" style="background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 30px; font-size: 16px; margin-top: 10px;">Got it</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Track that modal was shown
+    if (window.SUPERPIG_LOGGED_IN === true) {
+        // Dispatch event for tracking
+        window.dispatchEvent(new CustomEvent('pwa-ios-modal-shown'));
+    }
+    
+    document.getElementById('close-ios-modal').onclick = () => modal.remove();
+}
+
 
 
 function showInstallSuccessModal() {
@@ -77,7 +119,9 @@ const PWA_EVENT ={
     INSTALL_CLICKED:    "PWA_INSTALL_CLICKED",
     INSTALL_ACCEPTED:   "PWA_INSTALL_ACCEPTED",
     INSTALL_DISMISSED:  "PWA_INSTALL_DISMISSED",
-    INSTALLED:          "PWA_INSTALLED"
+    INSTALLED:          "PWA_INSTALLED",
+    
+    IOS_INSTRUCTIONS_SHOWN: "PWA_IOS_INSTRUCTIONS_SHOWN"
 }; 
 
 
@@ -492,19 +536,40 @@ export function PageHomeDashBoard(input_settings){
     
     
     this._bindEventListeners = function(){
+        const isIOSDevice   = isIOS();
+        const isInstalled   = isAppInstalled();
         
         // Check if PWA was already ready before login
         if (localStorage.getItem('pwa_ready') === 'true' && window.deferredPrompt) {
             console.log('PWA: using saved event from before login');
             deferredPrompt = window.deferredPrompt;
-            if (elemInstallBtn) {
+            if (elemInstallBtn && !isInstalled) {
                 elemInstallBtn.hidden = false;
             }
             localStorage.removeItem('pwa_ready');
         }
         
+        
+        // iOS specific handling
+        if (isIOSDevice && !isInstalled) {
+            window.addEventListener('pwa-ios-ready', function (){
+                console.log('PWA: iOS ready - showing instructions');
+                if (elemInstallBtn) {
+                    elemInstallBtn.hidden = false;
+                    elemInstallBtn.textContent = '📱 Add to Home Screen';
+                    elemInstallBtn.style.background = '#007aff'; // iOS blue
+                }
+            });
+            
+            // Trigger iOS detection if not already triggered
+            if (localStorage.getItem('pwa_ready_ios') === 'true') {
+                window.dispatchEvent(new CustomEvent('pwa-ios-ready'));
+            }
+        }
+        
+        
         // Listen for custom pwa-ready event (if PWA becomes ready after login)
-        window.addEventListener('pwa-ready', (e) => {
+        window.addEventListener('pwa-ready', function(e) {
             console.log('PWA: ready event received');
             deferredPrompt = e.detail;
             if (elemInstallBtn) {
@@ -514,6 +579,22 @@ export function PageHomeDashBoard(input_settings){
 
             
         elemInstallBtn.addEventListener('click', async function(){
+            if (isIOSDevice) {
+                // Show iOS instructions modal
+                showIOSInstallInstructions();
+                
+                // Track that user saw iOS instructions
+                const data_pwa_track = {
+                    event: PWA_EVENT.IOS_INSTRUCTIONS_SHOWN,
+                    screen_width: window.innerWidth,
+                    screen_height: window.innerHeight
+                };
+                thisObj.addUserTrackAppInstall(data_pwa_track);
+                return;
+            }
+            
+            
+            
             const prompt = deferredPrompt || window.deferredPrompt;
             if (!prompt) {
                 console.log('No deferred prompt available');

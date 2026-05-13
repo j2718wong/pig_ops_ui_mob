@@ -1,3 +1,5 @@
+// pwa-handler.js
+
 // Global PWA event handler - runs on ALL pages
 window.deferredPrompt = null;
 
@@ -28,3 +30,24 @@ window.addEventListener('appinstalled', () => {
     window.deferredPrompt = null;
     window.dispatchEvent(new CustomEvent('pwa-installed'));
 });
+
+
+
+// Detect iOS Safari
+const isIOS             = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isStandalone      = window.matchMedia('(display-mode: standalone)').matches;
+const isIOSStandalone   = window.navigator.standalone === true;
+
+
+// Different install methods for different platforms
+if (isIOS && !isIOSStandalone) {
+    // iOS: Show "Add to Home Screen" instructions
+    console.log('iOS detected - showing add to home screen instructions');
+    localStorage.setItem('pwa_ready_ios', 'true');
+    
+    // Show a custom modal with iOS instructions
+    window.dispatchEvent(new CustomEvent('pwa-ios-ready'));
+} else if (!isIOS && !isStandalone) {
+    // Android/Chrome: Use beforeinstallprompt
+    console.log('Android/Chrome - waiting for beforeinstallprompt');
+}
