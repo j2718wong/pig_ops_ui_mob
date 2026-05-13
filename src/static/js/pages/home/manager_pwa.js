@@ -1,0 +1,431 @@
+// May 13, 2026
+// Jack Wong
+// j2718wong@gmail.com
+
+'use strict';
+
+import {APPLICATION,
+        FLAG_BITS,
+        DEFAULT_WEEKDAY,
+        PAGE_ID}            from '../../constants.js';
+;
+
+
+        
+
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+
+function isAppInstalled() {
+    // For Chrome, Edge, Samsung Internet (modern Android)
+    const isStandalone      = window.matchMedia('(display-mode: standalone)').matches;
+    
+    // For iOS Safari
+    const isIOSStandalone   = window.navigator.standalone === true;
+    
+    return isStandalone || isIOSStandalone;
+}
+
+
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+}
+
+
+function showIOSInstallInstructions() {
+    // Check if modal already exists
+    if (document.getElementById('ios-instructions-modal')) return;
+    
+    const modal = document.createElement('div');
+    modal.id = 'ios-instructions-modal';
+    modal.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div style="background: white; border-radius: 20px; max-width: 320px; width: 85%; padding: 24px; text-align: center;">
+                <div style="font-size: 48px;">📱</div>
+                <h3 style="margin: 12px 0 8px; color: #1e3a8a;">Add to Home Screen</h3>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px; text-align: left;">
+                    To install SuperPig on your iPhone:
+                </p>
+                <ol style="text-align: left; color: #666; font-size: 14px; margin-bottom: 20px; padding-left: 20px;">
+                    <li>Tap the Share button <span style="font-size: 18px;">📤</span> at the bottom of Safari</li>
+                    <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+                    <li>Tap <strong>"Add"</strong> in the top right corner</li>
+                </ol>
+                <img src="/static_m/images/ios-add-to-home.png" style="max-width: 200px; margin: 10px 0; border-radius: 12px;" onerror="this.style.display='none'">
+                <button id="close-ios-modal" style="background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 30px; font-size: 16px; margin-top: 10px;">Got it</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Track that modal was shown
+    if (window.SUPERPIG_LOGGED_IN === true) {
+        // Dispatch event for tracking
+        window.dispatchEvent(new CustomEvent('pwa-ios-modal-shown'));
+    }
+    
+    document.getElementById('close-ios-modal').onclick = () => modal.remove();
+}
+
+
+
+function showInstallSuccessModal() {
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div style="background: white; border-radius: 20px; max-width: 300px; width: 85%; padding: 24px; text-align: center;">
+                <div style="font-size: 48px;">🎉</div>
+                <h3 style="margin: 12px 0 8px; color: #1e3a8a;">SuperPig Installed!</h3>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+                    SuperPig has been added to your home screen.
+                </p>
+                <button id="close-install-modal" style="background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 30px; font-size: 16px;">Got it</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    document.getElementById('close-install-modal').onclick = () => modal.remove();
+}
+
+/* PWA events tracking
+Event	                When to Track	                Why
+pwa_ready	            beforeinstallprompt fires	    Install is possible
+pwa_button_shown	    Your install button becomes     visible	User saw the option
+pwa_install_clicked	    User clicks install button	    User wants to install
+pwa_install_accepted	User accepts native prompt	    Installation started
+pwa_install_dismissed	User dismisses native prompt	User declined
+pwa_installed	        appinstalled event fires	    
+
+*/
+
+
+const PWA_EVENT ={
+    READY:              "PWA_READY",
+    INSTALL_BTN_SHOWN:  "PWA_BTN_SHOWN",
+    INSTALL_CLICKED:    "PWA_INSTALL_CLICKED",
+    INSTALL_ACCEPTED:   "PWA_INSTALL_ACCEPTED",
+    INSTALL_DISMISSED:  "PWA_INSTALL_DISMISSED",
+    INSTALLED:          "PWA_INSTALLED",
+    
+    IOS_INSTRUCTIONS_SHOWN: "PWA_IOS_INSTRUCTIONS_SHOWN"
+}; 
+
+
+
+export function ManagerPwa(input_settings){
+    
+    const TAG                   = 'ManagerPwa';
+    
+    const thisObj               = this;
+    const navigation            = input_settings.navigation;
+    const parentObj             = input_settings.parentObj;
+    
+    
+    const elemDivContainer      = input_settings.elemDivContainer
+    
+    /*
+    Typical settings = {
+        navigation:             navigation,
+        parentObj:              parentObj,
+        elemIdDivContainer:     elemIdContUserDisabled
+    };
+    */
+    const settings              = input_settings;
+    
+
+    
+    let elemInstallBtn          = null;
+    
+    
+    let elemServerErrorMsg      = null;
+    
+    
+    // PWA Installation
+    let deferredPrompt;
+    
+    
+    this.init = function(){
+
+    }
+    
+    
+    this.getHtml = function(){
+        
+        const html = `
+        <button id="install-superpig-btn" hidden style="
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 320px;
+            background: var(--gestating-color);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 16px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        ">
+            📱 Install SuperPig App
+        </button>
+        `;
+        
+        return html;
+
+    }
+    
+    
+    this.afterHtmlRender = function(){
+        this._findElements();
+        this._processAfterHtmlRender();
+        this._bindEventListeners();
+    }
+    
+    
+    this._findElements = function(){
+        
+        elemInstallBtn          = elemDivContainer.querySelector('#install-superpig-btn'); 
+        
+        elemServerErrorMsg      = parentObj.elemServerErrorMsg;
+
+    }
+    
+    
+    this._processAfterHtmlRender = function(){
+        
+    }
+    
+    
+    this._bindEventListeners = function(){
+        const isIOSDevice   = isIOS();
+        const isInstalled   = isAppInstalled();
+        
+        // Check if PWA was already ready before login
+        if (localStorage.getItem('pwa_ready') === 'true' && window.deferredPrompt) {
+            console.log('PWA: using saved event from before login');
+            deferredPrompt = window.deferredPrompt;
+            if (elemInstallBtn && !isInstalled) {
+                elemInstallBtn.hidden = false;
+            }
+            localStorage.removeItem('pwa_ready');
+        }
+        
+        
+        // iOS specific handling
+        if (isIOSDevice && !isInstalled) {
+            window.addEventListener('pwa-ios-ready', function (){
+                console.log('PWA: iOS ready - showing instructions');
+                if (elemInstallBtn) {
+                    elemInstallBtn.hidden = false;
+                    elemInstallBtn.textContent = '📱 Add to Home Screen';
+                    elemInstallBtn.style.background = '#007aff'; // iOS blue
+                }
+            });
+            
+            // Trigger iOS detection if not already triggered
+            if (localStorage.getItem('pwa_ready_ios') === 'true') {
+                window.dispatchEvent(new CustomEvent('pwa-ios-ready'));
+            }
+        }
+        
+        
+        // Listen for custom pwa-ready event (if PWA becomes ready after login)
+        window.addEventListener('pwa-ready', function(e) {
+            console.log('PWA: ready event received');
+            deferredPrompt = e.detail;
+            if (elemInstallBtn) {
+                elemInstallBtn.hidden = false;
+            }
+        });
+
+            
+        elemInstallBtn.addEventListener('click', async function(){
+            if (isIOSDevice) {
+                // Show iOS instructions modal
+                showIOSInstallInstructions();
+                
+                // Track that user saw iOS instructions
+                const data_pwa_track = {
+                    event: PWA_EVENT.IOS_INSTRUCTIONS_SHOWN,
+                    screen_width: window.innerWidth,
+                    screen_height: window.innerHeight
+                };
+                thisObj.addUserTrackAppInstall(data_pwa_track);
+                return;
+            }
+            
+            
+            
+            const prompt = deferredPrompt || window.deferredPrompt;
+            if (!prompt) {
+                console.log('No deferred prompt available');
+                return;
+            }
+            prompt.prompt();
+            
+            
+            let data_pwa_track = {
+                event:          PWA_EVENT.INSTALL_CLICKED,
+                screen_width:   window.innerWidth,
+                screen_height:  window.innerHeight
+
+            };
+
+            thisObj.addUserTrackAppInstall(data_pwa_track);
+            
+            
+            // Wait for user response
+            const { outcome } = await prompt.userChoice;
+            console.log(`User install choice: ${outcome}`);
+            
+            // Track the outcome
+            const eventType = outcome === 'accepted' ? PWA_EVENT.INSTALL_ACCEPTED : PWA_EVENT.INSTALL_DISMISSED;
+            data_pwa_track = {
+                event:          eventType,
+                screen_width:   window.innerWidth,
+                screen_height:  window.innerHeight
+            };
+            thisObj.addUserTrackAppInstall(data_pwa_track);
+                    
+            
+            // Reset the deferred prompt variable (can only be used once)
+            deferredPrompt = null;
+            
+            // Hide the install button
+            elemInstallBtn.hidden = true;
+        });
+
+        
+        window.addEventListener('appinstalled', function(){
+            console.log('SuperPig was installed');
+            
+            // Show success modal
+            showInstallSuccessModal();
+            
+            const data_pwa_track = {
+                event:          PWA_EVENT.INSTALLED
+            };
+
+            thisObj.addUserTrackAppInstall(data_pwa_track);
+            
+            
+            
+            // Hide the install button permanently
+            if (elemInstallBtn) {
+                elemInstallBtn.style.display = 'none';
+            }
+        });
+
+
+
+        // If already installed, hide button
+        if (isAppInstalled()) {
+            elemInstallBtn.hidden = true;
+        }
+
+        
+        
+        
+    }
+    
+
+    this.showPwaInstallButton = function(){
+        // Show PWA install button
+        if (!isAppInstalled()) {
+            setTimeout(function() {
+                const promptToUse = deferredPrompt || window.deferredPrompt;
+                if (promptToUse) {
+                    elemInstallBtn.hidden = false;
+                    
+                    const data_pwa_track = {
+                        event: PWA_EVENT.INSTALL_BTN_SHOWN,
+                        screen_width: window.innerWidth,
+                        screen_height: window.innerHeight
+                    };
+                    thisObj.addUserTrackAppInstall(data_pwa_track);
+                }
+            }, 500);
+        }
+        
+    }
+
+
+    this.addUserTrackAppInstall = function(data, callback_success){
+        const user_hid      = navigation.userControl.getUserHid();
+        const base_url      = window.location.origin;
+        
+        
+        
+        // send post request
+        const post_data = {
+            'uhid':             user_hid,
+            'event':            data.event
+        };
+        
+        
+        if (data.screen_width){
+            post_data.screen_width = data.screen_width;
+        }
+        
+        if (data.screen_height){
+            post_data.screen_height = data.screen_height;
+        }
+        
+        
+        let url = `${base_url}/user/track_app_install`;
+
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    if (callback_success){
+                        callback_success();
+                    }
+                }
+                else{
+                    navigation.serverError.receivedErrorMessage(
+                        response, elemServerErrorMsg);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+    
+        
+        
+        
+}
