@@ -34,61 +34,6 @@ function isMobileDevice() {
 }
 
 
-function showIOSInstallInstructions() {
-    // Check if modal already exists
-    if (document.getElementById('ios-instructions-modal')) return;
-    
-    const modal = document.createElement('div');
-    modal.id = 'ios-instructions-modal';
-    modal.innerHTML = `
-        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;">
-            <div style="background: white; border-radius: 20px; max-width: 320px; width: 85%; padding: 24px; text-align: center;">
-                <div style="font-size: 48px;">📱</div>
-                <h3 style="margin: 12px 0 8px; color: #1e3a8a;">Add to Home Screen</h3>
-                <p style="color: #666; font-size: 14px; margin-bottom: 20px; text-align: left;">
-                    To install SuperPig on your iPhone:
-                </p>
-                <ol style="text-align: left; color: #666; font-size: 14px; margin-bottom: 20px; padding-left: 20px;">
-                    <li>Tap the Share button <span style="font-size: 18px;">📤</span> at the bottom of Safari</li>
-                    <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
-                    <li>Tap <strong>"Add"</strong> in the top right corner</li>
-                </ol>
-                <img src="/static_m/images/ios-add-to-home.png" style="max-width: 200px; margin: 10px 0; border-radius: 12px;" onerror="this.style.display='none'">
-                <button id="close-ios-modal" style="background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 30px; font-size: 16px; margin-top: 10px;">Got it</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    
-    // Track that modal was shown
-    if (window.SUPERPIG_LOGGED_IN === true) {
-        // Dispatch event for tracking
-        window.dispatchEvent(new CustomEvent('pwa-ios-modal-shown'));
-    }
-    
-    document.getElementById('close-ios-modal').onclick = () => modal.remove();
-}
-
-
-
-function showInstallSuccessModal() {
-    const modal = document.createElement('div');
-    modal.innerHTML = `
-        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;">
-            <div style="background: white; border-radius: 20px; max-width: 300px; width: 85%; padding: 24px; text-align: center;">
-                <div style="font-size: 48px;">🎉</div>
-                <h3 style="margin: 12px 0 8px; color: #1e3a8a;">SuperPig Installed!</h3>
-                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
-                    SuperPig has been added to your home screen.
-                </p>
-                <button id="close-install-modal" style="background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 30px; font-size: 16px;">Got it</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    
-    document.getElementById('close-install-modal').onclick = () => modal.remove();
-}
 
 /* PWA events tracking
 Event	                When to Track	                Why
@@ -103,14 +48,19 @@ pwa_installed	        appinstalled event fires
 
 
 const PWA_EVENT ={
-    READY:              "PWA_READY",
-    INSTALL_BTN_SHOWN:  "PWA_BTN_SHOWN",
-    INSTALL_CLICKED:    "PWA_INSTALL_CLICKED",
-    INSTALL_ACCEPTED:   "PWA_INSTALL_ACCEPTED",
-    INSTALL_DISMISSED:  "PWA_INSTALL_DISMISSED",
-    INSTALLED:          "PWA_INSTALLED",
+    READY:                      "PWA_READY",
+    INSTALL_BTN_SHOWN:          "PWA_BTN_SHOWN",
+    INSTALL_CLICKED:            "PWA_INSTALL_CLICKED",
+    INSTALL_ACCEPTED:           "PWA_INSTALL_ACCEPTED",
+    INSTALL_DISMISSED:          "PWA_INSTALL_DISMISSED",
+    INSTALLED:                  "PWA_INSTALLED",
     
-    IOS_INSTRUCTIONS_SHOWN: "PWA_IOS_INSTRUCTIONS_SHOWN"
+    IOS_INSTRUCTIONS_SHOWN:     "PWA_IOS_INSTRUCTIONS_SHOWN",
+    ANDROID_INSTRUCTIONS_SHOWN: "PWA_ANDROID_INSTRUCTIONS_SHOWN",
+    
+    PWA_IOS_INSTRUCTIONS_DISMISSED:     "PWA_IOS_INSTRUCTIONS_DISMISSED",
+    PWA_ANDROID_INSTRUCTIONS_DISMISSED: "PWA_ANDROID_INSTRUCTIONS_DISMISSED"
+    
 }; 
 
 
@@ -251,7 +201,7 @@ export function ManagerPwa(input_settings){
         elemInstallBtn.addEventListener('click', async function(){
             if (isIOSDevice) {
                 // Show iOS instructions modal
-                showIOSInstallInstructions();
+                thisObj.showIOSInstallInstructions();
                 
                 // Track that user saw iOS instructions
                 const data_pwa_track = {
@@ -267,7 +217,8 @@ export function ManagerPwa(input_settings){
             
             const prompt = deferredPrompt || window.deferredPrompt;
             if (!prompt) {
-                console.log('No deferred prompt available');
+                // Show Android manual installation instructions
+                thisObj.showAndroidInstallInstructions();
                 return;
             }
             prompt.prompt();
@@ -309,7 +260,7 @@ export function ManagerPwa(input_settings){
             console.log('SuperPig was installed');
             
             // Show success modal
-            showInstallSuccessModal();
+            thisObj.showInstallSuccessModal();
             
             const data_pwa_track = {
                 event:          PWA_EVENT.INSTALLED
@@ -356,6 +307,197 @@ export function ManagerPwa(input_settings){
             }, 500);
         }
         
+    }
+
+
+    this.showIOSInstallInstructions = function() {
+        // Check if modal already exists
+        if (document.getElementById('ios-instructions-modal')) return;
+        
+        const modal = document.createElement('div');
+        modal.id = 'ios-instructions-modal';
+        modal.innerHTML = `
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                <div style="background: white; border-radius: 20px; max-width: 320px; width: 85%; padding: 24px; text-align: center;">
+                    <div style="font-size: 48px;">📱</div>
+                    <h3 style="margin: 12px 0 8px; color: #1e3a8a;">Add to Home Screen</h3>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 20px; text-align: left;">
+                        To install SuperPig on your iPhone:
+                    </p>
+                    <ol style="text-align: left; color: #666; font-size: 14px; margin-bottom: 20px; padding-left: 20px;">
+                        <li>Tap the Share button <span style="font-size: 18px;">📤</span> at the bottom of Safari</li>
+                        <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+                        <li>Tap <strong>"Add"</strong> in the top right corner</li>
+                    </ol>
+                    <img src="/static_m/images/ios-add-to-home.png" style="max-width: 200px; margin: 10px 0; border-radius: 12px;" onerror="this.style.display='none'">
+                    <button id="close-ios-modal" style="background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 30px; font-size: 16px; margin-top: 10px;">Got it</button>
+                </div>
+            </div>
+        `;
+        
+       
+        document.body.appendChild(modal);
+        
+        document.getElementById('close-ios-modal').onclick = function(){
+            modal.remove();
+            
+            // Track modal dismissal
+            const data_pwa_track = {
+                event: 'PWA_IOS_INSTRUCTIONS_DISMISSED',
+                screen_width: window.innerWidth,
+                screen_height: window.innerHeight
+            };
+            thisObj.addUserTrackAppInstall(data_pwa_track);
+        };
+        
+        
+        // Track that modal was shown
+        if (window.SUPERPIG_LOGGED_IN === true) {
+            // Dispatch event for tracking
+            window.dispatchEvent(new CustomEvent('pwa-ios-modal-shown'));
+        }
+        
+        
+    }
+
+
+    this.showAndroidInstallInstructions = function() {
+        // Check if modal already exists
+        if (document.getElementById('android-instructions-modal')) return;
+        
+        // Detect browser for specific instructions
+        const ua = navigator.userAgent;
+        const isChrome = /Chrome/.test(ua) && !/Edg/.test(ua);
+        const isSamsung = /SamsungBrowser/.test(ua);
+        const isFirefox = /Firefox/.test(ua);
+        const isEdge = /Edg/.test(ua);
+        
+        let browserName = 'Chrome';
+        let browserSteps = '';
+        
+        if (isChrome) {
+            browserName = 'Chrome';
+            browserSteps = `
+                <li>Tap the <strong>⋮</strong> (three dots) menu in the top right corner</li>
+                <li>Tap <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong></li>
+                <li>Tap <strong>"Install"</strong> to confirm</li>
+            `;
+        } else if (isSamsung) {
+            browserName = 'Samsung Internet';
+            browserSteps = `
+                <li>Tap the <strong>☰</strong> (hamburger menu) at the bottom</li>
+                <li>Tap <strong>"Add to Home screen"</strong></li>
+                <li>Tap <strong>"Add"</strong> to confirm</li>
+            `;
+        } else if (isFirefox) {
+            browserName = 'Firefox';
+            browserSteps = `
+                <li>Tap the <strong>⋮</strong> (three dots) menu</li>
+                <li>Tap <strong>"Install"</strong> or <strong>"Add to Home screen"</strong></li>
+                <li>Tap <strong>"Add"</strong> to confirm</li>
+            `;
+        } else if (isEdge) {
+            browserName = 'Edge';
+            browserSteps = `
+                <li>Tap the <strong>⋮</strong> (three dots) menu at the bottom</li>
+                <li>Tap <strong>"Add to Home screen"</strong></li>
+                <li>Tap <strong>"Add"</strong> to confirm</li>
+            `;
+        } else {
+            // Generic Android instructions
+            browserSteps = `
+                <li>Tap the browser menu button (usually ⋮ or ☰)</li>
+                <li>Look for <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong></li>
+                <li>Tap <strong>"Install"</strong> or <strong>"Add"</strong> to confirm</li>
+            `;
+        }
+        
+        const modal = document.createElement('div');
+        modal.id = 'android-instructions-modal';
+        modal.innerHTML = `
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                <div style="background: white; border-radius: 20px; max-width: 350px; width: 90%; padding: 24px; text-align: center; max-height: 90%; overflow-y: auto;">
+                    <div style="font-size: 48px;">📱</div>
+                    <h3 style="margin: 12px 0 8px; color: #1e3a8a;">Install SuperPig App</h3>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 20px; text-align: left;">
+                        You can install SuperPig as a standalone app on your Android device:
+                    </p>
+                    <ol style="text-align: left; color: #666; font-size: 14px; margin-bottom: 20px; padding-left: 20px;">
+                        ${browserSteps}
+                    </ol>
+                    
+                    <div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 12px; margin: 16px 0; text-align: left; border-radius: 8px;">
+                        <strong style="color: #166534;">✨ Benefits of installing:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #14532d;">
+                            <li>Launch from home screen like a native app</li>
+                            <li>No browser address bar - full screen experience</li>
+                            <li>Faster access to SuperPig</li>
+                            <li>Works offline (cached content)</li>
+                        </ul>
+                    </div>
+                    
+                    <button id="close-android-modal" style="background: #1e3a8a; color: white; border: none; padding: 12px 28px; border-radius: 30px; font-size: 16px; margin-top: 10px; cursor: pointer;">
+                        Got it
+                    </button>
+                </div>
+            </div>
+        `;
+        
+            
+        document.body.appendChild(modal);
+        
+        
+        document.getElementById('close-android-modal').onclick = function(){
+            modal.remove();
+            
+            // Track modal dismissal
+            const data_pwa_track = {
+                event: 'PWA_ANDROID_INSTRUCTIONS_DISMISSED',
+                screen_width: window.innerWidth,
+                screen_height: window.innerHeight
+            };
+            thisObj.addUserTrackAppInstall(data_pwa_track);
+        };
+        
+        
+        // Track that Android instructions were shown
+        const data_pwa_track = {
+            event: PWA_EVENT.ANDROID_INSTRUCTIONS_SHOWN,
+            screen_width: window.innerWidth,
+            screen_height: window.innerHeight
+        };
+        thisObj.addUserTrackAppInstall(data_pwa_track);
+        
+        
+        // Close when clicking outside
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+    };
+
+
+
+    this.showInstallSuccessModal = function() {
+        const modal = document.createElement('div');
+        modal.innerHTML = `
+            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                <div style="background: white; border-radius: 20px; max-width: 300px; width: 85%; padding: 24px; text-align: center;">
+                    <div style="font-size: 48px;">🎉</div>
+                    <h3 style="margin: 12px 0 8px; color: #1e3a8a;">SuperPig Installed!</h3>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+                        SuperPig has been added to your home screen.
+                    </p>
+                    <button id="close-install-modal" style="background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 30px; font-size: 16px;">Got it</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        document.getElementById('close-install-modal').onclick = function(){ 
+            modal.remove();
+        }
     }
 
 

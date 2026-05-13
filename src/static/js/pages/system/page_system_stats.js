@@ -140,7 +140,7 @@ export function PageSystemStats(input_settings){
         elemTdAccNotStarted     = elemDivContainer.querySelector('#'+elemIdTdAccNotStarted); 
         elemTdAccNoSowBoar      = elemDivContainer.querySelector('#'+elemIdTdAccNoSowBoar); 
         
-        elemIdCountPWAInstall   = elemDivContainer.querySelector('#'+elemIdTdCountPWAInstall); 
+        elemTdCountPWAInstall   = elemDivContainer.querySelector('#'+elemIdTdCountPWAInstall); 
     }
 
     
