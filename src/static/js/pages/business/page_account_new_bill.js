@@ -813,7 +813,18 @@ ${html_style}
         elemTdTaxableSale.textContent       = s_taxable_sale;   
             
         //elemIdLabelTaxAmount      
-        elemTdTaxAmount.textContent         = s_tax_amount;     
+        elemTdTaxAmount.textContent         = s_tax_amount;  
+        
+        if (data.prev_balance &&  data.prev_balance > 0){
+            elemTrPrevBalance.style.display = 'block';
+        
+            let s_prev_balance      = moneyFormatter.format(data.prev_balance);
+            elemTdPrevBalance.textContent   = s_prev_balance;  
+        }
+        else{
+            elemTrPrevBalance.style.display = 'none';
+        }
+           
             
         elemTdAmountDue.innerHTML           = `<b>${s_amount_due}</b>`;     
         
@@ -938,7 +949,6 @@ ${html_style}
     }
 
     
-    // In your PageAccountNewBill.js
     this.onClickSubmitPaymentProof = async function() {
         const screenshot = elemScreenshotInput ? elemScreenshotInput.files[0] : null;
         
