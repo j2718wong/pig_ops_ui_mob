@@ -24,6 +24,33 @@ import {DEFAULT_NO_ENTRIES_TABLE}   from './page_table_basic.js';
 
 
 
+export function updateTableRowColors(elemTable) {
+    const tbody = elemTable.querySelector('tbody');
+    const allRows = Array.from(tbody.querySelectorAll('tr'));
+    
+    // Disable CSS nth-child by forcing inline styles that override
+    allRows.forEach(row => {
+        row.style.setProperty('background-color', 'transparent', 'important');
+        row.style.setProperty('background', 'transparent', 'important');
+    });
+    
+    // Filter visible rows
+    const visibleRows = allRows.filter(row => {
+        const style = window.getComputedStyle(row);
+        return style.display !== 'none';
+    });
+    
+    // Apply your colors
+    visibleRows.forEach((row, index) => {
+        if (index % 2 === 0) {
+            row.style.setProperty('background-color', 'var(--row-even)', 'important');
+        } else {
+            row.style.setProperty('background-color', 'transparent', 'important');
+        }
+    });
+}
+
+
 export function TableBasic(input_settings){
     const thisObj               = this;
     const parentObj             = input_settings.parentObj;

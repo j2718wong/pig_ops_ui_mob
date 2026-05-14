@@ -17,6 +17,7 @@ import {formatDate,
         FORMAT_LONG_MONTH,
         FORMAT_COMPACT}         from '../../utils.js';
 
+import {updateTableRowColors}   from '../common/table_basic.js'
 
 export function PageAccountNewBill(input_settings){
 
@@ -46,6 +47,8 @@ export function PageAccountNewBill(input_settings){
     
     let elemIdAccountBillMsg    = null;
     
+    let elemIdTableBillDetails  = null;
+    
     let elemIdTdBillReference   = null;
     let elemIdTdDateIssue       = null;
     let elemIdTdDateDue         = null;
@@ -62,7 +65,9 @@ export function PageAccountNewBill(input_settings){
                                 
     let elemIdLabelTaxAmount    = null;
     let elemIdTdTaxAmount       = null;
-              
+    
+    let elemIdTrPrevBalance     = null;
+    let elemIdTdPrevBalance     = null;
     let elemIdTdAmountDue       = null;
     
     
@@ -96,6 +101,8 @@ export function PageAccountNewBill(input_settings){
     
     let elemAccountBillMsg      = null;
     
+    let elemTableBillDetails    = null;
+    
     let elemTdBillReference     = null;
     let elemTdDateIssue         = null;
     let elemTdDateDue           = null;
@@ -113,6 +120,8 @@ export function PageAccountNewBill(input_settings){
     let elemLabelTaxAmount      = null;
     let elemTdTaxAmount         = null;
                
+    let elemTrPrevBalance       = null;
+    let elemTdPrevBalance       = null;
     let elemTdAmountDue         = null;
     
     
@@ -381,6 +390,8 @@ ${html_style}
         
         elemAccountBillMsg      = elemDivContainer.querySelector('#'+elemIdAccountBillMsg);
         
+        elemTableBillDetails    = elemDivContainer.querySelector('#'+elemIdTableBillDetails); 
+        
         elemTdBillReference     = elemDivContainer.querySelector('#'+elemIdTdBillReference); 
         elemTdDateIssue         = elemDivContainer.querySelector('#'+elemIdTdDateIssue); 
         elemTdDateDue           = elemDivContainer.querySelector('#'+elemIdTdDateDue); 
@@ -397,7 +408,9 @@ ${html_style}
                                                                                            
         elemLabelTaxAmount      = elemDivContainer.querySelector('#'+elemIdLabelTaxAmount); 
         elemTdTaxAmount         = elemDivContainer.querySelector('#'+elemIdTdTaxAmount); 
-                                                                                           
+              
+        elemTrPrevBalance       = elemDivContainer.querySelector('#'+elemIdTrPrevBalance);
+        elemTdPrevBalance       = elemDivContainer.querySelector('#'+elemIdTdPrevBalance); 
         elemTdAmountDue         = elemDivContainer.querySelector('#'+elemIdTdAmountDue); 
         
         
@@ -442,6 +455,7 @@ ${html_style}
     
     
     this.getHtmlBillInfo = function(){
+        elemIdTableBillDetails  = `${settings.uniqueKey}-table-bill-details`;
        
         
         elemIdTdBillReference   = `${settings.uniqueKey}-bill-reference`;
@@ -461,11 +475,14 @@ ${html_style}
         elemIdLabelTaxAmount    = `${settings.uniqueKey}-tax-label`;
         elemIdTdTaxAmount       = `${settings.uniqueKey}-tax-amount`;
 
+        elemIdTrPrevBalance     = `${settings.uniqueKey}-prev-balance-show`;
+        elemIdTdPrevBalance     = `${settings.uniqueKey}-prev-balance`;
+
         elemIdTdAmountDue       = `${settings.uniqueKey}-amount-due`;
         
         const html = `
         
-        <table class="data-table">
+        <table class="data-table dynamic-row-table" id = "${elemIdTableBillDetails}">
             <colgroup>
                 <col style="width: 60%;">
                 <col style="width: 40%;">
@@ -522,6 +539,12 @@ ${html_style}
                     <td class="label" id="${elemIdLabelTaxAmount}">VAT 12%</td>
                     <td class="value" id="${elemIdTdTaxAmount}"></td>
                 </tr>
+                
+                <tr id="${elemIdTrPrevBalance}" style="display:none">
+                    <td class="label">Previous Balance</td>
+                    <td class="value" id="${elemIdTdPrevBalance}">0.0</td>
+                </tr>
+                
                 
                 <tr>
                     <td class="label">Total Amount Due</td>
@@ -794,6 +817,7 @@ ${html_style}
             
         elemTdAmountDue.innerHTML           = `<b>${s_amount_due}</b>`;     
         
+        updateTableRowColors(elemTableBillDetails);
     }
     
     

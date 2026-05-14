@@ -1342,6 +1342,10 @@ p {
     background-color: var(--row-even);
 }
 
+.data-table.dynamic-row-table tr {
+    background-color: transparent !important;
+}
+
 .data-table tr.completed {
     opacity: 0.8;
 }
