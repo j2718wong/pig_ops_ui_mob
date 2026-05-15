@@ -31,12 +31,13 @@ export function PageReceiptDataEntry(){
     let elemUnAuthorizedShow    = null;
     let elemVerificationShow    = null;
     let elemVerificationCode    = null;
-    let elemBtnVerifyCode       = null;
+    let elemVerifyCodeBtn       = null;
     
     let elemServerErrorMsg      = null;
     let elemBtnModalClose       = null;
     
     
+    let dataUnverifiedUser      = null;
 
     
     this.init = function(){
@@ -78,7 +79,7 @@ export function PageReceiptDataEntry(){
         elemUnAuthorizedShow    = elemDivContainer.querySelector('#unauthorizedDiv');
         elemVerificationShow    = elemDivContainer.querySelector('#verificationSection');
         elemVerificationCode    = elemDivContainer.querySelector('#verificationCode');
-        elemBtnVerifyCode       = elemDivContainer.querySelector('#verifyCodeBtn');
+        elemVerifyCodeBtn       = elemDivContainer.querySelector('#verifyCodeBtn');
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#serverErrorMsg');
         elemBtnModalClose       = elemDivContainer.querySelector('#closeModalBtn');
@@ -105,7 +106,7 @@ export function PageReceiptDataEntry(){
         });
         
         
-        elemBtnVerifyCode.addEventListener('click', function() {
+        elemVerifyCodeBtn.addEventListener('click', function() {
             thisObj.onClickVerifyCode();
         });
         
@@ -190,6 +191,7 @@ export function PageReceiptDataEntry(){
                 if (response.result.num == 0){
                     elemVerificationShow.style.display = 'block';
                     
+                    dataUnverifiedUser = response.user_unverified;
                     
                 }
                 else{
@@ -208,7 +210,7 @@ export function PageReceiptDataEntry(){
     }
     
     
-    this.onClickVerifyEmail = function() {
+    this.onClickVerifyCode = function() {
         
         const enteredCode = elemVerificationCode ? elemVerificationCode.value : '';
         
@@ -219,13 +221,12 @@ export function PageReceiptDataEntry(){
         }
 
         // Show loading state
-        if (elemBtnVerifyCode) {
-            elemBtnVerifyCode.disabled = true;
-            elemBtnVerifyCode.textContent = 'Verifying...';
+        if (elemVerifyCodeBtn) {
+            elemVerifyCodeBtn.disabled = true;
+            elemVerifyCodeBtn.textContent = 'Verifying...';
         }
         
         
-        const unverified_user_hid = dataUnverifiedUser.hid;
         const user_hid = dataUnverifiedUser.uhid;
         
         const base_url      = window.location.origin;
@@ -239,19 +240,13 @@ export function PageReceiptDataEntry(){
         
         // send post request
         const post_data = {
-            'uvuhid':           unverified_user_hid,
+            'uhid':             user_hid,
             'auth_code':        enteredCode,
             'viewport_width':   viewport_width,
             'viewport_height':  viewport_height
         };
         
-        if (unverified_user_hid){
-            post_data.uvuhid = unverified_user_hid;
-        }
-        else{
-            post_data.uhid = user_hid;
-        }
-        
+
         
         $.ajax({
             type: 'POST',
@@ -270,16 +265,16 @@ export function PageReceiptDataEntry(){
             success: function(response){
                 if (response.result.num == 0){
                     if (response.bearer_token){
-                        if (elemVerification) {
-                            elemVerification.classList.remove('error');
+                        if (elemVerificationCode) {
+                            elemVerificationCode.classList.remove('error');
                         }
 
                         
                         // Store token
-                        localStorage.setItem('access_token', response.bearer_token);
+                        //localStorage.setItem('access_token', response.bearer_token);
                         
                         // handle post login
-                        parentObj.handlePostLoginFlow(response.user_account);
+                        //parentObj.handlePostLoginFlow(response.user_account);
                         return;
                     }
                     else{
@@ -299,30 +294,26 @@ export function PageReceiptDataEntry(){
                         case 'RES_NUM_CANNOT_FIND_VERIFICATION':
                         case 'RES_NUM_INVALID_CODE':{
                             thisObj._showMessage('✗ Invalid code. Please try again.', 'error');
-                            if (elemVerification) {
-                                elemVerification.classList.add('error');
-                                //elemVerification.value = '';
-                                elemVerification.focus();
-                                //thisObj._updateCodePreview('');
+                            if (elemVerificationCode) {
+                                elemVerificationCode.classList.add('error');
+                                elemVerificationCode.focus();
                             }
-                            if (elemVerifyBtn) {
-                                elemVerifyBtn.disabled = false;
-                                elemVerifyBtn.textContent = 'Verify Email';
+                            if (elemVerifyCodeBtn) {
+                                elemVerifyCodeBtn.disabled = false;
+                                elemVerifyCodeBtn.textContent = 'Verify Email';
                             }
                             break;
                         }
                         
                         case 'RES_NUM_CODE_EXPIRED':{
                             thisObj._showMessage('✗ Code Expired. Please request code again.', 'error');
-                            if (elemVerification) {
-                                elemVerification.classList.add('error');
-                                //elemVerification.value = '';
-                                elemVerification.focus();
-                                //thisObj._updateCodePreview('');
+                            if (elemVerificationCode) {
+                                elemVerificationCode.classList.add('error');
+                                elemVerificationCode.focus();
                             }
-                            if (elemVerifyBtn) {
-                                elemVerifyBtn.disabled = false;
-                                elemVerifyBtn.textContent = 'Verify Email';
+                            if (elemVerifyCodeBtn) {
+                                elemVerifyCodeBtn.disabled = false;
+                                elemVerifyCodeBtn.textContent = 'Verify Email';
                             }
                             
                             break;
@@ -342,7 +333,6 @@ export function PageReceiptDataEntry(){
 
 
     }
-    
     
     
     

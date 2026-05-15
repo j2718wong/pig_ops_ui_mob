@@ -344,7 +344,7 @@ export function PageUserSignUpGoogle(input_settings){
             console.log("✅ Backend response received");
             
             // Store token
-            localStorage.setItem('access_token', data.bearer_token);
+            managerLogin.saveAuthToken(data.bearer_token);
             localStorage.setItem('user_picture', data.user_picture);
             
             // Capture language from URL or localStorage before redirect

@@ -12,8 +12,8 @@ import {APPLICATION,
 
 
         
-
-function isIOS() {
+// Do not rename this; as there is a global function isIOS in pwa-handler.js
+function checkIfIOSDevice() {
     return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 }
 
@@ -156,7 +156,7 @@ export function ManagerPwa(input_settings){
     
     
     this._bindEventListeners = function(){
-        const isIOSDevice   = isIOS();
+        const isIOSDevice   = checkIfIOSDevice();
         const isInstalled   = isAppInstalled();
         
         // Check if PWA was already ready before login

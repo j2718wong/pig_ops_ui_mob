@@ -437,7 +437,7 @@ export function ManagerAlerts(_navigation) {
         // Bill Alerts section
         if (billAlerts.length > 0) {
             html += '<h3 style="color: var(--critical-color, #f44336);">';
-            html += '<i class="fas fa-exclamation-circle"></i> New Bills';
+            html += '<i class="fas fa-exclamation-circle"></i> New Bill';
             html += '</h3>';
             
             for (let j = 0; j < billAlerts.length; j++) {

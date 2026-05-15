@@ -32,20 +32,20 @@ export function PageEmailVerifyCode(input_settings){
     
     // Element IDs
     let elemIdUserEmail         = `${settings.uniqueKey}-user-email`;
-    let elemIdVerification      = `${settings.uniqueKey}-verification-code`;
+    let elemIdVerificationCode  = `${settings.uniqueKey}-verification-code`;
     let elemIdTimer             = `${settings.uniqueKey}-timer`;
     let elemIdResendBtn         = `${settings.uniqueKey}-resend-btn`;
-    let elemIdVerifyBtn         = `${settings.uniqueKey}-verify-btn`;
+    let elemIdVerifyCodeBtn     = `${settings.uniqueKey}-verify-btn`;
     let elemIdMessage           = `${settings.uniqueKey}-message`;
     let elemIdBackLink          = `${settings.uniqueKey}-back-link`;
     let elemIdCodePreview       = `${settings.uniqueKey}-code-preview`;
     
     // DOM Elements
     let elemUserEmail           = null;
-    let elemVerification        = null;
+    let elemVerificationCode    = null;
     let elemTimer               = null;
     let elemResendBtn           = null;
-    let elemVerifyBtn           = null;
+    let elemVerifyCodeBtn       = null;
     let elemMessage             = null;
     let elemBackLink            = null;
     let elemCodePreview         = null;
@@ -551,7 +551,7 @@ ${html_style}
             <label>Enter 6-digit code</label>
             <input type="text" 
                    class="single-code-input" 
-                   id="${elemIdVerification}"
+                   id="${elemIdVerificationCode}"
                    maxlength="6" 
                    pattern="[0-9]*" 
                    inputmode="numeric"
@@ -588,7 +588,7 @@ ${html_style}
             </button>
         </div>
 
-        <button class="verify-btn" id="${elemIdVerifyBtn}">
+        <button class="verify-btn" id="${elemIdVerifyCodeBtn}">
             Verify Email
         </button>
 
@@ -619,10 +619,10 @@ ${html_style}
     
     this._findElements = function(){
         elemUserEmail           = elemDivContainer.querySelector('#' + elemIdUserEmail);
-        elemVerification        = elemDivContainer.querySelector('#' + elemIdVerification);
+        elemVerificationCode    = elemDivContainer.querySelector('#' + elemIdVerificationCode);
         elemTimer               = elemDivContainer.querySelector('#' + elemIdTimer);
         elemResendBtn           = elemDivContainer.querySelector('#' + elemIdResendBtn);
-        elemVerifyBtn           = elemDivContainer.querySelector('#' + elemIdVerifyBtn);
+        elemVerifyCodeBtn       = elemDivContainer.querySelector('#' + elemIdVerifyCodeBtn);
         elemMessage             = elemDivContainer.querySelector('#' + elemIdMessage);
         elemBackLink            = elemDivContainer.querySelector('#' + elemIdBackLink);
         elemCodePreview         = elemDivContainer.querySelector('#' + elemIdCodePreview);
@@ -640,17 +640,17 @@ ${html_style}
     
     this._bindEventListeners = function(){
         // Verification code input
-        if (elemVerification) {
-            elemVerification.addEventListener('input', (e) => this._handleInput(e));
-            elemVerification.addEventListener('keydown', (e) => this._handleKeyDown(e));
-            elemVerification.addEventListener('paste', (e) => this._handlePaste(e));
-            elemVerification.addEventListener('focus', (e) => this._handleFocus(e));
-            elemVerification.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+        if (elemVerificationCode) {
+            elemVerificationCode.addEventListener('input', (e) => this._handleInput(e));
+            elemVerificationCode.addEventListener('keydown', (e) => this._handleKeyDown(e));
+            elemVerificationCode.addEventListener('paste', (e) => this._handlePaste(e));
+            elemVerificationCode.addEventListener('focus', (e) => this._handleFocus(e));
+            elemVerificationCode.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
         }
         
         // Verify button
-        if (elemVerifyBtn) {
-            elemVerifyBtn.addEventListener('click', function(){
+        if (elemVerifyCodeBtn) {
+            elemVerifyCodeBtn.addEventListener('click', function(){
                 thisObj.onClickVerifyEmail();
             });
         }
@@ -729,7 +729,7 @@ ${html_style}
         const pastedData = e.clipboardData.getData('text');
         const numbers = pastedData.replace(/[^0-9]/g, '').slice(0, 6);
         
-        elemVerification.value = numbers;
+        elemVerificationCode.value = numbers;
         this._updateCodePreview(numbers);
         
         // Auto-submit if we got 6 digits
@@ -827,12 +827,12 @@ ${html_style}
                     thisObj._startTimer();
                     
                     // Clear input
-                    elemVerification.value = '';
-                    elemVerification.classList.remove('error');
+                    elemVerificationCode.value = '';
+                    elemVerificationCode.classList.remove('error');
                     thisObj._updateCodePreview('');
                     
                     // Focus input
-                    elemVerification.focus();
+                    elemVerificationCode.focus();
                     
                     thisObj._showMessage('New verification code sent!', 'success');
             
@@ -874,7 +874,7 @@ ${html_style}
     
     this._addTouchHandling = function() {
         // Prevent double-tap zoom on buttons
-        const buttons = [elemVerifyBtn, elemResendBtn, elemBackLink];
+        const buttons = [elemVerifyCodeBtn, elemResendBtn, elemBackLink];
         buttons.forEach(btn => {
             if (btn) {
                 btn.addEventListener('touchstart', (e) => {
@@ -899,7 +899,7 @@ ${html_style}
         
         // Auto hide success messages after 4 seconds
         if (type === 'success') {
-            setTimeout(() => {
+            setTimeout(function() {
                 if (elemMessage && elemMessage.classList.contains('success')) {
                     elemMessage.style.display = 'none';
                 }
@@ -912,9 +912,9 @@ ${html_style}
     
     
     this._resetForm = function() {
-        if (elemVerification) {
-            elemVerification.value = '';
-            elemVerification.classList.remove('error');
+        if (elemVerificationCode) {
+            elemVerificationCode.value = '';
+            elemVerificationCode.classList.remove('error');
         }
         
         this._updateCodePreview('');
@@ -923,9 +923,9 @@ ${html_style}
             elemMessage.style.display = 'none';
         }
         
-        if (elemVerifyBtn) {
-            elemVerifyBtn.disabled = false;
-            elemVerifyBtn.textContent = 'Verify Email';
+        if (elemVerifyCodeBtn) {
+            elemVerifyCodeBtn.disabled = false;
+            elemVerifyCodeBtn.textContent = 'Verify Email';
         }
     }
     
@@ -956,8 +956,8 @@ ${html_style}
         
         // Focus on the input
         setTimeout(() => {
-            if (elemVerification) {
-                elemVerification.focus();
+            if (elemVerificationCode) {
+                elemVerificationCode.focus();
             }
         }, 300);
     }
@@ -975,21 +975,21 @@ ${html_style}
             elemMessage.style.display = 'none';
         }
         
-        const enteredCode = elemVerification ? elemVerification.value : '';
+        const enteredCode = elemVerificationCode ? elemVerificationCode.value : '';
         
         // Validation
         if (enteredCode.length < 6) {
             this._showMessage('Please enter the complete 6-digit code', 'error');
-            if (elemVerification) {
-                elemVerification.classList.add('error');
+            if (elemVerificationCode) {
+                elemVerificationCode.classList.add('error');
             }
             return;
         }
 
         // Show loading state
-        if (elemVerifyBtn) {
-            elemVerifyBtn.disabled = true;
-            elemVerifyBtn.textContent = 'Verifying...';
+        if (elemVerifyCodeBtn) {
+            elemVerifyCodeBtn.disabled = true;
+            elemVerifyCodeBtn.textContent = 'Verifying...';
         }
         
         
@@ -1038,13 +1038,13 @@ ${html_style}
             success: function(response){
                 if (response.result.num == 0){
                     if (response.bearer_token){
-                        if (elemVerification) {
-                            elemVerification.classList.remove('error');
+                        if (elemVerificationCode) {
+                            elemVerificationCode.classList.remove('error');
                         }
 
                         
                         // Store token
-                        localStorage.setItem('access_token', response.bearer_token);
+                        parentObj.saveAuthToken(response.bearer_token);
                         
                         // handle post login
                         parentObj.handlePostLoginFlow(response.user_account);
@@ -1067,30 +1067,28 @@ ${html_style}
                         case 'RES_NUM_CANNOT_FIND_VERIFICATION':
                         case 'RES_NUM_INVALID_CODE':{
                             thisObj._showMessage('✗ Invalid code. Please try again.', 'error');
-                            if (elemVerification) {
-                                elemVerification.classList.add('error');
-                                //elemVerification.value = '';
-                                elemVerification.focus();
-                                //thisObj._updateCodePreview('');
+                            if (elemVerificationCode) {
+                                elemVerificationCode.classList.add('error');
+                                elemVerificationCode.focus();
                             }
-                            if (elemVerifyBtn) {
-                                elemVerifyBtn.disabled = false;
-                                elemVerifyBtn.textContent = 'Verify Email';
+                            if (elemVerifyCodeBtn) {
+                                elemVerifyCodeBtn.disabled = false;
+                                elemVerifyCodeBtn.textContent = 'Verify Email';
                             }
                             break;
                         }
                         
                         case 'RES_NUM_CODE_EXPIRED':{
                             thisObj._showMessage('✗ Code Expired. Please request code again.', 'error');
-                            if (elemVerification) {
-                                elemVerification.classList.add('error');
-                                //elemVerification.value = '';
-                                elemVerification.focus();
+                            if (elemVerificationCode) {
+                                elemVerificationCode.classList.add('error');
+                                //elemVerificationCode.value = '';
+                                elemVerificationCode.focus();
                                 //thisObj._updateCodePreview('');
                             }
-                            if (elemVerifyBtn) {
-                                elemVerifyBtn.disabled = false;
-                                elemVerifyBtn.textContent = 'Verify Email';
+                            if (elemVerifyCodeBtn) {
+                                elemVerifyCodeBtn.disabled = false;
+                                elemVerifyCodeBtn.textContent = 'Verify Email';
                             }
                             
                             break;

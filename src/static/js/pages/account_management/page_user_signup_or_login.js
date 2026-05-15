@@ -933,7 +933,7 @@ export function PageUserSignUpOrLogin(input_settings){
                         console.log('\n\n\nonClickStaffSignUp; User token to be saved in storage');
                         
                         // Store token
-                        localStorage.setItem('access_token', response.bearer_token);
+                        managerLogin.saveAuthToken(data.bearer_token);
                         const data_user_account = response.user_account;
                         
                         
@@ -1194,7 +1194,7 @@ export function PageUserSignUpOrLogin(input_settings){
                         console.log('\n\n\nonClickSignUpOrLogin; User token to be saved in storage');
                         
                         // Store token
-                        localStorage.setItem('access_token', response.bearer_token);
+                        managerLogin.saveAuthToken(data.bearer_token);
                         const data_user_account = response.user_account;
                         
                         

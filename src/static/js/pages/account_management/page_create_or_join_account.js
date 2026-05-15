@@ -591,7 +591,8 @@ export function PageCreateOrJoinAccount(input_settings){
                         console.log('\n\n\nonClickJoinAccount; User token to be saved in storage');
                         
                         // Store token
-                        localStorage.setItem('access_token', response.bearer_token);
+                        parentObj.saveAuthToken(response.bearer_token);
+                        
                         const data_user_account = response.user_account;
                         
                         parentObj.handlePostLoginFlow(data_user_account);

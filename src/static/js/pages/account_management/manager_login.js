@@ -173,8 +173,6 @@ export function ManagerLogin(){
     }
 
     
-    
-    
     this.onPageLoad = function(){
         const url_path = window.location.pathname;
         
@@ -194,6 +192,10 @@ export function ManagerLogin(){
             localStorage.clear();
             sessionStorage.clear();
             
+            // Clear auth cookies
+            document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+            document.cookie = 'user_lang=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+            
             // Redirect to home or login
             window.location.href = '/login';
             return;
@@ -204,7 +206,7 @@ export function ManagerLogin(){
         const currentYear = new Date().getFullYear();
         elemCopyRightYear.textContent = currentYear;
         
-        const bearer_token = localStorage.getItem('access_token');
+        const bearer_token = thisObj.getAuthToken();
                         
         
         // Check if there is a access_token stored;
@@ -479,6 +481,37 @@ export function ManagerLogin(){
         }
     }
     
+    
+    // Save access token to multiple places;
+    // 2026-05-15: This is because in PWA app, sometimes the localStorage
+    // is cleared.    
+    this.saveAuthToken = function(token) {
+        // Primary: localStorage (PWA)
+        localStorage.setItem('access_token', token);
+        
+        // Backup: Cookie (more persistent)
+        document.cookie = `access_token=${token}; path=/; max-age=2592000; SameSite=Lax`;
+        
+        // Also try sessionStorage as fallback
+        sessionStorage.setItem('access_token', token);
+    }
+
+
+    // Will read access_token from multiple places
+    this.getAuthToken = function() {
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        
+        
+        return localStorage.getItem('access_token') ||
+               getCookie('access_token') ||
+               sessionStorage.getItem('access_token');
+    }
+
+
     
     this.showThisPage = function(page_container){
         
