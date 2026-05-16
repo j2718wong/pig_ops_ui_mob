@@ -1,3 +1,5 @@
+// comp_feed_buy_input.js
+
 // January 15, 2026
 // Jack Wong
 // j2718wong@gmail.com

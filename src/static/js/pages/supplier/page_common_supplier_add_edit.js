@@ -1,3 +1,5 @@
+// page_common_supplier_add_edit.js
+
 // December 23, 2025
 // Jack Wong
 // j2718wong@gmail.com

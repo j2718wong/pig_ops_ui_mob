@@ -1,3 +1,5 @@
+// default_strings_gesta_lacta.js
+
 // March 29, 2026
 // Jack Wong
 // j2718wong@gmail.com

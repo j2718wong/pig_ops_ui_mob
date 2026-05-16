@@ -1,3 +1,5 @@
+// page_prod_entry_common.js
+
 // January 1, 2026
 // Jack Wong
 // j2718wong@gmail.com

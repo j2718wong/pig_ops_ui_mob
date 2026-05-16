@@ -1,3 +1,5 @@
+// manager_system.js
+
 // April 19, 2026
 // Jack Wong
 // j2718wong@gmail.com
@@ -13,7 +15,7 @@ export function ManagerSystem(_navigation) {
     const navigation                = _navigation;
     
     
-    let elemNoConnection            = null;
+    let elemOffline            = null;
     
     
     this.init = function(){
@@ -31,7 +33,7 @@ export function ManagerSystem(_navigation) {
     this._findElements  = function(){
         
          
-        elemNoConnection                = document.getElementById('container-no-connection');
+        elemOffline                 = document.getElementById('offlineIndicator');
         
         
     }
@@ -44,12 +46,12 @@ export function ManagerSystem(_navigation) {
 
     
     this.hideMsgNoConnection = function(){
-        elemNoConnection.style.display = 'none';
+        elemOffline.classList.remove('show');
     }
     
     
     this.showMsgNoConnection = function(){
-        elemNoConnection.style.display = 'block';
+        elemOffline.classList.add('show');
     }
     
     

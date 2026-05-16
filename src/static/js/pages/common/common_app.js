@@ -1,3 +1,5 @@
+// common_app.js
+
 // December 31, 2025
 // Jack Wong
 // j2718wong@gmail.com

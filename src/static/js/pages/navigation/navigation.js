@@ -1,3 +1,5 @@
+// navigation.js
+
 // December 24, 2025
 // Jack Wong
 // j2718wong@gmail.com
@@ -728,6 +730,13 @@ export function Navigation(){
                 console.log('\n\nNo internet - 0 bytes transferred');
                 
                 if (bearer_token){
+                    // In this case the bearer_token will not be checked for 
+                    // validity as tehre is no connection to server 
+                    
+                    thisObj.initComponents();
+                    thisObj.afterHtmlRender();
+                    
+                    
                     thisObj.managerLocalData.loadDataFromStorageToApp();
                     
                 }

@@ -1,3 +1,5 @@
+// loading_animation.js
+
 // Deepseek code
 // March 6, 2026
 

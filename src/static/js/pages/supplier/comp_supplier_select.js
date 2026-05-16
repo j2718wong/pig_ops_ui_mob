@@ -1,3 +1,5 @@
+// comp_supplier_select.js
+
 // February 3, 2026
 // Jack Wong
 // j2718wong@gmail.com

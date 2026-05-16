@@ -1,3 +1,5 @@
+// translation_helper.js
+
 // March 27, 2026
 // Jack Wong
 // j2718wong@gmail.com

@@ -1,3 +1,5 @@
+// comp_feed_brand.js
+
 // February 11, 2026
 // Jack Wong
 // j2718wong@gmail.com
