@@ -674,6 +674,7 @@ body {
 
 /* Main Content */
 .main-content {
+    position:relative;
     margin-top: 100px;
     padding: 20px;
     max-width: 1200px;
@@ -712,6 +713,7 @@ p {
 /***************************************************************************/
 
 .hidden-container{
+    position:relative;
     max-width: 600px;
     margin: 0 auto;
     height:100%;
@@ -4128,6 +4130,7 @@ input[type=number] {
 
 /************************************************************************/
 .dashboard {
+    position:relative;
     width: 100%;
     max-width: 480px;
     margin: 0 auto;

@@ -72,7 +72,6 @@ export function ManagerLocalData(_navigation) {
         }
         
         
-        // navigation.pigFarm.managerSowBoar saved local data
         cached      = null;
         data        = null;
         
@@ -99,7 +98,7 @@ export function ManagerLocalData(_navigation) {
     
     /** 
      * Will load data from storage to application;
-     * This assumes the follwoing:
+     * This assumes the following:
      * 1.) the app has no data yet; previously unloaded by browser
      * 2.) verified no internet
      * 3.) the bearer token is available but not verified if still valid.
@@ -108,8 +107,9 @@ export function ManagerLocalData(_navigation) {
      *      passed from server to client. Therefore cannot call 
      *      navigation.setPageData().
      * 
-     * See the individual getDataToSaveToStorage() method, what data is actually
-     * saved to storage. 
+     * See the individual modules with  getDataToSaveToStorage() method, 
+     * what data is actually saved to storage. These modules are major components
+     * where pages read on these pages. 
      * */
     this.loadDataFromStorageToApp = function(local_data){
         let cur_data = null;
@@ -122,6 +122,10 @@ export function ManagerLocalData(_navigation) {
         // Load data to navigation.userControl
         cur_data = local_data[navigation.userControl.STORAGE_KEY];
         navigation.setDataUserAccount(cur_data.userAccount);
+        
+        
+        // Load data to navigation.managerAddress
+        navigation.managerAddress.loadDataFromStorage();
         
         
         // Set Pig Farm
@@ -144,7 +148,7 @@ export function ManagerLocalData(_navigation) {
         // Load data to navigation.pageAccPigOpsList
         navigation.pageAccPigOpsList.loadDataFromStorage();
         
-        
+        console.log('\n\nManagerLocalData.loadDataFromStorageToApp(); Success: local data loaded to app');
     }
 
 }

@@ -58,9 +58,13 @@ export function ManagerSowBoar(input_settings){
 
     
     this.loadDataFromStorage = function(){
+        console.log('\n\nManagerSowBoar.loadDataFromStorage()');
         const cached = localStorage.getItem(thisObj.STORAGE_KEY);
         if (cached) {
             const data = JSON.parse(cached);
+            
+            console.log('\n\nManagerSowBoar saved local storage data');
+            console.log(data);
             
             thisObj.dataSowList             = data.sowList;
             thisObj.dataGiltList            = data.giltList;
@@ -68,6 +72,8 @@ export function ManagerSowBoar(input_settings){
             thisObj.dataFarmPigletsOutput   = data.farmPigLetsOutput;
             
             thisObj.dataBoarExtMateList     = data.boarExtMateList;
+        }else{
+            console.log('No cached data');
         }
     }
     

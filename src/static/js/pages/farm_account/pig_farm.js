@@ -331,15 +331,15 @@ export function PigFarm(_navigation){
         
         thisObj.dataStaffList = data.staff_list;
 
-
         // Update local storage
         thisObj.saveToStorage();
 
-        
+
         thisObj.managerSowBoar.setDataSowList(data.sow_list);
         thisObj.managerSowBoar.setDataBoarList(data.boar_list);
 
-            
+        // Update thisObj.managerSowBoar storage
+        thisObj.managerSowBoar.saveToStorage();
 
             
         if ('pig_production' in data){

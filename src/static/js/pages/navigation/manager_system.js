@@ -42,15 +42,27 @@ export function ManagerSystem(_navigation) {
     
     this._processAfterHtmlRender = function(){}
     
-    this._bindEventListeners = function(){}
+    
+    this._bindEventListeners = function(){
+        window.addEventListener('online', function(){
+            console.log('Connection restored');
+            thisObj.hideMsgOffline();
+        });
+        
+        window.addEventListener('offline', function(){
+            console.log('Connection lost');
+            thisObj.showMsgOffline();
+        });
+        
+    }
 
     
-    this.hideMsgNoConnection = function(){
+    this.hideMsgOffline = function(){
         elemOffline.classList.remove('show');
     }
     
     
-    this.showMsgNoConnection = function(){
+    this.showMsgOffline = function(){
         elemOffline.classList.add('show');
     }
     

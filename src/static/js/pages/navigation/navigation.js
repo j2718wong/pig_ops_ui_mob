@@ -731,13 +731,33 @@ export function Navigation(){
                 
                 if (bearer_token){
                     // In this case the bearer_token will not be checked for 
-                    // validity as tehre is no connection to server 
+                    // validity as there is no connection to server 
                     
                     thisObj.initComponents();
                     thisObj.afterHtmlRender();
                     
                     
-                    thisObj.managerLocalData.loadDataFromStorageToApp();
+                    // Show Offline indicator
+                    thisObj.managerSystem.showMsgOffline();
+                    
+                    console.log(`local_data`);
+                    console.log(local_data);
+                    
+                    // Load data from storage to major App components;
+                    thisObj.managerLocalData.loadDataFromStorageToApp(local_data);
+                    
+                    
+                    // Hide loading page and show content
+                    elemPageLoading.classList.add('fade-out');
+                    setTimeout(() => {
+                        elemPageLoading.style.display = 'none';
+                    }, 300); // Match fade-out transition time
+                    
+                    
+                    console.log('About to show dashboard - without internet');
+                    
+                    // The ending should show the dashboard even without internet 
+                    thisObj.showHomeDashBoard();
                     
                 }
           
@@ -933,6 +953,11 @@ export function Navigation(){
                     thisObj.initComponents();
                     thisObj.afterHtmlRender();
                     
+                    
+                    // Hide message offline
+                    thisObj.managerSystem.hideMsgOffline();
+                    
+                    
                     // Set PageData
                     thisObj.setPageData(response.data);
                     
@@ -941,6 +966,10 @@ export function Navigation(){
                     setTimeout(() => {
                         elemPageLoading.style.display = 'none';
                     }, 300); // Match fade-out transition time
+                    
+                   
+                    
+                    
                                 
                 }
                 else {
@@ -1332,8 +1361,6 @@ export function Navigation(){
         const container_home    = thisObj.pageContainers.getPageContainer(PAGE_ID.HOME);
         const hidden_containers = thisObj.pageContainers.hiddenContainers;
         
-        // Hide this Global message
-        thisObj.managerSystem.hideMsgNoConnection();
         
         
         // Perform user and account control checks.
