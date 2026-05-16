@@ -435,7 +435,7 @@ export function PigFarm(_navigation){
      * current this.getPigFarmHid();
      * */
     this.requestPigFarmDataVerNum = function(pig_farm_hid, callback_success, 
-            callback_timeout, elem_show_error){
+            callback_offline, elem_show_error){
         
         let pfhid = null;
         
@@ -487,19 +487,21 @@ export function PigFarm(_navigation){
             error: function(jqXHR, textStatus, errorThrown){
                 // Check for timeout error
                 if (textStatus === 'timeout') {
-                    if (callback_timeout) {
-                        callback_timeout();
-                    } else {
-                        // Default timeout handling
-                        if (elem_show_error){
-                            elem_show_error.style.display = 'block';
-                            elem_show_error.innerHTML = 'Server no reply. Please try again later.';
-                        }
+                    // Default timeout handling
+                    if (elem_show_error){
+                        elem_show_error.style.display = 'block';
+                        elem_show_error.innerHTML = 'Server no reply. Please try again later.';
                     }
-                } else {
-                    navigation.serverError.serverErrorThrown(jqXHR, 
-                        textStatus, errorThrown);
+                
+                    return;
+                } 
+                
+                
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline(); return;}
                 }
+                
             }
         });
         

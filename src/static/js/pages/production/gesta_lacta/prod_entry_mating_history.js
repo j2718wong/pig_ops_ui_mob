@@ -322,9 +322,7 @@ export function ProdEntryMatingHistory(input_settings){
         this._resetForm();
         
         curDataPigProd = data_pig_prod;
-        
-        console.log(`curDataPigProd`);
-        console.log(curDataPigProd);
+
         
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);

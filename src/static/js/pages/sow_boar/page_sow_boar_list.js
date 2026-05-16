@@ -679,22 +679,22 @@ ${html_style}
         navigation.curPageNavigated.pageData = {options:options};
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
+        showOptions = options;
         
         
         // Request requestFarmPigletsOutput 
-        if (navigation.pigFarm.managerSowBoar.dataFarmPigletsOutput == null){
-            const callback_success = function(){
-                // Render Table later
-            };
-            
-            navigation.pigFarm.managerSowBoar.requestFarmPigletsOutput(
-                callback_success);
+        if (showOptions && showOptions.sow_boar_type == SOW_BOAR_TYPE.SOW) {
+            if (navigation.pigFarm.managerSowBoar.dataFarmPigletsOutput == null){
+                const callback_success = function(){
+                    // Render Table later
+                };
+                
+                navigation.pigFarm.managerSowBoar.requestFarmPigletsOutput(
+                    callback_success);
+            }
         }
         
-        
-        
-        
-        showOptions = options;
+
         
         showpageHeaderAlarm = false; // Need to reset this.
         elemPageHeaderAlarm.style.display = 'none';

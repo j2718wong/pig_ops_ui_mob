@@ -488,10 +488,6 @@ ${html_style}
         const dataLactatingList = navigation.pigFarm.managerPigProd.dataLactatingList;
         const dataGestatingList = navigation.pigFarm.managerPigProd.dataGestatingList;
         
-        console.log(`dataGestatingList`);
-        console.log(dataGestatingList);
-        
-        
         
         const dataPigFarm = navigation.pigFarm.dataPigFarm;
         

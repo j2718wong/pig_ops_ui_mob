@@ -327,7 +327,7 @@ export function PageAccessCodeList(input_settings){
 
                 
             default:
-                console.log('Unknown group_num:', group_num);
+                break;
         }
         
         

@@ -298,7 +298,7 @@ export function PageViewBasic(){
         }
     }
     
-    
+        
     this.setClickListenersOnCloseAndCancelButtons = function(options){
         // Update Close and cancel button on click
         

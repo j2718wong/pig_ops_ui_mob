@@ -580,7 +580,6 @@ export function PageHomeDashBoard(input_settings){
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
-        console.log('dashboard.show()');
         
         // Show/ Hide debug  elemnts
         const user = navigation.userControl.dataUserAccount.user.user;
@@ -956,7 +955,6 @@ export function PageHomeDashBoard(input_settings){
             // Auto-scroll to bottom
             //elemDebug.scrollTop = elemDebug.scrollHeight;
         }
-        console.log(message);
     }
         
 }

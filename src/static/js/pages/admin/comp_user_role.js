@@ -142,7 +142,7 @@ export function ComponentUserRole(input_settings){
                 break;
                 
             default:
-                console.log('Unknown group_num:', group_num);
+                break;
         }
     }
 

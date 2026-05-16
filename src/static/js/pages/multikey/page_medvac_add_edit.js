@@ -605,8 +605,6 @@ export function PageMedVacAddEdit(input_settings){
         
         if (cur_medvac == null){return;}
         
-        console.log(`cur_medvac`);
-        console.log(cur_medvac);
         
 
         // Set the datepicker to this date

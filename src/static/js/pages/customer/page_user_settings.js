@@ -280,10 +280,7 @@ ${html_style}
         };
         
         
-        const callback_success = function(data){
-            console.log('user subscription list')
-            console.log(data)
-            
+        const callback_success = function(data){            
             thisObj.existingSubscription = data;
             
             thisObj.populateForm();
@@ -364,11 +361,6 @@ ${html_style}
             return;
         }
         
-        console.log('thisObj.existingSubscription');
-        console.log(thisObj.existingSubscription);
-        
-        console.log('currentSubscription.endpoint');
-        console.log(currentSubscription.endpoint);
         
         // Check if this subscription endpoint exists in server data
         let found = false;
@@ -452,7 +444,6 @@ ${html_style}
             // For now, we'll assume you have a PUBLIC_VAPID_KEY constant
             // This should be loaded from server or environment
             
-            console.log('window.PUBLIC_VAPID_KEY = ' + window.PUBLIC_VAPID_KEY);
             
             // Subscribe the user
             const subscription = await registration.pushManager.subscribe({
@@ -460,7 +451,6 @@ ${html_style}
                 applicationServerKey: this.urlBase64ToUint8Array(window.PUBLIC_VAPID_KEY)
             });
             
-            console.log('Push subscription created:', subscription);
             
             // Send subscription to server
             const subscriptionData = {

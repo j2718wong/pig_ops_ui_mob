@@ -1036,7 +1036,7 @@ export function ManagerPigProd(input_settings){
                 
                 const pig_prod_type  = PIG_PROD_TYPE.ALL;
                 thisObj.requestPigProdList(pig_prod_type, 
-                    callback_success_pig_prod_list, elem_show_error);
+                    callback_success_pig_prod_list, null, elem_show_error);
             } 
             else{
                 // No data change;
@@ -1045,8 +1045,14 @@ export function ManagerPigProd(input_settings){
         };
         
         
+        const callback_offline = function(){
+            // No data change;
+            callback_success();
+        };
+        
+        
         parentObj.requestPigFarmDataVerNum(null, callback_success_ver_num, 
-            null, elem_show_error);
+            callback_offline, elem_show_error);
         
     }
 

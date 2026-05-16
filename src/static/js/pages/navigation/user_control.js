@@ -383,8 +383,7 @@ export function UserControl(_navigation) {
     
     
     this.onClickSettings = function(){
-        console.log(`test on click settings`);
-        
+
         let go_back_page    = navigation.curPageNavigated.pageContainer;
         if (go_back_page == null){
             go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);

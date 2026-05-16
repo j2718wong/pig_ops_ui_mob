@@ -721,7 +721,7 @@ export function PageCustomerFeedback(input_settings){
         
         
         
-        let url = `${base_url}/cust_feedback/add`;
+        let url = `${base_url}/customer/feedback/add`;
         
         const bearer_token = localStorage.getItem('access_token');
         

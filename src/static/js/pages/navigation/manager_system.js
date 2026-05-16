@@ -11,11 +11,14 @@ import {APPLICATION,
 
 
 export function ManagerSystem(_navigation) {
-    const thisObj                   = this;
-    const navigation                = _navigation;
+    const thisObj           = this;
+    const navigation        = _navigation;
     
     
-    let elemOffline            = null;
+    // This is the bottom banner that tells No internet
+    let elemOffline         = null;
+    
+    this.isOffLine          = false;
     
     
     this.init = function(){
@@ -40,30 +43,119 @@ export function ManagerSystem(_navigation) {
     
     
     
-    this._processAfterHtmlRender = function(){}
+    this._processAfterHtmlRender = function(){
+        this.offlineModal = this.initOfflineModal();
+    }
     
     
     this._bindEventListeners = function(){
         window.addEventListener('online', function(){
             console.log('Connection restored');
             thisObj.hideMsgOffline();
+            
+            thisObj.isOffLine = false;
         });
         
         window.addEventListener('offline', function(){
             console.log('Connection lost');
             thisObj.showMsgOffline();
+            
+            thisObj.isOffLine = true;
         });
         
     }
 
     
+    this.initOfflineModal = function() {
+        if (document.getElementById('offline-msg-modal')) return;
+        
+        const modal = document.createElement('div');
+        modal.id = 'offline-msg-modal';
+        modal.className = 'modal-overlay';
+        modal.style.display = 'none';
+        modal.innerHTML = `
+            <div class="modal-container" style="max-width: 350px;">
+                <div class="modal-header" style="background: #dc3545; display: flex; justify-content: space-between; align-items: center;">
+                    <h3 id="offline-modal-title" style="margin: 0;">📡 No Internet Connection</h3>
+                    <button id="offline-modal-close" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <p id="offline-modal-message" style="font-size: 1rem; margin-bottom: 16px;">
+                        This page needs Internet.
+                    </p>
+                    
+                    <p style="color: #666; font-size: 0.9rem;">
+                        Your farm data: sows, production, farrowing are still available offline.
+                    </p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button id="offline-modal-retry" class="btn-modal" style="background: #1e3a8a; color: white;">
+                        <i class="fas fa-sync-alt"></i> Retry
+                    </button>
+                    <button id="offline-modal-dashboard" class="btn-modal btn-secondary">
+                        Go to Dashboard
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Close button
+        document.getElementById('offline-modal-close').onclick = () => {
+            modal.style.display = 'none';
+        };
+        
+        // Retry button
+        document.getElementById('offline-modal-retry').onclick = () => {
+            if (navigator.onLine) {
+                modal.style.display = 'none';
+                location.reload();
+            } else {
+                alert('Still offline. Please check your connection.');
+            }
+        };
+        
+        // Dashboard button
+        document.getElementById('offline-modal-dashboard').onclick = () => {
+            modal.style.display = 'none';
+            if (window.navigation && window.navigation.showHomeDashBoard) {
+                window.navigation.showHomeDashBoard();
+            }
+        };
+        
+        // Close when clicking outside
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+        
+        this.offlineModal = modal;
+    }
+    
+    
+    // Hides Offline  banner below the page
     this.hideMsgOffline = function(){
+        thisObj.isOffLine = false;
         elemOffline.classList.remove('show');
     }
     
     
+    // Show Offline  banner below the page
     this.showMsgOffline = function(){
+        thisObj.isOffLine = true;
         elemOffline.classList.add('show');
+    }
+    
+    
+    // Show Offline  modal
+    this.showOfflineMessageModal = function(pageTitle) {
+        if (!this.offlineModal) this.initOfflineModal();
+        
+        this.offlineModal.style.display = 'flex';
     }
     
     

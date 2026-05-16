@@ -740,8 +740,6 @@ export function Navigation(){
                     // Show Offline indicator
                     thisObj.managerSystem.showMsgOffline();
                     
-                    console.log(`local_data`);
-                    console.log(local_data);
                     
                     // Load data from storage to major App components;
                     thisObj.managerLocalData.loadDataFromStorageToApp(local_data);
@@ -1205,11 +1203,8 @@ export function Navigation(){
 
     
     this.loadDataFromStorage = function(data){
-        let cur_data;
-        
         tsLastReqPigFarmData    = data.tsLastReqPigFarmData;
-        
-        cur_data    = data.dataApplication;
+
     }
     
     
@@ -1466,10 +1461,7 @@ export function Navigation(){
                     // Request account bill
                     
                 }
-                
-                
             }
-            
         }
         
         
@@ -1535,7 +1527,6 @@ export function Navigation(){
     
     this.setNotificationsData = function(){
         // Listen for messages from service worker
-        
         
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.addEventListener('message', (event) => {
