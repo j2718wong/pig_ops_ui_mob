@@ -35,16 +35,6 @@ ENTRY_POINTS = {
         'type': 'js'
     },
     
-    'receipt_data_entry': {
-        'path': "src/static/js/admin_receipt_data_entry.js",
-        'output_base': "static/js/bundle.receipt_data_entry.min.js",
-        'output_name': "bundle.receipt_data_entry",
-        'bundle_key': 'receipt_data_entry',
-        'name': 'Receipt Data Entry',
-        'type': 'js'
-    },
-    
-    
     
     # Add CSS entry point
     'main_css': {
@@ -432,14 +422,23 @@ def clean_old_versions(keep_last=2):
     # Process JS directory
     js_dir = Path("static/js")
     if js_dir.exists():
-        # Find all versioned JS files (pattern: name.hash.min.js)
+        # Find all versioned JS files
         versioned_js_files = {}
         
         for f in js_dir.glob("*.min.js"):
-            parts = f.name.split('.')
-            # Versioned files have 4 parts: bundle.hash.min.js
-            if len(parts) >= 4 and len(parts[1]) == 8:  # hash is 8 chars
-                bundle_name = parts[0]  # bundle, bundle.core, etc.
+            name = f.name
+            # Remove .min.js to get the base name
+            base_name = name.replace('.min.js', '')
+            parts = base_name.split('.')
+            
+            # Check if last part looks like a hash (8 characters, alphanumeric)
+            last_part = parts[-1] if parts else ''
+            is_versioned = len(last_part) == 8 and last_part.isalnum()
+            
+            if is_versioned:
+                # Bundle name is everything except the last part (the hash)
+                bundle_name = '.'.join(parts[:-1]) if len(parts) > 1 else 'bundle'
+                
                 if bundle_name not in versioned_js_files:
                     versioned_js_files[bundle_name] = []
                 versioned_js_files[bundle_name].append(f)
@@ -453,15 +452,16 @@ def clean_old_versions(keep_last=2):
                     print(f"   🗑️  Removing old {bundle_name} bundle: {old_file.name}")
                     old_file.unlink()
             
-            print(f"\n   📌 Keeping {bundle_name} bundles ({len(files[:keep_last])} files):")
-            for f in files[:keep_last]:
-                size_kb = f.stat().st_size / 1024
-                mtime = time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))
-                print(f"      • {f.name} ({size_kb:.1f}KB) - {mtime}")
+            if files:
+                print(f"\n   📌 Keeping {bundle_name} bundles ({len(files[:keep_last])} files):")
+                for f in files[:keep_last]:
+                    size_kb = f.stat().st_size / 1024
+                    mtime = time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))
+                    print(f"      • {f.name} ({size_kb:.1f}KB) - {mtime}")
             
-            # Remove non-versioned version if exists
+            # Remove non-versioned version if versioned files exist
             non_versioned = js_dir / f"{bundle_name}.min.js"
-            if non_versioned.exists():
+            if non_versioned.exists() and versioned_js_files.get(bundle_name):
                 print(f"\n   🗑️  Removing non-versioned: {non_versioned.name}")
                 non_versioned.unlink()
     
@@ -470,9 +470,16 @@ def clean_old_versions(keep_last=2):
     if css_dir.exists():
         css_versioned = {}
         for f in css_dir.glob("*.min.css"):
-            parts = f.name.split('.')
-            if len(parts) >= 3 and len(parts[1]) == 8:
-                bundle_name = parts[0]
+            name = f.name
+            base_name = name.replace('.min.css', '')
+            parts = base_name.split('.')
+            
+            last_part = parts[-1] if parts else ''
+            is_versioned = len(last_part) == 8 and last_part.isalnum()
+            
+            if is_versioned:
+                bundle_name = '.'.join(parts[:-1]) if len(parts) > 1 else 'main'
+                
                 if bundle_name not in css_versioned:
                     css_versioned[bundle_name] = []
                 css_versioned[bundle_name].append(f)
@@ -485,11 +492,12 @@ def clean_old_versions(keep_last=2):
                     print(f"   🗑️  Removing old CSS {bundle_name} bundle: {old_file.name}")
                     old_file.unlink()
             
-            print(f"\n   📌 Keeping CSS {bundle_name} bundles ({len(files[:keep_last])} files):")
-            for f in files[:keep_last]:
-                size_kb = f.stat().st_size / 1024
-                mtime = time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))
-                print(f"      • {f.name} ({size_kb:.1f}KB) - {mtime}")
+            if files:
+                print(f"\n   📌 Keeping CSS {bundle_name} bundles ({len(files[:keep_last])} files):")
+                for f in files[:keep_last]:
+                    size_kb = f.stat().st_size / 1024
+                    mtime = time.strftime('%Y-%m-%d', time.localtime(f.stat().st_mtime))
+                    print(f"      • {f.name} ({size_kb:.1f}KB) - {mtime}")
     
     print("\n   ✅ Cleanup complete")
 
