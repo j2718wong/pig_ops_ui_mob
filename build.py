@@ -273,7 +273,7 @@ def build_js_entry(entry_config, enable_versioning=False):
     
     # Build command
     cmd = [
-        "npx", "esbuild", entry_point,
+        "esbuild", entry_point,
         "--bundle",
         "--minify",
         f"--outfile={temp_file}"
