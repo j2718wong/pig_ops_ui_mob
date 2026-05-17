@@ -200,63 +200,14 @@ export function ManagerPwa(input_settings){
         });
 
             
-        elemInstallBtn.addEventListener('click', async function(){
-            if (isIOSDevice) {
-                // Show iOS instructions modal
-                thisObj.showIOSInstallInstructions();
-                
-                // Track that user saw iOS instructions
-                const data_pwa_track = {
-                    event: PWA_EVENT.IOS_INSTRUCTIONS_SHOWN,
-                    screen_width: window.innerWidth,
-                    screen_height: window.innerHeight
-                };
-                thisObj.addUserTrackAppInstall(data_pwa_track);
-                return;
-            }
-            
-            
-            
-            const prompt = deferredPrompt || window.deferredPrompt;
-            if (!prompt) {
-                // Show Android manual installation instructions
-                thisObj.showAndroidInstallInstructions();
-                return;
-            }
-            prompt.prompt();
-            
-            
-            let data_pwa_track = {
-                event:          PWA_EVENT.INSTALL_CLICKED,
-                screen_width:   window.innerWidth,
-                screen_height:  window.innerHeight
-
-            };
-
-            thisObj.addUserTrackAppInstall(data_pwa_track);
-            
-            
-            // Wait for user response
-            const { outcome } = await prompt.userChoice;
-            console.log(`User install choice: ${outcome}`);
-            
-            // Track the outcome
-            const eventType = outcome === 'accepted' ? PWA_EVENT.INSTALL_ACCEPTED : PWA_EVENT.INSTALL_DISMISSED;
-            data_pwa_track = {
-                event:          eventType,
-                screen_width:   window.innerWidth,
-                screen_height:  window.innerHeight
-            };
-            thisObj.addUserTrackAppInstall(data_pwa_track);
-                    
-            
-            // Reset the deferred prompt variable (can only be used once)
-            deferredPrompt = null;
-            
-            // Hide the install button
-            elemInstallBtn.hidden = true;
-        });
-
+        
+        // Remove existing listener to prevent duplicates
+        if (elemInstallBtn) {
+            elemInstallBtn.removeEventListener('click', this._onInstallClick);
+            elemInstallBtn.addEventListener('click', this._onInstallClick);
+        }
+        
+        
         
         window.addEventListener('appinstalled', function(){
             console.log('SuperPig was installed');
@@ -285,10 +236,69 @@ export function ManagerPwa(input_settings){
             elemInstallBtn.hidden = true;
         }
 
-        
-        
-        
     }
+    
+    
+    // Define click handler as named function
+    this._onInstallClick = async function(){
+        const isIOSDevice   = checkIfIOSDevice();
+        
+        if (isIOSDevice) {
+            // Show iOS instructions modal
+            thisObj.showIOSInstallInstructions();
+            
+            // Track that user saw iOS instructions
+            const data_pwa_track = {
+                event: PWA_EVENT.IOS_INSTRUCTIONS_SHOWN,
+                screen_width: window.innerWidth,
+                screen_height: window.innerHeight
+            };
+            thisObj.addUserTrackAppInstall(data_pwa_track);
+            return;
+        }
+        
+        
+        
+        const prompt = deferredPrompt || window.deferredPrompt;
+        if (!prompt) {
+            // Show Android manual installation instructions
+            thisObj.showAndroidInstallInstructions();
+            return;
+        }
+        prompt.prompt();
+        
+        
+        let data_pwa_track = {
+            event:          PWA_EVENT.INSTALL_CLICKED,
+            screen_width:   window.innerWidth,
+            screen_height:  window.innerHeight
+
+        };
+
+        thisObj.addUserTrackAppInstall(data_pwa_track);
+        
+        
+        // Wait for user response
+        const { outcome } = await prompt.userChoice;
+        console.log(`User install choice: ${outcome}`);
+        
+        // Track the outcome
+        const eventType = outcome === 'accepted' ? PWA_EVENT.INSTALL_ACCEPTED : PWA_EVENT.INSTALL_DISMISSED;
+        data_pwa_track = {
+            event:          eventType,
+            screen_width:   window.innerWidth,
+            screen_height:  window.innerHeight
+        };
+        thisObj.addUserTrackAppInstall(data_pwa_track);
+                
+        
+        // Reset the deferred prompt variable (can only be used once)
+        deferredPrompt = null;
+        
+        // Hide the install button
+        elemInstallBtn.hidden = true;
+    }
+    
     
 
     this.showPwaInstallButton = function(){
