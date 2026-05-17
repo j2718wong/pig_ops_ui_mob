@@ -98,7 +98,8 @@ export function AccountLists(_navigation){
     }
     
     
-    this.requestDataUserList = function(callback_success, elem_show_error){
+    this.requestDataUserList = function(callback_success, callback_offline,
+            elem_show_error){
         
         const base_url = window.location.origin;
         const url = `${base_url}/user/list?ahid=${accountHid}`;
@@ -141,6 +142,12 @@ export function AccountLists(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    return;
+                }
+                
                 navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });

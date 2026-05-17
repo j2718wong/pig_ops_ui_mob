@@ -228,7 +228,7 @@ export function ManagerPigProd(input_settings){
     
     
     this.requestPigProdNotPregnantList = function(callback_success, 
-            elem_show_error){
+            callback_offline, elem_show_error){
         
         
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
@@ -278,6 +278,12 @@ export function ManagerPigProd(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    return;
+                }
+                
                 navigation.serverError.serverErrorThrown(jqXHR, 
                     textStatus, errorThrown);
             }
@@ -286,7 +292,7 @@ export function ManagerPigProd(input_settings){
     }
     
     
-    this.requestProdPigDeadList = function(callback_success, 
+    this.requestProdPigDeadList = function(callback_success, callback_offline,
             elem_show_error){
         
         
@@ -337,6 +343,14 @@ export function ManagerPigProd(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    
+                    return;
+                }
+                
+                
                 navigation.serverError.serverErrorThrown(jqXHR, 
                     textStatus, errorThrown);
             }
@@ -1025,7 +1039,7 @@ export function ManagerPigProd(input_settings){
                 };
 
                 thisObj.requestPigProdNotPregnantList(
-                    callback_success_not_pregnant, elem_show_error
+                    callback_success_not_pregnant, null, elem_show_error
                 );
             }
             

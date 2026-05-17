@@ -836,7 +836,7 @@ export function PageProdGestatingAdd(input_settings){
         // Need to update Not PregnantList.
         if (componentSelectSow.isSelectedSowGestating){
             navigation.pigFarm.managerPigProd.requestPigProdNotPregnantList(
-                null, elemServerErrorMsg);
+                null, null, elemServerErrorMsg);
         }
         
         

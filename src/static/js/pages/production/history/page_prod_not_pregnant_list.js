@@ -61,6 +61,9 @@ export function PageProdNotPregnantList(input_settings){
     
     
     let dataNotPregnantList     = null;
+    
+    
+    let localDataVerNum         = 0;
 
     
     let searchIncludeInsem      = true;
@@ -181,23 +184,53 @@ export function PageProdNotPregnantList(input_settings){
     
     
     this.show = function(){
-        dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
-
-        if (dataNotPregnantList == null){
         
-            const callback_success = function(data){
-                dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+        const callback_success = function(data){
+            dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+            thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
+            thisObj.renderTable(dataNotPregnantList);
+            
+            // Copy the Server dataVerNum  to localDataVerNum 
+            localDataVerNum     = navigation.pigFarm.dataVerNum.not_pregnant;
+        };
+        
+        
+        const callback_offline = function(){
+            dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+            
+            if (dataNotPregnantList){
+                // Display last known data
                 thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
                 thisObj.renderTable(dataNotPregnantList);
-            };
-            
-            // Request ProdNotPregnant List
-            navigation.pigFarm.managerPigProd.requestPigProdNotPregnantList(
-                callback_success, null);
+            }
+            else{
+                // Display modal offline
+                navigation.managerSystem.showOfflineMessageModal();
+            }
+        };
+
         
+        
+        let server_data_ver_num =  navigation.pigFarm.dataVerNum.not_pregnant;
+        let is_to_request_data = 0;
+        
+        dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+        
+        if (dataNotPregnantList == null){
+            is_to_request_data = 1;
+        } else{
+            if (server_data_ver_num > localDataVerNum){
+                is_to_request_data = 1;
+            }
         }
-        else{
-            dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+        
+        
+        // Request data only if needed
+        if (is_to_request_data > 0){
+            navigation.pigFarm.managerPigProd.requestPigProdNotPregnantList(
+                callback_success, callback_offline, null);
+        } else{
+            // Display last known data
             thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
             thisObj.renderTable(dataNotPregnantList);
         }

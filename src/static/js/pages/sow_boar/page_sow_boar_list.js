@@ -551,7 +551,7 @@ ${html_style}
     
     
     this._processAfterHtmlRender = function(){
-        this.handleWindowResize();
+
     }
     
     
@@ -625,20 +625,6 @@ ${html_style}
         }
     }
     
-    
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        /*
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }*/
-    }
     
     
     this.renderPage = function(page_data){
@@ -920,7 +906,7 @@ ${html_style}
                 
                 
                 if (dataDisposedList == null){
-                    const callback = function(data){
+                    const callback_success = function(data){
                         dataDisposedList = data;
                         curDataListView = dataDisposedList;
                         tableDiposed.renderTable(curDataListView);
@@ -929,7 +915,27 @@ ${html_style}
                         elemEntryCount.textContent = entry_count;
                     };
                     
-                    tableDiposed.requestDisposedSowBoar(callback);
+                    const callback_offline = function(){
+                        const managerSowBoar = navigation.pigFarm.managerSowBoar;
+                        dataDisposedList = managerSowBoar.dataDisposedSowBoarList;
+                        
+                        if (dataDisposedList){
+                            // Display last known data
+                            curDataListView = dataDisposedList;
+                            tableDiposed.renderTable(curDataListView);
+                            
+                            entry_count = dataDisposedList.length;
+                            elemEntryCount.textContent = entry_count;
+                        }
+                        else{
+                            // Display modal offline
+                            navigation.managerSystem.showOfflineMessageModal();
+                        }
+                    };
+                    
+                    navigation.pigFarm.managerSowBoar.requestDisposedSowBoarList(
+                        callback_success, callback_offline);
+                    
                 }
                 else {
                     curDataListView = dataDisposedList;

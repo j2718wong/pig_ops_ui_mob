@@ -63,7 +63,9 @@ export function PageProdPigDeadList(input_settings){
     let elemTableBody           = null;
     
     
-    let dataPigDeadList     = null;
+    let dataPigDeadList         = null;
+    
+    let localDataVerNum         = 0;
 
     
     let searchIncludeInsem      = true;
@@ -98,7 +100,7 @@ export function PageProdPigDeadList(input_settings){
         
         let page_info   = `
             This is a list of Dead pigs after birth. It is important
-            to record dead pigs so that teh atual pig count per production entry
+            to record dead pigs so that the actual pig count per production entry
             is accurate. 
         `;
         
@@ -187,21 +189,6 @@ export function PageProdPigDeadList(input_settings){
     
     
     
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        /*
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }*/
-    }
-    
-    
     this.renderPage = function(page_data){
         thisObj.show();
     }
@@ -216,17 +203,55 @@ export function PageProdPigDeadList(input_settings){
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
+        
         const callback_success = function(data){
             dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+            thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
             thisObj.renderTable(dataPigDeadList);
             
-            thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
+            
+            // Copy the Server dataVerNum  to localDataVerNum 
+            localDataVerNum     = navigation.pigFarm.dataVerNum.pig_dead;
         };
 
+
+        const callback_offline = function(){
+            dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+            if (dataPigDeadList){
+                // Display last known data
+                thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
+                thisObj.renderTable(dataPigDeadList);            
+            }
+            else{
+                // Display modal offline
+                navigation.managerSystem.showOfflineMessageModal();
+            }
+        };
    
-        // Request ProdPigDead List
-        navigation.pigFarm.managerPigProd.requestProdPigDeadList(
-            callback_success, null);
+   
+        let server_data_ver_num =  navigation.pigFarm.dataVerNum.pig_dead;
+        let is_to_request_data = 0;
+        
+        dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+        
+        if (dataPigDeadList == null){
+            is_to_request_data = 1;
+        } else{
+            if (server_data_ver_num > localDataVerNum){
+                is_to_request_data = 1;
+            }
+        }
+   
+   
+        // Request data only if needed
+        if (is_to_request_data > 0){
+            navigation.pigFarm.managerPigProd.requestProdPigDeadList(
+                callback_success, callback_offline, null);
+        } else{
+            // Display last known data
+            thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
+            thisObj.renderTable(dataPigDeadList);
+        }
         
     }
     

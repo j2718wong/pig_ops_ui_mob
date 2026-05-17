@@ -71,7 +71,10 @@ export function PageBoarExternalMateList(input_settings){
     
     let dataBoarExtMateList     = null;
 
-
+    
+    let localDataVerNum         = 0;
+    
+    
     
     let dtCurrentDate           = null;
 
@@ -203,21 +206,6 @@ export function PageBoarExternalMateList(input_settings){
     
     
     
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        /*
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }*/
-    }
-    
-    
     this.renderPage = function(page_data){
         thisObj.show();
     }
@@ -243,30 +231,54 @@ export function PageBoarExternalMateList(input_settings){
         elemDateToday.textContent = s_dt_current;
         
 
+        
+        
+        const callback_success = function(data){
+            dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
+            thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
+            thisObj.renderTable(dataBoarExtMateList);
+        };
+        
+        const callback_offline = function(){
+            dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
+            
+            if (dataBoarExtMateList){
+                thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
+                thisObj.renderTable(dataBoarExtMateList);
+            }
+            else{
+                // Display modal offline
+                navigation.managerSystem.showOfflineMessageModal();
+            }
+        };
+        
+        
+        let server_data_ver_num =  navigation.pigFarm.dataVerNum.boar_ext_mate;
+        let is_to_request_data = 0;
+        
+        
         dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
         
         if (dataBoarExtMateList == null){
+            is_to_request_data = 1;
+        } else{
+            if (server_data_ver_num > localDataVerNum){
+                is_to_request_data = 1;
+            }
+        }
         
-            const callback_success = function(data){
-                dataBoarExtMateList = data;
-                thisObj.renderTable(data);
-                
-                thisObj.showInfoBox(data, elemPageInfo);
-            };
-
-       
-            // Request BoarExtMate List
+        
+        // Request data only if needed
+        if (is_to_request_data > 0){
             navigation.pigFarm.managerSowBoar.requestBoarExtMateList(
-                callback_success, null);
+                callback_success, callback_offline, null);
         }
         else{
-            // Ways to refresh navigation.pigFarm.managerSowBoar.dataBoarExtMateList
-            // 1.) Add/edit BoarExtMate entry; 
-            // 2.) navigation.pigFarm.dataVerNum.boar_ext_mate has changed
-            
-            thisObj.renderTable(dataBoarExtMateList);
+            // Display last known data
             thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
+            thisObj.renderTable(dataBoarExtMateList);
         }
+        
     }
     
 

@@ -274,6 +274,7 @@ export function PigFarm(_navigation){
     }
     
     
+    
     /**
      * This will initialize pig farm data.
      * 
@@ -362,6 +363,9 @@ export function PigFarm(_navigation){
                     pig_dead:               data[9]
                 };
                 
+                
+                console.log('\n\nPigFarm.dataVerNum');
+                console.log(thisObj.dataVerNum);
                 
                 navigation.showHomeDashBoard();
             }
@@ -499,7 +503,8 @@ export function PigFarm(_navigation){
                 
                 // Check if Offline
                 if (navigation.managerSystem.isOffLine){
-                    if (callback_offline) {callback_offline(); return;}
+                    if (callback_offline) {callback_offline();}
+                    return;
                 }
                 
             }

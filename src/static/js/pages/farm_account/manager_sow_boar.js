@@ -27,6 +27,7 @@ export function ManagerSowBoar(input_settings){
     this.dataBoarList           = null;
     
     
+    
     // This is a number of piglets at weaning + currently lactating.
     // This includes both active sows and disposed sows.
     // This is requested at pig_farm level not at sow_level.
@@ -37,6 +38,9 @@ export function ManagerSowBoar(input_settings){
     this.dataBoarExtMateList    = null;
     
     
+    this.dataDisposedSowBoarList= null;
+    
+    
     this.getDataToSaveToStorage = function(){
         return {
             sowList:            thisObj.dataSowList,
@@ -44,7 +48,8 @@ export function ManagerSowBoar(input_settings){
             boarList:           thisObj.dataBoarList,
             
             farmPigLetsOutput:  thisObj.dataFarmPigletsOutput,
-            boarExtMateList:    thisObj.dataBoarExtMateList
+            boarExtMateList:    thisObj.dataBoarExtMateList,
+            disposedList:       thisObj.dataDisposedSowBoarList       
         }
     }
     
@@ -68,6 +73,7 @@ export function ManagerSowBoar(input_settings){
             thisObj.dataFarmPigletsOutput   = data.farmPigLetsOutput;
             
             thisObj.dataBoarExtMateList     = data.boarExtMateList;
+            thisObj.dataDisposedSowBoarList = data.disposedList;
         }
     }
     
@@ -191,7 +197,6 @@ export function ManagerSowBoar(input_settings){
             }
         });
     }
-    
     
     
     this.requestSowBoarEntry = function(sow_boar_hid, callback_success, 
@@ -501,8 +506,8 @@ export function ManagerSowBoar(input_settings){
     
 
 
-    this.requestBoarExtMateList = function(callback_success, elem_show_error){
-        
+    this.requestBoarExtMateList = function(callback_success, callback_offline,
+            elem_show_error){
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
         
         
@@ -549,6 +554,13 @@ export function ManagerSowBoar(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    
+                    return;
+                }
+                
                 navigation.serverError.serverErrorThrown(jqXHR, 
                     textStatus, errorThrown);
             }
@@ -557,6 +569,66 @@ export function ManagerSowBoar(input_settings){
     }
     
     
+    this.requestDisposedSowBoarList = function(callback_success, callback_offline, 
+            elem_show_error){
+        
+        const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
+        
+        const is_mob_view = 1; // TODO for desktop view
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/sow_boar/list?pfhid=${cur_pig_farm_hid}&is_disposed=1&inc_user_audit=1`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataDisposedSowBoarList = response.data;
+                    
+                    // Update local storage
+                    thisObj.saveToStorage();
+                    
+                    if (callback_success){
+                        callback_success(response.data);
+                    }
+                }
+                else {
+                    // TODO
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    
+                    return;
+                }
+                
+                
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
     
     
 

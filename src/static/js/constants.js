@@ -79,7 +79,32 @@ const TRANSLATION_MODE = {
     USE_ENGLISH:            0,
     ENGLISH_FIRST_THEN_LOCAL: 1,    // if local translation not available use english
     USE_LOCAL:              2       // if local translation not available use english
-}
+};
+
+
+const SERVER_VERSIONED_DATA = {
+    SOW:                    1,
+    BOAR:                   2,
+    PIG_PROD:               3,
+    PROD_HISTORY:           4,
+    STAFF:                  5,  
+    FEED_BUY:               6,
+    FEED_BALANCE:           7, 
+    NOT_PREGNANT:           8,
+    BOAR_EXT_MATE:          9,
+    PIG_DEAD:               10,
+    
+    
+    GESTATING_OPS:          21,        
+    LACTATING_PIGLETS_OPS:  22,
+    LACTATING_SOW_OPS:      23,
+    GILT_OPS:               24,
+    WEANING_SOW_OPS:        25,
+
+    ACCOUNT:                26,
+    PIG_BUYER:              27
+
+};
 
 
 const PAGE_ID = {
@@ -413,6 +438,7 @@ export {
     ACC_USER_GROUP,
     
     TRANSLATION_MODE,
+    SERVER_VERSIONED_DATA,
     
     NAV_MENU_GROUP,
     PAGE_ID,

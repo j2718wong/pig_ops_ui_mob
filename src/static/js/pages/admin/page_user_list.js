@@ -184,26 +184,31 @@ export function PageUserList(input_settings){
     
     
     this.show = function(){
-        dataUserList  = navigation.pigFarm.accountLists.dataUserList;
+        
 
-        if (dataUserList == null){
-        
-            const callback_success = function(data){
-                dataUserList  = navigation.pigFarm.accountLists.dataUserList;
-                thisObj.renderTable(dataUserList);
-            };
-            
-            // Request User List
-            navigation.pigFarm.accountLists.requestDataUserList(
-                callback_success, null);
-        
-        }
-        else{
+        const callback_success = function(data){
             dataUserList  = navigation.pigFarm.accountLists.dataUserList;
             thisObj.renderTable(dataUserList);
-        }
+        };
         
         
+        const callback_offline = function(){
+            dataUserList  = navigation.pigFarm.accountLists.dataUserList;
+            
+            if (dataUserList){
+                // Display last known data if available
+                thisObj.renderTable(dataUserList);
+            }
+            else{
+                // Display modal offline
+                navigation.managerSystem.showOfflineMessageModal();
+            }
+        };
+        
+        
+        // Request User List
+        navigation.pigFarm.accountLists.requestDataUserList(
+            callback_success, callback_offline, null);
     }
     
 

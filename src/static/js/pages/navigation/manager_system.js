@@ -44,7 +44,7 @@ export function ManagerSystem(_navigation) {
     
     
     this._processAfterHtmlRender = function(){
-        this.offlineModal = this.initOfflineModal();
+        thisObj.offlineModal = thisObj.initOfflineModal();
     }
     
     
@@ -77,26 +77,21 @@ export function ManagerSystem(_navigation) {
             <div class="modal-container" style="max-width: 350px;">
                 <div class="modal-header" style="background: #dc3545; display: flex; justify-content: space-between; align-items: center;">
                     <h3 id="offline-modal-title" style="margin: 0;">📡 No Internet Connection</h3>
-                    <button id="offline-modal-close" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
+                    <button id="offline-modal-close" style="background: none; border: none; color: white; font-size: 32px; cursor: pointer;">&times;</button>
                 </div>
                 
                 <div class="modal-body">
-                    <p id="offline-modal-message" style="font-size: 1rem; margin-bottom: 16px;">
+                    <p id="offline-modal-message" style="font-size: 1rem; margin-bottom: 1.1rem;">
                         This page needs Internet.
                     </p>
                     
-                    <p style="color: #666; font-size: 0.9rem;">
+                    <p style="color: #666; font-size: 1.2rem;">
                         Your farm data: sows, production, farrowing are still available offline.
                     </p>
                 </div>
                 
                 <div class="modal-footer">
-                    <button id="offline-modal-retry" class="btn-modal" style="background: #1e3a8a; color: white;">
-                        <i class="fas fa-sync-alt"></i> Retry
-                    </button>
-                    <button id="offline-modal-dashboard" class="btn-modal btn-secondary">
-                        Go to Dashboard
-                    </button>
+                    
                 </div>
             </div>
         `;
@@ -108,23 +103,7 @@ export function ManagerSystem(_navigation) {
             modal.style.display = 'none';
         };
         
-        // Retry button
-        document.getElementById('offline-modal-retry').onclick = () => {
-            if (navigator.onLine) {
-                modal.style.display = 'none';
-                location.reload();
-            } else {
-                alert('Still offline. Please check your connection.');
-            }
-        };
         
-        // Dashboard button
-        document.getElementById('offline-modal-dashboard').onclick = () => {
-            modal.style.display = 'none';
-            if (window.navigation && window.navigation.showHomeDashBoard) {
-                window.navigation.showHomeDashBoard();
-            }
-        };
         
         // Close when clicking outside
         modal.onclick = (e) => {
@@ -133,7 +112,7 @@ export function ManagerSystem(_navigation) {
             }
         };
         
-        this.offlineModal = modal;
+        return modal;
     }
     
     
@@ -152,10 +131,8 @@ export function ManagerSystem(_navigation) {
     
     
     // Show Offline  modal
-    this.showOfflineMessageModal = function(pageTitle) {
-        if (!this.offlineModal) this.initOfflineModal();
-        
-        this.offlineModal.style.display = 'flex';
+    this.showOfflineMessageModal = function() {
+        thisObj.offlineModal.style.display = 'flex';
     }
     
     
