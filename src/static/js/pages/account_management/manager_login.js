@@ -175,8 +175,85 @@ export function ManagerLogin(){
     }
 
     
+    /**
+     * Will check connection test; To use:
+     * 
+     * // Usage
+     * connectionTest((status) => {
+     *     if (!status.hasInternet) {
+     *         console.log('No internet - 0 bytes transferred');
+     *         showNoInternetMessage();
+     *     } else if (!status.serverReachable) {
+     *         console.log('Server down - 0 bytes transferred');
+     *         showServerDownMessage();
+     *     } else {
+     *         console.log('Both working - 0 bytes transferred');
+     *         proceedWithRequest();
+     *     }
+     * });
+     * 
+     * */
+    this.connectionTest = function(callback) {
+        const testResults = {
+            hasInternet: false,
+            serverReachable: false,
+            bytesTransferred: 0,
+            timestamp: Date.now()
+        };
+        
+        let testsCompleted = 0;
+        
+        // Test 1: HEAD request to reliable CDN (tests internet connectivity)
+        fetch('https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js', {
+            method: 'HEAD',
+            cache: 'no-store',
+            timeout: 3000
+        })
+        .then(() => {
+            testResults.hasInternet = true;
+            console.log('Check Internet connection: HEAD request successful - 0 bytes');
+        })
+        .catch(() => {
+            testResults.hasInternet = false;
+            console.log('Check Internet connection: HEAD request failed');
+        })
+        .finally(() => {
+            testsCompleted++;
+            if (testsCompleted === 2) callback(testResults);
+        });
+        
+        // Test 2: HEAD request to favicon.ico (tests if server is reachable)
+        fetch(`${window.location.origin}/favicon.ico?t=${Date.now()}`, {
+            method: 'GET',
+            cache: 'no-store',
+            timeout: 3000
+        })
+        .then(() => {
+            testResults.serverReachable = true;
+            console.log('Check Server Connection: favicon.ico GET request successful');
+        })
+        .catch((error) => {
+            testResults.serverReachable = false;
+            console.log('Check Server Connection: favicon.ico GET request failed -', error.message);
+        })
+        .finally(() => {
+            testsCompleted++;
+            if (testsCompleted === 2) callback(testResults);
+        });
+    };
+
+    
+    
     this.onPageLoad = function(){
         const url_path = window.location.pathname;
+        const bearer_token = thisObj.getAuthToken();
+        
+        // If offline and have token, skip the marketing page entirely
+        if (!navigator.onLine && bearer_token) {
+            console.log('Offline with token - redirecting to dashboard');
+            window.location.href = '/';
+            return;
+        }
         
         // Get language from URL or cookie
         let currentLang = this.getLanguageFromUrl();
@@ -208,7 +285,7 @@ export function ManagerLogin(){
         const currentYear = new Date().getFullYear();
         elemCopyRightYear.textContent = currentYear;
         
-        const bearer_token = thisObj.getAuthToken();
+        
                         
         
         // Check if there is a access_token stored;
