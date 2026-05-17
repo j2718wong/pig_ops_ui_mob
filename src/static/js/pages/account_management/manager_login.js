@@ -251,7 +251,7 @@ export function ManagerLogin(){
         // If offline and have token, skip the marketing page entirely
         if (!navigator.onLine && bearer_token) {
             console.log('Offline with token - redirecting to dashboard');
-            window.location.href = '/';
+            window.location.href = '/app';
             return;
         }
         
@@ -399,17 +399,17 @@ export function ManagerLogin(){
                     // Redirect to Dashboard if user has account
                     const savedLang = localStorage.getItem('user_language');
                     
-                    window.location.href = '/';
+                    window.location.href = '/app';
                     
                     /*
                     // ALWAYS include language if it exists
                     if (savedLang && savedLang !== 'default'){
                         console.log('Redirecting with language:', savedLang);
-                        window.location.href = '/?lang=' + savedLang;
+                        window.location.href = '/app?lang=' + savedLang;
                     } 
                     else if (savedLang === 'default') {
                         // If language is explicitly set to 'default', don't include lang param
-                        window.location.href = '/';
+                        window.location.href = '/app';
                     }
                     else {
                         // No language saved, check URL for language
@@ -417,9 +417,9 @@ export function ManagerLogin(){
                         const urlLang = urlParams.get('lang');
                         if (urlLang && urlLang !== 'default') {
                             console.log('Found language in URL, preserving:', urlLang);
-                            window.location.href = '/?lang=' + urlLang;
+                            window.location.href = '/app?lang=' + urlLang;
                         } else {
-                            window.location.href = '/';
+                            window.location.href = '/app';
                         }
                     }
                     */
@@ -479,22 +479,8 @@ export function ManagerLogin(){
             // User has assigned farms even the URL path tells that user has no farm
             // redirect to "/"
             // redirect to "/" with language
-            
-            
-            const savedLang = localStorage.getItem('user_language');
-            
-            
-            // Build clean URL without duplicate parameters
-            let redirectUrl = '/';
-            /*
-            if (savedLang && savedLang !== 'default') {
-                // Use path-based language, not query parameter
-                const langMap = {'en': 'en', 'fil': 'tag', 'ceb': 'bis', 'zh': 'zh'};
-                const urlLang = langMap[savedLang] || 'en';
-                redirectUrl = `/?lang=${urlLang}`;
-            }
-            */
-            window.location.href = redirectUrl
+
+            window.location.href = '/app'
             
             return true;
         }
@@ -648,21 +634,21 @@ export function ManagerLogin(){
                     const savedLang = localStorage.getItem('user_language');
                     if (savedLang && savedLang !== 'default') {
                         console.log('Redirecting to home with language:', savedLang);
-                        window.location.href = '/?lang=' + savedLang;
+                        window.location.href = '/app?lang=' + savedLang;
                     } else {
                         // Check if language exists in URL before redirecting without it
                         const urlParams = new URLSearchParams(window.location.search);
                         const urlLang = urlParams.get('lang');
                         if (urlLang && urlLang !== 'default') {
                             console.log('Preserving language from URL:', urlLang);
-                            window.location.href = '/?lang=' + urlLang;
+                            window.location.href = '/app?lang=' + urlLang;
                         } else {
-                            window.location.href = '/';
+                            window.location.href = '/app';
                         }
                     }
                     */
                     
-                    window.location.href = '/';
+                    window.location.href = '/app';
                     
                     
                 } else {

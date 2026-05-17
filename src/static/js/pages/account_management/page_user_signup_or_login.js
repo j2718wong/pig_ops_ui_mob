@@ -114,7 +114,7 @@ export async function getLocationWithFallback() {
 }
 
 
-// In page_user_signup_or_login.js
+
 export async function loadHomePageWithToken() {
     // Try to get token from cookie first (new flow)
     let token = getCookie('access_token');
@@ -128,7 +128,6 @@ export async function loadHomePageWithToken() {
     
     if (!token) {
         console.log('No token found, redirecting to login');
-        // Preserve language when redirecting to login
         const savedLang = localStorage.getItem('user_language');
         let loginUrl = '/login';
         if (savedLang && savedLang !== 'default') {
@@ -138,52 +137,24 @@ export async function loadHomePageWithToken() {
         return;
     }
     
-    try {
-        // Get language preference
-        const savedLang = localStorage.getItem('user_language');
-        let url = '/';
-        if (savedLang && savedLang !== 'default') {
-            url = '/?lang=' + savedLang;
-            console.log('loadHomePageWithToken - loading homepage with language:', savedLang);
+    // ✅ FIX: Redirect to SPA instead of fetching marketing page
+    const savedLang = localStorage.getItem('user_language');
+    let appUrl = '/app';
+    if (savedLang && savedLang !== 'default') {
+        // Map internal language to URL language code
+        let urlLang = 'en';
+        if (savedLang === 'fil') {
+            urlLang = 'tag';
+        } else if (savedLang === 'ceb') {
+            urlLang = 'bis';
         } else {
-            console.log('loadHomePageWithToken - loading homepage without language');
+            urlLang = 'en';
         }
-        
-        const response = await fetch(url, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (response.ok) {
-            const html = await response.text();
-            document.open();
-            document.write(html);
-            document.close();
-            // Update URL to include language if needed
-            if (savedLang && savedLang !== 'default') {
-                history.pushState({}, '', '/?lang=' + savedLang);
-            } else {
-                history.pushState({}, '', '/');
-            }
-        } else {
-            console.log('Failed to load homepage, redirecting to login');
-            const savedLang = localStorage.getItem('user_language');
-            let loginUrl = '/login';
-            if (savedLang && savedLang !== 'default') {
-                loginUrl += '?lang=' + savedLang;
-            }
-            window.location.href = loginUrl;
-        }
-    } catch (error) {
-        console.error('Failed to load homepage:', error);
-        const savedLang = localStorage.getItem('user_language');
-        let loginUrl = '/login';
-        if (savedLang && savedLang !== 'default') {
-            loginUrl += '?lang=' + savedLang;
-        }
-        window.location.href = loginUrl;
+        appUrl += `?lang=${urlLang}`;
     }
+    
+    console.log('Redirecting to SPA:', appUrl);
+    window.location.href = appUrl;
 }
 
 
@@ -935,7 +906,7 @@ export function PageUserSignUpOrLogin(input_settings){
                         console.log('\n\n\nonClickStaffSignUp; User token to be saved in storage');
                         
                         // Store token
-                        managerLogin.saveAuthToken(data.bearer_token);
+                        parentObj.saveAuthToken(data.bearer_token);
                         const data_user_account = response.user_account;
                         
                         
@@ -1196,7 +1167,7 @@ export function PageUserSignUpOrLogin(input_settings){
                         console.log('\n\n\nonClickSignUpOrLogin; User token to be saved in storage');
                         
                         // Store token
-                        managerLogin.saveAuthToken(data.bearer_token);
+                        parentObj.saveAuthToken(data.bearer_token);
                         const data_user_account = response.user_account;
                         
                         

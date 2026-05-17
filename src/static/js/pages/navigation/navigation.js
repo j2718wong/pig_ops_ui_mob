@@ -1498,28 +1498,27 @@ export function Navigation(){
     
     
     this.autoUpdateServiceWorker = function(){
-        
         if ('serviceWorker' in navigator) {
+            const currentVersion = APP_VERSION;
+            const reloadedVersion = sessionStorage.getItem('sw_reloaded_version');
+            
+            // Only auto-reload once per version
+            if (reloadedVersion === currentVersion) {
+                return;
+            }
+            
             navigator.serviceWorker.ready.then(registration => {
-                // Listen for a new worker that is waiting to become active
                 registration.addEventListener('updatefound', () => {
                     const newWorker = registration.installing;
                     if (!newWorker) return;
 
                     newWorker.addEventListener('statechange', () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            window.location.reload();
-                            
-                            /*// A new version is available! Show a prompt to your user.
-                            if (confirm('A new version of SuperPig is available. Update now?')) {
-                                newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                window.location.reload();
-                            }
-                            */ 
+                            sessionStorage.setItem('sw_reloaded_version', currentVersion);
+                            //window.location.reload();
                         }
                     });
                 });
-               
             });
         }
     }
