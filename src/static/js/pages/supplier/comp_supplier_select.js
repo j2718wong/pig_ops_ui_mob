@@ -117,6 +117,19 @@ export function ComponentSupplierSelect(input_settings){
         });
         
         elemEntryAdd.addEventListener('click', function() {
+            // Show Container
+            const next_page = navigation.getPageContainer(PAGE_ID.SUPPLIER_ADD_EDIT);
+            
+            // Push currentPage to NavHistory; 
+            // Will also compare current page and  next_page NAV_MENU_GROUP.
+            navigation.pushCurrentPageToNavHistory(next_page);
+            
+            navigation.showThisPage(next_page)
+            
+            
+            
+            // Show Page
+            
             // Should open SupplierAddEdit page.
             // after success add or cancel/close should go back to this page
             
@@ -138,11 +151,8 @@ export function ComponentSupplierSelect(input_settings){
                 elemSelect.value = new_supplier_hid;
             };
             
-            navigation.pageSupplierAddEdit.beforeShow(options_supplier);
+            navigation.pageSupplierAddEdit.show(options_supplier);
             navigation.pageSupplierAddEdit.callbackOnSuccessAdd = callback_success;
-            
-            const next_page = navigation.getPageContainer(PAGE_ID.SUPPLIER_ADD_EDIT);
-            navigation.showThisPage(next_page)
         });
         
         

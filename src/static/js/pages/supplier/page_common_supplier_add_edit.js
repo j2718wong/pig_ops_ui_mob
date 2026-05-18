@@ -10,19 +10,21 @@ import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        FLAG_BITS,
         SOW_STATUS,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
         SUPPLIER_TYPE}          from '../../constants.js';
 
-import {CommonSelectOptions}    from '../common/common_select_options.js';
+import {CommonSelectOptions}        from '../common/common_select_options.js';
 
 
-import {addValidationClassToElem} from '../common/ui/ui_utils.js';
+import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
 
-import {ComponentAddressLevels} from '../common/ui/comp_address_levels.js'
+import {ComponentAddressLevels}     from '../common/ui/comp_address_levels.js'
 
-import {ComponentCommonSupplier}  from './comp_common_supplier.js';
+import {ComponentCommonSupplier}    from './comp_common_supplier.js';
+import {UiInputTextWithCounter}     from '../common/ui/input_text_with_counter.js';
 
 
 export function PageCommonSupplierAddEdit(input_settings){
@@ -73,6 +75,8 @@ export function PageCommonSupplierAddEdit(input_settings){
     let curAddressLevel1        = null;
     let curAddressLevel2        = null;
     
+    let hasAddressLevels        = 0;
+    
     
     const compAddressLevels     = new ComponentAddressLevels({
         navigation:             navigation,
@@ -102,6 +106,17 @@ export function PageCommonSupplierAddEdit(input_settings){
     });
     
     
+    const elemUiName            = new UiInputTextWithCounter({
+        uniqueKey:              `${settings.uniqueKey}-supplier-name-2`,
+        
+        className:              'form-group-text',
+        textLabel:              'Name',
+        isRequired:             true,
+        textMaxChars:           50,
+        invalidFeedBack:        'Please enter a valid name.',
+        helpText:               null
+    });
+    
     
     this.callbackOnSuccessAdd   = null;
     
@@ -124,7 +139,7 @@ export function PageCommonSupplierAddEdit(input_settings){
         
         const html_address_levels   = compAddressLevels.getHtml();
         const html_supplier_list    = compCommonSupplier.getHtml();
-        
+        const html_supplier_name    = elemUiName.getHtml();
         
         const html =`
 
@@ -144,6 +159,8 @@ export function PageCommonSupplierAddEdit(input_settings){
         ${html_address_levels}
         
         ${html_supplier_list}
+        
+        ${html_supplier_name}
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
         
@@ -169,6 +186,7 @@ export function PageCommonSupplierAddEdit(input_settings){
     this.afterHtmlRender = function(){
         compAddressLevels.afterHtmlRender();
         compCommonSupplier.afterHtmlRender();
+        elemUiName.afterHtmlRender();
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -199,8 +217,6 @@ export function PageCommonSupplierAddEdit(input_settings){
         elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
         });
-        
-        
     }
     
     
@@ -210,12 +226,10 @@ export function PageCommonSupplierAddEdit(input_settings){
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         compAddressLevels.reset();
-
-        
     }
     
     
-    this.beforeShow = function(options){
+    this.show = function(options){
         /*
         
         Typical options 
@@ -257,7 +271,45 @@ export function PageCommonSupplierAddEdit(input_settings){
         
         elemHeaderTitle.textContent  = title;
         
+
         compCommonSupplier.setSupplierType(showOptions.supplier_type);
+
+        
+        // Get pig_farm country
+        const pig_farm      = navigation.pigFarm.dataPigFarm;
+        const loc_country   = pig_farm.location.country;
+        const country_flag  = loc_country.flag;
+        
+        
+        // 2026-05-18 notes:
+        // 1.) The original address design has address levels business objects:
+        //      - country_id
+        //      - address_level_1_id
+        //      - address_level_2_id
+        //      - address_level_3_id
+        //
+        // where address_level_1 is the highest geographic division. This
+        // was intended for nearby suppliers filtering of the pig farm.
+        // 
+        // 2.) The address_levels by default are optional, and of this writing
+        // only the country Philippines has address levels saved static data in 
+        // different database.
+        //
+        // 3.) Setting up an address level of a country is a major effort, 
+        // therefore this must be optional.
+        //
+        // 
+        
+        
+        hasAddressLevels = 0;
+        
+        if ((country_flag & FLAG_BITS.APP_COUNTRY.HAS_ADDRESS_LEVELS) > 0){
+            hasAddressLevels = 1;
+        }
+        
+        if (hasAddressLevels == 0){
+            compAddressLevels.hide();
+        }
         
         
         // Hide Supplier List
@@ -278,8 +330,6 @@ export function PageCommonSupplierAddEdit(input_settings){
     
     this.getSupplierCountPerAddressLevel1 =  function(){
         if (SHOW_SUPPLIER_COUNT_ADDRESS_LEVEL_1 == false){return;}
-        
-        
     }
     
     
@@ -400,10 +450,8 @@ export function PageCommonSupplierAddEdit(input_settings){
         };
         
         
-        // Set suppliers to address Level2
+        // Request suppliers for address Level2
         managerAddress.requestDataSupplier(curAddressLevel2, callback_success);
-        
-        
     }
     
     
@@ -413,6 +461,127 @@ export function PageCommonSupplierAddEdit(input_settings){
     
         
     this.onClickSaveButton = function(){
+        if (hasAddressLevels > 0){
+            this._saveSupplierAsSharedSupplier();
+        }
+        else{
+            this._saveSupplierToAccountOnly();
+        }
+    }
+        
+    
+    this._saveSupplierToAccountOnly = function(){
+        let input_elem      = null;
+        let validation      = 0;
+        
+       
+        let input_name      = elemUiName.getValue();
+        
+       
+        input_elem          = elemUiName.getElemText();
+        if (input_name.length == 0){
+            validation = -1;
+        }
+        addValidationClassToElem(input_elem, validation);
+        
+        
+        if (validation != 0) {return;}
+        
+        
+        // Get pig_farm country
+        const pig_farm          = navigation.pigFarm.dataPigFarm;
+        const loc_country       = pig_farm.location.country;
+        const loc_country_hid   = loc_country.hid;
+        
+        
+        const user_hid      = navigation.userControl.getUserHid();
+        
+        const base_url      = window.location.origin;
+
+
+        const url = `${base_url}/supplier/add`;
+    
+        // send post request
+        const post_data = {
+            'uhid':             user_hid,
+            'country_hid':      loc_country_hid,
+           
+            'name':             input_name
+        };
+        
+      
+        
+        switch(showOptions.supplier_type){
+            case SUPPLIER_TYPE.FEED: {
+                post_data.is_feed_supplier = 1;
+                break;
+            }
+            
+            case SUPPLIER_TYPE.SEMEN: {
+                post_data.is_semen_supplier = 1;
+                break;
+            }
+            
+            case SUPPLIER_TYPE.GILT: {
+                post_data.is_gilt_supplier = 1;
+                break;
+            }
+        }
+        
+
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+                elemServerErrorMsg.innerHTML = '';
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                   
+                    
+                    const supplier_hid = response.supplier.hid;
+                    
+                    
+                    thisObj.onSuccessAddEntryAccountSelection(supplier_hid);
+                    
+                }
+                else{
+                    navigation.serverError.receivedErrorMessage(response,
+                        elemServerErrorMsg);
+                }
+            },
+  
+            complete: function(){
+                // TODO unsay buhaton
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+
+        
+    }
+    
+    
+        
+    this._saveSupplierAsSharedSupplier = function(){
         let input_elem;
         let validation      = 0;
         

@@ -38,6 +38,7 @@ export function ComponentAddressLevels(input_settings){
     const elemDivContainer      = settings.elemDivContainer;
     
     
+    const elemIdAddressShow         = `${settings.uniqueKey}-adrs-show`;
     const elemIdServerErrorMsg      = `${settings.uniqueKey}-server-error-msg`;
     
     const elemIdCountry             = `${settings.uniqueKey}-country`;
@@ -53,6 +54,8 @@ export function ComponentAddressLevels(input_settings){
     const elemIdAddressLevel3       = `${settings.uniqueKey}-adrs-level3`;
     const elemIdAddressLevel3Count  = `${settings.uniqueKey}-adrs-level3-count`;
     
+    
+    let elemAddressShow             = null;
     
     let elemServerErrorMsg          = null;
     
@@ -95,51 +98,53 @@ export function ComponentAddressLevels(input_settings){
       
         
         return `
-        
-        <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
-        
-        <div class="form-group-check">
-            <label class="form-label">Country</label>
-            <span class="read-only-field" id="${elemIdCountry}">Philippines</span>
-                        
-        </div>
-        
-        
-        <div id="${elemIdAddressLevels}">
-        
-            <!-- 1. Address Level 1 -->
-            <div class="form-group-select">
-                <label for="${elemIdAddressLevel1}" class="form-label">
-                    ${settings.level1Label} <span class="entries-count" id=${elemIdAddressLevel1Count}></span>
-                </label>
+        <div id="${elemIdAddressShow}">
+            <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
+            
+            <div class="form-group-check">
+                <label class="form-label">Country</label>
+                <span class="read-only-field" id="${elemIdCountry}">Philippines</span>
                             
-                <select class="form-select" id="${elemIdAddressLevel1}">
-                    <option value="-1" selected disabled>No Entries</option>
-                </select>
-                
-            </div>
-                
-            <!-- 2. Address Level 2 -->
-            <div class="form-group-select">
-                <label for="${elemIdAddressLevel2}" class="form-label">
-                    ${settings.level2Label} <span class="entries-count" id=${elemIdAddressLevel2Count}></span>
-                </label>
-                            
-                <select class="form-select" id="${elemIdAddressLevel2}">
-                    <option value="0" selected disabled>Please Select</option>
-                </select>
             </div>
             
             
-            <!-- 3. Address Level 3 -->
-            <div class="form-group-select">
-                <label for="${elemIdAddressLevel3}" class="form-label">
-                    ${settings.level3Label} <span class="entries-count" id=${elemIdAddressLevel3Count}></span>
-                </label>
-                            
-                <select class="form-select" id="${elemIdAddressLevel3}">
-                    <option value="0" selected disabled>Please Select</option>
-                </select>
+            <div id="${elemIdAddressLevels}">
+            
+                <!-- 1. Address Level 1 -->
+                <div class="form-group-select">
+                    <label for="${elemIdAddressLevel1}" class="form-label">
+                        ${settings.level1Label} <span class="entries-count" id=${elemIdAddressLevel1Count}></span>
+                    </label>
+                                
+                    <select class="form-select" id="${elemIdAddressLevel1}">
+                        <option value="-1" selected disabled>No Entries</option>
+                    </select>
+                    
+                </div>
+                    
+                <!-- 2. Address Level 2 -->
+                <div class="form-group-select">
+                    <label for="${elemIdAddressLevel2}" class="form-label">
+                        ${settings.level2Label} <span class="entries-count" id=${elemIdAddressLevel2Count}></span>
+                    </label>
+                                
+                    <select class="form-select" id="${elemIdAddressLevel2}">
+                        <option value="0" selected disabled>Please Select</option>
+                    </select>
+                </div>
+                
+                
+                <!-- 3. Address Level 3 -->
+                <div class="form-group-select">
+                    <label for="${elemIdAddressLevel3}" class="form-label">
+                        ${settings.level3Label} <span class="entries-count" id=${elemIdAddressLevel3Count}></span>
+                    </label>
+                                
+                    <select class="form-select" id="${elemIdAddressLevel3}">
+                        <option value="0" selected disabled>Please Select</option>
+                    </select>
+                </div>
+                
             </div>
             
         </div>
@@ -149,6 +154,9 @@ export function ComponentAddressLevels(input_settings){
     
     
     this._findElements = function(){
+        
+        elemAddressShow             = elemDivContainer.querySelector('#'+elemIdAddressShow);
+        
         elemServerErrorMsg          = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
         
         elemCountry                 = elemDivContainer.querySelector('#'+elemIdCountry);
@@ -186,13 +194,13 @@ export function ComponentAddressLevels(input_settings){
     }
     
     
-    this.getElemText  = function(){
-        return elemText;
+    this.show  = function(){
+        elemAddressShow.style.display = 'block';
     }
     
     
-    this.setValue = function(text){
-        elemText.value      = text;
+    this.hide = function(){
+        elemAddressShow.style.display = 'none';
     }
     
     

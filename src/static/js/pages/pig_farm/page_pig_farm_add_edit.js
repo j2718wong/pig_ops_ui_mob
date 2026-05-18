@@ -331,6 +331,7 @@ export function PagePigFarmAddEdit(input_settings){
         }
         
         
+        // Get pig_farm country
         const loc_country   = pig_farm.location.country;
         const country_flag  = loc_country.flag;
         
