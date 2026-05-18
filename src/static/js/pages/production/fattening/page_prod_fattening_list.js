@@ -279,6 +279,7 @@ export function PageProdFatteningList(input_settings){
     gap: 12px;
     padding: 16px;
     border-top: 1px solid #eee;
+    flex-wrap: wrap;
 }
 
 /* Buttons */
@@ -307,6 +308,45 @@ export function PageProdFatteningList(input_settings){
     font-size: 1.2rem;
 }
 
+
+.modal-footer .btn,
+.modal-footer .btn-primary,
+.modal-footer .btn-secondary {
+    flex: 0 0 auto;
+    min-width: 120px;
+}
+
+
+/* For mobile screens */
+@media (max-width: 480px) {
+    .modal-footer {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .modal-footer .btn,
+    .modal-footer .btn-primary,
+    .modal-footer .btn-secondary {
+        width: 100%;
+        flex: 1;
+        text-align: center;
+    }
+}
+
+/* For tablets and desktop */
+@media (min-width: 481px) {
+    .modal-footer {
+        flex-direction: row;
+    }
+    
+    .modal-footer .btn,
+    .modal-footer .btn-primary,
+    .modal-footer .btn-secondary {
+        min-width: 120px;
+        width: auto;
+    }
+}
+
 /* Mobile optimization */
 @media (max-width: 768px) {
     .modal-container {
@@ -314,10 +354,6 @@ export function PageProdFatteningList(input_settings){
         max-width: 320px;
     }
     
-    .btn-primary, .btn-secondary {
-        padding: 10px 16px;
-        font-size: 1.2rem;
-    }
     
     .modal-header h3 {
         font-size: 1.3rem;

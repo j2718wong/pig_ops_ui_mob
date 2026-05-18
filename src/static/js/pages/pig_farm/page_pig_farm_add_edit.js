@@ -10,6 +10,7 @@ import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        FLAG_BITS,
         SOW_STATUS,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
@@ -241,8 +242,6 @@ export function PagePigFarmAddEdit(input_settings){
     }
     
     
-    
-    
    
     this._resetForm = function(){
         // Clear previous Form values and validation classes
@@ -251,6 +250,7 @@ export function PagePigFarmAddEdit(input_settings){
         compAddressLevels.reset();
         compNumFarrowingCrate.reset();
         
+        elemServerErrorMsg.style.display = 'none';
     }
     
     
@@ -313,6 +313,12 @@ export function PagePigFarmAddEdit(input_settings){
 
         const pig_farm = navigation.pigFarm.dataPigFarm;
         
+        console.log(`pig_farm`);
+        console.log(pig_farm);
+        
+        
+        
+        
         elemUiName.setValue(pig_farm.pig_farm.name);
         
         if (pig_farm.location.address){
@@ -324,9 +330,38 @@ export function PagePigFarmAddEdit(input_settings){
             }
         }
         
-
         
-        compAddressLevels.setLocationAddress(pig_farm.location);
+        const loc_country   = pig_farm.location.country;
+        const country_flag  = loc_country.flag;
+        
+        
+        // 2026-05-18 notes:
+        // 1.) The original address design has address levels business objects:
+        //      - country_id
+        //      - address_level_1_id
+        //      - address_level_2_id
+        //      - address_level_3_id
+        //
+        // where address_level_1 is the highest geographic division. This
+        // was intended for nearby suppliers filtering of the pig farm.
+        // 
+        // 2.) The address_levels by default are optional, and of this writing
+        // only the country Philippines has address levels saved static data in 
+        // different database.
+        //
+        // 3.) Setting up an address level of a country is a major effort, 
+        // therefore this must be optional.
+        //
+        // 
+        
+        let has_address_levels = 0;
+        
+        if ((country_flag & FLAG_BITS.APP_COUNTRY.HAS_ADDRESS_LEVELS) > 0){
+            has_address_levels = 1;
+        }
+        
+        
+        compAddressLevels.setLocationAddress(pig_farm.location, has_address_levels);
         
         compNumFarrowingCrate.setValue(pig_farm.pig_farm.num_farrow_crates);
     }
@@ -415,24 +450,32 @@ export function PagePigFarmAddEdit(input_settings){
         };
         
         if (address_hids){
-            if (address_hids.level_1_hid == '0' || address_hids.level_1_hid == '-1'){}
-            else{
-                if (address_hids.level_1_hid.length > 0){
-                    post_data.level_1_hid = address_hids.level_1_hid;
+            if (address_hids.level_1_hid) {
+                if (address_hids.level_1_hid == '0' || address_hids.level_1_hid == '-1'){}
+                else{
+                    if (address_hids.level_1_hid.length > 0){
+                        post_data.level_1_hid = address_hids.level_1_hid;
+                    }
+                }
+            }
+
+            
+            if (address_hids.level_2_hid) {
+                if (address_hids.level_2_hid == '0' || address_hids.level_2_hid == '-1'){}
+                else{
+                    if (address_hids.level_2_hid.length > 0){
+                        post_data.level_2_hid = address_hids.level_2_hid;
+                    }
                 }
             }
             
-            if (address_hids.level_2_hid == '0' || address_hids.level_2_hid == '-1'){}
-            else{
-                if (address_hids.level_2_hid.length > 0){
-                    post_data.level_2_hid = address_hids.level_2_hid;
-                }
-            }
             
-            if (address_hids.level_3_hid == '0' || address_hids.level_3_hid == '-1'){}
-            else{
-                if (address_hids.level_3_hid.length > 0){
-                    post_data.level_3_hid = address_hids.level_3_hid;
+            if (address_hids.level_3_hid){
+                if (address_hids.level_3_hid == '0' || address_hids.level_3_hid == '-1'){}
+                else{
+                    if (address_hids.level_3_hid.length > 0){
+                        post_data.level_3_hid = address_hids.level_3_hid;
+                    }
                 }
             }
         }

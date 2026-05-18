@@ -165,49 +165,9 @@ export function PageProdEntryCommon(input_settings){
             font-size: 1.2rem;
         }
 
-
-        
-        /* Dynamic Field Sections */
-        .dynamic-section {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #f8fafc;
-            border-radius: 8px;
-            border: 1px solid var(--corporate-border);
-        }
-
-        /* Buttons */
-        /*
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background-color: var(--corporate-blue);
-            color: white;
-        }
-
-        .btn-primary:active {
-            background-color: #1e40af;
-            transform: translateY(1px);
-        }
-        */
-        
-        
-
         
         /* Responsive Adjustments */
         @media (max-width: 480px) {
-           
            
             
             .nav-button {
@@ -233,11 +193,7 @@ export function PageProdEntryCommon(input_settings){
                 max-height: calc(200vh - var(--height-fixed-prod-entry)); /* Viewport height minus fixed headers */
         
             }
-            
-            
-            .btn {
-                padding: 12px;
-            }
+
             
         }
 
@@ -255,11 +211,6 @@ export function PageProdEntryCommon(input_settings){
             
         }
         
-        @media (max-height: 600px) {
-            .tab-content {
-                
-            }
-        }
     </style>
         `;
         

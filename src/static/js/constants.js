@@ -422,10 +422,19 @@ const FLAG_BITS ={
         IS_BILL_EXEMPTED:       16    
     },
     
+    
+    APP_COUNTRY:{
+        ENABLE:                 1,
+        HAS_ADDRESS_LEVELS:     2
+    },
+    
     PIG_PROD:{
         IS_A_GROUP:             2,
         EXTERNAL_PIGLETS:       4
     }
+    
+    
+    
 
 };
 
