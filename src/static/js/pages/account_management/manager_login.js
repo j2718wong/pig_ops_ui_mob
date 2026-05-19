@@ -369,16 +369,15 @@ export function ManagerLogin(){
             // This needs to be handled as well.
             
             const callback_failure = function(){
-                // Clear all items from localStorage
-                localStorage.clear();
-            
-                console.log('\n\n\nonmanagerLogin; failure; to remove token');
-
-
-                // Preserve language if it exists
+                // Delete token from ALL storage locations
+                localStorage.removeItem('access_token');
+                sessionStorage.removeItem('access_token');
+                document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                
+                // Preserve language preference (don't delete this)
                 const savedLang = localStorage.getItem('user_language');
                 let loginUrl = '/login';
-                if (savedLang && savedLang !== 'default') {
+                if (savedLang && savedLang !== 'default' && savedLang !== 'null') {
                     loginUrl += '?lang=' + savedLang;
                 }
                 
@@ -823,8 +822,7 @@ export function ManagerLogin(){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
+                
             }
         });
     }

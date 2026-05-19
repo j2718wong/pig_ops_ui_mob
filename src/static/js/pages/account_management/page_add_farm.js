@@ -684,8 +684,7 @@ export function PageAddFarm(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    // This is temporary; should href via tokens
-                    window.location.href = `/?u=${user_hid}`;
+                    window.location.href = `/app`;
                 }
                 else{
                     let error_code = response.result.code;

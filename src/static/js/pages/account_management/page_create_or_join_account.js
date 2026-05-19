@@ -42,6 +42,8 @@ export function PageCreateOrJoinAccount(input_settings){
     let elemAccountName         = null;      
     let elemInvalidAccNameShow  = null;
 
+    let elemCountrySelect       = null;
+    let elemInvalidCountryShow  = null;
     
     let elemJoinAccount         = null;
     let elemAccessCode          = null;
@@ -53,6 +55,13 @@ export function PageCreateOrJoinAccount(input_settings){
     let curDataUserAccount      = null;
     
     
+    let countryList             = null;
+    
+    
+    // If == 0, separate steps for account and pig_farm creation.
+    // if > 0, joint account and pig farm creation with account and pig_farm having same name.
+    let jointAccountPigFarmCreate = 0;
+    
     
     this.init = function(){
         this.render();
@@ -61,6 +70,12 @@ export function PageCreateOrJoinAccount(input_settings){
     
     
     this.render = function(){
+        if (window.SUPERPIG_UI_SETTINGS.joint_account_pig_farm_create > 0){
+            jointAccountPigFarmCreate = 1;
+        }
+        
+        
+        
         elemUiLangSwitch = new UiLanguageSwitch({
             uniqueKey:      'create_or_join'
         });
@@ -132,6 +147,11 @@ export function PageCreateOrJoinAccount(input_settings){
         
         const html_lang_switch  = elemUiLangSwitch.getHtml();
         
+        let html_country_select = '';
+        if (jointAccountPigFarmCreate > 0){
+            html_country_select = this.getHtmlCountrySelection();
+        }
+        
         
         const html =`
 <div class="signup-card">
@@ -177,10 +197,14 @@ export function PageCreateOrJoinAccount(input_settings){
             </div>
         </div>
         
+        ${html_country_select}
+        
+        
         <div id="create-account" style="font-size:1.3rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
             👆 ${label_click_to_continue}
         </div>
     </div>
+
 
     <!-- option 2: join (staff) -->
     <div class="option-card">
@@ -248,6 +272,74 @@ export function PageCreateOrJoinAccount(input_settings){
     }
     
     
+    this.getHtmlCountrySelection = function(){
+        return `
+            <div class="code-area" style="margin-top: 12px;">
+                <div class="code-label">
+                    Country <span style="color: red;">*</span>
+                </div>
+                
+                <select id="account-country-select" class="country-select" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 1.2rem;">
+                    <option value="">-- Select Country --</option>
+                </select>
+                
+                <div id="invalid-country-show" class="invalid-feedback" style="display:none;">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <span>Please select a country</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    
+    this.populateCountryDropdown = function(){
+        // This should be called after user token already saved in storage
+    
+        const callback_success = function(data) {
+            countryList = data;
+            
+            const selectElem = elemDivContainer.querySelector('#account-country-select');
+            if (!selectElem) return;
+            
+            // Clear existing options except the first placeholder
+            while (selectElem.options.length > 1) {
+                selectElem.remove(1);
+            }
+            
+            // Add country options
+            for (let i = 0; i < countryList.length; i++) {
+                const country = countryList[i];
+                const option = document.createElement('option');
+                option.value = country.hid;
+                option.textContent = country.name;
+                selectElem.appendChild(option);
+            }
+        };
+
+    
+        const callback_error = function() {
+            console.log('Failed to load country list');
+            // Show fallback - at least Philippines
+            const selectElem = elemDivContainer.querySelector('#account-country-select');
+            if (selectElem) {
+                const option = document.createElement('option');
+                option.value = '3QLG0EDV';  // Philippines HID from your data
+                option.textContent = 'Philippines';
+                selectElem.appendChild(option);
+            }
+        };
+        
+        if (countryList && countryList.length > 0) {
+            callback_success(countryList);
+        } else {
+            parentObj.requestDataActiveCountryList(callback_success, null);
+        } 
+
+        
+    }
+    
+    
+    
     this.afterHtmlRender = function(){
         elemUiLangSwitch.afterHtmlRender();
         
@@ -264,6 +356,11 @@ export function PageCreateOrJoinAccount(input_settings){
         elemCreateAccount       = elemDivContainer.querySelector('#create-account');
         elemAccountName         = elemDivContainer.querySelector('#account-name');
         elemInvalidAccNameShow  = elemDivContainer.querySelector('#invalid-account-name-show');
+        
+        
+        // Add country select elements
+        elemCountrySelect       = elemDivContainer.querySelector('#account-country-select');
+        elemInvalidCountryShow  = elemDivContainer.querySelector('#invalid-country-show');
         
         
         elemJoinAccount         = elemDivContainer.querySelector('#join-account');
@@ -315,6 +412,11 @@ export function PageCreateOrJoinAccount(input_settings){
     this._resetForm = function(){
         elemInvalidAccNameShow.style.display = 'none';
         
+        
+        if (elemInvalidCountryShow) {
+            elemInvalidCountryShow.style.display = 'none';
+        }
+        
         let label_valid_name        = 'Please enter valid name.';
         
         const helper = parentObj.translationHelper;
@@ -339,6 +441,8 @@ export function PageCreateOrJoinAccount(input_settings){
         
         curDataUserAccount = data_user;
         this.populateForm();
+        
+        this.populateCountryDropdown();
     }
     
     
@@ -447,7 +551,7 @@ export function PageCreateOrJoinAccount(input_settings){
                     break;
                 }
                 
-                case  SOCIAL_MEDIA.FACEBOOK:{
+                case  SOCIAL_MEDIA.TIKTOK:{
                     html_greetings = `
                     Hello <span>${user_name}</span>, you have Tiktok Account to SuperPig.  
                     Please choose an option to continue.
@@ -473,6 +577,23 @@ export function PageCreateOrJoinAccount(input_settings){
         }
         
         
+        // Validate country if joint creation is enabled
+        if (jointAccountPigFarmCreate > 0) {
+            const countryHid = elemCountrySelect ? elemCountrySelect.value : '';
+            if (!countryHid || countryHid === '') {
+                if (elemInvalidCountryShow) {
+                    elemInvalidCountryShow.style.display = 'block';
+                }
+                return;
+            } else {
+                if (elemInvalidCountryShow) {
+                    elemInvalidCountryShow.style.display = 'none';
+                }
+            }
+        }
+    
+        
+        
         const user_hid      = curDataUserAccount.hid;
         const base_url      = window.location.origin;
 
@@ -484,6 +605,11 @@ export function PageCreateOrJoinAccount(input_settings){
             
         };
         
+        if (jointAccountPigFarmCreate > 0){
+            const country_hid = elemCountrySelect.value;
+            
+            post_data.country_hid = country_hid;
+        }
       
         
         let url = `${base_url}/account/register`
@@ -514,12 +640,24 @@ export function PageCreateOrJoinAccount(input_settings){
                     
                     const data_user_account = response.user_account;
 
-                    
-                    const goto_page_id   = PAGE_ID.ADD_FARM;
-                    const page_container = parentObj.getPageContainer(goto_page_id);
+                    if (jointAccountPigFarmCreate == 0){
+                        // This is the old flow, will open to Add Pig Farm page
                         
-                    parentObj.showThisPage(page_container);
-                    parentObj.pageAddFarm.show(data_user_account);
+                        const goto_page_id   = PAGE_ID.ADD_FARM;
+                        const page_container = parentObj.getPageContainer(goto_page_id);
+                            
+                        parentObj.showThisPage(page_container);
+                        parentObj.pageAddFarm.show(data_user_account);
+                    }
+                    
+                    else{
+                        // At this point, the account is created, pig_farm is created
+                        // the user has already an assigned farm;
+                        // The user access_token shoudl be already saved in local storage
+                        // or cookies.
+                        
+                        window.location.href = `/app`;
+                    }
                 }
                 else{
                     let error_code = response.result.code;
