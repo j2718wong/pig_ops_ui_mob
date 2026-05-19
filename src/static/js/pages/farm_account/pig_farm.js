@@ -133,6 +133,9 @@ export function PigFarm(_navigation){
     this.dataLastFeedBalance    = null;
     
     
+    this.dataSowDueChecklist    = null;
+    
+    
     this.managerSowBoar         = new ManagerSowBoar({
         navigation:             navigation,
         parentObj:              this
@@ -160,7 +163,9 @@ export function PigFarm(_navigation){
             farmFeedBuyList:    thisObj.dataFarmFeedBuyList,
             summaryReportList:  thisObj.dataSummaryReportList,
             
-            lastFeedBalance:    thisObj.dataLastFeedBalance
+            lastFeedBalance:    thisObj.dataLastFeedBalance,
+            
+            sowDueChecklist:    thisObj.dataSowDueChecklist
         }
     }
     
@@ -198,6 +203,8 @@ export function PigFarm(_navigation){
             thisObj.dataSummaryReportList   = data.summaryReportList;
             
             thisObj.dataLastFeedBalance     = data.lastFeedBalance;
+            
+            thisObj.dataSowDueChecklist     = data.sowDueChecklist;
         }
     }
     
@@ -299,6 +306,13 @@ export function PigFarm(_navigation){
         console.log('\n\ninitializeFarmData');
         console.log(data);
 
+        
+        if (data.sow_due_chklst){
+            this.dataSowDueChecklist = data.sow_due_chklst;
+        }
+        else{
+            this.dataSowDueChecklist = null;
+        }
         
             
         if ('acc_pig_ops' in data){

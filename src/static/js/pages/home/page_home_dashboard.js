@@ -27,6 +27,7 @@ import {formatDate,
         
         
 import {ManagerPwa}             from './manager_pwa.js'
+import {PigFarmSowDueChecklist} from './pig_farm_sow_due_checklist.js'
 
 
 export function PageHomeDashBoard(input_settings){
@@ -162,9 +163,67 @@ export function PageHomeDashBoard(input_settings){
     });
     
     
+    let sowDueChecklist         = new PigFarmSowDueChecklist({
+        navigation:             navigation,
+        parentObj:              thisObj,
+        elemDivContainer:       elemDivContainer
+    });
+    
+    
     this.init = function(){
         this.render();
         this.afterHtmlRender();
+    }
+    
+    
+    this._writeInlineStyle = function(){
+        const html = `
+        <style>
+        /* Add to your main CSS */
+        .checklist-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .checklist-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .checklist-table tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .checklist-table tr.checked {
+            background-color: #f0fdf4;
+        }
+
+        .checklist-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .checklist-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: #2e7d64;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .checklist-label {
+            display: block;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .checklist-label.checked {
+            color: #28a745;
+            text-decoration: line-through;
+        }
+        </style>`;
+        
+        return html;
     }
     
     
@@ -201,10 +260,16 @@ export function PageHomeDashBoard(input_settings){
         elemIdDebug             = `${settings.uniqueKey}-debug`;
         
         
+        const html_style        = thisObj._writeInlineStyle();
+        
         const html_install_btn  = managerPwa.getHtml();
 
+        const html_sow_due_checklist = sowDueChecklist.getHtml();
         
         const html = `
+    ${html_style}
+    
+        
     <div class="dashboard">
         
         <div class="customer-header">
@@ -276,7 +341,10 @@ export function PageHomeDashBoard(input_settings){
             <div class="section-title">
                 <span>⏳</span><span id="${elemIdLabelExpectingSows}">Expecting next 7 days</span>
             </div>
+            
             <div class="sow-name-pills" id="${elemIdExpectingSows}"></div>
+        
+            ${html_sow_due_checklist}
         </div>
 
         
@@ -341,6 +409,7 @@ export function PageHomeDashBoard(input_settings){
         
         
         managerPwa.afterHtmlRender();
+        sowDueChecklist.afterHtmlRender();
     }
     
     
@@ -752,6 +821,18 @@ export function PageHomeDashBoard(input_settings){
             elemExpectingSowsShow.style.display = 'block';
             elemExpectingSows.innerHTML = '';
             
+
+            // Check PigFarm sow due checklist is available
+            const data_checklist = navigation.pigFarm.dataSowDueChecklist;
+            
+            
+            if (data_checklist && data_checklist.length > 0){
+                sowDueChecklist.showChecklistBtn();
+            }
+            else{
+                sowDueChecklist.hideChecklistBtn();
+            }
+
 
             let index = 0;
             for (index = 0; index < expecting_sows.length; index++){
