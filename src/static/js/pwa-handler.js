@@ -51,3 +51,103 @@ if (isIOS && !isIOSStandalone) {
     // Android/Chrome: Use beforeinstallprompt
     console.log('Android/Chrome - waiting for beforeinstallprompt');
 }
+
+
+
+
+
+function isInAppBrowser() {
+    const ua = navigator.userAgent;
+    
+    
+    // Standard WebView detection
+    const isWebView = /FBAN|FBAV|Instagram|Line|Twitter|WhatsApp|Snapchat/.test(ua);
+    
+    // Additional detection for iOS WebView
+    const isIOSWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(ua);
+    
+    // Android WebView detection
+    const isAndroidWebView = /wv/.test(ua);
+    
+    return isWebView || isIOSWebView || isAndroidWebView;
+}
+
+
+function showOpenInBrowserModal() {
+    if (document.getElementById('browser-warning-modal')) return;
+    
+    const modal = document.createElement('div');
+    modal.id = 'browser-warning-modal';
+    modal.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 100000; display: flex; align-items: center; justify-content: center;">
+            <div style="background: white; border-radius: 20px; max-width: 340px; width: 85%; padding: 24px; text-align: center;">
+                <div style="font-size: 48px;">🌐</div>
+                <h3 style="margin: 12px 0 8px; color: #1e3a8a;">Open in Browser</h3>
+                <p style="color: #666; font-size: 14px; margin-bottom: 16px;">
+                    Please open SuperPig in <strong>Chrome, Firefox or Safari</strong><br>
+                    so you can install the App after signup.
+                </p>
+                
+                <div style="background: #f0f2f5; border-radius: 8px; padding: 12px; margin: 16px 0;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                        <code style="font-size: 14px; word-break: break-all; color: #1e3a8a;">superpig.jsysdev.com</code>
+                        <button id="copy-link-btn" style="background: #1e3a8a; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <ol style="text-align: left; color: #666; font-size: 13px; margin: 16px 0; padding-left: 20px;">
+                    <li style="margin: 6px 0;">Tap <strong>⋯</strong> (menu) or <strong>📤</strong> (share)</li>
+                    <li style="margin: 6px 0;">Select <strong>"Open in Chrome"</strong> or <strong>"Safari"</strong></li>
+                    <li style="margin: 6px 0;">Sign up and install SuperPig</li>
+                </ol>
+                
+                <button id="close-warning-modal" style="background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 30px; font-size: 16px; cursor: pointer;">
+                    Got it
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Copy link button
+    const copyBtn = modal.querySelector('#copy-link-btn');
+    if (copyBtn) {
+        copyBtn.onclick = () => {
+            const link = 'https://superpig.jsysdev.com';
+            navigator.clipboard.writeText(link).then(() => {
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            });
+        };
+    }
+    
+    // Close button
+    const closeBtn = modal.querySelector('#close-warning-modal');
+    if (closeBtn) {
+        closeBtn.onclick = () => modal.remove();
+    }
+    
+    // Close when clicking outside
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    };
+}
+
+
+
+// Check and show modal
+if (isInAppBrowser()) {
+    // Wait for page to load
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(showOpenInBrowserModal, 500);
+    });
+}
+
+
