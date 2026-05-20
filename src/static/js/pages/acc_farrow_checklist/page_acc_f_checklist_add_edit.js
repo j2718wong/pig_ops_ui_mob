@@ -1,38 +1,26 @@
-// page_boar_ext_mate_add_edit.js
+// page_acc_f_checklist_add_edit.js
 
-// December 23, 2025
+// May 20, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
 'use strict';
 
-import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
-        PAGE_ID,
-        SOW_STATUS,
-        PIG_PROD_TYPE,
-        PIG_OPERATION_TYPE,
-        PROD_STATUS,
-        SUPPLIER_TYPE}          from '../../../constants.js';
-
-
-import {SelectBoarGesta}        from '../../production/gesta_lacta/components/select_boar_gesta.js';
-
-import {UiInputDatePicker}      from '../../common/ui/input_datepicker.js';
-import {UiInputTextWithCounter} from '../../common/ui/input_text_with_counter.js';
-
-import {ComponentAccPigBuyer}   from '../../production/harvest/comp_acc_pig_buyer.js';   
-
-
-import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
+        PAGE_ID}                from '../../constants.js';
 
 
 
-export function PageBoarExtMateAddEdit(input_settings){
+import {UiInputTextWithCounter} from '../common/ui/input_text_with_counter.js';
+
+
+
+export function PageAccFChecklistAddEdit(input_settings){
     PageViewPigFarmPage.call(this);
     
-    const TAG                   = 'PageBoarExtMateAddEdit';
+    const TAG                   = 'PageAccFChecklistAddEdit';
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -52,9 +40,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
     let elemIdBtnClose          = null;
     
-    let componentSelectBoar     = null;
-    let elemUiDateMating        = null;
-    let componentBoarCustomer   = null;
+
     let elemUiNotes             = null;
     
     let elemIdServerErrorMsg    = null;
@@ -85,54 +71,16 @@ export function PageBoarExtMateAddEdit(input_settings){
         elemIdBtnClose          = `${settings.uniqueKey}-select-close`;
         
         
-        componentSelectBoar     = new SelectBoarGesta({
-            navigation:         navigation,
-            uniqueKey:          `${settings.uniqueKey}-select-boar`,
-            
-            pageDivContainer:   elemDivContainer,
-            
-            labelSelect:        'Select Boar',
-            helpText:           null
-        });
-        
-        
-        elemUiDateMating        = new UiInputDatePicker({
-            uniqueKey:          `${settings.uniqueKey}-date-mating`,
-        
-            textLabel:          'Date Mating',
-            isRequired:         true,
-            invalidFeedBack:    'Please input date.',
-            helpText:           null
-        });
-        
-        
-        componentBoarCustomer   = new ComponentAccPigBuyer({
-            navigation:         navigation,
-            parentObj:          thisObj,
-            uniqueKey:          `${settings.uniqueKey}-boar-customer`,
-            
-            isBoarCustomer:     true,
-
-            titleExpandSection: 'Add Boar Customer',
-            htmlExpandSection:  null,
-            labelBtnExpandSave: 'Save Boar Customer',
-            
-            labelSelect:        'Select Boar Customer',
-            helpText:           null
-        });
-       
-       
-    
         
         elemUiNotes             = new UiInputTextWithCounter({
             uniqueKey:          `${settings.uniqueKey}-notes`,
             
             isTextArea:         true,
             className:          'form-group-text-area',
-            textLabel:          'Notes',
+            textLabel:          'Description',
             isRequired:         false,
-            textMaxChars:       160,
-            rows:               3,
+            textMaxChars:       50,
+            rows:               2,
             helpText:           null  
         });
         
@@ -146,10 +94,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         elemIdBtnSave           = `${settings.uniqueKey}-save`;
         
         
-        const html_select_boar  = componentSelectBoar.getHtml();
-        const html_date_mating  = elemUiDateMating.getHtml();
-        const html_customer     = componentBoarCustomer.getHtml();
-        
+      
         const html_notes        = elemUiNotes.getHtml();
         
         const html =`
@@ -158,8 +103,8 @@ export function PageBoarExtMateAddEdit(input_settings){
 <div class="form-container">
 
     <div class="modal-header gestating">
-        <h5 class="modal-title" id="add-entry-acc-pig-ops-modal-label">
-            <i class="fas fa-plus me-2"></i><span>Add Boar External Mate</span>
+        <h5 class="modal-title">
+            <i class="fas fa-plus me-2"></i><span>Add Farrowing Checklist</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
@@ -167,15 +112,6 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     <div class="modal-body">
         
-        
-        ${html_select_boar}
-
-        
-        ${html_date_mating}
-        
-        
-        ${html_customer}
-       
         
         ${html_notes}
         
@@ -204,9 +140,6 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
-        componentSelectBoar.afterHtmlRender();
-        elemUiDateMating.afterHtmlRender();
-        componentBoarCustomer.afterHtmlRender();
         elemUiNotes.afterHtmlRender();
         
         this._findElements();
@@ -243,7 +176,7 @@ export function PageBoarExtMateAddEdit(input_settings){
                 showOptions.go_back_page);
             
             
-            // This will not redraw the previous page; only shwo container
+            // This will not redraw the previous page; only show container
             navigation.showThisPage(showOptions.go_back_page);
             
             if (APPLICATION.DEBUG_NAV_HISTORY){
@@ -278,12 +211,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     this._resetForm = function(){
         // Clear previous Form values and validation classes
         
-      
         
-        elemUiDateMating.reset();
-        
-        componentSelectBoar.reset();
-        componentBoarCustomer.reset();
         elemUiNotes.reset();
         
     }
@@ -292,8 +220,6 @@ export function PageBoarExtMateAddEdit(input_settings){
     this.show = function(options){
         thisObj._resetForm();
         
-        componentSelectBoar.beforeShow();
-        componentBoarCustomer.beforeShow();
         
         showOptions = options;
     }
@@ -317,43 +243,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         let validation      = 0;
         
 
-        let input_boar_hid      = componentSelectBoar.getValue();
-        let input_date_mating   = elemUiDateMating.getValue();
-        let input_customer_hid  = componentBoarCustomer.getValue();
         let input_notes         = elemUiNotes.getValue();
-        
-        
-        input_elem          = componentSelectBoar.getElemSelect();
-        if (input_boar_hid == '0'  || input_boar_hid == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-            
-        
-        input_elem          = elemUiDateMating.getElemText();
-        
-        // Convert date to YYYY-MM-DD format
-        const dt_mating     = new Date(input_date_mating);
-        if (isNaN(dt_mating.getTime())){
-            validation      = -1;
-            addValidationClassToElem(input_elem, validation);
-            if (validation != 0) {return;}
-        }
-        
-        const dt_mating_s   = dt_mating.toLocaleDateString('en-CA');
-        validation          = 0
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
-        
-        input_elem          = componentBoarCustomer.getElemSelect();
-        if (input_customer_hid == '0'  || input_customer_hid == '-1'){
-            validation = -1;
-        }
-        addValidationClassToElem(input_elem, validation);
-        if (validation != 0) {return;}
-        
         
         
         // Final check before sending request
@@ -368,12 +258,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         
         // send post request
         const post_data = {
-            'uhid':             user_hid,
-            'boar_hid':         input_boar_hid,
-            'boar_customer_hid': input_customer_hid,
-            'notes':            input_notes,
-            
-            'date_mate':        dt_mating_s
+            'name':         input_notes
         };
         
        
@@ -402,7 +287,7 @@ export function PageBoarExtMateAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const go_back_page_id = PAGE_ID.BOAR_EXT_MATE_LIST;
+                    const go_back_page_id = PAGE_ID.ACC_FARROW_CHECKLIST;
                     const go_back_page = navigation.getPageContainer(go_back_page_id);
                     
                     navigation.managerNavHistory.removeFromNavHistoryHead(

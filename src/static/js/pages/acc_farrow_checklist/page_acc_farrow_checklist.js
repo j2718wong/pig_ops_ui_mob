@@ -405,7 +405,7 @@ export function PageAccFarrowChecklist(input_settings){
     
     this.onClickAddEntry = function(){
         // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT);
+        const next_page = navigation.getPageContainer(PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -415,7 +415,7 @@ export function PageAccFarrowChecklist(input_settings){
         
         
         // Show Page
-        const go_back_page_id = PAGE_ID.BOAR_EXT_MATE_LIST;
+        const go_back_page_id = PAGE_ID.ACC_FARROW_CHECKLIST;
         const go_back_page = navigation.getPageContainer(go_back_page_id);
         
         const options ={
@@ -423,7 +423,7 @@ export function PageAccFarrowChecklist(input_settings){
             callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         }
-        navigation.pageBoarExtMateAddEdit.show(options);
+        navigation.pageAccFChecklistAddEdit.show(options);
     }
     
     
