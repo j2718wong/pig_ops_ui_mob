@@ -575,11 +575,11 @@ export function ManagerNavLinks(_navigation) {
         });
 
         elemDesktopNavOperations4.addEventListener('click', function() {
-           thisObj.onClickNavPigDead(false);
+            thisObj.onClickNavPigDead(false);
         });
 
         elemDesktopNavOperations5.addEventListener('click', function() {
-           thisObj.onClickNavSummaryReports(false);
+            thisObj.onClickNavFarrowingChecklist(false);
         });
 
         
@@ -593,7 +593,7 @@ export function ManagerNavLinks(_navigation) {
         });
           
         elemDesktopNavFinancials3.addEventListener('click', function() {
-            thisObj.onClickNavNonFeedsExpenses(false);
+            thisObj.onClickNavSummaryReports(false);
         });  
 
 
@@ -726,7 +726,7 @@ export function ManagerNavLinks(_navigation) {
         });
 
         elemMobileNavOperations5.addEventListener('click', function() {
-            thisObj.onClickNavSummaryReports(true);
+            thisObj.onClickNavFarrowingChecklist(true);
         });
 
 
@@ -739,7 +739,7 @@ export function ManagerNavLinks(_navigation) {
         });  
          
         elemMobileNavFinancials3.addEventListener('click', function() {
-            thisObj.onClickNavNonFeedsExpenses(true);
+            thisObj.onClickNavSummaryReports(true);
         });   
             
             
@@ -945,7 +945,7 @@ export function ManagerNavLinks(_navigation) {
             elemDesktopNavLabelOperations4.textContent = translated_nav_links.Operations4 || "Pig Dead";
         }
         if (elemDesktopNavLabelOperations5) {
-            elemDesktopNavLabelOperations5.textContent = translated_nav_links.Operations5 || "Reports";
+            elemDesktopNavLabelOperations5.textContent = translated_nav_links.Operations5 || "Farrowing Checklist";
         }
         
         // Desktop financials submenu labels
@@ -956,7 +956,7 @@ export function ManagerNavLinks(_navigation) {
             elemDesktopNavLabelFinancials2.textContent = translated_nav_links.Financials2 || "Feeds Expenses";
         }
         if (elemDesktopNavLabelFinancials3) {
-            elemDesktopNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "";
+            elemDesktopNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Reports";
         }
         
         // Desktop account lists submenu labels
@@ -1064,6 +1064,7 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelSowBoarGilt5.textContent = translated_nav_links.SowBoarGilt5 || "Parent Trace";
         }
         
+        
         // Mobile operations submenu labels
         if (elemMobileNavLabelOperations1) {
             elemMobileNavLabelOperations1.textContent = translated_nav_links.Operations1 || "Feed Balance";
@@ -1078,8 +1079,9 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelOperations4.textContent = translated_nav_links.Operations4 || "Pig Dead";
         }
         if (elemMobileNavLabelOperations5) {
-            elemMobileNavLabelOperations5.textContent = translated_nav_links.Operations5 || "Reports";
+            elemMobileNavLabelOperations5.textContent = translated_nav_links.Operations5 || "Farrowing Checklist";
         }
+        
         
         // Mobile financials submenu labels
         if (elemMobileNavLabelFinancials1) {
@@ -1089,8 +1091,9 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelFinancials2.textContent = translated_nav_links.Financials2 || "Feeds Expenses";
         }
         if (elemMobileNavLabelFinancials3) {
-            elemMobileNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "";
+            elemMobileNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Reports";
         }
+        
         
         // Mobile account lists submenu labels
         if (elemMobileNavLabelAccountLists1) {
@@ -1337,13 +1340,18 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
+    this.onClickNavFarrowingChecklist = function(is_mobile, show_options){
+        const next_page = navigation.getPageContainer(PAGE_ID.ACC_FARROW_CHECKLIST);
         
-    this.onClickNavSummaryReports = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.SUMMARY_REPORT_LIST);
-    
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
         navigation.showThisPage(next_page);
-        navigation.pageSummaryReportList.show(show_options);
+        navigation.pageAccFarrowChecklist.show();
     }
+        
         
         
     this.onClickNavFeedCalculator = function(is_mobile, show_options){
@@ -1378,12 +1386,18 @@ export function ManagerNavLinks(_navigation) {
         navigation.pagePigFarmFeedBuyList.show();
     }
         
-        
+    
+    this.onClickNavSummaryReports = function(is_mobile, show_options){
+        const next_page = navigation.getPageContainer(PAGE_ID.SUMMARY_REPORT_LIST);
+    
+        navigation.showThisPage(next_page);
+        navigation.pageSummaryReportList.show(show_options);
+    }
+    
+    
     this.onClickNavNonFeedsExpenses = function(is_mobile, show_options){
         console.log('onClickNavNonFeedsExpenses not yet implemented; is_mobile=' + is_mobile);
     }
-        
-        
         
         
         
@@ -1480,9 +1494,4 @@ export function ManagerNavLinks(_navigation) {
         navigation.pageSystemStats.show();
     }
 
-
-    
-    
-    
-    
 }

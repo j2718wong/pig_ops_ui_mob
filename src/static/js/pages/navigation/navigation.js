@@ -102,6 +102,9 @@ import {PageFarrowingSchedule}      from '../pig_farm/page_farrowing_schedule.js
 
 import {PageProdPigDeadList}        from '../production/pig_dead/page_prod_pig_dead_list.js';
 import {PagePigDeadAddEdit}         from '../production/pig_dead/page_pig_dead_add_edit.js';
+
+import {PageAccFarrowChecklist}     from '../acc_farrow_checklist/page_acc_farrow_checklist.js';
+
 import {PageSummaryReportList}      from '../reports/page_summary_report_list.js';
 import {PageSummaryReportAdd}       from '../reports/page_summary_report_add.js';
 
@@ -605,6 +608,13 @@ export function Navigation(){
         uniqueKey:              'pig-dead-add-edit'
     });
 
+
+    this.pageAccFarrowChecklist = new PageAccFarrowChecklist({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACC_FARROW_CHECKLIST),
+        uniqueKey:              'acc-farrow-checklist'
+    });
+
     
     this.pageSummaryReportList = new PageSummaryReportList({
         navigation:             this,
@@ -1067,12 +1077,17 @@ export function Navigation(){
         this.pagePigDeadList.init();
         this.pagePigDeadAddEdit.init();
         
-        this.pageSummaryReportList.init();
-        this.pageSummaryReportAdd.init();
+        
+        this.pageAccFarrowChecklist.init();
+        
         
         
         this.pageProdSalesList.init();
         this.pageProdSalesEntry.init();
+        
+        this.pageSummaryReportList.init();
+        this.pageSummaryReportAdd.init();
+        
         
         
         this.pageAccOpsSettingsEdit.init();

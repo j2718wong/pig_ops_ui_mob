@@ -94,13 +94,17 @@ export function NavPageContainers(_navigation){
     const elemIdContPigDeadList         = 'container-pig-dead-list';
     const elemIdContPigDeadAddEdit      = 'container-pig-dead-add-edit';
     
-    const elemIdContSummaryReportList   = 'container-summary-report-list';
-    const elemIdContSummaryReportAddEdit= 'container-summary-report-add-edit';
+    const elemIdContAccFChecklist       = 'container-farrowing-checklist';
+    const elemIdContAccFChecklistAddEdit= 'container-f-checklist-add-edit';
     
     
     
     const elemIdContProdSalesList       = 'container-prod-sales-list';
     const elemIdContProdSalesEntry      = 'container-prod-sales-entry';
+    
+    const elemIdContSummaryReportList   = 'container-summary-report-list';
+    const elemIdContSummaryReportAddEdit= 'container-summary-report-add-edit';
+    
     
     
     const elemIdContAccOpsSettingsEdit  = 'container-acc-ops-settings-edit'; 
@@ -148,7 +152,7 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.MY_ACCOUNT]             = document.getElementById(elemIdContMyAccount);
         this.containers[PAGE_ID.CUSTOMER_PRICING]       = document.getElementById(elemIdContCustomerPricing);
         this.containers[PAGE_ID.BILL_NEW]               = document.getElementById(elemIdContNewBill);
-        this.containers[PAGE_ID.USER_SETTINGS]               = document.getElementById(elemIdContUserSettings);
+        this.containers[PAGE_ID.USER_SETTINGS]          = document.getElementById(elemIdContUserSettings);
         
         
         this.containers[PAGE_ID.ACCOUNT_DISABLED]       = document.getElementById(elemIdContAccountDisabled);
@@ -208,19 +212,21 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.PIG_DEAD_LIST]          = document.getElementById(elemIdContPigDeadList);
         this.containers[PAGE_ID.PIG_DEAD_ADD_EDIT]      = document.getElementById(elemIdContPigDeadAddEdit);
         
-        this.containers[PAGE_ID.SUMMARY_REPORT_LIST]    = document.getElementById(elemIdContSummaryReportList);
-        this.containers[PAGE_ID.SUMMARY_REPORT_ADD_EDIT]= document.getElementById(elemIdContSummaryReportAddEdit);
+        this.containers[PAGE_ID.ACC_FARROW_CHECKLIST]   = document.getElementById(elemIdContAccFChecklist);
+        this.containers[PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT] = document.getElementById(elemIdContAccFChecklistAddEdit);
         
 
         
         this.containers[PAGE_ID.PROD_SALES_LIST]        = document.getElementById(elemIdContProdSalesList);
         this.containers[PAGE_ID.PROD_SALES_ENTRY]       = document.getElementById(elemIdContProdSalesEntry);
     
-    
-    
         this.containers[PAGE_ID.FARM_FEED_BUY_LIST]       = document.getElementById(elemIdContFarmFeedBuyList);
         this.containers[PAGE_ID.FARM_FEED_BUY_ADD_EDIT]   = document.getElementById(elemIdContFarmFeedBuyAddEdit);
         this.containers[PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT] = document.getElementById(elemIdContFeedBuyItemAddEdit);
+        
+        this.containers[PAGE_ID.SUMMARY_REPORT_LIST]    = document.getElementById(elemIdContSummaryReportList);
+        this.containers[PAGE_ID.SUMMARY_REPORT_ADD_EDIT]= document.getElementById(elemIdContSummaryReportAddEdit);
+        
         
         
         
@@ -266,13 +272,14 @@ export function NavPageContainers(_navigation){
             this.containers[PAGE_ID.FARROWING_SCHEDULE],
             this.containers[PAGE_ID.BOAR_EXT_MATE_LIST],
             this.containers[PAGE_ID.PIG_DEAD_LIST],
-            this.containers[PAGE_ID.SUMMARY_REPORT_LIST]
+            this.containers[PAGE_ID.ACC_FARROW_CHECKLIST]
         ];
         
         
         CONTAINER_GROUP_FINANCIALS      = [
             this.containers[PAGE_ID.PROD_SALES_LIST],
-            this.containers[PAGE_ID.FARM_FEED_BUY_LIST]
+            this.containers[PAGE_ID.FARM_FEED_BUY_LIST],
+            this.containers[PAGE_ID.SUMMARY_REPORT_LIST]
         ];
         
         
@@ -297,7 +304,7 @@ export function NavPageContainers(_navigation){
             { container: this.containers[PAGE_ID.MY_ACCOUNT],             id: PAGE_ID.MY_ACCOUNT },
             { container: this.containers[PAGE_ID.CUSTOMER_PRICING],       id: PAGE_ID.CUSTOMER_PRICING },
             { container: this.containers[PAGE_ID.BILL_NEW],               id: PAGE_ID.BILL_NEW },
-            { container: this.containers[PAGE_ID.USER_SETTINGS],               id: PAGE_ID.USER_SETTINGS },
+            { container: this.containers[PAGE_ID.USER_SETTINGS],          id: PAGE_ID.USER_SETTINGS },
             
             
             { container: this.containers[PAGE_ID.HOME],                   id: PAGE_ID.HOME },
@@ -346,9 +353,10 @@ export function NavPageContainers(_navigation){
                 
             { container: this.containers[PAGE_ID.PIG_DEAD_LIST],          id: PAGE_ID.PIG_DEAD_LIST },
             { container: this.containers[PAGE_ID.PIG_DEAD_ADD_EDIT],      id: PAGE_ID.PIG_DEAD_ADD_EDIT },
-                
-            { container: this.containers[PAGE_ID.SUMMARY_REPORT_LIST],    id: PAGE_ID.SUMMARY_REPORT_LIST },
-            { container: this.containers[PAGE_ID.SUMMARY_REPORT_ADD_EDIT],id: PAGE_ID.SUMMARY_REPORT_ADD_EDIT },
+            
+            { container: this.containers[PAGE_ID.ACC_FARROW_CHECKLIST],   id: PAGE_ID.ACC_FARROW_CHECKLIST },
+            { container: this.containers[PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT],id: PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT },
+            
                 
             
             { container: this.containers[PAGE_ID.PROD_SALES_LIST],        id: PAGE_ID.PROD_SALES_LIST },
@@ -357,6 +365,12 @@ export function NavPageContainers(_navigation){
             { container: this.containers[PAGE_ID.FARM_FEED_BUY_LIST],     id: PAGE_ID.FARM_FEED_BUY_LIST },
             { container: this.containers[PAGE_ID.FARM_FEED_BUY_ADD_EDIT], id: PAGE_ID.FARM_FEED_BUY_ADD_EDIT },
             { container: this.containers[PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT], id: PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT },
+            
+            { container: this.containers[PAGE_ID.SUMMARY_REPORT_LIST],    id: PAGE_ID.SUMMARY_REPORT_LIST },
+            { container: this.containers[PAGE_ID.SUMMARY_REPORT_ADD_EDIT],id: PAGE_ID.SUMMARY_REPORT_ADD_EDIT },
+            
+            
+            
                 
             { container: this.containers[PAGE_ID.ACC_OPS_SETTINGS_EDIT],  id: PAGE_ID.ACC_OPS_SETTINGS_EDIT },
             { container: this.containers[PAGE_ID.ACC_PIG_OPS_LIST],       id: PAGE_ID.ACC_PIG_OPS_LIST },
@@ -514,14 +528,13 @@ export function NavPageContainers(_navigation){
             case PAGE_ID.PIG_DEAD_ADD_EDIT:
                 return elemIdContPigDeadAddEdit;
                 
+            case PAGE_ID.ACC_FARROW_CHECKLIST:
+                return elemIdContAccFChecklist;
+            
+            case PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT:
+                return elemIdContAccFChecklistAddEdit;
         
-            case PAGE_ID.SUMMARY_REPORT_LIST:
-                return elemIdContSummaryReportList;
                 
-            case PAGE_ID.SUMMARY_REPORT_ADD_EDIT:
-                return elemIdContSummaryReportAddEdit;
-
-        
                 
             case PAGE_ID.PROD_SALES_LIST:
                 return elemIdContProdSalesList;
@@ -542,6 +555,14 @@ export function NavPageContainers(_navigation){
             case PAGE_ID.PROD_FEED_BAL_ADD_EDIT:
                 return elemIdContProdFeedBalAddEdit;
                 
+            case PAGE_ID.SUMMARY_REPORT_LIST:
+                return elemIdContSummaryReportList;
+                
+            case PAGE_ID.SUMMARY_REPORT_ADD_EDIT:
+                return elemIdContSummaryReportAddEdit;
+
+            
+            
                 
             case PAGE_ID.ACC_OPS_SETTINGS_EDIT:
                 return elemIdContAccOpsSettingsEdit;
@@ -680,6 +701,9 @@ export function NavPageContainers(_navigation){
                                                                             
             case this.containers[PAGE_ID.PIG_DEAD_LIST]             :{return "PageContPigDeadList";}
             case this.containers[PAGE_ID.PIG_DEAD_ADD_EDIT]         :{return "PageContPigDeadAddEdit";}
+            
+            case this.containers[PAGE_ID.ACC_FARROW_CHECKLIST]      :{return "PageContAccFarrowChecklist";}
+            case this.containers[PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT]  :{return "PageContAccFarrowChecklistAddEdit";}
                                                                         
                                                                         
             case this.containers[PAGE_ID.SUMMARY_REPORT_LIST]       :{return "PageContSummaryReportList";}

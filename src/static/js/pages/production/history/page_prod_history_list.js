@@ -450,7 +450,7 @@ export function PageProdHistoryList(input_settings){
         if (settings.isProdSalesHistory){
             
             componentNavLeftRight.callbackNavLeft = function(){
-                navigation.managerNavLinks.onClickNavFeedsExpenses();
+                navigation.managerNavLinks.onClickNavSummaryReports();
             };
             
               

@@ -171,7 +171,7 @@ export function PageProdPigDeadList(input_settings){
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavSummaryReports();
+            navigation.managerNavLinks.onClickNavFarrowingChecklist();
         };
         
         

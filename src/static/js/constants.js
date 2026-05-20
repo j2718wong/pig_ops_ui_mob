@@ -171,6 +171,7 @@ const PAGE_ID = {
     
     PROD_NOT_PREGNANT_LIST: 45,
     
+    
     PROD_SALES_LIST:        48,
     PROD_SALES_ENTRY:       49,
     
@@ -186,15 +187,18 @@ const PAGE_ID = {
     PIG_DEAD_LIST:          55,
     PIG_DEAD_ADD_EDIT:      56,
     
-    SUMMARY_REPORT_LIST:    57,
-    SUMMARY_REPORT_ADD_EDIT:58,
-    
-    
+    ACC_FARROW_CHECKLIST:   57,
+    ACC_F_CHECKLIST_ADD_EDIT: 58,   
+
     
     
     FARM_FEED_BUY_LIST:     70,
     FARM_FEED_BUY_ADD_EDIT: 71,
     FARM_FEED_BUY_ITEM_ADD_EDIT: 72,
+    
+    SUMMARY_REPORT_LIST:    73,
+    SUMMARY_REPORT_ADD_EDIT:74,
+    
     
     
     ACC_OPS_SETTINGS_EDIT:  80,

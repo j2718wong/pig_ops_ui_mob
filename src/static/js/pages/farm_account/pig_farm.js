@@ -974,4 +974,62 @@ export function PigFarm(_navigation){
  
     
     
+    this.requestDataPigFarmSowDueChecklist = function(callback_success,
+            elem_show_error){
+        
+        const pig_farm_hid = thisObj.getPigFarmHid();
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pf_sow_due_chklst?pfhid=${pig_farm_hid}`;
+        
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    let checklist = response.data;
+                    if (checklist.length == 0){checklist = null;}
+                    
+                    thisObj.dataSowDueChecklist = checklist;
+                    
+                    if (callback_success){callback_success();}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+ 
+    
+    
 }

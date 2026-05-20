@@ -181,10 +181,12 @@ export function PigFarmSowDueChecklist(input_settings){
         
         let html = '<div style="display: flex; flex-direction: column; gap: 2px;">';
         
+
+        
         for (let i = 0; i < data.length; i++) {
             const item = data[i];
             const itemId = item.hid || item.id;
-            const isChecked = item.dt_check !== null && item.dt_check !== undefined;
+            const isChecked = item.dt_checked !== null && item.dt_checked !== undefined;
             const rowBg = i % 2 === 0 ? '#f8f9fa' : '#ffffff';
             
             checkboxStates[itemId] = isChecked;
@@ -275,14 +277,15 @@ export function PigFarmSowDueChecklist(input_settings){
         
      
     this.updateChecklistItem = function(itemId, isChecked) {
-        const data = {
-            item_hid: itemId,
-            is_checked: isChecked ? 1 : 0
+        const post_data = {
+            checklist_item_hid: itemId,
+            is_checked:         isChecked ? 1 : 0
         };
+        
         
         const bearer_token = localStorage.getItem('access_token');
         const base_url = window.location.origin;
-        const url = `${base_url}/pig_farm/sow_due_checklist/update`;
+        const url = `${base_url}/pf_sow_due_chklst_item/update`;
         
         $.ajax({
             type: 'POST',
@@ -294,11 +297,13 @@ export function PigFarmSowDueChecklist(input_settings){
             timeout: APPLICATION.REQUEST_TIMEOUT,
             url: url,
             async: true,
-            data: JSON.stringify(data),
+            data: JSON.stringify(post_data),
             success: function(response) {
-                if (response.result.num !== 0) {
-                    console.error('Failed to update checklist item');
+                if (response.result.num == 0) {
+                    navigation.pigFarm.requestDataPigFarmSowDueChecklist();
                 }
+                
+                
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error('Error updating checklist item:', textStatus);

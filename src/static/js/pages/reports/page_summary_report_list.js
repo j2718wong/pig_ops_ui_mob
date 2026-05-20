@@ -174,12 +174,12 @@ export function PageSummaryReportList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavPigDead();
+            navigation.managerNavLinks.onClickNavFeedsExpenses();
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavFeedBalance();
+            navigation.managerNavLinks.onClickNavProdSales();
         };
         
         
