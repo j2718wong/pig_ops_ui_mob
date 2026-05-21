@@ -252,7 +252,7 @@ export function PageAllFeedBalanceList(input_settings){
         // Request data only if needed
         if (is_to_request_data > 0){
             navigation.pigFarm.requestDataPigFarmFeedBalance(
-                null, callback_success, callback_failure);
+                null, callback_success, callback_offline, null);
         } else{
             // Display last known data
             thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);

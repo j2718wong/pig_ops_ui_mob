@@ -502,24 +502,15 @@ export function PageBoarExternalMateList(input_settings){
         
         const options ={
             is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         }
         navigation.pageBoarExtMateAddEdit.show(options);
     }
     
     
-    this.onSuccessAddEntry = function(){
-        
-    }
-    
-    
-    this.onSuccessEditEntry = function(){
-        
-    }
-    
     
     this.onClickRowEntry = function(entry_hid){
+        /*
         const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
         
         const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
@@ -537,6 +528,7 @@ export function PageBoarExternalMateList(input_settings){
         const goto_page_id   = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
         const page_container = navigation.getPageContainer(goto_page_id);
         navigation.showThisPage(page_container);
+        */ 
     }
   
     

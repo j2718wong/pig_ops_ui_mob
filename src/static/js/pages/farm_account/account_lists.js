@@ -472,7 +472,8 @@ export function AccountLists(_navigation){
     }
     
     
-    this.requestDataAccSowDueChecklist = function(callback_success, elem_show_error){
+    this.requestDataAccSowDueChecklist = function(callback_success, 
+            callback_offline, elem_show_error){
         const base_url = window.location.origin;
         const url = `${base_url}/acc_sow_due_chklst?ahid=${accountHid}`;
         
@@ -513,6 +514,13 @@ export function AccountLists(_navigation){
                     
                 }
                 else {
+                    // Check if Offline
+                    if (navigation.managerSystem.isOffLine){
+                        if (callback_offline) {callback_offline();}
+                        
+                        return;
+                    }
+                    
                     navigation.serverError.receivedErrorMessage(
                         response, elem_show_error);
                     

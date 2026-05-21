@@ -417,27 +417,11 @@ export function PageAccFarrowChecklist(input_settings){
         
         const options ={
             is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
-        }
+        };
         navigation.pageAccFChecklistAddEdit.show(options);
     }
     
-    
-    this.onSuccessAddEntry = function(){
-        const callback_success = function(data){
-            dataAccFarrowChecklist = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
-            thisObj.renderTable(dataAccFarrowChecklist);
-        };
-        
-        navigation.pigFarm.accountLists.requestDataAccSowDueChecklist(
-                callback_success, null, null);
-    }
-    
-    
-    this.onSuccessEditEntry = function(){
-        
-    }
     
     
     this.onClickRowEntry = function(entry_hid){

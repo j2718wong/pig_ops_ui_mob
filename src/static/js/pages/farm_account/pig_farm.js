@@ -819,7 +819,7 @@ export function PigFarm(_navigation){
      * 
      * */
     this.requestDataPigFarmFeedBalance = function(date_since, callback_success,
-        elem_show_error){
+            callback_offline, elem_show_error){
         
         const pig_farm_hid = thisObj.getPigFarmHid();
         
@@ -877,6 +877,13 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    
+                    return;
+                }
+                
                 navigation.serverError.serverErrorThrown(jqXHR, 
                     textStatus, errorThrown);
             }
