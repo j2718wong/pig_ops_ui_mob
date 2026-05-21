@@ -1557,11 +1557,20 @@ export function PageAllFeedBalanceAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    const go_back_page_id = PAGE_ID.ALL_FEED_BAL_LIST;
+                    const go_back_page = navigation.getPageContainer(go_back_page_id);
+                    
+                    
                     navigation.managerNavHistory.removeFromNavHistoryHead(
                         showOptions.go_back_page);
                     
-                    navigation.showThisPage(showOptions.go_back_page);
-                    navigation.pageAllFeedBalanceList.show();
+                    
+                    const options = {
+                        refresh_list: true
+                    };
+                    
+                    navigation.showThisPage(go_back_page);
+                    navigation.pageAllFeedBalanceList.show(options);
                 
                 }   
                 else{

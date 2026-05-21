@@ -76,7 +76,7 @@ export function PageAllFeedBalanceList(input_settings){
     let dtCurrentDate           = null;
     
     
-    let dataFarmFeedBalanceList     = null;
+    let dataFeedBalanceList     = null;
     
     
     this.init = function(){
@@ -207,7 +207,7 @@ export function PageAllFeedBalanceList(input_settings){
     }
     
     
-    this.show = function(){
+    this.show = function(options){
         thisObj.debugNavHistory(TAG);
         
         // Update navigation.curPageNavigated
@@ -215,31 +215,51 @@ export function PageAllFeedBalanceList(input_settings){
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
-        /*
-        // Request pig_farm data_version
         const callback_success = function(data){
-            // This is teh typical data returned
-            const data_ver_num_sow          = data[0];
-            const data_ver_num_boar         = data[1];
-            const data_ver_num_pig_prod     = data[2];
-            const data_ver_num_staff        = data[3];
-            const data_ver_num_feed_buy     = data[4];
-            const data_ver_num_feed_balance = data[5];
-            const data_ver_num_not_pregnant = data[6];
-            
-            
+            dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
+            thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
+            thisObj.renderTable(dataFeedBalanceList);
         };
-        
-        
-        navigation.pigFarm.requestPigFarmDataVerNum(null, callback_success);
-        */
-        
-        const callback_success = function(data){
-            thisObj.renderTable(data);
-            thisObj.showInfoBox(data, elemPageInfo);
+
+
+        const callback_offline = function(){
+            dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
+            if (dataFeedBalanceList){
+                // Display last known data
+                thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
+                thisObj.renderTable(dataFeedBalanceList);            
+            }
+            else{
+                // Display modal offline
+                navigation.managerSystem.showOfflineMessageModal();
+            }
         };
+   
+   
+        let is_to_request_data = 0;
         
-        navigation.pigFarm.requestDataPigFarmFeedBalance(null, callback_success);
+        dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
+        
+        if (dataFeedBalanceList == null){
+            is_to_request_data = 1;
+        } 
+        
+        if (options && options.refresh_list){
+            is_to_request_data = 1;
+        }
+        
+   
+        // Request data only if needed
+        if (is_to_request_data > 0){
+            navigation.pigFarm.requestDataPigFarmFeedBalance(
+                null, callback_success, callback_failure);
+        } else{
+            // Display last known data
+            thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
+            thisObj.renderTable(dataFeedBalanceList);
+        }
+        
+       
     }
     
      

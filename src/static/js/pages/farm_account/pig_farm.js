@@ -125,12 +125,13 @@ export function PigFarm(_navigation){
     
     this.dataStaffList          = null;
     
+    
     this.dataFarmFeedBuyList    = null;
     
     
     this.dataSummaryReportList  = null;
     
-    
+    this.dataFeedBalanceList    = null;
     this.dataLastFeedBalance    = null;
     
     
@@ -164,6 +165,7 @@ export function PigFarm(_navigation){
             farmFeedBuyList:    thisObj.dataFarmFeedBuyList,
             summaryReportList:  thisObj.dataSummaryReportList,
             
+            feedBalanceList:    thisObj.dataFeedBalanceList,
             lastFeedBalance:    thisObj.dataLastFeedBalance,
             
             sowDueChecklist:    thisObj.dataSowDueChecklist
@@ -203,6 +205,7 @@ export function PigFarm(_navigation){
             thisObj.dataFarmFeedBuyList     = data.farmFeedBuyList;
             thisObj.dataSummaryReportList   = data.summaryReportList;
             
+            thisObj.dataFeedBalanceList     = data.feedBalanceList; 
             thisObj.dataLastFeedBalance     = data.lastFeedBalance;
             
             thisObj.dataSowDueChecklist     = data.sowDueChecklist;
@@ -849,6 +852,19 @@ export function PigFarm(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
+                    thisObj.dataFeedBalanceList = response.data;
+                    
+                    // Update thisObj.dataVerNum.feed_balance
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.feed_balance;
+                        thisObj.dataVerNum.feed_balance = ver_num;
+                    }
+                    
+                    
+                    // Update local storage
+                    thisObj.saveToStorage();
+                    
+                    
                     if (callback_success){callback_success(response.data);}
                 }
                 else {
