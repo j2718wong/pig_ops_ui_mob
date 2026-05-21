@@ -561,9 +561,13 @@ export function PagePigDeadAddEdit(input_settings){
                     
                     navigation.managerNavHistory.removeFromNavHistoryHead(
                         go_back_page);
+                        
+                    const options = {
+                        refresh_list: true
+                    };
                     
                     navigation.showThisPage(go_back_page);
-                    navigation.pagePigDeadList.show();
+                    navigation.pagePigDeadList.show(options);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

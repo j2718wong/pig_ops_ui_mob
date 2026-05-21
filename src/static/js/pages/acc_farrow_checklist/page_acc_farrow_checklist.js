@@ -206,7 +206,6 @@ export function PageAccFarrowChecklist(input_settings){
         const callback_success = function(data){
             dataAccFarrowChecklist = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
             thisObj.renderTable(dataAccFarrowChecklist);
-             
         };
         
         const callback_offline = function(){
@@ -428,7 +427,13 @@ export function PageAccFarrowChecklist(input_settings){
     
     
     this.onSuccessAddEntry = function(){
+        const callback_success = function(data){
+            dataAccFarrowChecklist = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
+            thisObj.renderTable(dataAccFarrowChecklist);
+        };
         
+        navigation.pigFarm.accountLists.requestDataAccSowDueChecklist(
+                callback_success, null, null);
     }
     
     

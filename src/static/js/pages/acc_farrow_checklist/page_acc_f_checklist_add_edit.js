@@ -294,7 +294,7 @@ export function PageAccFChecklistAddEdit(input_settings){
                         go_back_page);
                     
                     navigation.showThisPage(go_back_page);
-                    navigation.pageBoarExtMateList.show();
+                    navigation.pageAccFarrowChecklist.show();
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

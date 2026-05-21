@@ -263,6 +263,12 @@ export function ManagerPigProd(input_settings){
                 if (response.result.num == 0){
                     thisObj.dataNotPregnantList = response.data;
                     
+                    // Update parentObj.dataVerNum.not_pregnant
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.not_pregnant;
+                        parentObj.dataVerNum.not_pregnant = ver_num;
+                    }
+                    
                     // Update local storage
                     thisObj.saveToStorage();
                     
@@ -327,6 +333,12 @@ export function ManagerPigProd(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataProdPigDeadList = response.data;
+                    
+                    // Update parentObj.dataVerNum.pig_dead
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.pig_dead;
+                        parentObj.dataVerNum.pig_dead = ver_num;
+                    }
                     
                     // Update local storage
                     thisObj.saveToStorage();
@@ -950,6 +962,7 @@ export function ManagerPigProd(input_settings){
             const data_ver_num_not_pregnant = data[7];
             const data_ver_num_boar_ext_mate= data[8];
             const data_ver_num_pig_dead     = data[9];
+            const data_ver_num_sow_due_checklist= data[10];
             
             
             /*
@@ -963,13 +976,14 @@ export function ManagerPigProd(input_settings){
                 feed_balance:           data_ver_num_feed_balance,
                 not_pregnant:           data_ver_num_not_pregnant,
                 boar_ext_mate:          data_ver_num_boar_ext_mate,
-                pig_dead:               data_ver_num_pig_dead 
+                pig_dead:               data_ver_num_pig_dead,
+                sow_due_checklist:      data_ver_num_sow_due_checklist
             };
             */
             
             
             /**
-             * The data change for other business objects can also be detecetd 
+             * The data change for other business objects can also be detected 
              * from this data. These business objects will also be updated
              * but will not be chained to the pig_production refresh data 
              * callbacks. 
@@ -1042,6 +1056,20 @@ export function ManagerPigProd(input_settings){
                     callback_success_not_pregnant, null, elem_show_error
                 );
             }
+            
+            
+            if (parentObj.dataVerNum.sow_due_checklist != data_ver_num_sow_due_checklist){
+                // This should update navigation.pigFarm.dataSowDueChecklist
+                const callback_success_sow_due_checklist = function(){
+                    parentObj.dataVerNum.sow_due_checklist = data_ver_num_sow_due_checklist;
+                };
+
+                parentObj.requestDataPigFarmSowDueChecklist(
+                    callback_success_sow_due_checklist, elem_show_error
+                );
+            }
+
+            
             
             
             // Refresh pig_production

@@ -539,6 +539,12 @@ export function ManagerSowBoar(input_settings){
                 if (response.result.num == 0){
                     thisObj.dataBoarExtMateList = response.data;
                     
+                    // Update parentObj.dataVerNum.boar_ext_mate
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.boar_ext_mate;
+                        parentObj.dataVerNum.boar_ext_mate = ver_num;
+                    }
+                    
                     // Update local storage
                     thisObj.saveToStorage();
                     

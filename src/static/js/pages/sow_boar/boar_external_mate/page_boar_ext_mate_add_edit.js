@@ -408,8 +408,13 @@ export function PageBoarExtMateAddEdit(input_settings){
                     navigation.managerNavHistory.removeFromNavHistoryHead(
                         go_back_page);
                     
+                    
+                    const options = {
+                        refresh_list: true
+                    };
+                    
                     navigation.showThisPage(go_back_page);
-                    navigation.pageBoarExtMateList.show();
+                    navigation.pageBoarExtMateList.show(options);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

@@ -63,9 +63,9 @@ export function PageProdPigDeadList(input_settings){
     let elemTableBody           = null;
     
     
-    let dataPigDeadList         = null;
+    let showOptions             = null;
     
-    let localDataVerNum         = 0;
+    let dataPigDeadList         = null;
 
     
     let searchIncludeInsem      = true;
@@ -195,7 +195,7 @@ export function PageProdPigDeadList(input_settings){
     
     
     
-    this.show = function(){
+    this.show = function(options){
         thisObj.debugNavHistory(TAG);
         
         // Update navigation.curPageNavigated
@@ -203,15 +203,10 @@ export function PageProdPigDeadList(input_settings){
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
-        
         const callback_success = function(data){
             dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
             thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
             thisObj.renderTable(dataPigDeadList);
-            
-            
-            // Copy the Server dataVerNum  to localDataVerNum 
-            localDataVerNum     = navigation.pigFarm.dataVerNum.pig_dead;
         };
 
 
@@ -229,19 +224,18 @@ export function PageProdPigDeadList(input_settings){
         };
    
    
-        let server_data_ver_num =  navigation.pigFarm.dataVerNum.pig_dead;
         let is_to_request_data = 0;
         
         dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
         
         if (dataPigDeadList == null){
             is_to_request_data = 1;
-        } else{
-            if (server_data_ver_num > localDataVerNum){
-                is_to_request_data = 1;
-            }
+        } 
+        
+        if (options && options.refresh_list){
+            is_to_request_data = 1;
         }
-   
+        
    
         // Request data only if needed
         if (is_to_request_data > 0){

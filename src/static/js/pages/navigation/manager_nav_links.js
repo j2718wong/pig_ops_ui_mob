@@ -1364,7 +1364,7 @@ export function ManagerNavLinks(_navigation) {
         
         // Push currentPage to NavHistory;
         // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //navigation.pushCurrentPageToNavHistory(next_page);
+        navigation.pushCurrentPageToNavHistory(next_page);
         
         
         navigation.showThisPage(next_page);

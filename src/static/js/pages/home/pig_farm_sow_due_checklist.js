@@ -116,7 +116,7 @@ export function PigFarmSowDueChecklist(input_settings){
         
         modal.innerHTML = `
             <div class="modal-container" style="max-width: 500px; width: 90%;">
-                <div class="modal-header" style="background: #2e7d64;">
+                <div class="modal-header" style="background: var(--gestating-color)">
                     <h3 style="margin: 0;">📋 Farrowing Checklist</h3>
                     <button class="modal-close-btn" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
                 </div>
@@ -143,16 +143,27 @@ export function PigFarmSowDueChecklist(input_settings){
         const closeBtn = modal.querySelector('.modal-close-btn');
         const closeFooterBtn = modal.querySelector('#checklist-close');
         
-        closeBtn.onclick = () => modal.remove();
-        closeFooterBtn.onclick = () => modal.remove();
+        closeBtn.onclick = function() {modal.remove();}
+        closeFooterBtn.onclick = function() {modal.remove();}
         
         // Click outside to close
-        modal.onclick = (e) => {
+        modal.onclick = function(e) {
             if (e.target === modal) {
                 modal.remove();
             }
         };
         
+        
+        // Edit Checklist button handler
+        const editChecklistBtn = modal.querySelector('#checklist-edit');
+        
+        
+        editChecklistBtn.onclick = function(){
+            modal.remove();
+            navigation.managerNavLinks.onClickNavFarrowingChecklist();
+        };
+        
+                    
         
         // Load checklist data
         thisObj.loadChecklistData();
@@ -163,6 +174,8 @@ export function PigFarmSowDueChecklist(input_settings){
         const data_checklist = navigation.pigFarm.dataSowDueChecklist;
         this.renderChecklistItems(data_checklist || []);
     }
+    
+    
     
     
     this.renderChecklistItems = function(data) {

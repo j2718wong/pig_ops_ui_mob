@@ -41,7 +41,8 @@ export function PigFarm(_navigation){
         feed_balance:           0,
         not_pregnant:           0,
         boar_ext_mate:          0,
-        pig_dead:               0
+        pig_dead:               0,
+        sow_due_checklist:      0
     };
 
     
@@ -374,7 +375,8 @@ export function PigFarm(_navigation){
                     feed_balance:           data[6],
                     not_pregnant:           data[7],
                     boar_ext_mate:          data[8],
-                    pig_dead:               data[9]
+                    pig_dead:               data[9],
+                    sow_due_checklist:      data[10]
                 };
                 
                 
@@ -658,6 +660,12 @@ export function PigFarm(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataFarmFeedBuyList = response.data;
+                    
+                    // Update thisObj.dataVerNum.feed_buy
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.feed_buy;
+                        thisObj.dataVerNum.feed_buy = ver_num;
+                    }
                     
                     // Update local storage
                     thisObj.saveToStorage();
@@ -1010,6 +1018,16 @@ export function PigFarm(_navigation){
                     if (checklist.length == 0){checklist = null;}
                     
                     thisObj.dataSowDueChecklist = checklist;
+                    
+                    // Update thisObj.dataVerNum.sow_due_checklist
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.sow_due_checklist;
+                        parentObj.dataVerNum.sow_due_checklist = ver_num;
+                    }
+                    
+                    
+                    // Update local storage
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success();}
                 }

@@ -14,6 +14,7 @@ export function AccountLists(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
     
+    this.STORAGE_KEY            = 'superpig_manager_account_list';
     
     this.dataVerNum             = {
         gestating_ops:          0,        
@@ -49,6 +50,30 @@ export function AccountLists(_navigation){
     this.setPigFarmAccountHid = function(hid){
         accountHid = hid;
     }
+    
+    
+    this.getDataToSaveToStorage = function(){
+        return {
+            accSowDueChecklist:     thisObj.dataAccSowDueChecklist     
+        }
+    }
+    
+    
+    this.saveToStorage = function() {
+        const data = thisObj.getDataToSaveToStorage();
+        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
+    }
+
+
+    this.loadDataFromStorage = function(){
+        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            thisObj.dataAccSowDueChecklist       = data.accSowDueChecklist;      
+        }
+    }
+    
     
     
     this.requestAccountDataVerNum = function(callback_success, elem_show_error){

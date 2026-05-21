@@ -67,14 +67,11 @@ export function PageBoarExternalMateList(input_settings){
     let elemDateToday           = null;
     
     let elemTableBody           = null;
-    
+
+
     
     let dataBoarExtMateList     = null;
 
-    
-    let localDataVerNum         = 0;
-    
-    
     
     let dtCurrentDate           = null;
 
@@ -212,7 +209,7 @@ export function PageBoarExternalMateList(input_settings){
     
     
     
-    this.show = function(){
+    this.show = function(options){
         thisObj.debugNavHistory(TAG);
         
         // Update navigation.curPageNavigated
@@ -232,7 +229,6 @@ export function PageBoarExternalMateList(input_settings){
         
 
         
-        
         const callback_success = function(data){
             dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
             thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
@@ -243,6 +239,7 @@ export function PageBoarExternalMateList(input_settings){
             dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
             
             if (dataBoarExtMateList){
+                // Display last known data
                 thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
                 thisObj.renderTable(dataBoarExtMateList);
             }
@@ -253,18 +250,17 @@ export function PageBoarExternalMateList(input_settings){
         };
         
         
-        let server_data_ver_num =  navigation.pigFarm.dataVerNum.boar_ext_mate;
+
         let is_to_request_data = 0;
-        
-        
+                
         dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
         
         if (dataBoarExtMateList == null){
             is_to_request_data = 1;
-        } else{
-            if (server_data_ver_num > localDataVerNum){
-                is_to_request_data = 1;
-            }
+        } 
+        
+        if (options && options.refresh_list){
+            is_to_request_data = 1;
         }
         
         
