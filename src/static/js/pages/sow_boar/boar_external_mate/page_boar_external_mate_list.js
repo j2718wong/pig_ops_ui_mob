@@ -266,6 +266,14 @@ export function PageBoarExternalMateList(input_settings){
         }
         
         
+        // Optionally expire cache after 7 days
+        if (data.cached_at && (Date.now() - data.cached_at) > APPLICATION.NUM_MSECS_CACHE_DATA) {
+            // Cache too old, fetch fresh
+            this.requestServerData();
+            return;
+        }
+        
+        
         // Update data source
         navigation.pigFarm.managerSowBoar.dataBoarExtMateList = data.data;
         

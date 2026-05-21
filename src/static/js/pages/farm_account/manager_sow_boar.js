@@ -550,7 +550,8 @@ export function ManagerSowBoar(input_settings){
                     const local_data = {
                         pig_farm_hid:   parentObj.getPigFarmHid(),
                         ver_num:        parentObj.dataVerNum.boar_ext_mate,
-                        data:           thisObj.dataBoarExtMateList
+                        data:           thisObj.dataBoarExtMateList,
+                        cached_at:      Date.now()
                     };
                     localStorage.setItem(key, JSON.stringify(local_data));
                     

@@ -634,7 +634,9 @@ export function PigFarm(_navigation){
     }
  
     
-    this.requestDataPigFarmFeedBuyList = function(callback_success, elem_show_error){
+    this.requestDataPigFarmFeedBuyList = function(callback_success, 
+            callback_offline, elem_show_error){
+        
         const base_url = window.location.origin;
         let url = `${base_url}/pf_feed_buy/list?pfhid=${thisObj.getPigFarmHid()}`;
         
@@ -669,8 +671,17 @@ export function PigFarm(_navigation){
                         thisObj.dataVerNum.feed_buy = ver_num;
                     }
                     
+                    
                     // Update local storage
-                    thisObj.saveToStorage();
+                    const key = navigation.managerLocalData.STORAGE_KEY.FINANCIALS.FEED_BUY;
+                    const local_data = {
+                        pig_farm_hid:   thisObj.getPigFarmHid(),
+                        ver_num:        thisObj.dataVerNum.feed_buy,
+                        data:           thisObj.dataFarmFeedBuyList,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -684,6 +695,13 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    
+                    return;
+                }
+                
                 navigation.serverError.serverErrorThrown(jqXHR, 
                     textStatus, errorThrown);
             }
@@ -865,7 +883,8 @@ export function PigFarm(_navigation){
                     const local_data = {
                         pig_farm_hid:   thisObj.getPigFarmHid(),
                         ver_num:        thisObj.dataVerNum.feed_balance,
-                        data:           thisObj.dataFeedBalanceList
+                        data:           thisObj.dataFeedBalanceList,
+                        cached_at:      Date.now()
                     };
                     localStorage.setItem(key, JSON.stringify(local_data));
                     

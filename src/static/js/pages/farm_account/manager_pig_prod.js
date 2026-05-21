@@ -345,7 +345,8 @@ export function ManagerPigProd(input_settings){
                     const local_data = {
                         pig_farm_hid:   parentObj.getPigFarmHid(),
                         ver_num:        parentObj.dataVerNum.pig_dead,
-                        data:           thisObj.dataProdPigDeadList
+                        data:           thisObj.dataProdPigDeadList,
+                        cached_at:      Date.now()
                     };
                     localStorage.setItem(key, JSON.stringify(local_data));
                     
@@ -1045,12 +1046,8 @@ export function ManagerPigProd(input_settings){
             
             if (parentObj.dataVerNum.feed_buy != data_ver_num_feed_buy){
                 // This should update navigation.pigFarm.dataFarmFeedBuyList
-                const callback_success_feed_buy = function(){
-                    parentObj.dataVerNum.feed_buy = data_ver_num_feed_buy;
-                };
-                
                 parentObj.requestDataPigFarmFeedBuyList(
-                    callback_success_feed_buy, elem_show_error);
+                    null, null, elem_show_error);
             }
             
             

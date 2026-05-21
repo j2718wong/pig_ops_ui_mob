@@ -108,9 +108,6 @@ export function TablePigProdFeed(input_settings){
         dataPigProd     = data_pig_prod;
         showOptions     = options;
         
-        // This is needed when adding and editing PigProdFeed
-        thisObj.requestDataPigFarmFeedBuyList();
-        
         
         // Request data if not yet requested
         if ('data_details' in dataPigProd){
@@ -124,29 +121,6 @@ export function TablePigProdFeed(input_settings){
         }
 
     }
-    
-    
-    this.requestDataPigFarmFeedBuyList = function(){
-        // Request data if not yet requested
-        let feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
-        if (feed_buy_list == null){
-            
-            const callback_success = function(data){
-                feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
-                
-            };
-            
-            let elem_show_error = thisObj.elemServerErrorMsg;
-       
-            
-            navigation.pigFarm.requestDataPigFarmFeedBuyList(callback_success, 
-                elem_show_error);
-        
-        }
-     
-        
-    }
-    
     
     
     this.requestDataPigProdFeedList = function(){

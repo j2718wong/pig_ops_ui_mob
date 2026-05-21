@@ -7,6 +7,8 @@ const APPLICATION = {
     REQUEST_TIMEOUT:                5000,
     NUM_MSECS_1DAY:                 1000 * 60 * 60 * 24,
     
+    NUM_MSECS_CACHE_DATA:           7 * 24 * 60 * 60 * 1000,
+    
     MOBILE_TABLE_ROW_PER_PAGE:      10,
     
     MAX_WIDTH_WINDOW_IS_MOBILE:     768,

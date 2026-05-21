@@ -614,17 +614,26 @@ export function PagePfFeedBuyAddEdit(input_settings){
                             elemInfoBox.style.display = 'none';
                         };
                         
+                        const callback_offline = function(){
+                            // nothing to do
+                        };
+                        
                         navigation.pigFarm.requestDataPigFarmFeedBuyList(
-                            callback_success, elemServerErrorMsg);
+                            callback_success, callback_offline, elemServerErrorMsg);
                     }
                     
                     else{
                         const callback_success = function(){
                             navigation.managerNavLinks.onClickNavFeedsExpenses();
                         };
+
+                        const callback_offline = function(){
+                            // nothing to do
+                        };
+
                         
                         navigation.pigFarm.requestDataPigFarmFeedBuyList(
-                            callback_success, elemServerErrorMsg);
+                            callback_success, callback_offline, elemServerErrorMsg);
                     }
                 }
                 else{

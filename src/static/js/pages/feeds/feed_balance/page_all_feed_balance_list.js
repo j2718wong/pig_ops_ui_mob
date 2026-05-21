@@ -215,6 +215,98 @@ export function PageAllFeedBalanceList(input_settings){
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
+        if (options && options.refresh_list){
+            this.requestServerData();
+            return;
+        }
+        
+   
+   
+        // Get data source
+        dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
+        
+        if (dataFeedBalanceList){
+            // Display last known data
+            thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
+            thisObj.renderTable(dataFeedBalanceList);
+            return;
+        } 
+       
+        
+        // If data source is null, that means the page was unloaded;
+            
+        // Load cached data 
+        const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.FEED_BALANCE;
+        const cached = localStorage.getItem(key);
+        if (!cached) {
+            this.requestServerData();
+            return;
+        }
+        
+        
+        const data = JSON.parse(cached);
+        
+        // Check if pig_farm_hid matched
+        const cached_pig_farm_hid = data.pig_farm_hid;
+        const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+        if (cached_pig_farm_hid != pig_farm_hid){
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Optionally expire cache after 7 days
+        if (data.cached_at && (Date.now() - data.cached_at) > APPLICATION.NUM_MSECS_CACHE_DATA) {
+            // Cache too old, fetch fresh
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Update data source
+        navigation.pigFarm.dataFeedBalanceListt = data.data;
+        
+        // Update data source version
+        navigation.pigFarm.dataVerNum.feed_balance = data.ver_num;
+        
+        // Display cached data
+        dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
+        thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
+        thisObj.renderTable(dataFeedBalanceList);
+        
+        
+        // Request Server version num
+        const callback_success = function(data){
+            const data_ver_num_sow              = data[0];
+            const data_ver_num_boar             = data[1];
+            const data_ver_num_pig_prod         = data[2];
+            const data_ver_num_prod_history     = data[3];
+            const data_ver_num_staff            = data[4];
+            const data_ver_num_feed_buy         = data[5];
+            const data_ver_num_feed_balance     = data[6];
+            const data_ver_num_not_pregnant     = data[7];
+            const data_ver_num_boar_ext_mate    = data[8];
+            const data_ver_num_pig_dead         = data[9];
+            const data_ver_num_sow_due_checklist= data[10];
+            
+            if (data_ver_num_feed_balance > navigation.pigFarm.dataVerNum.feed_balance){
+                thisObj.requestServerData();
+            }
+        };
+        
+        
+        const callback_offline = function(){
+            // nothing to do;
+        };
+        
+        
+        navigation.pigFarm.requestPigFarmDataVerNum(null, callback_success, 
+            callback_offline, null);
+       
+    }
+    
+    
+    this.requestServerData = function(){
         const callback_success = function(data){
             dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
             thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
@@ -234,32 +326,14 @@ export function PageAllFeedBalanceList(input_settings){
                 navigation.managerSystem.showOfflineMessageModal();
             }
         };
-   
-   
-        let is_to_request_data = 0;
         
-        dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
         
-        if (dataFeedBalanceList == null){
-            is_to_request_data = 1;
-        } 
-        
-        if (options && options.refresh_list){
-            is_to_request_data = 1;
-        }
-        
-   
-        // Request data only if needed
-        if (is_to_request_data > 0){
-            navigation.pigFarm.requestDataPigFarmFeedBalance(
+        // This should update:
+        // - navigation.pigFarm.dataFeedBalanceList
+        // - navigation.pigFarm.dataVerNum.feed_balance
+        navigation.pigFarm.requestDataPigFarmFeedBalance(
                 null, callback_success, callback_offline, null);
-        } else{
-            // Display last known data
-            thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
-            thisObj.renderTable(dataFeedBalanceList);
-        }
         
-       
     }
     
      
