@@ -261,8 +261,7 @@ export function PageAccFChecklistAddEdit(input_settings){
             'name':         input_notes
         };
         
-       
-       
+      
         
         const bearer_token = localStorage.getItem('access_token');
         
@@ -276,7 +275,7 @@ export function PageAccFChecklistAddEdit(input_settings){
             },
             
             timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: `${base_url}/boar_ext_mate/add`,
+            url: `${base_url}/acc_sow_due_chklst/add`,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -293,8 +292,40 @@ export function PageAccFChecklistAddEdit(input_settings){
                     navigation.managerNavHistory.removeFromNavHistoryHead(
                         go_back_page);
                     
+                    
+                    // Adding or updating an account_sow_due_chklst entry should also
+                    // update  pig_farm_sow_due_chklst
+                    
+                    const pig_farm_data_checklist = navigation.pigFarm.dataSowDueChecklist;
+                    
+                    if (pig_farm_data_checklist){
+                        // Only update this is tehre is an entry
+                        
+                        const callback_success = function(){
+                            // Go back to account Checklist
+                            const options = {
+                                refresh_list: true
+                            };
+                            
+                            navigation.showThisPage(go_back_page);
+                            navigation.pageAccFarrowChecklist.show(options);
+                        };
+                        
+                        
+                        navigation.pigFarm.requestDataPigFarmSowDueChecklist(
+                            callback_success, elemServerErrorMsg);
+                       
+                        return; 
+                    }
+                    
+                    
+                    // Go back to account Checklist
+                    const options = {
+                        refresh_list: true
+                    };
+                    
                     navigation.showThisPage(go_back_page);
-                    navigation.pageAccFarrowChecklist.show();
+                    navigation.pageAccFarrowChecklist.show(options);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

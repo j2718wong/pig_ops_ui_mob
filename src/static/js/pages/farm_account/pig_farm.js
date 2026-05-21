@@ -1022,7 +1022,7 @@ export function PigFarm(_navigation){
                     // Update thisObj.dataVerNum.sow_due_checklist
                     if (response.data_ver_num){
                         const ver_num = response.data_ver_num.pig_farm.sow_due_checklist;
-                        parentObj.dataVerNum.sow_due_checklist = ver_num;
+                        thisObj.dataVerNum.sow_due_checklist = ver_num;
                     }
                     
                     

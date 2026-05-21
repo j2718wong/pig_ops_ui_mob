@@ -24,8 +24,8 @@ export function AccountLists(_navigation){
         weaning_sow_ops:        0,      
         
         account:                0,
-        pig_buyer:              0             
-       
+        pig_buyer:              0,             
+        sow_due_checklist:      0
     };
     
     
@@ -54,6 +54,7 @@ export function AccountLists(_navigation){
     
     this.getDataToSaveToStorage = function(){
         return {
+            verNum:                 thisObj.dataVerNum,
             accSowDueChecklist:     thisObj.dataAccSowDueChecklist     
         }
     }
@@ -70,7 +71,11 @@ export function AccountLists(_navigation){
         if (cached) {
             const data = JSON.parse(cached);
             
-            thisObj.dataAccSowDueChecklist       = data.accSowDueChecklist;      
+            thisObj.dataVerNum                  = data.verNum;
+            
+            thisObj.dataAccSowDueChecklist      = data.accSowDueChecklist;
+            
+                            
         }
     }
     
@@ -494,6 +499,15 @@ export function AccountLists(_navigation){
                 if (response.result.num == 0){
                    
                     thisObj.dataAccSowDueChecklist = response.data;
+                    
+                    // Update thisObj.dataVerNum.sow_due_checklist
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.account.sow_due_checklist;
+                        thisObj.dataVerNum.sow_due_checklist = ver_num;
+                    }
+                    
+                    // Update local storage
+                    thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                     

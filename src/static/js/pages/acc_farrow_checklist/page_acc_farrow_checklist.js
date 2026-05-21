@@ -188,7 +188,7 @@ export function PageAccFarrowChecklist(input_settings){
     
     
     
-    this.show = function(){
+    this.show = function(options){
         thisObj.debugNavHistory(TAG);
         
         // Update navigation.curPageNavigated
@@ -209,7 +209,7 @@ export function PageAccFarrowChecklist(input_settings){
         };
         
         const callback_offline = function(){
-            /*
+            
             dataAccFarrowChecklist = navigation.pigFarm.managerSowBoar.dataAccFarrowChecklist;
             
             if (dataAccFarrowChecklist){
@@ -220,7 +220,6 @@ export function PageAccFarrowChecklist(input_settings){
                 // Display modal offline
                 navigation.managerSystem.showOfflineMessageModal();
             }
-            */ 
         };
         
         
@@ -232,11 +231,10 @@ export function PageAccFarrowChecklist(input_settings){
         
         if (dataAccFarrowChecklist == null){
             is_to_request_data = 1;
-        } else{
-            /*
-            if (server_data_ver_num > localDataVerNum){
-                is_to_request_data = 1;
-            }*/
+        } 
+        
+        if (options && options.refresh_list){
+            is_to_request_data = 1;
         }
         
         
