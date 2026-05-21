@@ -202,7 +202,91 @@ export function PageProdPigDeadList(input_settings){
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
+  
+  
+        if (options && options.refresh_list){
+            this.requestServerData();
+            return;
+        }
+  
+   
+        // Get data source
+        dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+
         
+        if (dataPigDeadList){
+            // Display last known data
+            thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
+            thisObj.renderTable(dataPigDeadList);
+            return;
+        }
+        
+        
+        // If data source is null, that means the page was unloaded;
+            
+        // Load cached data 
+        const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.PIG_DEAD;
+        const cached = localStorage.getItem(key);
+        if (!cached) {
+            this.requestServerData();
+            return;
+        }
+        
+        
+        const data = JSON.parse(cached);
+        
+        // Check if pig_farm_hid matched
+        const cached_pig_farm_hid = data.pig_farm_hid;
+        const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+        if (cached_pig_farm_hid != pig_farm_hid){
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Update data source
+        navigation.pigFarm.managerPigProd.dataProdPigDeadList = data.data;
+        
+        // Update data source version
+        navigation.pigFarm.dataVerNum.pig_dead = data.ver_num;
+        
+        // Display cached data
+        dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+        thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
+        thisObj.renderTable(dataPigDeadList);
+        
+        
+        // Request Server version num
+        const callback_success = function(data){
+            const data_ver_num_sow              = data[0];
+            const data_ver_num_boar             = data[1];
+            const data_ver_num_pig_prod         = data[2];
+            const data_ver_num_prod_history     = data[3];
+            const data_ver_num_staff            = data[4];
+            const data_ver_num_feed_buy         = data[5];
+            const data_ver_num_feed_balance     = data[6];
+            const data_ver_num_not_pregnant     = data[7];
+            const data_ver_num_boar_ext_mate    = data[8];
+            const data_ver_num_pig_dead         = data[9];
+            const data_ver_num_sow_due_checklist= data[10];
+            
+            if (data_ver_num_pig_dead > navigation.pigFarm.dataVerNum.pig_dead){
+                thisObj.requestServerData();
+            }
+        };
+        
+        
+        const callback_offline = function(){
+            // nothing to do;
+        };
+        
+        
+        navigation.pigFarm.requestPigFarmDataVerNum(null, callback_success, 
+            callback_offline, null);
+    }
+    
+
+    this.requestServerData = function(){
         const callback_success = function(data){
             dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
             thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
@@ -222,33 +306,15 @@ export function PageProdPigDeadList(input_settings){
                 navigation.managerSystem.showOfflineMessageModal();
             }
         };
-   
-   
-        let is_to_request_data = 0;
         
-        dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
         
-        if (dataPigDeadList == null){
-            is_to_request_data = 1;
-        } 
-        
-        if (options && options.refresh_list){
-            is_to_request_data = 1;
-        }
-        
-   
-        // Request data only if needed
-        if (is_to_request_data > 0){
-            navigation.pigFarm.managerPigProd.requestProdPigDeadList(
+        // This should update:
+        // - navigation.pigFarm.managerPigProd.dataProdPigDeadList
+        // - navigation.pigFarm.dataVerNum.pig_dead
+        navigation.pigFarm.managerPigProd.requestProdPigDeadList(
                 callback_success, callback_offline, null);
-        } else{
-            // Display last known data
-            thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
-            thisObj.renderTable(dataPigDeadList);
-        }
-        
     }
-    
+
 
     this._writeInlineStyle = function(){
         const html = `

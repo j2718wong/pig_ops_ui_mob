@@ -48,7 +48,6 @@ export function ManagerSowBoar(input_settings){
             boarList:           thisObj.dataBoarList,
             
             farmPigLetsOutput:  thisObj.dataFarmPigletsOutput,
-            boarExtMateList:    thisObj.dataBoarExtMateList,
             disposedList:       thisObj.dataDisposedSowBoarList       
         }
     }
@@ -72,7 +71,7 @@ export function ManagerSowBoar(input_settings){
             thisObj.dataBoarList            = data.boarList;
             thisObj.dataFarmPigletsOutput   = data.farmPigLetsOutput;
             
-            thisObj.dataBoarExtMateList     = data.boarExtMateList;
+
             thisObj.dataDisposedSowBoarList = data.disposedList;
         }
     }
@@ -545,8 +544,16 @@ export function ManagerSowBoar(input_settings){
                         parentObj.dataVerNum.boar_ext_mate = ver_num;
                     }
                     
+                    
                     // Update local storage
-                    thisObj.saveToStorage();
+                    const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.BOAR_EXT_MATE;
+                    const local_data = {
+                        pig_farm_hid:   parentObj.getPigFarmHid(),
+                        ver_num:        parentObj.dataVerNum.boar_ext_mate,
+                        data:           thisObj.dataBoarExtMateList
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     
                     if (callback_success){callback_success(response.data);}
                 }

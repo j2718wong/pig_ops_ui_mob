@@ -42,8 +42,7 @@ export function ManagerPigProd(input_settings){
             
             prodHistoryList:    thisObj.dataProdHistoryList,
             
-            notPregnantList:    thisObj.dataNotPregnantList,
-            prodPigDeadList:    thisObj.dataProdPigDeadList
+            notPregnantList:    thisObj.dataNotPregnantList
         }
     }
     
@@ -67,7 +66,7 @@ export function ManagerPigProd(input_settings){
             thisObj.dataProdHistoryList     = data.prodHistoryList;   
                                             
             thisObj.dataNotPregnantList     = data.notPregnantList;    
-            thisObj.dataProdPigDeadList     = data.prodPigDeadList;    
+ 
         }
     }
     
@@ -340,8 +339,17 @@ export function ManagerPigProd(input_settings){
                         parentObj.dataVerNum.pig_dead = ver_num;
                     }
                     
+                    
                     // Update local storage
-                    thisObj.saveToStorage();
+                    const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.PIG_DEAD;
+                    const local_data = {
+                        pig_farm_hid:   parentObj.getPigFarmHid(),
+                        ver_num:        parentObj.dataVerNum.pig_dead,
+                        data:           thisObj.dataProdPigDeadList
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
+                    
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -952,16 +960,16 @@ export function ManagerPigProd(input_settings){
         
         const callback_success_ver_num = function(data){
             
-            const data_ver_num_sow          = data[0];
-            const data_ver_num_boar         = data[1];
-            const data_ver_num_pig_prod     = data[2];
-            const data_ver_num_prod_history = data[3];
-            const data_ver_num_staff        = data[4];
-            const data_ver_num_feed_buy     = data[5];
-            const data_ver_num_feed_balance = data[6];
-            const data_ver_num_not_pregnant = data[7];
-            const data_ver_num_boar_ext_mate= data[8];
-            const data_ver_num_pig_dead     = data[9];
+            const data_ver_num_sow              = data[0];
+            const data_ver_num_boar             = data[1];
+            const data_ver_num_pig_prod         = data[2];
+            const data_ver_num_prod_history     = data[3];
+            const data_ver_num_staff            = data[4];
+            const data_ver_num_feed_buy         = data[5];
+            const data_ver_num_feed_balance     = data[6];
+            const data_ver_num_not_pregnant     = data[7];
+            const data_ver_num_boar_ext_mate    = data[8];
+            const data_ver_num_pig_dead         = data[9];
             const data_ver_num_sow_due_checklist= data[10];
             
             

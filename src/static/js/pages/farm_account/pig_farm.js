@@ -165,7 +165,7 @@ export function PigFarm(_navigation){
             farmFeedBuyList:    thisObj.dataFarmFeedBuyList,
             summaryReportList:  thisObj.dataSummaryReportList,
             
-            feedBalanceList:    thisObj.dataFeedBalanceList,
+
             lastFeedBalance:    thisObj.dataLastFeedBalance,
             
             sowDueChecklist:    thisObj.dataSowDueChecklist
@@ -205,7 +205,6 @@ export function PigFarm(_navigation){
             thisObj.dataFarmFeedBuyList     = data.farmFeedBuyList;
             thisObj.dataSummaryReportList   = data.summaryReportList;
             
-            thisObj.dataFeedBalanceList     = data.feedBalanceList; 
             thisObj.dataLastFeedBalance     = data.lastFeedBalance;
             
             thisObj.dataSowDueChecklist     = data.sowDueChecklist;
@@ -862,7 +861,13 @@ export function PigFarm(_navigation){
                     
                     
                     // Update local storage
-                    thisObj.saveToStorage();
+                    const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.FEED_BALANCE;
+                    const local_data = {
+                        pig_farm_hid:   thisObj.getPigFarmHid(),
+                        ver_num:        thisObj.dataVerNum.feed_balance,
+                        data:           thisObj.dataFeedBalanceList
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
                     
                     
                     if (callback_success){callback_success(response.data);}

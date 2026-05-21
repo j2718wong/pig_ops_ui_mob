@@ -223,12 +223,93 @@ export function PageBoarExternalMateList(input_settings){
         
         
         const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
-        
-        // This is only shown in Gesta, Lacta and Wean tabs
         elemDateToday.textContent = s_dt_current;
         
 
         
+        if (options && options.refresh_list){
+            this.requestServerData();
+            return;
+        }
+        
+
+        // Get data source
+        dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
+        
+        if (dataBoarExtMateList){
+            // Display last known data
+            thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
+            thisObj.renderTable(dataBoarExtMateList);
+            return;
+        } 
+
+        
+        // If data source is null, that means the page was unloaded;
+            
+        // Load cached data 
+        const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.BOAR_EXT_MATE;
+        const cached = localStorage.getItem(key);
+        if (!cached) {
+            this.requestServerData();
+            return;
+        }
+        
+        
+        const data = JSON.parse(cached);
+        
+        // Check if pig_farm_hid matched
+        const cached_pig_farm_hid = data.pig_farm_hid;
+        const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+        if (cached_pig_farm_hid != pig_farm_hid){
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Update data source
+        navigation.pigFarm.managerSowBoar.dataBoarExtMateList = data.data;
+        
+        // Update data source version
+        navigation.pigFarm.dataVerNum.boar_ext_mate = data.ver_num;
+        
+        // Display cached data
+        dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
+        thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
+        thisObj.renderTable(dataBoarExtMateList);
+        
+        
+        // Request Server version num
+        const callback_success = function(data){
+            const data_ver_num_sow              = data[0];
+            const data_ver_num_boar             = data[1];
+            const data_ver_num_pig_prod         = data[2];
+            const data_ver_num_prod_history     = data[3];
+            const data_ver_num_staff            = data[4];
+            const data_ver_num_feed_buy         = data[5];
+            const data_ver_num_feed_balance     = data[6];
+            const data_ver_num_not_pregnant     = data[7];
+            const data_ver_num_boar_ext_mate    = data[8];
+            const data_ver_num_pig_dead         = data[9];
+            const data_ver_num_sow_due_checklist= data[10];
+            
+            if (data_ver_num_boar_ext_mate > navigation.pigFarm.dataVerNum.boar_ext_mate){
+                thisObj.requestServerData();
+            }
+        };
+        
+        
+        const callback_offline = function(){
+            // nothing to do;
+        };
+        
+        
+        navigation.pigFarm.requestPigFarmDataVerNum(null, callback_success, 
+            callback_offline, null);
+        
+    }
+    
+    
+    this.requestServerData = function(){
         const callback_success = function(data){
             dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
             thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
@@ -250,31 +331,11 @@ export function PageBoarExternalMateList(input_settings){
         };
         
         
-
-        let is_to_request_data = 0;
-                
-        dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
-        
-        if (dataBoarExtMateList == null){
-            is_to_request_data = 1;
-        } 
-        
-        if (options && options.refresh_list){
-            is_to_request_data = 1;
-        }
-        
-        
-        // Request data only if needed
-        if (is_to_request_data > 0){
-            navigation.pigFarm.managerSowBoar.requestBoarExtMateList(
+        // This should update:
+        // - navigation.pigFarm.managerSowBoar.dataBoarExtMateList
+        // - navigation.pigFarm.dataVerNum.boar_ext_mate
+        navigation.pigFarm.managerSowBoar.requestBoarExtMateList(
                 callback_success, callback_offline, null);
-        }
-        else{
-            // Display last known data
-            thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
-            thisObj.renderTable(dataBoarExtMateList);
-        }
-        
     }
     
 
