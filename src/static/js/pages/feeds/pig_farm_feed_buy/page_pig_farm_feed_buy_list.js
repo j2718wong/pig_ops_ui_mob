@@ -73,8 +73,6 @@ export function PagePigFarmFeedBuyList(input_settings){
     let dtCurrentDate           = null;
     
     
-    let dataFarmFeedBuyList     = null;
-    
     
     this.init = function(){
         
@@ -208,13 +206,13 @@ export function PagePigFarmFeedBuyList(input_settings){
 
         
         // Get data source
-        dataFarmFeedBuyList = navigation.pigFarm.dataFarmFeedBuyList;
+        let data_list = navigation.pigFarm.dataFarmFeedBuyList;
         
         
-        if (dataFarmFeedBuyList){
+        if (data_list){
             // Display last known data
-            thisObj.showInfoBox(dataFarmFeedBuyList, elemPageInfo);
-            thisObj.renderTable(dataFarmFeedBuyList);
+            thisObj.showInfoBox(data_list, elemPageInfo);
+            thisObj.renderTable(data_list);
             return;
         }
         
@@ -256,10 +254,9 @@ export function PagePigFarmFeedBuyList(input_settings){
         navigation.pigFarm.dataVerNum.feed_buy = data.ver_num;
         
         // Display cached data
-        dataFarmFeedBuyList = navigation.pigFarm.dataFarmFeedBuyList;
-        thisObj.showInfoBox(dataFarmFeedBuyList, elemPageInfo);
-        //thisObj.setDataEntryList(dataFarmFeedBuyList);
-        thisObj.renderTable(dataFarmFeedBuyList);
+        data_list = navigation.pigFarm.dataFarmFeedBuyList;
+        thisObj.showInfoBox(data_list, elemPageInfo);
+        thisObj.renderTable(data_list);
         
         
         // Request Server version num
@@ -294,20 +291,18 @@ export function PagePigFarmFeedBuyList(input_settings){
     
     this.requestServerData = function(){
         const callback_success = function(data){
-            dataFarmFeedBuyList = navigation.pigFarm.dataFarmFeedBuyList;
-            thisObj.showInfoBox(dataFarmFeedBuyList, elemPageInfo);
-            //thisObj.setDataEntryList(dataFarmFeedBuyList);
-            thisObj.renderTable(dataFarmFeedBuyList);
+            const data_list = navigation.pigFarm.dataFarmFeedBuyList;
+            thisObj.showInfoBox(data_list, elemPageInfo);
+            thisObj.renderTable(data_list);
         };
 
 
         const callback_offline = function(){
-            dataFarmFeedBuyList = navigation.pigFarm.dataFarmFeedBuyList;
-            if (dataFarmFeedBuyList){
+            const data_list = navigation.pigFarm.dataFarmFeedBuyList;
+            if (data_list){
                 // Display last known data
-                thisObj.showInfoBox(dataFarmFeedBuyList, elemPageInfo);
-                //thisObj.setDataEntryList(dataFarmFeedBuyList);
-                thisObj.renderTable(dataFarmFeedBuyList);            
+                thisObj.showInfoBox(data_list, elemPageInfo);
+                thisObj.renderTable(data_list);            
             }
             else{
                 // Display modal offline
@@ -409,8 +404,7 @@ export function PagePigFarmFeedBuyList(input_settings){
     }
     
     
-    
-    
+      
     this.getElemTableRow = function(cur_entry){
         const elem_row = document.createElement('tr');
         
@@ -446,17 +440,16 @@ export function PagePigFarmFeedBuyList(input_settings){
     
     
     
-    
-    
     this.searchEntries = function(key){
+        const data_list = navigation.pigFarm.dataFarmFeedBuyList;
         
-        if (key == ''){return dataFarmFeedBuyList;}
+        if (key == ''){return data_list;}
         
         
         const filtered = [];
         
         
-        for (const cur_entry of dataFarmFeedBuyList){
+        for (const cur_entry of data_list){
             let u_feed_supplier = cur_entry.feed_supplier.name.toUpperCase();
             
             if (u_feed_supplier.includes(key)){
@@ -469,9 +462,7 @@ export function PagePigFarmFeedBuyList(input_settings){
     
     
     this.getEntry = function(entry_hid){
-        dataFarmFeedBuyList = navigation.pigFarm.dataFarmFeedBuyList;
-        
-        const data_list = dataFarmFeedBuyList;
+        const data_list = navigation.pigFarm.dataFarmFeedBuyList;
         
         for (const cur_entry of data_list){
             if (cur_entry.pf_feed_buy.hid == entry_hid){
@@ -499,16 +490,6 @@ export function PagePigFarmFeedBuyList(input_settings){
         const goto_page_id   = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
         const page_container = navigation.getPageContainer(goto_page_id);
         navigation.showThisPage(page_container);
-    }
-    
-    
-    this.onSuccessAddEntry = function(){
-        
-    }
-    
-    
-    this.onSuccessEditEntry = function(){
-
     }
     
     

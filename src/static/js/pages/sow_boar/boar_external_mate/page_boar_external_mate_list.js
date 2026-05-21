@@ -68,10 +68,6 @@ export function PageBoarExternalMateList(input_settings){
     
     let elemTableBody           = null;
 
-
-    
-    let dataBoarExtMateList     = null;
-
     
     let dtCurrentDate           = null;
 
@@ -234,12 +230,12 @@ export function PageBoarExternalMateList(input_settings){
         
 
         // Get data source
-        dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
+        let data_list = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
         
-        if (dataBoarExtMateList){
+        if (data_list){
             // Display last known data
-            thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
-            thisObj.renderTable(dataBoarExtMateList);
+            thisObj.showInfoBox(data_list, elemPageInfo);
+            thisObj.renderTable(data_list);
             return;
         } 
 
@@ -281,9 +277,9 @@ export function PageBoarExternalMateList(input_settings){
         navigation.pigFarm.dataVerNum.boar_ext_mate = data.ver_num;
         
         // Display cached data
-        dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
-        thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
-        thisObj.renderTable(dataBoarExtMateList);
+        data_list = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
+        thisObj.showInfoBox(data_list, elemPageInfo);
+        thisObj.renderTable(data_list);
         
         
         // Request Server version num
@@ -319,18 +315,18 @@ export function PageBoarExternalMateList(input_settings){
     
     this.requestServerData = function(){
         const callback_success = function(data){
-            dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
-            thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
-            thisObj.renderTable(dataBoarExtMateList);
+            const data_list = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
+            thisObj.showInfoBox(data_list, elemPageInfo);
+            thisObj.renderTable(data_list);
         };
         
         const callback_offline = function(){
-            dataBoarExtMateList = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
+            const data_list = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
             
-            if (dataBoarExtMateList){
+            if (data_list){
                 // Display last known data
-                thisObj.showInfoBox(dataBoarExtMateList, elemPageInfo);
-                thisObj.renderTable(dataBoarExtMateList);
+                thisObj.showInfoBox(data_list, elemPageInfo);
+                thisObj.renderTable(data_list);
             }
             else{
                 // Display modal offline
@@ -505,7 +501,7 @@ export function PageBoarExternalMateList(input_settings){
     
     
     this.searchEntries = function(key){
-        let data_list = dataBoarExtMateList;
+        const data_list = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
         
         const filtered = [];
         for (const cur_entry of data_list){
@@ -552,6 +548,21 @@ export function PageBoarExternalMateList(input_settings){
         
         return filtered;
     }
+    
+    
+    this.getEntry = function(entry_hid){
+        const data_list = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
+        
+        for (const cur_entry of data_list){
+            if (cur_entry.hid == entry_hid){
+                return cur_entry;
+            }
+        }
+        
+        return null;
+    }
+    
+    
     
     
     this.onClickAddEntry = function(){

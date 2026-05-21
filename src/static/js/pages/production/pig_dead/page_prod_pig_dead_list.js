@@ -65,8 +65,6 @@ export function PageProdPigDeadList(input_settings){
     
     let showOptions             = null;
     
-    let dataPigDeadList         = null;
-
     
     let searchIncludeInsem      = true;
     
@@ -211,13 +209,13 @@ export function PageProdPigDeadList(input_settings){
   
    
         // Get data source
-        dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+        let data_list  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
 
         
-        if (dataPigDeadList){
+        if (data_list){
             // Display last known data
-            thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
-            thisObj.renderTable(dataPigDeadList);
+            thisObj.showInfoBox(data_list, elemPageInfo);
+            thisObj.renderTable(data_list);
             return;
         }
         
@@ -259,9 +257,9 @@ export function PageProdPigDeadList(input_settings){
         navigation.pigFarm.dataVerNum.pig_dead = data.ver_num;
         
         // Display cached data
-        dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
-        thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
-        thisObj.renderTable(dataPigDeadList);
+        data_list  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+        thisObj.showInfoBox(data_list, elemPageInfo);
+        thisObj.renderTable(data_list);
         
         
         // Request Server version num
@@ -296,18 +294,18 @@ export function PageProdPigDeadList(input_settings){
 
     this.requestServerData = function(){
         const callback_success = function(data){
-            dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
-            thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
-            thisObj.renderTable(dataPigDeadList);
+            const data_list = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+            thisObj.showInfoBox(data_list, elemPageInfo);
+            thisObj.renderTable(data_list);
         };
 
 
         const callback_offline = function(){
-            dataPigDeadList  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
-            if (dataPigDeadList){
+            const data_list = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+            if (data_list){
                 // Display last known data
-                thisObj.showInfoBox(dataPigDeadList, elemPageInfo);
-                thisObj.renderTable(dataPigDeadList);            
+                thisObj.showInfoBox(data_list, elemPageInfo);
+                thisObj.renderTable(data_list);            
             }
             else{
                 // Display modal offline
@@ -483,12 +481,11 @@ export function PageProdPigDeadList(input_settings){
     
     
     this.searchEntries = function(key){
-        let data_pig_prod_list = dataPigDeadList;
-        
+        const data_list = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
         
         
         const filtered = [];
-        for (const cur_entry of data_pig_prod_list){
+        for (const cur_entry of data_list){
             
             let u_sow_name          = null;
             let u_sow_number        = null;
@@ -605,13 +602,15 @@ export function PageProdPigDeadList(input_settings){
     }
     
     
-    this.getDataPigProd = function(pid){
-        // Most functions with getData*** always use entry_hid as 
-        // input parameter. The DataPigProd will use pid instead
-        // as this is highly visible by in the page.
-        for (const cur_entry of dataPigProdList){
-            if(cur_entry.pig_production.farm_prod_id == pid){return cur_entry;}
+    this.getEntry = function(entry_hid){
+        const data_list = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
+        
+        for (const cur_entry of data_list){
+            if (cur_entry.pig_dead.hid == entry_hid){
+                return cur_entry;
+            }
         }
+        
         return null;
     }
     
