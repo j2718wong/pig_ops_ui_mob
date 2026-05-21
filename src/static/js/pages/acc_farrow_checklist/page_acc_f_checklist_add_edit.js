@@ -37,18 +37,19 @@ export function PageAccFChecklistAddEdit(input_settings){
     
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
-        
+    
+    let elemIdHeaderTitle       = null;    
     let elemIdBtnClose          = null;
     
 
-    let elemUiNotes             = null;
+    let elemUiDescription             = null;
     
     let elemIdServerErrorMsg    = null;
     
     let elemIdBtnCancel         = null;
     let elemIdBtnSave           = null;
     
-    
+    let elemHeaderTitle         = null;
     let elemBtnClose            = null;
     
     let elemServerErrorMsg      = null;
@@ -59,6 +60,7 @@ export function PageAccFChecklistAddEdit(input_settings){
     
     let showOptions             = null;
     
+    let dataAccChecklistItem    = null;  
     
     this.init = function(){
         this.render();
@@ -67,12 +69,11 @@ export function PageAccFChecklistAddEdit(input_settings){
     
     
     this.render = function(){
-        
+        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         elemIdBtnClose          = `${settings.uniqueKey}-select-close`;
         
         
-        
-        elemUiNotes             = new UiInputTextWithCounter({
+        elemUiDescription        = new UiInputTextWithCounter({
             uniqueKey:          `${settings.uniqueKey}-notes`,
             
             isTextArea:         true,
@@ -95,7 +96,7 @@ export function PageAccFChecklistAddEdit(input_settings){
         
         
       
-        const html_notes        = elemUiNotes.getHtml();
+        const html_description  = elemUiDescription.getHtml();
         
         const html =`
 
@@ -104,7 +105,7 @@ export function PageAccFChecklistAddEdit(input_settings){
 
     <div class="modal-header gestating">
         <h5 class="modal-title">
-            <i class="fas fa-plus me-2"></i><span>Add Farrowing Checklist</span>
+            <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Add Farrowing Checklist</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
@@ -113,7 +114,7 @@ export function PageAccFChecklistAddEdit(input_settings){
     <div class="modal-body">
         
         
-        ${html_notes}
+        ${html_description}
         
         
         <div class="server-error-msg" id="${elemIdServerErrorMsg}"></div>
@@ -140,7 +141,7 @@ export function PageAccFChecklistAddEdit(input_settings){
     
     
     this.afterHtmlRender = function(){
-        elemUiNotes.afterHtmlRender();
+        elemUiDescription.afterHtmlRender();
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -149,9 +150,9 @@ export function PageAccFChecklistAddEdit(input_settings){
     
     
     this._findElements = function(){
+        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
-        
-        
+
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
             
@@ -167,9 +168,7 @@ export function PageAccFChecklistAddEdit(input_settings){
     
     this._bindEventListeners = function(){
         
-       
-        
-              
+
         elemBtnClose.addEventListener('click', function() {
             // Remove NavHistoryHead if same with go_back_page
             navigation.managerNavHistory.removeFromNavHistoryHead(
@@ -212,7 +211,7 @@ export function PageAccFChecklistAddEdit(input_settings){
         // Clear previous Form values and validation classes
         
         
-        elemUiNotes.reset();
+        elemUiDescription.reset();
         
     }
     
@@ -222,6 +221,23 @@ export function PageAccFChecklistAddEdit(input_settings){
         
         
         showOptions = options;
+        
+        let html = '';
+        if (showOptions.is_add){
+            html = `<i class="fas fa-plus me-2"></i>Add Farrowing Checklist`;
+        }
+        else{
+            html = `<i class="fas fa-edit me-2"></i>Edit Farrowing Checklist`;
+            
+            dataAccChecklistItem = showOptions.data_row_entry;
+            thisObj.populateForm();
+        }
+        elemHeaderTitle.innerHTML = html;
+    }
+    
+    
+    this.populateForm = function(){
+        elemUiDescription.setValue(dataAccChecklistItem.name);
     }
     
         
@@ -243,7 +259,7 @@ export function PageAccFChecklistAddEdit(input_settings){
         let validation      = 0;
         
 
-        let input_notes         = elemUiNotes.getValue();
+        let input_description         = elemUiDescription.getValue();
         
         
         // Final check before sending request
@@ -255,13 +271,22 @@ export function PageAccFChecklistAddEdit(input_settings){
         const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
 
+        let url ='';
+        if (showOptions.is_add){
+            url = `${base_url}/acc_sow_due_chklst/add`
+        }
+        else{
+            url = `${base_url}/acc_sow_due_chklst/update`
+        }
         
         // send post request
         const post_data = {
-            'name':         input_notes
+            'name':         input_description
         };
         
-      
+        if (!showOptions.is_add){
+            post_data.checklist_hid = dataAccChecklistItem.hid;
+        }
         
         const bearer_token = localStorage.getItem('access_token');
         
@@ -275,7 +300,7 @@ export function PageAccFChecklistAddEdit(input_settings){
             },
             
             timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: `${base_url}/acc_sow_due_chklst/add`,
+            url: url,
             async: true,
   
             data: JSON.stringify(post_data),
@@ -299,7 +324,7 @@ export function PageAccFChecklistAddEdit(input_settings){
                     const pig_farm_data_checklist = navigation.pigFarm.dataSowDueChecklist;
                     
                     if (pig_farm_data_checklist){
-                        // Only update this is tehre is an entry
+                        // Only update this is there is an entry
                         
                         const callback_success = function(){
                             // Go back to account Checklist

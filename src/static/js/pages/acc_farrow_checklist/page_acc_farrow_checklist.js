@@ -56,7 +56,7 @@ export function PageAccFarrowChecklist(input_settings){
     let elemTableBody           = null;
     
     
-    let dataAccFarrowChecklist     = null;
+    let dataAccFarrowChecklist  = null;
 
     
     let localDataVerNum         = 0;
@@ -349,8 +349,6 @@ export function PageAccFarrowChecklist(input_settings){
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
         
-         
-
         
         // Attach onclick listeners to td
         
@@ -362,7 +360,7 @@ export function PageAccFarrowChecklist(input_settings){
 
             if (index == 1) {
                 cur_td.onclick = function(){
-                   
+                    thisObj.onClickRowEntry(cur_entry.hid);
                 }
             }
             
@@ -372,7 +370,6 @@ export function PageAccFarrowChecklist(input_settings){
         
         return elem_row;
     }
-    
     
     
     
@@ -400,9 +397,21 @@ export function PageAccFarrowChecklist(input_settings){
     }
     
     
+    this.getDataEntry = function(entry_hid){
+        if (dataAccFarrowChecklist == null) {return null;}
+        
+        for (const cur_entry of dataAccFarrowChecklist){
+            if (cur_entry.hid == entry_hid){return cur_entry;}
+        } 
+        
+        return null;
+    }
+    
+    
     this.onClickAddEntry = function(){
         // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT);
+        const next_page_id  = PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT;
+        const next_page = navigation.getPageContainer(next_page_id);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -425,25 +434,34 @@ export function PageAccFarrowChecklist(input_settings){
     
     
     this.onClickRowEntry = function(entry_hid){
-        const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
+        console.log('onClickRowEntry entry_hid = ' + entry_hid);
         
-        const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
+        
+        
+        const data_row_entry = thisObj.getDataEntry(entry_hid);  
+        if (data_row_entry == null){return;}
+        
+        
+        // Show container
+        const next_page_id  = PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT;
+        const next_page = navigation.getPageContainer(next_page_id);
+        
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        navigation.showThisPage(next_page);
+        
+        
+        // Show Page
+        const go_back_page_id = PAGE_ID.ACC_FARROW_CHECKLIST;
         const go_back_page = navigation.getPageContainer(go_back_page_id);
     
-        const options ={
-            operation_type:         curAccPigOpsType,
-            is_add:                 false,   // false is edit
-            callback_after_edit:    thisObj.onSuccessEditEntry,
-            go_back_page:           go_back_page 
-        }
-        navigation.pageAccPigOpsAddEdit.beforeShow(options, data_acc_pig_ops);
-        
-        
-        const goto_page_id   = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
-        const page_container = navigation.getPageContainer(goto_page_id);
-        navigation.showThisPage(page_container);
+        const options = {
+            is_add:             false,   // false is edit
+            go_back_page:       go_back_page,
+            data_row_entry:     data_row_entry
+        };
+        navigation.pageAccFChecklistAddEdit.show(options);
     }
-  
-    
-    
 }
