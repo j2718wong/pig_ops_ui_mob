@@ -26,10 +26,6 @@ import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
 
 
 
-/*
-
-*/
-
 export function PageAllFeedBalanceList(input_settings){
     PageTableBasic.call(this);
     
@@ -65,18 +61,9 @@ export function PageAllFeedBalanceList(input_settings){
     let elemTableBody           = null;
     
 
-
-
-    //let textTranslation         = new TextTranslation();
-    let curUserLanguageKey      = 'en';
-
-
     let showOptions             = null;
     
     let dtCurrentDate           = null;
-    
-    
-    let dataFeedBalanceList     = null;
     
     
     this.init = function(){
@@ -223,12 +210,12 @@ export function PageAllFeedBalanceList(input_settings){
    
    
         // Get data source
-        dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
+        let data_list  = navigation.pigFarm.dataFeedBalanceList;
         
-        if (dataFeedBalanceList){
+        if (data_list){
             // Display last known data
-            thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
-            thisObj.renderTable(dataFeedBalanceList);
+            thisObj.showInfoBox(data_list, elemPageInfo);
+            thisObj.renderTable(data_list);
             return;
         } 
        
@@ -264,15 +251,15 @@ export function PageAllFeedBalanceList(input_settings){
         
         
         // Update data source
-        navigation.pigFarm.dataFeedBalanceListt = data.data;
+        navigation.pigFarm.dataFeedBalanceList = data.data;
         
         // Update data source version
         navigation.pigFarm.dataVerNum.feed_balance = data.ver_num;
         
         // Display cached data
-        dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
-        thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
-        thisObj.renderTable(dataFeedBalanceList);
+        data_list = navigation.pigFarm.dataFeedBalanceList;
+        thisObj.showInfoBox(data_list, elemPageInfo);
+        thisObj.renderTable(data_list);
         
         
         // Request Server version num
@@ -308,18 +295,18 @@ export function PageAllFeedBalanceList(input_settings){
     
     this.requestServerData = function(){
         const callback_success = function(data){
-            dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
-            thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
-            thisObj.renderTable(dataFeedBalanceList);
+            const data_list = navigation.pigFarm.dataFeedBalanceList;
+            thisObj.showInfoBox(data_list, elemPageInfo);
+            thisObj.renderTable(data_list);
         };
 
 
         const callback_offline = function(){
-            dataFeedBalanceList  = navigation.pigFarm.dataFeedBalanceList;
-            if (dataFeedBalanceList){
+            const data_list = navigation.pigFarm.dataFeedBalanceList;
+            if (data_list){
                 // Display last known data
-                thisObj.showInfoBox(dataFeedBalanceList, elemPageInfo);
-                thisObj.renderTable(dataFeedBalanceList);            
+                thisObj.showInfoBox(data_list, elemPageInfo);
+                thisObj.renderTable(data_list);            
             }
             else{
                 // Display modal offline
@@ -500,17 +487,12 @@ export function PageAllFeedBalanceList(input_settings){
     }
     
     
-    
-    
-    
     this.searchEntries = function(key){
     }
     
     
     this.getEntry = function(entry_hid){
-        dataFarmFeedBuyList = navigation.pigFarm.dataFarmFeedBuyList;
-        
-        const data_list = dataFarmFeedBuyList;
+        const data_list = navigation.pigFarm.dataFarmFeedBuyList;
         
         for (const cur_entry of data_list){
             if (cur_entry.pf_feed_buy.hid == entry_hid){
@@ -546,13 +528,7 @@ export function PageAllFeedBalanceList(input_settings){
         
     }
     
-    
-    
-    this.onSuccessEditEntry = function(){
 
-    }
-    
-    
     
     this.onClickRowEntry = function(row_entry){
         
@@ -567,13 +543,10 @@ export function PageAllFeedBalanceList(input_settings){
         
             const options = {
                 is_add:                 false,   // false is edit
-                callback_after_edit:    thisObj.onSuccessEditEntry,
                 go_back_page:           go_back_page
             }
             navigation.pageAllFeedBalanceAddEdit.show(options, row_entry);
-            
-            
-            
+
         }
     }
 }
