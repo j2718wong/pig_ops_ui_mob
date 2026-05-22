@@ -213,6 +213,9 @@ export function PagePigFarmFeedBuyList(input_settings){
             // Display last known data
             thisObj.showInfoBox(data_list, elemPageInfo);
             thisObj.renderTable(data_list);
+            
+            this.checkDataUpdate();
+            
             return;
         }
         
@@ -259,6 +262,11 @@ export function PagePigFarmFeedBuyList(input_settings){
         thisObj.renderTable(data_list);
         
         
+        this.checkDataUpdate();
+    }
+    
+    
+    this.checkDataUpdate = function(){
         // Request Server version num
         const callback_success = function(data){
             const data_ver_num_sow              = data[0];

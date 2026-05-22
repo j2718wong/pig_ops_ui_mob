@@ -588,8 +588,7 @@ export function ManagerSowBoar(input_settings){
         
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
         
-        const is_mob_view = 1; // TODO for desktop view
-        
+       
         const base_url = window.location.origin;
         const url = `${base_url}/sow_boar/list?pfhid=${cur_pig_farm_hid}&is_disposed=1&inc_user_audit=1`;
         
@@ -615,8 +614,23 @@ export function ManagerSowBoar(input_settings){
                 if (response.result.num == 0){
                     thisObj.dataDisposedSowBoarList = response.data;
                     
+                    // Update parentObj.dataVerNum.sow_boar_disposed
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.sow_boar_disposed;
+                        parentObj.dataVerNum.sow_boar_disposed = ver_num;
+                    }
+                    
+                    
                     // Update local storage
-                    thisObj.saveToStorage();
+                    const key = navigation.managerLocalData.STORAGE_KEY.SOW_BOAR_GILT.DISPOSED;
+                    const local_data = {
+                        pig_farm_hid:   parentObj.getPigFarmHid(),
+                        ver_num:        parentObj.dataVerNum.sow_boar_disposed,
+                        data:           thisObj.dataDisposedSowBoarList,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     
                     if (callback_success){
                         callback_success(response.data);

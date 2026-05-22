@@ -42,7 +42,8 @@ export function PigFarm(_navigation){
         not_pregnant:           0,
         boar_ext_mate:          0,
         pig_dead:               0,
-        sow_due_checklist:      0
+        sow_due_checklist:      0,
+        sow_boar_disposed:      0
     };
 
     
@@ -162,7 +163,6 @@ export function PigFarm(_navigation){
             pigFarmAccount:     thisObj.dataPigFarmAccount,
             
             staffList:          thisObj.dataStaffList,
-            farmFeedBuyList:    thisObj.dataFarmFeedBuyList,
             summaryReportList:  thisObj.dataSummaryReportList,
             
 
@@ -202,7 +202,6 @@ export function PigFarm(_navigation){
             thisObj.dataPigFarmAccount      = data.pigFarmAccount;
             
             thisObj.dataStaffList           = data.staffList;      
-            thisObj.dataFarmFeedBuyList     = data.farmFeedBuyList;
             thisObj.dataSummaryReportList   = data.summaryReportList;
             
             thisObj.dataLastFeedBalance     = data.lastFeedBalance;

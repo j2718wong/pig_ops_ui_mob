@@ -216,6 +216,9 @@ export function PageProdPigDeadList(input_settings){
             // Display last known data
             thisObj.showInfoBox(data_list, elemPageInfo);
             thisObj.renderTable(data_list);
+            
+            this.checkDataUpdate();
+            
             return;
         }
         
@@ -262,6 +265,11 @@ export function PageProdPigDeadList(input_settings){
         thisObj.renderTable(data_list);
         
         
+        this.checkDataUpdate();
+    }
+    
+    
+    this.checkDataUpdate = function(){
         // Request Server version num
         const callback_success = function(data){
             const data_ver_num_sow              = data[0];
@@ -291,7 +299,7 @@ export function PageProdPigDeadList(input_settings){
             callback_offline, null);
     }
     
-
+    
     this.requestServerData = function(){
         const callback_success = function(data){
             const data_list = navigation.pigFarm.managerPigProd.dataProdPigDeadList;
