@@ -7,6 +7,7 @@
 'use strict';
 
 import {APPLICATION,
+        DATA_VER_NUM_PIG_FARM,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
         SOW_STATUS,
@@ -37,11 +38,13 @@ export function PigFarm(_navigation){
         pig_prod:               0,
         prod_history:           0,
         staff:                  0,
+        
         feed_buy:               0,
         feed_balance:           0,
         not_pregnant:           0,
         boar_ext_mate:          0,
         pig_dead:               0,
+        
         sow_due_checklist:      0,
         sow_boar_disposed:      0
     };
@@ -209,6 +212,141 @@ export function PigFarm(_navigation){
             thisObj.dataSowDueChecklist     = data.sowDueChecklist;
         }
     }
+    
+    
+    /**
+     * Checks server version against local version for a specific data type.
+     * 
+     * @param {number} index_data_ver_num - Data type constant from DATA_VER_NUM_PIG_FARM
+     * @param {Function} callback_request_server_data - Called when server version is newer
+     * 
+     * @description
+     * Compares local vs server version numbers. If server version > local version,
+     * executes callback to refresh data. Used for offline-first stale-while-revalidate pattern.
+     * 
+     * @example
+     * this.checkServerDataUpdate(DATA_VER_NUM_PIG_FARM.FEED_BALANCE, () => {
+     *     this.fetchFreshFeedBalance();
+     * });
+     */
+    this.checkServerDataUpdate = function(index_data_ver_num, 
+            callback_request_server_data){
+        
+        // Request Server version num
+        const callback_success = function(data){
+            const data_ver_num_sow              = data[0];
+            const data_ver_num_boar             = data[1];
+            const data_ver_num_pig_prod         = data[2];
+            const data_ver_num_prod_history     = data[3];
+            const data_ver_num_staff            = data[4];
+            
+            const data_ver_num_feed_buy         = data[5];
+            const data_ver_num_feed_balance     = data[6];
+            const data_ver_num_not_pregnant     = data[7];
+            const data_ver_num_boar_ext_mate    = data[8];
+            const data_ver_num_pig_dead         = data[9];
+            
+            const data_ver_num_sow_due_checklist= data[10];
+            const data_ver_num_sow_boar_disposed= data[11];
+            
+            
+            switch(index_data_ver_num){
+                
+                case DATA_VER_NUM_PIG_FARM.SOW: {
+                    break;
+                }
+                
+                case DATA_VER_NUM_PIG_FARM.BOAR:{
+                    break;
+                }
+                             
+                case DATA_VER_NUM_PIG_FARM.PIG_PROD:{
+                    break;
+                }
+                         
+                case DATA_VER_NUM_PIG_FARM.PROD_HISTORY:{
+                    break;
+                }
+                     
+                case DATA_VER_NUM_PIG_FARM.STAFF:{
+                    if (data_ver_num_staff > thisObj.dataVerNum.staff){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+                    break;
+                }            
+                
+                case DATA_VER_NUM_PIG_FARM.FEED_BUY:{
+                    if (data_ver_num_feed_buy > thisObj.dataVerNum.feed_buy){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+                    break;
+                }
+                         
+                case DATA_VER_NUM_PIG_FARM.FEED_BALANCE:{
+                    if (data_ver_num_feed_balance > thisObj.dataVerNum.feed_balance){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+                    break;
+                }
+                     
+                case DATA_VER_NUM_PIG_FARM.NOT_PREGNANT:{
+                    if (data_ver_num_not_pregnant > thisObj.dataVerNum.not_pregnant){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+                    break;
+                }
+                     
+                case DATA_VER_NUM_PIG_FARM.BOAR_EXT_MATE:{
+                    if (data_ver_num_boar_ext_mate > thisObj.dataVerNum.boar_ext_mate){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+                    break;
+                }
+                    
+                case DATA_VER_NUM_PIG_FARM.PIG_DEAD:{
+                    if (data_ver_num_pig_dead > thisObj.dataVerNum.pig_dead){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+                    break;
+                }         
+                
+                case DATA_VER_NUM_PIG_FARM.SOW_DUE_CHECKLIST:{
+                    break;
+                }
+                
+                case DATA_VER_NUM_PIG_FARM.SOW_BOAR_DISPOSED:{
+                    if (data_ver_num_sow_boar_disposed > thisObj.dataVerNum.sow_boar_disposed){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+                    break;
+                }
+            }
+        };
+        
+        
+        const callback_offline = function(){
+            // nothing to do;
+        };
+        
+        
+        thisObj.requestPigFarmDataVerNum(null, callback_success, 
+            callback_offline, null);
+    }
+    
     
     
     

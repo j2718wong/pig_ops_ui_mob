@@ -12,6 +12,7 @@ import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        DATA_VER_NUM_PIG_FARM,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
         PROD_STATUS}            from '../../../constants.js';
@@ -217,7 +218,9 @@ export function PageProdPigDeadList(input_settings){
             thisObj.showInfoBox(data_list, elemPageInfo);
             thisObj.renderTable(data_list);
             
-            this.checkDataUpdate();
+            // Check server data update
+            navigation.pigFarm.checkServerDataUpdate(DATA_VER_NUM_PIG_FARM.PIG_DEAD,
+                thisObj.requestServerData);
             
             return;
         }
@@ -265,38 +268,9 @@ export function PageProdPigDeadList(input_settings){
         thisObj.renderTable(data_list);
         
         
-        this.checkDataUpdate();
-    }
-    
-    
-    this.checkDataUpdate = function(){
-        // Request Server version num
-        const callback_success = function(data){
-            const data_ver_num_sow              = data[0];
-            const data_ver_num_boar             = data[1];
-            const data_ver_num_pig_prod         = data[2];
-            const data_ver_num_prod_history     = data[3];
-            const data_ver_num_staff            = data[4];
-            const data_ver_num_feed_buy         = data[5];
-            const data_ver_num_feed_balance     = data[6];
-            const data_ver_num_not_pregnant     = data[7];
-            const data_ver_num_boar_ext_mate    = data[8];
-            const data_ver_num_pig_dead         = data[9];
-            const data_ver_num_sow_due_checklist= data[10];
-            
-            if (data_ver_num_pig_dead > navigation.pigFarm.dataVerNum.pig_dead){
-                thisObj.requestServerData();
-            }
-        };
-        
-        
-        const callback_offline = function(){
-            // nothing to do;
-        };
-        
-        
-        navigation.pigFarm.requestPigFarmDataVerNum(null, callback_success, 
-            callback_offline, null);
+        // Check server data update
+        navigation.pigFarm.checkServerDataUpdate(DATA_VER_NUM_PIG_FARM.PIG_DEAD,
+            thisObj.requestServerData);
     }
     
     

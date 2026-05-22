@@ -365,13 +365,22 @@ const HARVEST_TYPE = {
 };
 
 
-const DATA_VER_NUM_INDEX_PIG_FARM = {
+const DATA_VER_NUM_PIG_FARM = {
     SOW:                    0,
     BOAR:                   1,
     PIG_PROD:               2,
-    STAFF:                  3,
-    FEED_BUY:               4,
-    NOT_PREGNANT:           5
+    PROD_HISTORY:           3,
+    STAFF:                  4,
+    
+    FEED_BUY:               5,
+    FEED_BALANCE:           6,
+    NOT_PREGNANT:           7,
+    BOAR_EXT_MATE:          8,
+    PIG_DEAD:               9,
+    
+    SOW_DUE_CHECKLIST:      10,
+    SOW_BOAR_DISPOSED:      11
+
 };
 
 
@@ -473,7 +482,7 @@ export {
     DEFAULT_UNIT_WEIGHT,
     HARVEST_TYPE,
     
-    DATA_VER_NUM_INDEX_PIG_FARM,
+    DATA_VER_NUM_PIG_FARM,
     
     REPORT_TYPE,
     

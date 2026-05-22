@@ -237,6 +237,68 @@ export function PageProdNotPregnantList(input_settings){
     }
     
     
+    this.checkDataUpdate = function(){
+        // Request Server version num
+        const callback_success = function(data){
+            const data_ver_num_sow              = data[0];
+            const data_ver_num_boar             = data[1];
+            const data_ver_num_pig_prod         = data[2];
+            const data_ver_num_prod_history     = data[3];
+            const data_ver_num_staff            = data[4];
+            const data_ver_num_feed_buy         = data[5];
+            const data_ver_num_feed_balance     = data[6];
+            const data_ver_num_not_pregnant     = data[7];
+            const data_ver_num_boar_ext_mate    = data[8];
+            const data_ver_num_pig_dead         = data[9];
+            const data_ver_num_sow_due_checklist= data[10];
+            
+            if (data_ver_num_not_pregnant > navigation.pigFarm.dataVerNum.not_pregnant){
+                thisObj.requestServerData();
+            }
+        };
+        
+        
+        const callback_offline = function(){
+            // nothing to do;
+        };
+        
+        
+        navigation.pigFarm.requestPigFarmDataVerNum(null, callback_success, 
+            callback_offline, null);
+    }
+    
+    
+    this.requestServerData = function(){
+        const callback_success = function(data){
+            const data_list = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+            thisObj.showInfoBox(data_list, elemPageInfo);
+            thisObj.renderTable(data_list);
+        };
+
+
+        const callback_offline = function(){
+            const data_list = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+            if (data_list){
+                // Display last known data
+                thisObj.showInfoBox(data_list, elemPageInfo);
+                thisObj.renderTable(data_list);            
+            }
+            else{
+                // Display modal offline
+                navigation.managerSystem.showOfflineMessageModal();
+            }
+        };
+        
+        
+        // This should update:
+        // - navigation.pigFarm.managerPigProd.dataNotPregnantList
+        // - navigation.pigFarm.dataVerNum.not_pregnant
+        navigation.pigFarm.managerPigProd.requestPigProdNotPregnantList(
+                callback_success, callback_offline, null);
+    }
+
+    
+    
     this._writeInlineStyle = function(){
         const html = `
         <style>
