@@ -268,8 +268,17 @@ export function ManagerPigProd(input_settings){
                         parentObj.dataVerNum.not_pregnant = ver_num;
                     }
                     
+                    
                     // Update local storage
-                    thisObj.saveToStorage();
+                    const key = navigation.managerLocalData.STORAGE_KEY.PRODUCTION.NOT_PREGNANT;
+                    const local_data = {
+                        pig_farm_hid:   parentObj.getPigFarmHid(),
+                        ver_num:        parentObj.dataVerNum.not_pregnant,
+                        data:           thisObj.dataNotPregnantList,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -349,7 +358,6 @@ export function ManagerPigProd(input_settings){
                         cached_at:      Date.now()
                     };
                     localStorage.setItem(key, JSON.stringify(local_data));
-                    
                     
                     
                     if (callback_success){callback_success(response.data);}

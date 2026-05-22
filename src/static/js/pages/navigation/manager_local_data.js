@@ -13,6 +13,14 @@ export function ManagerLocalData(_navigation) {
     
     
     this.STORAGE_KEY = {
+        PIG_FARM: {
+            STAFF:                  'superpig_staff'
+        },
+        
+        PRODUCTION:{
+            NOT_PREGNANT:           'superpig_not_pregnant'
+        },
+        
         SOW_BOAR_GILT: {
             DISPOSED:               'superpig_disposed'
         },

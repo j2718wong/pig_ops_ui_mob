@@ -437,7 +437,6 @@ export function PigFarm(_navigation){
     ​
     sow_list: Array(8) [ {…}, {…}, {…}, … ]
     ​
-    staff_list: Array [ {…} ]
     ​
     */
     this.initializeFarmData = function(data){
@@ -484,7 +483,6 @@ export function PigFarm(_navigation){
         
         thisObj.dataPigFarmAccount = data.account;
         
-        thisObj.dataStaffList = data.staff_list;
 
         // Update local storage
         thisObj.saveToStorage();
@@ -747,6 +745,24 @@ export function PigFarm(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataStaffList = response.data;
+                    
+                    // Update thisObj.dataVerNum.feed_buy
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.staff;
+                        thisObj.dataVerNum.staff = ver_num;
+                    }
+                    
+                    
+                    // Update local storage
+                    const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.STAFF;
+                    const local_data = {
+                        pig_farm_hid:   thisObj.getPigFarmHid(),
+                        ver_num:        thisObj.dataVerNum.staff,
+                        data:           thisObj.dataStaffList,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     
                     // Update local storage
                     thisObj.saveToStorage();

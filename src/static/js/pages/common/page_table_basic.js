@@ -17,9 +17,78 @@ import {createPaginationManager} from '../../utils.js';
 export const DEFAULT_NO_ENTRIES_TABLE = ['No Entries', 'No Data', 'Nothing in here', 'Try Add Entry'];
 
 
+export function CachedDataSource(){
+   PageViewBasic.call(this);
+
+   
+   this.loadCachedData = function(pig_farm_hid){
+            
+        // Load cached data 
+        const key = this.getStorageKey();
+        const cached = localStorage.getItem(key);
+        if (!cached) {
+            this.requestServerData();
+            return;
+        }
+        
+        
+        const data = JSON.parse(cached);
+        
+        // Check if pig_farm_hid matched
+        const cached_pig_farm_hid = data.pig_farm_hid;
+        if (cached_pig_farm_hid != pig_farm_hid){
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Optionally expire cache after 7 days
+        if (data.cached_at && (Date.now() - data.cached_at) > APPLICATION.NUM_MSECS_CACHE_DATA) {
+            // Cache too old, fetch fresh
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Update data source
+        this.updateDataSource(data.data, data.ver_num);
+        
+        
+        // Display Data
+        this.displayData();
+        
+        
+        // Check server data update
+        this.checkServerDataUpdate();
+    
+    }
+    
+    
+    // Must be overriden; It should return the key string saved in localStorage.
+    this.getStorageKey = function(){return null;}
+ 
+    
+    // Must be overriden;
+    this.requestServerData = function(){}
+    
+    
+    // Must be overriden;
+    this.updateDataSource = function(){}
+    
+    
+    // Must be overriden;
+    this.displayData = function(){}
+    
+    
+    // Must be overriden;
+    this.checkServerDataUpdate = function(){}
+    
+}
+
+
 
 export function PageTableBasic(){
-    PageViewBasic.call(this);
+    CachedDataSource.call(this);
     
     const thisObj               = this;
     
@@ -587,6 +656,4 @@ export function PageTableBasic(){
         
         return label_no_entries;
     }
-    
-    
 }

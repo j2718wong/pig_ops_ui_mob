@@ -12,6 +12,7 @@ import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        DATA_VER_NUM_PIG_FARM,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
         PROD_STATUS}            from '../../../constants.js';
@@ -29,6 +30,8 @@ import {getSowBoarReference}    from '../../common/common_app.js';
 
 export function PageProdNotPregnantList(input_settings){
     PageTableBasic.call(this);
+    
+    const TAG                   = 'PageProdNotPregnantList';
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -183,96 +186,77 @@ export function PageProdNotPregnantList(input_settings){
     }
     
     
-    this.show = function(){
+    this.getStorageKey = function(){
+        return navigation.managerLocalData.STORAGE_KEY.PRODUCTION.NOT_PREGNANT;
+    }
+    
+    
+    // The data, data_ver_num comes from localStorage.
+    this.updateDataSource = function(data, data_ver_num){
+        // Update data source
+        navigation.pigFarm.managerPigProd.dataNotPregnantList = data;
         
-        const callback_success = function(data){
-            dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
-            thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
-            thisObj.renderTable(dataNotPregnantList);
-            
-            // Copy the Server dataVerNum  to localDataVerNum 
-            localDataVerNum     = navigation.pigFarm.dataVerNum.not_pregnant;
-        };
+        // Update data source version
+        navigation.pigFarm.dataVerNum.not_pregnant = data_ver_num;
+    }
+    
+    
+    // Display data
+    this.displayData = function(){
+        const data_list = navigation.pigFarm.managerPigProd.dataNotPregnantList;
+        thisObj.showInfoBox(data_list, elemPageInfo);
+        thisObj.renderTable(data_list);
+    }
+    
+    
+    // Check server data update
+    this.checkServerDataUpdate = function(){
+        navigation.pigFarm.checkServerDataUpdate(
+            DATA_VER_NUM_PIG_FARM.NOT_PREGNANT,
+            thisObj.requestServerData);
+    }
+    
+    
+    this.show = function(options){
+        thisObj.debugNavHistory(TAG);
+        
+        // Update navigation.curPageNavigated
+        navigation.curPageNavigated.pageData = null;
+        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
-        const callback_offline = function(){
-            dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
-            
-            if (dataNotPregnantList){
-                // Display last known data
-                thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
-                thisObj.renderTable(dataNotPregnantList);
-            }
-            else{
-                // Display modal offline
-                navigation.managerSystem.showOfflineMessageModal();
-            }
-        };
+        
+        if (options && options.refresh_list){
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Get data source
+        let data_list  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
 
         
-        
-        let server_data_ver_num =  navigation.pigFarm.dataVerNum.not_pregnant;
-        let is_to_request_data = 0;
-        
-        dataNotPregnantList  = navigation.pigFarm.managerPigProd.dataNotPregnantList;
-        
-        if (dataNotPregnantList == null){
-            is_to_request_data = 1;
-        } else{
-            if (server_data_ver_num > localDataVerNum){
-                is_to_request_data = 1;
-            }
-        }
-        
-        
-        // Request data only if needed
-        if (is_to_request_data > 0){
-            navigation.pigFarm.managerPigProd.requestPigProdNotPregnantList(
-                callback_success, callback_offline, null);
-        } else{
+        if (data_list){
             // Display last known data
-            thisObj.showInfoBox(dataNotPregnantList, elemPageInfo);
-            thisObj.renderTable(dataNotPregnantList);
-        }
-    }
-    
-    
-    this.checkDataUpdate = function(){
-        // Request Server version num
-        const callback_success = function(data){
-            const data_ver_num_sow              = data[0];
-            const data_ver_num_boar             = data[1];
-            const data_ver_num_pig_prod         = data[2];
-            const data_ver_num_prod_history     = data[3];
-            const data_ver_num_staff            = data[4];
-            const data_ver_num_feed_buy         = data[5];
-            const data_ver_num_feed_balance     = data[6];
-            const data_ver_num_not_pregnant     = data[7];
-            const data_ver_num_boar_ext_mate    = data[8];
-            const data_ver_num_pig_dead         = data[9];
-            const data_ver_num_sow_due_checklist= data[10];
+            this.displayData();
             
-            if (data_ver_num_not_pregnant > navigation.pigFarm.dataVerNum.not_pregnant){
-                thisObj.requestServerData();
-            }
-        };
+            // Check server data update
+            this.checkServerDataUpdate();
+            
+            return;
+        }
         
         
-        const callback_offline = function(){
-            // nothing to do;
-        };
-        
-        
-        navigation.pigFarm.requestPigFarmDataVerNum(null, callback_success, 
-            callback_offline, null);
+        // If data source is null, that means the page was unloaded;
+        // Load cached data 
+        const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+        this.loadCachedData(pig_farm_hid);
     }
     
-    
+        
     this.requestServerData = function(){
-        const callback_success = function(data){
-            const data_list = navigation.pigFarm.managerPigProd.dataNotPregnantList;
-            thisObj.showInfoBox(data_list, elemPageInfo);
-            thisObj.renderTable(data_list);
+        const callback_success = function(){
+            thisObj.displayData();
         };
 
 

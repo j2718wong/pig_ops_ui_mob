@@ -86,6 +86,8 @@ export function ComponentStaffFormGroup(input_settings){
     let elemChkDoneByMe         = null;
     
     
+    let showOptions             = null;
+    
     let dataStaffList           = null;
     
     
@@ -344,25 +346,84 @@ export function ComponentStaffFormGroup(input_settings){
     }
     
     
+    // The data, data_ver_num comes from localStorage.
+    this.updateDataSource = function(data, data_ver_num){
+        // Update data source
+        navigation.pigFarm.dataStaffList = data;
+        
+        // Update data source version
+        navigation.pigFarm.dataVerNum.staff = data_ver_num;
+    }
+    
+    
+    this.displayData = function(){
+        const data_list = navigation.pigFarm.dataStaffList;
+        thisObj.setDataStaffList(data_list);
+    }
+    
+    
     this.beforeShow = function(options){
-        const staff_list = navigation.pigFarm.dataStaffList;
-        if (staff_list == null){
+        
+        showOptions = options;
+        
+        // Get data source
+        const data_list = navigation.pigFarm.dataStaffList;
+        
+        if (data_list == null){
             
-            const callback_success = function(data){
-                thisObj.setDataStaffList(data);
-            };
+            // Load cache data if there is any
+            // Load cached data 
+            const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.STAFF;
+            const cached = localStorage.getItem(key);
+            if (!cached) {
+                this.requestServerData();
+                return;
+            }
             
-            let elem_show_error = null;
-            if (options && options.elem_show_error){
-                elem_show_error = options.elem_show_error;}
             
-            navigation.pigFarm.requestDataPigFarmStaffList(callback_success, 
-                elem_show_error);
+            const data = JSON.parse(cached);
+            
+            // Check if pig_farm_hid matched
+            const cached_pig_farm_hid = data.pig_farm_hid;
+            const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+            
+            if (cached_pig_farm_hid != pig_farm_hid){
+                this.requestServerData();
+                return;
+            }
+        
+            
+            // Optionally expire cache after 7 days
+            if (data.cached_at && (Date.now() - data.cached_at) > APPLICATION.NUM_MSECS_CACHE_DATA) {
+                // Cache too old, fetch fresh
+                this.requestServerData();
+                return;
+            }
+        
+        
+            // Update data source
+            this.updateDataSource(data.data, data.ver_num);
+                
+            thisObj.displayData();
         
         }
         else{
-            thisObj.setDataStaffList(staff_list);
+            thisObj.setDataStaffList(data_list);
         }
+    }
+    
+    
+    this.requestServerData = function(){
+        const callback_success = function(){
+            thisObj.displayData();
+        };
+        
+        let elem_show_error = null;
+        if (showOptions && showOptions.elem_show_error){
+            elem_show_error = showOptions.elem_show_error;}
+        
+        navigation.pigFarm.requestDataPigFarmStaffList(callback_success, 
+            elem_show_error);
     }
     
     
