@@ -1287,6 +1287,9 @@ export function Navigation(){
         this.managerNavLinks.showHideNavLinksAfterUserSet();
         
         
+        // Load account pig_ops
+        this.pageAccPigOpsList.loadDataFromStorage();
+        
         
         // The ending of this.pigFarm.initializeFarmData() is calling
         //this.showHomeDashBoard()

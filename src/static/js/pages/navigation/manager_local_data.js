@@ -33,6 +33,14 @@ export function ManagerLocalData(_navigation) {
         
         FINANCIALS:{
             FEED_BUY:               'superpig_feed_buy'
+        },
+        
+        PIG_OPS_SETTINGS:{
+            GESTATING_OPS:          'superpig_gestating_ops',
+            LACTATING_PIGLETS_OPS:  'superpig_lactating_piglets_ops',
+            LACTATING_SOW_OPS:      'superpig_lactating_sow_ops',
+            GILT_OPS:               'superpig_gilt_ops',
+            WEANING_SOW_OPS:        'superpig_weaning_sow_ops'
         }
     }
     

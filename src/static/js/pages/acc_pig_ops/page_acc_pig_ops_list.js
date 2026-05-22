@@ -69,11 +69,11 @@ export function PageAccPigOpsList(input_settings){
     let curUserLanguageKey      = 'en';
 
 
-    let dataAccGestatingOps     = [];
-    let dataAccLactatingPigletOps= [];
-    let dataAccLactatingSowOps  = [];
-    let dataAccWeaningSowOps    = [];
-    let dataAccGiltOps          = [];
+    let dataAccGestatingOps     = null;
+    let dataAccLactatingPigletOps= null;
+    let dataAccLactatingSowOps  = null;
+    let dataAccWeaningSowOps    = null;
+    let dataAccGiltOps          = null;
 
     let curAccPigOpsType        = null;
     let curDataAccPigOpsList    = null;
@@ -165,31 +165,123 @@ export function PageAccPigOpsList(input_settings){
     }
     
         
-    this.setDataAccPigOpsList = function(data, operation_type){
+    this.setDataAccPigOpsList = function(data, operation_type, data_ver_num){
+        const account_data_ver_num = navigation.pigFarm.accountLists.dataVerNum;
+        const KEY_PIG_OPS_SETTINGS = navigation.managerLocalData.STORAGE_KEY.PIG_OPS_SETTINGS;
+        
+        let ver_num;
+        let key; 
+        let local_data;
+        
         if (operation_type){
             switch(operation_type){
                 case PIG_OPERATION_TYPE.GESTATING:{
                     dataAccGestatingOps         = data;
+                    
+                    // Update navigation.pigFarm.accountLists.dataVerNum.gestating_ops
+                    if (data_ver_num){
+                        ver_num = data_ver_num.account.gestating_ops;
+                        account_data_ver_num.gestating_ops = ver_num;
+                    }
+                    
+                    // Update local storage
+                    key = KEY_PIG_OPS_SETTINGS.GESTATING_OPS;
+                    local_data = {
+                        pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                        ver_num:        account_data_ver_num.gestating_ops,
+                        data:           dataAccGestatingOps,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                                        
                     break;
                 }
                 
                 case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
                     dataAccLactatingPigletOps   = data;
+                    
+                    // Update navigation.pigFarm.accountLists.dataVerNum.lactating_piglets_ops
+                    if (data_ver_num){
+                        ver_num = data_ver_num.account.lactating_piglets_ops;
+                        account_data_ver_num.lactating_piglets_ops = ver_num;
+                    }
+                    
+                    // Update local storage
+                    key = KEY_PIG_OPS_SETTINGS.LACTATING_PIGLETS_OPS;
+                    local_data = {
+                        pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                        ver_num:        account_data_ver_num.lactating_piglets_ops,
+                        data:           dataAccLactatingPigletOps,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     break;
                 }
                 
                 case PIG_OPERATION_TYPE.LACTATING_SOW:{
                     dataAccLactatingSowOps      = data;
-                    break;
-                }
-                
-                case PIG_OPERATION_TYPE.WEANING_SOW:{
-                    dataAccWeaningSowOps        = data;
+                    
+                    // Update navigation.pigFarm.accountLists.dataVerNum.lactating_sow_ops
+                    if (data_ver_num){
+                        ver_num = data_ver_num.account.lactating_sow_ops;
+                        account_data_ver_num.lactating_sow_ops = ver_num;
+                    }
+                    
+                    // Update local storage
+                    key = KEY_PIG_OPS_SETTINGS.LACTATING_SOW_OPS;
+                    local_data = {
+                        pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                        ver_num:        account_data_ver_num.lactating_sow_ops,
+                        data:           dataAccLactatingSowOps,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     break;
                 }
                 
                 case PIG_OPERATION_TYPE.GILT:{
                     dataAccGiltOps              = data;
+                    
+                    // Update navigation.pigFarm.accountLists.dataVerNum.gilt_ops
+                    if (data_ver_num){
+                        ver_num = data_ver_num.account.gilt_ops;
+                        account_data_ver_num.gilt_ops = ver_num;
+                    }
+                    
+                    // Update local storage
+                    key = KEY_PIG_OPS_SETTINGS.GILT_OPS;
+                    local_data = {
+                        pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                        ver_num:        account_data_ver_num.gilt_ops,
+                        data:           dataAccGiltOps,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
+                    break;
+                }
+                
+                case PIG_OPERATION_TYPE.WEANING_SOW:{
+                    dataAccWeaningSowOps        = data;
+                    
+                    // Update navigation.pigFarm.accountLists.dataVerNum.weaning_sow_ops
+                    if (data_ver_num){
+                        ver_num = data_ver_num.account.weaning_sow_ops;
+                        account_data_ver_num.weaning_sow_ops = ver_num;
+                    }
+                    
+                    // Update local storage
+                    key = KEY_PIG_OPS_SETTINGS.WEANING_SOW_OPS;
+                    local_data = {
+                        pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                        ver_num:        account_data_ver_num.weaning_sow_ops,
+                        data:           dataAccWeaningSowOps,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     break;
                 }
             }
@@ -232,50 +324,160 @@ export function PageAccPigOpsList(input_settings){
                     }
                 }
             }
+            
+            
+            // Update navigation.pigFarm.accountLists.dataVerNum.gestating_ops
+            if (data_ver_num){
+                ver_num = data_ver_num.account.gestating_ops;
+                account_data_ver_num.gestating_ops = ver_num;
+            }
+            
+            // Update local storage
+            key = KEY_PIG_OPS_SETTINGS.GESTATING_OPS;
+            local_data = {
+                pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                ver_num:        navigation.pigFarm.accountLists.dataVerNum.gestating_ops,
+                data:           dataAccGestatingOps,
+                cached_at:      Date.now()
+            };
+            localStorage.setItem(key, JSON.stringify(local_data));
+    
+            
+            // Update navigation.pigFarm.accountLists.dataVerNum.lactating_piglets_ops
+            if (data_ver_num){
+                ver_num = data_ver_num.account.lactating_piglets_ops;
+                account_data_ver_num.lactating_piglets_ops = ver_num;
+            }
+            
+            // Update local storage
+            key = KEY_PIG_OPS_SETTINGS.LACTATING_PIGLETS_OPS;
+            local_data = {
+                pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                ver_num:        account_data_ver_num.lactating_piglets_ops,
+                data:           dataAccLactatingPigletOps,
+                cached_at:      Date.now()
+            };
+            localStorage.setItem(key, JSON.stringify(local_data));
+                    
+            
+            // Update navigation.pigFarm.accountLists.dataVerNum.lactating_sow_ops
+            if (data_ver_num){
+                ver_num = data_ver_num.account.lactating_sow_ops;
+                account_data_ver_num.lactating_sow_ops = ver_num;
+            }
+            
+            // Update local storage
+            key = KEY_PIG_OPS_SETTINGS.LACTATING_SOW_OPS;
+            local_data = {
+                pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                ver_num:        account_data_ver_num.lactating_sow_ops,
+                data:           dataAccLactatingSowOps,
+                cached_at:      Date.now()
+            };
+            localStorage.setItem(key, JSON.stringify(local_data));
+            
+            
+            // Update navigation.pigFarm.accountLists.dataVerNum.gilt_ops
+            if (data_ver_num){
+                ver_num = data_ver_num.account.gilt_ops;
+                account_data_ver_num.gilt_ops = ver_num;
+            }
+            
+            // Update local storage
+            key = KEY_PIG_OPS_SETTINGS.GILT_OPS;
+            local_data = {
+                pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                ver_num:        account_data_ver_num.gilt_ops,
+                data:           dataAccGiltOps,
+                cached_at:      Date.now()
+            };
+            localStorage.setItem(key, JSON.stringify(local_data));
+                            
+            
+            // Update navigation.pigFarm.accountLists.dataVerNum.weaning_sow_ops
+            if (data_ver_num){
+                ver_num = data_ver_num.account.weaning_sow_ops;
+                account_data_ver_num.weaning_sow_ops = ver_num;
+            }
+            
+            // Update local storage
+            key = KEY_PIG_OPS_SETTINGS.WEANING_SOW_OPS;
+            local_data = {
+                pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                ver_num:        account_data_ver_num.weaning_sow_ops,
+                data:           dataAccWeaningSowOps,
+                cached_at:      Date.now()
+            };
+            localStorage.setItem(key, JSON.stringify(local_data));
+
         }
         
-        // Update local storage
-        thisObj.saveToStorage();
     }
     
-    
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-    
-    }
-    
-    
-    this.getDataToSaveToStorage = function(){
-        return {
-            accGestatingOps:        dataAccGestatingOps,
-            accLactatingPigletOps:  dataAccLactatingPigletOps,
-            accLactatingSowOps:     dataAccLactatingSowOps,
-            accWeaningSowOps:       dataAccWeaningSowOps,
-            accGiltOps:             dataAccGiltOps
-        }
-    }
-    
-    
-    
-    this.saveToStorage = function() {
-        const data = thisObj.getDataToSaveToStorage();
-        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
-    }
-
-
     
     this.loadDataFromStorage = function(){
-        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
+        const account_data_ver_num = navigation.pigFarm.accountLists.dataVerNum;
+        const KEY_PIG_OPS_SETTINGS = navigation.managerLocalData.STORAGE_KEY.PIG_OPS_SETTINGS;
+        
+        let cached;
+        let data  
+        
+        cached = localStorage.getItem(KEY_PIG_OPS_SETTINGS.GESTATING_OPS);
         if (cached) {
-            const data = JSON.parse(cached);
+            data = JSON.parse(cached);
             
-            dataAccGestatingOps         = data.accGestatingOps;
-            dataAccLactatingPigletOps   = data.accLactatingPigletOps;
-            dataAccLactatingSowOps      = data.accLactatingSowOps;
-            dataAccWeaningSowOps        = data.accWeaningSowOps;
-            dataAccGiltOps              = data.accGiltOps;
+            dataAccGestatingOps                 = data.data;
+            account_data_ver_num.gestating_ops  = data.ver_num;
         }
+        
+        
+        cached = localStorage.getItem(KEY_PIG_OPS_SETTINGS.LACTATING_PIGLETS_OPS);
+        if (cached) {
+            data = JSON.parse(cached);
+            
+            dataAccLactatingPigletOps           = data.data;
+            account_data_ver_num.lactating_piglets_ops  = data.ver_num;
+        }
+        
+        
+        cached = localStorage.getItem(KEY_PIG_OPS_SETTINGS.LACTATING_SOW_OPS);
+        if (cached) {
+            data = JSON.parse(cached);
+            
+            dataAccLactatingSowOps              = data.data;
+            account_data_ver_num.lactating_sow_ops  = data.ver_num;
+        }
+        
+        
+        cached = localStorage.getItem(KEY_PIG_OPS_SETTINGS.WEANING_SOW_OPS);
+        if (cached) {
+            data = JSON.parse(cached);
+            
+            dataAccWeaningSowOps                = data.data;
+            account_data_ver_num.weaning_sow_ops  = data.ver_num;
+        }
+
+        
+        cached = localStorage.getItem(KEY_PIG_OPS_SETTINGS.GILT_OPS);
+        if (cached) {
+            data = JSON.parse(cached);
+            
+            dataAccGiltOps                      = data.data;
+            account_data_ver_num.gilt_ops       = data.ver_num;
+        }
+        
+        
+        // Check if there is no data loaded
+        if (dataAccGestatingOps == null){
+            const callback_success = function(){
+                
+            };
+            
+            // Request all AccPigOps type;
+            // A successful request should call this.setDataAccPigOpsList()
+            navigation.pigFarm.requestDataAccPigOpsList(null, callback_success);
+        }
+        
     }
     
     
@@ -285,6 +487,26 @@ export function PageAccPigOpsList(input_settings){
             curAccPigOpsType = pig_ops_type;
         }
         
+        
+        const callback_success = function(data){
+
+            const cur_ver_num_gestating_ops         = data[0];    
+            const cur_ver_num_lactating_piglets_ops = data[1];
+            const cur_ver_num_lactating_sow_ops     = data[2];    
+            const cur_ver_num_gilt_ops              = data[3];             
+            const cur_ver_num_weaning_sow_ops       = data[4];
+            
+            
+            // A successful request should call this.setDataAccPigOpsList()
+            navigation.pigFarm.requestDataAccPigOpsList(curAccPigOpsType, 
+                thisObj.displayData);
+        };
+        
+        navigation.pigFarm.accountLists.requestAccountDataVerNum(callback_success);
+    }
+    
+    
+    this.displayData = function(){
         switch(curAccPigOpsType){
             case PIG_OPERATION_TYPE.GESTATING:{
                 curDataAccPigOpsList = dataAccGestatingOps;
@@ -295,7 +517,8 @@ export function PageAccPigOpsList(input_settings){
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, 
+                        PIG_OPERATION_TYPE.LACTATING_PIGLETS);
                 }
                 break;
             }
@@ -305,11 +528,13 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GESTATING);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, 
+                        PIG_OPERATION_TYPE.GESTATING);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, 
+                        PIG_OPERATION_TYPE.LACTATING_SOW);
                 }
                 break;
             }
@@ -319,11 +544,13 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, 
+                        PIG_OPERATION_TYPE.LACTATING_PIGLETS);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.WEANING_SOW);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, 
+                        PIG_OPERATION_TYPE.WEANING_SOW);
                 }
                 break;
             }
@@ -333,11 +560,13 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.LACTATING_SOW);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, 
+                        PIG_OPERATION_TYPE.LACTATING_SOW);
                 }
         
                 elemNavNextEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.GILT);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, 
+                        PIG_OPERATION_TYPE.GILT);
                 }
                 break;
             }
@@ -347,7 +576,8 @@ export function PageAccPigOpsList(input_settings){
                 
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
-                    navigation.managerNavLinks.onClickNavAccPigOps(null, PIG_OPERATION_TYPE.WEANING_SOW);
+                    navigation.managerNavLinks.onClickNavAccPigOps(null, 
+                        PIG_OPERATION_TYPE.WEANING_SOW);
                 }
         
                 elemNavNextEntry.onclick = function(){
@@ -355,6 +585,7 @@ export function PageAccPigOpsList(input_settings){
                 }
                 break;
             }
+            
         }
         
         

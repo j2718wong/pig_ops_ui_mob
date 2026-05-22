@@ -165,7 +165,6 @@ export function PigFarm(_navigation){
             pigFarm:            thisObj.dataPigFarm,
             pigFarmAccount:     thisObj.dataPigFarmAccount,
             
-            staffList:          thisObj.dataStaffList,
             summaryReportList:  thisObj.dataSummaryReportList,
             
 
@@ -204,7 +203,6 @@ export function PigFarm(_navigation){
             
             thisObj.dataPigFarmAccount      = data.pigFarmAccount;
             
-            thisObj.dataStaffList           = data.staffList;      
             thisObj.dataSummaryReportList   = data.summaryReportList;
             
             thisObj.dataLastFeedBalance     = data.lastFeedBalance;
@@ -427,10 +425,9 @@ export function PigFarm(_navigation){
      * 
      * Typical data:
      * 
-    Object { acc_pig_ops: (11) […], sow_list: (8) […], boar_list: (3) […], staff_list: (1) […], account: {…} }
+    Object { sow_list: (8) […], boar_list: (3) […], account: {…} }
 ​
-    acc_pig_ops: Array(11) [ {…}, {…}, {…}, … ]
-    ​
+
     account: Object { account: {…}, settings_operations: {…} }
     ​
     boar_list: Array(3) [ {…}, {…}, {…} ]
@@ -453,33 +450,6 @@ export function PigFarm(_navigation){
             this.dataSowDueChecklist = null;
         }
         
-            
-        if ('acc_pig_ops' in data){
-            navigation.pageAccPigOpsList.setDataAccPigOpsList(data.acc_pig_ops);
-        }
-        else{
-            if ('acc_gestating_ops' in data){
-                navigation.pageAccPigOpsList.setDataAccPigOpsList(
-                    data.acc_gestating_ops, PIG_OPERATION_TYPE.GESTATING);
-            }
-            
-            if ('acc_lactating_piglets_ops' in data){
-                navigation.pageAccPigOpsList.setDataAccPigOpsList(
-                    data.acc_lactating_piglets_ops, 
-                    PIG_OPERATION_TYPE.LACTATING_PIGLETS);
-            }
-            
-            if ('acc_lactating_sow_ops' in data){
-                navigation.pageAccPigOpsList.setDataAccPigOpsList(
-                    data.acc_lactating_sow_ops,
-                    PIG_OPERATION_TYPE.LACTATING_SOW);
-            }
-            
-            if ('gilt_ops' in data){
-                navigation.pageAccPigOpsList.setDataAccPigOpsList(
-                    data.acc_gilt_ops, PIG_OPERATION_TYPE.GILT);
-            }
-        }
         
         thisObj.dataPigFarmAccount = data.account;
         
@@ -495,49 +465,44 @@ export function PigFarm(_navigation){
         thisObj.managerSowBoar.saveToStorage();
 
             
-        if ('pig_production' in data){
-            thisObj.managerPigProd.setDataPigProdList(data.pig_production);
-        }
-        else{
-            // Set pig_farm.dataVerNum 
-            const callback_set_pig_farm_data_ver_num = function(data){
-                
-                thisObj.dataVerNum = {
-                    sow:                    data[0],
-                    boar:                   data[1],
-                    pig_prod:               data[2],
-                    prod_history:           data[3],
-                    staff:                  data[4],
-                    feed_buy:               data[5],
-                    feed_balance:           data[6],
-                    not_pregnant:           data[7],
-                    boar_ext_mate:          data[8],
-                    pig_dead:               data[9],
-                    sow_due_checklist:      data[10]
-                };
-                
-                
-                console.log('\n\nPigFarm.dataVerNum');
-                console.log(thisObj.dataVerNum);
-                
-                navigation.showHomeDashBoard();
-            }
+        
+        // Set pig_farm.dataVerNum 
+        const callback_set_pig_farm_data_ver_num = function(data){
             
-            
-            const callback_success = function(data){
-                thisObj.managerPigProd.setDataPigProdList(data);
-                
-                thisObj.requestPigFarmDataVerNum(null,
-                    callback_set_pig_farm_data_ver_num);
+            thisObj.dataVerNum = {
+                sow:                    data[0],
+                boar:                   data[1],
+                pig_prod:               data[2],
+                prod_history:           data[3],
+                staff:                  data[4],
+                feed_buy:               data[5],
+                feed_balance:           data[6],
+                not_pregnant:           data[7],
+                boar_ext_mate:          data[8],
+                pig_dead:               data[9],
+                sow_due_checklist:      data[10]
             };
             
             
-            const pig_prod_type = PIG_PROD_TYPE.ALL;
-            thisObj.managerPigProd.requestPigProdList(pig_prod_type, 
-                callback_success);
-
+            console.log('\n\nPigFarm.dataVerNum');
+            console.log(thisObj.dataVerNum);
+            
+            navigation.showHomeDashBoard();
         }
         
+        
+        const callback_success = function(data){
+            thisObj.managerPigProd.setDataPigProdList(data);
+            
+            thisObj.requestPigFarmDataVerNum(null,
+                callback_set_pig_farm_data_ver_num);
+        };
+        
+        
+        const pig_prod_type = PIG_PROD_TYPE.ALL;
+        thisObj.managerPigProd.requestPigProdList(pig_prod_type, 
+            callback_success);
+
     }
     
     
@@ -666,10 +631,16 @@ export function PigFarm(_navigation){
     }
  
     
-    this.requestDataAccPigOpsList = function(callback_success, elem_show_error){
+    this.requestDataAccPigOpsList = function(pig_operation_type, 
+            callback_success, elem_show_error){
+        
         const base_url = window.location.origin;
         const farm_account_hid = navigation.pigFarm.getPigFarmAccountHid();
         let url = `${base_url}/account_pig_ops/list?ahid=${farm_account_hid}`;
+        
+        if (pig_operation_type){
+            url += `&operation_type=${pig_operation_type}`;
+        }
         
         
         const bearer_token = localStorage.getItem('access_token');
@@ -695,8 +666,10 @@ export function PigFarm(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                     
+                    
                     navigation.pageAccPigOpsList.setDataAccPigOpsList(
-                        response.data);
+                        response.data, pig_operation_type, 
+                        response.data_ver_num);
                     
                     if (callback_success){callback_success(response.data);}
                 }

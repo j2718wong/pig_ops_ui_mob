@@ -542,7 +542,7 @@ export function PageAccPigOpsAddEdit(input_settings){
                             
                         };
                         
-                        navigation.pigFarm.requestDataAccPigOpsList(
+                        navigation.pigFarm.requestDataAccPigOpsList(operationType,
                             callback_success, elemServerErrorMsg);
 
                         return;
@@ -554,7 +554,7 @@ export function PageAccPigOpsAddEdit(input_settings){
                             navigation.pageAccPigOpsList.show();
                         };
                         
-                        navigation.pigFarm.requestDataAccPigOpsList(
+                        navigation.pigFarm.requestDataAccPigOpsList(operationType,
                             callback_success, elemServerErrorMsg);
 
                         return;
