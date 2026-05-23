@@ -417,9 +417,15 @@ export function ProdEntryUpdateGestaStatus(input_settings){
                         navigation.managerNavLinks.onClickNavProdGestaLacta(null, operation_type);
                     };
                     
+                    const callback_offline = function(){
+                        // TODO: what to do
+                    };
+
+                    
                     // Request Gestating List
                     navigation.pigFarm.managerPigProd.requestPigProdList(
-                        PIG_PROD_TYPE.GESTATING, callback_success, elemServerErrorMsg);
+                        PIG_PROD_TYPE.GESTATING, callback_success, 
+                        callback_offline, elemServerErrorMsg);
 
                 } 
                 else{

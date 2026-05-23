@@ -1255,12 +1255,20 @@ export function Navigation(){
         this.pigFarm.setDataPigFarm(user_current_farm);
 
         
+        const callback_after_init = function(){
+            thisObj.showHomeDashBoard();
+        };
+
+        
         // The initial_farm_data is the data coming from server;
         // This is broken down into several list as each list maybe updated
         // by user independently.
         const initial_farm_data = data.initial_farm_data;
-        this.pigFarm.initializeFarmData(initial_farm_data);
+        this.pigFarm.initializeFarmData(initial_farm_data, callback_after_init);
         
+        
+        
+        // Will continue to set these even while the dashboard is shown; 
         
         const country   = user_current_farm.location.country;
 
@@ -1291,8 +1299,7 @@ export function Navigation(){
         this.pageAccPigOpsList.loadDataFromStorage();
         
         
-        // The ending of this.pigFarm.initializeFarmData() is calling
-        //this.showHomeDashBoard()
+        
     }
 
 

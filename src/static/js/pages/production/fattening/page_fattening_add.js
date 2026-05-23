@@ -512,9 +512,14 @@ export function PageProdFatteningAdd(input_settings){
                     
                     };
             
+                    const callback_offline = function(){
+                        // TODO: what to do
+                    };
+            
                     // Request Fattening List
                     navigation.pigFarm.managerPigProd.requestPigProdList(
-                        PIG_PROD_TYPE.FATTENING, callback_success, elemServerErrorMsg);
+                        PIG_PROD_TYPE.FATTENING, callback_success, 
+                        callback_offline, elemServerErrorMsg);
                             
                     
                     

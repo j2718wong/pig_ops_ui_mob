@@ -40,9 +40,8 @@ export function ManagerPigProd(input_settings){
             lactatingtList:     thisObj.dataLactatingList,
             fatteningList:      thisObj.dataFatteningList,
             
-            prodHistoryList:    thisObj.dataProdHistoryList,
-            
-            notPregnantList:    thisObj.dataNotPregnantList
+            prodHistoryList:    thisObj.dataProdHistoryList
+
         }
     }
     
@@ -55,7 +54,9 @@ export function ManagerPigProd(input_settings){
 
 
     this.loadDataFromStorage = function(){
-        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
+        // This is the previous cache loading
+        /*
+        let cached = localStorage.getItem(thisObj.STORAGE_KEY);
         if (cached) {
             const data = JSON.parse(cached);
             
@@ -64,10 +65,87 @@ export function ManagerPigProd(input_settings){
             thisObj.dataFatteningList       = data.fatteningList;    
                                             
             thisObj.dataProdHistoryList     = data.prodHistoryList;   
-                                            
-            thisObj.dataNotPregnantList     = data.notPregnantList;    
- 
+
+        }*/
+        
+        
+        // Get current pig_farm_hid; this must be previously set
+        const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+        
+        
+        // This the granular cache loading
+        const KEY_PIG_FARM = navigation.managerLocalData.STORAGE_KEY.PIG_FARM;
+        let key;
+        let cached;
+        
+        
+        key = KEY_PIG_FARM.PROD_GESTATING;
+        cached = localStorage.getItem(key);
+        
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            if (pig_farm_hid == data.pig_farm_hid) {
+                thisObj.dataGestatingList           = data.data;      
+                parentObj.dataVerNum.prod_gesta     = data.ver_num;
+            }
         }
+        
+        
+        key = KEY_PIG_FARM.PROD_LACTATING;
+        cached = localStorage.getItem(key);
+        
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            if (pig_farm_hid == data.pig_farm_hid) {
+                thisObj.dataLactatingList           = data.data;
+                parentObj.dataVerNum.prod_lacta     = data.ver_num;      
+            }
+        }
+        
+        
+        key = KEY_PIG_FARM.PROD_FATTENING;
+        cached = localStorage.getItem(key);
+        
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            if (pig_farm_hid == data.pig_farm_hid) {
+                thisObj.dataFatteningList           = data.data; 
+                parentObj.dataVerNum.prod_fatten    = data.ver_num;       
+            }
+        }
+        
+        
+        key = KEY_PIG_FARM.PROD_HISTORY;
+        cached = localStorage.getItem(key);
+        
+        if (cached) {
+            const data = JSON.parse(cached);
+            
+            if (pig_farm_hid == data.pig_farm_hid) {
+                thisObj.dataProdHistoryList         = data.data; 
+                parentObj.dataVerNum.prod_history   = data.ver_num;     
+            }
+        }
+        
+        
+        console.log('\n\npigFarm.managerPigProd data after loadDataFromStorage');
+        
+        console.log('dataGestatingList');
+        console.log(thisObj.dataGestatingList);
+        
+        console.log('dataLactatingList');
+        console.log(thisObj.dataLactatingList);
+
+        console.log('dataFatteningList');
+        console.log(thisObj.dataFatteningList);
+        
+        console.log('dataProdHistoryList');
+        console.log(thisObj.dataProdHistoryList);
+        
+        
     }
     
     
@@ -97,13 +175,11 @@ export function ManagerPigProd(input_settings){
                 case PROD_STATUS.WEANING:
                 case PROD_STATUS.GROWING:{
                     thisObj.dataFatteningList.push(cur_entry);
+                    break;
                 }
             
             }
         } 
-        
-        // Update local storage
-        thisObj.saveToStorage();
         
     }
     
@@ -139,13 +215,12 @@ export function ManagerPigProd(input_settings){
     
     
     this.requestPigProdList = function(pig_prod_type, callback_success, 
-            elem_show_error){
+            callback_offline, elem_show_error){
         
         // Note: There is a difference between PIG_PROD_TYPE and PROD_STATUS
         // constants.
         
-        
-        
+
         const cur_pig_farm_hid  = navigation.userControl.getCurrentFarmHid()
         
         const is_mob_view = 1; // TODO for desktop view
@@ -176,35 +251,161 @@ export function ManagerPigProd(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    const KEY_PIG_FARM = navigation.managerLocalData.STORAGE_KEY.PIG_FARM;
+                    
+                    let ver_num;
+                    let key;
+                    let local_data;
+                    
                     switch(pig_prod_type){
                         case PIG_PROD_TYPE.GESTATING:{
                             thisObj.dataGestatingList = response.data;
+                            
+                            // Update parentObj.dataVerNum.prod_gesta
+                            if (response.data_ver_num){
+                                ver_num = response.data_ver_num.pig_farm.prod_gesta;
+                                parentObj.dataVerNum.prod_gesta = ver_num;
+                            }
+                                   
+                            // Update local storage
+                            key = KEY_PIG_FARM.PROD_GESTATING;
+                            local_data = {
+                                pig_farm_hid:   parentObj.getPigFarmHid(),
+                                ver_num:        parentObj.dataVerNum.prod_gesta,
+                                data:           thisObj.dataGestatingList,
+                                cached_at:      Date.now()
+                            };
+                            localStorage.setItem(key, JSON.stringify(local_data));
+                    
                             break;
                         }
                         
                         case PIG_PROD_TYPE.LACTATING:{
                             thisObj.dataLactatingList = response.data;
+                            
+                            // Update parentObj.dataVerNum.prod_lacta
+                            if (response.data_ver_num){
+                                ver_num = response.data_ver_num.pig_farm.prod_lacta;
+                                parentObj.dataVerNum.prod_lacta = ver_num;
+                            }
+                                   
+                            // Update local storage
+                            key = KEY_PIG_FARM.PROD_LACTATING;
+                            local_data = {
+                                pig_farm_hid:   parentObj.getPigFarmHid(),
+                                ver_num:        parentObj.dataVerNum.prod_lacta,
+                                data:           thisObj.dataLactatingList,
+                                cached_at:      Date.now()
+                            };
+                            localStorage.setItem(key, JSON.stringify(local_data));
+                    
                             break;
                         }
                         
                         case PIG_PROD_TYPE.FATTENING:{
                             thisObj.dataFatteningList = response.data;
+                            
+                            // Update parentObj.dataVerNum.prod_fatten
+                            if (response.data_ver_num){
+                                ver_num = response.data_ver_num.pig_farm.prod_fatten;
+                                parentObj.dataVerNum.prod_fatten = ver_num;
+                            }
+                                   
+                            // Update local storage
+                            key = KEY_PIG_FARM.PROD_FATTENING;
+                            local_data = {
+                                pig_farm_hid:   parentObj.getPigFarmHid(),
+                                ver_num:        parentObj.dataVerNum.prod_fatten,
+                                data:           thisObj.dataFatteningList,
+                                cached_at:      Date.now()
+                            };
+                            localStorage.setItem(key, JSON.stringify(local_data));
+                    
+                            
                             break;
                         }
                         
                         case PIG_PROD_TYPE.ALL: {
                             thisObj.setDataPigProdList(response.data);
+                            
+                            
+                            // Update parentObj.dataVerNum.prod_gesta
+                            if (response.data_ver_num){
+                                ver_num = response.data_ver_num.pig_farm.prod_gesta;
+                                parentObj.dataVerNum.prod_gesta = ver_num;
+                            }
+                                   
+                            // Update local storage
+                            key = KEY_PIG_FARM.PROD_GESTATING;
+                            local_data = {
+                                pig_farm_hid:   parentObj.getPigFarmHid(),
+                                ver_num:        parentObj.dataVerNum.prod_gesta,
+                                data:           thisObj.dataGestatingList,
+                                cached_at:      Date.now()
+                            };
+                            localStorage.setItem(key, JSON.stringify(local_data));
+                    
+                            
+                            // Update parentObj.dataVerNum.prod_lacta
+                            if (response.data_ver_num){
+                                ver_num = response.data_ver_num.pig_farm.prod_lacta;
+                                parentObj.dataVerNum.prod_lacta = ver_num;
+                            }
+                                   
+                            // Update local storage
+                            key = KEY_PIG_FARM.PROD_LACTATING;
+                            local_data = {
+                                pig_farm_hid:   parentObj.getPigFarmHid(),
+                                ver_num:        parentObj.dataVerNum.prod_lacta,
+                                data:           thisObj.dataLactatingList,
+                                cached_at:      Date.now()
+                            };
+                            localStorage.setItem(key, JSON.stringify(local_data));
+                            
+                            
+                            // Update parentObj.dataVerNum.prod_fatten
+                            if (response.data_ver_num){
+                                ver_num = response.data_ver_num.pig_farm.prod_fatten;
+                                parentObj.dataVerNum.prod_fatten = ver_num;
+                            }
+                                   
+                            // Update local storage
+                            key = KEY_PIG_FARM.PROD_FATTENING;
+                            local_data = {
+                                pig_farm_hid:   parentObj.getPigFarmHid(),
+                                ver_num:        parentObj.dataVerNum.prod_fatten,
+                                data:           thisObj.dataFatteningList,
+                                cached_at:      Date.now()
+                            };
+                            localStorage.setItem(key, JSON.stringify(local_data));
+                            
+                            
                             break;
                         }
                         
                         case PIG_PROD_TYPE.HARVESTED: {
                             thisObj.dataProdHistoryList = response.data;
+                            
+                            // Update parentObj.dataVerNum.prod_history
+                            if (response.data_ver_num){
+                                ver_num = response.data_ver_num.pig_farm.prod_history;
+                                parentObj.dataVerNum.prod_history = ver_num;
+                            }
+                                   
+                            // Update local storage
+                            key = KEY_PIG_FARM.PROD_HISTORY;
+                            local_data = {
+                                pig_farm_hid:   parentObj.getPigFarmHid(),
+                                ver_num:        parentObj.dataVerNum.prod_history,
+                                data:           thisObj.dataProdHistoryList,
+                                cached_at:      Date.now()
+                            };
+                            localStorage.setItem(key, JSON.stringify(local_data));
+                            
                             break;
                         }
                     }
-                    
-                    // Update local storage
-                    thisObj.saveToStorage();
+
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -218,6 +419,14 @@ export function ManagerPigProd(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    
+                    return;
+                }
+                
+                
                 navigation.serverError.serverErrorThrown(jqXHR, 
                     textStatus, errorThrown);
             }
@@ -557,7 +766,7 @@ export function ManagerPigProd(input_settings){
                     data_pig_prod.data_details = response.data;
                     
                     // Update local storage
-                    thisObj.saveToStorage();
+                    //thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }    
@@ -616,7 +825,7 @@ export function ManagerPigProd(input_settings){
                         data_pig_prod.data_details.list_prod_feed = response.data;
                         
                         // Update local storage
-                        thisObj.saveToStorage();
+                        //thisObj.saveToStorage();
                     }
                     
                     if (callback_success){callback_success(response.data);}
@@ -689,7 +898,7 @@ export function ManagerPigProd(input_settings){
                     data_pig_prod.data_details.list_notes        = notes;
                     
                     // Update local storage
-                    thisObj.saveToStorage();
+                    //thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }    
@@ -745,7 +954,7 @@ export function ManagerPigProd(input_settings){
                     data_pig_prod.data_details.list_feed_balance = response.data;
                     
                     // Update local storage
-                    thisObj.saveToStorage();
+                    //thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -801,7 +1010,7 @@ export function ManagerPigProd(input_settings){
                     data_pig_prod.data_details.list_harvest = response.data;
                     
                     // Update local storage
-                    thisObj.saveToStorage();
+                    //thisObj.saveToStorage();
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -844,7 +1053,7 @@ export function ManagerPigProd(input_settings){
                 prod_list.splice(index, 1);
                 
                 // Update local storage
-                thisObj.saveToStorage();
+                //thisObj.saveToStorage();
                 
                 return;
             }
@@ -870,7 +1079,7 @@ export function ManagerPigProd(input_settings){
                 prod_list.splice(index, 1, new_prod_entry);
                 
                 // Update local storage
-                thisObj.saveToStorage();
+                //thisObj.saveToStorage();
                 
                 return;
             }
@@ -915,7 +1124,7 @@ export function ManagerPigProd(input_settings){
                     // It is updating the thisObj.dataGestatingList 
                     
                     // Update local storage
-                    thisObj.saveToStorage();
+                    //thisObj.saveToStorage();
                     
                     return;
                 }

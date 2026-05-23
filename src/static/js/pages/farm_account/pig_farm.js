@@ -7,6 +7,7 @@
 'use strict';
 
 import {APPLICATION,
+        PAGE_ID,
         DATA_VER_NUM_PIG_FARM,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
@@ -46,7 +47,10 @@ export function PigFarm(_navigation){
         pig_dead:               0,
         
         sow_due_checklist:      0,
-        sow_boar_disposed:      0
+        sow_boar_disposed:      0,
+        prod_gesta:             0,
+        prod_lacta:             0,
+        prod_fatten:            0
     };
 
     
@@ -246,6 +250,10 @@ export function PigFarm(_navigation){
             
             const data_ver_num_sow_due_checklist= data[10];
             const data_ver_num_sow_boar_disposed= data[11];
+            const data_ver_num_prod_gestating   = data[12];
+            const data_ver_num_prod_lactating   = data[13];
+            const data_ver_num_prod_fattening   = data[14];
+            
             
             
             switch(index_data_ver_num){
@@ -425,10 +433,8 @@ export function PigFarm(_navigation){
      * 
      * Typical data:
      * 
-    Object { sow_list: (8) […], boar_list: (3) […], account: {…} }
+    Object { sow_list: (8) […], boar_list: (3) […] }
 ​
-
-    account: Object { account: {…}, settings_operations: {…} }
     ​
     boar_list: Array(3) [ {…}, {…}, {…} ]
     ​
@@ -436,9 +442,8 @@ export function PigFarm(_navigation){
     ​
     ​
     */
-    this.initializeFarmData = function(data){
+    this.initializeFarmData = function(data, callback_after_init){
         
-
         console.log('\n\ninitializeFarmData');
         console.log(data);
 
@@ -464,45 +469,193 @@ export function PigFarm(_navigation){
         // Update thisObj.managerSowBoar storage
         thisObj.managerSowBoar.saveToStorage();
 
-            
+
+        // Load cached production data if there is any
+        thisObj.managerPigProd.loadDataFromStorage();
         
-        // Set pig_farm.dataVerNum 
-        const callback_set_pig_farm_data_ver_num = function(data){
+        console.log('thisObj.dataVerNum  after loading from storage');
+        console.log(thisObj.dataVerNum);
+        
+        
+        
+        
+        // Check if there production data is null
+        // If no production data for the farm, it should be saved as empty list
+        if (thisObj.managerPigProd.dataGestatingList == null){
+            // Even just one list is null, it is assumed, no cache production data
             
-            thisObj.dataVerNum = {
-                sow:                    data[0],
-                boar:                   data[1],
-                pig_prod:               data[2],
-                prod_history:           data[3],
-                staff:                  data[4],
-                feed_buy:               data[5],
-                feed_balance:           data[6],
-                not_pregnant:           data[7],
-                boar_ext_mate:          data[8],
-                pig_dead:               data[9],
-                sow_due_checklist:      data[10]
+            
+            const callback_success = function(data){
+                if (callback_after_init){
+                    callback_after_init();
+                }
             };
             
             
-            console.log('\n\nPigFarm.dataVerNum');
-            console.log(thisObj.dataVerNum);
+            const callback_offline = function(){
+                // TODO: what to do
+            };
             
-            navigation.showHomeDashBoard();
-        }
-        
-        
-        const callback_success = function(data){
-            thisObj.managerPigProd.setDataPigProdList(data);
-            
-            thisObj.requestPigFarmDataVerNum(null,
-                callback_set_pig_farm_data_ver_num);
-        };
-        
-        
-        const pig_prod_type = PIG_PROD_TYPE.ALL;
-        thisObj.managerPigProd.requestPigProdList(pig_prod_type, 
-            callback_success);
+            // This should set production entry list and version numbers
+            const pig_prod_type = PIG_PROD_TYPE.ALL;
+            thisObj.managerPigProd.requestPigProdList(pig_prod_type, 
+                callback_success, callback_offline);
 
+        }
+        else{
+            // The production data cache is loaded here, including 
+            // the production data version numbers
+            
+            // Request  production data version numbers
+            
+            const callback_success = function(data){
+                // Request production data that has a higher server data version number
+                
+                const data_ver_num_sow              = data[0];
+                const data_ver_num_boar             = data[1];
+                const data_ver_num_pig_prod         = data[2];
+                const data_ver_num_prod_history     = data[3];
+                const data_ver_num_staff            = data[4];
+                
+                const data_ver_num_feed_buy         = data[5];
+                const data_ver_num_feed_balance     = data[6];
+                const data_ver_num_not_pregnant     = data[7];
+                const data_ver_num_boar_ext_mate    = data[8];
+                const data_ver_num_pig_dead         = data[9];
+                
+                const data_ver_num_sow_due_checklist= data[10];
+                const data_ver_num_sow_boar_disposed= data[11];
+                const data_ver_num_prod_gesta       = data[12];
+                const data_ver_num_prod_lacta       = data[13];
+                const data_ver_num_prod_fatten      = data[14];
+                
+                console.log('version number from server');
+                console.log(data);
+        
+                console.log('pigFarm.dataVerNum');
+                console.log(thisObj.dataVerNum);
+        
+                
+                let needs_dashboard_refresh = false;
+                
+                
+                if (data_ver_num_prod_gesta > thisObj.dataVerNum.prod_gesta){
+                    // This should save production gestating data in cache;
+                    // And also update thisObj.dataVerNum.prod_gesta
+                    
+                    console.log('To request PIG_PROD_TYPE.GESTATING from server');
+                    
+                    const pig_prod_type = PIG_PROD_TYPE.GESTATING;
+                    thisObj.managerPigProd.requestPigProdList(pig_prod_type);
+                    
+                    needs_dashboard_refresh = true;
+                }
+                
+                if (data_ver_num_prod_lacta > thisObj.dataVerNum.prod_lacta){
+                    // This should save production lactating data in cache;
+                    // And also update thisObj.dataVerNum.prod_lacta
+                    
+                    console.log('To request PIG_PROD_TYPE.LACTATING from server');
+                    
+                    const pig_prod_type = PIG_PROD_TYPE.LACTATING;
+                    thisObj.managerPigProd.requestPigProdList(pig_prod_type);
+                    
+                    needs_dashboard_refresh = true;
+                }
+                
+                if (data_ver_num_prod_fatten > thisObj.dataVerNum.prod_fatten){
+                    // This should save production fattening data in cache;
+                    // And also update thisObj.dataVerNum.prod_fatten
+                    
+                    console.log('To request PIG_PROD_TYPE.FATTENING from server');
+                    
+                    const pig_prod_type = PIG_PROD_TYPE.FATTENING;
+                    thisObj.managerPigProd.requestPigProdList(pig_prod_type);
+                    
+                    needs_dashboard_refresh = true;
+                }
+                
+                if (data_ver_num_prod_history > thisObj.dataVerNum.prod_history){
+                    // This should include the harvested production entries 
+                    // and combined to group;
+                    
+                    // This should save production production history data in cache;
+                    // And also update thisObj.dataVerNum.prod_history
+                    
+                    console.log('To request PIG_PROD_TYPE.HARVESTED from server');
+                    
+                    const pig_prod_type = PIG_PROD_TYPE.HARVESTED;
+                    thisObj.managerPigProd.requestPigProdList(pig_prod_type);
+                    
+                    needs_dashboard_refresh = true;
+                }
+                
+                
+                // This will silently update the following: 
+                // thisObj.managerPigProd.dataGestatingList
+                // thisObj.managerPigProd.dataLactatingList
+                // thisObj.managerPigProd.dataFatteningList
+                // thisObj.managerPigProd.dataProdHistoryList
+                
+                // But the dashboard data(which should be displayed in 
+                // callback_after_init  will not be updated until next visit to dashboard
+                // TODO: How to refesh dashboard, if current viewed and the
+                // all the requested server data already saved in cached
+                
+                // After all requests complete, notify dashboard
+                if (needs_dashboard_refresh) {
+                    console.log('needs_dashboard_refresh = ');
+                    
+                    // Wait for all async requests to complete
+                    Promise.all([
+                        thisObj.managerPigProd.requestPigProdList(PIG_PROD_TYPE.GESTATING),
+                        thisObj.managerPigProd.requestPigProdList(PIG_PROD_TYPE.LACTATING),
+                        thisObj.managerPigProd.requestPigProdList(PIG_PROD_TYPE.FATTENING)
+                    ]).finally(() => {
+                        
+                        // Check if the current page viewed by user is still dashboard.
+                        let page_view_dashboard = false;
+                        
+                        const container_dashboard = navigation.pageContainers.getPageContainerId(PAGE_ID.HOME);
+                        
+                        if (navigation.curPageNavigated.pageContainer == container_dashboard){
+                            page_view_dashboard = true;
+                        }
+                        
+                        if (page_view_dashboard){
+                            console.log('\n\nPageDashBoard to be rerendered');
+                            
+                            // Just simply re render PageDashboard
+                            navigation.pageHomeDashBoard.show();
+                        }
+                        else{
+                            if (callback_after_init) {
+                                callback_after_init();  
+                            }
+                        
+                        }
+                        
+                        
+                    });
+                } else {
+                    console.log('no need to refresh dashboard');
+                    
+                    if (callback_after_init) {
+                        callback_after_init();  
+                    }
+                }
+                
+            };
+            
+            
+            const callback_offline = function(){
+                // Nothing to do; just display cache data;
+                // The "Offline Mode - No Internet" message should be always
+                // visible at this time.
+            };
+        
+            thisObj.requestPigFarmDataVerNum(null, callback_success, callback_offline);
+        }
     }
     
     

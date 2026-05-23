@@ -14,7 +14,12 @@ export function ManagerLocalData(_navigation) {
     
     this.STORAGE_KEY = {
         PIG_FARM: {
-            STAFF:                  'superpig_staff'
+            STAFF:                  'superpig_staff',
+            
+            PROD_GESTATING:         'superpig_prod_gestating',
+            PROD_LACTATING:         'superpig_prod_lactating',
+            PROD_FATTENING:         'superpig_prod_fattening',
+            PROD_HISTORY:           'superpig_prod_history'
         },
         
         PRODUCTION:{

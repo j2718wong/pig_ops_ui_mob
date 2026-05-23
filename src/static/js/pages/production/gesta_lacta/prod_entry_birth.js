@@ -878,9 +878,14 @@ export function ProdEntryBirth(input_settings){
                 navigation.managerNavLinks.onClickNavProdGestaLacta(null, operation_type);
             };
             
+            const callback_offline = function(){
+                // TODO: what to do
+            };
+            
             // Request Lactating List
             navigation.pigFarm.managerPigProd.requestPigProdList(
-                PIG_PROD_TYPE.LACTATING, callback_success, elemServerErrorMsg);
+                PIG_PROD_TYPE.LACTATING, callback_success, 
+                callback_offline, elemServerErrorMsg);
         }
         
         

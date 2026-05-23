@@ -1340,11 +1340,15 @@ export function PageProdHarvestAddEdit(input_settings){
                 navigation.managerNavLinks.onClickNavProdFattening();
             };
             
+            const callback_offline = function(){
+                // TODO: what to do
+            };
                     
             // Need to udpate prod_history list
             const pig_prod_type = PIG_PROD_TYPE.HARVESTED;
             navigation.pigFarm.managerPigProd.requestPigProdList(
-                pig_prod_type, callback_success, elemServerErrorMsg
+                pig_prod_type, callback_success, 
+                callback_offline, elemServerErrorMsg
             );
         }
         

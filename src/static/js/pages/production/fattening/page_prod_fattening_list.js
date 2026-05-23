@@ -1301,11 +1301,16 @@ ${html_style}
                         thisObj.show();
                     };
                     
+                    const callback_offline = function(){
+                        // TODO: what to do
+                    };
+                    
                     const pig_prod_type     = PIG_PROD_TYPE.FATTENING;
                     const elem_show_error   = thisObj.elemServerErrorMsg;
                     
                     navigation.pigFarm.managerPigProd.requestPigProdList(
-                        pig_prod_type, callback_success, elem_show_error
+                        pig_prod_type, callback_success, 
+                        callback_offline, elem_show_error
                     );
                     
                 }

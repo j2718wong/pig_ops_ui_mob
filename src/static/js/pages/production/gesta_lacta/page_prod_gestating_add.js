@@ -825,6 +825,10 @@ export function PageProdGestatingAdd(input_settings){
                 PIG_OPERATION_TYPE.GESTATING);
         };
         
+        const callback_offline = function(){
+            // TODO: what to do
+        };
+    
         
         // Sow Entry in SowList needs to be updated
         // This will request the whole sow_list
@@ -842,7 +846,8 @@ export function PageProdGestatingAdd(input_settings){
         
         // Request PigProdList
         navigation.pigFarm.managerPigProd.requestPigProdList(
-            pig_prod_type, callback_success, elemServerErrorMsg);
+            pig_prod_type, callback_success, 
+            callback_offline, elemServerErrorMsg);
         
     }
     

@@ -528,9 +528,15 @@ export function PageProdHistoryList(input_settings){
                 thisObj.showInfoBox(dataProdHistList, elemPageInfo);
             };
             
+            const callback_offline = function(){
+                // TODO: what to do
+            };
+        
+            
             // Request ProdHistory List
             navigation.pigFarm.managerPigProd.requestPigProdList(
-                PIG_PROD_TYPE.HARVESTED, callback_success, null);
+                PIG_PROD_TYPE.HARVESTED, callback_success, 
+                callback_offline, null);
         
         }
         else{

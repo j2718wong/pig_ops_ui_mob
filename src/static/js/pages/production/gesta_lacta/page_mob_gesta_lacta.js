@@ -1495,7 +1495,12 @@ ${html_style}
             navigation.pageProdPigOpsEdit.hide();
         };
         
-        navigation.pigFarm.managerPigProd.requestPigProdList(pig_prod_type, callback_success);
+        const callback_offline = function(){
+            // TODO: what to do
+        };
+        
+        navigation.pigFarm.managerPigProd.requestPigProdList(pig_prod_type, 
+            callback_success, callback_offline);
         
     }
 }
