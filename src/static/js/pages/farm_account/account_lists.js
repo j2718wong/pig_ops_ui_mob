@@ -11,6 +11,8 @@ import {APPLICATION,
         DATA_VER_NUM_ACCOUNT}          from '../../constants.js';
 
 
+const MAX_SECONDS_REQUEST_DATA_VER_NUM   = 60;
+
 export function AccountLists(input_settings){
     const thisObj               = this;
     const navigation            = input_settings.navigation;
@@ -30,6 +32,12 @@ export function AccountLists(input_settings){
         sow_due_checklist:      0
     };
     
+    
+    // This should be filled up in every successful dataVerNum request 
+    this.lastDataVerNumReq = {
+        seconds:                null,
+        dataVerNum:             null
+    };
     
     
     this.dataUserList           = null;
@@ -85,6 +93,25 @@ export function AccountLists(input_settings){
     
     this.requestAccountDataVerNum = function(callback_success, callback_offline, 
             elem_show_error){
+                
+        // Check if there was a previous request result
+        if (thisObj.lastDataVerNumReq.seconds){
+            const seconds   = Math.floor(Date.now() / 1000);
+            const delta     = seconds - thisObj.lastDataVerNumReq.seconds;
+            
+            if (delta < MAX_SECONDS_REQUEST_DATA_VER_NUM){
+                // If within this range there is expected no data change;
+                // So return old result to minimize server request
+                
+                if (callback_success){
+                    callback_success(thisObj.lastDataVerNumReq.dataVerNum);
+                }
+                
+                return;
+            }
+        }
+        
+                
         const base_url = window.location.origin;
         let url = `${base_url}/account/data_ver_num?ahid=${accountHid}&r=1`;
         
@@ -111,6 +138,10 @@ export function AccountLists(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
+                    const seconds = Math.floor(Date.now() / 1000);
+                    
+                    thisObj.lastDataVerNumReq.seconds = seconds;
+                    thisObj.lastDataVerNumReq.dataVerNum = response.data;
                     
                     if (callback_success){callback_success(response.data);}
                 }

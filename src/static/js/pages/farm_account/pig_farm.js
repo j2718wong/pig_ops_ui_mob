@@ -25,6 +25,9 @@ import {AccountLists}           from './account_lists.js';
 
 
 
+const MAX_SECONDS_REQUEST_DATA_VER_NUM   = 60;
+
+
 export function PigFarm(_navigation){
     const thisObj               = this;
     const navigation            = _navigation;
@@ -54,6 +57,13 @@ export function PigFarm(_navigation){
         prod_gesta:             0,
         prod_lacta:             0,
         prod_fatten:            0
+    };
+    
+    
+    // This should be filled up in every successful dataVerNum request 
+    this.lastDataVerNumReq = {
+        seconds:                null,
+        dataVerNum:             null
     };
 
     
@@ -729,6 +739,25 @@ export function PigFarm(_navigation){
             pfhid = thisObj.getPigFarmHid();
         }
         
+        
+        // Check if there was a previous request result
+        if (thisObj.lastDataVerNumReq.seconds){
+            const seconds   = Math.floor(Date.now() / 1000);
+            const delta     = seconds - thisObj.lastDataVerNumReq.seconds;
+            
+            if (delta < MAX_SECONDS_REQUEST_DATA_VER_NUM){
+                // If within this range there is expected no data change;
+                // So return old result to minimize server request
+                
+                if (callback_success){
+                    callback_success(thisObj.lastDataVerNumReq.dataVerNum);
+                }
+                
+                return;
+            }
+        }
+        
+        
         const base_url = window.location.origin;
         const url = `${base_url}/pig_farm/data_ver_num?pfhid=${pfhid}&r=1`;
         
@@ -755,6 +784,10 @@ export function PigFarm(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
+                    const seconds = Math.floor(Date.now() / 1000);
+                    
+                    thisObj.lastDataVerNumReq.seconds = seconds;
+                    thisObj.lastDataVerNumReq.dataVerNum = response.data;
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -777,8 +810,7 @@ export function PigFarm(_navigation){
                 navigation.serverError.serverErrorThrown(jqXHR, 
                     textStatus, errorThrown);
             }
-        });
-        
+        });        
     }
  
     
