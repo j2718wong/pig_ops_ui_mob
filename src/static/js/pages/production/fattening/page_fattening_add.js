@@ -299,6 +299,13 @@ export function PageProdFatteningAdd(input_settings){
         showOptions = options;
         
         
+        // Check if Offline
+        if (navigation.managerSystem.isOffLine){
+            // Display modal offline
+            navigation.managerSystem.showOfflineMessageModal();
+        }
+        
+        
         let html;
         
         

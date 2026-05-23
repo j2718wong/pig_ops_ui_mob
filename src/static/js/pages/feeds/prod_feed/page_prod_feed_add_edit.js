@@ -705,7 +705,7 @@ export function PageProdFeedAddEdit(input_settings){
                 callback_after_edit:    null,
                 go_back_page:           go_back_page
             }
-            navigation.pagePfFeedBuyAddEdit.beforeShow(options, row_entry);
+            navigation.pagePfFeedBuyAddEdit.show(options, row_entry);
             
             
             const goto_page_id   = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;

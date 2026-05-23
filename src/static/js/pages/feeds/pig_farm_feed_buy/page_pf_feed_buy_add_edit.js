@@ -106,9 +106,6 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     let elemFeedItems           = null;
     
-    
-    
-    
 
     
     let curDataPigFarmFeedBuy   = null;
@@ -362,7 +359,16 @@ export function PagePfFeedBuyAddEdit(input_settings){
     }
     
     
-    this.beforeShow = function(options, data_farm_feed_buy){
+    this.show = function(options, data_farm_feed_buy){
+        
+        
+        // Check if Offline
+        if (navigation.managerSystem.isOffLine){
+            // Display modal offline
+            navigation.managerSystem.showOfflineMessageModal();
+        }
+        
+        
         thisObj._resetForm();
         
         /*

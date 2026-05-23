@@ -298,6 +298,13 @@ export function PagePigDeadAddEdit(input_settings){
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
         
+        // Check if Offline
+        if (navigation.managerSystem.isOffLine){
+            // Display modal offline
+            navigation.managerSystem.showOfflineMessageModal();
+        }
+        
+        
         thisObj._resetForm();
         
         showOptions = options;

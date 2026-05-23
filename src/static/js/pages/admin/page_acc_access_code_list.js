@@ -572,7 +572,7 @@ export function PageAccessCodeList(input_settings){
             callback_after_edit:    thisObj.onSuccessEditEntry,
             go_back_page:           go_back_page 
         }
-        navigation.pageAccPigOpsAddEdit.beforeShow(options, data_acc_pig_ops);
+        navigation.pageAccPigOpsAddEdit.show(options, data_acc_pig_ops);
         
         
         const goto_page_id   = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;

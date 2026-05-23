@@ -217,6 +217,14 @@ export function PageAccFChecklistAddEdit(input_settings){
     
     
     this.show = function(options){
+        
+        // Check if Offline
+        if (navigation.managerSystem.isOffLine){
+            // Display modal offline
+            navigation.managerSystem.showOfflineMessageModal();
+        }
+        
+        
         thisObj._resetForm();
         
         

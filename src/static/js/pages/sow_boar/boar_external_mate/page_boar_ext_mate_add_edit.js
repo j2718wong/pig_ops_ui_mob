@@ -234,9 +234,6 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     this._bindEventListeners = function(){
         
-       
-        
-              
         elemBtnClose.addEventListener('click', function() {
             // Remove NavHistoryHead if same with go_back_page
             navigation.managerNavHistory.removeFromNavHistoryHead(
@@ -290,6 +287,14 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     this.show = function(options){
+        
+        // Check if Offline
+        if (navigation.managerSystem.isOffLine){
+            // Display modal offline
+            navigation.managerSystem.showOfflineMessageModal();
+        }
+        
+        
         thisObj._resetForm();
         
         componentSelectBoar.beforeShow();

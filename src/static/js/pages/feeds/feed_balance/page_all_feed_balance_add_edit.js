@@ -547,9 +547,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         componentBreadcrumb.afterHtmlRender();
         elemUiDateBalance.afterHtmlRender();
         
-      
-        
-        
+       
         this._findElements();
         this._processAfterHtmlRender();
         this._bindEventListeners();
@@ -640,6 +638,14 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     
     
     this.show = function(options, data_feed_balance){
+        
+        // Check if Offline
+        if (navigation.managerSystem.isOffLine){
+            // Display modal offline
+            navigation.managerSystem.showOfflineMessageModal();
+        }
+        
+        
         thisObj._resetForm();
         
         showOptions = options;

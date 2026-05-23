@@ -290,6 +290,13 @@ export function PageAccPigOpsAddEdit(input_settings){
          * */
         
         
+        // Check if Offline
+        if (navigation.managerSystem.isOffLine){
+            // Display modal offline
+            navigation.managerSystem.showOfflineMessageModal();
+        }
+        
+        
         thisObj._resetForm();
         
         showOptions = options;

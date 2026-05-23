@@ -261,20 +261,15 @@ export function PagePigFarmAddEdit(input_settings){
         navigation.curPageNavigated.pageData = {options: options};
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
-        /*
-        
-        Typical options 
-        {
-            is_add:         true,
-            supplier_type:  SUPPLIER_TYPE.SEMEN,
-            go_back_page:   settings.pageDivContainer   // Go back to this page
-            callback_on_success_add : function
+        // Check if Offline
+        if (navigation.managerSystem.isOffLine){
+            // Display modal offline
+            navigation.managerSystem.showOfflineMessageModal();
         }
-        
-        */
         
         
         thisObj._resetForm();
+        
         
         
         showOptions = options;
