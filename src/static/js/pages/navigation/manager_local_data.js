@@ -33,7 +33,8 @@ export function ManagerLocalData(_navigation) {
         OPERATIONS: {
             FEED_BALANCE:           'superpig_feed_balance',
             BOAR_EXT_MATE:          'superpig_boar_ext_mate',
-            PIG_DEAD:               'superpig_boar_pig_dead'
+            PIG_DEAD:               'superpig_boar_pig_dead',
+            SOW_DUE_CHECKLIST:      'superpig_sow_due_checklist'
         },
         
         FINANCIALS:{

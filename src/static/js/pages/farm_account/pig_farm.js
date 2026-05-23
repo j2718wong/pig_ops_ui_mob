@@ -31,7 +31,10 @@ export function PigFarm(_navigation){
     
     this.STORAGE_KEY            = 'superpig_pig_farm';  
     
-    this.accountLists           = new AccountLists(_navigation);
+    this.accountLists           = new AccountLists({
+        navigation:             navigation,
+        parentObj:              this
+    });
     
     this.dataVerNum             = {
         sow:                    0,
@@ -271,6 +274,11 @@ export function PigFarm(_navigation){
                 }
                          
                 case DATA_VER_NUM_PIG_FARM.PROD_HISTORY:{
+                    if (data_ver_num_prod_history > thisObj.dataVerNum.prod_history){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
                     break;
                 }
                      
@@ -760,24 +768,14 @@ export function PigFarm(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                // Check for timeout error
-                if (textStatus === 'timeout') {
-                    // Default timeout handling
-                    if (elem_show_error){
-                        elem_show_error.style.display = 'block';
-                        elem_show_error.innerHTML = 'Server no reply. Please try again later.';
-                    }
-                
-                    return;
-                } 
-                
-                
                 // Check if Offline
                 if (navigation.managerSystem.isOffLine){
                     if (callback_offline) {callback_offline();}
                     return;
                 }
                 
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
             }
         });
         

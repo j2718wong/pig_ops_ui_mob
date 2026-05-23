@@ -7,12 +7,14 @@
 'use strict';
 
 import {APPLICATION, 
-        SUPPLIER_TYPE}          from '../../constants.js';
+        SUPPLIER_TYPE,
+        DATA_VER_NUM_ACCOUNT}          from '../../constants.js';
 
 
-export function AccountLists(_navigation){
+export function AccountLists(input_settings){
     const thisObj               = this;
-    const navigation            = _navigation;
+    const navigation            = input_settings.navigation;
+    const parentObj             = input_settings.parentObj
     
     this.STORAGE_KEY            = 'superpig_manager_account_list';
     
@@ -81,7 +83,8 @@ export function AccountLists(_navigation){
     
     
     
-    this.requestAccountDataVerNum = function(callback_success, elem_show_error){
+    this.requestAccountDataVerNum = function(callback_success, callback_offline, 
+            elem_show_error){
         const base_url = window.location.origin;
         let url = `${base_url}/account/data_ver_num?ahid=${accountHid}&r=1`;
         
@@ -121,6 +124,12 @@ export function AccountLists(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    return;
+                }
+                
                 navigation.serverError.serverErrorThrown(jqXHR, 
                     textStatus, errorThrown);
             }
@@ -129,6 +138,98 @@ export function AccountLists(_navigation){
     }
     
     
+    this.checkServerDataUpdate = function(index_data_ver_num, 
+            callback_request_server_data){
+        
+        // Request Server version num
+        const callback_success = function(data){
+            const cur_gesta_ops             = data[0];
+            const cur_lacta_piglets_ops     = data[1];
+            const cur_lacta_sow_ops         = data[2];
+            const cur_gilt_ops              = data[3];
+            const cur_weaning_sow_ops       = data[4];
+                    
+            const cur_account               = data[5];
+            const cur_pig_buyer             = data[6];
+            const cur_sow_due_checklist     = data[7];
+           
+
+            switch(index_data_ver_num){
+                
+                case DATA_VER_NUM_ACCOUNT.GESTA_OPS: {
+                    if (cur_gesta_ops > thisObj.dataVerNum.gestating_ops){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+
+                    break;
+                }
+                
+                case DATA_VER_NUM_ACCOUNT.LACTA_PIGLETS_OPS:{
+                    if (cur_lacta_piglets_ops > thisObj.dataVerNum.lactating_piglets_ops){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+
+                    break;
+                }
+                             
+                case DATA_VER_NUM_ACCOUNT.LACTA_SOW_OPS:{
+                    if (cur_lacta_sow_ops > thisObj.dataVerNum.lactating_sow_ops){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+
+                    break;
+                }
+                
+                case DATA_VER_NUM_ACCOUNT.WEANING_SOW_OPS:{
+                    if (cur_weaning_sow_ops > thisObj.dataVerNum.weaning_sow_ops){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+
+                    break;
+                }
+                
+                case DATA_VER_NUM_ACCOUNT.GILT_OPS:{
+                    if (cur_gilt_ops > thisObj.dataVerNum.gilt_ops){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+
+                    break;
+                }
+                         
+                         
+                case DATA_VER_NUM_ACCOUNT.SOW_DUE_CHECKLIST:{
+                    if (cur_sow_due_checklist > thisObj.dataVerNum.sow_due_checklist){
+                        if (callback_request_server_data){
+                            callback_request_server_data();
+                        }
+                    }
+                    break;
+                }
+               
+            }
+        };
+        
+        
+        const callback_offline = function(){
+            // nothing to do;
+        };
+        
+        
+        thisObj.requestAccountDataVerNum(callback_success, 
+            callback_offline, null);
+    }
+    
+
     this.requestDataUserList = function(callback_success, callback_offline,
             elem_show_error){
         
@@ -508,19 +609,20 @@ export function AccountLists(_navigation){
                     }
                     
                     // Update local storage
-                    thisObj.saveToStorage();
+                    const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.SOW_DUE_CHECKLIST;
+                    const local_data = {
+                        pig_farm_hid:   parentObj.getPigFarmHid(),
+                        ver_num:        thisObj.dataVerNum.sow_due_checklist,
+                        data:           thisObj.dataAccSowDueChecklist,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     
                     if (callback_success){callback_success(response.data);}
                     
                 }
                 else {
-                    // Check if Offline
-                    if (navigation.managerSystem.isOffLine){
-                        if (callback_offline) {callback_offline();}
-                        
-                        return;
-                    }
-                    
                     navigation.serverError.receivedErrorMessage(
                         response, elem_show_error);
                     
@@ -531,6 +633,13 @@ export function AccountLists(_navigation){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    
+                    return;
+                }
+                    
                 navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });

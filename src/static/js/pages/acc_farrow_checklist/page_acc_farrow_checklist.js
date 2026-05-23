@@ -10,7 +10,8 @@ import {PageTableBasic}         from '../common/page_table_basic.js';
 
 
 import {APPLICATION,
-        PAGE_ID}                from '../../constants.js';
+        PAGE_ID,
+        DATA_VER_NUM_ACCOUNT}   from '../../constants.js';
 
 
 import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
@@ -187,6 +188,36 @@ export function PageAccFarrowChecklist(input_settings){
     }
     
     
+    this.getStorageKey = function(){
+        return navigation.managerLocalData.STORAGE_KEY.OPERATIONS.SOW_DUE_CHECKLIST;
+    }
+    
+    
+    // The data, data_ver_num comes from localStorage.
+    this.updateDataSource = function(data, data_ver_num){
+        // Update data source
+        navigation.pigFarm.accountLists.dataAccSowDueChecklist = data;
+        
+        // Update data source version
+        navigation.pigFarm.accountLists.dataVerNum.sow_due_checklist = data_ver_num;
+    }
+    
+    
+    // Display data
+    this.displayData = function(){
+        const data_list = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
+        thisObj.showInfoBox(data_list, elemPageInfo);
+        thisObj.renderTable(data_list);
+    }
+    
+    
+    // Check server data update
+    this.checkServerDataUpdate = function(){
+        navigation.pigFarm.accountLists.checkServerDataUpdate(
+            DATA_VER_NUM_ACCOUNT.SOW_DUE_CHECKLIST,
+            thisObj.requestServerData);
+    }
+    
     
     this.show = function(options){
         thisObj.debugNavHistory(TAG);
@@ -201,20 +232,46 @@ export function PageAccFarrowChecklist(input_settings){
         dtCurrentDate.setHours(0, 0, 0, 0);
         
        
+        if (options && options.refresh_list){
+            this.requestServerData();
+            return;
+        }
+  
+   
+        // Get data source
+        let data_list  = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
         
         
-        const callback_success = function(data){
-            dataAccFarrowChecklist = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
-            thisObj.renderTable(dataAccFarrowChecklist);
+        if (data_list){
+            // Display last known data
+            this.displayData();
+            
+            // Check server data update
+            this.checkServerDataUpdate();
+            
+            return;
+        }
+        
+        
+        // If data source is null, that means the page was unloaded;
+        // Load cached data 
+        const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+        this.loadCachedData(pig_farm_hid);
+    }
+    
+
+    this.requestServerData = function(){
+        const callback_success = function(){
+            thisObj.displayData();
         };
-        
+
+
         const callback_offline = function(){
-            
-            dataAccFarrowChecklist = navigation.pigFarm.managerSowBoar.dataAccFarrowChecklist;
-            
-            if (dataAccFarrowChecklist){
-                thisObj.showInfoBox(dataAccFarrowChecklist, elemPageInfo);
-                thisObj.renderTable(dataAccFarrowChecklist);
+            const data_list = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
+            if (data_list){
+                // Display last known data
+                thisObj.showInfoBox(data_list, elemPageInfo);
+                thisObj.renderTable(data_list);            
             }
             else{
                 // Display modal offline
@@ -223,34 +280,14 @@ export function PageAccFarrowChecklist(input_settings){
         };
         
         
-        
-        let is_to_request_data = 0;
-        
-        
-        dataAccFarrowChecklist = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
-        
-        if (dataAccFarrowChecklist == null){
-            is_to_request_data = 1;
-        } 
-        
-        if (options && options.refresh_list){
-            is_to_request_data = 1;
-        }
-        
-        
-        // Request data only if needed
-        if (is_to_request_data > 0){
-            navigation.pigFarm.accountLists.requestDataAccSowDueChecklist(
+        // This should update:
+        // - navigation.pigFarm.accountLists.dataAccSowDueChecklist
+        // - navigation.pigFarm.accountLists.dataVerNum.sow_due_checklist
+        navigation.pigFarm.accountLists.requestDataAccSowDueChecklist(
                 callback_success, callback_offline, null);
-        }
-        else{
-            // Display last known data
-            thisObj.renderTable(dataAccFarrowChecklist);
-        }
-        
-        
     }
-    
+
+
 
     this._writeInlineStyle = function(){
         const html = `

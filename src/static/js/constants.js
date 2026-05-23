@@ -84,30 +84,6 @@ const TRANSLATION_MODE = {
 };
 
 
-const SERVER_VERSIONED_DATA = {
-    SOW:                    1,
-    BOAR:                   2,
-    PIG_PROD:               3,
-    PROD_HISTORY:           4,
-    STAFF:                  5,  
-    FEED_BUY:               6,
-    FEED_BALANCE:           7, 
-    NOT_PREGNANT:           8,
-    BOAR_EXT_MATE:          9,
-    PIG_DEAD:               10,
-    
-    
-    GESTATING_OPS:          21,        
-    LACTATING_PIGLETS_OPS:  22,
-    LACTATING_SOW_OPS:      23,
-    GILT_OPS:               24,
-    WEANING_SOW_OPS:        25,
-
-    ACCOUNT:                26,
-    PIG_BUYER:              27
-
-};
-
 
 const PAGE_ID = {
     NOT_LOGGED_IN:          0,
@@ -379,8 +355,23 @@ const DATA_VER_NUM_PIG_FARM = {
     PIG_DEAD:               9,
     
     SOW_DUE_CHECKLIST:      10,
-    SOW_BOAR_DISPOSED:      11
+    SOW_BOAR_DISPOSED:      11,
+    PROD_GESTATING:         12,
+    PROD_LACTATING:         13,
+    PROD_FATTENING:         14
+};
 
+
+const DATA_VER_NUM_ACCOUNT = {
+    GESTA_OPS:              0,
+    LACTA_PIGLETS_OPS:      1,
+    LACTA_SOW_OPS:          2,
+    GILT_OPS:               3,
+    WEANING_SOW_OPS:        4,
+    
+    ACCOUNT:                5,
+    PIG_BUYER:              6,
+    SOW_DUE_CHECKLIST:      7
 };
 
 
@@ -462,7 +453,7 @@ export {
     ACC_USER_GROUP,
     
     TRANSLATION_MODE,
-    SERVER_VERSIONED_DATA,
+
     
     NAV_MENU_GROUP,
     PAGE_ID,
@@ -483,6 +474,7 @@ export {
     HARVEST_TYPE,
     
     DATA_VER_NUM_PIG_FARM,
+    DATA_VER_NUM_ACCOUNT,
     
     REPORT_TYPE,
     
