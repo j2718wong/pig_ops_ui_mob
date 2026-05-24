@@ -37,6 +37,8 @@ import {addValidationClassToElem} from '../../common/ui/ui_utils.js';
 export function PageProdGestatingAdd(input_settings){
     PageViewPigFarmPage.call(this);
     
+    const TAG                   = 'PageProdGestatingAdd';
+    
     const thisObj               = this;
     const navigation            = input_settings.navigation;
       

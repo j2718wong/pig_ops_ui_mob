@@ -101,10 +101,7 @@ export function PageAccPigOpsList(input_settings){
         this.afterHtmlRenderThis();
     }
     
-    
-    
-    
-    
+        
     this.render = function(){
         elemIdNavPrevEntry      = `${settings.uniqueKey}-page-title-prev`;
         elemIdNavNextEntry      = `${settings.uniqueKey}-page-title-next`;
@@ -481,11 +478,142 @@ export function PageAccPigOpsList(input_settings){
     }
     
     
+    this.getStorageKey = function(){
+        
+        const KEY_PIG_OPS_SETTINGS = navigation.managerLocalData.STORAGE_KEY.PIG_OPS_SETTINGS;
+        
+        switch(curAccPigOpsType){
+            case PIG_OPERATION_TYPE.GESTATING:{
+                return KEY_PIG_OPS_SETTINGS.GESTATING_OPS;
+            }
+            
+            case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
+                return KEY_PIG_OPS_SETTINGS.LACTATING_PIGLETS_OPS;
+            }
+            
+            case PIG_OPERATION_TYPE.LACTATING_SOW:{
+                return KEY_PIG_OPS_SETTINGS.LACTATING_SOW_OPS;
+            }
+            
+            case PIG_OPERATION_TYPE.WEANING_SOW:{
+                return KEY_PIG_OPS_SETTINGS.WEANING_SOW_OPS;
+            }
+            
+            case PIG_OPERATION_TYPE.GILT:{
+                return KEY_PIG_OPS_SETTINGS.GILT_OPS;
+            }
+        }
+        
+        return null;
+    }
+    
+  
+    // The data, data_ver_num comes from localStorage.
+    this.updateDataSource = function(data, data_ver_num){
+        switch(curAccPigOpsType){
+            case PIG_OPERATION_TYPE.GESTATING:{
+                // Update data source
+                dataAccGestatingOps = data;
+                
+                // Update data source version
+                navigation.pigFarm.accountLists.dataVerNum.gestating_ops = data_ver_num;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
+                // Update data source
+                dataAccLactatingPigletOps = data;
+                
+                // Update data source version
+                navigation.pigFarm.accountLists.dataVerNum.lactating_piglets_ops = data_ver_num;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.LACTATING_SOW:{
+                // Update data source
+                dataAccLactatingSowOps = data;
+                
+                // Update data source version
+                navigation.pigFarm.accountLists.dataVerNum.lactating_sow_ops = data_ver_num;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.WEANING_SOW:{
+                // Update data source
+                dataAccWeaningSowOps = data;
+                
+                // Update data source version
+                navigation.pigFarm.accountLists.dataVerNum.weaning_sow_ops = data_ver_num;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.GILT:{
+                // Update data source
+                dataAccGiltOps = data;
+                
+                // Update data source version
+                navigation.pigFarm.accountLists.dataVerNum.gilt_ops = data_ver_num;
+                break;
+            }
+        }
+    }
+    
+   
+    
+    // Check server data update
+    this.checkServerDataUpdate = function(){
+        
+    }
+    
+    
     this.show = function(pig_ops_type){
         // Change only if needed
         if (pig_ops_type){
             curAccPigOpsType = pig_ops_type;
         }
+        
+        
+        // Get data source
+        let data_list = null;
+        
+        switch(curAccPigOpsType){
+            case PIG_OPERATION_TYPE.GESTATING:{
+                data_list = dataAccGestatingOps;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
+                data_list = dataAccLactatingPigletOps;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.LACTATING_SOW:{
+                data_list = dataAccLactatingSowOps;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.WEANING_SOW:{
+                data_list = dataAccWeaningSowOps;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.GILT:{
+                data_list = dataAccGiltOps;
+                break;
+            }
+        }
+        
+        /*
+        if (data_list){
+            // Display last known data
+            this.displayData();
+            
+            // Check server data update
+            //this.checkServerDataUpdate();
+            
+            return;
+        }
+        */
         
         
         const callback_success = function(data){
