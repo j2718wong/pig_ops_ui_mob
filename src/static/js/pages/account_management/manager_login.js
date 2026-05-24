@@ -554,10 +554,20 @@ export function ManagerLogin(){
         localStorage.setItem('access_token', token);
         
         // Backup: Cookie (more persistent)
-        document.cookie = `access_token=${token}; path=/; max-age=2592000; SameSite=Lax`;
+        const isSecure = window.location.protocol === 'https:';
+        const secureFlag = isSecure ? '; Secure' : '';
+        const domain = window.location.hostname === 'localhost' ? '' : 'domain=.jsysdev.com;';
+        
+        document.cookie = `access_token=${token}; path=/; ${domain} max-age=2592000; SameSite=Lax${secureFlag}`;
         
         // Also try sessionStorage as fallback
         sessionStorage.setItem('access_token', token);
+        
+        // Debug log
+        console.log('Token saved. Storage methods:');
+        console.log('  localStorage:', !!localStorage.getItem('access_token'));
+        console.log('  sessionStorage:', !!sessionStorage.getItem('access_token'));
+        console.log('  cookie:', document.cookie.includes('access_token'));
     }
 
 
