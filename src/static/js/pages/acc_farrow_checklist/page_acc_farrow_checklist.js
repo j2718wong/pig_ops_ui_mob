@@ -471,10 +471,6 @@ export function PageAccFarrowChecklist(input_settings){
     
     
     this.onClickRowEntry = function(entry_hid){
-        console.log('onClickRowEntry entry_hid = ' + entry_hid);
-        
-        
-        
         const data_row_entry = thisObj.getDataEntry(entry_hid);  
         if (data_row_entry == null){return;}
         

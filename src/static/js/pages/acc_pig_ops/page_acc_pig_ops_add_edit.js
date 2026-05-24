@@ -272,9 +272,8 @@ export function PageAccPigOpsAddEdit(input_settings){
         
     }
     
-    
-    // Reset add form
-    this.beforeShow = function(options, data_acc_pig_ops){
+
+    this.show = function(options, data_acc_pig_ops){
         let min_days;
         let max_days;
         let num_days_title;

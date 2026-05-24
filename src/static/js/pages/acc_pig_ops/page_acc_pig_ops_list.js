@@ -1087,41 +1087,47 @@ export function PageAccPigOpsList(input_settings){
     
     
     this.onClickAddEntry = function(){
-        let go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
+        // Show Container
+        const next_page = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_ADD_EDIT);
         
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        navigation.showThisPage(next_page);
+        
+        
+        // Show Page
+        const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
         const go_back_page = navigation.getPageContainer(go_back_page_id);
-        
         
         const options ={
             operation_type:         curAccPigOpsType,
             is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         }
         
         navigation.pageAccPigOpsAddEdit.show(options);
-        const page_container = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_ADD_EDIT);
-        navigation.showThisPage(page_container);
-        
-        
-    }
-    
-    
-    this.onSuccessAddEntry = function(){
-        
-    }
-    
-    
-    this.onSuccessEditEntry = function(){
-        
     }
     
     
     this.onClickRowEntry = function(entry_hid){
-        const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
+        // Show Container
+        const next_page = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_ADD_EDIT);
         
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        navigation.showThisPage(next_page);
+        
+        
+        // Show Page
         const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
         const go_back_page = navigation.getPageContainer(go_back_page_id);
+    
+        const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
+        
     
         const options ={
             operation_type:         curAccPigOpsType,
@@ -1130,11 +1136,6 @@ export function PageAccPigOpsList(input_settings){
             go_back_page:           go_back_page 
         }
         navigation.pageAccPigOpsAddEdit.show(options, data_acc_pig_ops);
-        
-        
-        const goto_page_id   = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
-        const page_container = navigation.getPageContainer(goto_page_id);
-        navigation.showThisPage(page_container);
     }
     
 }

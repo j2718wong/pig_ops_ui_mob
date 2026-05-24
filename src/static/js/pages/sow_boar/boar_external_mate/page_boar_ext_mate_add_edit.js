@@ -301,6 +301,20 @@ export function PageBoarExtMateAddEdit(input_settings){
         componentBoarCustomer.beforeShow();
         
         showOptions = options;
+        
+        
+        let html = '';
+        if (showOptions.is_add){
+            html = `<i class="fas fa-plus me-2"></i>Add Boar External Mate`;
+        }
+        else{
+            html = `<i class="fas fa-edit me-2"></i>Edit Boar External Mate`;
+            
+            dataAccChecklistItem = showOptions.data_row_entry;
+            thisObj.populateForm();
+        }
+        elemHeaderTitle.innerHTML = html;
+        
     }
     
         
@@ -314,6 +328,11 @@ export function PageBoarExtMateAddEdit(input_settings){
         
 
 
+    }
+    
+    
+    this.populateForm = function(){
+        
     }
     
     
