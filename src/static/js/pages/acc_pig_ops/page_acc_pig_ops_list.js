@@ -566,14 +566,7 @@ export function PageAccPigOpsList(input_settings){
     }
     
     
-    this.show = function(pig_ops_type){
-        // Change only if needed
-        if (pig_ops_type){
-            curAccPigOpsType = pig_ops_type;
-        }
-        
-        
-        // Get data source
+    this.getDataList = function(){
         let data_list = null;
         
         switch(curAccPigOpsType){
@@ -603,7 +596,24 @@ export function PageAccPigOpsList(input_settings){
             }
         }
         
-        /*
+        return data_list;
+    }
+    
+    
+    this.show = function(pig_ops_type){
+        // Change only if needed
+        if (pig_ops_type){
+            curAccPigOpsType = pig_ops_type;
+        }
+        
+        
+        this.setNavigationListeners();
+        
+        
+        // Get data source
+        let data_list = this.getDataList();
+        
+        
         if (data_list){
             // Display last known data
             this.displayData();
@@ -613,7 +623,12 @@ export function PageAccPigOpsList(input_settings){
             
             return;
         }
-        */
+        
+        /*
+        // If data source is null, that means the page was unloaded;
+        // Load cached data 
+        const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+        this.loadCachedData(pig_farm_hid);
         
         
         const callback_success = function(data){
@@ -631,14 +646,13 @@ export function PageAccPigOpsList(input_settings){
         };
         
         navigation.pigFarm.accountLists.requestAccountDataVerNum(callback_success);
+        */ 
     }
     
     
-    this.displayData = function(){
+    this.setNavigationListeners = function(){
         switch(curAccPigOpsType){
             case PIG_OPERATION_TYPE.GESTATING:{
-                curDataAccPigOpsList = dataAccGestatingOps;
-                
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavAccOpsSettings(null);
@@ -652,8 +666,6 @@ export function PageAccPigOpsList(input_settings){
             }
             
             case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
-                curDataAccPigOpsList = dataAccLactatingPigletOps;
-                
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavAccPigOps(null, 
@@ -668,8 +680,6 @@ export function PageAccPigOpsList(input_settings){
             }
             
             case PIG_OPERATION_TYPE.LACTATING_SOW:{
-                curDataAccPigOpsList = dataAccLactatingSowOps;
-                
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavAccPigOps(null, 
@@ -684,8 +694,6 @@ export function PageAccPigOpsList(input_settings){
             }
             
             case PIG_OPERATION_TYPE.WEANING_SOW:{
-                curDataAccPigOpsList = dataAccWeaningSowOps;
-                
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavAccPigOps(null, 
@@ -700,8 +708,6 @@ export function PageAccPigOpsList(input_settings){
             }
             
             case PIG_OPERATION_TYPE.GILT:{
-                curDataAccPigOpsList = dataAccGiltOps;
-                
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavAccPigOps(null, 
@@ -713,15 +719,69 @@ export function PageAccPigOpsList(input_settings){
                 }
                 break;
             }
+        }
+    }
+    
+    
+    this.displayData = function(){
+        switch(curAccPigOpsType){
+            case PIG_OPERATION_TYPE.GESTATING:{
+                curDataAccPigOpsList = dataAccGestatingOps;
+                break;
+            }
             
+            case PIG_OPERATION_TYPE.LACTATING_PIGLETS:{
+                curDataAccPigOpsList = dataAccLactatingPigletOps;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.LACTATING_SOW:{
+                curDataAccPigOpsList = dataAccLactatingSowOps;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.WEANING_SOW:{
+                curDataAccPigOpsList = dataAccWeaningSowOps;
+                break;
+            }
+            
+            case PIG_OPERATION_TYPE.GILT:{
+                curDataAccPigOpsList = dataAccGiltOps;
+                break;
+            }
         }
         
-        
         thisObj.renderTable(curDataAccPigOpsList);
-
         thisObj.onUserChangeLanguage();
     }
     
+    
+    this.requestServerData = function(){
+        const callback_success = function(){
+            thisObj.displayData();
+        };
+
+
+        const callback_offline = function(){
+            const data_list = thisObj.getDataList();
+            if (data_list){
+                // Display last known data
+                thisObj.displayData();           
+            }
+            else{
+                // Display modal offline
+                navigation.managerSystem.showOfflineMessageModal();
+            }
+        };
+        
+        
+        // This should update:
+        // - 
+        // - 
+        navigation.pigFarm.requestDataAccPigOpsList(curAccPigOpsType, 
+                callback_success, null);
+    }
+
     
     this._writeInlineStyle = function(){
         const html = `
