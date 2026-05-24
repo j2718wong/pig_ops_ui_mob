@@ -19,7 +19,9 @@ export function ManagerLocalData(_navigation) {
             PROD_GESTATING:         'superpig_prod_gestating',
             PROD_LACTATING:         'superpig_prod_lactating',
             PROD_FATTENING:         'superpig_prod_fattening',
-            PROD_HISTORY:           'superpig_prod_history'
+            PROD_HISTORY:           'superpig_prod_history',
+            
+            LAST_FEED_BALANCE:      'superpig_last_feed_balance'
         },
         
         PRODUCTION:{

@@ -61,6 +61,7 @@ export function PageHomeDashBoard(input_settings){
     let elemIdFarmName          = null;
     let elemIdTodayDate         = null;
                      
+    let elemIdDashBoardMain     = null;
     
     let elemIdCardLactaPiglets  = null;
     let elemIdCardFatteningPigs = null;
@@ -90,9 +91,18 @@ export function PageHomeDashBoard(input_settings){
     let elemIdDebug             = null;
     
     
+    let elemIdAccountLocked     = null;
+    let elemIdAccountLockedMsg  = null;
+    let elemIdAccountViewBill   = null;
+    
+    
+    
+    
     let elemFarmName            = null;
     let elemTodayDate           = null;
     
+    
+    let elemDashBoardMain       = null;
    
     let elemCardLactaPiglets    = null;
     let elemCardFatteningPigs   = null;
@@ -149,6 +159,13 @@ export function PageHomeDashBoard(input_settings){
     let elemDebug               = null;
     
     
+    
+    let elemAccountLocked       = null;
+    let elemAccountLockedMsg    = null;
+    let elemAccountViewBill     = null;
+
+    
+    
     let dtCurrentDate           = null;
 
     
@@ -179,7 +196,78 @@ export function PageHomeDashBoard(input_settings){
     this._writeInlineStyle = function(){
         const html = `
         <style>
-        /* Add to your main CSS */
+        /* Account Locked Styles */
+        .account-locked-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .account-locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        
+        .account-locked-card {
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+        
+        .account-locked-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .account-locked-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+        
+        .account-locked-message {
+            color: #4b5563;
+            line-height: 1.5;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .account-locked-btn {
+            background: #2e7d64;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .account-locked-btn:hover {
+            background: #236b55;
+        }
+        
+        
+        
+        
+        
+        
         .checklist-table {
             width: 100%;
             border-collapse: collapse;
@@ -231,6 +319,7 @@ export function PageHomeDashBoard(input_settings){
         elemIdFarmName          = `${settings.uniqueKey}-farm-name`;
         elemIdTodayDate         = `${settings.uniqueKey}-today-date`;
         
+        elemIdDashBoardMain     = `${settings.uniqueKey}-dashboard`;
         
         elemIdCardLactaPiglets  = `${settings.uniqueKey}-card-lacta-piglets`;
         elemIdCardFatteningPigs = `${settings.uniqueKey}-card-fattening-pigs`;
@@ -264,7 +353,9 @@ export function PageHomeDashBoard(input_settings){
         
         const html_install_btn  = managerPwa.getHtml();
 
-        const html_sow_due_checklist = sowDueChecklist.getHtml();
+        const html_account_locked       = thisObj.getAccountLockedHtml();
+
+        const html_sow_due_checklist    = sowDueChecklist.getHtml();
         
         const html = `
     ${html_style}
@@ -280,112 +371,116 @@ export function PageHomeDashBoard(input_settings){
 
         ${html_install_btn}
 
-
-        <!-- grid rows: only label + number, centered -->
-        <div class="stats-grid">
-
-            <!-- row 1: Lacta Piglets | Fattening Pigs -->
-            <div class="grid-row">
-                <div class="stat-cell card-lacta-piglets" id="${elemIdCardLactaPiglets}">
-                    <div class="label">Lacta Piglets</div>
-                    <div class="number">0</div>
-                </div>
-                <div class="stat-cell card-fattening" id="${elemIdCardFatteningPigs}">
-                    <div class="label">Fattening Pigs</div>
-                    <div class="number">0</div>
-                </div>
-            </div>
-
-            <!-- row 2: Lacta Sow | Gesta Sow -->
-            <div class="grid-row">
-                <div class="stat-cell card-lacta-sows" id="${elemIdCardLactaSows}">
-                    <div class="label">Lacta Sows</div>
-                    <div class="number">0</div>
-                </div>
-                <div class="stat-cell card-gesta" id="${elemIdCardGestaSows}">
-                    <div class="label">Gesta Sows</div>
-                    <div class="number">0</div>
-                </div>
-            </div>
-
-            <!-- row 3: Boars | Gilts -->
-            <div class="grid-row">
-                <div class="stat-cell" id="${elemIdCardBoars}">
-                    <div class="label">Boars</div>
-                    <div class="number">0</div>
-                </div>
-                <div class="stat-cell card-gilts" id="${elemIdCardGilts}">
-                    <div class="label">Gilts</div>
-                    <div class="number">0</div>
-                </div>
-            </div>
-            
-            <!-- row 4: Weaned Sows | 140 Days+ -->
-            <div class="grid-row">
-                <div class="stat-cell card-wean-sows" id="${elemIdCardWeanedSows}">
-                    <div class="label">Weaned Sows</div>
-                    <div class="number">0</div>
-                </div>
-                <div class="stat-cell card-to-harvest" id="${elemIdCardToHarvest}">
-                    <div class="label">140 Days+</div>
-                    <div class="number">0</div>
-                </div>
-            </div>
-            
-            
-        </div>
-
-
-        <!-- row 4: Expecting Next 7 days (list) -->
-        <div class="expecting-section" id="${elemIdExpectingSowsShow}">
-            <div class="section-title">
-                <span>⏳</span><span id="${elemIdLabelExpectingSows}">Expecting next 7 days</span>
-            </div>
-            
-            <div class="sow-name-pills" id="${elemIdExpectingSows}"></div>
         
-            ${html_sow_due_checklist}
-        </div>
+        ${html_account_locked}
 
-        
-        <!-- NEW ROW 4.5: Last Feed Balance -->
-        <div class="expecting-section" id="${elemIdFeedBalanceShow}">
-            <div class="section-title">
-                <span>📊</span> <span id="${elemIdLabelFeedBalance}">Last Feed Balance</span>
+
+        <div id="${elemIdDashBoardMain}">
+            <div class="stats-grid">
+
+                <!-- row 1: Lacta Piglets | Fattening Pigs -->
+                <div class="grid-row">
+                    <div class="stat-cell card-lacta-piglets" id="${elemIdCardLactaPiglets}">
+                        <div class="label">Lacta Piglets</div>
+                        <div class="number">0</div>
+                    </div>
+                    <div class="stat-cell card-fattening" id="${elemIdCardFatteningPigs}">
+                        <div class="label">Fattening Pigs</div>
+                        <div class="number">0</div>
+                    </div>
+                </div>
+
+                <!-- row 2: Lacta Sow | Gesta Sow -->
+                <div class="grid-row">
+                    <div class="stat-cell card-lacta-sows" id="${elemIdCardLactaSows}">
+                        <div class="label">Lacta Sows</div>
+                        <div class="number">0</div>
+                    </div>
+                    <div class="stat-cell card-gesta" id="${elemIdCardGestaSows}">
+                        <div class="label">Gesta Sows</div>
+                        <div class="number">0</div>
+                    </div>
+                </div>
+
+                <!-- row 3: Boars | Gilts -->
+                <div class="grid-row">
+                    <div class="stat-cell" id="${elemIdCardBoars}">
+                        <div class="label">Boars</div>
+                        <div class="number">0</div>
+                    </div>
+                    <div class="stat-cell card-gilts" id="${elemIdCardGilts}">
+                        <div class="label">Gilts</div>
+                        <div class="number">0</div>
+                    </div>
+                </div>
+                
+                <!-- row 4: Weaned Sows | 140 Days+ -->
+                <div class="grid-row">
+                    <div class="stat-cell card-wean-sows" id="${elemIdCardWeanedSows}">
+                        <div class="label">Weaned Sows</div>
+                        <div class="number">0</div>
+                    </div>
+                    <div class="stat-cell card-to-harvest" id="${elemIdCardToHarvest}">
+                        <div class="label">140 Days+</div>
+                        <div class="number">0</div>
+                    </div>
+                </div>
+                
+                
             </div>
+
+
+            <!-- row 4: Expecting Next 7 days (list) -->
+            <div class="expecting-section" id="${elemIdExpectingSowsShow}">
+                <div class="section-title">
+                    <span>⏳</span><span id="${elemIdLabelExpectingSows}">Expecting next 7 days</span>
+                </div>
+                
+                <div class="sow-name-pills" id="${elemIdExpectingSows}"></div>
             
-            <div id="${elemIdDateFeedBalance}"></div>
+                ${html_sow_due_checklist}
+            </div>
+
             
-            <div class="feed-balance-text" id="${elemIdFeedBalanceText}" style="font-size: 1.2rem; color: #4b5563; margin-top: 0.25rem;">
+            <!-- NEW ROW 4.5: Last Feed Balance -->
+            <div class="expecting-section" id="${elemIdFeedBalanceShow}">
+                <div class="section-title">
+                    <span>📊</span> <span id="${elemIdLabelFeedBalance}">Last Feed Balance</span>
+                </div>
+                
+                <div id="${elemIdDateFeedBalance}"></div>
+                
+                <div class="feed-balance-text" id="${elemIdFeedBalanceText}" style="font-size: 1.2rem; color: #4b5563; margin-top: 0.25rem;">
+                </div>
             </div>
-        </div>
 
 
-        <!-- row 5: Harvest Next 7 days (table) -->
-        <div class="harvest-section" style="display:none;">
-            <div class="section-title">
-                <span>🔪</span> Harvest next 7 days
-            </div>
-            <div class="table-container-harvest">
-                <table class="dashboard-table-harvest">
-                    <thead>
-                        <tr>
-                            <th>PID</th>
-                            <th>Num Pigs</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="dashboard-pid">H-2410</td><td><span class="dashboard-pig-count">6</span></td></tr>
-                        <tr><td class="dashboard-pid">H-2411</td><td><span class="dashboard-pig-count">4</span></td></tr>
-                        <tr><td class="dashboard-pid">H-2412</td><td><span class="dashboard-pig-count">8</span></td></tr>
-                        <tr><td class="dashboard-pid">H-2413</td><td><span class="dashboard-pig-count">5</span></td></tr>
-                        <tr><td class="dashboard-pid">H-2414</td><td><span class="dashboard-pig-count">7</span></td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--icon-syringe); display: flex; justify-content: space-between;">
-                <span>total 30 head</span>
-                <span style="color:var(--corporate-blue);">⬇️ schedule</span>
+            <!-- row 5: Harvest Next 7 days (table) -->
+            <div class="harvest-section" style="display:none;">
+                <div class="section-title">
+                    <span>🔪</span> Harvest next 7 days
+                </div>
+                <div class="table-container-harvest">
+                    <table class="dashboard-table-harvest">
+                        <thead>
+                            <tr>
+                                <th>PID</th>
+                                <th>Num Pigs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="dashboard-pid">H-2410</td><td><span class="dashboard-pig-count">6</span></td></tr>
+                            <tr><td class="dashboard-pid">H-2411</td><td><span class="dashboard-pig-count">4</span></td></tr>
+                            <tr><td class="dashboard-pid">H-2412</td><td><span class="dashboard-pig-count">8</span></td></tr>
+                            <tr><td class="dashboard-pid">H-2413</td><td><span class="dashboard-pig-count">5</span></td></tr>
+                            <tr><td class="dashboard-pid">H-2414</td><td><span class="dashboard-pig-count">7</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--icon-syringe); display: flex; justify-content: space-between;">
+                    <span>total 30 head</span>
+                    <span style="color:var(--corporate-blue);">⬇️ schedule</span>
+                </div>
             </div>
         </div>
         
@@ -419,6 +514,14 @@ export function PageHomeDashBoard(input_settings){
         elemFarmName            = elemDivContainer.querySelector('#'+elemIdFarmName);        
         elemTodayDate           = elemDivContainer.querySelector('#'+elemIdTodayDate);       
         
+        
+        elemAccountLocked       = elemDivContainer.querySelector('#'+elemIdAccountLocked);
+        elemAccountLockedMsg    = elemDivContainer.querySelector('#'+elemIdAccountLockedMsg);
+        elemAccountViewBill     = elemDivContainer.querySelector('#'+elemIdAccountViewBill);
+        
+        
+        
+        elemDashBoardMain       = elemDivContainer.querySelector('#'+elemIdDashBoardMain);
                
         elemCardLactaPiglets    = elemDivContainer.querySelector('#'+elemIdCardLactaPiglets); 
         elemCardFatteningPigs   = elemDivContainer.querySelector('#'+elemIdCardFatteningPigs);
@@ -537,14 +640,56 @@ export function PageHomeDashBoard(input_settings){
     }
     
     
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
     
+    this.getAccountLockedHtml = function(){
+        elemIdAccountLocked     = `${settings.uniqueKey}-account-locked`;
+        elemIdAccountLockedMsg  = `${settings.uniqueKey}-acc-locked-msg`;
+        elemIdAccountViewBill   = `${settings.uniqueKey}-view-bill`;
+        
+        
+        /**
+         Account Locked
+         
+         Your Pig Farm Account data has been temporary locked due ovedue bill.
+         
+         Message 1: For Staff
+            Please contact you account admins to settle your account bill.
+            
+            
+         Message 2: For Admin and Management
+            Please settle your account bill to restore access to all users 
+            of your Pig Farm Account. Note we can restore access only after
+            we verify the bill payment.
+            
+            
+            View Bill 
+        **/
+        
+        let label_title         = 'Account Locked';
+        let label_view_bill     = 'View Bill';
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_title             = helper.getSimpleTranslation('page_dashboard.labels.account_locked.title') || label_title;
+        label_view_bill         = helper.getSimpleTranslation('page_dashboard.labels.account_locked.view_bill') || label_view_bill;
+        
+       
+        const html = `
+        <div id="${elemIdAccountLocked}" class="account-locked-container" style="display:none;">
+            <div class="account-locked-overlay"></div>
+            <div class="account-locked-card">
+                <div class="account-locked-icon">🔒</div>
+                <div class="account-locked-title">${label_title}</div>
+                <div class="account-locked-message" id="${elemIdAccountLockedMsg}"></div>
+                <button class="account-locked-btn" id="${elemIdAccountViewBill}">${label_view_bill}</button>
+            </div>
+        </div>
+        `;
+        return html;
     }
-    
-   
+        
     
     this.onUserChangeLanguage = function(){
         const translations = navigation.getTranslations();
@@ -610,30 +755,6 @@ export function PageHomeDashBoard(input_settings){
     }
     
     
-    this.getDataToSaveToStorage = function(){
-        return {
-            dataFeedBalance:    lastDataFeedBalance,  
-            verNumFeedBalance:  lastVerNumFeedBalance
-        }
-    }
-    
-    
-    
-    this.saveToStorage = function() {
-        const data = thisObj.getDataToSaveToStorage();
-        localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
-    }
-
-
-    
-    this.loadDataFromStorage = function(){
-        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
-        if (cached) {
-            const data = JSON.parse(cached);
-            
-            
-        }
-    }
 
     
     
@@ -690,6 +811,8 @@ export function PageHomeDashBoard(input_settings){
         elemTodayDate.textContent = `${s_dt_today}, ${label_weekday}`;
         
         
+        thisObj.populateAccountLocked(); 
+        
         // Pig Farm Metrics
         thisObj.populatePigFarmMetrics();
         
@@ -718,6 +841,38 @@ export function PageHomeDashBoard(input_settings){
         
         // Refresh alerts
         navigation.managerAlerts.refreshAlerts();
+    }
+    
+    
+    this.populateAccountLocked = function(){
+        const translations = navigation.getTranslations();
+        
+        let label_staff_msg = 'Please contact your account admins to settle your account bill.';
+        let label_admin_msg = 'Please settle your account bill to restore access to all users of your Pig Farm Account. Note we can restore access only after we verify the bill payment.';        
+        
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_staff_msg         = helper.getSimpleTranslation('page_dashboard.labels.account_locked.staff_msg') || label_staff_msg;
+        label_admin_msg         = helper.getSimpleTranslation('page_dashboard.labels.account_locked.admin_msg') || label_admin_msg;
+        
+        
+        let label_locked_msg    = '';
+        
+        const user = navigation.userControl.dataUserAccount.user;
+        const user_group_num = user.user_group.group_num;
+        
+        if (user_group_num === ACC_USER_GROUP.ADMIN || 
+            user_group_num === ACC_USER_GROUP.MANAGEMENT) {
+            label_locked_msg = label_admin_msg;
+        } else {
+            label_locked_msg = label_staff_msg;
+        }
+        
+        
+        elemAccountLockedMsg.textContent = label_locked_msg;
+        
     }
     
     

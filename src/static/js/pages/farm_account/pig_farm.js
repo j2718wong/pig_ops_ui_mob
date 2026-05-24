@@ -920,9 +920,6 @@ export function PigFarm(_navigation){
                     localStorage.setItem(key, JSON.stringify(local_data));
                     
                     
-                    // Update local storage
-                    thisObj.saveToStorage();
-                    
                     if (callback_success){callback_success(response.data);}
                 }
                 else {
@@ -1259,6 +1256,17 @@ export function PigFarm(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataLastFeedBalance = response.data;
+                    
+                    // Update local storage
+                    const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.LAST_FEED_BALANCE;
+                    const local_data = {
+                        pig_farm_hid:   thisObj.getPigFarmHid(),
+                        ver_num:        thisObj.dataVerNum.feed_balance,
+                        data:           thisObj.dataLastFeedBalance,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
                     
                     if (callback_success){callback_success(response.data);}
                 }
