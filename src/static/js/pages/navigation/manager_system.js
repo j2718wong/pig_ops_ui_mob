@@ -3,6 +3,7 @@
 // April 19, 2026
 // Jack Wong
 // j2718wong@gmail.com
+// Updated: May 25, 2026 - Added PWA token recovery
 
 'use strict';
 
@@ -45,6 +46,8 @@ export function ManagerSystem(_navigation) {
     
     this._processAfterHtmlRender = function(){
         thisObj.offlineModal = thisObj.initOfflineModal();
+        
+        thisObj.checkAndRecoverToken();
     }
     
     
@@ -54,6 +57,9 @@ export function ManagerSystem(_navigation) {
             thisObj.hideMsgOffline();
             
             thisObj.isOffLine = false;
+            
+            // NEW: When coming back online, check and recover token
+            thisObj.checkAndRecoverToken();
         });
         
         window.addEventListener('offline', function(){
@@ -63,6 +69,26 @@ export function ManagerSystem(_navigation) {
             thisObj.isOffLine = true;
         });
         
+        // NEW: Listen for storage events (in case token was updated in another tab)
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'access_token') {
+                console.log('Token changed in another tab/window');
+                if (event.newValue) {
+                    console.log('Token found, updating session');
+                    thisObj.ensureTokenInAllStorages(event.newValue);
+                }
+            }
+        });
+        
+        // NEW: Listen for service worker messages
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data === 'offline-mode') {
+                    console.log('Received offline mode from service worker');
+                    thisObj.showMsgOffline();
+                }
+            });
+        }
     }
 
     
@@ -119,20 +145,269 @@ export function ManagerSystem(_navigation) {
     // Hides Offline  banner below the page
     this.hideMsgOffline = function(){
         thisObj.isOffLine = false;
-        elemOffline.classList.remove('show');
+        if (elemOffline) {
+            elemOffline.classList.remove('show');
+        }
     }
     
     
     // Show Offline  banner below the page
     this.showMsgOffline = function(){
         thisObj.isOffLine = true;
-        elemOffline.classList.add('show');
+        if (elemOffline) {
+            elemOffline.classList.add('show');
+        }
     }
     
     
     // Show Offline  modal
     this.showOfflineMessageModal = function() {
         thisObj.offlineModal.style.display = 'flex';
+    }
+    
+    
+    // NEW: Check and recover token from all storage locations
+    this.checkAndRecoverToken = function() {
+        console.log('Checking token health...');
+        
+        // Try to get token from any storage location
+        let token = this.getTokenFromAnyStorage();
+        
+        if (token) {
+            console.log('Token found in storage');
+            
+            // Ensure token exists in ALL storage locations
+            this.ensureTokenInAllStorages(token);
+            
+            // If online, verify token is still valid with server
+            if (!thisObj.isOffLine && navigator.onLine) {
+                this.verifyTokenWithServer(token);
+            } else {
+                console.log('Offline mode - skipping server verification');
+            }
+        } else {
+            console.log('No token found in any storage');
+            
+            // Only redirect to login if we're online and not already on login page
+            if (navigator.onLine && 
+                !window.location.pathname.includes('/login') &&
+                !window.location.pathname.includes('/app?') === false) {
+                
+                console.log('No token and online - redirecting to login');
+                
+                // Save current page to return after login
+                sessionStorage.setItem('redirect_after_login', window.location.pathname);
+                
+                // Clear any stale data
+                this.clearAllTokens();
+                
+                // Redirect to login
+                window.location.href = '/login';
+            }
+        }
+    }
+    
+    
+    // NEW: Get token from any available storage
+    this.getTokenFromAnyStorage = function() {
+        // Check localStorage first (primary)
+        let token = localStorage.getItem('access_token');
+        if (token) return token;
+        
+        // Check sessionStorage
+        token = sessionStorage.getItem('access_token');
+        if (token) return token;
+        
+        // Check cookies
+        token = this.getCookie('access_token');
+        if (token) return token;
+        
+        // Check window object (in-memory fallback)
+        if (window.__auth_token) {
+            return window.__auth_token;
+        }
+        
+        return null;
+    }
+    
+    
+    // NEW: Ensure token exists in all storage locations
+    this.ensureTokenInAllStorages = function(token) {
+        if (!token) return;
+        
+        // Save to localStorage
+        if (localStorage.getItem('access_token') !== token) {
+            localStorage.setItem('access_token', token);
+            console.log('Restored token to localStorage');
+        }
+        
+        // Save to sessionStorage
+        if (sessionStorage.getItem('access_token') !== token) {
+            sessionStorage.setItem('access_token', token);
+            console.log('Restored token to sessionStorage');
+        }
+        
+        // Save to cookie
+        const currentCookie = this.getCookie('access_token');
+        if (currentCookie !== token) {
+            this.setCookieToken(token);
+            console.log('Restored token to cookie');
+        }
+        
+        // Save to window object
+        window.__auth_token = token;
+    }
+    
+    
+    // NEW: Set cookie with proper expiration for PWA
+    this.setCookieToken = function(token) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (60 * 24 * 60 * 60 * 1000)); // 60 days for PWA
+        
+        const isSecure = window.location.protocol === 'https:';
+        const secureFlag = isSecure ? '; Secure' : '';
+        
+        let domainFlag = '';
+        if (window.location.hostname !== 'localhost') {
+            domainFlag = `; domain=${window.location.hostname}`;
+        }
+        
+        document.cookie = `access_token=${token}; path=/; expires=${expires.toUTCString()}; SameSite=Strict${secureFlag}${domainFlag}`;
+    }
+    
+    
+    // NEW: Get cookie value
+    this.getCookie = function(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+    
+    
+    // NEW: Verify token with server
+    this.verifyTokenWithServer = async function(token) {
+        try {
+            const response = await fetch('/user/verify_token', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                cache: 'no-store'
+            });
+            
+            if (response.status === 401) {
+                console.log('Token invalid or expired on server');
+                
+                // Check if this is a PWA that lost its token
+                if (thisObj.isPWA()) {
+                    console.log('PWA detected - attempting to refresh token');
+                    await thisObj.attemptTokenRefresh();
+                } else {
+                    console.log('Token invalid - clearing and redirecting to login');
+                    thisObj.clearAllTokens();
+                    
+                    if (!window.location.pathname.includes('/login')) {
+                        window.location.href = '/login';
+                    }
+                }
+            } else if (response.ok) {
+                console.log('Token verified successfully');
+                const data = await response.json();
+                
+                // If we got user data, ensure token is still in storage
+                thisObj.ensureTokenInAllStorages(token);
+            }
+        } catch (error) {
+            console.log('Token verification failed (network error):', error.message);
+            // Don't redirect on network error - might be offline
+        }
+    }
+    
+    
+    // NEW: Attempt to refresh token (for PWA)
+    this.attemptTokenRefresh = async function() {
+        console.log('Attempting to refresh token...');
+        
+        // Try to get refresh token if you have one
+        const refreshToken = localStorage.getItem('refresh_token');
+        
+        if (refreshToken) {
+            try {
+                const response = await fetch('/user/refresh_token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ refresh_token: refreshToken })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.access_token) {
+                        console.log('Token refreshed successfully');
+                        thisObj.saveAuthTokenExternal(data.access_token);
+                        
+                        // Reload the page to use new token
+                        window.location.reload();
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.log('Token refresh failed:', error);
+            }
+        }
+        
+        // No refresh token or refresh failed, redirect to login
+        console.log('Cannot refresh token, redirecting to login');
+        thisObj.clearAllTokens();
+        
+        if (!window.location.pathname.includes('/login')) {
+            window.location.href = '/login';
+        }
+    }
+    
+    
+    // NEW: Check if running as PWA
+    this.isPWA = function() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               window.navigator.standalone === true ||
+               document.referrer.includes('android-app://');
+    }
+    
+    
+    // NEW: Clear all tokens from all storage
+    this.clearAllTokens = function() {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        sessionStorage.removeItem('access_token');
+        document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        
+        if (window.__auth_token) {
+            delete window.__auth_token;
+        }
+        
+        // Notify service worker to clear auth caches
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage('clearAuthCache');
+        }
+        
+        console.log('All tokens cleared from all storage');
+    }
+    
+    
+    // NEW: Save auth token (to be called from login)
+    this.saveAuthTokenExternal = function(token) {
+        if (!token) return;
+        
+        localStorage.setItem('access_token', token);
+        sessionStorage.setItem('access_token', token);
+        this.setCookieToken(token);
+        window.__auth_token = token;
+        
+        console.log('Auth token saved to all storage locations');
+        console.log('PWA mode:', this.isPWA());
     }
     
     
@@ -212,7 +487,7 @@ export function ManagerSystem(_navigation) {
         const url = `${base_url}/system/stats`;
         
         
-        const bearer_token = localStorage.getItem('access_token');
+        const bearer_token = this.getTokenFromAnyStorage(); // Use recovery method
         
         $.ajax({
             type: 'GET',
@@ -263,7 +538,7 @@ export function ManagerSystem(_navigation) {
         const url = `${base_url}/system/latest_users`;
         
         
-        const bearer_token = localStorage.getItem('access_token');
+        const bearer_token = this.getTokenFromAnyStorage(); // Use recovery method
         
         $.ajax({
             type: 'GET',
@@ -307,6 +582,3 @@ export function ManagerSystem(_navigation) {
     
     
 }
-
-
-

@@ -3,6 +3,7 @@
 // February 27, 2026
 // Jack Wong
 // j2718wong@gmail.com
+// Updated: May 25, 2026 - Enhanced PWA token handling
 
 'use strict';
 
@@ -148,10 +149,134 @@ export function ManagerLogin(){
     }
     
     
-    this._processAfterHtmlRender = function(){}
+    this._processAfterHtmlRender = function(){
+        // NEW: Add PWA detection logging
+        thisObj.detectPWAEnvironment();
+    }
     
     
-    this._bindEventListeners = function(){}
+    this._bindEventListeners = function(){
+        // NEW: Listen for online/offline events
+        window.addEventListener('online', () => {
+            console.log('ManagerLogin: Connection restored');
+            thisObj.handleConnectionRestored();
+        });
+        
+        window.addEventListener('offline', () => {
+            console.log('ManagerLogin: Connection lost');
+        });
+        
+        // NEW: Listen for storage events (cross-tab sync)
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'access_token') {
+                console.log('ManagerLogin: Token changed in another tab');
+                if (event.newValue) {
+                    thisObj.syncTokenFromOtherTab(event.newValue);
+                }
+            }
+        });
+    }
+    
+    
+    // NEW: Detect PWA environment
+    this.detectPWAEnvironment = function() {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                            window.navigator.standalone === true;
+        
+        if (isStandalone) {
+            console.log('Running as PWA - enhanced token persistence enabled');
+            document.body.classList.add('pwa-mode');
+        } else {
+            console.log('Running in browser');
+        }
+        
+        // Log token status
+        const token = thisObj.getAuthToken();
+        console.log('Initial token status:', token ? 'Present' : 'Missing');
+    }
+    
+    
+    // NEW: Handle connection restored
+    this.handleConnectionRestored = async function() {
+        const token = thisObj.getAuthToken();
+        
+        if (token && window.location.pathname !== '/app') {
+            console.log('Connection restored with token, verifying...');
+            
+            try {
+                const response = await fetch('/user/verify_token', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    console.log('Token valid, redirecting to app');
+                    window.location.href = '/app';
+                } else {
+                    console.log('Token invalid, staying on login page');
+                    // Clear invalid token
+                    thisObj.clearAllTokens();
+                }
+            } catch (error) {
+                console.log('Network error during verification');
+            }
+        }
+    }
+    
+    
+    // NEW: Sync token from another tab
+    this.syncTokenFromOtherTab = function(token) {
+        console.log('Syncing token from another tab');
+        
+        // Update all storage locations
+        localStorage.setItem('access_token', token);
+        sessionStorage.setItem('access_token', token);
+        thisObj.setCookieToken(token);
+        
+        // If we're on login page and got a token, redirect to app
+        if (token && (window.location.pathname === '/login' || 
+                      window.location.pathname === '/signup')) {
+            console.log('Token received from another tab, redirecting to app');
+            window.location.href = '/app';
+        }
+    }
+    
+    
+    // NEW: Set cookie with proper PWA persistence
+    this.setCookieToken = function(token) {
+        if (!token) return;
+        
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (60 * 24 * 60 * 60 * 1000)); // 60 days
+        
+        const isSecure = window.location.protocol === 'https:';
+        const secureFlag = isSecure ? '; Secure' : '';
+        
+        // Fix domain handling for PWA
+        let domainFlag = '';
+        if (window.location.hostname !== 'localhost') {
+            const domain = window.location.hostname.split(':')[0];
+            domainFlag = `; domain=${domain}`;
+        }
+        
+        document.cookie = `access_token=${token}; path=/; expires=${expires.toUTCString()}; SameSite=Strict${secureFlag}${domainFlag}`;
+    }
+    
+    
+    // NEW: Clear all tokens from all storage
+    this.clearAllTokens = function() {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        sessionStorage.removeItem('access_token');
+        
+        document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+        document.cookie = 'access_token=; path=/; domain=.jsysdev.com; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+        
+        if (window.__auth_token) {
+            delete window.__auth_token;
+        }
+        
+        console.log('All tokens cleared');
+    }
     
     
     this.getLanguageFromUrl = function() {
@@ -248,9 +373,11 @@ export function ManagerLogin(){
         const url_path = window.location.pathname;
         const bearer_token = thisObj.getAuthToken();
         
-        // If offline and have token, skip the marketing page entirely
+        // NEW: Enhanced offline detection for PWA
         if (!navigator.onLine && bearer_token) {
-            console.log('Offline with token - redirecting to dashboard');
+            console.log('Offline with token - attempting to use cached app');
+            // Store that we're offline but have token
+            sessionStorage.setItem('offline_with_token', 'true');
             window.location.href = '/app';
             return;
         }
@@ -267,13 +394,18 @@ export function ManagerLogin(){
         
         
         if (url_path == '/logout'){
-            // Clear cookies and storage
-            localStorage.clear();
-            sessionStorage.clear();
+            // Clear all storage including PWA persistent storage
+            thisObj.clearAllTokens();
             
-            // Clear auth cookies
+            // Clear auth cookies with all possible paths/domains
             document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+            document.cookie = 'access_token=; path=/; domain=.jsysdev.com; expires=Thu, 01 Jan 1970 00:00:00 GMT';
             document.cookie = 'user_lang=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+            
+            // Clear IndexedDB if needed
+            if (window.indexedDB) {
+                indexedDB.deleteDatabase('app_auth');
+            }
             
             // Redirect to home or login
             window.location.href = '/login';
@@ -283,14 +415,16 @@ export function ManagerLogin(){
         
         // Set CopyRight Year
         const currentYear = new Date().getFullYear();
-        elemCopyRightYear.textContent = currentYear;
+        if (elemCopyRightYear) {
+            elemCopyRightYear.textContent = currentYear;
+        }
         
         
                         
-        
         // Check if there is a access_token stored;
         if (bearer_token){
             console.log('\n\n\nmanagerLogin; has bearer token');
+            console.log('Token source:', thisObj.getTokenSource());
             
             const urlParams = new URLSearchParams(window.location.search);
             const state     = urlParams.get('state');
@@ -369,10 +503,10 @@ export function ManagerLogin(){
             // This needs to be handled as well.
             
             const callback_failure = function(){
+                console.log('Token verification failed - clearing tokens');
+                
                 // Delete token from ALL storage locations
-                localStorage.removeItem('access_token');
-                sessionStorage.removeItem('access_token');
-                document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+                thisObj.clearAllTokens();
                 
                 // Preserve language preference (don't delete this)
                 const savedLang = localStorage.getItem('user_language');
@@ -393,41 +527,13 @@ export function ManagerLogin(){
                     const user_has_farms = thisObj.checkIfUserHasPigFarms(data_user_account);
                     if (user_has_farms == false){return;}
                     
-                    
-                    
                     // Redirect to Dashboard if user has account
                     const savedLang = localStorage.getItem('user_language');
                     
                     window.location.href = '/app';
                     
-                    /*
-                    // ALWAYS include language if it exists
-                    if (savedLang && savedLang !== 'default'){
-                        console.log('Redirecting with language:', savedLang);
-                        window.location.href = '/app?lang=' + savedLang;
-                    } 
-                    else if (savedLang === 'default') {
-                        // If language is explicitly set to 'default', don't include lang param
-                        window.location.href = '/app';
-                    }
-                    else {
-                        // No language saved, check URL for language
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const urlLang = urlParams.get('lang');
-                        if (urlLang && urlLang !== 'default') {
-                            console.log('Found language in URL, preserving:', urlLang);
-                            window.location.href = '/app?lang=' + urlLang;
-                        } else {
-                            window.location.href = '/app';
-                        }
-                    }
-                    */
-                    
                     return;
                 }
-                
-                
- 
                 
                 thisObj.handlePostLoginFlow(data_user_account); 
                 return;
@@ -443,9 +549,6 @@ export function ManagerLogin(){
         
         // No bearer token;
         let options;
-        
-        
-        
         
         if (url_path == '/signup'){
             options = {
@@ -468,6 +571,24 @@ export function ManagerLogin(){
     }
     
     
+    // NEW: Get token source for debugging
+    this.getTokenSource = function() {
+        if (localStorage.getItem('access_token')) return 'localStorage';
+        if (sessionStorage.getItem('access_token')) return 'sessionStorage';
+        if (this.getCookieToken()) return 'cookie';
+        return 'none';
+    }
+    
+    
+    // NEW: Get cookie token
+    this.getCookieToken = function() {
+        const value = `; ${document.cookie}`;
+        const parts = value.split('; access_token=');
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+    
+    
     this.checkIfUserHasPigFarms = function(data_user_account){
         thisObj.isProcessingNF = false;
         
@@ -476,11 +597,8 @@ export function ManagerLogin(){
         
         if (user.pig_farms && user.pig_farms.length > 0){
             // User has assigned farms even the URL path tells that user has no farm
-            // redirect to "/"
             // redirect to "/" with language
-
             window.location.href = '/app'
-            
             return true;
         }
         
@@ -550,39 +668,90 @@ export function ManagerLogin(){
     // 2026-05-15: This is because in PWA app, sometimes the localStorage
     // is cleared.    
     this.saveAuthToken = function(token) {
+        if (!token) {
+            console.error('saveAuthToken called with no token');
+            return;
+        }
+        
         // Primary: localStorage (PWA)
         localStorage.setItem('access_token', token);
         
-        // Backup: Cookie (more persistent)
+        // Backup: Cookie with longer expiration for PWA
         const isSecure = window.location.protocol === 'https:';
         const secureFlag = isSecure ? '; Secure' : '';
-        const domain = window.location.hostname === 'localhost' ? '' : 'domain=.jsysdev.com;';
         
-        document.cookie = `access_token=${token}; path=/; ${domain} max-age=2592000; SameSite=Lax${secureFlag}`;
+        // Fix domain handling - don't hardcode domain
+        let domainFlag = '';
+        if (window.location.hostname !== 'localhost') {
+            const domain = window.location.hostname.split(':')[0];
+            domainFlag = `; domain=${domain}`;
+        }
+        
+        // 60 days for PWA (increased from 30)
+        const maxAge = 60 * 24 * 60 * 60; // 60 days in seconds
+        
+        document.cookie = `access_token=${token}; path=/; max-age=${maxAge}; SameSite=Strict${secureFlag}${domainFlag}`;
         
         // Also try sessionStorage as fallback
         sessionStorage.setItem('access_token', token);
         
+        // Store in window object for in-memory access
+        window.__auth_token = token;
+        
         // Debug log
-        console.log('Token saved. Storage methods:');
+        console.log('Token saved. PWA Mode:', thisObj.isPWA());
         console.log('  localStorage:', !!localStorage.getItem('access_token'));
         console.log('  sessionStorage:', !!sessionStorage.getItem('access_token'));
         console.log('  cookie:', document.cookie.includes('access_token'));
+        console.log('  window.__auth_token:', !!window.__auth_token);
+    }
+
+
+    // NEW: Check if running as PWA
+    this.isPWA = function() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               window.navigator.standalone === true ||
+               document.referrer.includes('android-app://');
     }
 
 
     // Will read access_token from multiple places
     this.getAuthToken = function() {
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
+        // Check in-memory first (fastest)
+        if (window.__auth_token) {
+            return window.__auth_token;
         }
         
+        // Check localStorage (primary for PWA)
+        let token = localStorage.getItem('access_token');
+        if (token) {
+            // Sync to window object for faster access next time
+            window.__auth_token = token;
+            return token;
+        }
         
-        return localStorage.getItem('access_token') ||
-               getCookie('access_token') ||
-               sessionStorage.getItem('access_token');
+        // Check cookie (backup for PWA)
+        token = this.getCookieToken();
+        if (token) {
+            // Restore to localStorage
+            localStorage.setItem('access_token', token);
+            window.__auth_token = token;
+            console.log('Token restored from cookie to localStorage');
+            return token;
+        }
+        
+        // Check sessionStorage (last resort)
+        token = sessionStorage.getItem('access_token');
+        if (token) {
+            // Restore to localStorage and cookie
+            localStorage.setItem('access_token', token);
+            this.setCookieToken(token);
+            window.__auth_token = token;
+            console.log('Token restored from sessionStorage');
+            return token;
+        }
+        
+        return null;
     }
 
 
@@ -634,32 +803,7 @@ export function ManagerLogin(){
                 }
                 
                 if (account_has_farms > 0){
-                    
-                    //loadHomePageWithToken();
-                    //return;
-                    
-                    // Use the stored language for redirect
-                    /*
-                    const savedLang = localStorage.getItem('user_language');
-                    if (savedLang && savedLang !== 'default') {
-                        console.log('Redirecting to home with language:', savedLang);
-                        window.location.href = '/app?lang=' + savedLang;
-                    } else {
-                        // Check if language exists in URL before redirecting without it
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const urlLang = urlParams.get('lang');
-                        if (urlLang && urlLang !== 'default') {
-                            console.log('Preserving language from URL:', urlLang);
-                            window.location.href = '/app?lang=' + urlLang;
-                        } else {
-                            window.location.href = '/app';
-                        }
-                    }
-                    */
-                    
                     window.location.href = '/app';
-                    
-                    
                 } else {
                     const goto_page_id = PAGE_ID.ADD_FARM;
                     const page_container = thisObj.getPageContainer(goto_page_id);
@@ -689,7 +833,13 @@ export function ManagerLogin(){
         let url = `${base_url}/user/verify_token`;
         
         
-        const bearer_token = localStorage.getItem('access_token');
+        const bearer_token = thisObj.getAuthToken(); // Use enhanced getter
+        
+        if (!bearer_token) {
+            console.log('No token to verify');
+            if (callback_failure) callback_failure();
+            return;
+        }
         
         $.ajax({
             type: 'GET',
@@ -728,6 +878,7 @@ export function ManagerLogin(){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
+                console.log('Token verification error:', textStatus);
                 if (callback_failure){
                     callback_failure();
                 }
@@ -743,7 +894,7 @@ export function ManagerLogin(){
         let url = `${base_url}/user_account`;
         
         
-        const bearer_token = localStorage.getItem('access_token');
+        const bearer_token = thisObj.getAuthToken(); // Use enhanced getter
         
         $.ajax({
             type: 'GET',
@@ -794,7 +945,7 @@ export function ManagerLogin(){
         let url = `${base_url}/country/list`;
         
         
-        const bearer_token = localStorage.getItem('access_token');
+        const bearer_token = thisObj.getAuthToken(); // Use enhanced getter
         
         $.ajax({
             type: 'GET',
@@ -836,8 +987,4 @@ export function ManagerLogin(){
             }
         });
     }
-    
-    
-    
 }
-
