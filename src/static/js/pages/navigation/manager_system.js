@@ -505,46 +505,99 @@ export function ManagerSystem(_navigation) {
         };
         
         let testsCompleted = 0;
+        let timeoutOccurred = false;
         
-        // Test 1: HEAD request to reliable CDN (tests internet connectivity)
-        fetch('https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js', {
-            method: 'HEAD',
-            cache: 'no-store',
-            timeout: 3000
-        })
-        .then(() => {
-            testResults.hasInternet = true;
-            console.log('Check Internet connection: HEAD request successful - 0 bytes');
-        })
-        .catch(() => {
-            testResults.hasInternet = false;
-            console.log('Check Internet connection: HEAD request failed');
-        })
-        .finally(() => {
-            testsCompleted++;
-            if (testsCompleted === 2) callback(testResults);
-        });
+        // Use Promise.race for faster offline detection
+        const quickOnlineCheck = async () => {
+            // Use navigator.onLine first (instant)
+            if (!navigator.onLine) {
+                console.log('Connection test: navigator says offline');
+                testResults.hasInternet = false;
+                testResults.serverReachable = false;
+                callback(testResults);
+                return true; // Short-circuit
+            }
+            
+            // Try a simple HEAD to same origin (fastest)
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1500); // 1.5 sec timeout
+                
+                const response = await fetch('/favicon.ico?t=' + Date.now(), {
+                    method: 'HEAD',
+                    cache: 'no-store',
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (response.ok || response.status === 405) { // 405 is fine for HEAD
+                    testResults.hasInternet = true;
+                    testResults.serverReachable = true;
+                    callback(testResults);
+                    return true;
+                }
+            } catch (e) {
+                console.log('Quick connection test failed:', e.message);
+            }
+            
+            return false; // Need fallback test
+        };
         
-        // Test 2: HEAD request to favicon.ico (tests if server is reachable)
-        fetch(`${window.location.origin}/favicon.ico?t=${Date.now()}`, {
-            method: 'GET',
-            cache: 'no-store',
-            timeout: 3000
-        })
-        .then(() => {
-            testResults.serverReachable = true;
-            console.log('Check Server Connection: favicon.ico GET request successful');
-        })
-        .catch((error) => {
-            testResults.serverReachable = false;
-            console.log('Check Server Connection: favicon.ico GET request failed -', error.message);
-        })
-        .finally(() => {
-            testsCompleted++;
-            if (testsCompleted === 2) callback(testResults);
+        // Run quick test first
+        quickOnlineCheck().then((completed) => {
+            if (completed) return;
+            
+            // Fallback to dual test with shorter timeouts
+            // Test 1: Check internet (Google DNS - very reliable)
+            fetch('https://dns.google/resolve?name=google.com&type=A', {
+                method: 'GET',
+                cache: 'no-store',
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(() => {
+                testResults.hasInternet = true;
+                console.log('Internet: reachable');
+            })
+            .catch(() => {
+                testResults.hasInternet = false;
+                console.log('Internet: NOT reachable');
+            })
+            .finally(() => {
+                testsCompleted++;
+                if (testsCompleted === 2 && !timeoutOccurred) {
+                    callback(testResults);
+                }
+            });
+            
+            // Test 2: Check server (with shorter timeout)
+            const serverController = new AbortController();
+            const serverTimeout = setTimeout(() => serverController.abort(), 2000);
+            
+            fetch(`${window.location.origin}/favicon.ico?t=${Date.now()}`, {
+                method: 'HEAD',
+                cache: 'no-store',
+                signal: serverController.signal
+            })
+            .then(() => {
+                testResults.serverReachable = true;
+                testResults.hasInternet = true; // If server reachable, internet exists
+                console.log('Server: reachable');
+                clearTimeout(serverTimeout);
+            })
+            .catch((error) => {
+                testResults.serverReachable = false;
+                console.log('Server: NOT reachable -', error.message);
+            })
+            .finally(() => {
+                testsCompleted++;
+                if (testsCompleted === 2 && !timeoutOccurred) {
+                    callback(testResults);
+                }
+            });
         });
     };
-    
+        
     
     this.requestSystemStats = function(callback_success, 
             elem_show_error){

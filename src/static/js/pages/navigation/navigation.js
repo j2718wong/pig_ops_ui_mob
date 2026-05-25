@@ -739,73 +739,86 @@ export function Navigation(){
     this.init = function(){
         
         // Check if there is a access_token stored
-        const bearer_token  = localStorage.getItem('access_token');
+        const bearer_token  = thisObj.managerSystem.getTokenFromAnyStorage(); 
         const local_data    = thisObj.managerLocalData.getSavedLocalData();
         
         
-        // Check if there is a connection to server
-        this.managerSystem.connectionTest(function(status){
-            if (!status.hasInternet) {
-                console.log('\n\nNo internet - 0 bytes transferred');
+        // IMMEDIATE OFFLINE CHECK - Don't wait for connectionTest
+        if (!navigator.onLine) {
+            console.log('OFFLINE MODE DETECTED - Loading from cache immediately');
+            
+            if (bearer_token) {
+                // Load everything from storage
+                thisObj.initComponents();
+                thisObj.afterHtmlRender();
+                thisObj.managerSystem.showMsgOffline();
+                thisObj.managerLocalData.loadDataFromStorageToApp(local_data);
                 
-                if (bearer_token){
-                    // In this case the bearer_token will not be checked for 
-                    // validity as there is no connection to server 
-                    
+                // Hide loading and show dashboard
+                elemPageLoading.classList.add('fade-out');
+                setTimeout(() => {
+                    elemPageLoading.style.display = 'none';
+                }, 300);
+                
+                thisObj.showHomeDashBoard();
+                return; // Exit early
+            } else {
+                // No token, can't do anything offline
+                const langParam = getLanguageParam();
+                window.location.href = '/login' + langParam;
+                return;
+            }
+        }
+        
+        
+        // Check if there is a connection to server
+        // ONLINE: Do full check
+        this.managerSystem.connectionTest(function(status){
+            console.log('Connection test results:', status);
+            
+            // Check if we have a token and can access it
+            const hasToken = bearer_token !== null && bearer_token !== undefined && bearer_token !== "";
+            
+            if (!status.hasInternet || !status.serverReachable) {
+                console.log('Limited connectivity - trying offline mode');
+                
+                if (hasToken) {
+                    // Try offline mode
                     thisObj.initComponents();
                     thisObj.afterHtmlRender();
                     
+                    if (!status.serverReachable) {
+                        thisObj.managerSystem.showMsgOffline();
+                    }
                     
-                    // Show Offline indicator
-                    thisObj.managerSystem.showMsgOffline();
-                    
-                    
-                    // Load data from storage to major App components;
                     thisObj.managerLocalData.loadDataFromStorageToApp(local_data);
                     
-                    
-                    // Hide loading page and show content
                     elemPageLoading.classList.add('fade-out');
                     setTimeout(() => {
                         elemPageLoading.style.display = 'none';
-                    }, 300); // Match fade-out transition time
+                    }, 300);
                     
-                    
-                    console.log('About to show dashboard - without internet');
-                    
-                    // The ending should show the dashboard even without internet 
                     thisObj.showHomeDashBoard();
-                    
+                } else {
+                    // No token, redirect to login
+                    const langParam = getLanguageParam();
+                    window.location.href = '/login' + langParam;
                 }
-          
-            } else if (!status.serverReachable) {
-                console.log('\n\nServer down - 0 bytes transferred');
-          
             } else {
-                console.log('\n\nHas internet and Server online');
+                // Full online mode
+                console.log('Full online mode');
                 
-                if (bearer_token){
-                    thisObj.requestInitialPigFarmData(bearer_token);
+                if (hasToken){
+                    thisObj.requestInitialPigFarmData(thisObj.managerSystem.getTokenFromAnyStorage());
                 }
                 else{
                     const langParam = getLanguageParam();
                     window.location.href = '/login' + langParam;
                 }
-                
             }
-            
         });
         
-        
-        /** Original code
-        if (bearer_token){
-            thisObj.requestInitialPigFarmData(bearer_token);
-        }
-        else{
-            const langParam = getLanguageParam();
-            window.location.href = '/login' + langParam;
-        }
-        */
+       
     }
     
     
