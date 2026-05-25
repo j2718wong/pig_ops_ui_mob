@@ -47,7 +47,70 @@ export function ManagerSystem(_navigation) {
     this._processAfterHtmlRender = function(){
         thisObj.offlineModal = thisObj.initOfflineModal();
         
+        // Check and recover token on startup
         thisObj.checkAndRecoverToken();
+        
+        // NEW: Check if page was served from cache (offline mode)
+        thisObj.detectOfflineMode();
+    }
+    
+
+    // NEW: Detect if we're in offline cache mode
+    this.detectOfflineMode = function() {
+        // Method 1: Check if we're actually offline
+        if (!navigator.onLine) {
+            console.log('Browser reports offline');
+            thisObj.showMsgOffline();
+            thisObj.isOffLine = true;
+            return;
+        }
+        
+        // Method 2: Check if page was served from cache (transferSize = 0 means from cache)
+        if (performance && performance.getEntriesByType) {
+            const navEntry = performance.getEntriesByType('navigation')[0];
+            if (navEntry && navEntry.transferSize === 0) {
+                console.log('Page was served from cache (transferSize = 0)');
+                
+                // Test if we're REALLY offline by trying a quick fetch
+                fetch('/favicon.ico?t=' + Date.now(), { 
+                    method: 'GET',
+                    cache: 'no-store',
+                    timeout: 2000
+                })
+                .then(() => {
+                    // Online, but page was cached - don't show offline banner
+                    console.log('Actually online, page was just cached');
+                })
+                .catch(() => {
+                    // Really offline
+                    console.log('Actually offline - showing offline banner');
+                    thisObj.showMsgOffline();
+                    thisObj.isOffLine = true;
+                });
+                
+                return;
+            }
+        }
+        
+        // Method 3: Try a quick network test
+        fetch('/favicon.ico?t=' + Date.now(), { 
+            method: 'HEAD',
+            cache: 'no-store',
+            timeout: 2000
+        })
+        .then(() => {
+            // Online - hide offline banner if showing
+            if (thisObj.isOffLine) {
+                thisObj.hideMsgOffline();
+                thisObj.isOffLine = false;
+            }
+        })
+        .catch(() => {
+            // Offline
+            console.log('Network test failed - offline mode');
+            thisObj.showMsgOffline();
+            thisObj.isOffLine = true;
+        });
     }
     
     
@@ -60,6 +123,10 @@ export function ManagerSystem(_navigation) {
             
             // NEW: When coming back online, check and recover token
             thisObj.checkAndRecoverToken();
+            
+            // Just notify that we're back online, don't refresh
+            // Components can listen for 'connection-restored' event if they need to refresh
+            window.dispatchEvent(new CustomEvent('connection-restored'));
         });
         
         window.addEventListener('offline', function(){

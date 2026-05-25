@@ -32,9 +32,77 @@ window.addEventListener('appinstalled', () => {
 });
 
 
+// SILENT Service Worker Update - No User Notifications
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        registerAndMonitorServiceWorker();
+    });
+}
+
+async function registerAndMonitorServiceWorker() {
+    try {
+        // Get current version
+        const appVersion = window.APP_VERSION || Date.now();
+        
+        const registration = await navigator.serviceWorker.register(
+            `/service_worker.js?v=${appVersion}`,
+            { scope: '/' }
+        );
+        
+        console.log('SW registered:', registration.scope);
+        
+        // Store registration globally
+        window.swRegistration = registration;
+        
+        // SILENT: Check for updates immediately
+        await registration.update();
+        
+        // SILENT: Auto-update when new worker is found
+        registration.addEventListener('updatefound', () => {
+            console.log('New service worker found - updating silently');
+            const newWorker = registration.installing;
+            
+            newWorker.addEventListener('statechange', () => {
+                console.log('SW state changed:', newWorker.state);
+                
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New worker is waiting - activate it silently
+                    console.log('New SW ready - activating silently');
+                    if (newWorker) {
+                        newWorker.postMessage({ action: 'skipWaiting' });
+                    }
+                    // Reload to use new version (silent, no user prompt)
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                }
+            });
+        });
+        
+        // SILENT: Check for updates periodically (every 6 hours)
+        setInterval(async () => {
+            if (window.swRegistration) {
+                await window.swRegistration.update();
+                console.log('Periodic SW update check completed');
+            }
+        }, 6 * 60 * 60 * 1000); // Every 6 hours
+        
+    } catch (error) {
+        console.log('SW registration failed:', error);
+    }
+}
+
+// SILENT: Handle controller change (new SW activated)
+if (navigator.serviceWorker) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('Service worker updated - new version active');
+        // No user notification - just log it
+    });
+}
+
 
 // Detect iOS Safari
-const isIOS             = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+let isIOS             = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 const isStandalone      = window.matchMedia('(display-mode: standalone)').matches;
 const isIOSStandalone   = window.navigator.standalone === true;
 
