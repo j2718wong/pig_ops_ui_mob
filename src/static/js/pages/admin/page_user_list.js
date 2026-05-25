@@ -263,7 +263,12 @@ export function PageUserList(input_settings){
 
     this.getHtmlTableRow = function(cur_entry){
         let user_name = `${cur_entry.user.name_first} ${cur_entry.user.name_last}`;
-        let user_email = cur_entry.user.email;
+        let user_email = '';
+        
+        if (cur_entry.user.email){
+            user_email = cur_entry.user.email;
+        }
+        
         let html_user = `
             <div>${user_name}</div>
             <div style="color:blue;">${user_email}</div>
