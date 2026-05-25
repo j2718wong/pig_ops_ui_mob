@@ -237,38 +237,39 @@ export function ManagerSystem(_navigation) {
     this.checkAndRecoverToken = function() {
         console.log('Checking token health...');
         
-        // Try to get token from any storage location
+        // NEW: If we're offline, skip server verification entirely
+        if (!navigator.onLine) {
+            console.log('Offline mode detected - skipping token verification');
+            const token = this.getTokenFromAnyStorage();
+            if (token) {
+                console.log('Token exists offline - continuing with cached data');
+                this.ensureTokenInAllStorages(token);
+                return; // Don't try to verify with server
+            } else {
+                console.log('No token offline - staying on current page');
+                return;
+            }
+        }
+        
+        // Only run server verification if online
         let token = this.getTokenFromAnyStorage();
         
         if (token) {
             console.log('Token found in storage');
-            
-            // Ensure token exists in ALL storage locations
             this.ensureTokenInAllStorages(token);
             
-            // If online, verify token is still valid with server
-            if (!thisObj.isOffLine && navigator.onLine) {
+            // Only verify with server if online
+            if (navigator.onLine) {
                 this.verifyTokenWithServer(token);
-            } else {
-                console.log('Offline mode - skipping server verification');
             }
         } else {
             console.log('No token found in any storage');
             
-            // Only redirect to login if we're online and not already on login page
+            // Only redirect to login if we're online
             if (navigator.onLine && 
-                !window.location.pathname.includes('/login') &&
-                !window.location.pathname.includes('/app?') === false) {
-                
+                !window.location.pathname.includes('/login')) {
                 console.log('No token and online - redirecting to login');
-                
-                // Save current page to return after login
-                sessionStorage.setItem('redirect_after_login', window.location.pathname);
-                
-                // Clear any stale data
                 this.clearAllTokens();
-                
-                // Redirect to login
                 window.location.href = '/login';
             }
         }
@@ -354,6 +355,12 @@ export function ManagerSystem(_navigation) {
     
     // NEW: Verify token with server
     this.verifyTokenWithServer = async function(token) {
+        // Don't try to verify if offline
+        if (!navigator.onLine) {
+            console.log('Offline - skipping token verification');
+            return;
+        }
+        
         try {
             const response = await fetch('/user/verify_token', {
                 method: 'GET',
@@ -366,29 +373,22 @@ export function ManagerSystem(_navigation) {
             
             if (response.status === 401) {
                 console.log('Token invalid or expired on server');
+                thisObj.clearAllTokens();
                 
-                // Check if this is a PWA that lost its token
-                if (thisObj.isPWA()) {
-                    console.log('PWA detected - attempting to refresh token');
-                    await thisObj.attemptTokenRefresh();
-                } else {
-                    console.log('Token invalid - clearing and redirecting to login');
-                    thisObj.clearAllTokens();
-                    
-                    if (!window.location.pathname.includes('/login')) {
-                        window.location.href = '/login';
-                    }
+                if (!window.location.pathname.includes('/login') && navigator.onLine) {
+                    window.location.href = '/login';
                 }
             } else if (response.ok) {
                 console.log('Token verified successfully');
-                const data = await response.json();
-                
-                // If we got user data, ensure token is still in storage
                 thisObj.ensureTokenInAllStorages(token);
             }
         } catch (error) {
             console.log('Token verification failed (network error):', error.message);
-            // Don't redirect on network error - might be offline
+            // Don't redirect - might be offline
+            // Just keep using the token we have
+            if (!navigator.onLine) {
+                console.log('Network error - assuming offline, keeping token');
+            }
         }
     }
     
