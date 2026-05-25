@@ -44,9 +44,8 @@
 
     // SILENT Service Worker Update - No User Notifications
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            registerAndMonitorServiceWorker();
-        });
+        // Register immediately, don't wait for load
+        registerAndMonitorServiceWorker();
     }
 
     async function registerAndMonitorServiceWorker() {
