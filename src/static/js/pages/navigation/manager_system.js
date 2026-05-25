@@ -27,6 +27,51 @@ export function ManagerSystem(_navigation) {
     }
     
     
+    // Add this method to manager_system.js
+    this.forceOfflineMode = function() {
+        console.log('FORCE OFFLINE MODE - Loading from cache immediately');
+        const token = this.getTokenFromAnyStorage();
+        
+        if (token) {
+            // Show offline banner
+            this.showMsgOffline();
+            this.isOffLine = true;
+            
+            // Dispatch event that we're in offline mode
+            window.dispatchEvent(new CustomEvent('offline-mode-activated', {
+                detail: { token: token }
+            }));
+            
+            return true;
+        }
+        return false;
+    }
+
+    // Also add this early check method
+    this.checkOfflineStartup = function() {
+        // If browser says we're offline OR we're in standalone PWA mode with no connection
+        if (!navigator.onLine) {
+            console.log('OFFLINE STARTUP DETECTED');
+            return this.forceOfflineMode();
+        }
+        
+        // Try a super quick ping (50ms timeout)
+        return fetch('/favicon.ico?t=' + Date.now(), {
+            method: 'HEAD',
+            cache: 'no-store'
+        })
+        .then(() => {
+            console.log('Quick ping succeeded - online');
+            return false;
+        })
+        .catch(() => {
+            console.log('Quick ping failed - forcing offline mode');
+            this.forceOfflineMode();
+            return true;
+        });
+    };
+    
+    
     this.afterHtmlRender = function(){
         this._findElements();
         this._processAfterHtmlRender();
@@ -47,10 +92,19 @@ export function ManagerSystem(_navigation) {
     this._processAfterHtmlRender = function(){
         thisObj.offlineModal = thisObj.initOfflineModal();
         
-        // Check and recover token on startup
+        // CRITICAL: Check offline FIRST before anything else
+        // Skip server verification if offline
+        if (!navigator.onLine) {
+            console.log('Offline - skipping token verification and just showing cached data');
+            thisObj.showMsgOffline();
+            thisObj.isOffLine = true;
+            return; // Don't try to verify token with server
+        }
+        
+        // Check and recover token on startup (only if online)
         thisObj.checkAndRecoverToken();
         
-        // NEW: Check if page was served from cache (offline mode)
+        // Check if page was served from cache (offline mode)
         thisObj.detectOfflineMode();
     }
     
