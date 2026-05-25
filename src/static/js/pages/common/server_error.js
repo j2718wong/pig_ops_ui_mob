@@ -101,6 +101,10 @@ export function ServerError(_navigation){
         console.log('jqXHR')
         console.log(jqXHR)
         
+        console.log('Status:', jqXHR.status);
+        console.log('Response URL:', jqXHR.responseURL);
+        console.log('Response Text:', jqXHR.responseText);
+            
         console.log('textStatus')
         console.log(textStatus)
         if (textStatus == 'timeout'){
