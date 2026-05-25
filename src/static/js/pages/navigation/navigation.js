@@ -1158,6 +1158,11 @@ export function Navigation(){
         this.pageMobGestatingList.setNavigation(thisObj);
         this.pageMobLactatingList.setNavigation(thisObj);
         
+        // skip next steps if offline
+        if (!navigator.onLine){
+            return;
+        }
+        
         this.autoUpdateServiceWorker();
         this.setNotificationsData();
     }
@@ -1545,6 +1550,13 @@ export function Navigation(){
     
     
     this.autoUpdateServiceWorker = function(){
+        
+        // Skip if offline
+        if (!navigator.onLine) {
+            console.log('Offline - skipping service worker update check');
+            return;
+        }
+        
         if ('serviceWorker' in navigator) {
             const currentVersion = APP_VERSION;
             const reloadedVersion = sessionStorage.getItem('sw_reloaded_version');
