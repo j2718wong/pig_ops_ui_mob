@@ -648,4 +648,26 @@ export function ManagerSystem(_navigation) {
     }
     
     
+    // Add visual debug method (remove after testing)
+    this.visualDebug = function(message, isError = false) {
+        const debugDiv = document.createElement('div');
+        debugDiv.style.cssText = `
+            position: fixed;
+            bottom: 100px;
+            left: 10px;
+            right: 10px;
+            background: ${isError ? 'red' : 'green'};
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 99999;
+            font-size: 12px;
+            text-align: center;
+            font-family: monospace;
+        `;
+        debugDiv.textContent = message;
+        document.body.appendChild(debugDiv);
+        setTimeout(() => debugDiv.remove(), 3000);
+    }
+    
 }
