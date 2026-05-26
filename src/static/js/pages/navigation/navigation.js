@@ -741,6 +741,12 @@ export function Navigation(){
     
     
     this.init = function(){
+        // Note: this is ony viewable if user is SUPER_ADMIN
+        // By default this displayed none;
+        elemDebugWindow             = document.getElementById('debug-window');
+        
+        this.elemDebugWindow        = elemDebugWindow;
+        
         
         // Check if there is a access_token stored
         const bearer_token  = thisObj.managerSystem.getTokenFromAnyStorage(); 
@@ -749,11 +755,13 @@ export function Navigation(){
         
         // IMMEDIATE OFFLINE CHECK - Don't wait for connectionTest
         if (!navigator.onLine) {
-            thisObj.elemDebugWindow.style.display = 'block';
+            elemDebugWindow.style.display = 'block';
             
-            const msg = 'OFFLINE MODE DETECTED - Loading from cache immediately';
+            const msg = 'OFFLINE MODE DETECTED - Loading from cache immediately\n';
             console.log(msg);
-            thisObj.elemDebugWindow.textContent += msg;
+            elemDebugWindow.textContent += msg;
+            
+            elemDebugWindow.textContent += JSON.stringify(local_data);
             
             if (bearer_token) {
                 thisObj.elemDebugWindow.textContent += 'Test Offline 1';
@@ -1155,11 +1163,6 @@ export function Navigation(){
         
         elemDesktopPigFarmName          = document.getElementById('pigFarmName');
         elemMobilePigFarmName           = document.getElementById('mobilePigFarmName');
-        
-        // Note: this is ony viewable if user is SUPER_ADMIN
-        elemDebugWindow                 = document.getElementById('debug-window');
-        
-        this.elemDebugWindow            = elemDebugWindow;
         
         
         this.pageContainers.findElements();
