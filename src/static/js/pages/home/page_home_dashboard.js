@@ -782,6 +782,7 @@ export function PageHomeDashBoard(input_settings){
         }
         */
         
+        console.log('Test before showing PWA install');
 
         managerPwa.showPwaInstallButton();
                 

@@ -765,6 +765,7 @@ export function Navigation(){
             
             if (bearer_token) {
                 thisObj.elemDebugWindow.textContent += 'Test Offline 1';
+                console.log('Test Offline 1');
                 
                 // Load everything from storage
                 thisObj.initComponents();
@@ -777,7 +778,10 @@ export function Navigation(){
                 setTimeout(() => {
                     elemPageLoading.style.display = 'none';
                 }, 300);
-                
+
+
+                console.log('about to show dash board');
+
                 thisObj.showHomeDashBoard();
                 return; // Exit early
             } else {
