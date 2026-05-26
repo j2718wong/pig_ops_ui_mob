@@ -749,9 +749,15 @@ export function Navigation(){
         
         // IMMEDIATE OFFLINE CHECK - Don't wait for connectionTest
         if (!navigator.onLine) {
-            console.log('OFFLINE MODE DETECTED - Loading from cache immediately');
+            thisObj.elemDebugWindow.style.display = 'block';
+            
+            const msg = 'OFFLINE MODE DETECTED - Loading from cache immediately';
+            console.log(msg);
+            thisObj.elemDebugWindow.textContent += msg;
             
             if (bearer_token) {
+                thisObj.elemDebugWindow.textContent += 'Test Offline 1';
+                
                 // Load everything from storage
                 thisObj.initComponents();
                 thisObj.afterHtmlRender();
@@ -786,6 +792,9 @@ export function Navigation(){
             
             if (!status.hasInternet || !status.serverReachable) {
                 console.log('Limited connectivity - trying offline mode');
+                
+                thisObj.elemDebugWindow.style.display = 'block';
+                thisObj.elemDebugWindow.textContent += 'Test Offline 2';
                 
                 if (hasToken) {
                     // Try offline mode
