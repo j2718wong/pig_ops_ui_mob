@@ -1,17 +1,16 @@
 // pwa-handler.js - With duplicate prevention
 
-(function() {
-    'use strict';
-    
-    // Prevent duplicate execution
-    if (window.__pwaHandlerInitialized) {
-        console.log('pwa-handler already initialized, skipping');
-        return;
-    }
+
+// Prevent duplicate execution
+if (window.__pwaHandlerInitialized) {
+    console.log('pwa-handler already initialized, skipping');
+}
+else {
+
     window.__pwaHandlerInitialized = true;
-    
+
     let registrationAttempted = false;
-    
+
     // Global PWA event handler - runs on ALL pages
     window.deferredPrompt = null;
 
@@ -243,7 +242,5 @@
             setTimeout(showOpenInBrowserModal, 500);
         });
     }
-    
-})(); // End of IIFE
 
-
+}
