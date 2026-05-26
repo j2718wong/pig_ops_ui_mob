@@ -251,7 +251,7 @@ export function PageTableBasic(){
         
 
         if (thisObj.navigation){
-            const helper = navigation.managerTranslations.translationHelper;
+            const helper = thisObj.navigation.managerTranslations.translationHelper;
             
             label_add_entry     = helper.getSimpleTranslation('common.labels.add_entry') || label_add_entry;
             label_search        = helper.getSimpleTranslation('common.labels.search') || label_search;
