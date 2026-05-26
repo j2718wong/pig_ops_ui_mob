@@ -205,14 +205,9 @@ export function UserControl(_navigation) {
 
         
         if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
-            console.log('to display debug window');
             navigation.elemDebugWindow.style.display = 'block';
         }
         else{
-            
-            console.log('Not to display debug window');
-            console.log(`user`);
-            console.log(user);
             navigation.elemDebugWindow.style.display = 'none';
         }
         

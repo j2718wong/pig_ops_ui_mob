@@ -155,7 +155,7 @@ export function ManagerLocalData(_navigation) {
         let cur_data = null;
         
         if (navigation.elemDebugWindow){
-            navigation.elemDebugWindow.textContent = 'loadDataFromStorageToApp; about to load\n';
+            navigation.elemDebugWindow.textContent += 'loadDataFromStorageToApp; about to load\n';
         }
         
         

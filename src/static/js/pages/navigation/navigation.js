@@ -1377,6 +1377,21 @@ export function Navigation(){
         
         elemDesktopPigFarmName.textContent = pig_farm_name;
         elemMobilePigFarmName.textContent = pig_farm_name;
+        
+        if (!elemDesktopPigFarmName){
+            console.log('No elemDesktopPigFarmName');
+        }
+        else{
+            console.log('elemDesktopPigFarmName is set');
+        }
+        
+        if (!elemMobilePigFarmName){
+            console.log('No elemMobilePigFarmName');
+        }
+        else{
+            console.log('elemMobilePigFarmName is set');
+        }
+        
     }
     
 
