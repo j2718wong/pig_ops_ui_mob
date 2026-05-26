@@ -804,6 +804,10 @@ export function PageHomeDashBoard(input_settings){
         
         
         const pig_farm = navigation.pigFarm.dataPigFarm.pig_farm;
+        
+        console.log('dashboard navigation.pigFarm.dataPigFarm');
+        console.log(navigation.pigFarm.dataPigFarm);
+        
         elemFarmName.textContent = pig_farm.name;
         
         
