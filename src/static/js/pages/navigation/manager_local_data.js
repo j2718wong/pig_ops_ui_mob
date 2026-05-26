@@ -154,6 +154,11 @@ export function ManagerLocalData(_navigation) {
     this.loadDataFromStorageToApp = function(local_data){
         let cur_data = null;
         
+        if (navigation.elemDebugWindow){
+            navigation.elemDebugWindow.textContent = 'loadDataFromStorageToApp; about to load\n';
+        }
+        
+        
         // Load data to navigation
         cur_data = local_data[navigation.STORAGE_KEY];
         navigation.setDataApplication(cur_data.dataApplication);
@@ -189,6 +194,10 @@ export function ManagerLocalData(_navigation) {
         navigation.pageAccPigOpsList.loadDataFromStorage();
         
         console.log('\n\nManagerLocalData.loadDataFromStorageToApp(); Success: local data loaded to app');
+        
+        if (navigation.elemDebugWindow){
+            navigation.elemDebugWindow.textContent += 'loadDataFromStorageToApp; success\n';
+        }
     }
 
 }

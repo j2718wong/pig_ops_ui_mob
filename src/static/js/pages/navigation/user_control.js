@@ -11,6 +11,7 @@ import {APPLICATION,
         ACC_USER_GROUP,
         PIG_OPERATION_TYPE,
         PAGE_ID,
+        FLAG_BITS,
         SOW_BOAR_TYPE,
         PIG_PROD_TYPE,
         SUPPLIER_TYPE}              from '../../constants.js';
@@ -203,7 +204,17 @@ export function UserControl(_navigation) {
         }
 
         
-
+        if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
+            console.log('to display debug window');
+            navigation.elemDebugWindow.style.display = 'block';
+        }
+        else{
+            
+            console.log('Not to display debug window');
+            console.log(`user`);
+            console.log(user);
+            navigation.elemDebugWindow.style.display = 'none';
+        }
         
         
         // TODO this

@@ -237,11 +237,15 @@ export function Navigation(){
     let elemDesktopPigFarmName  = null;
     let elemMobilePigFarmName   = null;
     
+    let elemDebugWindow         = null;
+    
     let dataApplication         = null;
 
     // Timestamp when the last pig farm data is requested from server
     let tsLastReqPigFarmData    = null;
 
+    
+    this.elemDebugWindow        = null;
     
     
     this.curScreenIsMobile      = null;
@@ -776,6 +780,7 @@ export function Navigation(){
         this.managerSystem.connectionTest(function(status){
             console.log('Connection test results:', status);
             
+            
             // Check if we have a token and can access it
             const hasToken = bearer_token !== null && bearer_token !== undefined && bearer_token !== "";
             
@@ -997,10 +1002,6 @@ export function Navigation(){
                         elemPageLoading.style.display = 'none';
                     }, 300); // Match fade-out transition time
                     
-                   
-                    
-                    
-                                
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(
@@ -1145,6 +1146,11 @@ export function Navigation(){
         
         elemDesktopPigFarmName          = document.getElementById('pigFarmName');
         elemMobilePigFarmName           = document.getElementById('mobilePigFarmName');
+        
+        // Note: this is ony viewable if user is SUPER_ADMIN
+        elemDebugWindow                 = document.getElementById('debug-window');
+        
+        this.elemDebugWindow            = elemDebugWindow;
         
         
         this.pageContainers.findElements();
@@ -1352,6 +1358,10 @@ export function Navigation(){
         // Set Farm name
         const cur_user_farm = thisObj.userControl.getCurrentFarm();
         const pig_farm_name = cur_user_farm.pig_farm.name;
+        
+        if (this.elemDebugWindow){
+            this.elemDebugWindow.textContent += `pig_farm_name= ${pig_farm_name}\n`;
+        }
         
         elemDesktopPigFarmName.textContent = pig_farm_name;
         elemMobilePigFarmName.textContent = pig_farm_name;
