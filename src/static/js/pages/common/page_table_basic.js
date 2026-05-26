@@ -154,19 +154,12 @@ export function PageTableBasic(){
     
     let elemAddTextLinkShow     = null;
     let elemAddTextLink         = null;
-    
 
     
     let dataEntryList           = null;
     
     let curDataView             = null;
     
-
-
-    //let textTranslation         = new TextTranslation();
-    let curUserLanguageKey      = 'en';
-
-
     
     let dtCurrentDate           = null;
     
@@ -238,7 +231,6 @@ export function PageTableBasic(){
         elemIdTableCurPage      = `${settings.uniqueKey}-cur-page`;
         elemIdTableTotalPages   = `${settings.uniqueKey}-total-pages`;
         elemIdTableNextPage     = `${settings.uniqueKey}-next-page`;
-        
         
         elemIdAddTextLinkShow   = `${settings.uniqueKey}-add-entry-link-show`;
         elemIdAddTextLink       = `${settings.uniqueKey}-add-entry-link`;
@@ -357,7 +349,6 @@ export function PageTableBasic(){
            
         const html = `
 
-        
 <div class="mobile-container" id="${elemIdTableContainer}">
 
     ${html_header}
@@ -436,7 +427,6 @@ export function PageTableBasic(){
         elemAddTextLink         = document.getElementById(elemIdAddTextLink);
         
         thisObj.elemIdTableContent  = document.getElementById(elemIdTableContent);
-             
     }
     
     
