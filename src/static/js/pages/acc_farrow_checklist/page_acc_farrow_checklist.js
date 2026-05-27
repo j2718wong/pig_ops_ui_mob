@@ -411,8 +411,8 @@ export function PageAccFarrowChecklist(input_settings){
     
     
     this.searchEntries = function(key){
-        let data_list = dataAccFarrowChecklist;
-        
+        let data_list = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
+   
         const filtered = [];
         for (const cur_entry of data_list){
             
@@ -422,7 +422,7 @@ export function PageAccFarrowChecklist(input_settings){
             u_name = cur_entry.name.toUpperCase();
             
            
-            if (u_name.startsWith(key)){
+            if (u_name.includes(key)){
                 filtered.push(cur_entry);
                 continue;
             }
