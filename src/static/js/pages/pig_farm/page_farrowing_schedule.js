@@ -1014,6 +1014,7 @@ ${html_style}
                         block.style.color = '#ffffff';
                     }
                     
+                    
                     const today = new Date(dtCurrentDate);
                     today.setHours(0, 0, 0, 0);
                     
@@ -1047,22 +1048,10 @@ ${html_style}
                     }
                     else if (assignment.type === 'lactating') {
                         const weanDate = endDateToUse;
-                        const daysRemaining = Math.ceil((weanDate - today) / (1000 * 60 * 60 * 24));
-                        
-                        let urgencyIcon = '🍼';
-                        let urgencyText = '';
-                        if (daysRemaining <= 3) {
-                            urgencyIcon = '🚨';
-                            urgencyText = 'URGENT!';
-                        } else if (daysRemaining <= 7) {
-                            urgencyIcon = '⚠️';
-                            urgencyText = 'Soon';
-                        }
                         
                         contentHtml = `
                             <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
-                            <div class="timeline-sub">${urgencyIcon} Wean: ${thisObj.formatDateShort(weanDate)} | ${daysRemaining} days left</div>
-                            ${urgencyText ? `<div class="timeline-urgency">${urgencyText}</div>` : ''}
+                            <div class="timeline-sub">Wean: ${thisObj.formatDateShort(weanDate)}</div>
                         `;
                     } 
                     else {
@@ -1072,12 +1061,7 @@ ${html_style}
                         const durationDays = Math.ceil((moveOutDate - moveInDate) / (1000 * 60 * 60 * 24));
                         
                         let daysToMoveIn = Math.ceil((moveInDate - today) / (1000 * 60 * 60 * 24));
-                        let moveIcon = '📦';
-                        if (daysToMoveIn <= 3 && daysToMoveIn > 0) {
-                            moveIcon = '🚨';
-                        } else if (daysToMoveIn <= 7 && daysToMoveIn > 0) {
-                            moveIcon = '⚠️';
-                        }
+
                         
                         // Show original move in date if adjusted
                         if (assignment.originalStartDate && assignment.isAdjusted) {
@@ -1088,11 +1072,45 @@ ${html_style}
                                 <div class="timeline-sub">Out: ${thisObj.formatDateShort(moveOutDate)}; Due: ${thisObj.formatDateShort(expectedBirth)}</div>
                             `;
                         } else {
-                            contentHtml = `
-                                <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
-                                <div class="timeline-sub">Move: ${thisObj.formatDateShort(moveInDate)}; Out: ${thisObj.formatDateShort(moveOutDate)}</div>
-                                <div class="timeline-sub">Due: ${thisObj.formatDateShort(expectedBirth)}; Stay: ${durationDays} days</div>
-                            `;
+                            /**
+                             New changes, because the text wont fit in the 
+                             occupancy entry as the expectedBirth nears:
+                             1.) If moveInDate < today, display:
+                                assignment.sowName
+                                Move: moveInDate; Out: moveOutDate 
+                                Due: expectedBirth; Stay: durationDays
+                            
+                             2.) If (expectedBirth - today) <= 5
+                                - it is assumed, the sow must be already moved into a farrowing crate
+                                Display:
+                                
+                                Out: moveOutDate 
+                                Due: expectedBirth
+
+                             * */
+                            
+                            
+                            // Calculate days until expected birth
+                            const daysUntilBirth = Math.ceil((expectedBirth - today) / (1000 * 60 * 60 * 24));
+                            const isMoveInDatePast = moveInDate < today;
+                            const isBirthNear = daysUntilBirth <= 5;
+                            
+                            // Case 2: Birth is near (5 days or less) - sow should already be in crate
+                            if (isBirthNear) {
+                                contentHtml = `
+                                    <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
+                                    <div class="timeline-sub">Out: ${thisObj.formatDateShort(moveOutDate)}</div>
+                                    <div class="timeline-sub">Due: ${thisObj.formatDateShort(expectedBirth)}</div>
+                                `;
+                            }
+                            // Default case 
+                            else {
+                                contentHtml = `
+                                    <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
+                                    <div class="timeline-sub">Move: ${thisObj.formatDateShort(moveInDate)}; Out: ${thisObj.formatDateShort(moveOutDate)}</div>
+                                    <div class="timeline-sub">Due: ${thisObj.formatDateShort(expectedBirth)}; Stay: ${durationDays} days</div>
+                                `;
+                            }
                         }
                     }
                     

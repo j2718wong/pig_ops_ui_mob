@@ -169,7 +169,6 @@ export function PageHomeDashBoard(input_settings){
     let dtCurrentDate           = null;
 
     
-    let lastDataFeedBalance     = null;
     let lastVerNumFeedBalance   = null;
     
    
@@ -1103,16 +1102,14 @@ export function PageHomeDashBoard(input_settings){
     }
     
 
-    this.requestFeedBalance = function(){
+    this.requestServerDataLastFeedBalance = function(){
         const callback_success = function(data){
             thisObj.displayFeedBalance(data);
             
             // Set last version from pigFarm
-            // This verison number increments when there is a chnage in farm feed balance
+            // This version number increments when there is a change in farm feed balance
             lastVerNumFeedBalance   = navigation.pigFarm.dataVerNum.feed_balance;
-            
-            lastDataFeedBalance     = data;
-            
+
         };
         
             
@@ -1126,18 +1123,70 @@ export function PageHomeDashBoard(input_settings){
         const farmLastBalance = navigation.pigFarm.dataLastFeedBalance;
         
         if (farmLastBalance == null){
-            thisObj.requestFeedBalance();
+            //thisObj.requestServerDataLastFeedBalance();
+            
+            
+            // If data source is null, that means the page was unloaded;
+            // Load cached data 
+            const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+            this.loadCachedDataLastFeedBalance(pig_farm_hid);
         }
         else{
             const cur_ver_num = navigation.pigFarm.dataVerNum.feed_balance;
             
-            if (cur_ver_num != lastVerNumFeedBalance){
-                thisObj.requestFeedBalance();
+            if (cur_ver_num > lastVerNumFeedBalance){
+                thisObj.requestServerDataLastFeedBalance();
             }
             else{
                 thisObj.displayFeedBalance(farmLastBalance);
             }
         }
+    }
+    
+    
+    this.loadCachedDataLastFeedBalance = function(pig_farm_hid){
+            
+        // Load cached data 
+        const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.LAST_FEED_BALANCE;
+        const cached = localStorage.getItem(key);
+        if (!cached) {
+            this.requestServerDataLastFeedBalance();
+            return;
+        }
+        
+        
+        const data = JSON.parse(cached);
+        
+        // Check if pig_farm_hid matched
+        const cached_pig_farm_hid = data.pig_farm_hid;
+        if (cached_pig_farm_hid != pig_farm_hid){
+            this.requestServerDataLastFeedBalance();
+            return;
+        }
+        
+        
+        // Optionally expire cache after 7 days
+        if (data.cached_at && (Date.now() - data.cached_at) > APPLICATION.NUM_MSECS_CACHE_DATA) {
+            // Cache too old, fetch fresh
+            this.requestServerDataLastFeedBalance();
+            return;
+        }
+        
+        
+        // Update data source
+        navigation.pigFarm.dataLastFeedBalance = data.data;
+        
+        // Update data source version
+        navigation.pigFarm.dataVerNum.feed_balance = data.data_ver_num;
+
+        
+        // Display Data
+        thisObj.displayFeedBalance(data.data);
+        
+        
+        // Check server data update
+        //this.checkServerDataUpdate();
+    
     }
     
     

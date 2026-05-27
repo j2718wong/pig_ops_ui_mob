@@ -1225,6 +1225,14 @@ export function PigFarm(_navigation){
     
     this.requestDataPigFarmLastFeedBalance = function(callback_success,
             elem_show_error){
+        /*
+        1.) This request is called at dashboard;
+        2.) The version number associated with this request is thisObj.dataVerNum.feed_balance.
+            Same with this.requestDataPigFarmFeedBalance;
+        3.) The this.requestDataPigFarmFeedBalance is called deep in 
+            Operations menu. Therefore if this.dataLastFeedBalance is updated,
+            the this.dataFeedBalanceList should be updated silently too.
+        */                                
         
         const pig_farm_hid = thisObj.getPigFarmHid();
         
@@ -1256,6 +1264,18 @@ export function PigFarm(_navigation){
             success: function(response){
                 if (response.result.num == 0){
                     thisObj.dataLastFeedBalance = response.data;
+                    
+                    
+                    // Update thisObj.dataVerNum.feed_balance
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.feed_balance;
+                        if (ver_num > thisObj.dataVerNum.feed_balance){
+                            thisObj.requestDataPigFarmFeedBalance();
+                        }
+                        
+                        thisObj.dataVerNum.feed_balance = ver_num;
+                    }
+                    
                     
                     // Update local storage
                     const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.LAST_FEED_BALANCE;
