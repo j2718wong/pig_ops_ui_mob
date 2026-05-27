@@ -764,12 +764,16 @@ export function PageHomeDashBoard(input_settings){
     
     
     this.show = function(){
+        console.log('\n\nDashboard test 1');
+        
         thisObj.debugNavHistory(TAG);
+        console.log('Dashboard test 2'); 
         
         // Update navigation.curPageNavigated
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
         
+        console.log('Dashboard test 3');
         
         // Show/ Hide debug  elemnts
         const user = navigation.userControl.dataUserAccount.user.user;
