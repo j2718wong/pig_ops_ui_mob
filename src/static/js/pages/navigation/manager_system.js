@@ -119,6 +119,7 @@ export function ManagerSystem(_navigation) {
             return;
         }
         
+        /*
         // Method 2: Check if page was served from cache (transferSize = 0 means from cache)
         if (performance && performance.getEntriesByType) {
             const navEntry = performance.getEntriesByType('navigation')[0];
@@ -165,6 +166,7 @@ export function ManagerSystem(_navigation) {
             thisObj.showMsgOffline();
             thisObj.isOffLine = true;
         });
+        **/
     }
     
     
