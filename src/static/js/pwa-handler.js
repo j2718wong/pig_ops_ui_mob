@@ -42,7 +42,7 @@ else {
     });
 
     // SILENT Service Worker Update - No User Notifications
-    if ('serviceWorker' in navigator && window.SUPERPIG_LOGGED_IN === true) {
+    if ('serviceWorker' in navigator) {
         // Register immediately, don't wait for load
         registerAndMonitorServiceWorker();
     }
