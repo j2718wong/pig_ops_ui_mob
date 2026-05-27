@@ -148,7 +148,7 @@ export function ManagerSystem(_navigation) {
         
         // Method 3: Try a quick network test
         fetch('/favicon.ico?t=' + Date.now(), { 
-            method: 'HEAD',
+            method: 'GET',
             cache: 'no-store',
             timeout: 2000
         })
