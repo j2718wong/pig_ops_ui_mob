@@ -204,14 +204,6 @@ export function UserControl(_navigation) {
         }
 
         
-        if ((user.flag & FLAG_BITS.USER.IS_SYS_ADMIN) > 0){
-            navigation.elemDebugWindow.style.display = 'block';
-        }
-        else{
-            navigation.elemDebugWindow.style.display = 'none';
-        }
-        
-        
         // TODO this
         elemDesktopBillHistory.style.display ='none';
     }

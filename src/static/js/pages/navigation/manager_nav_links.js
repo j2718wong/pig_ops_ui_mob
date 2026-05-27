@@ -506,17 +506,6 @@ export function ManagerNavLinks(_navigation) {
     
     this._bindEventListeners = function(){
         
-        elemDesktopFarmSummary.addEventListener('click', function() {
-            navigation.generateFarmSummaryReport();
-        });
-        
-        
-        elemMobileFarmSummary.addEventListener('click', function() {
-            navigation.generateFarmSummaryReport();
-        });
-
-        
-        
         elemDesktopNavProduction1.addEventListener('click', function() {
             thisObj.onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.GESTATING, true);
         });

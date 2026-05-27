@@ -1413,5 +1413,76 @@ export function PigFarm(_navigation){
     }
  
     
-    
+    this.generateFarmSummaryReport = function(callback_success, elem_show_error){
+        const user_hid      = navigation.userControl.getUserHid();
+        const pig_farm_hid  = thisObj.getPigFarmHid();
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/report/pig_farm/summary?uhid=${user_hid}&pfhid=${pig_farm_hid}`;
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'binary',  // Important: handle binary data
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+            xhrFields: {
+                responseType: 'blob'  // This tells jQuery to treat response as blob
+            },
+            
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+            
+            success: function(blob, status, xhr){
+                // Create download link
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                
+                // Try to get filename from Content-Disposition header
+                const contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                let filename = `farm_report_${pig_farm_hid}.pdf`;
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                    if (match && match[1]) {
+                        filename = match[1].replace(/['"]/g, '');
+                    }
+                }
+                
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                // Clean up
+                window.URL.revokeObjectURL(downloadUrl);
+                
+                if (callback_success) {
+                    callback_success();
+                }
+            },
+            
+            error: function(jqXHR, textStatus, errorThrown){
+                if (elem_show_error) {
+                    // Try to parse error response (might be JSON)
+                    try {
+                        const response = JSON.parse(jqXHR.responseText);
+                        navigation.serverError.receivedErrorMessage(response, elem_show_error);
+                    } catch (e) {
+                        elem_show_error.textContent = 'Failed to download report.';
+                        elem_show_error.style.display = 'block';
+                    }
+                }
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
 }

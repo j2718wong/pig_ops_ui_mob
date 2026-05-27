@@ -130,98 +130,7 @@ import {PageAccessCodeAddEdit}      from '../admin/page_acc_access_code_add_edit
 
 import {PageSystemStats}            from '../system/page_system_stats.js';
 
-
-
-// Get IP trace location
-export async function getLocationWithFallback() {
-    const services = [
-        // Service 1: ipapi.co (your primary)
-        async () => {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000);
-            
-            try {
-                const res = await fetch('https://ipapi.co/json/', { 
-                    signal: controller.signal 
-                });
-                clearTimeout(timeoutId);
-                
-                if (res.ok) {
-                    const data = await res.json();
-                    return {
-                        login_country_code: data.country_code,
-                        login_country_name: data.country_name,
-                        login_city: data.city,
-                        login_region: data.region
-                    };
-                }
-            } catch (e) {
-                console.warn('ipapi.co failed:', e);
-            }
-            return null;
-        },
-        
-        // Service 2: ip-api.com (no API key needed)
-        async () => {
-            try {
-                const res = await fetch('http://ip-api.com/json/?fields=status,country,countryCode,city,region');
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.status === 'success') {
-                        return {
-                            login_country_code: data.countryCode,
-                            login_country_name: data.country,
-                            login_city: data.city,
-                            login_region: data.region
-                        };
-                    }
-                }
-            } catch (e) {
-                console.warn('ip-api.com failed:', e);
-            }
-            return null;
-        },
-        
-        // Service 3: ipwhois.io
-        async () => {
-            try {
-                const res = await fetch('https://ipwhois.app/json/');
-                if (res.ok) {
-                    const data = await res.json();
-                    return {
-                        login_country_code: data.country_code,
-                        login_country_name: data.country,
-                        login_city: data.city,
-                        login_region: data.region
-                    };
-                }
-            } catch (e) {
-                console.warn('ipwhois.io failed:', e);
-            }
-            return null;
-        }
-    ];
-    
-    // Try each service in order until one succeeds
-    for (const service of services) {
-        const result = await service();
-        if (result) {
-            console.log('Location data obtained from fallback service');
-            return result;
-        }
-    }
-    
-    // All services failed - return nulls
-    console.warn('All location services failed');
-    return {
-        login_country_code: null,
-        login_country_name: null,
-        login_city: null,
-        login_region: null
-    };
-}
-
-
+import {getLocationWithFallback}    from '../../utils.js';
 
 
 export function Navigation(){
@@ -843,8 +752,6 @@ export function Navigation(){
                 }
             }
         });
-        
-       
     }
     
 
@@ -1325,11 +1232,6 @@ export function Navigation(){
         this.account.setAccount(data_user_account.account);
     }
 
-    
-    this.addDataToSaveBeforePageUnload = function(app_data_to_save){
-        app_data_to_save.data_application   = dataApplication;      
-    }
-    
 
     this.updatePigFarmName = function() {
         // Set Farm name
@@ -1770,79 +1672,5 @@ export function Navigation(){
         
     }
     
-    
-    
-    this.generateFarmSummaryReport = function(callback_success, elem_show_error){
-        const user_hid      = thisObj.userControl.getUserHid();
-        const pig_farm_hid  = thisObj.pigFarm.getPigFarmHid();
-        
-        const base_url = window.location.origin;
-        let url = `${base_url}/report/pig_farm/summary?uhid=${user_hid}&pfhid=${pig_farm_hid}`;
-        
-        const bearer_token = localStorage.getItem('access_token');
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'binary',  // Important: handle binary data
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-            xhrFields: {
-                responseType: 'blob'  // This tells jQuery to treat response as blob
-            },
-            
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-            
-            success: function(blob, status, xhr){
-                // Create download link
-                const downloadUrl = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = downloadUrl;
-                
-                // Try to get filename from Content-Disposition header
-                const contentDisposition = xhr.getResponseHeader('Content-Disposition');
-                let filename = `farm_report_${pig_farm_hid}.pdf`;
-                if (contentDisposition) {
-                    const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-                    if (match && match[1]) {
-                        filename = match[1].replace(/['"]/g, '');
-                    }
-                }
-                
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
-                // Clean up
-                window.URL.revokeObjectURL(downloadUrl);
-                
-                if (callback_success) {
-                    callback_success();
-                }
-            },
-            
-            error: function(jqXHR, textStatus, errorThrown){
-                if (elem_show_error) {
-                    // Try to parse error response (might be JSON)
-                    try {
-                        const response = JSON.parse(jqXHR.responseText);
-                        navigation.serverError.receivedErrorMessage(response, elem_show_error);
-                    } catch (e) {
-                        elem_show_error.textContent = 'Failed to download report.';
-                        elem_show_error.style.display = 'block';
-                    }
-                }
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
-            }
-        });
-    }
     
 }

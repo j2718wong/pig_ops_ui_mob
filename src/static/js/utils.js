@@ -387,3 +387,96 @@ export function createPaginationManager(config) {
 }
 
 
+
+// Get IP trace location
+export async function getLocationWithFallback() {
+    const services = [
+        // Service 1: ipapi.co (your primary)
+        async () => {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            
+            try {
+                const res = await fetch('https://ipapi.co/json/', { 
+                    signal: controller.signal 
+                });
+                clearTimeout(timeoutId);
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    return {
+                        login_country_code: data.country_code,
+                        login_country_name: data.country_name,
+                        login_city: data.city,
+                        login_region: data.region
+                    };
+                }
+            } catch (e) {
+                console.warn('ipapi.co failed:', e);
+            }
+            return null;
+        },
+        
+        // Service 2: ip-api.com (no API key needed)
+        async () => {
+            try {
+                const res = await fetch('http://ip-api.com/json/?fields=status,country,countryCode,city,region');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'success') {
+                        return {
+                            login_country_code: data.countryCode,
+                            login_country_name: data.country,
+                            login_city: data.city,
+                            login_region: data.region
+                        };
+                    }
+                }
+            } catch (e) {
+                console.warn('ip-api.com failed:', e);
+            }
+            return null;
+        },
+        
+        // Service 3: ipwhois.io
+        async () => {
+            try {
+                const res = await fetch('https://ipwhois.app/json/');
+                if (res.ok) {
+                    const data = await res.json();
+                    return {
+                        login_country_code: data.country_code,
+                        login_country_name: data.country,
+                        login_city: data.city,
+                        login_region: data.region
+                    };
+                }
+            } catch (e) {
+                console.warn('ipwhois.io failed:', e);
+            }
+            return null;
+        }
+    ];
+    
+    // Try each service in order until one succeeds
+    for (const service of services) {
+        const result = await service();
+        if (result) {
+            console.log('Location data obtained from fallback service');
+            return result;
+        }
+    }
+    
+    // All services failed - return nulls
+    console.warn('All location services failed');
+    return {
+        login_country_code: null,
+        login_country_name: null,
+        login_city: null,
+        login_region: null
+    };
+}
+
+
+
+
