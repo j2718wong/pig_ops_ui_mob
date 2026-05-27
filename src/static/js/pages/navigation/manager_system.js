@@ -103,9 +103,11 @@ export function ManagerSystem(_navigation) {
         
         // Check and recover token on startup (only if online)
         thisObj.checkAndRecoverToken();
+        //console.log('After ManagerSystem.checkAndRecoverToken; before checking offline');
         
         // Check if page was served from cache (offline mode)
         thisObj.detectOfflineMode();
+        console.log('After ManagerSystem.detectOfflineMode');
     }
     
 
@@ -119,7 +121,7 @@ export function ManagerSystem(_navigation) {
             return;
         }
         
-        /*
+        
         // Method 2: Check if page was served from cache (transferSize = 0 means from cache)
         if (performance && performance.getEntriesByType) {
             const navEntry = performance.getEntriesByType('navigation')[0];
@@ -166,7 +168,7 @@ export function ManagerSystem(_navigation) {
             thisObj.showMsgOffline();
             thisObj.isOffLine = true;
         });
-        **/
+        
     }
     
     
@@ -317,6 +319,7 @@ export function ManagerSystem(_navigation) {
             // Only verify with server if online
             if (navigator.onLine) {
                 this.verifyTokenWithServer(token);
+                console.log('Token verified');
             }
         } else {
             console.log('No token found in any storage');
@@ -553,107 +556,37 @@ export function ManagerSystem(_navigation) {
      * 
      * */
     this.connectionTest = function(callback) {
+        // Simple, fast connection test
         const testResults = {
-            hasInternet: false,
+            hasInternet: navigator.onLine,
             serverReachable: false,
             bytesTransferred: 0,
             timestamp: Date.now()
         };
         
-        let testsCompleted = 0;
-        let timeoutOccurred = false;
+        // If browser says offline, return immediately
+        if (!navigator.onLine) {
+            callback(testResults);
+            return;
+        }
         
-        // Use Promise.race for faster offline detection
-        const quickOnlineCheck = async () => {
-            // Use navigator.onLine first (instant)
-            if (!navigator.onLine) {
-                console.log('Connection test: navigator says offline');
-                testResults.hasInternet = false;
-                testResults.serverReachable = false;
-                callback(testResults);
-                return true; // Short-circuit
-            }
-            
-            // Try a simple HEAD to same origin (fastest)
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 1500); // 1.5 sec timeout
-                
-                const response = await fetch('/favicon.ico?t=' + Date.now(), {
-                    method: 'HEAD',
-                    cache: 'no-store',
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                if (response.ok || response.status === 405) { // 405 is fine for HEAD
-                    testResults.hasInternet = true;
-                    testResults.serverReachable = true;
-                    callback(testResults);
-                    return true;
-                }
-            } catch (e) {
-                console.log('Quick connection test failed:', e.message);
-            }
-            
-            return false; // Need fallback test
-        };
-        
-        // Run quick test first
-        quickOnlineCheck().then((completed) => {
-            if (completed) return;
-            
-            // Fallback to dual test with shorter timeouts
-            // Test 1: Check internet (Google DNS - very reliable)
-            fetch('https://dns.google/resolve?name=google.com&type=A', {
-                method: 'GET',
-                cache: 'no-store',
-                headers: { 'Accept': 'application/json' }
-            })
-            .then(() => {
-                testResults.hasInternet = true;
-                console.log('Internet: reachable');
-            })
-            .catch(() => {
-                testResults.hasInternet = false;
-                console.log('Internet: NOT reachable');
-            })
-            .finally(() => {
-                testsCompleted++;
-                if (testsCompleted === 2 && !timeoutOccurred) {
-                    callback(testResults);
-                }
-            });
-            
-            // Test 2: Check server (with shorter timeout)
-            const serverController = new AbortController();
-            const serverTimeout = setTimeout(() => serverController.abort(), 2000);
-            
-            fetch(`${window.location.origin}/favicon.ico?t=${Date.now()}`, {
-                method: 'HEAD',
-                cache: 'no-store',
-                signal: serverController.signal
-            })
-            .then(() => {
-                testResults.serverReachable = true;
-                testResults.hasInternet = true; // If server reachable, internet exists
-                console.log('Server: reachable');
-                clearTimeout(serverTimeout);
-            })
-            .catch((error) => {
-                testResults.serverReachable = false;
-                console.log('Server: NOT reachable -', error.message);
-            })
-            .finally(() => {
-                testsCompleted++;
-                if (testsCompleted === 2 && !timeoutOccurred) {
-                    callback(testResults);
-                }
-            });
+        // Quick test to same origin
+        fetch('/favicon.ico?t=' + Date.now(), { 
+            method: 'GET',
+            cache: 'no-store'
+        })
+        .then(() => {
+            testResults.serverReachable = true;
+            testResults.hasInternet = true;
+            callback(testResults);
+        })
+        .catch(() => {
+            testResults.serverReachable = false;
+            testResults.hasInternet = false;
+            callback(testResults);
         });
     };
-        
+            
     
     this.requestSystemStats = function(callback_success, 
             elem_show_error){

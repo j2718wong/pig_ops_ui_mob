@@ -834,8 +834,8 @@ export function Navigation(){
                 // Full online mode
                 console.log('Full online mode');
                 
-                if (hasToken){
-                    thisObj.requestInitialPigFarmData(thisObj.managerSystem.getTokenFromAnyStorage());
+                if (hasToken) {
+                    thisObj.requestInitialPigFarmData(bearer_token);
                 }
                 else{
                     const langParam = getLanguageParam();
@@ -847,49 +847,10 @@ export function Navigation(){
        
     }
     
-    
-    // GPS Test Function - Add this to your page
-    this.testGPS = function()  {
-        // Check if browser supports GPS
-        if (navigator.geolocation) {
-            console.log('GPS is supported');
-            
-            // Request location
-            navigator.geolocation.getCurrentPosition(
-                // Success function
-                function(position) {
-                    var lat = position.coords.latitude;
-                    var lng = position.coords.longitude;
-                    var accuracy = position.coords.accuracy;
-                    
-                    console.log('GPS Success!');
-                    console.log('Latitude: ' + lat);
-                    console.log('Longitude: ' + lng);
-                    console.log('Accuracy: ' + accuracy + ' meters');
-                    
-                },
-                
-                // Error function
-                function(error) {
-                    console.log('GPS Error: ' + error.message);
-                },
-                
-                // Options
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000
-                }
-            );
-        } else {
-            console.log('GPS not supported in this browser');
-        }
-    }
 
-    
     
     // This is first request if there is a token saved in client browser
     this.requestInitialPigFarmData = async function(bearer_token){
-        //thisObj.testGPS();
         
         const base_url = window.location.origin;
         let url = `${base_url}/pig_farm/data`;
@@ -935,7 +896,7 @@ export function Navigation(){
   
             success: function(response){
                 if (response.result.num == 0){
-
+                    
                     if (response.data.user_account == null){
                         // Clear all items from localStorage
                         localStorage.clear();
@@ -1001,7 +962,7 @@ export function Navigation(){
                     // At this point, the response.data is valid;
                     tsLastReqPigFarmData = Math.floor(Date.now() / 1000);
                     
-                    
+                   
                     // The user is already logged in at this point
                     window.SUPERPIG_LOGGED_IN = true;
                     
@@ -1603,7 +1564,7 @@ export function Navigation(){
         }
         
         if ('serviceWorker' in navigator) {
-            const currentVersion = APP_VERSION;
+            const currentVersion = window.APP_VERSION;
             const reloadedVersion = sessionStorage.getItem('sw_reloaded_version');
             
             // Only auto-reload once per version
