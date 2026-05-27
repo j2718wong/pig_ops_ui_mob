@@ -1584,9 +1584,13 @@ export function Navigation(){
     
     
     this.showHomeDashBoard = function(){
+        console.log('showHomeDashBoard Test 1');
         const next_page = thisObj.getPageContainer(PAGE_ID.HOME);
+        console.log('showHomeDashBoard Test 2');
         thisObj.showThisPage(next_page);
+        console.log('showHomeDashBoard Test 3');
         thisObj.pageHomeDashBoard.show();
+        console.log('showHomeDashBoard Test 4');
     }
     
     
