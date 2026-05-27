@@ -664,16 +664,11 @@ export function Navigation(){
         
         // IMMEDIATE OFFLINE CHECK - Don't wait for connectionTest
         if (!navigator.onLine) {
-            elemDebugWindow.style.display = 'block';
-            
+
             const msg = 'OFFLINE MODE DETECTED - Loading from cache immediately\n';
             console.log(msg);
-            elemDebugWindow.textContent += msg;
-            
-            elemDebugWindow.textContent += JSON.stringify(local_data);
-            
+
             if (bearer_token) {
-                thisObj.elemDebugWindow.textContent += 'Test Offline 1';
                 console.log('Test Offline 1');
                 
                 // Load everything from storage
@@ -688,8 +683,6 @@ export function Navigation(){
                     elemPageLoading.style.display = 'none';
                 }, 300);
 
-
-                console.log('about to show dash board');
 
                 thisObj.showHomeDashBoard();
                 return; // Exit early
@@ -1447,13 +1440,9 @@ export function Navigation(){
     
     
     this.showHomeDashBoard = function(){
-        console.log('showHomeDashBoard Test 1');
         const next_page = thisObj.getPageContainer(PAGE_ID.HOME);
-        console.log('showHomeDashBoard Test 2');
         thisObj.showThisPage(next_page);
-        console.log('showHomeDashBoard Test 3');
         thisObj.pageHomeDashBoard.show();
-        console.log('showHomeDashBoard Test 4');
     }
     
     
