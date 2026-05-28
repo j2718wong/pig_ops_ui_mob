@@ -344,7 +344,7 @@ body {
 }
 
 .alert-modal-body {
-    padding: 20px;
+    padding: 8px;
 }
 
 .alert-category {
@@ -409,7 +409,7 @@ body {
 }
 
 .alert-time {
-    font-size: 12px;
+    font-size: 1.1rem;
     color: #999;
 }
 

@@ -63,6 +63,12 @@ export function ManagerAlerts(_navigation) {
     this._bindEventListeners = function(){
         if (elemAlertIcon) {
             elemAlertIcon.addEventListener('click', function(event) {
+                if (navigation.userControl.isAccountLocked()){
+                    navigation.showHomeDashBoard();
+                    return;
+                }
+                
+                
                 thisObj.renderAlerts();
                 elemAlertModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
@@ -457,7 +463,8 @@ export function ManagerAlerts(_navigation) {
                     isOverdue = true;
                 }
                 
-                const dueClass = isOverdue ? 'alert-critical' : 'alert-warning';
+                const dueClass  = isOverdue ? 'alert-critical' : 'alert-warning';
+                let sDateDue    = formatDate(dateDue, FORMAT_COMPACT);
                 let dueText = '';
                 if (isOverdue) {
                     dueText = 'OVERDUE';
@@ -471,6 +478,9 @@ export function ManagerAlerts(_navigation) {
                     maximumFractionDigits: 2
                 });
                 
+                
+                let sDateIssue  = formatDate(new Date(bill.date_issue), FORMAT_COMPACT)
+                
                 html += '<div class="alert-item clickable" data-alert-key="' + alert.uniqueKey + '">';
                 html += '<div class="alert-content">';
                 html += '<div>';
@@ -481,7 +491,11 @@ export function ManagerAlerts(_navigation) {
                 html += 'Amount: ' + (bill.currency_code || 'PHP') + ' ' + formattedAmount;
                 html += '</div>';
                 if (bill.date_issue) {
-                    html += '<div class="alert-time">Issued: ' + formatDate(new Date(bill.date_issue), FORMAT_COMPACT) + '</div>';
+                    html += '<div class="alert-time">Issued: ' + sDateIssue; 
+                    if (isOverdue){
+                        html += `<span class ="nowrap"; style="margin-left:20px;">Due: ${sDateDue}</span>`;
+                    }
+                    html += '</div>';
                 }
                 html += '</div>';
                 html += '</div>';

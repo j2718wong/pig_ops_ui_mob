@@ -279,10 +279,10 @@ export function UserControl(_navigation) {
         userAccountIsEnabled = is_enabled;
     }
     
+    
     this.getCurrentFarmHid =  function(){
         return userCurrentFarmHid;
     }
-    
     
     
     this.hideNewBillAvailable = function(){
@@ -320,7 +320,38 @@ export function UserControl(_navigation) {
     }
     
 
-
+    /**
+     * Will check if account is locked due to overdue bill;
+     * 
+     * */
+    this.isAccountLocked = function(){
+        const account = thisObj.dataUserAccount.account.account;
+        
+        if (!account.current_bill){return false;}
+        
+        const date_due = new Date(account.current_bill.date_due);
+        
+        const today = new Date();
+        let is_overdue = false;
+        if (date_due < today) {
+            is_overdue = true;
+            
+            // Exemption 1: Check account.flag if BILL_EXEMPTED
+            if ((account.flag && FLAG_BITS.ACCOUNT.IS_BILL_EXEMPTED) > 0){
+                // In production system, these accounts are bill exempted
+                // In local testing this is ignored for testing
+                is_overdue = false;
+                
+                if (window.APP_VERSION == '1.0.0.0'){
+                    is_overdue = true;
+                }
+            }
+            
+        }
+        
+        return is_overdue;
+    }
+    
     
     this.onClickMyAccount = function(){
         let go_back_page    = navigation.curPageNavigated.pageContainer;

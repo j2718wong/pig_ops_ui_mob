@@ -507,22 +507,47 @@ export function ManagerNavLinks(_navigation) {
     this._bindEventListeners = function(){
         
         elemDesktopNavProduction1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.GESTATING, true);
         });
           
         elemDesktopNavProduction2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdGestaLacta(false, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         });
           
         elemDesktopNavProduction3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdFattening(false);
         });
           
         elemDesktopNavProduction4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdHistory(false);
         });
           
         elemDesktopNavProduction5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdNotPregnant(false);
         });  
         
@@ -530,58 +555,123 @@ export function ManagerNavLinks(_navigation) {
     
 
         elemDesktopNavSowBoarGilt1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSowBoar(false, SOW_BOAR_TYPE.SOW);
         });
          
         elemDesktopNavSowBoarGilt2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSowBoar(false, SOW_BOAR_TYPE.BOAR);
         });
          
         elemDesktopNavSowBoarGilt3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSowBoar(false, SOW_BOAR_TYPE.GILT);
         });
          
         elemDesktopNavSowBoarGilt4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSowBoar(false, SOW_BOAR_TYPE.DISPOSED);
         });
          
         elemDesktopNavSowBoarGilt5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavParentTrace(false);
         }); 
 
 
 
         elemDesktopNavOperations1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavFeedBalance(false);
         });
         
         elemDesktopNavOperations2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavFarrowingSchedule(false);
         });
         
         elemDesktopNavOperations3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavBoarExternalMate(false);
         });
 
         elemDesktopNavOperations4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavPigDead(false);
         });
 
         elemDesktopNavOperations5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavFarrowingChecklist(false);
         });
 
         
 
         elemDesktopNavFinancials1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdSales(false);
         });
           
         elemDesktopNavFinancials2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavFeedsExpenses(false);
         });
           
         elemDesktopNavFinancials3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSummaryReports(false);
         });  
 
@@ -589,214 +679,455 @@ export function ManagerNavLinks(_navigation) {
             
 
         elemDesktopNavAccountLists1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavStaff(false);
         });
         
         elemDesktopNavAccountLists2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj._onClickPigBuyers(false);
         });
         
         elemDesktopNavAccountLists3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj._onClickFeedSuppliers(false);
         });
         
         elemDesktopNavAccountLists4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj._onClickSemenSuppliers(false);
         });
         
         elemDesktopNavAccountLists5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj._onClickGiltSuppliers(false);
         });
 
 
 
         elemDesktopNavSettings1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccOpsSettings(false);
         });   
          
         elemDesktopNavSettings2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.GESTATING);
         }); 
            
         elemDesktopNavSettings3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         }); 
            
         elemDesktopNavSettings4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.LACTATING_SOW);
         }); 
            
         elemDesktopNavSettings5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.WEANING_SOW);
         });  
          
         elemDesktopNavSettings6.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(false, PIG_OPERATION_TYPE.GILT);
         });    
 
 
 
         elemDesktopNavAdmin1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavUsers(false);
         });       
         
         elemDesktopNavAdmin2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccessCodes(false);
         });       
 
         /*
         elemDesktopNavAdmin3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavUsersRequest(false);
         });
         */
         elemDesktopNavAdmin4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSystemStats(false);
         });
         
+        
 
         elemMobileNavProduction1.addEventListener('click', function() {
-             thisObj.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING, true);
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.GESTATING, true);
         }); 
           
         elemMobileNavProduction2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdGestaLacta(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         }); 
           
         elemMobileNavProduction3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdFattening(true);
         }); 
           
         elemMobileNavProduction4.addEventListener('click', function() {
-             thisObj.onClickNavProdHistory(true);
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavProdHistory(true);
         }); 
           
         elemMobileNavProduction5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdNotPregnant(true);
         });   
 
             
             
         elemMobileNavSowBoarGilt1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSowBoar(true, SOW_BOAR_TYPE.SOW);
         });  
         
         elemMobileNavSowBoarGilt2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSowBoar(true, SOW_BOAR_TYPE.BOAR);
         });
           
         elemMobileNavSowBoarGilt3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSowBoar(true, SOW_BOAR_TYPE.GILT);
         });
           
         elemMobileNavSowBoarGilt4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSowBoar(true, SOW_BOAR_TYPE.DISPOSED);
         });
           
         elemMobileNavSowBoarGilt5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavParentTrace(true);
         });  
 
 
             
         elemMobileNavOperations1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavFeedBalance(true);
         });  
         
         elemMobileNavOperations2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavFarrowingSchedule(true);
         }); 
         
         elemMobileNavOperations3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavBoarExternalMate(true);
         }); 
         
         elemMobileNavOperations4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavPigDead(true);
         });
 
         elemMobileNavOperations5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavFarrowingChecklist(true);
         });
 
 
         elemMobileNavFinancials1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavProdSales(true);
         }); 
           
         elemMobileNavFinancials2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavFeedsExpenses(true);
         });  
          
         elemMobileNavFinancials3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSummaryReports(true);
         });   
             
             
             
         elemMobileNavAccountLists1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavStaff(true);
         }); 
         
         elemMobileNavAccountLists2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj._onClickPigBuyers(true);
         }); 
         
         elemMobileNavAccountLists3.addEventListener('click', function() {
-             thisObj._onClickFeedSuppliers(true);
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj._onClickFeedSuppliers(true);
         }); 
         
         elemMobileNavAccountLists4.addEventListener('click', function() {
-             thisObj._onClickSemenSuppliers(true);
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj._onClickSemenSuppliers(true);
         }); 
         
         elemMobileNavAccountLists5.addEventListener('click', function() {
-             thisObj._onClickGiltSuppliers(true);
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj._onClickGiltSuppliers(true);
         }); 
             
             
             
         elemMobileNavSettings1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccOpsSettings(true);
         });
              
         elemMobileNavSettings2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.GESTATING);
         }); 
             
         elemMobileNavSettings3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.LACTATING_PIGLETS);
         });  
            
         elemMobileNavSettings4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.LACTATING_SOW);
         });
              
         elemMobileNavSettings5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.WEANING_SOW);
         }); 
             
         elemMobileNavSettings6.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccPigOps(true, PIG_OPERATION_TYPE.GILT);
         });     
             
             
         elemMobileNavAdmin1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavUsers(true);
         });   
         
             
         elemMobileNavAdmin2.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavAccessCodes(true);
         }); 
         
         /*
         elemMobileNavAdmin3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavUsersRequest(true);
         });
         */        
         
         
         elemMobileNavAdmin4.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
             thisObj.onClickNavSystemStats(true);
         });
         

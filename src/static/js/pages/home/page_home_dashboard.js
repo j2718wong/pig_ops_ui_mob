@@ -593,6 +593,20 @@ export function PageHomeDashBoard(input_settings){
     
     this._bindEventListeners = function(){
         
+        elemAccountViewBill.addEventListener('click', function() {
+            const go_back_page = navigation.getPageContainer(PAGE_ID.HOME);
+                        
+            const next_page = navigation.getPageContainer(PAGE_ID.BILL_NEW);
+            navigation.pushCurrentPageToNavHistory(next_page);
+            navigation.showThisPage(next_page);
+            
+            const options = {
+                go_back_page: go_back_page
+            };
+            navigation.pageAccountNewBill.show(options);
+                        
+        });
+        
         elemCardLactaPiglets.addEventListener('click', function() {
             navigation.managerNavLinks.onClickNavProdGestaLacta(true, 
                 PIG_OPERATION_TYPE.LACTATING_PIGLETS);
@@ -676,7 +690,7 @@ export function PageHomeDashBoard(input_settings){
         
        
         const html = `
-        <div id="${elemIdAccountLocked}" class="account-locked-container" style="display:none;">
+        <div id="${elemIdAccountLocked}" class="account-locked-container" style="">
             <div class="account-locked-overlay"></div>
             <div class="account-locked-card">
                 <div class="account-locked-icon">🔒</div>
@@ -755,8 +769,7 @@ export function PageHomeDashBoard(input_settings){
     
     
 
-    
-    
+
     this.renderPage = function(page_data){
         thisObj.show();
     }
@@ -871,6 +884,15 @@ export function PageHomeDashBoard(input_settings){
         
         
         elemAccountLockedMsg.textContent = label_locked_msg;
+        
+        
+        // Locked account if overdue bill
+        if (navigation.userControl.isAccountLocked()){
+            elemAccountLocked.style.display = '';
+        }
+        else{
+            elemAccountLocked.style.display = 'none';
+        }
         
     }
     
