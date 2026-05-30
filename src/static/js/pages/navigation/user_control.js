@@ -319,6 +319,13 @@ export function UserControl(_navigation) {
         return this.getViewedBills().includes(billReference);
     }
     
+    
+    // Will replace account.current_bill
+    this.replaceCurrentBill = function(current_bill){
+        const account = thisObj.dataUserAccount.account.account;
+        account.current_bill = current_bill;
+    }
+    
 
     /**
      * Will check if account is locked due to overdue bill;
@@ -337,7 +344,7 @@ export function UserControl(_navigation) {
             is_overdue = true;
             
             // Exemption 1: Check account.flag if BILL_EXEMPTED
-            if ((account.flag && FLAG_BITS.ACCOUNT.IS_BILL_EXEMPTED) > 0){
+            if ((account.flag & FLAG_BITS.ACCOUNT.IS_BILL_EXEMPTED) > 0){
                 // In production system, these accounts are bill exempted
                 // In local testing this is ignored for testing
                 is_overdue = false;

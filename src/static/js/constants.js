@@ -414,9 +414,10 @@ const FLAG_BITS ={
         MOBILE_NUM_VERIFIED:    4,
         IS_DELETED:             8,
         
-        IS_ACCOUNT_ADMIN1:      6,
-        
-        IS_TEST_USER:           7,
+        IS_ACCOUNT_ADMIN:       16,
+        IS_INTERNAL_DATA_ENTRY: 32,
+        IS_INTERNAL_FINANCE:    64,
+        IS_TEST_USER:           128,
         
         IS_SYS_ADMIN:           256
     },
@@ -425,7 +426,9 @@ const FLAG_BITS ={
         ENABLE:                 1,
         FREE_TRIAL_STARTED:     2,
         
-        IS_BILL_EXEMPTED:       16    
+        IS_BILL_EXEMPTED:       16,   
+        IS_TEST_ACCOUNT:        32,
+        IS_COMPANY_OWNED:       64
     },
     
     
@@ -439,9 +442,6 @@ const FLAG_BITS ={
         EXTERNAL_PIGLETS:       4
     }
     
-    
-    
-
 };
 
 
