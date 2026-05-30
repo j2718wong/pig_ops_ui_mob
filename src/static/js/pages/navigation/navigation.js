@@ -98,6 +98,8 @@ import {PageProdNotPregnantList}    from '../production/history/page_prod_not_pr
 import {PageAllFeedBalanceList}     from '../feeds/feed_balance/page_all_feed_balance_list.js';
 import {PageAllFeedBalanceAddEdit}  from '../feeds/feed_balance/page_all_feed_balance_add_edit.js';
 
+import {PageFeedsConsumedChart}     from '../feeds/page_feeds_consumed_chart.js';
+
 import {PageFarrowingSchedule}      from '../pig_farm/page_farrowing_schedule.js';
 
 import {PageProdPigDeadList}        from '../production/pig_dead/page_prod_pig_dead_list.js';
@@ -410,26 +412,7 @@ export function Navigation(){
     });
     
 
-    this.pagePigFarmFeedBuyList = new PagePigFarmFeedBuyList({
-        navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARM_FEED_BUY_LIST),
-        uniqueKey:              'farm-feed-buy-list'
-    });
-
-
-    this.pagePfFeedBuyAddEdit   = new PagePfFeedBuyAddEdit({
-        navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARM_FEED_BUY_ADD_EDIT),
-        uniqueKey:              'farm-feed-buy-add-edit'
-    });
-
-
-    this.pagePfFeedBuyItemAddEdit = new PagePfBuyItemAddEdit({
-        navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT),
-        uniqueKey:              'feed-buy-item-add-edit'
-    });
-
+    
 
     this.pageProdFeedAddEdit    = new PageProdFeedAddEdit({
         navigation:             this,
@@ -472,14 +455,15 @@ export function Navigation(){
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_NOT_PREGNANT_LIST),
         uniqueKey:              'prod-not-pregnant'
     });
-
-
+    
+    
+    
+    
     this.pageAllFeedBalanceList = new PageAllFeedBalanceList({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ALL_FEED_BAL_LIST),
         uniqueKey:              'all-feed-balance-list'
     });
-
 
     this.pageAllFeedBalanceAddEdit = new PageAllFeedBalanceAddEdit({
         navigation:             this,
@@ -488,7 +472,6 @@ export function Navigation(){
 
     });
 
-    
     this.pageFarrowingSchedule = new PageFarrowingSchedule({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARROWING_SCHEDULE),
@@ -508,8 +491,6 @@ export function Navigation(){
         uniqueKey:              'boar-ext-mate-add-edit'
     });
 
-
-
     this.pagePigDeadList        = new PageProdPigDeadList({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PIG_DEAD_LIST),
@@ -523,13 +504,11 @@ export function Navigation(){
         uniqueKey:              'pig-dead-add-edit'
     });
 
-
     this.pageAccFarrowChecklist = new PageAccFarrowChecklist({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACC_FARROW_CHECKLIST),
         uniqueKey:              'acc-farrow-checklist'
     });
-
     
     this.pageAccFChecklistAddEdit = new PageAccFChecklistAddEdit({
         navigation:             this,
@@ -538,18 +517,6 @@ export function Navigation(){
     });
 
     
-    this.pageSummaryReportList = new PageSummaryReportList({
-        navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SUMMARY_REPORT_LIST),
-        uniqueKey:              'summary-report-list'
-    });
-    
-    
-    this.pageSummaryReportAdd   = new PageSummaryReportAdd({
-        navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SUMMARY_REPORT_ADD_EDIT),
-        uniqueKey:              'summary-report-add'
-    });
 
 
     this.pageProdSalesList    = new PageProdHistoryList({
@@ -559,13 +526,50 @@ export function Navigation(){
         isProdSalesHistory:     true
     });
 
-
     this.pageProdSalesEntry   = new PageProdSalesEntry({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_SALES_ENTRY),
         uniqueKey:              'prod-sales-entry',
         isProdHistory:          true
     });
+
+    this.pagePigFarmFeedBuyList = new PagePigFarmFeedBuyList({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARM_FEED_BUY_LIST),
+        uniqueKey:              'farm-feed-buy-list'
+    });
+
+    this.pagePfFeedBuyAddEdit   = new PagePfFeedBuyAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARM_FEED_BUY_ADD_EDIT),
+        uniqueKey:              'farm-feed-buy-add-edit'
+    });
+
+    this.pagePfFeedBuyItemAddEdit = new PagePfBuyItemAddEdit({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT),
+        uniqueKey:              'feed-buy-item-add-edit'
+    });
+
+    this.pageFeedsConsumedChart  = new PageFeedsConsumedChart({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FEEDS_CONSUMED),
+        uniqueKey:              'feeds-consumed'
+    });
+
+    this.pageSummaryReportList = new PageSummaryReportList({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SUMMARY_REPORT_LIST),
+        uniqueKey:              'summary-report-list'
+    });
+    
+    this.pageSummaryReportAdd   = new PageSummaryReportAdd({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SUMMARY_REPORT_ADD_EDIT),
+        uniqueKey:              'summary-report-add'
+    });
+
+
 
 
     this.pageAccOpsSettingsEdit = new PageAccOpsSettingsEdit({
@@ -970,14 +974,10 @@ export function Navigation(){
         this.pageProdHistoryEntry.init();
         this.pageNotPregnantList.init();
         
-        
-        this.pageAllFeedBalanceList.init();
-        this.pageAllFeedBalanceAddEdit.init();
+        this.pageFarrowingSchedule.init();
         
         this.pageBoarExtMateList.init();
         this.pageBoarExtMateAddEdit.init();
-        
-        this.pageFarrowingSchedule.init();
         
         this.pagePigDeadList.init();
         this.pagePigDeadAddEdit.init();
@@ -989,6 +989,11 @@ export function Navigation(){
         
         this.pageProdSalesList.init();
         this.pageProdSalesEntry.init();
+        
+        this.pageAllFeedBalanceList.init();
+        this.pageAllFeedBalanceAddEdit.init();
+        
+        this.pageFeedsConsumedChart.init();
         
         this.pageSummaryReportList.init();
         this.pageSummaryReportAdd.init();

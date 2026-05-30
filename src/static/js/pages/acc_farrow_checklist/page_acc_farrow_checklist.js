@@ -165,7 +165,7 @@ export function PageAccFarrowChecklist(input_settings){
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavFeedBalance();
+            navigation.managerNavLinks.onClickNavFeedsConsumed();
         };
         
         

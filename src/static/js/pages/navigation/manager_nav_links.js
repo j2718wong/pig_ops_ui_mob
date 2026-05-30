@@ -51,7 +51,6 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavSowBoarGilt3      = null;
     let elemDesktopNavSowBoarGilt4      = null;
     let elemDesktopNavSowBoarGilt5      = null;
-                                    
                                         
                                         
     let elemDesktopNavOperations1       = null;
@@ -59,11 +58,13 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavOperations3       = null;
     let elemDesktopNavOperations4       = null;
     let elemDesktopNavOperations5       = null;
+    let elemDesktopNavOperations6       = null;                                    
                                         
                                         
     let elemDesktopNavFinancials1       = null;
     let elemDesktopNavFinancials2       = null;
     let elemDesktopNavFinancials3       = null;
+    let elemDesktopNavFinancials4       = null;
                                         
                                         
     let elemDesktopNavAccountLists1     = null;
@@ -106,6 +107,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavOperations3        = null;
     let elemMobileNavOperations4        = null;
     let elemMobileNavOperations5        = null;
+    let elemMobileNavOperations6        = null;
                                         
                                         
     let elemMobileNavFinancials1        = null;
@@ -161,6 +163,7 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavLabelOperations3      = null;
     let elemDesktopNavLabelOperations4      = null;
     let elemDesktopNavLabelOperations5      = null;
+    let elemDesktopNavLabelOperations6      = null;
     
     let elemDesktopNavLabelFinancials1      = null;
     let elemDesktopNavLabelFinancials2      = null;
@@ -212,6 +215,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavLabelOperations3       = null;
     let elemMobileNavLabelOperations4       = null;
     let elemMobileNavLabelOperations5       = null;
+    let elemMobileNavLabelOperations6       = null;
     
     let elemMobileNavLabelFinancials1       = null;
     let elemMobileNavLabelFinancials2       = null;
@@ -299,6 +303,7 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavOperations3       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-3');
         elemDesktopNavOperations4       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-4');
         elemDesktopNavOperations5       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-5');
+        elemDesktopNavOperations6       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-6');
         
     
         elemDesktopNavFinancials1       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-1');  
@@ -346,6 +351,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavOperations3        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-3');
         elemMobileNavOperations4        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-4');
         elemMobileNavOperations5        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-5');
+        elemMobileNavOperations6        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-6');
         
         
         elemMobileNavFinancials1        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-1');  
@@ -409,11 +415,14 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavLabelOperations3      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-3 .nav-label');
         elemDesktopNavLabelOperations4      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-4 .nav-label');
         elemDesktopNavLabelOperations5      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-5 .nav-label');
+        elemDesktopNavLabelOperations6      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-6 .nav-label');
+        
         
         // Desktop submenu labels - Financials
         elemDesktopNavLabelFinancials1      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-1 .nav-label');
         elemDesktopNavLabelFinancials2      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-2 .nav-label');
         elemDesktopNavLabelFinancials3      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-3 .nav-label');
+        
         
         // Desktop submenu labels - Account Lists
         elemDesktopNavLabelAccountLists1    = elemDesktopNavAccountLists.querySelector('#desktop-nav-account-lists-1 .nav-label');
@@ -466,12 +475,14 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavLabelOperations3       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-3 .nav-label');
         elemMobileNavLabelOperations4       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-4 .nav-label');
         elemMobileNavLabelOperations5       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-5 .nav-label');
+        elemMobileNavLabelOperations6       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-6 .nav-label');
         
         
         // Mobile submenu labels - Financials
         elemMobileNavLabelFinancials1       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-1 .nav-label');
         elemMobileNavLabelFinancials2       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-2 .nav-label');
         elemMobileNavLabelFinancials3       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-3 .nav-label');
+        
         
         // Mobile submenu labels - Account Lists
         elemMobileNavLabelAccountLists1     = elemMobileNavAccountLists.querySelector('#mobile-subnav-account-lists-1 .nav-label');
@@ -646,6 +657,15 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavFarrowingChecklist(false);
         });
 
+        elemDesktopNavOperations6.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavFeedsConsumed(false);
+        });
+
         
 
         elemDesktopNavFinancials1.addEventListener('click', function() {
@@ -665,6 +685,7 @@ export function ManagerNavLinks(_navigation) {
             
             thisObj.onClickNavFeedsExpenses(false);
         });
+        
           
         elemDesktopNavFinancials3.addEventListener('click', function() {
             if (navigation.userControl.isAccountLocked()){
@@ -959,6 +980,15 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavFarrowingChecklist(true);
         });
 
+        elemMobileNavOperations6.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavFeedsConsumed(true);
+        }); 
+
 
         elemMobileNavFinancials1.addEventListener('click', function() {
             if (navigation.userControl.isAccountLocked()){
@@ -976,7 +1006,7 @@ export function ManagerNavLinks(_navigation) {
             }
             
             thisObj.onClickNavFeedsExpenses(true);
-        });  
+        });
          
         elemMobileNavFinancials3.addEventListener('click', function() {
             if (navigation.userControl.isAccountLocked()){
@@ -1276,7 +1306,10 @@ export function ManagerNavLinks(_navigation) {
             elemDesktopNavLabelFinancials2.textContent = translated_nav_links.Financials2 || "Feeds Expenses";
         }
         if (elemDesktopNavLabelFinancials3) {
-            elemDesktopNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Reports";
+            elemDesktopNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Feeds Consumed";
+        }
+        if (elemDesktopNavLabelFinancials4) {
+            elemDesktopNavLabelFinancials4.textContent = translated_nav_links.Financials4 || "Reports";
         }
         
         // Desktop account lists submenu labels
@@ -1411,7 +1444,10 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelFinancials2.textContent = translated_nav_links.Financials2 || "Feeds Expenses";
         }
         if (elemMobileNavLabelFinancials3) {
-            elemMobileNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Reports";
+            elemMobileNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Feeds Consumed";
+        }
+        if (elemMobileNavLabelFinancials4) {
+            elemMobileNavLabelFinancials4.textContent = translated_nav_links.Financials4 || "Reports";
         }
         
         
@@ -1606,6 +1642,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
         
+        
     this.onClickNavFeedBalance = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
         
@@ -1631,8 +1668,7 @@ export function ManagerNavLinks(_navigation) {
         navigation.pageFarrowingSchedule.show();
     }
     
-    
-    
+
     this.onClickNavBoarExternalMate = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_LIST);
         
@@ -1672,11 +1708,24 @@ export function ManagerNavLinks(_navigation) {
         navigation.pageAccFarrowChecklist.show();
     }
         
+    
+    this.onClickNavFeedsConsumed = function(is_mobile, show_options){
+        const next_page = navigation.getPageContainer(PAGE_ID.FEEDS_CONSUMED);
         
+        // Push currentPage to NavHistory;
+        // Will also compare current page and next_page NAV_MENU_GROUP. 
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        
+        navigation.showThisPage(next_page);
+        navigation.pageFeedsConsumedChart.show();
+    }
+    
         
     this.onClickNavFeedCalculator = function(is_mobile, show_options){
         console.log('onClickNavFeedCalculator not yet implemented; is_mobile=' + is_mobile);
     }
+    
     
     
     this.onClickNavProdSales = function(is_mobile, show_options){
@@ -1692,7 +1741,6 @@ export function ManagerNavLinks(_navigation) {
     }
     
         
-        
     this.onClickNavFeedsExpenses = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_LIST);
         
@@ -1700,7 +1748,6 @@ export function ManagerNavLinks(_navigation) {
         // Will also compare current page and next_page NAV_MENU_GROUP. 
         navigation.pushCurrentPageToNavHistory(next_page);
         
-        console.log('onClickNavFeedsExpenses');
         
         navigation.showThisPage(next_page);
         navigation.pagePigFarmFeedBuyList.show();

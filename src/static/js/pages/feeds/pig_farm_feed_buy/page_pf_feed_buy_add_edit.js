@@ -624,7 +624,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
                             // nothing to do
                         };
                         
-                        navigation.pigFarm.requestDataPigFarmFeedBuyList(
+                        navigation.pigFarm.requestDataPigFarmFeedBuyList(null,
                             callback_success, callback_offline, elemServerErrorMsg);
                     }
                     
@@ -638,7 +638,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
                         };
 
                         
-                        navigation.pigFarm.requestDataPigFarmFeedBuyList(
+                        navigation.pigFarm.requestDataPigFarmFeedBuyList(null,
                             callback_success, callback_offline, elemServerErrorMsg);
                     }
                 }

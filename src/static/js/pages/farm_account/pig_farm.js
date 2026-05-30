@@ -940,12 +940,17 @@ export function PigFarm(_navigation){
     }
  
     
-    this.requestDataPigFarmFeedBuyList = function(callback_success, 
-            callback_offline, elem_show_error){
+    /**
+     *  date_since - can be null or YYYY-MM-DD date string
+     * */
+    this.requestDataPigFarmFeedBuyList = function(date_since, callback_success, 
+            callback_offline, elem_show_error, dont_save_to_cache){
         
         const base_url = window.location.origin;
         let url = `${base_url}/pf_feed_buy/list?pfhid=${thisObj.getPigFarmHid()}`;
-        
+        if (date_since) {
+            url += `&date_since=${date_since}`
+        }
         
         const bearer_token = localStorage.getItem('access_token');
         
@@ -969,25 +974,29 @@ export function PigFarm(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
-                    thisObj.dataFarmFeedBuyList = response.data;
-                    
-                    // Update thisObj.dataVerNum.feed_buy
-                    if (response.data_ver_num){
-                        const ver_num = response.data_ver_num.pig_farm.feed_buy;
-                        thisObj.dataVerNum.feed_buy = ver_num;
+                    // By default, the result is saved to cache;
+                    // But if specified dont_save_to_cache, it will ignore this
+                    // saving action.
+                    if (!dont_save_to_cache){
+                        thisObj.dataFarmFeedBuyList = response.data;
+                        
+                        // Update thisObj.dataVerNum.feed_buy
+                        if (response.data_ver_num){
+                            const ver_num = response.data_ver_num.pig_farm.feed_buy;
+                            thisObj.dataVerNum.feed_buy = ver_num;
+                        }
+                        
+                        
+                        // Update local storage
+                        const key = navigation.managerLocalData.STORAGE_KEY.FINANCIALS.FEED_BUY;
+                        const local_data = {
+                            pig_farm_hid:   thisObj.getPigFarmHid(),
+                            ver_num:        thisObj.dataVerNum.feed_buy,
+                            data:           thisObj.dataFarmFeedBuyList,
+                            cached_at:      Date.now()
+                        };
+                        localStorage.setItem(key, JSON.stringify(local_data));
                     }
-                    
-                    
-                    // Update local storage
-                    const key = navigation.managerLocalData.STORAGE_KEY.FINANCIALS.FEED_BUY;
-                    const local_data = {
-                        pig_farm_hid:   thisObj.getPigFarmHid(),
-                        ver_num:        thisObj.dataVerNum.feed_buy,
-                        data:           thisObj.dataFarmFeedBuyList,
-                        cached_at:      Date.now()
-                    };
-                    localStorage.setItem(key, JSON.stringify(local_data));
-                    
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -1139,15 +1148,14 @@ export function PigFarm(_navigation){
     
     /**
      *  date_since - can be null or YYYY-MM-DD date string
-     * 
      * */
     this.requestDataPigFarmFeedBalance = function(date_since, callback_success,
-            callback_offline, elem_show_error){
+            callback_offline, elem_show_error, dont_save_to_cache){
         
         const pig_farm_hid = thisObj.getPigFarmHid();
         
         const base_url = window.location.origin;
-        let url = `${base_url}/feed_balance/list?pig_farm_hid=${pig_farm_hid}`;
+        let url = `${base_url}/feed_balance/list?pfhid=${pig_farm_hid}`;
         if (date_since) {
             url += `&date_since=${date_since}`
         }
@@ -1175,25 +1183,29 @@ export function PigFarm(_navigation){
   
             success: function(response){
                 if (response.result.num == 0){
-                    thisObj.dataFeedBalanceList = response.data;
-                    
-                    // Update thisObj.dataVerNum.feed_balance
-                    if (response.data_ver_num){
-                        const ver_num = response.data_ver_num.pig_farm.feed_balance;
-                        thisObj.dataVerNum.feed_balance = ver_num;
+                    // By default, the result is saved to cache;
+                    // But if specified dont_save_to_cache, it will ignore this
+                    // saving action.
+                    if (!dont_save_to_cache){
+                        thisObj.dataFeedBalanceList = response.data;
+                        
+                        // Update thisObj.dataVerNum.feed_balance
+                        if (response.data_ver_num){
+                            const ver_num = response.data_ver_num.pig_farm.feed_balance;
+                            thisObj.dataVerNum.feed_balance = ver_num;
+                        }
+                        
+                        
+                        // Update local storage
+                        const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.FEED_BALANCE;
+                        const local_data = {
+                            pig_farm_hid:   thisObj.getPigFarmHid(),
+                            ver_num:        thisObj.dataVerNum.feed_balance,
+                            data:           thisObj.dataFeedBalanceList,
+                            cached_at:      Date.now()
+                        };
+                        localStorage.setItem(key, JSON.stringify(local_data));
                     }
-                    
-                    
-                    // Update local storage
-                    const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.FEED_BALANCE;
-                    const local_data = {
-                        pig_farm_hid:   thisObj.getPigFarmHid(),
-                        ver_num:        thisObj.dataVerNum.feed_balance,
-                        data:           thisObj.dataFeedBalanceList,
-                        cached_at:      Date.now()
-                    };
-                    localStorage.setItem(key, JSON.stringify(local_data));
-                    
                     
                     if (callback_success){callback_success(response.data);}
                 }
@@ -1307,8 +1319,6 @@ export function PigFarm(_navigation){
         
     }
  
-    
-    
     
     
     this.requestDataPigFarmSummaryReportList = function(callback_success, 

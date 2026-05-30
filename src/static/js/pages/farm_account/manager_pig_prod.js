@@ -1263,7 +1263,7 @@ export function ManagerPigProd(input_settings){
             
             if (parentObj.dataVerNum.feed_buy != data_ver_num_feed_buy){
                 // This should update navigation.pigFarm.dataFarmFeedBuyList
-                parentObj.requestDataPigFarmFeedBuyList(
+                parentObj.requestDataPigFarmFeedBuyList(null,
                     null, null, elem_show_error);
             }
             

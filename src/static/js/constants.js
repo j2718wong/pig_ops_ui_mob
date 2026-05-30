@@ -168,6 +168,7 @@ const PAGE_ID = {
     ACC_FARROW_CHECKLIST:   57,
     ACC_F_CHECKLIST_ADD_EDIT: 58,   
 
+    FEEDS_CONSUMED:         59,
     
     
     FARM_FEED_BUY_LIST:     70,
@@ -176,6 +177,7 @@ const PAGE_ID = {
     
     SUMMARY_REPORT_LIST:    73,
     SUMMARY_REPORT_ADD_EDIT:74,
+    
     
     
     

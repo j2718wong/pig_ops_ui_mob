@@ -284,7 +284,7 @@ export function PagePigFarmFeedBuyList(input_settings){
         // This should update:
         // - navigation.pigFarm.dataFarmFeedBuyList
         // - navigation.pigFarm.dataVerNum.feed_buy
-        navigation.pigFarm.requestDataPigFarmFeedBuyList(
+        navigation.pigFarm.requestDataPigFarmFeedBuyList(null,
                 callback_success, callback_offline, null);
     }
 
