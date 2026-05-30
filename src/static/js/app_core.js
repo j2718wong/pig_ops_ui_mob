@@ -12,7 +12,7 @@ function initializeAppCore() {
     navigation.init();
     
     // Make available globally if needed
-    globalThis.navigation = navigation;
+    window.navigation = navigation;
 }
 
 // Wait for DOM to be ready

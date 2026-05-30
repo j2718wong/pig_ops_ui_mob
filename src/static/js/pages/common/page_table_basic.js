@@ -18,10 +18,25 @@ export const DEFAULT_NO_ENTRIES_TABLE = ['No Entries', 'No Data', 'Nothing in he
 
 
 export function CachedDataSource(){
-   PageViewBasic.call(this);
+    PageViewBasic.call(this);
 
-   
-   this.loadCachedData = function(pig_farm_hid){
+    // This will load cache but will not request new data , will not display data
+    this.loadCachedDataOnly = function(){
+        // Load cached data 
+        const key = this.getStorageKey();
+        const cached = localStorage.getItem(key);
+        
+        if (cached){
+            const data = JSON.parse(cached);
+            
+            // Update data source
+            this.updateDataSource(data.data, data.ver_num);
+        }
+    }
+
+    
+    // This will load cache and display data
+    this.loadCachedData = function(pig_farm_hid){
             
         // Load cached data 
         const key = this.getStorageKey();

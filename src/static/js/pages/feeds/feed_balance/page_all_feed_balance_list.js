@@ -212,9 +212,159 @@ export function PageAllFeedBalanceList(input_settings){
     
     // Display data
     this.displayData = function(){
-        const data_list = navigation.pigFarm.dataFeedBalanceList;
+        const feed_balance_list = navigation.pigFarm.dataFeedBalanceList;
+        
+        // Get the last_entry of the list
+        let data_list = feed_balance_list;
+        
+        if (feed_balance_list.length > 0){
+            // Get the feed_buy from earliest date of feed_balance until now
+            
+            let feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+            
+            
+            if (feed_buy_list == null){
+                // The current design is the navigation.pigFarm.dataFarmFeedBuyList
+                // is loaded from cache when user navigates to pagePigFarmFeedBuyList;
+                // But since user is currently in feed balance list, need to load
+                // feed_buy list from cache. 
+                navigation.pagePigFarmFeedBuyList.loadCachedDataOnly();
+            
+                feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+            }
+             
+            
+            
+            if (feed_buy_list){
+                const combined = thisObj.insertFeedBuyToFeedBalance(feed_balance_list, feed_buy_list);
+                data_list = combined;
+            }
+        }
+        
+        
+        
         thisObj.showInfoBox(data_list, elemPageInfo);
         thisObj.renderTable(data_list);
+    }
+    
+    
+    this.insertFeedBuyToFeedBalance = function(feed_balance_list, feed_buy_list) {
+        if (!feed_balance_list || feed_balance_list.length === 0) {
+            return [];
+        }
+        
+        if (!feed_buy_list || feed_buy_list.length === 0) {
+            return feed_balance_list;
+        }
+        
+        // Get the earliest feed_balance date (last entry in the list)
+        const earliestBalance = feed_balance_list[feed_balance_list.length - 1];
+        const earliestBalanceDate = earliestBalance.date_balance;
+        
+        // Filter feed_buy entries with date_buy >= earliest balance date
+        // feed_buy_list is already sorted by date_buy descending (newest first)
+        const relevantBuys = feed_buy_list.filter(buy => buy.pf_feed_buy.date_buy >= earliestBalanceDate);
+        
+       
+        
+        // Transform feed_buy entries to feed_balance format
+        const transformedBuys = relevantBuys.map(buy => {
+            // Initialize all feed type quantities to 0 (in sacks)
+            const feedQuantities = {
+                num_gestating: 0,
+                num_lactating: 0,
+                num_booster: 0,
+                num_prestarter: 0,
+                num_starter: 0,
+                num_grower: 0,
+                num_finisher: 0
+            };
+            
+            // Aggregate quantities from feed_items (in sacks)
+            if (buy.feed_items && buy.feed_items.length > 0) {
+                for (const item of buy.feed_items) {
+                    const feedTypeName = item.feed_type.name;
+                    const quantity = item.feed_item.quantity;  // Number of sacks
+                    
+                    // Map feed_type.name to feed_balance field
+                    switch (feedTypeName) {
+                        case 'GESTA':
+                            feedQuantities.num_gestating += quantity;
+                            break;
+                        case 'LACTA':
+                            feedQuantities.num_lactating += quantity;
+                            break;
+                        case 'BOST':
+                            feedQuantities.num_booster += quantity;
+                            break;
+                        case 'PRES':
+                            feedQuantities.num_prestarter += quantity;
+                            break;
+                        case 'START':
+                            feedQuantities.num_starter += quantity;
+                            break;
+                        case 'GROW':
+                            feedQuantities.num_grower += quantity;
+                            break;
+                        case 'FINISH':
+                            feedQuantities.num_finisher += quantity;
+                            break;
+                        default:
+                            console.warn('Unknown feed type:', feedTypeName);
+                    }
+                }
+            }
+            
+            // Create feed_balance object and filter out null/0 values
+            const feedBalance = {
+                hid: null
+            };
+            
+            if (feedQuantities.num_gestating > 0){
+                feedBalance.num_gestating = feedQuantities.num_gestating;
+            }
+            
+            if (feedQuantities.num_lactating > 0){
+                feedBalance.num_lactating = feedQuantities.num_lactating;
+            }
+            
+            if (feedQuantities.num_booster > 0){
+                feedBalance.num_booster = feedQuantities.num_booster;
+            }
+            
+            if (feedQuantities.num_prestarter > 0){
+                feedBalance.num_prestarter = feedQuantities.num_prestarter;
+            }
+            
+            if (feedQuantities.num_starter > 0){
+                feedBalance.num_starter = feedQuantities.num_starter;
+            }
+            
+            if (feedQuantities.num_grower > 0){
+                feedBalance.num_grower = feedQuantities.num_grower;
+            }
+            
+            if (feedQuantities.num_finisher > 0){
+                feedBalance.num_finisher = feedQuantities.num_finisher
+            }
+            
+            
+            return {
+                date_balance: buy.pf_feed_buy.date_buy,
+                is_feed_buy: 1,
+                feed_balance: [feedBalance]
+            };
+        });
+        
+        
+        
+        // Merge transformed buys with original feed_balance
+        const mergedList = [...transformedBuys, ...feed_balance_list];
+        
+        // Sort by date_balance in descending order (newest first)
+        mergedList.sort((a, b) => new Date(b.date_balance) - new Date(a.date_balance));
+    
+        return mergedList;
     }
     
     
@@ -355,6 +505,7 @@ export function PageAllFeedBalanceList(input_settings){
         const dt_balance    = new Date(cur_entry.date_balance);
         const s_dt_balance  = formatDate(dt_balance, FORMAT_COMPACT);
         
+        let is_feed_buy     = 0;
         
         let total_gesta     = 0;
         let total_lacta     = 0;
@@ -376,35 +527,43 @@ export function PageAllFeedBalanceList(input_settings){
             if (cur_item.num_finisher)  {total_finisher += cur_item.num_finisher;}
         }
         
+        let s_plus = '';
+        let s_style = '';
+        
+        if (cur_entry.is_feed_buy && cur_entry.is_feed_buy > 0){
+            is_feed_buy = 1;
+            s_plus = '+';
+            s_style = `style="color:var(--corporate-blue-company)";`;
+        }
         
         let html_feeds = '';
         
         if (total_gesta > 0){
-            html_feeds += `<div>${total_gesta} GESTA</div>`;
+            html_feeds += `<div ${s_style}>${s_plus}${total_gesta} GESTA</div>`;
         } 
         
         if (total_lacta > 0){
-            html_feeds += `<div>${total_lacta} LACTA</div>`;
+            html_feeds += `<div ${s_style}>${s_plus}${total_lacta} LACTA</div>`;
         }
         
         if (total_booster > 0){
-            html_feeds += `<div>${total_booster} BOOSTER</div>`;
+            html_feeds += `<div ${s_style}>${s_plus}${total_booster} BOOSTER</div>`;
         }
         
         if (total_prestarter > 0){
-            html_feeds += `<div>${total_prestarter} PRESTARTER</div>`;
+            html_feeds += `<div ${s_style}>${s_plus}${total_prestarter} PRESTARTER</div>`;
         }
         
         if (total_starter > 0){
-            html_feeds += `<div>${total_starter} STARTER</div>`;
+            html_feeds += `<divv${s_style}>${s_plus}${total_starter} STARTER</div>`;
         }
         
         if (total_grower > 0){
-            html_feeds += `<div>${total_grower} GROWER</div>`;
+            html_feeds += `<div ${s_style}>${s_plus}${total_grower} GROWER</div>`;
         }
         
         if (total_finisher > 0){
-            html_feeds += `<div>${total_finisher} FINISHER</div>`;
+            html_feeds += `<div ${s_style}>${s_plus}${total_finisher} FINISHER</div>`;
         }
         
         
@@ -433,20 +592,24 @@ export function PageAllFeedBalanceList(input_settings){
         
         // Attach onclick listeners to td
         
+        let is_feed_buy = 0;
+        if (cur_entry.is_feed_buy && cur_entry.is_feed_buy > 0){
+            is_feed_buy = 1;
+        }
         
         const elem_tds = elem_row.querySelectorAll('td'); 
         
         let index = 0
         for (const cur_td of elem_tds){
-            
-            if (index == 0 || index == 1){
-                cur_td.onclick = function(){
-                    thisObj.onClickRowEntry(cur_entry);
-                };
-                        
+            if (is_feed_buy == 0){
+                if (index == 0 || index == 1){
+                    cur_td.onclick = function(){
+                        thisObj.onClickRowEntry(cur_entry);
+                    };
+                }
             }
-            
             index += 1;
+            
         } 
         
         return elem_row;
