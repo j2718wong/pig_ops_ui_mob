@@ -67,6 +67,9 @@ export function PageAllFeedBalanceList(input_settings){
     let dtCurrentDate           = null;
     
     
+    let debugDataRows           = [];
+    
+    
     this.init = function(){
         
         thisObj.setSettingsTable({
@@ -244,9 +247,13 @@ export function PageAllFeedBalanceList(input_settings){
         }
         
         
+        debugDataRows = [];
         
         thisObj.showInfoBox(data_list, elemPageInfo);
         thisObj.renderTable(data_list);
+        
+        console.log('\n\ndebugDataRows');
+        console.log(debugDataRows);
     }
     
     
@@ -540,34 +547,56 @@ export function PageAllFeedBalanceList(input_settings){
         
         let html_feeds = '';
         
+
+        const num_feeds = {};
+        
+        
+        
         if (total_gesta > 0){
             html_feeds += `<div ${s_style}>${s_plus}${total_gesta} GESTA</div>`;
+            num_feeds.num_gestating = total_gesta;
         } 
         
         if (total_lacta > 0){
             html_feeds += `<div ${s_style}>${s_plus}${total_lacta} LACTA</div>`;
+            num_feeds.num_lactating = total_lacta;
         }
         
         if (total_booster > 0){
             html_feeds += `<div ${s_style}>${s_plus}${total_booster} BOOSTER</div>`;
+            num_feeds.num_booster = total_booster;
         }
         
         if (total_prestarter > 0){
             html_feeds += `<div ${s_style}>${s_plus}${total_prestarter} PRESTARTER</div>`;
+            num_feeds.num_prestarter = total_prestarter;
         }
         
         if (total_starter > 0){
             html_feeds += `<div ${s_style}>${s_plus}${total_starter} STARTER</div>`;
+            num_feeds.num_starter = total_starter;
         }
         
         if (total_grower > 0){
             html_feeds += `<div ${s_style}>${s_plus}${total_grower} GROWER</div>`;
+            num_feeds.num_grower = total_grower;
         }
         
         if (total_finisher > 0){
             html_feeds += `<div ${s_style}>${s_plus}${total_finisher} FINISHER</div>`;
+            num_feeds.num_finisher = total_finisher;
         }
         
+        const cur_debug_data = {
+            date_balance: cur_entry.date_balance,
+            num_feeds:  num_feeds
+        }; 
+        
+        if (is_feed_buy > 0){
+            cur_debug_data.is_feed_buy = 1;
+        }
+        
+        debugDataRows.push(cur_debug_data);
         
         const html = `
             <tr>
