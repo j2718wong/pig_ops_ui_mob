@@ -1297,6 +1297,9 @@ export function ManagerNavLinks(_navigation) {
         if (elemDesktopNavLabelOperations5) {
             elemDesktopNavLabelOperations5.textContent = translated_nav_links.Operations5 || "Farrowing Checklist";
         }
+        if (elemDesktopNavLabelOperations6) {
+            elemDesktopNavLabelOperations6.textContent = translated_nav_links.Operations6 || "Feeds Consumed";
+        }
         
         // Desktop financials submenu labels
         if (elemDesktopNavLabelFinancials1) {
@@ -1306,10 +1309,7 @@ export function ManagerNavLinks(_navigation) {
             elemDesktopNavLabelFinancials2.textContent = translated_nav_links.Financials2 || "Feeds Expenses";
         }
         if (elemDesktopNavLabelFinancials3) {
-            elemDesktopNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Feeds Consumed";
-        }
-        if (elemDesktopNavLabelFinancials4) {
-            elemDesktopNavLabelFinancials4.textContent = translated_nav_links.Financials4 || "Reports";
+            elemDesktopNavLabelFinancials3.textContent = translated_nav_links.Financials4 || "Reports";
         }
         
         // Desktop account lists submenu labels
@@ -1434,6 +1434,9 @@ export function ManagerNavLinks(_navigation) {
         if (elemMobileNavLabelOperations5) {
             elemMobileNavLabelOperations5.textContent = translated_nav_links.Operations5 || "Farrowing Checklist";
         }
+        if (elemMobileNavLabelOperations6) {
+            elemMobileNavLabelOperations6.textContent = translated_nav_links.Operations6 || "Feeds Consumed";
+        }
         
         
         // Mobile financials submenu labels
@@ -1444,10 +1447,7 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelFinancials2.textContent = translated_nav_links.Financials2 || "Feeds Expenses";
         }
         if (elemMobileNavLabelFinancials3) {
-            elemMobileNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Feeds Consumed";
-        }
-        if (elemMobileNavLabelFinancials4) {
-            elemMobileNavLabelFinancials4.textContent = translated_nav_links.Financials4 || "Reports";
+            elemMobileNavLabelFinancials3.textContent = translated_nav_links.Financials4 || "Reports";
         }
         
         
