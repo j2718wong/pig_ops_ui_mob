@@ -89,12 +89,7 @@ export function PageFeedsConsumedChart(input_settings){
     this._writeInlineStyle = function(){
         const html = `
         <style>
-            .feed-type-selector select {
-                cursor: pointer;
-            }
-            .feed-type-selector select:hover {
-                border-color: #1e3a8a;
-            }
+        
             .bar-container {
                 min-width: 40px;
             }
@@ -120,6 +115,82 @@ export function PageFeedsConsumedChart(input_settings){
                     min-width: 30px;
                 }
             }
+            
+            
+            .feed-type-selector {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: #f8f9fa;
+                padding: 10px 20px;
+                border-radius: 40px;
+                margin: 15px 20px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            
+            .feed-type-arrow {
+                background: #1e3a8a;
+                color: white;
+                border: none;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 1.2rem;
+                transition: all 0.2s;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            
+            .feed-type-arrow:hover {
+                background: #2e4a9a;
+                transform: scale(1.05);
+            }
+            
+            .feed-type-arrow:active {
+                transform: scale(0.95);
+            }
+            
+            .feed-type-arrow.disabled,
+            .feed-type-arrow:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+            }
+            
+            .feed-type-label {
+                font-size: 1.3rem;
+                font-weight: 600;
+                color: #1e3a8a;
+                min-width: 120px;
+                text-align: center;
+                padding: 8px 16px;
+                background: white;
+                border-radius: 30px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+            
+            @media (max-width: 768px) {
+                .feed-type-label {
+                    font-size: 1rem;
+                    min-width: 100px;
+                    padding: 6px 12px;
+                }
+                
+                .feed-type-arrow {
+                    width: 32px;
+                    height: 32px;
+                    font-size: 1rem;
+                }
+                
+                .feed-type-selector {
+                    padding: 8px 16px;
+                    margin: 10px;
+                }
+            }
+            
         </style>
         `;
         return html;
@@ -128,6 +199,7 @@ export function PageFeedsConsumedChart(input_settings){
     
     this.render = function(){
         let label_page_title    = 'Feeds Consumed';
+        let label_today         = 'Today';
         
         let label_see_sample    = 'See Sample Schedule';
         
@@ -141,8 +213,8 @@ export function PageFeedsConsumedChart(input_settings){
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title    = helper.getSimpleTranslation('navigation.nav_links.Financials3') || label_page_title;
-   
+        label_page_title    = helper.getSimpleTranslation('navigation.nav_links.Operations6') || label_page_title;
+        label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
         
         label_see_sample    = helper.getSimpleTranslation('page_farrowing_schedule.labels.see_sample') || label_see_sample;
         
@@ -158,6 +230,8 @@ export function PageFeedsConsumedChart(input_settings){
         
         elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         
+        elemIdLabelToday        = `${settings.uniqueKey}-label-today`;
+        elemIdDateToday         = `${settings.uniqueKey}-date-today`;
 
         elemIdShowSample        = `${settings.uniqueKey}-show-sample`;
         
@@ -182,6 +256,11 @@ ${html_style}
     </div>
     -->
     
+    <div style="text-align: center;">
+        <span id="${elemIdLabelToday}">${label_today}</span>
+        <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
+    </div>
+    
     <div id="${elemIdConsumedChart}"></div>
 
 </div>
@@ -202,6 +281,9 @@ ${html_style}
     
     this._findElements = function(){
         elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
+     
+        elemLabelToday          = elemDivContainer.querySelector('#'+elemIdLabelToday);
+        elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
      
         elemShowSample          = elemDivContainer.querySelector('#'+elemIdShowSample);
         
@@ -248,6 +330,10 @@ ${html_style}
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         
+        const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
+        
+        elemDateToday.textContent = s_dt_current;
+        
         
         const reference_date = this.calculateRefMonthStart();
         const dont_save_to_cache = true;
@@ -279,8 +365,8 @@ ${html_style}
         // Create a copy and set to first day of current month FIRST
         const refDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         
-        // Then subtract 3 months
-        refDate.setMonth(refDate.getMonth() - 3);
+        // Then subtract 4 months
+        refDate.setMonth(refDate.getMonth() - 4);
         
         // Format as YYYY-MM-DD
         const year = refDate.getFullYear();
@@ -306,6 +392,7 @@ ${html_style}
         const feedTypes = [
             { key: 'num_gestating', label: 'Gesta' },
             { key: 'num_lactating', label: 'Lacta' },
+            { key: 'num_prestarter',label: 'Prestarter' },
             { key: 'num_starter',   label: 'Starter' },
             { key: 'num_grower',    label: 'Grower' },
             { key: 'num_finisher',  label: 'Finisher' }
@@ -320,7 +407,7 @@ ${html_style}
             const year = date.getFullYear();
             const month = date.getMonth();
             const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
-            const monthLabel = date.toLocaleString('default', { month: 'short' }); // Jan, Feb, Mar
+            const monthLabel = date.toLocaleString('default', { month: 'short' });
             
             if (!monthlyData[monthKey]) {
                 monthlyData[monthKey] = {
@@ -328,8 +415,8 @@ ${html_style}
                     label: monthLabel,
                     year: year,
                     month: month,
-                    feedBalanceEnd: {},  // Last feed balance of the month per feed type
-                    feedBuyTotal: {}     // Total feed buy of the month per feed type
+                    feedBalanceEnd: {},
+                    feedBuyTotal: {}
                 };
                 monthsList.push(monthKey);
             }
@@ -347,7 +434,7 @@ ${html_style}
                 });
             }
             
-            // Track feed balance end (last entry of the month - overwrite since sorted ascending)
+            // Track feed balance end (last entry of the month)
             if (entry.feed_balance && !entry.is_feed_buy) {
                 entry.feed_balance.forEach(fb => {
                     feedTypes.forEach(type => {
@@ -360,83 +447,58 @@ ${html_style}
             }
         });
         
-        // Sort months chronologically (oldest first)
+        // Sort months chronologically
         monthsList.sort();
         
-        // Get month labels (e.g., "Feb", "Mar", "Apr", "May")
-        const monthLabels = monthsList.map(m => monthlyData[m].label);
+        // DEBUG: Print all monthly data
+        console.log("=== MONTHLY DATA DEBUG ===");
+        monthsList.forEach(monthKey => {
+            console.log(`\n${monthKey}:`);
+            console.log(`  feedBuyTotal:`, monthlyData[monthKey].feedBuyTotal);
+            console.log(`  feedBalanceEnd:`, monthlyData[monthKey].feedBalanceEnd);
+        });
         
-        // Function to get the last available feed balance before a given month
-        function getLastFeedBalance(monthIndex, feedTypeKey) {
-            // Start from previous month and go backwards
-            for (let i = monthIndex - 1; i >= 0; i--) {
-                const prevMonth = monthsList[i];
-                const balance = monthlyData[prevMonth].feedBalanceEnd[feedTypeKey];
-                if (balance !== undefined && balance !== null && balance !== 0) {
-                    return balance;
-                }
-            }
-            // If no previous balance found, return 0
-            return 0;
-        }
+        // Create display months (exclude the first month)
+        const displayMonths = monthsList.slice(1);
+        const displayMonthLabels = displayMonths.map(m => monthlyData[m].label);
         
-        // Function to get the first feed balance in current month (if no ending balance)
-        function getFirstFeedBalance(monthKey, feedTypeKey) {
-            // Find the first feed_balance entry in this month
-            const monthEntries = allEntries.filter(e => {
-                const date = new Date(e.date_balance);
-                const entryMonthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                return entryMonthKey === monthKey && !e.is_feed_buy && e.feed_balance;
-            });
-            
-            if (monthEntries.length > 0) {
-                // Get the first entry (earliest date in month)
-                for (const entry of monthEntries) {
-                    for (const fb of entry.feed_balance) {
-                        const value = fb[feedTypeKey];
-                        if (value !== undefined && value !== null && value !== 0) {
-                            return value;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-        
+
         // Calculate consumption per month
         function calculateConsumptionData(feedTypeKey) {
             const consumptionData = [];
             let previousBalance = 0;
             
+            console.log(`\n=== CONSUMPTION DEBUG for ${feedTypeKey} ===`);
+            
             for (let i = 0; i < monthsList.length; i++) {
                 const monthKey = monthsList[i];
                 const feedBuyTotal = monthlyData[monthKey].feedBuyTotal[feedTypeKey] || 0;
-                let feedBalanceEnd = monthlyData[monthKey].feedBalanceEnd[feedTypeKey];
                 
-                // If no feed balance at end of month, try to get first balance of the month
-                if (feedBalanceEnd === undefined || feedBalanceEnd === null) {
-                    const firstBalance = getFirstFeedBalance(monthKey, feedTypeKey);
-                    if (firstBalance !== null) {
-                        feedBalanceEnd = firstBalance;
-                    } else {
-                        feedBalanceEnd = 0;
-                    }
+                // IMPORTANT: Don't default to 0 - check if the key actually exists
+                let feedBalanceEnd;
+                if (monthlyData[monthKey].feedBalanceEnd.hasOwnProperty(feedTypeKey)) {
+                    feedBalanceEnd = monthlyData[monthKey].feedBalanceEnd[feedTypeKey];
+                } else {
+                    // No balance entry means balance is same as previous (not consumed yet)
+                    feedBalanceEnd = previousBalance;
                 }
                 
-                // Get previous month's balance (look back for last non-zero balance)
-                let previousMonthBalance = previousBalance;
-                if (previousBalance === 0 && i > 0) {
-                    previousMonthBalance = getLastFeedBalance(i, feedTypeKey);
-                }
+                console.log(`\n${monthKey}:`);
+                console.log(`  feedBuyTotal: ${feedBuyTotal}`);
+                console.log(`  feedBalanceEnd: ${feedBalanceEnd}`);
+                console.log(`  previousBalance: ${previousBalance}`);
                 
                 // Total available = feed bought this month + previous month's balance
-                const totalAvailable = feedBuyTotal + previousMonthBalance;
+                const totalAvailable = feedBuyTotal + previousBalance;
                 
                 // Consumed = total available - remaining balance
                 let consumed = totalAvailable - feedBalanceEnd;
                 
-                // Ensure consumed is not negative (due to data inconsistencies)
+                // Ensure consumed is not negative
                 consumed = Math.max(0, consumed);
+                
+                console.log(`  totalAvailable: ${totalAvailable}`);
+                console.log(`  consumed: ${consumed}`);
                 
                 consumptionData.push(consumed);
                 
@@ -446,49 +508,91 @@ ${html_style}
             
             return consumptionData;
         }
+
         
         // Create selector and chart container
         const selectorHtml = `
-            <div class="feed-type-selector" style="margin: 20px 0; text-align: center;">
-                <label for="feedTypeSelect" style="font-weight: 600; margin-right: 10px;">Feed Type:</label>
-                <select id="feedTypeSelect" style="padding: 8px 16px; border-radius: 6px; border: 1px solid #ddd; font-size: 1rem;">
-                    ${feedTypes.map(type => `<option value="${type.key}">${type.label}</option>`).join('')}
-                </select>
+            <div class="feed-type-selector">
+                <button class="feed-type-arrow" id="feedTypePrev"><i class="fas fa-chevron-left"></i></button>
+                <span class="feed-type-label" id="feedTypeLabel">${feedTypes[0].label}</span>
+                <button class="feed-type-arrow" id="feedTypeNext"><i class="fas fa-chevron-right"></i></button>
             </div>
         `;
         
         elemConsumedChart.innerHTML = selectorHtml + '<div id="chartContainer" style="width: 100%; min-height: 400px;"></div>';
         
-        let currentFeedType = 'num_gestating';
+        
+        let currentFeedTypeIndex = 0;
+        let currentFeedType = feedTypes[currentFeedTypeIndex].key;
+        let currentFeedTypeLabel = feedTypes[currentFeedTypeIndex].label;
+
+        function updateFeedTypeLabel() {
+            const labelElem = document.getElementById('feedTypeLabel');
+            if (labelElem) {
+                labelElem.textContent = feedTypes[currentFeedTypeIndex].label;
+            }
+        }
+
+        function changeFeedType(delta) {
+            const newIndex = currentFeedTypeIndex + delta;
+            if (newIndex >= 0 && newIndex < feedTypes.length) {
+                currentFeedTypeIndex = newIndex;
+                currentFeedType = feedTypes[currentFeedTypeIndex].key;
+                currentFeedTypeLabel = feedTypes[currentFeedTypeIndex].label;
+                updateFeedTypeLabel();
+                renderChart(currentFeedType);
+            }
+        }
+
+        // Bind arrow buttons
+        const prevBtn = document.getElementById('feedTypePrev');
+        const nextBtn = document.getElementById('feedTypeNext');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => changeFeedType(-1));
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => changeFeedType(1));
+        }
+
+        
+
         
         function renderChart(feedTypeKey) {
-            const consumptionData = calculateConsumptionData(feedTypeKey);
+            const fullConsumptionData = calculateConsumptionData(feedTypeKey);
             const feedTypeLabel = feedTypes.find(t => t.key === feedTypeKey)?.label || feedTypeKey;
             
-            // Check if there's any data to display
-            const hasData = consumptionData.some(v => v > 0) || monthsList.length > 0;
+            // Get consumption data for display months only
+            const consumptionData = [];
+            for (let i = 0; i < displayMonths.length; i++) {
+                const originalIndex = monthsList.indexOf(displayMonths[i]);
+                consumptionData.push(fullConsumptionData[originalIndex]);
+            }
             
-            if (!hasData || monthsList.length === 0) {
+            console.log(`\n=== RENDER CHART for ${feedTypeKey} ===`);
+            console.log(`displayMonths:`, displayMonths);
+            console.log(`consumptionData:`, consumptionData);
+            
+            const hasData = consumptionData.some(v => v > 0) || displayMonths.length > 0;
+            
+            if (!hasData || displayMonths.length === 0) {
                 const chartContainer = document.getElementById('chartContainer');
                 if (chartContainer) {
                     chartContainer.innerHTML = `
                         <div style="text-align: center; padding: 60px; color: #999;">
                             <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
                             <div>No feed consumption data available for the selected period.</div>
-                            <div style="font-size: 12px; margin-top: 8px;">Please add feed balances or feed purchases to see chart.</div>
                         </div>
                     `;
                 }
                 return;
             }
             
-            // Calculate max value for y-axis
             const maxValue = Math.max(...consumptionData, 1);
             const chartHeight = 300;
             
-            // Build bar chart HTML
             let barsHtml = '';
-            for (let i = 0; i < monthsList.length; i++) {
+            for (let i = 0; i < displayMonths.length; i++) {
                 const value = consumptionData[i];
                 const barHeight = (value / maxValue) * chartHeight;
                 const barColor = value > 0 ? '#2e7d64' : '#ddd';
@@ -496,24 +600,22 @@ ${html_style}
                 barsHtml += `
                     <div class="bar-container" style="display: flex; flex-direction: column; align-items: center; min-width: 60px; margin: 0 8px;">
                         <div class="bar-value" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 6px;">${value.toFixed(1)}</div>
-                        <div class="bar" style="width: 50px; height: ${barHeight}px; background: ${barColor}; border-radius: 6px 6px 0 0; transition: height 0.3s; cursor: pointer;"></div>
-                        <div class="bar-label" style="font-size: 1.1rem; margin-top: 8px; font-weight: 500;">${monthLabels[i]}</div>
+                        <div class="bar" style="width: 50px; height: ${barHeight}px; background: ${barColor}; border-radius: 6px 6px 0 0;"></div>
+                        <div class="bar-label" style="font-size: 1.1rem; margin-top: 8px;">${displayMonthLabels[i]}</div>
                     </div>
                 `;
             }
             
-            // Add tooltip to show formula breakdown
             const chartHtml = `
                 <div style="padding: 20px; background: #f9f9f9; border-radius: 12px;">
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <h3 style="margin: 0; color: #1e3a8a;">${feedTypeLabel} Consumed(sacks)</h3>
+                        <h3 style="margin: 0; color: #1e3a8a;">${feedTypeLabel} Consumed (sacks)</h3>
                     </div>
                     <div style="display: flex; justify-content: center; align-items: flex-end; min-height: ${chartHeight + 80}px; overflow-x: auto; padding: 10px 0;">
                         <div style="display: flex; align-items: flex-end;">
                             ${barsHtml}
                         </div>
                     </div>
-                    
                 </div>
             `;
             
@@ -523,7 +625,6 @@ ${html_style}
             }
         }
         
-        // Add event listener to selector
         const feedTypeSelect = document.getElementById('feedTypeSelect');
         if (feedTypeSelect) {
             feedTypeSelect.addEventListener('change', (e) => {
@@ -532,21 +633,22 @@ ${html_style}
             });
         }
         
-        // Handle empty data
-        if (monthsList.length === 0) {
+        if (displayMonths.length === 0) {
             elemConsumedChart.innerHTML = `
                 <div style="text-align: center; padding: 60px; color: #999;">
                     <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
                     <div>No feed consumption data available for the selected period.</div>
-                    <div style="font-size: 12px; margin-top: 8px;">Please add feed balances or feed purchases to see chart.</div>
                 </div>
             `;
             return;
         }
         
+        
         // Initial render
+        updateFeedTypeLabel();
         renderChart(currentFeedType);
     }
+        
     
     
     this.transformFeedBuyToFeedBalanceEntry = function(){

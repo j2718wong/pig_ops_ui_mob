@@ -78,7 +78,9 @@ export function PageAllFeedBalanceList(input_settings){
             addEntryLink: {
                 label:      'Add Feed Balance',
                 onclickAddEntry:    thisObj.onClickAddEntry
-            }
+            },
+            
+            refreshFunc:    thisObj.requestServerData
         });
         
         
@@ -555,7 +557,7 @@ export function PageAllFeedBalanceList(input_settings){
         }
         
         if (total_starter > 0){
-            html_feeds += `<divv${s_style}>${s_plus}${total_starter} STARTER</div>`;
+            html_feeds += `<div ${s_style}>${s_plus}${total_starter} STARTER</div>`;
         }
         
         if (total_grower > 0){
@@ -632,7 +634,7 @@ export function PageAllFeedBalanceList(input_settings){
         return null;
     }
     
-    
+
     this.onClickAddEntry = function(){
         // Show Container
         const goto_page_id   = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;

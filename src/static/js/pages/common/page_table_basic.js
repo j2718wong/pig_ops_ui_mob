@@ -133,6 +133,8 @@ export function PageTableBasic(){
     
     let elemIdControlsBar       = null;
     
+    let elemIdRefreshData       = null;
+    
     let elemIdTableRowCount     = null;
     let elemIdTablePagination   = null;
     let elemIdTablePrevPage     = null;
@@ -159,6 +161,8 @@ export function PageTableBasic(){
     this.elemServerErrorMsg     = null;
     
     let elemControlsBar         = null;
+    
+    let elemRefreshData         = null;
     
     let elemTableRowCount       = null;
     let elemTablePagination     = null;
@@ -240,6 +244,8 @@ export function PageTableBasic(){
         
         elemIdControlsBar       = `${settings.uniqueKey}-controls-bar`;
         
+        elemIdRefreshData       = `${settings.uniqueKey}-refresh-data`;
+        
         elemIdTableRowCount     = `${settings.uniqueKey}-row-count`;
         elemIdTablePagination   = `${settings.uniqueKey}-pagination`;
         elemIdTablePrevPage     = `${settings.uniqueKey}-prev-page`;
@@ -309,6 +315,11 @@ export function PageTableBasic(){
             html_hide_row_count = 'style="display:none;"'
         }
         
+        let html_refresh = '';
+        if (settings.refreshFunc){
+            html_refresh = `<span id="${elemIdRefreshData}" style="cursor: pointer; color: var(--icon-blue);"><i class="fas fa-sync-alt"></i></span>`;
+        }
+        
         
         let html_controls_bar = `
         <div class="controls-bar" id="${elemIdControlsBar}">
@@ -316,6 +327,9 @@ export function PageTableBasic(){
                 <span id="${elemIdTableRowCount}" ${html_hide_row_count}>
                     0 Entries
                 </span>
+                
+                ${html_refresh}
+                
             </div>
             
             
@@ -430,6 +444,8 @@ export function PageTableBasic(){
         
         elemControlsBar         = document.getElementById(elemIdControlsBar);
         
+        elemRefreshData         = document.getElementById(elemIdRefreshData);
+        
         elemTableRowCount       = document.getElementById(elemIdTableRowCount);
         elemTablePagination     = document.getElementById(elemIdTablePagination);
         elemTablePrevPage       = document.getElementById(elemIdTablePrevPage);
@@ -467,6 +483,12 @@ export function PageTableBasic(){
             });
         }
         
+        
+        if (settings.refreshFunc){
+            elemRefreshData.addEventListener('click', function() {
+                settings.refreshFunc();
+            });
+        }
     }
     
     
