@@ -392,10 +392,11 @@ ${html_style}
         const feedTypes = [
             { key: 'num_gestating', label: 'Gesta' },
             { key: 'num_lactating', label: 'Lacta' },
-            { key: 'num_prestarter',label: 'Prestarter' },
+            { key: 'num_prestarter', label: 'Prestarter' },
             { key: 'num_starter',   label: 'Starter' },
             { key: 'num_grower',    label: 'Grower' },
-            { key: 'num_finisher',  label: 'Finisher' }
+            { key: 'num_finisher',  label: 'Finisher' },
+            { key: 'gesta_lacta',   label: 'Gesta+Lacta', isCombined: true }
         ];
         
         // Group entries by month
@@ -425,10 +426,12 @@ ${html_style}
             if (entry.is_feed_buy === 1 && entry.feed_balance) {
                 entry.feed_balance.forEach(fb => {
                     feedTypes.forEach(type => {
-                        const value = fb[type.key];
-                        if (value && value > 0) {
-                            monthlyData[monthKey].feedBuyTotal[type.key] = 
-                                (monthlyData[monthKey].feedBuyTotal[type.key] || 0) + value;
+                        if (!type.isCombined) {
+                            const value = fb[type.key];
+                            if (value && value > 0) {
+                                monthlyData[monthKey].feedBuyTotal[type.key] = 
+                                    (monthlyData[monthKey].feedBuyTotal[type.key] || 0) + value;
+                            }
                         }
                     });
                 });
@@ -438,9 +441,11 @@ ${html_style}
             if (entry.feed_balance && !entry.is_feed_buy) {
                 entry.feed_balance.forEach(fb => {
                     feedTypes.forEach(type => {
-                        const value = fb[type.key];
-                        if (value !== undefined && value !== null) {
-                            monthlyData[monthKey].feedBalanceEnd[type.key] = value;
+                        if (!type.isCombined) {
+                            const value = fb[type.key];
+                            if (value !== undefined && value !== null) {
+                                monthlyData[monthKey].feedBalanceEnd[type.key] = value;
+                            }
                         }
                     });
                 });
@@ -450,65 +455,36 @@ ${html_style}
         // Sort months chronologically
         monthsList.sort();
         
-        // DEBUG: Print all monthly data
-        console.log("=== MONTHLY DATA DEBUG ===");
-        monthsList.forEach(monthKey => {
-            console.log(`\n${monthKey}:`);
-            console.log(`  feedBuyTotal:`, monthlyData[monthKey].feedBuyTotal);
-            console.log(`  feedBalanceEnd:`, monthlyData[monthKey].feedBalanceEnd);
-        });
-        
         // Create display months (exclude the first month)
         const displayMonths = monthsList.slice(1);
         const displayMonthLabels = displayMonths.map(m => monthlyData[m].label);
         
-
-        // Calculate consumption per month
+        // Calculate consumption per month for a single feed type
         function calculateConsumptionData(feedTypeKey) {
             const consumptionData = [];
             let previousBalance = 0;
-            
-            console.log(`\n=== CONSUMPTION DEBUG for ${feedTypeKey} ===`);
             
             for (let i = 0; i < monthsList.length; i++) {
                 const monthKey = monthsList[i];
                 const feedBuyTotal = monthlyData[monthKey].feedBuyTotal[feedTypeKey] || 0;
                 
-                // IMPORTANT: Don't default to 0 - check if the key actually exists
                 let feedBalanceEnd;
                 if (monthlyData[monthKey].feedBalanceEnd.hasOwnProperty(feedTypeKey)) {
                     feedBalanceEnd = monthlyData[monthKey].feedBalanceEnd[feedTypeKey];
                 } else {
-                    // No balance entry means balance is same as previous (not consumed yet)
                     feedBalanceEnd = previousBalance;
                 }
                 
-                console.log(`\n${monthKey}:`);
-                console.log(`  feedBuyTotal: ${feedBuyTotal}`);
-                console.log(`  feedBalanceEnd: ${feedBalanceEnd}`);
-                console.log(`  previousBalance: ${previousBalance}`);
-                
-                // Total available = feed bought this month + previous month's balance
                 const totalAvailable = feedBuyTotal + previousBalance;
-                
-                // Consumed = total available - remaining balance
                 let consumed = totalAvailable - feedBalanceEnd;
-                
-                // Ensure consumed is not negative
                 consumed = Math.max(0, consumed);
                 
-                console.log(`  totalAvailable: ${totalAvailable}`);
-                console.log(`  consumed: ${consumed}`);
-                
                 consumptionData.push(consumed);
-                
-                // Update previous balance for next month
                 previousBalance = feedBalanceEnd;
             }
             
             return consumptionData;
         }
-
         
         // Create selector and chart container
         const selectorHtml = `
@@ -521,116 +497,184 @@ ${html_style}
         
         elemConsumedChart.innerHTML = selectorHtml + '<div id="chartContainer" style="width: 100%; min-height: 400px;"></div>';
         
-        
         let currentFeedTypeIndex = 0;
         let currentFeedType = feedTypes[currentFeedTypeIndex].key;
         let currentFeedTypeLabel = feedTypes[currentFeedTypeIndex].label;
-
+        let isCombinedMode = feedTypes[currentFeedTypeIndex].isCombined || false;
+        
         function updateFeedTypeLabel() {
             const labelElem = document.getElementById('feedTypeLabel');
             if (labelElem) {
                 labelElem.textContent = feedTypes[currentFeedTypeIndex].label;
             }
         }
-
+        
         function changeFeedType(delta) {
             const newIndex = currentFeedTypeIndex + delta;
             if (newIndex >= 0 && newIndex < feedTypes.length) {
                 currentFeedTypeIndex = newIndex;
                 currentFeedType = feedTypes[currentFeedTypeIndex].key;
                 currentFeedTypeLabel = feedTypes[currentFeedTypeIndex].label;
+                isCombinedMode = feedTypes[currentFeedTypeIndex].isCombined || false;
                 updateFeedTypeLabel();
-                renderChart(currentFeedType);
+                renderChart();
             }
         }
-
+        
         // Bind arrow buttons
         const prevBtn = document.getElementById('feedTypePrev');
         const nextBtn = document.getElementById('feedTypeNext');
-
+        
         if (prevBtn) {
             prevBtn.addEventListener('click', () => changeFeedType(-1));
         }
         if (nextBtn) {
             nextBtn.addEventListener('click', () => changeFeedType(1));
         }
-
         
-
-        
-        function renderChart(feedTypeKey) {
-            const fullConsumptionData = calculateConsumptionData(feedTypeKey);
-            const feedTypeLabel = feedTypes.find(t => t.key === feedTypeKey)?.label || feedTypeKey;
+        function renderChart() {
+            let chartHtml = '';
             
-            // Get consumption data for display months only
-            const consumptionData = [];
-            for (let i = 0; i < displayMonths.length; i++) {
-                const originalIndex = monthsList.indexOf(displayMonths[i]);
-                consumptionData.push(fullConsumptionData[originalIndex]);
-            }
-            
-            console.log(`\n=== RENDER CHART for ${feedTypeKey} ===`);
-            console.log(`displayMonths:`, displayMonths);
-            console.log(`consumptionData:`, consumptionData);
-            
-            const hasData = consumptionData.some(v => v > 0) || displayMonths.length > 0;
-            
-            if (!hasData || displayMonths.length === 0) {
-                const chartContainer = document.getElementById('chartContainer');
-                if (chartContainer) {
-                    chartContainer.innerHTML = `
-                        <div style="text-align: center; padding: 60px; color: #999;">
-                            <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
-                            <div>No feed consumption data available for the selected period.</div>
+            // Special handling for Gesta+Lacta combined chart - STACKED VERSION
+            if (isCombinedMode) {
+                const gestaConsumption = calculateConsumptionData('num_gestating');
+                const lactaConsumption = calculateConsumptionData('num_lactating');
+                
+                // Get data for display months only
+                const gestaDisplay = [];
+                const lactaDisplay = [];
+                for (let i = 0; i < displayMonths.length; i++) {
+                    const originalIndex = monthsList.indexOf(displayMonths[i]);
+                    gestaDisplay.push(gestaConsumption[originalIndex]);
+                    lactaDisplay.push(lactaConsumption[originalIndex]);
+                }
+                
+                const hasData = gestaDisplay.some(v => v > 0) || lactaDisplay.some(v => v > 0);
+                
+                if (!hasData || displayMonths.length === 0) {
+                    const chartContainer = document.getElementById('chartContainer');
+                    if (chartContainer) {
+                        chartContainer.innerHTML = `
+                            <div style="text-align: center; padding: 60px; color: #999;">
+                                <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
+                                <div>No feed consumption data available for the selected period.</div>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+                
+                // Calculate max value for y-axis (sum of both for each month)
+                const maxValue = Math.max(...gestaDisplay.map((g, i) => g + lactaDisplay[i]), 1);
+                const chartHeight = 300;
+                
+                let barsHtml = '';
+                for (let i = 0; i < displayMonths.length; i++) {
+                    const gestaValue = gestaDisplay[i];
+                    const lactaValue = lactaDisplay[i];
+                    const totalValue = gestaValue + lactaValue;
+                    
+                    // Calculate heights as percentages of max (stacked)
+                    const gestaHeight = (gestaValue / maxValue) * chartHeight;
+                    const lactaHeight = (lactaValue / maxValue) * chartHeight;
+                    
+                    barsHtml += `
+                        <div class="bar-container" style="display: flex; flex-direction: column; align-items: center; min-width: 60px; margin: 0 8px;">
+                            <div class="bar-value" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 6px;">${totalValue.toFixed(1)}</div>
+                            <div style="width: 50px; display: flex; flex-direction: column; justify-content: flex-end; height: ${chartHeight}px;">
+                                <div style="height: ${lactaHeight}px; background: #e67e22; border-radius: 6px 6px 0 0; width: 100%; transition: height 0.3s;"></div>
+                                <div style="height: ${gestaHeight}px; background: #2e7d64; border-radius: 0 0 6px 6px; width: 100%; transition: height 0.3s;"></div>
+                            </div>
+                            <div class="bar-label" style="font-size: 1.1rem; margin-top: 8px;">${displayMonthLabels[i]}</div>
                         </div>
                     `;
                 }
-                return;
-            }
-            
-            const maxValue = Math.max(...consumptionData, 1);
-            const chartHeight = 300;
-            
-            let barsHtml = '';
-            for (let i = 0; i < displayMonths.length; i++) {
-                const value = consumptionData[i];
-                const barHeight = (value / maxValue) * chartHeight;
-                const barColor = value > 0 ? '#2e7d64' : '#ddd';
                 
-                barsHtml += `
-                    <div class="bar-container" style="display: flex; flex-direction: column; align-items: center; min-width: 60px; margin: 0 8px;">
-                        <div class="bar-value" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 6px;">${value.toFixed(1)}</div>
-                        <div class="bar" style="width: 50px; height: ${barHeight}px; background: ${barColor}; border-radius: 6px 6px 0 0;"></div>
-                        <div class="bar-label" style="font-size: 1.1rem; margin-top: 8px;">${displayMonthLabels[i]}</div>
+                chartHtml = `
+                    <div style="padding: 20px; background: #f9f9f9; border-radius: 12px;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h3 style="margin: 0; color: #1e3a8a;">Gesta + Lacta Consumed (sacks)</h3>
+                            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 20px; height: 20px; background: #e67e22; border-radius: 4px;"></div>
+                                    <span style="font-size: 0.8rem;">Lacta</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 20px; height: 20px; background: #2e7d64; border-radius: 4px;"></div>
+                                    <span style="font-size: 0.8rem;">Gesta</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; align-items: flex-end; min-height: ${chartHeight + 80}px; overflow-x: auto; padding: 10px 0;">
+                            <div style="display: flex; align-items: flex-end;">
+                                ${barsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Regular single feed type chart
+                const fullConsumptionData = calculateConsumptionData(currentFeedType);
+                const feedTypeLabel = feedTypes.find(t => t.key === currentFeedType)?.label || currentFeedType;
+                
+                // Get consumption data for display months only
+                const consumptionData = [];
+                for (let i = 0; i < displayMonths.length; i++) {
+                    const originalIndex = monthsList.indexOf(displayMonths[i]);
+                    consumptionData.push(fullConsumptionData[originalIndex]);
+                }
+                
+                const hasData = consumptionData.some(v => v > 0) || displayMonths.length > 0;
+                
+                if (!hasData || displayMonths.length === 0) {
+                    const chartContainer = document.getElementById('chartContainer');
+                    if (chartContainer) {
+                        chartContainer.innerHTML = `
+                            <div style="text-align: center; padding: 60px; color: #999;">
+                                <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
+                                <div>No feed consumption data available for the selected period.</div>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+                
+                const maxValue = Math.max(...consumptionData, 1);
+                const chartHeight = 300;
+                
+                let barsHtml = '';
+                for (let i = 0; i < displayMonths.length; i++) {
+                    const value = consumptionData[i];
+                    const barHeight = (value / maxValue) * chartHeight;
+                    const barColor = value > 0 ? '#2e7d64' : '#ddd';
+                    
+                    barsHtml += `
+                        <div class="bar-container" style="display: flex; flex-direction: column; align-items: center; min-width: 60px; margin: 0 8px;">
+                            <div class="bar-value" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 6px;">${value.toFixed(1)}</div>
+                            <div class="bar" style="width: 50px; height: ${barHeight}px; background: ${barColor}; border-radius: 6px 6px 0 0;"></div>
+                            <div class="bar-label" style="font-size: 1.1rem; margin-top: 8px;">${displayMonthLabels[i]}</div>
+                        </div>
+                    `;
+                }
+                
+                chartHtml = `
+                    <div style="padding: 20px; background: #f9f9f9; border-radius: 12px;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h3 style="margin: 0; color: #1e3a8a;">${feedTypeLabel} Consumed (sacks)</h3>
+                        </div>
+                        <div style="display: flex; justify-content: center; align-items: flex-end; min-height: ${chartHeight + 80}px; overflow-x: auto; padding: 10px 0;">
+                            <div style="display: flex; align-items: flex-end;">
+                                ${barsHtml}
+                            </div>
+                        </div>
                     </div>
                 `;
             }
-            
-            const chartHtml = `
-                <div style="padding: 20px; background: #f9f9f9; border-radius: 12px;">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <h3 style="margin: 0; color: #1e3a8a;">${feedTypeLabel} Consumed (sacks)</h3>
-                    </div>
-                    <div style="display: flex; justify-content: center; align-items: flex-end; min-height: ${chartHeight + 80}px; overflow-x: auto; padding: 10px 0;">
-                        <div style="display: flex; align-items: flex-end;">
-                            ${barsHtml}
-                        </div>
-                    </div>
-                </div>
-            `;
             
             const chartContainer = document.getElementById('chartContainer');
             if (chartContainer) {
                 chartContainer.innerHTML = chartHtml;
             }
-        }
-        
-        const feedTypeSelect = document.getElementById('feedTypeSelect');
-        if (feedTypeSelect) {
-            feedTypeSelect.addEventListener('change', (e) => {
-                currentFeedType = e.target.value;
-                renderChart(currentFeedType);
-            });
         }
         
         if (displayMonths.length === 0) {
@@ -643,12 +687,10 @@ ${html_style}
             return;
         }
         
-        
         // Initial render
         updateFeedTypeLabel();
-        renderChart(currentFeedType);
+        renderChart();
     }
-        
     
     
     this.transformFeedBuyToFeedBalanceEntry = function(){
