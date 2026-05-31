@@ -24,6 +24,9 @@ import {formatDate,
 import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
 
 
+const FEED_BALANCE_CONSUMED     = 'superpig_feed_balance_consumed';
+const FEED_BUY_CONSUMED         = 'superpig_feed_buy_consumed';
+
 
 export function PageFeedsConsumedChart(input_settings){
     PageViewPigFarmPage.call(this);
@@ -75,8 +78,12 @@ export function PageFeedsConsumedChart(input_settings){
     
     let dtCurrentDate           = null;
 
-    let data4MFarmFeedBuyList   = null;
-    let data4MFeedBalanceList   = null;
+    let dataFarmFeedBuyList     = null;
+    let dataFeedBalanceList     = null;
+    
+    
+    let dataFarmFeedBuyVerNum   = 0;
+    let dataFeedBalanceVerNum   = 0;
     
     
     
@@ -334,27 +341,199 @@ ${html_style}
         
         elemDateToday.textContent = s_dt_current;
         
-        
-        const reference_date = this.calculateRefMonthStart();
-        const dont_save_to_cache = true;
-        
-        if (data4MFeedBalanceList == null){
-            const callback_success_feed_buy = function(data){
-                data4MFarmFeedBuyList = data;
-                thisObj.plotFeedConsumption();
-            };
-            
-            
-            const callback_success_feed_balance = function(data){
-                data4MFeedBalanceList = data;
-                
-                navigation.pigFarm.requestDataPigFarmFeedBuyList(reference_date, 
-                    callback_success_feed_buy, null, null, dont_save_to_cache);
-            };
-            
-            navigation.pigFarm.requestDataPigFarmFeedBalance(reference_date, 
-                callback_success_feed_balance, null, null, dont_save_to_cache);
+        if (dataFeedBalanceList == null){
+            // This will cached feed_balance, cached feed_buy and plot consumption graph.
+            this.loadCachedDataFeedBalance();
         }
+        else{
+            thisObj.plotFeedConsumption();
+        }
+    }
+    
+    
+    this.loadCachedDataFeedBalance = function(){
+        
+        const key = FEED_BALANCE_CONSUMED;
+        const cached = localStorage.getItem(key);
+        if (!cached) {
+            // This will request feed_balance, request  feed_buy and plot consumption graph.
+            this.requestServerData();
+            return;
+        }
+        
+        
+        const pig_farm_hid  = navigation.pigFarm.getPigFarmHid();
+        
+        const data = JSON.parse(cached);
+        
+        // Check if pig_farm_hid matched
+        const cached_pig_farm_hid = data.pig_farm_hid;
+        if (cached_pig_farm_hid != pig_farm_hid){
+            // This will request feed_balance, request  feed_buy and plot consumption graph.
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Optionally expire cache after 7 days
+        if (data.cached_at && (Date.now() - data.cached_at) > APPLICATION.NUM_MSECS_CACHE_DATA) {
+            // Cache too old, fetch fresh
+            // This will request feed_balance, request  feed_buy and plot consumption graph.
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Update data source
+        dataFeedBalanceList     = data.data;
+        dataFeedBalanceVerNum   = data.ver_num;
+            
+            
+        // Check if dataFeedBalanceVerNum is same with server_ver_num
+        let server_ver_num = navigation.pigFarm.dataVerNum.feed_balance;
+        if (server_ver_num > dataFeedBalanceVerNum){
+            this.requestServerData();
+            return;
+        }
+        
+        
+        // Load cached Feed Buy
+        this.loadCachedDataFeedBuy(); 
+    }
+    
+    
+    this.loadCachedDataFeedBuy = function(){
+        
+        const key = FEED_BUY_CONSUMED;
+        const cached = localStorage.getItem(key);
+        if (!cached) {
+            // This will  request  feed_buy and plot consumption graph.
+            this.requestServerDataFeedBuyOnly();
+            return;
+        }
+        
+        
+        const pig_farm_hid  = navigation.pigFarm.getPigFarmHid();
+        
+        const data = JSON.parse(cached);
+        
+        // Check if pig_farm_hid matched
+        const cached_pig_farm_hid = data.pig_farm_hid;
+        if (cached_pig_farm_hid != pig_farm_hid){
+            // This will request  feed_buy and plot consumption graph.
+            this.requestServerDataFeedBuyOnly();
+            return;
+        }
+        
+        
+        // Optionally expire cache after 7 days
+        if (data.cached_at && (Date.now() - data.cached_at) > APPLICATION.NUM_MSECS_CACHE_DATA) {
+            // Cache too old, fetch fresh
+            // This will request feed_balance, request  feed_buy and plot consumption graph.
+            this.requestServerDataFeedBuyOnly();
+            return;
+        }
+        
+        
+        // Update data source
+        dataFarmFeedBuyList     = data.data;
+        dataFarmFeedBuyVerNum   = data.ver_num;
+            
+            
+        // Check if dataFarmFeedBuyVerNum is same with server_ver_num
+        let server_ver_num = navigation.pigFarm.dataVerNum.feed_buy;
+        if (server_ver_num > dataFarmFeedBuyVerNum){
+            this.requestServerDataFeedBuyOnly();
+            return;
+        }
+        
+        
+        thisObj.plotFeedConsumption();
+    }
+    
+    
+    
+    /** This will request feed_balance, request  feed_buy and plot consumption graph.*/
+    this.requestServerData = function(){
+        const reference_date        = this.calculateRefMonthStart();
+        const dont_save_to_cache    = true; // instruction to not save cache at pigFarm
+        
+        
+        const callback_success_feed_buy = function(data){
+            dataFarmFeedBuyList     = data.data;
+            dataFarmFeedBuyVerNum       = data.ver_num;
+            
+            // Save this to cache; this is saved separately from
+            // navigation.pigFarm.dataFarmFeedBuyList
+            
+            // Update local storage
+            const key = FEED_BUY_CONSUMED;
+            const local_data = {
+                pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                ver_num:        dataFarmFeedBuyVerNum,
+                data:           dataFarmFeedBuyList,
+                cached_at:      Date.now()
+            };
+            localStorage.setItem(key, JSON.stringify(local_data)); 
+            
+            thisObj.plotFeedConsumption();
+        };
+        
+        
+        const callback_success_feed_balance = function(data){
+            dataFeedBalanceList     = data.data;
+            dataFeedBalanceVerNum   = data.ver_num;
+            
+            // Save this to cache; this is saved separately from
+            // navigation.pigFarm.dataFeedBalanceList
+            
+            // Update local storage
+            const key = FEED_BALANCE_CONSUMED;
+            const local_data = {
+                pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                ver_num:        dataFeedBalanceVerNum,
+                data:           dataFeedBalanceList,
+                cached_at:      Date.now()
+            };
+            localStorage.setItem(key, JSON.stringify(local_data)); 
+            
+            navigation.pigFarm.requestDataPigFarmFeedBuyList(reference_date, 
+                callback_success_feed_buy, null, null, dont_save_to_cache);
+        };
+        
+        
+        navigation.pigFarm.requestDataPigFarmFeedBalance(reference_date, 
+            callback_success_feed_balance, null, null, dont_save_to_cache);
+    }
+    
+    
+    this.requestServerDataFeedBuyOnly = function(){
+        const reference_date        = this.calculateRefMonthStart();
+        const dont_save_to_cache    = true; // instruction to not save cache at pigFarm
+        
+        const callback_success_feed_buy = function(data){
+            dataFarmFeedBuyList     = data.data;
+            dataFarmFeedBuyVerNum       = data.ver_num;
+            
+            // Save this to cache; this is saved separately from
+            // navigation.pigFarm.dataFarmFeedBuyList
+            
+            // Update local storage
+            const key = FEED_BUY_CONSUMED;
+            const local_data = {
+                pig_farm_hid:   navigation.pigFarm.getPigFarmHid(),
+                ver_num:        dataFarmFeedBuyVerNum,
+                data:           dataFarmFeedBuyList,
+                cached_at:      Date.now()
+            };
+            localStorage.setItem(key, JSON.stringify(local_data)); 
+            
+            thisObj.plotFeedConsumption();
+        };
+        
+        
+        navigation.pigFarm.requestDataPigFarmFeedBuyList(reference_date, 
+                callback_success_feed_buy, null, null, dont_save_to_cache);
     }
     
     
@@ -379,11 +558,11 @@ ${html_style}
     this.plotFeedConsumption = function() {
         const transformed_feed_buy = this.transformFeedBuyToFeedBalanceEntry();
         
-        console.log(`data4MFeedBalanceList`);
-        console.log(data4MFeedBalanceList);
+        console.log(`dataFeedBalanceList`);
+        console.log(dataFeedBalanceList);
         
         // Merge both lists
-        const allEntries = [...data4MFeedBalanceList, ...transformed_feed_buy];
+        const allEntries = [...dataFeedBalanceList, ...transformed_feed_buy];
         
         // Sort by date_balance ascending (oldest first for calculation)
         allEntries.sort((a, b) => new Date(a.date_balance) - new Date(b.date_balance));
@@ -695,7 +874,7 @@ ${html_style}
     
     this.transformFeedBuyToFeedBalanceEntry = function(){
         // Transform feed_buy entries to feed_balance format
-        const transformedBuys = data4MFarmFeedBuyList.map(buy => {
+        const transformedBuys = dataFarmFeedBuyList.map(buy => {
             // Initialize all feed type quantities to 0 (in sacks)
             const feedQuantities = {
                 num_gestating: 0,

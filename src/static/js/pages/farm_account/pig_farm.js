@@ -998,7 +998,17 @@ export function PigFarm(_navigation){
                         localStorage.setItem(key, JSON.stringify(local_data));
                     }
                     
-                    if (callback_success){callback_success(response.data);}
+                    if (callback_success){
+                        let ver_num = 0
+                        if (response.data_ver_num){
+                            ver_num = response.data_ver_num;
+                        }
+
+                        callback_success({
+                            ver_num : ver_num,
+                            data: response.data
+                        });
+                    }
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(
@@ -1207,7 +1217,17 @@ export function PigFarm(_navigation){
                         localStorage.setItem(key, JSON.stringify(local_data));
                     }
                     
-                    if (callback_success){callback_success(response.data);}
+                    if (callback_success){
+                        let ver_num = 0
+                        if (response.data_ver_num){
+                            ver_num = response.data_ver_num;
+                        }
+                        
+                        callback_success({
+                            ver_num : ver_num,
+                            data: response.data
+                        });
+                    }
                 }
                 else {
                     navigation.serverError.receivedErrorMessage(
