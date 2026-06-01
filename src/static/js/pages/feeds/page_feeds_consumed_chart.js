@@ -211,7 +211,7 @@ export function PageFeedsConsumedChart(input_settings){
         let label_page_title    = 'Feeds Consumed';
         let label_today         = 'Today';
         
-        let label_see_sample    = 'See Sample Schedule';
+        let label_see_sample    = 'See Sample Feeds Consumed data';
         
         
         let page_info   = `
@@ -252,6 +252,8 @@ export function PageFeedsConsumedChart(input_settings){
         
         const html_nav          = componentNavLeftRight.getHtml();   
  
+        
+ 
            
         const html = `
 
@@ -269,6 +271,12 @@ ${html_style}
     <div style="text-align: center;">
         <span id="${elemIdLabelToday}">${label_today}</span>
         <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
+    </div>
+    
+    <div style="margin: 8px 0;" id="${elemIdShowSample}" style="display:none;">
+        <a href="javascript:void(0)" class="text-link" >
+            ${label_see_sample}
+        </a>
     </div>
     
     <div id="${elemIdConsumedChart}"></div>
@@ -321,7 +329,13 @@ ${html_style}
     
     this._bindEventListeners = function(){
 
-        
+        elemShowSample.addEventListener('click', function() {
+            thisObj.onClickShowSample({
+                title:      'Sample Feeds Consumed Data',
+                img_src:    '/static_m/images/mar/mar_feeds_consumed.png',
+                img_alt:    'Sample Feeds Consumed Data'
+            });
+        });
     }
     
     
@@ -602,9 +616,6 @@ ${html_style}
     this.plotFeedConsumption = function() {
         const transformed_feed_buy = this.transformFeedBuyToFeedBalanceEntry();
         
-        console.log(`dataFeedBalanceList`);
-        console.log(dataFeedBalanceList);
-        
         // Merge both lists
         const allEntries = [...dataFeedBalanceList, ...transformed_feed_buy];
         
@@ -615,6 +626,9 @@ ${html_style}
         // Sum feeds in each entry (combine multiple feed_balance objects within same date)
         const descEntriesAdded = this.sumFeedsInEveryEntry(descendingEntries);
         
+        console.log(`descEntriesAdded`);
+        console.log(descEntriesAdded);
+        
         // Get consumption per month using the new method
         const monthlyConsumption = this.getFeedConsumedPerMonth(descEntriesAdded);
         
@@ -622,15 +636,19 @@ ${html_style}
         
         // If no consumption data, show empty state
         if (!monthlyConsumption || monthlyConsumption.length === 0) {
+            elemShowSample.style.display = 'block';
+            
             elemConsumedChart.innerHTML = `
-                <div style="text-align: center; padding: 60px; color: #999;">
+                <div style="text-align: center; padding: 60px;>
                     <div style="font-size: 48px; margin-bottom: 16px;">📊</div>
-                    <div>No feed consumption data available for the selected period.</div>
-                    <div style="font-size: 12px; margin-top: 8px;">Please add feed balances or feed purchases to see chart.</div>
+                    <div style="font-size: 1.1rem;">No feed consumption data available for the selected period.</div>
+                    <div style="font-size: 1.1rem; margin-top: 8px;">Please add feed balances or feed purchases to see chart.</div>
                 </div>
             `;
             return;
         }
+        
+        elemShowSample.style.display = 'none';
         
         // Extract month labels and sort by date (oldest to newest for display)
         const sortedMonths = [...monthlyConsumption].sort((a, b) => {
