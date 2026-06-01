@@ -51,6 +51,7 @@ export function PageCreateOrJoinAccount(input_settings){
     let elemInvalidAccCodeMsg   = null;
     
     let elemBackToSignUp        = null;
+    let elemCancelBtn           = null;
     
     let curDataUserAccount      = null;
     
@@ -185,7 +186,7 @@ export function PageCreateOrJoinAccount(input_settings){
         
         <div class="code-area">
             <div class="code-label">
-                ${label_create_account_name}
+                ${label_create_account_name} <span style="color: red;">*</span>
             </div>
             <div class="input-wrapper">
                 <input id="account-name" type="text" maxlength="50" autocomplete="off">
@@ -241,6 +242,7 @@ export function PageCreateOrJoinAccount(input_settings){
         </div>
     </div>
     
+    <!--
     <div style="margin-top: 0.5rem; text-align: center;">
         <button 
             id="back-signup-btn" 
@@ -261,7 +263,29 @@ export function PageCreateOrJoinAccount(input_settings){
             ${label_back_to_signup}
         </button>
     </div>
-
+    -->
+    
+    <div style="margin-top: 0.5rem; text-align: center;">
+        <button 
+            id="cancel-btn" 
+            type="button" 
+            style="
+                background: none;
+                border: 1px solid #dc3545;
+                color: #dc3545;
+                font-size: 1rem;
+                padding: 8px 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                width: 100%;
+                font-family: inherit;
+            "
+        >
+            Cancel
+        </button>
+    </div>
+    
+    
     
 </div>
 
@@ -369,6 +393,7 @@ export function PageCreateOrJoinAccount(input_settings){
         elemInvalidAccCodeMsg   = elemDivContainer.querySelector('#invalid-account-code-msg');
         
         elemBackToSignUp        = elemDivContainer.querySelector('#back-signup-btn');
+        elemCancelBtn           = elemDivContainer.querySelector('#cancel-btn');
     }
     
     
@@ -388,24 +413,43 @@ export function PageCreateOrJoinAccount(input_settings){
             thisObj.onClickJoinAccount();
         });
 
-        elemBackToSignUp.addEventListener('click', function() {
-            // 2. Clear frontend storage
-            localStorage.clear();
-            sessionStorage.clear();
-            
-            // 3. Clear all cookies
-            document.cookie.split(";").forEach(function(c) {
-                var name = c.split("=")[0].trim();
-                document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-                document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+        if (elemBackToSignUp){
+            elemBackToSignUp.addEventListener('click', function() {
+                // 2. Clear frontend storage
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // 3. Clear all cookies
+                document.cookie.split(";").forEach(function(c) {
+                    var name = c.split("=")[0].trim();
+                    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+                    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+                });
+                
+                // 4. Redirect to signup
+                window.location.href = '/signup';
             });
-            
-            // 4. Redirect to signup
-            window.location.href = '/signup';
-        });
+        }
+        
+        
+        if (elemCancelBtn) {
+            elemCancelBtn.addEventListener('click', function() {
+                // Clear all tokens and storage
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Clear cookies
+                document.cookie.split(";").forEach(function(c) {
+                    let name = c.split("=")[0].trim();
+                    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+                    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+                });
+                
+                // Go to marketing page (not signup)
+                window.location.href = '/';
+            });
+        }
     }
-    
-    
     
     
    
