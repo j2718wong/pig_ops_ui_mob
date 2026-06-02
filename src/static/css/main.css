@@ -2808,12 +2808,12 @@ textarea.form-control {
     margin-bottom: 5px;
     color: #856404;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 1.2rem;
 }
 
 .warning-box .warning-details {
     color: #856404;
-    font-size: 0.85rem;
+    font-size: 1.1rem;
     line-height: 1.4;
 }
 
