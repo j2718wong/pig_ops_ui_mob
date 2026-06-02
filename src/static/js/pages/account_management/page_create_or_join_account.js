@@ -200,10 +200,26 @@ export function PageCreateOrJoinAccount(input_settings){
         
         ${html_country_select}
         
+        <button id="create-account" class="action-btn" style="
+            background: #2e7d64;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        ">
+            Create Account
+        </button>
         
+        <!--
         <div id="create-account" style="font-size:1.3rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
             👆 ${label_click_to_continue}
         </div>
+        -->
     </div>
 
 
@@ -236,10 +252,27 @@ export function PageCreateOrJoinAccount(input_settings){
                 <span style="color:var(--icon-indigo);">🔐</span> ${label_ask_farm_admin}
             </p>
         </div>
-
+        
+        <button id="join-account" class="action-btn" style="
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        ">
+            Join Account
+        </button>
+        
+        <!--
         <div id="join-account" style="font-size:1.3rem; margin-top:0.5rem; color: var(--corporate-blue); font-weight:500;">
             👆 ${label_click_to_continue}
         </div>
+        -->
     </div>
     
     <!--
