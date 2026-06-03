@@ -66,6 +66,8 @@ const PWA_EVENT ={
 }; 
 
 
+const MIN_DAYS_SINCE_PWA_INSTALL_DISMISSED  = 3;
+
 
 export function ManagerPwa(input_settings){
     
@@ -90,7 +92,7 @@ export function ManagerPwa(input_settings){
 
     
     let elemInstallBtn          = null;
-    
+    let elemInstallBannerBtn    = null;
     
     let elemServerErrorMsg      = null;
     
@@ -129,6 +131,31 @@ export function ManagerPwa(input_settings){
         ">
             📱 Install SuperPig App
         </button>
+        
+        <div id="pwa-install-banner" style="
+            display:none; 
+            position: fixed; 
+            bottom: 20px; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);  /* 20px margin on each side */
+            max-width: 400px;          /* Maximum width for tablets */ 
+            background: var(--gestating-color); 
+            color: white; 
+            padding: 16px; 
+            border-radius: 12px; 
+            z-index: 9999; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+            
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <strong>📱 Open App</strong>
+                </div>
+                <button id="pwa-install-now-btn" style="background: white; color: #1e3a8a; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer;">Install</button>
+                <button id="pwa-install-dismiss" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✕</button>
+            </div>
+        </div>
+
         `;
         
         return html;
@@ -146,6 +173,8 @@ export function ManagerPwa(input_settings){
     this._findElements = function(){
         
         elemInstallBtn          = elemDivContainer.querySelector('#install-superpig-btn'); 
+        
+        elemInstallBannerBtn    = document.getElementById('pwa-install-now-btn');
         
         elemServerErrorMsg      = parentObj.elemServerErrorMsg;
 
@@ -235,6 +264,13 @@ export function ManagerPwa(input_settings){
         if (isAppInstalled()) {
             elemInstallBtn.hidden = true;
         }
+        
+        
+        if (elemInstallBannerBtn) {
+            elemInstallBannerBtn.addEventListener('click', function(){
+                thisObj.initiateInstall();
+            });
+        }
 
     }
     
@@ -297,11 +333,22 @@ export function ManagerPwa(input_settings){
         
         // Hide the install button
         elemInstallBtn.hidden = true;
+        
+        
+        // If eventType PWA_EVENT.INSTALL_DISMISSED, save to local storage
+        localStorage.setItem('pwa_dismissed_date', Date.now().toString());
+        
     }
     
     
 
     this.showPwaInstallButton = function(){
+        // DON'T SHOW ON DESKTOP
+        if (!isMobileDevice()) {
+            console.log('PWA: Desktop device - hiding install banner');
+            return;
+        }
+        
         // Show PWA install button
         if (!isAppInstalled()) {
             setTimeout(function() {
@@ -513,6 +560,85 @@ export function ManagerPwa(input_settings){
     }
 
 
+    // Check if user has dismissed PWA installation in the past
+    this.hasUserDismissedPWA = function() {
+        const dismissed = localStorage.getItem('pwa_dismissed_permanently');
+        //if (dismissed === 'true') return true; // this is dsiabled until decided what to do
+        
+        // Check if dismissed within last 7 days (for re-engagement)
+        const dismissedDate = localStorage.getItem('pwa_dismissed_date');
+        if (dismissedDate) {
+            const daysSinceDismissed = (Date.now() - parseInt(dismissedDate)) / (1000 * 60 * 60 * 24);
+            if (daysSinceDismissed < MIN_DAYS_SINCE_PWA_INSTALL_DISMISSED) return true;
+        }
+        return false;
+    }
+    
+
+    
+    // Show persistent install banner in dashboard
+    this.showDashboardInstallBanner = function() {
+        // DON'T SHOW ON DESKTOP
+        if (!isMobileDevice()) {
+            console.log('PWA: Desktop device - hiding install banner');
+            return;
+        }
+        
+        // Don't show if already installed
+        if (isAppInstalled()) return;
+        
+        // Don't show if user permanently dismissed
+        if (this.hasUserDismissedPWA()) return;
+        
+        const banner = document.getElementById('pwa-install-banner');
+        if (!banner) return;
+        
+        // Show the banner
+        banner.style.display = 'block';
+        
+        // Track banner shown
+        const data_pwa_track = {
+            event: 'PWA_BANNER_SHOWN',
+            screen_width: window.innerWidth,
+            screen_height: window.innerHeight
+        };
+        thisObj.addUserTrackAppInstall(data_pwa_track);
+    }
+        
+        
+    // Handle install from dashboard banner
+    this.initiateInstall = async function() {
+        const prompt = deferredPrompt || window.deferredPrompt;
+        
+        if (prompt) {
+            // Use native prompt if available
+            prompt.prompt();
+            const { outcome } = await prompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                thisObj.addUserTrackAppInstall({ event: PWA_EVENT.INSTALL_ACCEPTED });
+                const banner = document.getElementById('pwa-install-banner');
+                if (banner) banner.style.display = 'none';
+            } else {
+                thisObj.addUserTrackAppInstall({ event: PWA_EVENT.INSTALL_DISMISSED });
+                // User dismissed - don't show banner again for 7 days
+                localStorage.setItem('pwa_dismissed_date', Date.now().toString());
+                const banner = document.getElementById('pwa-install-banner');
+                if (banner) banner.style.display = 'none';
+            }
+            deferredPrompt = null;
+        } else {
+            // No deferredPrompt - show manual instructions
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS) {
+                thisObj.showIOSInstallInstructions();
+            } else {
+                thisObj.showAndroidInstallInstructions();
+            }
+        }
+    }
+        
+
     this.addUserTrackAppInstall = function(data, callback_success){
         const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
@@ -579,7 +705,8 @@ export function ManagerPwa(input_settings){
         });
     }
     
-        
+    
+    
         
         
 }

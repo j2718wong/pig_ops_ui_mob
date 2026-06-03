@@ -795,8 +795,11 @@ export function PageHomeDashBoard(input_settings){
         */
 
 
+        // For first-time users with native prompt
         managerPwa.showPwaInstallButton();
                 
+        // For returning users who dismissed before
+        managerPwa.showDashboardInstallBanner();
         
         
         dtCurrentDate = new Date();
