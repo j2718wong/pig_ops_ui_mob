@@ -590,6 +590,21 @@ export function ManagerPwa(input_settings){
         // Don't show if user permanently dismissed
         if (this.hasUserDismissedPWA()) return;
         
+        
+        // Don't show banner if floating button is already visible
+        if (elemInstallBtn && !elemInstallBtn.hidden) {
+            console.log('PWA: Install button already showing - banner will not show');
+            return;
+        }
+        
+        // Don't show banner if native prompt is available
+        // The floating button will handle it instead
+        const prompt = deferredPrompt || window.deferredPrompt;
+        if (prompt) {
+            console.log('PWA: Native prompt available - banner will not show');
+            return;
+        }
+        
         const banner = document.getElementById('pwa-install-banner');
         if (!banner) return;
         
