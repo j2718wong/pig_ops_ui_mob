@@ -1051,6 +1051,63 @@ export function PageHomeDashBoard(input_settings){
     }
     
     
+    /***/
+    this._getFeedBuyAfterLastFeedBalance = function(date_balance){
+        const feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+        if (feed_buy_list == null){
+            return null;
+        }
+        
+        if (feed_buy_list.length == 0){
+            return null;
+        }
+        
+        const last_feed_buy = feed_buy_list[0];
+        
+        if (last_feed_buy.pf_feed_buy.date_buy > date_balance){
+            return last_feed_buy;
+        }
+        
+        return null;
+    }
+    
+    
+    this._appendLatestFeedBuyToFeedBalance = function(data_feed_buy){
+        const elemLastFeedBuy = elemFeedBalanceText.querySelector('#latest-feed-buy');
+        
+        if (elemLastFeedBuy){
+            let s = '';
+            let is_comma = 0;
+
+            
+            let index = 0;
+            for (const cur_entry of data_feed_buy.feed_items){
+                if (is_comma){s += ', ';}
+                
+                let quantity = cur_entry.feed_item.quantity;
+                let feed_type_name = cur_entry.feed_type.name;
+                
+                
+                let s_feed = `<span class="nowrap"><b>+${quantity} ${feed_type_name}</b></span>`;
+                s += s_feed;
+                
+                
+                is_comma = 1;
+            
+                
+                index += 1
+            } 
+            
+            
+            elemLastFeedBuy.innerHTML = s;
+        
+        }
+        else{
+            console.log('elemLastFeedBuy cannot be found');
+        }
+    }
+    
+    
     this.displayFeedBalance = function(data){
         // Add up feeds;
             
@@ -1093,12 +1150,16 @@ export function PageHomeDashBoard(input_settings){
                 s += s_feed;
                 
                 
-                
                 is_comma = 1;
             }
             
             index += 1
         } 
+        
+        
+        // Add span for latest feed buy if there is any
+        s += `<span id="latest-feed-buy" style="margin-left:8px;"></span>`        
+        
         
         
         elemFeedBalanceText.innerHTML = s;
@@ -1124,6 +1185,50 @@ export function PageHomeDashBoard(input_settings){
             elemFeedBalanceShow.style.display = 'block';
         } 
         
+        
+        // Display last feed_buy after last balance if there is any
+        let feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+        if (feed_buy_list == null){
+            navigation.pagePigFarmFeedBuyList.loadCachedDataOnly();
+            
+            feed_buy_list = navigation.pigFarm.dataFarmFeedBuyList;
+            // no cached data; need to request from server
+            if (feed_buy_list == null){
+                
+                const callback_success = function(data){
+                    const feed_buy = thisObj._getFeedBuyAfterLastFeedBalance(date_balance);
+                    if (feed_buy){
+                        thisObj._appendLatestFeedBuyToFeedBalance(feed_buy);
+                    }
+                };
+
+
+                const callback_offline = function(){
+                    
+                };
+                
+                
+                // This should update:
+                // - navigation.pigFarm.dataFarmFeedBuyList
+                // - navigation.pigFarm.dataVerNum.feed_buy
+                navigation.pigFarm.requestDataPigFarmFeedBuyList(null,
+                        callback_success, callback_offline, null); 
+            }
+            else {
+                const feed_buy = thisObj._getFeedBuyAfterLastFeedBalance(date_balance);
+                if (feed_buy){
+                    thisObj._appendLatestFeedBuyToFeedBalance(feed_buy);
+                }
+            }
+       
+        }
+        
+        else{
+            const feed_buy = thisObj._getFeedBuyAfterLastFeedBalance(date_balance);
+            if (feed_buy){
+                thisObj._appendLatestFeedBuyToFeedBalance(feed_buy);
+            }
+        }
     }
     
 
