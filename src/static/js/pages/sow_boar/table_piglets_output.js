@@ -21,6 +21,8 @@ import {formatDate,
 
 import {getSowBoarReference}    from '../common/common_app.js';
 
+import {calculateNumDaysSinceInsem} from '../common/page_view_basic.js'
+
 
 
 export function TablePigletsOutput(input_settings){
@@ -208,10 +210,10 @@ export function TablePigletsOutput(input_settings){
         
         <table class="data-table table-output" id="">
             <colgroup>
-                <col style="width: 32%;">
+                <col style="width: 35%;">
                 <col style="width: 16%;">
                 <col style="width: 16%;">
-                <col style="width: 19%;">
+                <col style="width: 17%;">
             </colgroup>
             
             <thead>
@@ -256,6 +258,12 @@ export function TablePigletsOutput(input_settings){
 
 
         const dt_birth = new Date(cur_entry.birth.date_actual);
+        
+        const insem_date    = cur_entry.insemination.insem_date;
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        
+        const num_days_actual = calculateNumDaysSinceInsem(insem_date, 
+            dt_birth, acc_settings_ops);
         
         
         let live_pigs_birth = 0;
@@ -328,7 +336,7 @@ export function TablePigletsOutput(input_settings){
                             <span>${formatDate(dt_birth, FORMAT_COMPACT)}</span>
                         </div>
                         <div>
-                            <span class="love-icon">❤️</span> ${boar_name}
+                            ${num_days_actual}D, <span class="love-icon">❤️</span> ${boar_name}
                         </div>
                     
                     </div>
