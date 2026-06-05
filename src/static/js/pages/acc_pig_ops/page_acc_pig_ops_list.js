@@ -888,7 +888,7 @@ export function PageAccPigOpsList(input_settings){
 
             if (index == 1 || index == 2){
                 cur_td.onclick = function(){
-                    thisObj.onClickRowEntry(cur_entry.acc_pig_ops.hid);
+                    thisObj.onClickRowEntry(cur_entry);
                 }
             }
             
@@ -1088,7 +1088,8 @@ export function PageAccPigOpsList(input_settings){
     
     this.onClickAddEntry = function(){
         // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_ADD_EDIT);
+        const next_page_id  = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
+        const next_page     = navigation.getPageContainer(next_page_id);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -1098,22 +1099,23 @@ export function PageAccPigOpsList(input_settings){
         
         
         // Show Page
-        const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        const go_back_page_id   = PAGE_ID.ACC_PIG_OPS_LIST;
+        const go_back_page      = navigation.getPageContainer(go_back_page_id);
         
         const options ={
-            operation_type:         curAccPigOpsType,
-            is_add:                 true,   // false is edit
-            go_back_page:           go_back_page   
+            operation_type:     curAccPigOpsType,
+            is_add:             true,   // false is edit
+            go_back_page:       go_back_page   
         }
         
         navigation.pageAccPigOpsAddEdit.show(options);
     }
     
     
-    this.onClickRowEntry = function(entry_hid){
+    this.onClickRowEntry = function(row_entry){
         // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.ACC_PIG_OPS_ADD_EDIT);
+        const next_page_id  = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
+        const next_page     = navigation.getPageContainer(next_page_id);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -1123,19 +1125,16 @@ export function PageAccPigOpsList(input_settings){
         
         
         // Show Page
-        const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        const go_back_page_id   = PAGE_ID.ACC_PIG_OPS_LIST;
+        const go_back_page      = navigation.getPageContainer(go_back_page_id);
     
-        const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
-        
     
         const options ={
-            operation_type:         curAccPigOpsType,
-            is_add:                 false,   // false is edit
-            callback_after_edit:    thisObj.onSuccessEditEntry,
-            go_back_page:           go_back_page 
+            operation_type:     curAccPigOpsType,
+            is_add:             false,   // false is edit
+            go_back_page:       go_back_page 
         }
-        navigation.pageAccPigOpsAddEdit.show(options, data_acc_pig_ops);
+        navigation.pageAccPigOpsAddEdit.show(options, row_entry);
     }
     
 }

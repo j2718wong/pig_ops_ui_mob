@@ -666,8 +666,8 @@ export function PageAllFeedBalanceList(input_settings){
 
     this.onClickAddEntry = function(){
         // Show Container
-        const goto_page_id   = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
-        const next_page = navigation.getPageContainer(goto_page_id);
+        const next_page_id  = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
+        const next_page     = navigation.getPageContainer(next_page_id);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -677,36 +677,38 @@ export function PageAllFeedBalanceList(input_settings){
         
         
         // Show Page
-        const go_back_page_id = PAGE_ID.ALL_FEED_BAL_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        const go_back_page_id   = PAGE_ID.ALL_FEED_BAL_LIST;
+        const go_back_page      = navigation.getPageContainer(go_back_page_id);
         
         const options ={
-            is_add:                 true,   // false is edit
-            go_back_page:           go_back_page   
+            is_add:             true,   // false is edit
+            go_back_page:       go_back_page   
         };
         navigation.pageAllFeedBalanceAddEdit.show(options);
-        
     }
     
 
     
     this.onClickRowEntry = function(row_entry){
+        // Show container
+        const next_page_id  = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
+        const next_page     = navigation.getPageContainer(next_page_id);
         
-        if (row_entry){
-            const goto_page_id   = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
-            const page_container = navigation.getPageContainer(goto_page_id);
-            navigation.showThisPage(page_container);
-            
-            
-            const go_back_page_id = PAGE_ID.ALL_FEED_BAL_LIST;
-            const go_back_page = navigation.getPageContainer(go_back_page_id);
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        navigation.pushCurrentPageToNavHistory(next_page);
         
-            const options = {
-                is_add:                 false,   // false is edit
-                go_back_page:           go_back_page
-            }
-            navigation.pageAllFeedBalanceAddEdit.show(options, row_entry);
-
+        navigation.showThisPage(next_page);
+        
+        
+        // Show Page
+        const go_back_page_id   = PAGE_ID.ALL_FEED_BAL_LIST;
+        const go_back_page      = navigation.getPageContainer(go_back_page_id);
+    
+        const options = {
+            is_add:             false,   // false is edit
+            go_back_page:       go_back_page
         }
+        navigation.pageAllFeedBalanceAddEdit.show(options, row_entry);
     }
 }

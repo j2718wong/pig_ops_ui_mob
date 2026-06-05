@@ -397,7 +397,7 @@ export function PagePigFarmFeedBuyList(input_settings){
             
             if (index == 0 || index == 1 || index == 2){
                 cur_td.onclick = function(){
-                    thisObj.onClickRowEntry(cur_entry.pf_feed_buy.hid);
+                    thisObj.onClickRowEntry(cur_entry);
                 };
                         
             }
@@ -446,7 +446,8 @@ export function PagePigFarmFeedBuyList(input_settings){
     
     this.onClickAddEntry = function(){
         // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_ADD_EDIT);
+        const next_page_id  = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
+        const next_page     = navigation.getPageContainer(next_page_id);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -456,37 +457,38 @@ export function PagePigFarmFeedBuyList(input_settings){
         
         
         // Show Page
-        const go_back_page_id = PAGE_ID.FARM_FEED_BUY_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        const go_back_page_id   = PAGE_ID.FARM_FEED_BUY_LIST;
+        const go_back_page      = navigation.getPageContainer(go_back_page_id);
         
         const options ={
-            is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   
+            is_add:             true,   // false is edit
+            go_back_page:       go_back_page   
         };
         navigation.pagePfFeedBuyAddEdit.show(options);
     }
     
     
     
-    this.onClickRowEntry = function(entry_hid){
-        const row_entry = thisObj.getEntry(entry_hid);
-
-        if (row_entry){
-            const go_back_page_id = PAGE_ID.FARM_FEED_BUY_LIST;
-            const go_back_page = navigation.getPageContainer(go_back_page_id);
+    this.onClickRowEntry = function(row_entry){
+        // Show container
+        const next_page_id  = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
+        const next_page     = navigation.getPageContainer(next_page_id);
         
-            const options ={
-                is_add:                 false,   // false is edit
-                callback_after_edit:    thisObj.onSuccessEditEntry,
-                go_back_page:           go_back_page
-            }
-            navigation.pagePfFeedBuyAddEdit.show(options, row_entry);
-            
-            
-            const goto_page_id   = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
-            const page_container = navigation.getPageContainer(goto_page_id);
-            navigation.showThisPage(page_container);
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        navigation.showThisPage(next_page);
+        
+        
+        // Show Page
+        const go_back_page_id   = PAGE_ID.FARM_FEED_BUY_LIST;
+        const go_back_page      = navigation.getPageContainer(go_back_page_id);
+    
+        const options ={
+            is_add:             false,   // false is edit
+            go_back_page:       go_back_page
         }
+        navigation.pagePfFeedBuyAddEdit.show(options, row_entry);
     }
 }

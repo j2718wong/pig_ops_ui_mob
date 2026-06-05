@@ -434,7 +434,7 @@ export function PageProdPigDeadList(input_settings){
 
             if (index == 0 || index == 1) {
                 cur_td.onclick = function(){
-                   
+                    thisObj.onClickRowEntry(cur_entry);
                 }
             }
             
@@ -583,7 +583,8 @@ export function PageProdPigDeadList(input_settings){
     
     this.onClickAddEntry = function(){
         // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
+        const next_page_id  = PAGE_ID.PIG_DEAD_ADD_EDIT;
+        const next_page     = navigation.getPageContainer(next_page_id);
         
         // Push currentPage to NavHistory; 
         // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -593,8 +594,8 @@ export function PageProdPigDeadList(input_settings){
         
         
         // Show Page
-        const go_back_page_id = PAGE_ID.PIG_DEAD_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
+        const go_back_page_id   = PAGE_ID.PIG_DEAD_LIST;
+        const go_back_page      = navigation.getPageContainer(go_back_page_id);
         
         const options ={
             is_add:                 true,   // false is edit
@@ -604,7 +605,7 @@ export function PageProdPigDeadList(input_settings){
     }
     
     
-    this.onClickRowEntry = function(entry_hid){
+    this.onClickRowEntry = function(row_entry){
         /*
         const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
         

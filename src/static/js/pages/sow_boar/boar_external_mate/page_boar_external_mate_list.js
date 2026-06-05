@@ -453,7 +453,7 @@ export function PageBoarExternalMateList(input_settings){
 
             if (index == 0 || index == 1) {
                 cur_td.onclick = function(){
-                   
+                    thisObj.onClickRowEntry(cur_entry);
                 }
             }
             
@@ -556,7 +556,8 @@ export function PageBoarExternalMateList(input_settings){
     
     
     
-    this.onClickRowEntry = function(entry_hid){
+    this.onClickRowEntry = function(row_entry){
+        if (row_entry == null){return;}
         /*
         const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
         

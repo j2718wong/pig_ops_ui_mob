@@ -55,8 +55,9 @@ export function PageUserSettings(input_settings){
     let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
     
-    let elemIdEnableNotifications = null;
-    let elemIdNotificationStatus  = null;  
+    let elemIdNotificationMsg       = null;
+    let elemIdEnableNotifications   = null;
+    let elemIdNotificationStatus    = null;  
     
     let elemIdServerErrorMsg    = null;
     
@@ -64,6 +65,7 @@ export function PageUserSettings(input_settings){
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;
     
+    let elemNotificationMsg     = null;
     let elemEnableNotifications = null;
     let elemNotificationStatus  = null;  
     
@@ -155,7 +157,7 @@ export function PageUserSettings(input_settings){
         elemIdHeaderTitle           = `${settings.uniqueKey}-title`;
         elemIdBtnClose              = `${settings.uniqueKey}-close`;
         
-        
+        elemIdNotificationMsg       = `${settings.uniqueKey}-notifications-msg`;
         elemIdEnableNotifications   = `${settings.uniqueKey}-enable-notifications`;
         elemIdNotificationStatus    = `${settings.uniqueKey}-notification-status`;
         
@@ -185,7 +187,7 @@ ${html_style}
         <div class="settings-card" id="">
             <div class="settings-content">
                 <h3>Notifications</h3>
-                <p>Get alerts for new bills, payment verification, and important farm updates.</p>
+                <span id="${elemIdNotificationMsg}"><p>Get alerts for important farm updates, new bill, and payment verification.</p></span>
                 <button id="${elemIdEnableNotifications}" class="btn-primary">
                     Enable Notifications
                 </button>
@@ -220,7 +222,7 @@ ${html_style}
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
         
-        
+        elemNotificationMsg     = elemDivContainer.querySelector('#'+elemIdNotificationMsg);
         elemEnableNotifications = elemDivContainer.querySelector('#'+elemIdEnableNotifications);
         elemNotificationStatus  = elemDivContainer.querySelector('#'+elemIdNotificationStatus);
 
@@ -268,6 +270,25 @@ ${html_style}
         if (options) {
             showOptions = options;
         }
+        
+        
+        // There is a different Notification message for Admin/Management or Staff users
+        // Get user.user_group.group_num
+        const cur_user = navigation.userControl.dataUserAccount.user;
+        const user_group_num = cur_user.user_group.group_num;
+        
+        let html;
+        if (user_group_num == ACC_USER_GROUP.ADMIN || 
+            user_group_num == ACC_USER_GROUP.MANAGEMENT){
+            
+            html = '<p>Get alerts for important farm updates, new bill, and payment verification.</p>';
+            
+        } 
+        else{
+            html = '<p>Get alerts for important farm updates.</p>';
+        }
+        elemNotificationMsg.innerHTML = html;
+        
         
         
         // Attach Listener to Close button
