@@ -36,6 +36,7 @@ export function PagePigFarmFeedBuyList(input_settings){
     
     const thisObj               = this;
     const navigation            = input_settings.navigation;
+    this.setNavigation(navigation);
     
     
     /*
@@ -161,7 +162,7 @@ export function PagePigFarmFeedBuyList(input_settings){
         
         
         // Set onclick listener to parent object
-        thisObj.setOnClickAddEntry(thisObj.onClickAddEntry); 
+        //thisObj.setOnClickAddEntry(thisObj.showAddEntryPage); 
     }
     
     
@@ -397,7 +398,7 @@ export function PagePigFarmFeedBuyList(input_settings){
             
             if (index == 0 || index == 1 || index == 2){
                 cur_td.onclick = function(){
-                    thisObj.onClickRowEntry(cur_entry);
+                    thisObj.showEditEntryPage(cur_entry);
                 };
                         
             }
@@ -431,64 +432,17 @@ export function PagePigFarmFeedBuyList(input_settings){
     }
     
     
-    this.getEntry = function(entry_hid){
-        const data_list = navigation.pigFarm.dataFarmFeedBuyList;
-        
-        for (const cur_entry of data_list){
-            if (cur_entry.pf_feed_buy.hid == entry_hid){
-                return cur_entry;
-            }
-        }
-        
-        return null;
-    }
+    this.getPageIdAddEditPage = function(){
+        return PAGE_ID.FARM_FEED_BUY_ADD_EDIT;}
     
     
-    this.onClickAddEntry = function(){
-        // Show Container
-        const next_page_id  = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
-        const next_page     = navigation.getPageContainer(next_page_id);
-        
-        // Push currentPage to NavHistory; 
-        // Will also compare current page and  next_page NAV_MENU_GROUP.
-        navigation.pushCurrentPageToNavHistory(next_page);
-        
-        navigation.showThisPage(next_page);
-        
-        
-        // Show Page
-        const go_back_page_id   = PAGE_ID.FARM_FEED_BUY_LIST;
-        const go_back_page      = navigation.getPageContainer(go_back_page_id);
-        
-        const options ={
-            is_add:             true,   // false is edit
-            go_back_page:       go_back_page   
-        };
-        navigation.pagePfFeedBuyAddEdit.show(options);
-    }
+    this.getPageIdListPage = function(){
+        return PAGE_ID.FARM_FEED_BUY_LIST;}
     
     
-    
-    this.onClickRowEntry = function(row_entry){
-        // Show container
-        const next_page_id  = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
-        const next_page     = navigation.getPageContainer(next_page_id);
-        
-        // Push currentPage to NavHistory; 
-        // Will also compare current page and  next_page NAV_MENU_GROUP.
-        navigation.pushCurrentPageToNavHistory(next_page);
-        
-        navigation.showThisPage(next_page);
-        
-        
-        // Show Page
-        const go_back_page_id   = PAGE_ID.FARM_FEED_BUY_LIST;
-        const go_back_page      = navigation.getPageContainer(go_back_page_id);
-    
-        const options ={
-            is_add:             false,   // false is edit
-            go_back_page:       go_back_page
-        }
-        navigation.pagePfFeedBuyAddEdit.show(options, row_entry);
-    }
+    // Should return a reference to a function that has this signature:
+    // func_name(options, row_entry);
+    this.getFuncAddEditShowPage = function(){
+        return navigation.pagePfFeedBuyAddEdit.show;}
+   
 }

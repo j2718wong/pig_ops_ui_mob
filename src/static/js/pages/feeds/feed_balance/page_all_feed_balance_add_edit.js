@@ -672,10 +672,10 @@ export function PageAllFeedBalanceAddEdit(input_settings){
 
 
         if (showOptions.is_add){
-            this.populateFeedInputTablesNew();
+            thisObj.populateFeedInputTablesNew();
         }
         else{
-            this.populateForm();
+            thisObj.populateForm();
         }
         
        

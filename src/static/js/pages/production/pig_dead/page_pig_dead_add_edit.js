@@ -290,7 +290,7 @@ export function PagePigDeadAddEdit(input_settings){
     
     
     // Reset add form
-    this.show = function(options){
+    this.show = function(options, data_pig_dead){
         thisObj.debugNavHistory(TAG);
         
         // Update navigation.curPageNavigated

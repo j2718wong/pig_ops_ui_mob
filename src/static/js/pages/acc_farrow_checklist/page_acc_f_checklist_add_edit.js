@@ -216,7 +216,7 @@ export function PageAccFChecklistAddEdit(input_settings){
     }
     
     
-    this.show = function(options){
+    this.show = function(options, data_acc_checklist_item){
         
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
@@ -237,7 +237,7 @@ export function PageAccFChecklistAddEdit(input_settings){
         else{
             html = `<i class="fas fa-edit me-2"></i>Edit Farrowing Checklist`;
             
-            dataAccChecklistItem = showOptions.data_row_entry;
+            dataAccChecklistItem = data_acc_checklist_item;
             thisObj.populateForm();
         }
         elemHeaderTitle.innerHTML = html;

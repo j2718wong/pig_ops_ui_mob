@@ -188,8 +188,6 @@ export function PageBoarExternalMateList(input_settings){
         
         componentNavLeftRight.bindEventListeners();
         
-        
-        thisObj.setOnClickAddEntry(thisObj.onClickAddEntry);
     }
     
     
@@ -453,7 +451,7 @@ export function PageBoarExternalMateList(input_settings){
 
             if (index == 0 || index == 1) {
                 cur_td.onclick = function(){
-                    thisObj.onClickRowEntry(cur_entry);
+                    //thisObj.showEditEntryPage(cur_entry);
                 }
             }
             
@@ -517,68 +515,18 @@ export function PageBoarExternalMateList(input_settings){
     }
     
     
-    this.getEntry = function(entry_hid){
-        const data_list = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;
-        
-        for (const cur_entry of data_list){
-            if (cur_entry.hid == entry_hid){
-                return cur_entry;
-            }
-        }
-        
-        return null;
-    }
+    this.getPageIdAddEditPage = function(){
+        return PAGE_ID.BOAR_EXT_MATE_ADD_EDIT;}
     
     
+    this.getPageIdListPage = function(){
+        return PAGE_ID.BOAR_EXT_MATE_LIST;}
     
     
-    this.onClickAddEntry = function(){
-        // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT);
-        
-        // Push currentPage to NavHistory; 
-        // Will also compare current page and  next_page NAV_MENU_GROUP.
-        navigation.pushCurrentPageToNavHistory(next_page);
-        
-        navigation.showThisPage(next_page);
-        
-        
-        // Show Page
-        const go_back_page_id = PAGE_ID.BOAR_EXT_MATE_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
-        
-        const options ={
-            is_add:                 true,   // false is edit
-            go_back_page:           go_back_page   
-        }
-        navigation.pageBoarExtMateAddEdit.show(options);
-    }
-    
-    
-    
-    this.onClickRowEntry = function(row_entry){
-        if (row_entry == null){return;}
-        /*
-        const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
-        
-        const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
-    
-        const options ={
-            operation_type:         curAccPigOpsType,
-            is_add:                 false,   // false is edit
-            callback_after_edit:    thisObj.onSuccessEditEntry,
-            go_back_page:           go_back_page 
-        }
-        navigation.pageAccPigOpsAddEdit.show(options, data_acc_pig_ops);
-        
-        
-        const goto_page_id   = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
-        const page_container = navigation.getPageContainer(goto_page_id);
-        navigation.showThisPage(page_container);
-        */ 
-    }
-  
-    
+    // Should return a reference to a function that has this signature:
+    // func_name(options, row_entry);
+    this.getFuncAddEditShowPage = function(){
+        return navigation.pageBoarExtMateAddEdit.show;}
+   
     
 }

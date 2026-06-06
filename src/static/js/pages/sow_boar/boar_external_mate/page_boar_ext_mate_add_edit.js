@@ -50,6 +50,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     const elemDivContainer      = document.getElementById(settings.elemIdDivContainer);
         
         
+    let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
     
     let componentSelectBoar     = null;
@@ -63,6 +64,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     let elemIdBtnSave           = null;
     
     
+    let elemHeaderTitle         = null;
     let elemBtnClose            = null;
     
     let elemServerErrorMsg      = null;
@@ -72,6 +74,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     let showOptions             = null;
+    let dataBoarExtMate         = null;
     
     
     this.init = function(){
@@ -82,7 +85,8 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     this.render = function(){
         
-        elemIdBtnClose          = `${settings.uniqueKey}-select-close`;
+        elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
+        elemIdBtnClose          = `${settings.uniqueKey}-close`;
         
         
         componentSelectBoar     = new SelectBoarGesta({
@@ -158,8 +162,8 @@ export function PageBoarExtMateAddEdit(input_settings){
 <div class="form-container">
 
     <div class="modal-header gestating">
-        <h5 class="modal-title" id="add-entry-acc-pig-ops-modal-label">
-            <i class="fas fa-plus me-2"></i><span>Add Boar External Mate</span>
+        <h5 class="modal-title">
+            <span id="${elemIdHeaderTitle}"><i class="fas fa-plus me-2"></i>Add Boar External Mate</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" id="${elemIdBtnClose}" aria-label="Close"></button>
     </div>
@@ -216,8 +220,8 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     this._findElements = function(){
+        elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
-        
         
         
         elemServerErrorMsg      = elemDivContainer.querySelector('#'+elemIdServerErrorMsg);
@@ -286,7 +290,7 @@ export function PageBoarExtMateAddEdit(input_settings){
     }
     
     
-    this.show = function(options){
+    this.show = function(options, data_boar_ext_mate){
         
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
@@ -310,7 +314,7 @@ export function PageBoarExtMateAddEdit(input_settings){
         else{
             html = `<i class="fas fa-edit me-2"></i>Edit Boar External Mate`;
             
-            dataAccChecklistItem = showOptions.data_row_entry;
+            dataBoarExtMate = data_boar_ext_mate;
             thisObj.populateForm();
         }
         elemHeaderTitle.innerHTML = html;

@@ -475,6 +475,14 @@ export function PageTableBasic(){
                 const filtered_entries = thisObj.searchEntries(search_term);
                 thisObj.renderTable(filtered_entries);
             });
+            
+            if (settings.noAddButton){}
+            else{
+                elemAddEntryBtn.addEventListener('click', function() {
+                    thisObj.showAddEntryPage();
+                });
+            }
+            
         }
         
         if (settings.addEntryLink){
@@ -683,4 +691,74 @@ export function PageTableBasic(){
         
         return label_no_entries;
     }
+    
+    
+    // Must be overridden
+    this.getPageIdAddEditPage = function(){return null;}
+    
+    
+    // Must be overridden
+    this.getPageIdListPage = function(){return null;}
+    
+    
+    // Must be overridden
+    // Should return a reference to a function that has this signature:
+    // func_name(options, row_entry);
+    this.getFuncAddEditShowPage = function(){return null;}
+    
+    
+    this.showAddEntryPage = function(){
+        const func_show_page = thisObj.getFuncAddEditShowPage();
+        if (!func_show_page){return;}
+        
+        // Show Container
+        const next_page_id  = thisObj.getPageIdAddEditPage();
+        const next_page     = thisObj.navigation.getPageContainer(next_page_id);
+        
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        thisObj.navigation.pushCurrentPageToNavHistory(next_page);
+        
+        thisObj.navigation.showThisPage(next_page);
+        
+        
+        // Show Page
+        const go_back_page_id   = thisObj.getPageIdListPage();
+        const go_back_page = thisObj.navigation.getPageContainer(go_back_page_id);
+        
+        const options ={
+            is_add:             true,   // false is edit
+            go_back_page:       go_back_page   
+        };
+        func_show_page(options);
+    }
+    
+    
+    this.showEditEntryPage = function(row_entry){
+        const func_show_page = thisObj.getFuncAddEditShowPage();
+        if (!func_show_page){return;}
+        
+        // Show container
+        const next_page_id  = thisObj.getPageIdAddEditPage();
+        const next_page     = thisObj.navigation.getPageContainer(next_page_id);
+        
+        // Push currentPage to NavHistory; 
+        // Will also compare current page and  next_page NAV_MENU_GROUP.
+        thisObj.navigation.pushCurrentPageToNavHistory(next_page);
+        
+        thisObj.navigation.showThisPage(next_page);
+        
+        
+        // Show Page
+        const go_back_page_id   = thisObj.getPageIdListPage();
+        const go_back_page      = thisObj.navigation.getPageContainer(go_back_page_id);
+    
+        const options = {
+            is_add:             false,   // false is edit
+            go_back_page:       go_back_page
+        };
+        func_show_page(options, row_entry);
+    }
+    
+    
 }
