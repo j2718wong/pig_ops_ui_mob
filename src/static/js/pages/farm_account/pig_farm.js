@@ -1001,7 +1001,7 @@ export function PigFarm(_navigation){
                     if (callback_success){
                         let ver_num = 0
                         if (response.data_ver_num){
-                            ver_num = response.data_ver_num;
+                            ver_num = response.data_ver_num.pig_farm.feed_buy;
                         }
 
                         callback_success({
@@ -1220,7 +1220,7 @@ export function PigFarm(_navigation){
                     if (callback_success){
                         let ver_num = 0
                         if (response.data_ver_num){
-                            ver_num = response.data_ver_num;
+                            ver_num = response.data_ver_num.pig_farm.feed_balance;
                         }
                         
                         callback_success({

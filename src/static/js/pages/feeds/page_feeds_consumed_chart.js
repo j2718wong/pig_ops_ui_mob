@@ -65,6 +65,7 @@ export function PageFeedsConsumedChart(input_settings){
     let elemIdShowSample        = null;
     
     let elemIdConsumedChart     = null;
+    let elemIdDebug             = null;
  
     
     let elemPageInfo            = null;
@@ -75,7 +76,8 @@ export function PageFeedsConsumedChart(input_settings){
     let elemShowSample          = null;
     
     let elemConsumedChart       = null;
-
+    let elemDebug               = null;
+    
     
     let dtCurrentDate           = null;
     
@@ -247,6 +249,7 @@ export function PageFeedsConsumedChart(input_settings){
         
         elemIdConsumedChart     = `${settings.uniqueKey}-consumed-chart`;
         
+        elemIdDebug             = `${settings.uniqueKey}-debug`;
         
         const html_style        = thisObj._writeInlineStyle();
         
@@ -280,6 +283,8 @@ ${html_style}
     </div>
     
     <div id="${elemIdConsumedChart}"></div>
+    
+    <div id="${elemIdDebug}"></div>
 
 </div>
         `;
@@ -306,6 +311,8 @@ ${html_style}
         elemShowSample          = elemDivContainer.querySelector('#'+elemIdShowSample);
         
         elemConsumedChart       = elemDivContainer.querySelector('#'+elemIdConsumedChart);
+        
+        elemDebug               = elemDivContainer.querySelector('#'+elemIdDebug);
     }
     
     
@@ -429,7 +436,7 @@ ${html_style}
         // Update data source
         dataFeedBalanceList     = data.data;
         dataFeedBalanceVerNum   = data.ver_num;
-            
+        
             
         // Check if dataFeedBalanceVerNum is same with server_ver_num
         let server_ver_num;
@@ -439,6 +446,14 @@ ${html_style}
         }
         else{
             server_ver_num = navigation.pigFarm.dataVerNum.feed_balance;
+        }
+        
+        //let s = `feedBal cache vernum = ${dataFeedBalanceVerNum}; server vernum = ${server_ver_num}`;
+        //elemDebug.textContent = s;
+        
+        if (Number.isInteger(dataFeedBalanceVerNum) == false){
+            // There was some messed up at initial saving
+            dataFeedBalanceVerNum = 0;
         }
         
         if (server_ver_num > dataFeedBalanceVerNum){
@@ -499,6 +514,12 @@ ${html_style}
         else{
             server_ver_num = navigation.pigFarm.dataVerNum.feed_buy;
         }
+        
+        if (Number.isInteger(dataFarmFeedBuyVerNum) == false){
+            // There was some messed up at initial saving
+            dataFarmFeedBuyVerNum = 0;
+        }
+
         
         if (server_ver_num > dataFarmFeedBuyVerNum){
             this.requestServerDataFeedBuyOnly();
