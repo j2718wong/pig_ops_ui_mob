@@ -1619,6 +1619,16 @@ export function Navigation(){
                 });
                 break;
             
+            case HASH_ROUTES.BILL_NEW:
+                pageContainer = this.getPageContainer(PAGE_ID.BILL_NEW);
+                this.showThisPage(pageContainer);
+                
+                this.pageAccountNewBill.show({ 
+                    returnRoute:    data.returnRoute || HASH_ROUTES.HOME
+                });
+                break;
+            
+            
             
             case HASH_ROUTES.USER_SETTINGS:
                 pageContainer = this.getPageContainer(PAGE_ID.USER_SETTINGS);

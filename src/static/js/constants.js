@@ -213,6 +213,7 @@ const HASH_ROUTES = {
     MY_ACCOUNT:             'my_account',
     CUSTOMER_PRICING:       'pricing',
     USER_SETTINGS:          'user_settings',
+    BILL_NEW:               'bill_new',
     
     
     ALL_FEED_BAL_LIST:      'feed_balance_list',

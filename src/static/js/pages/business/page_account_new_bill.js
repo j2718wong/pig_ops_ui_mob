@@ -448,6 +448,10 @@ ${html_style}
     
     
     this._bindEventListeners= function(){
+        elemBtnClose.addEventListener('click', function() {
+            history.back()
+        });
+        
         elemSubmitPaymentBtn.addEventListener('click', function() {
             thisObj.onClickSubmitPaymentProof();
         });
@@ -694,8 +698,6 @@ ${html_style}
           
     this.show = function(options){
         
-        // show the last showOptions if there is no options
-        if (options == null){options = showOptions;}
         
         // So that not to instantiate in every table redraw
         dtCurrentDate = new Date();
@@ -712,16 +714,7 @@ ${html_style}
         if (options){ // Change showOptions if there is a given options.  
             showOptions = options;
         }
-        
-        
-        elemBtnClose.onclick = function(){
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            navigation.showThisPage(showOptions.go_back_page);
-        };
-        
+                
         
         const account = navigation.userControl.dataUserAccount.account.account;
         const current_bill = account.current_bill;

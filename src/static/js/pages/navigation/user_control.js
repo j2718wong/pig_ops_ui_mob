@@ -383,31 +383,25 @@ export function UserControl(_navigation) {
     
     
     this.onClickBillNew = function(){
+        const cur_route      = navigation.hashRouter.getCurrentRoute();
+        const cur_container  = navigation.curPageNavigated.pageContainer;
+        const cur_page_id    = navigation.pageContainers.getPageIdFromContainer(cur_container);
         
-        console.log(`test dataUserAccount`);
-        console.log(this.dataUserAccount);
+        navigation.hashRouter.navigate(HASH_ROUTES.BILL_NEW, {
+            pageId:         PAGE_ID.BILL_NEW,
+            returnRoute:    cur_route,
+            returnPageId:   cur_page_id
+        });
         
-        let go_back_page    = navigation.curPageNavigated.pageContainer;
-        if (go_back_page == null){
-            go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
-        } 
         
         
         const next_page = navigation.getPageContainer(PAGE_ID.BILL_NEW);
-        
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
-        
-        
         navigation.showThisPage(next_page);
         
-        
-        const options ={
-            go_back_page:   go_back_page,
-        };
-        navigation.pageAccountNewBill.show(options);
+        navigation.pageAccountNewBill.show({ 
+            returnRoute:    cur_route,
+            returnPageId:   cur_page_id 
+        });
         
         elemDesktopUserDropdown.classList.remove('active');
     }
