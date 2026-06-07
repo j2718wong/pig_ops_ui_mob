@@ -1641,6 +1641,36 @@ export function Navigation(){
             
             
             
+            case HASH_ROUTES.SOW_BOAR_LIST:
+                // Parse query parameters
+                const urlParams = new URLSearchParams(route.split('?')[1] || '');
+                const type = urlParams.get('type') || 'sows';
+                const tab = urlParams.get('tab') || 'all';
+                
+                let sowBoarType;
+                switch(type) {
+                    case 'sows':    sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                    case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
+                    case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
+                    case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
+                    default: sowBoarType = SOW_BOAR_TYPE.SOW;
+                }
+                
+                pageContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+                this.showThisPage(pageContainer);
+                
+                const options = {
+                    sow_boar_type: sowBoarType
+                };
+                if (tab !== 'all') {
+                    options.filter_type = tab;
+                }
+                if (data.showOptions) {
+                    Object.assign(options, data.showOptions);
+                }
+                
+                this.pageSowBoarList.show(options);
+                break;
             
                         
             case HASH_ROUTES.ALL_FEED_BAL_LIST:

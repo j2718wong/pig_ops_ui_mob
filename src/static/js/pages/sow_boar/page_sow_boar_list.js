@@ -633,6 +633,14 @@ ${html_style}
     
     
     this.show = function(options){
+        /*Typical options
+            {
+                sow_boar_type:  SOW_BOAR_TYPE.SOW,
+                filter_type:    'all' 
+            }
+         * 
+         * */
+        
         // So that not to instantiate in every table redraw
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
@@ -657,14 +665,6 @@ ${html_style}
         
         // show the last showOptions if there is no options
         if (options == null){options = showOptions;}
-        
-        
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {options:options};
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
         showOptions = options;
         
         
@@ -751,12 +751,12 @@ ${html_style}
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavSowBoar(null, 
-                        SOW_BOAR_TYPE.DISPOSED);
+                        SOW_BOAR_TYPE.DISPOSED, null, true);
                 }
         
                 elemNavNextEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavSowBoar(null, 
-                        SOW_BOAR_TYPE.BOAR);
+                        SOW_BOAR_TYPE.BOAR, null, true);
                 }
                 
                 curDataListView = dataSowList;
@@ -817,12 +817,12 @@ ${html_style}
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavSowBoar(null, 
-                        SOW_BOAR_TYPE.SOW);
+                        SOW_BOAR_TYPE.SOW, null, true);
                 }
         
                 elemNavNextEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavSowBoar(null, 
-                        SOW_BOAR_TYPE.GILT);
+                        SOW_BOAR_TYPE.GILT, null, true);
                 }
                 
                 
@@ -856,12 +856,12 @@ ${html_style}
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavSowBoar(null, 
-                        SOW_BOAR_TYPE.BOAR);
+                        SOW_BOAR_TYPE.BOAR, null, true);
                 }
         
                 elemNavNextEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavSowBoar(null, 
-                        SOW_BOAR_TYPE.DISPOSED);
+                        SOW_BOAR_TYPE.DISPOSED, null, true);
                 }
                 
                 
@@ -896,12 +896,12 @@ ${html_style}
                 // Set up listeners for navigation arrows
                 elemNavPrevEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavSowBoar(null, 
-                        SOW_BOAR_TYPE.GILT);
+                        SOW_BOAR_TYPE.GILT, null, true);
                 }
         
                 elemNavNextEntry.onclick = function(){
                     navigation.managerNavLinks.onClickNavSowBoar(null, 
-                        SOW_BOAR_TYPE.SOW);
+                        SOW_BOAR_TYPE.SOW, null, true);
                 }
                 
                 

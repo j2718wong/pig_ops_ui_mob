@@ -1502,7 +1502,8 @@ export function ManagerNavLinks(_navigation) {
         }
     }
     
-            
+    
+    /*
     this.onClickNavSowBoar = function(is_mobile, sow_boar_type, show_options){
         
         
@@ -1558,7 +1559,87 @@ export function ManagerNavLinks(_navigation) {
         navigation.pageSowBoarList.show(options);
         
     }
+    */
     
+    
+    this.onClickNavSowBoar = function(is_mobile, sow_boar_type, show_options, is_left_right_nav){
+        // Get previous page from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
+        
+        // Check if same menu level
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+            previousPageId, PAGE_ID.SOW_BOAR_LIST);
+        
+        const isSamePage = (previousPageId === PAGE_ID.SOW_BOAR_LIST);
+        
+        // Determine route with query parameters for type and tab
+        let route = HASH_ROUTES.SOW_BOAR_LIST;
+        let activeTab = 'all';
+        
+        
+        // Set active tab based on sow_boar_type
+        switch(sow_boar_type) {
+            case SOW_BOAR_TYPE.SOW:
+                activeTab = show_options?.filter_type || 'all';
+                route = `${HASH_ROUTES.SOW_BOAR_LIST}?type=sows&tab=${activeTab}`;
+                break;
+            case SOW_BOAR_TYPE.BOAR:
+                route = `${HASH_ROUTES.SOW_BOAR_LIST}?type=boars`;
+                break;
+            case SOW_BOAR_TYPE.GILT:
+                route = `${HASH_ROUTES.SOW_BOAR_LIST}?type=gilts`;
+                break;
+            case SOW_BOAR_TYPE.DISPOSED:
+                route = `${HASH_ROUTES.SOW_BOAR_LIST}?type=disposed`;
+                break;
+        }
+        
+        // Special handling for Sows - check data updates first
+        const navigateToSowBoar = () => {
+            if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+                navigation.hashRouter.replace(route, {
+                    pageId:         PAGE_ID.SOW_BOAR_LIST,
+                    sowBoarType:    sow_boar_type,
+                    activeTab:      activeTab,
+                    showOptions:    show_options
+                });
+            } else {
+                navigation.hashRouter.navigate(route, {
+                    pageId:         PAGE_ID.SOW_BOAR_LIST,
+                    sowBoarType:    sow_boar_type,
+                    activeTab:      activeTab,
+                    showOptions:    show_options
+                });
+            }
+            
+            // Show the page
+            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+            navigation.showThisPage(next_page);
+            
+            const options = {
+                sow_boar_type: sow_boar_type
+            };
+            if (show_options) {
+                // Combine show_options to options
+                Object.assign(options, show_options);
+            }
+            navigation.pageSowBoarList.show(options);
+        };
+        
+        // For Sows, check data updates first
+        if (sow_boar_type == SOW_BOAR_TYPE.SOW) {
+            navigation.pigFarm.managerPigProd.checkIfToUpdateDataPigProdList(
+                navigateToSowBoar);
+            return;
+        }
+        
+        // For other types, navigate directly
+        navigateToSowBoar();
+    }
+
     
     this.onClickNavParentTrace = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.TRACE_PARENTS);
