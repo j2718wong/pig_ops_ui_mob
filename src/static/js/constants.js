@@ -216,6 +216,15 @@ const HASH_ROUTES = {
     BILL_NEW:               'bill_new',
     
     
+    SOW_BOAR_LIST:          'sow_boar_list',
+    SOW_BOAR_ENTRY:         'sow_boar_entry',
+    SOW_BOAR_ADD_EDIT:      'sow_boar_add_edit',
+    SOW_BOAR_DISPOSED:      'sow_boar_disposed',
+    TRACE_PARENTS:          'trace_parents',
+    
+    
+    
+    
     ALL_FEED_BAL_LIST:      'feed_balance_list',
     ALL_FEED_BAL_ADD_EDIT:  'feed_balance_add_edit',
     

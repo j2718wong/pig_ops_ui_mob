@@ -7,7 +7,8 @@
 'use strict';
 
 import {PageViewPigFarmPage}         from '../common/page_view_basic.js';
-import {calculateNumDaysSinceInsem}  from '../common/page_view_basic.js';
+import {calculateNumDaysSinceInsem,
+        calculateNumDaysSinceBirth}  from '../common/page_view_basic.js';
 
 
 import {APPLICATION,
@@ -488,7 +489,6 @@ ${html_style}
         const dataLactatingList = navigation.pigFarm.managerPigProd.dataLactatingList;
         const dataGestatingList = navigation.pigFarm.managerPigProd.dataGestatingList;
         
-        
         const dataPigFarm = navigation.pigFarm.dataPigFarm;
         
         let num_farrowing_crates = dataPigFarm.pig_farm.num_farrow_crates;
@@ -605,7 +605,7 @@ ${html_style}
                 num_farrowing_crates);
         
         const earlyWeanOptions = thisObj.findEarlyWeanOpportunities(
-            crateOccupancy, num_days_allow_early_wean);
+            crateOccupancy, num_days_allow_early_wean, conflicts);
         
         thisObj.renderCrateGanttChart(weeklyDates, crateOccupancy, conflicts, 
             earlyWeanOptions);
@@ -661,6 +661,9 @@ ${html_style}
             if (!sow.birth || !sow.birth.date_actual) continue;
             
             const birthDate = new Date(sow.birth.date_actual);
+            const moveInDate = new Date(birthDate);
+            moveInDate.setDate(moveInDate.getDate() - accSettingsOps.num_days_move_to_farrow);
+
             const moveOutDate = new Date(birthDate);
             moveOutDate.setDate(moveOutDate.getDate() + 
                     accSettingsOps.num_days_wean - day1Adjustment);
@@ -670,7 +673,7 @@ ${html_style}
                     type: 'lactating',
                     pid: sow.pig_production.farm_prod_id,
                     sowName: sow.sow.name,
-                    startDate: new Date(today),
+                    startDate: moveInDate,
                     endDate: moveOutDate,
                     expectedBirth: birthDate,
                     isExisting: true
@@ -822,11 +825,34 @@ ${html_style}
         const today = new Date(dtCurrentDate);
         today.setHours(0, 0, 0, 0);
         
+        // First, check if there are any unassigned gestating sows (conflicts)
+        let hasUnassignedGestating = false;
+        
+        for (const crate of crateOccupancy) {
+            for (const assignment of crate.assignments) {
+                // Check for gestating sows that couldn't be assigned
+                if (assignment.type === 'gestating' && 
+                    (assignment.noCrateAvailable || assignment.isConflict || assignment.hasOverlap)) {
+                    hasUnassignedGestating = true;
+                    break;
+                }
+            }
+            if (hasUnassignedGestating) break;
+        }
+        
+        // Only suggest early wean if there are actually unassigned gestating sows
+        if (!hasUnassignedGestating) {
+            console.log('No unassigned gestating sows - early wean not needed');
+            return opportunities;
+        }
+        
+        // Check for lactating sows that could be early weaned
         for (const crate of crateOccupancy) {
             for (const assignment of crate.assignments) {
                 if (assignment.type === 'lactating') {
                     const daysRemaining = Math.ceil((assignment.endDate - today) / (1000 * 60 * 60 * 24));
                     
+                    // Only suggest early wean if within window AND there's a conflict
                     if (daysRemaining <= earlyWeanDays && daysRemaining > 0) {
                         opportunities.push({
                             crateNumber: crate.crateNumber,
@@ -834,7 +860,7 @@ ${html_style}
                             sowName: assignment.sowName,
                             currentEndDate: assignment.endDate,
                             daysSaved: daysRemaining,
-                            message: `Lacta Sow ${assignment.pid} (${assignment.sowName}) in Crate ${crate.crateNumber} can be early weaned to free a crate`
+                            message: `⚠️ Crate shortage detected. Early weaning ${assignment.sowName} (Lacta) could free Crate ${crate.crateNumber} in ${daysRemaining} days.`
                         });
                     }
                 }
@@ -1049,9 +1075,19 @@ ${html_style}
                     else if (assignment.type === 'lactating') {
                         const weanDate = endDateToUse;
                         
+                        // Note: The assignment.expectedBirth here is now the 
+                        // sow actual birth.
+                        
+                        // Calculate the number of days since birth until today
+                        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+                        const date_of_birth     = assignment.expectedBirth;
+                        const num_days_since_birth = calculateNumDaysSinceBirth(
+                            date_of_birth, null, acc_settings_ops);
+                        
                         contentHtml = `
                             <div class="timeline-sow-name">🐖 ${assignment.pid} ${assignment.sowName}</div>
                             <div class="timeline-sub">Wean: ${thisObj.formatDateShort(weanDate)}</div>
+                            <div class="timeline-sub">Day ${num_days_since_birth}</div>
                         `;
                     } 
                     else {
