@@ -128,6 +128,9 @@ export function NavPageContainers(_navigation){
     const elemIdContSystemStats         = 'container-system-stats';
     
     
+    // Basically CONTAINER_GROUP and MENU_GROUP have similar information
+    // but dont delete CONTAINER_GROUP yet. 
+    
     let CONTAINER_GROUP_PRODUCTION      = null;
     let CONTAINER_GROUP_SOW_BOAR_GILT   = null;
     let CONTAINER_GROUP_OPERATIONS      = null;
@@ -135,6 +138,17 @@ export function NavPageContainers(_navigation){
     let CONTAINER_GROUP_ACCOUNT_LISTS   = null;
     let CONTAINER_GROUP_SETTINGS        = null;
     let CONTAINER_GROUP_ADMIN           = null;
+    
+    
+    let MENU_GROUP_PRODUCTION           = null;
+    let MENU_GROUP_SOW_BOAR_GILT        = null;
+    let MENU_GROUP_OPERATIONS           = null;
+    let MENU_GROUP_FINANCIALS           = null;
+    let MENU_GROUP_ACCOUNT_LISTS        = null;
+    let MENU_GROUP_SETTINGS             = null;
+    let MENU_GROUP_ADMIN                = null;
+    
+    
     
     
     let containerToPageIdMap            = null;
@@ -302,6 +316,59 @@ export function NavPageContainers(_navigation){
             this.containers[PAGE_ID.ACC_REFERRAL_LIST],
             this.containers[PAGE_ID.SYSTEM_STATS]
         ];
+        
+        
+        MENU_GROUP_PRODUCTION      = [
+            PAGE_ID.PROD_GESTA_LIST,
+            PAGE_ID.PROD_LACTA_LIST,
+            PAGE_ID.PROD_FATTENING_LIST,
+            PAGE_ID.PROD_HISTORY_LIST,
+            PAGE_ID.PROD_NOT_PREGNANT_LIST
+        ]; 
+        
+        
+        MENU_GROUP_SOW_BOAR_GILT   = [
+            PAGE_ID.SOW_BOAR_LIST,
+            PAGE_ID.SOW_BOAR_DISPOSED,
+            PAGE_ID.TRACE_PARENTS
+        ];
+        
+        
+        MENU_GROUP_OPERATIONS      = [
+            PAGE_ID.ALL_FEED_BAL_LIST,
+            PAGE_ID.FARROWING_SCHEDULE,
+            PAGE_ID.BOAR_EXT_MATE_LIST,
+            PAGE_ID.PIG_DEAD_LIST,
+            PAGE_ID.ACC_FARROW_CHECKLIST,
+            PAGE_ID.FEEDS_CONSUMED
+        ];
+        
+        
+        MENU_GROUP_FINANCIALS      = [
+            PAGE_ID.PROD_SALES_LIST,
+            PAGE_ID.FARM_FEED_BUY_LIST,
+            PAGE_ID.SUMMARY_REPORT_LIST
+        ];
+        
+        
+        MENU_GROUP_ACCOUNT_LISTS   = [];
+        
+        
+        MENU_GROUP_SETTINGS        = [
+            PAGE_ID.ACC_OPS_SETTINGS_EDIT,
+            PAGE_ID.ACC_PIG_OPS_LIST
+        ];
+        
+        
+        MENU_GROUP_ADMIN           = [
+            PAGE_ID.USER_LIST,
+            PAGE_ID.ACCESS_CODE_LIST,
+            PAGE_ID.ACC_REFERRAL_LIST,
+            PAGE_ID.SYSTEM_STATS
+        ];
+        
+        
+        
         
         
         containerToPageIdMap = [
@@ -792,4 +859,52 @@ export function NavPageContainers(_navigation){
         
         return null;
     }
+    
+    
+    this.getNavigationMenuGroupByPageId = function(page_id){
+        
+        if (MENU_GROUP_PRODUCTION.includes(page_id)){
+            return NAV_MENU_GROUP.PRODUCTION;
+        }
+        
+        if (MENU_GROUP_SOW_BOAR_GILT.includes(page_id)){
+            return NAV_MENU_GROUP.SOW_BOAR_GILT;
+        }
+        
+        if (MENU_GROUP_OPERATIONS.includes(page_id)){
+            return NAV_MENU_GROUP.OPERATIONS;
+        }
+        
+        if (MENU_GROUP_FINANCIALS.includes(page_id)){
+            return NAV_MENU_GROUP.FINANCIALS;
+        }
+        
+        if (MENU_GROUP_ACCOUNT_LISTS.includes(page_id)){
+            return NAV_MENU_GROUP.ACCOUNT_LISTS;
+        }
+        
+        if (MENU_GROUP_SETTINGS.includes(page_id)){
+            return NAV_MENU_GROUP.SETTINGS;
+        }
+        
+        if (MENU_GROUP_ADMIN.includes(page_id)){
+            return NAV_MENU_GROUP.ADMIN;
+        }
+        
+        return null;
+    }
+    
+    
+    this.checkIfPagesOnSameMenu = function(page_1, page_2){
+        const menu_1 = thisObj.getNavigationMenuGroupByPageId(page_1);
+        const menu_2 = thisObj.getNavigationMenuGroupByPageId(page_2);
+        
+        if (menu_1 == null) {return false;}
+        if (menu_2 == null) {return false;} 
+        
+        if (menu_1 == menu_2){return true;}
+        
+        return false;
+    }
+    
 }

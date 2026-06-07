@@ -9,7 +9,8 @@
 import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
     
 import {APPLICATION,    
-        PAGE_ID,    
+        PAGE_ID,
+        HASH_ROUTES,    
         PIG_OPERATION_TYPE}         from '../../../constants.js';
     
 import {ComponentBreadCrumbs}       from '../../common/ui/comp_breadcrumb.js';
@@ -271,6 +272,14 @@ export function PagePigDeadAddEdit(input_settings){
 
     
     this._bindEventListeners = function(){
+        elemBtnClose.addEventListener('click', function() {
+            history.back();
+        });
+        
+        elemBtnCancel.addEventListener('click', function() {
+            history.back();
+        });
+
         
         elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
@@ -290,12 +299,10 @@ export function PagePigDeadAddEdit(input_settings){
     
     
     // Reset add form
-    this.show = function(options, data_pig_dead){
-        thisObj.debugNavHistory(TAG);
+    this.show = function(options, data_pig_dead){        
         
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {options:options};
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        // Store return route for back button
+        thisObj.returnRoute = HASH_ROUTES.PIG_DEAD_LIST;
         
         
         // Check if Offline
@@ -335,36 +342,6 @@ export function PagePigDeadAddEdit(input_settings){
         }
         
         
-        // Update Close and cancel button on click
-        
-        elemBtnClose.onclick = function() {
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            // This will not redraw the previous page; only shwo container
-            navigation.showThisPage(showOptions.go_back_page);
-            
-            if (APPLICATION.DEBUG_NAV_HISTORY){
-                thisObj.debugNavHistory(TAG);
-            }
-        };
-        
-        elemBtnCancel.onclick = function() {
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            // This will not redraw the previous page; only shwo container
-            navigation.showThisPage(showOptions.go_back_page);
-
-            
-            if (APPLICATION.DEBUG_NAV_HISTORY){
-                thisObj.debugNavHistory(TAG);
-            }
-        };
     }
     
     
@@ -563,18 +540,12 @@ export function PagePigDeadAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const go_back_page_id = PAGE_ID.PIG_DEAD_LIST;
-                    const go_back_page = navigation.getPageContainer(go_back_page_id);
+                    // Fixed return route; After Add/edit should return to list page
+                    navigation.hashRouter.replace(HASH_ROUTES.PIG_DEAD_LIST, {
+                        pageId:         PAGE_ID.PIG_DEAD_LIST,
+                        refreshList:    true
+                    });
                     
-                    navigation.managerNavHistory.removeFromNavHistoryHead(
-                        go_back_page);
-                        
-                    const options = {
-                        refresh_list: true
-                    };
-                    
-                    navigation.showThisPage(go_back_page);
-                    navigation.pagePigDeadList.show(options);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

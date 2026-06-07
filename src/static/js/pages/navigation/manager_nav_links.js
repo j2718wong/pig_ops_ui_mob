@@ -10,9 +10,11 @@ import {ACC_USER_GROUP,
         FLAG_BITS,
         PIG_OPERATION_TYPE,
         PAGE_ID,
+        HASH_ROUTES,
         SOW_BOAR_TYPE,
         PIG_PROD_TYPE,
         SUPPLIER_TYPE}              from '../../constants.js';
+        
         
 
 export function ManagerNavLinks(_navigation) {
@@ -654,7 +656,7 @@ export function ManagerNavLinks(_navigation) {
                 return;
             }
             
-            thisObj.onClickNavFarrowingChecklist(false);
+            thisObj.onClickNavFarrowingChecklist(false, false);
         });
 
         elemDesktopNavOperations6.addEventListener('click', function() {
@@ -977,7 +979,7 @@ export function ManagerNavLinks(_navigation) {
                 return;
             }
             
-            thisObj.onClickNavFarrowingChecklist(true);
+            thisObj.onClickNavFarrowingChecklist(true, false);
         });
 
         elemMobileNavOperations6.addEventListener('click', function() {
@@ -1643,82 +1645,202 @@ export function ManagerNavLinks(_navigation) {
     
         
         
-    this.onClickNavFeedBalance = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
+    this.onClickNavFeedBalance = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
         
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
-         
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.ALL_FEED_BAL_LIST);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.ALL_FEED_BAL_LIST);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.hashRouter.replace(HASH_ROUTES.ALL_FEED_BAL_LIST, {
+                pageId: PAGE_ID.ALL_FEED_BAL_LIST
+            });
+        }
+        else{
+            navigation.hashRouter.navigate(HASH_ROUTES.ALL_FEED_BAL_LIST, {
+                pageId: PAGE_ID.ALL_FEED_BAL_LIST
+            });
+        }
+    }
+    
+        
+    this.onClickNavFarrowingSchedule = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
+        
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.FARROWING_SCHEDULE);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.FARROWING_SCHEDULE);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.hashRouter.replace(HASH_ROUTES.FARROWING_SCHEDULE, {
+                pageId: PAGE_ID.FARROWING_SCHEDULE
+            });
+        }
+        else{
+            navigation.hashRouter.navigate(HASH_ROUTES.FARROWING_SCHEDULE, {
+                pageId: PAGE_ID.FARROWING_SCHEDULE
+            });
+        }
+        
+    }
+    
 
-        navigation.showThisPage(next_page);
-        navigation.pageAllFeedBalanceList.show();
-    }
-    
-        
-    this.onClickNavFarrowingSchedule = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.FARROWING_SCHEDULE);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
-         
-
-        navigation.showThisPage(next_page);
-        navigation.pageFarrowingSchedule.show();
-    }
-    
-
-    this.onClickNavBoarExternalMate = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
+    this.onClickNavBoarExternalMate = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
         
         
-        navigation.showThisPage(next_page);
-        navigation.pageBoarExtMateList.show();
-    
-    }
-    
-    
-    this.onClickNavPigDead = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.BOAR_EXT_MATE_LIST);
         
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.BOAR_EXT_MATE_LIST);
         
         
-        navigation.showThisPage(next_page);
-        navigation.pagePigDeadList.show();
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.hashRouter.replace(HASH_ROUTES.BOAR_EXT_MATE_LIST, {
+                pageId: PAGE_ID.BOAR_EXT_MATE_LIST
+            });
+        }
+        else{
+            navigation.hashRouter.navigate(HASH_ROUTES.BOAR_EXT_MATE_LIST, {
+                pageId: PAGE_ID.BOAR_EXT_MATE_LIST
+            });
+        }
     }
     
     
-    this.onClickNavFarrowingChecklist = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.ACC_FARROW_CHECKLIST);
+    this.onClickNavPigDead = function(is_mobile, is_left_right_nav){
+        // 2026-06-06; Do not delete this yet; this is the old manaul nav history
+        // const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
+        
         
         // Push currentPage to NavHistory;
         // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
+        //navigation.pushCurrentPageToNavHistory(next_page);
         
         
-        navigation.showThisPage(next_page);
-        navigation.pageAccFarrowChecklist.show();
+        // manual show
+        //navigation.showThisPage(next_page);
+        //navigation.pagePigDeadList.show();
+        
+        
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
+        
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.PIG_DEAD_LIST);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.PIG_DEAD_LIST);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.hashRouter.replace(HASH_ROUTES.PIG_DEAD_LIST, {
+                pageId: PAGE_ID.PIG_DEAD_LIST
+            });
+        }
+        else{
+            navigation.hashRouter.navigate(HASH_ROUTES.PIG_DEAD_LIST, {
+                pageId: PAGE_ID.PIG_DEAD_LIST
+            });
+        }
+    }
+    
+    
+    this.onClickNavFarrowingChecklist = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
+        
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.ACC_FARROW_CHECKLIST);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.ACC_FARROW_CHECKLIST);
+        
+        console.log(`is_left_right_nav = ${is_left_right_nav}`);
+        console.log(`areSameMenuLevel = ${areSameMenuLevel}`);
+        console.log(`isSamePage = ${isSamePage}`);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.hashRouter.replace(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
+                pageId: PAGE_ID.ACC_FARROW_CHECKLIST
+            });
+        }
+        else{
+            navigation.hashRouter.navigate(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
+                pageId: PAGE_ID.ACC_FARROW_CHECKLIST
+            });
+        }
     }
         
     
-    this.onClickNavFeedsConsumed = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.FEEDS_CONSUMED);
+    this.onClickNavFeedsConsumed = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
         
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.FEEDS_CONSUMED);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.FEEDS_CONSUMED);
         
         
-        navigation.showThisPage(next_page);
-        navigation.pageFeedsConsumedChart.show();
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.hashRouter.replace(HASH_ROUTES.FEEDS_CONSUMED, {
+                pageId: PAGE_ID.FEEDS_CONSUMED
+            });
+        }
+        else{
+            navigation.hashRouter.navigate(HASH_ROUTES.FEEDS_CONSUMED, {
+                pageId: PAGE_ID.FEEDS_CONSUMED
+            });
+        }
     }
     
         

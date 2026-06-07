@@ -224,6 +224,9 @@ export function onClickShowSample(config_sample){
         if (modalOverlay && document.getElementById('sampleModalOverlay')) {
             event.preventDefault();
             closeModal();
+            
+            // Remove the event listener after use
+            window.removeEventListener('popstate', popStateHandler);
         }
     };
     

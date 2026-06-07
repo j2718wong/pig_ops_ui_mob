@@ -11,6 +11,7 @@ import {PageTableBasic}         from '../common/page_table_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         DATA_VER_NUM_ACCOUNT}   from '../../constants.js';
 
 
@@ -160,12 +161,12 @@ export function PageAccFarrowChecklist(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavPigDead();
+            navigation.managerNavLinks.onClickNavPigDead(null, true);
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavFeedsConsumed();
+            navigation.managerNavLinks.onClickNavFeedsConsumed(null, true);
         };
         
         
@@ -217,12 +218,7 @@ export function PageAccFarrowChecklist(input_settings){
     
     
     this.show = function(options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = null;
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
+        console.log('🔍 Page show START - History length:', history.length);
         
         // So that not to instantiate in every table redraw
         dtCurrentDate = new Date();
@@ -230,8 +226,13 @@ export function PageAccFarrowChecklist(input_settings){
         
        
         if (options && options.refresh_list){
+            console.log('\n\nabout to refresh list');
             this.requestServerData();
+            console.log('🔍 Page show exit 1 - History length:', history.length);
             return;
+        }
+        else{
+            console.log('\n\nNo refresh list');
         }
   
    
@@ -246,6 +247,7 @@ export function PageAccFarrowChecklist(input_settings){
             // Check server data update
             this.checkServerDataUpdate();
             
+            console.log('🔍 Page show exit 2 - History length:', history.length);
             return;
         }
         
@@ -254,6 +256,7 @@ export function PageAccFarrowChecklist(input_settings){
         // Load cached data 
         const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
         this.loadCachedData(pig_farm_hid);
+        console.log('🔍 Page show exit END - History length:', history.length);
     }
     
 
@@ -383,7 +386,6 @@ export function PageAccFarrowChecklist(input_settings){
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
         
-        
         // Attach onclick listeners to td
         
         const elem_tds = elem_row.querySelectorAll('td'); 
@@ -443,5 +445,20 @@ export function PageAccFarrowChecklist(input_settings){
     // func_name(options, row_entry);
     this.getFuncAddEditShowPage = function(){
         return navigation.pageAccFChecklistAddEdit.show;}
-   
-}
+    
+    
+    this.getHashRouteAddEditPage = function(){
+        return HASH_ROUTES.ACC_F_CHECKLIST_ADD_EDIT;
+    }
+    
+    
+    this.getHashRouteListPage = function(){
+        return HASH_ROUTES.ACC_FARROW_CHECKLIST;
+    }
+  
+  
+    this.getRowEntryHashId = function(row_entry){
+        if (!row_entry){return null;}
+        return row_entry.hid;
+    }
+}   

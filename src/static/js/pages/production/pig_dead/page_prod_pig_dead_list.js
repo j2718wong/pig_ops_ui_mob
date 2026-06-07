@@ -12,6 +12,7 @@ import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         DATA_VER_NUM_PIG_FARM,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
@@ -579,5 +580,16 @@ export function PageProdPigDeadList(input_settings){
     this.getFuncAddEditShowPage = function(){
         return navigation.pagePigDeadAddEdit.show;}
    
+    
+    this.getHashRouteAddEditPage = function(){
+        return HASH_ROUTES.PIG_DEAD_ADD_EDIT;
+    }
+    
+    
+    this.getHashRouteListPage = function(){
+        return HASH_ROUTES.PIG_DEAD_LIST;
+    }
+    
+    
     
 }

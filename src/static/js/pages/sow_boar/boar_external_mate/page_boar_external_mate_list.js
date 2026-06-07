@@ -12,6 +12,7 @@ import {calculateNumDaysSinceInsem}  from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         DATA_VER_NUM_PIG_FARM,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
@@ -177,12 +178,12 @@ export function PageBoarExternalMateList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavFarrowingSchedule();
+            navigation.managerNavLinks.onClickNavFarrowingSchedule(null, true);
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavPigDead();
+            navigation.managerNavLinks.onClickNavPigDead(null, true);
         };
         
         
@@ -240,6 +241,10 @@ export function PageBoarExternalMateList(input_settings){
         // Update navigation.curPageNavigated
         navigation.curPageNavigated.pageData = null;
         navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        
+        
+        // Store return route for back button
+        thisObj.returnRoute = HASH_ROUTES.BOAR_EXT_MATE_LIST;
         
         
         // So that not to instantiate in every table redraw
@@ -529,4 +534,12 @@ export function PageBoarExternalMateList(input_settings){
         return navigation.pageBoarExtMateAddEdit.show;}
    
     
+    this.getHashRouteAddEditPage = function(){
+        return HASH_ROUTES.BOAR_EXT_MATE_ADD_EDIT;
+    }
+    
+    
+    this.getHashRouteListPage = function(){
+        return HASH_ROUTES.BOAR_EXT_MATE_LIST;
+    }
 }

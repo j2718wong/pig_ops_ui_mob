@@ -9,7 +9,8 @@
 import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
-        PAGE_ID}                from '../../constants.js';
+        PAGE_ID,
+        HASH_ROUTES}            from '../../constants.js';
 
 
 
@@ -167,35 +168,14 @@ export function PageAccFChecklistAddEdit(input_settings){
     
     
     this._bindEventListeners = function(){
-        
 
         elemBtnClose.addEventListener('click', function() {
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            // This will not redraw the previous page; only show container
-            navigation.showThisPage(showOptions.go_back_page);
-            
-            if (APPLICATION.DEBUG_NAV_HISTORY){
-                thisObj.debugNavHistory(TAG);
-            }
+            history.back();
         });
         
         
         elemBtnCancel.addEventListener('click', function() {
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            // This will not redraw the previous page; only shwo container
-            navigation.showThisPage(showOptions.go_back_page);
-            
-            if (APPLICATION.DEBUG_NAV_HISTORY){
-                thisObj.debugNavHistory(TAG);
-            }
+            history.back();
         });
         
         
@@ -216,7 +196,23 @@ export function PageAccFChecklistAddEdit(input_settings){
     }
     
     
-    this.show = function(options, data_acc_checklist_item){
+    this.getEntry = function(entry_hid){
+        const data_list = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
+        
+        for (const cur_entry of data_list){
+            if (cur_entry.hid == entry_hid){
+                return cur_entry;
+            }
+        }
+        
+        return null;
+    }
+    
+    
+    
+    this.show = function(options, entry_hid){
+        // Store return route for back button
+        thisObj.returnRoute = HASH_ROUTES.ACC_FARROW_CHECKLIST;
         
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
@@ -237,7 +233,7 @@ export function PageAccFChecklistAddEdit(input_settings){
         else{
             html = `<i class="fas fa-edit me-2"></i>Edit Farrowing Checklist`;
             
-            dataAccChecklistItem = data_acc_checklist_item;
+            dataAccChecklistItem = thisObj.getEntry(entry_hid);
             thisObj.populateForm();
         }
         elemHeaderTitle.innerHTML = html;
@@ -319,15 +315,9 @@ export function PageAccFChecklistAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const go_back_page_id = PAGE_ID.ACC_FARROW_CHECKLIST;
-                    const go_back_page = navigation.getPageContainer(go_back_page_id);
                     
-                    navigation.managerNavHistory.removeFromNavHistoryHead(
-                        go_back_page);
-                    
-                    
-                    // Adding or updating an account_sow_due_chklst entry should also
-                    // update  pig_farm_sow_due_chklst
+                    // Adding or updating an account_sow_due_chklst entry should 
+                    // also update pig_farm_sow_due_chklst
                     
                     const pig_farm_data_checklist = navigation.pigFarm.dataSowDueChecklist;
                     
@@ -335,13 +325,12 @@ export function PageAccFChecklistAddEdit(input_settings){
                         // Only update this is there is an entry
                         
                         const callback_success = function(){
-                            // Go back to account Checklist
-                            const options = {
-                                refresh_list: true
-                            };
                             
-                            navigation.showThisPage(go_back_page);
-                            navigation.pageAccFarrowChecklist.show(options);
+                            // Fixed return route; After Add/edit should return to list page
+                            navigation.hashRouter.replace(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
+                                pageId:         PAGE_ID.ACC_FARROW_CHECKLIST,
+                                refreshList:    true
+                            });
                         };
                         
                         
@@ -352,13 +341,11 @@ export function PageAccFChecklistAddEdit(input_settings){
                     }
                     
                     
-                    // Go back to account Checklist
-                    const options = {
-                        refresh_list: true
-                    };
-                    
-                    navigation.showThisPage(go_back_page);
-                    navigation.pageAccFarrowChecklist.show(options);
+                    // Fixed return route; After Add/edit should return to list page
+                    navigation.hashRouter.replace(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
+                        pageId:         PAGE_ID.ACC_FARROW_CHECKLIST,
+                        refreshList:    true
+                    });
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

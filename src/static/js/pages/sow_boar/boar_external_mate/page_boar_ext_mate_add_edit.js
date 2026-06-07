@@ -10,6 +10,7 @@ import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         SOW_STATUS,
         PIG_PROD_TYPE,
         PIG_OPERATION_TYPE,
@@ -238,33 +239,13 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     this._bindEventListeners = function(){
         
-        elemBtnClose.addEventListener('click', function() {
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            // This will not redraw the previous page; only shwo container
-            navigation.showThisPage(showOptions.go_back_page);
-            
-            if (APPLICATION.DEBUG_NAV_HISTORY){
-                thisObj.debugNavHistory(TAG);
-            }
+        elemBtnClose.addEventListener('click', function(){
+           history.back();
         });
         
         
-        elemBtnCancel.addEventListener('click', function() {
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            // This will not redraw the previous page; only shwo container
-            navigation.showThisPage(showOptions.go_back_page);
-            
-            if (APPLICATION.DEBUG_NAV_HISTORY){
-                thisObj.debugNavHistory(TAG);
-            }
+        elemBtnCancel.addEventListener('click', function(){
+            history.back();
         });
         
         
@@ -291,6 +272,9 @@ export function PageBoarExtMateAddEdit(input_settings){
     
     
     this.show = function(options, data_boar_ext_mate){
+        
+        // Store return route for back button
+        thisObj.returnRoute = HASH_ROUTES.BOAR_EXT_MATE_LIST;
         
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
@@ -430,19 +414,11 @@ export function PageBoarExtMateAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const go_back_page_id = PAGE_ID.BOAR_EXT_MATE_LIST;
-                    const go_back_page = navigation.getPageContainer(go_back_page_id);
-                    
-                    navigation.managerNavHistory.removeFromNavHistoryHead(
-                        go_back_page);
-                    
-                    
-                    const options = {
-                        refresh_list: true
-                    };
-                    
-                    navigation.showThisPage(go_back_page);
-                    navigation.pageBoarExtMateList.show(options);
+                    // Fixed return route; After Add/edit should return to list page
+                    navigation.hashRouter.replace(HASH_ROUTES.BOAR_EXT_MATE_LIST, {
+                        pageId:         PAGE_ID.BOAR_EXT_MATE_LIST,
+                        refreshList:    true
+                    }); 
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

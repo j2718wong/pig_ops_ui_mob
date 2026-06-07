@@ -12,10 +12,12 @@ import {APPLICATION,
         ACC_USER_GROUP,
         PIG_OPERATION_TYPE,
         PAGE_ID,
+        HASH_ROUTES,
         SOW_BOAR_TYPE,
-        PIG_PROD_TYPE,
-        SUPPLIER_TYPE}              from '../../constants.js';
+        PIG_PROD_TYPE}              from '../../constants.js';
 
+
+import {HashRouter}                 from './hash_router.js';
 
 import {NavPageContainers}          from './nav_page_containers.js';
 
@@ -35,6 +37,7 @@ import {ManagerLocalData}           from './manager_local_data.js';
 import {ManagerAlerts}              from './manager_alerts.js';
 
 import {UserControl}                from './user_control.js';
+
 
 
 import {ServerError}                from '../common/server_error.js';
@@ -174,6 +177,7 @@ export function Navigation(){
     };
     
 
+    this.hashRouter             = new HashRouter();
     
     this.pageContainers         = new NavPageContainers(this);
     
@@ -908,6 +912,8 @@ export function Navigation(){
     
     
     this.initComponents = function(){
+        this.initHashRouter();
+        
         this.managerNavLinks.init();
         this.managerPublicSections.init();
         this.managerNavHistory.init();
@@ -1097,6 +1103,7 @@ export function Navigation(){
         });
         
         
+        /* 2026-06-06; disabled to try to use hashRouter
         // Listen for back button only
         window.addEventListener('popstate', function(event) {
             console.log('\n\nback pressed', event.state);
@@ -1112,7 +1119,7 @@ export function Navigation(){
                 // Let them leave
             }
         });
-        
+        */
     }
     
     
@@ -1187,9 +1194,16 @@ export function Navigation(){
         const account_hid = initial_farm_data.account.account.hid;
         this.pigFarm.accountLists.setPigFarmAccountHid(account_hid);
         
-        // Create initial history entry
-        history.pushState({inApp: true}, '', window.location.href);
-        console.log('\n\n\nCreated initial history entry');
+        
+        // Let hash router handle initial state 
+        if (this.hashRouter && this.hashRouter.isListening) {
+            console.log('\n\nHash router manages initial history state');
+        } else {
+            // Legacy fallback (optional)
+            history.replaceState({ inApp: true }, '', window.location.href);
+        }
+        
+        
         
         const container_home = thisObj.pageContainers.getPageContainer(PAGE_ID.HOME);
         
@@ -1445,6 +1459,18 @@ export function Navigation(){
     
     
     this.showHomeDashBoard = function(){
+        // Clear all history and start fresh with home
+        if (this.hashRouter && this.hashRouter.isListening) {
+            // Replace the entire history stack with just home
+            const initialState = { route: 'home', data: {}, timestamp: Date.now() };
+            history.replaceState(initialState, '', '#home');
+            
+            // Also reset any internal state
+            if (this.hashRouter) {
+                this.hashRouter.currentState = initialState;
+            }
+        }
+            
         const next_page = thisObj.getPageContainer(PAGE_ID.HOME);
         thisObj.showThisPage(next_page);
         thisObj.pageHomeDashBoard.show();
@@ -1549,6 +1575,144 @@ export function Navigation(){
         }        
         
 
+    }
+    
+    
+    this.initHashRouter = function() {
+        // Set the route handler
+        thisObj.hashRouter.onRouteChange = (route, data) => {
+            thisObj.handleHashRoute(route, data);
+        };
+        
+        // Start listening to popstate events
+        thisObj.hashRouter.init();
+    }
+    
+    
+    this.handleHashRoute = function(route, data) {
+        console.log('Hash route changed:', route, data);
+        
+        let pageContainer = null;
+        
+        switch(route) {
+            case HASH_ROUTES.HOME:
+                this.showHomeDashBoard();
+                break;
+            
+            
+            case HASH_ROUTES.ALL_FEED_BAL_LIST:
+                pageContainer = this.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
+                this.showThisPage(pageContainer);
+                
+                if (data.refreshList) {
+                    this.pageAllFeedBalanceList.show({ refresh_list: true });
+                } else {
+                    this.pageAllFeedBalanceList.show();
+                }
+                break;
+            
+            case HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT:
+                pageContainer = this.getPageContainer(PAGE_ID.ALL_FEED_BAL_ADD_EDIT);
+                this.showThisPage(pageContainer);
+                if (data.isAdd) {
+                    this.pageAllFeedBalanceAddEdit.show(data.options);
+                } else {
+                    this.pageAllFeedBalanceAddEdit.show(data.options);
+                }
+                break;
+                
+            
+            case HASH_ROUTES.FARROWING_SCHEDULE:
+                pageContainer = this.getPageContainer(PAGE_ID.FARROWING_SCHEDULE);
+                this.showThisPage(pageContainer);
+                
+                this.pageFarrowingSchedule.show();
+                break;
+                
+                
+            case HASH_ROUTES.PIG_DEAD_LIST:
+                pageContainer = this.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
+                this.showThisPage(pageContainer);
+                
+                if (data.refreshList) {
+                    this.pagePigDeadList.show({ refresh_list: true });
+                } else {
+                    this.pagePigDeadList.show();
+                }
+                break;
+                
+            case HASH_ROUTES.PIG_DEAD_ADD_EDIT:
+                pageContainer = this.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
+                this.showThisPage(pageContainer);
+                if (data.isAdd) {
+                    this.pagePigDeadAddEdit.show(data.options);
+                } else {
+                    //this.pagePigDeadAddEdit.show(data.options);
+                }
+                break;
+            
+            
+            case HASH_ROUTES.BOAR_EXT_MATE_LIST:
+                pageContainer = this.getPageContainer(PAGE_ID.BOAR_EXT_MATE_LIST);
+                this.showThisPage(pageContainer);
+                
+                if (data.refreshList) {
+                    this.pageBoarExtMateList.show({ refresh_list: true });
+                } else {
+                    this.pageBoarExtMateList.show();
+                }
+                break;
+                
+            case HASH_ROUTES.BOAR_EXT_MATE_ADD_EDIT:
+                pageContainer = this.getPageContainer(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT);
+                this.showThisPage(pageContainer);
+                if (data.isAdd) {
+                    this.pagePigDeadAddEdit.show(data.options);
+                } else {
+                    //this.pagePigDeadAddEdit.showEdit(data.options);
+                }
+                break;
+            
+            
+            case HASH_ROUTES.ACC_FARROW_CHECKLIST:
+                pageContainer = this.getPageContainer(PAGE_ID.ACC_FARROW_CHECKLIST);
+                this.showThisPage(pageContainer);
+                
+                if (data.refreshList) {
+                    this.pageAccFarrowChecklist.show({ refresh_list: true });
+                } else {
+                    this.pageAccFarrowChecklist.show();
+                }
+                break;
+            
+            case HASH_ROUTES.ACC_F_CHECKLIST_ADD_EDIT:
+                pageContainer = this.getPageContainer(PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT);
+                this.showThisPage(pageContainer);
+                if (data.isAdd) {
+                    this.pageAccFChecklistAddEdit.show(data.options);
+                } else {
+                    this.pageAccFChecklistAddEdit.show(
+                        data.options, data.entryHid);
+                }
+                break;
+            
+    
+            case HASH_ROUTES.FEEDS_CONSUMED:
+                pageContainer = this.getPageContainer(PAGE_ID.FEEDS_CONSUMED);
+                this.showThisPage(pageContainer);
+                
+                this.pageFeedsConsumedChart.show();
+                break;
+            
+            
+            
+                
+            // Add more routes as you implement them
+                
+            default:
+                // Default to home
+                this.showHomeDashBoard();
+        }
     }
     
     

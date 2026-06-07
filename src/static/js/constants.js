@@ -207,6 +207,28 @@ const PAGE_ID = {
 };
 
 
+const HASH_ROUTES = {
+    HOME:                   'home',
+    
+    
+    ALL_FEED_BAL_LIST:      'feed_balance_list',
+    ALL_FEED_BAL_ADD_EDIT:  'feed_balance_add_edit',
+    
+    FARROWING_SCHEDULE:     'farrowing_schedule',
+    
+    BOAR_EXT_MATE_LIST:     'boar_ext_mate_list',
+    BOAR_EXT_MATE_ADD_EDIT: 'boar_ext_add_edit',
+    
+    PIG_DEAD_LIST:          'pig_dead_list',
+    PIG_DEAD_ADD_EDIT:      'pig_dead_add_edit',
+    
+    ACC_FARROW_CHECKLIST:   'acc_farrow_checklist',
+    ACC_F_CHECKLIST_ADD_EDIT: 'acc_f_checklist_add_edit',
+    
+    FEEDS_CONSUMED:         'feeds_consumed'
+};
+
+
 const PIG_OPERATION_TYPE = {
     GESTATING:          1,
     LACTATING_PIGLETS:  2,
@@ -459,6 +481,7 @@ export {
     
     NAV_MENU_GROUP,
     PAGE_ID,
+    HASH_ROUTES,
     
     SOW_BOAR_TYPE,
     PIG_OPERATION_TYPE,

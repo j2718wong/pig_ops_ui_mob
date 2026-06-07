@@ -10,6 +10,7 @@ import {PageViewBasic}          from '../common/page_view_basic.js';
 
 import {APPLICATION,
         TRANSLATION_MODE}       from '../../constants.js';
+        
 
 import {createPaginationManager} from '../../utils.js';
 
@@ -707,6 +708,18 @@ export function PageTableBasic(){
     this.getFuncAddEditShowPage = function(){return null;}
     
     
+    // Optional: return hash route for add/edit page
+    this.getHashRouteAddEditPage = function(){return null;}
+    
+    
+    // Optional: return hash route for list page
+    this.getHashRouteListPage = function(){return null;}
+    
+    
+    // Return row_entry hash_id; must be overridden
+    this.getRowEntryHashId = function(row_entry){return null;}
+    
+    
     this.showAddEntryPage = function(){
         const func_show_page = thisObj.getFuncAddEditShowPage();
         if (!func_show_page){return;}
@@ -715,21 +728,42 @@ export function PageTableBasic(){
         const next_page_id  = thisObj.getPageIdAddEditPage();
         const next_page     = thisObj.navigation.getPageContainer(next_page_id);
         
-        // Push currentPage to NavHistory; 
-        // Will also compare current page and  next_page NAV_MENU_GROUP.
-        thisObj.navigation.pushCurrentPageToNavHistory(next_page);
+        const next_page_hash = thisObj.getHashRouteAddEditPage();
         
-        thisObj.navigation.showThisPage(next_page);
+        // Manual navigation history
+        if (!next_page_hash){
+            // Push currentPage to NavHistory; 
+            // Will also compare current page and  next_page NAV_MENU_GROUP.
+            thisObj.navigation.pushCurrentPageToNavHistory(next_page);
+            
+            thisObj.navigation.showThisPage(next_page);
+        }
         
         
         // Show Page
-        const go_back_page_id   = thisObj.getPageIdListPage();
-        const go_back_page = thisObj.navigation.getPageContainer(go_back_page_id);
+        if (next_page_hash){
+            const go_back_page_hash = thisObj.getHashRouteListPage();
+            
+            // This should not contain any DOM elements
+            const options_hash_route_data = {
+                is_add:         true      
+            };
+ 
+            
+            // Use hash navigation instead of manual history
+            thisObj.navigation.hashRouter.navigate(next_page_hash, {
+                pageId:         next_page_id,
+                isAdd:          true,
+                options:        options_hash_route_data,
+                returnRoute:    go_back_page_hash
+            });
+        }
         
-        const options ={
-            is_add:             true,   // false is edit
-            go_back_page:       go_back_page   
+        
+        const options = {
+            is_add:             true   // false is edit
         };
+        
         func_show_page(options);
     }
     
@@ -742,22 +776,47 @@ export function PageTableBasic(){
         const next_page_id  = thisObj.getPageIdAddEditPage();
         const next_page     = thisObj.navigation.getPageContainer(next_page_id);
         
-        // Push currentPage to NavHistory; 
-        // Will also compare current page and  next_page NAV_MENU_GROUP.
-        thisObj.navigation.pushCurrentPageToNavHistory(next_page);
+        const next_page_hash = thisObj.getHashRouteAddEditPage();
         
-        thisObj.navigation.showThisPage(next_page);
+        
+        // Manual navigation history
+        if (!next_page_hash){
+            // Push currentPage to NavHistory; 
+            // Will also compare current page and  next_page NAV_MENU_GROUP.
+            thisObj.navigation.pushCurrentPageToNavHistory(next_page);
+            
+            thisObj.navigation.showThisPage(next_page);
+        }
         
         
         // Show Page
-        const go_back_page_id   = thisObj.getPageIdListPage();
-        const go_back_page      = thisObj.navigation.getPageContainer(go_back_page_id);
-    
+        const row_entry_hid = thisObj.getRowEntryHashId(row_entry);
+        
+        if (next_page_hash){
+            const go_back_page_hash = thisObj.getHashRouteListPage();
+            
+            // This should not contain any DOM elements
+            const options_hash_route_data = {
+                is_add:         false      
+            };
+ 
+            
+            // Use hash navigation instead of manual history
+            thisObj.navigation.hashRouter.navigate(next_page_hash, {
+                pageId:         next_page_id,
+                isAdd:          false,
+                options:        options_hash_route_data,
+                returnRoute:    go_back_page_hash,
+                entryHid:       row_entry_hid
+            });
+        }
+        
         const options = {
-            is_add:             false,   // false is edit
-            go_back_page:       go_back_page
+            is_add:             false
         };
-        func_show_page(options, row_entry);
+        
+        
+        func_show_page(options, row_entry_hid);
     }
     
     

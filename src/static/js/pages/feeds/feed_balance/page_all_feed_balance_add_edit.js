@@ -12,6 +12,7 @@ import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         PIG_OPERATION_TYPE,
         SOW_BOAR_TYPE,
         SOW_STATUS,
@@ -582,6 +583,15 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     
     
     this._bindEventListeners = function(){
+        elemBtnClose.addEventListener('click', function() {
+            history.back();
+        });
+        
+        elemBtnCancel.addEventListener('click', function() {
+            history.back();
+        });
+
+        
         // ---------- slide toggle ----------
         const wrapper   = elemDivContainer.querySelector('#sliderWrapper');
         const toggleBtn = elemDivContainer.querySelector('#toggleBtn');
@@ -639,6 +649,9 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     
     this.show = function(options, data_feed_balance){
         
+        // Store return route for back button
+        thisObj.returnRoute = HASH_ROUTES.ALL_FEED_BAL_LIST;
+        
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
             // Display modal offline
@@ -679,23 +692,7 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         }
         
        
-        // Update Close and cancel button on click
         
-        elemBtnClose.onclick = function() {
-            // This will always go back to PAGE_ID.ALL_FEED_BAL_LIST
-            const go_back_page_id   = PAGE_ID.ALL_FEED_BAL_LIST;
-            const go_back_page      = navigation.getPageContainer(go_back_page_id);
-            
-            navigation.showThisPage(go_back_page);
-        };
-        
-        elemBtnCancel.onclick = function() {
-            // This will always go back to PAGE_ID.ALL_FEED_BAL_LIST
-            const go_back_page_id   = PAGE_ID.ALL_FEED_BAL_LIST;
-            const go_back_page      = navigation.getPageContainer(go_back_page_id);
-            
-            navigation.showThisPage(go_back_page);
-        };
     }
     
     
@@ -1563,20 +1560,11 @@ export function PageAllFeedBalanceAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    const go_back_page_id = PAGE_ID.ALL_FEED_BAL_LIST;
-                    const go_back_page = navigation.getPageContainer(go_back_page_id);
-                    
-                    
-                    navigation.managerNavHistory.removeFromNavHistoryHead(
-                        showOptions.go_back_page);
-                    
-                    
-                    const options = {
-                        refresh_list: true
-                    };
-                    
-                    navigation.showThisPage(go_back_page);
-                    navigation.pageAllFeedBalanceList.show(options);
+                    // Fixed return route; After Add/edit should return to list page
+                    navigation.hashRouter.replace(HASH_ROUTES.ALL_FEED_BAL_LIST, {
+                        pageId:         PAGE_ID.ALL_FEED_BAL_LIST,
+                        refreshList:    true
+                    });
                 
                 }   
                 else{

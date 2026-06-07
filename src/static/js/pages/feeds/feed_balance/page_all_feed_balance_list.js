@@ -10,6 +10,7 @@ import {PageTableBasic}         from '../../common/page_table_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         DATA_VER_NUM_PIG_FARM,
         SOW_BOAR_TYPE,
         SOW_STATUS,
@@ -164,12 +165,12 @@ export function PageAllFeedBalanceList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavFeedsConsumed();
+            navigation.managerNavLinks.onClickNavFeedsConsumed(null, true);
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavFarrowingSchedule();
+            navigation.managerNavLinks.onClickNavFarrowingSchedule(null, true);
         };
         
         
@@ -664,5 +665,14 @@ export function PageAllFeedBalanceList(input_settings){
     this.getFuncAddEditShowPage = function(){
         return navigation.pageAllFeedBalanceAddEdit.show;}
    
-   
+    
+    this.getHashRouteAddEditPage = function(){
+        return HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT;
+    }
+    
+    
+    this.getHashRouteListPage = function(){
+        return HASH_ROUTES.ALL_FEED_BAL_LIST;
+    }
+    
 }
