@@ -210,6 +210,10 @@ const PAGE_ID = {
 const HASH_ROUTES = {
     HOME:                   'home',
     
+    MY_ACCOUNT:             'my_account',
+    CUSTOMER_PRICING:       'pricing',
+    USER_SETTINGS:          'user_settings',
+    
     
     ALL_FEED_BAL_LIST:      'feed_balance_list',
     ALL_FEED_BAL_ADD_EDIT:  'feed_balance_add_edit',

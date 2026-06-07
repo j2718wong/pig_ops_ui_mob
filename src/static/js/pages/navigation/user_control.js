@@ -9,12 +9,9 @@
 import {APPLICATION,
         NAV_MENU_GROUP,
         ACC_USER_GROUP,
-        PIG_OPERATION_TYPE,
         PAGE_ID,
-        FLAG_BITS,
-        SOW_BOAR_TYPE,
-        PIG_PROD_TYPE,
-        SUPPLIER_TYPE}              from '../../constants.js';
+        HASH_ROUTES,
+        FLAG_BITS}              from '../../constants.js';
 
 
 export function UserControl(_navigation) {
@@ -361,27 +358,25 @@ export function UserControl(_navigation) {
     
     
     this.onClickMyAccount = function(){
-        let go_back_page    = navigation.curPageNavigated.pageContainer;
-        if (go_back_page == null){
-            go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
-        } 
+        const cur_route      = navigation.hashRouter.getCurrentRoute();
+        const cur_container  = navigation.curPageNavigated.pageContainer;
+        const cur_page_id    = navigation.pageContainers.getPageIdFromContainer(cur_container);
+        
+        navigation.hashRouter.navigate(HASH_ROUTES.MY_ACCOUNT, {
+            pageId:         PAGE_ID.MY_ACCOUNT,
+            returnRoute:    cur_route,
+            returnPageId:   cur_page_id
+        });
+        
         
         
         const next_page = navigation.getPageContainer(PAGE_ID.MY_ACCOUNT);
-        
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
-        
-        
         navigation.showThisPage(next_page);
         
-        
-        const options ={
-            go_back_page:   go_back_page,
-        };
-        navigation.pageMyAccount.show(options);
+        navigation.pageMyAccount.show({ 
+            returnRoute:    cur_route,
+            returnPageId:   cur_page_id 
+        });
         
         elemDesktopUserDropdown.classList.remove('active');
     }
@@ -419,31 +414,27 @@ export function UserControl(_navigation) {
     
     
     this.onClickSettings = function(){
-
-        let go_back_page    = navigation.curPageNavigated.pageContainer;
-        if (go_back_page == null){
-            go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
-        } 
+        const cur_route      = navigation.hashRouter.getCurrentRoute();
+        const cur_container  = navigation.curPageNavigated.pageContainer;
+        const cur_page_id    = navigation.pageContainers.getPageIdFromContainer(cur_container);
+        
+        navigation.hashRouter.navigate(HASH_ROUTES.USER_SETTINGS, {
+            pageId:         PAGE_ID.USER_SETTINGS,
+            returnRoute:    cur_route,
+            returnPageId:   cur_page_id
+        });
+        
         
         
         const next_page = navigation.getPageContainer(PAGE_ID.USER_SETTINGS);
-        
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
-        
-        
         navigation.showThisPage(next_page);
         
-        
-        const options ={
-            go_back_page:   go_back_page,
-        };
-        navigation.pageUserSettings.show(options);
+        navigation.pageUserSettings.show({ 
+            returnRoute:    cur_route,
+            returnPageId:   cur_page_id 
+        });
         
         elemDesktopUserDropdown.classList.remove('active');
-
     }
     
     

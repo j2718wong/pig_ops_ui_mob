@@ -238,6 +238,12 @@ ${html_style}
     
     
     this._bindEventListeners = function(){
+        // Attach Listener to Close button
+        elemBtnClose.addEventListener('click', function(event){
+            history.back();
+        });
+
+        
         elemEnableNotifications.addEventListener('click', function(event){
             thisObj.requestNotificationPermission();
         });
@@ -291,16 +297,6 @@ ${html_style}
         
         
         
-        // Attach Listener to Close button
-        elemBtnClose.onclick = function(){
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            navigation.showThisPage(showOptions.go_back_page);
-        };
-        
-        
         const callback_success = function(data){            
             thisObj.existingSubscription = data;
             
@@ -310,10 +306,6 @@ ${html_style}
         
         // Request  User PushSubscriptionList
         thisObj.requestPushSubscriptionList(callback_success, elemServerErrorMsg);
-
-
-        
-       
     }
     
     

@@ -1794,11 +1794,7 @@ export function ManagerNavLinks(_navigation) {
         
         // Check if previous page is next page
         const isSamePage = (previousPageId === PAGE_ID.ACC_FARROW_CHECKLIST);
-        
-        console.log(`is_left_right_nav = ${is_left_right_nav}`);
-        console.log(`areSameMenuLevel = ${areSameMenuLevel}`);
-        console.log(`isSamePage = ${isSamePage}`);
-        
+
         
         // Use hash navigation instead of manual history
         if (is_left_right_nav || areSameMenuLevel || isSamePage) {

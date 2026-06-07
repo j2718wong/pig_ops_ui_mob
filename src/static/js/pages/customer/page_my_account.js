@@ -13,11 +13,7 @@ import {APPLICATION,
         FLAG_BITS,
         ACC_USER_GROUP,
         PAGE_ID,
-        SOW_STATUS,
-        PIG_PROD_TYPE,
-        PIG_OPERATION_TYPE,
-        PROD_STATUS,
-        SUPPLIER_TYPE}              from '../../constants.js';
+        HASH_ROUTES}                from '../../constants.js';
 
 
 import {formatDate,
@@ -292,10 +288,6 @@ export function PageMyAccount(input_settings){
             
             return elem_row;
         }
-    
-        
-        
-        
     }
     
     
@@ -544,6 +536,12 @@ ${html_style}
     
     
     this._bindEventListeners = function(){
+        
+        elemBtnClose.addEventListener('click', function(event){
+            history.back();
+        });
+        
+        
         elemAccountNameDisplay.addEventListener('click', function(event){
             if (!accountInfo) return; // safety
             
@@ -576,26 +574,14 @@ ${html_style}
             elemAfterFreeTrialLink.addEventListener('click', function(event) {
                 event.preventDefault();
                 
-                let go_back_page    = navigation.curPageNavigated.pageContainer;
-                if (go_back_page == null){
-                    go_back_page    = navigation.getPageContainer(PAGE_ID.HOME);
-                } 
+                navigation.hashRouter.navigate(HASH_ROUTES.CUSTOMER_PRICING, {
+                    pageId:         PAGE_ID.CUSTOMER_PRICING
+                });
                 
                 const next_page = navigation.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
-                
-                // Push currentPage to NavHistory; 
-                // Will also compare current page and  next_page NAV_MENU_GROUP.
-                navigation.pushCurrentPageToNavHistory(next_page);
-                
-                
                 navigation.showThisPage(next_page);
                 
-                
-                const options ={
-                    go_back_page:   go_back_page,
-                };
-                navigation.pageCustomerPricing.show(options);
-                
+                navigation.pageCustomerPricing.show();
             });
         }
     
@@ -616,16 +602,8 @@ ${html_style}
     
     
     this.show = function(options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {options: options};
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
         
         thisObj._resetForm();
-        
-
         
         accountInfo  = navigation.account.accountInfo;
         
@@ -678,15 +656,6 @@ ${html_style}
             showOptions = options;
         }
         
-        
-        // Attach Listener to Close button
-        elemBtnClose.onclick = function(){
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            navigation.showThisPage(showOptions.go_back_page);
-        };
         
         
         this.populateFreeTrialValues();

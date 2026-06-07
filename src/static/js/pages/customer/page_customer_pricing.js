@@ -9,11 +9,7 @@
 import {PageViewBasic}          from '../common/page_view_basic.js';
 
 import {APPLICATION,
-        PAGE_ID,
-        SOW_STATUS,
-        PIG_PROD_TYPE,
-        PIG_OPERATION_TYPE,
-        SUPPLIER_TYPE}          from '../../constants.js';
+        PAGE_ID}                from '../../constants.js';
 
 
 
@@ -206,15 +202,8 @@ export function PageCustomerPricing(input_settings){
     
     this._bindEventListeners = function(){
         elemBtnClose.addEventListener('click', function(event) {
-            event.preventDefault();
-            
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            navigation.showThisPage(showOptions.go_back_page);
+            history.back();
         });
-
     }
     
    
@@ -231,18 +220,11 @@ export function PageCustomerPricing(input_settings){
     
     
     this.show = function(options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {options: options};
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
         
         thisObj._resetForm();
         
         
         showOptions = options;
-
 
         
         const callback_success = function(data){

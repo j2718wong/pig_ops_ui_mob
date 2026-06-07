@@ -1600,6 +1600,39 @@ export function Navigation(){
                 break;
             
             
+            case HASH_ROUTES.MY_ACCOUNT:
+                pageContainer = this.getPageContainer(PAGE_ID.MY_ACCOUNT);
+                this.showThisPage(pageContainer);
+                
+                this.pageMyAccount.show({ 
+                    returnRoute:    data.returnRoute,
+                    returnPageId:   data.returnPageId 
+                });
+                break;
+                        
+            case HASH_ROUTES.CUSTOMER_PRICING:
+                pageContainer = this.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
+                this.showThisPage(pageContainer);
+                
+                this.pageCustomerPricing.show({ 
+                    returnRoute:    data.returnRoute || HASH_ROUTES.MY_ACCOUNT
+                });
+                break;
+            
+            
+            case HASH_ROUTES.USER_SETTINGS:
+                pageContainer = this.getPageContainer(PAGE_ID.USER_SETTINGS);
+                this.showThisPage(pageContainer);
+                
+                this.pageUserSettings.show({ 
+                    returnRoute:    data.returnRoute || HASH_ROUTES.HOME
+                });
+                break;
+            
+            
+            
+            
+                        
             case HASH_ROUTES.ALL_FEED_BAL_LIST:
                 pageContainer = this.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
                 this.showThisPage(pageContainer);
