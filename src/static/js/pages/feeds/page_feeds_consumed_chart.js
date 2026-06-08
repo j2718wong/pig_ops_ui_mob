@@ -353,11 +353,6 @@ ${html_style}
     
     
     this.show = function(){
-        thisObj.debugNavHistory(TAG);
-        
-        navigation.curPageNavigated.pageData = null;
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         

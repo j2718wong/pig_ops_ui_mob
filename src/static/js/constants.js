@@ -147,7 +147,8 @@ const PAGE_ID = {
     PROD_HISTORY_LIST:      43,
     PROD_HISTORY_ENTRY:     44,
     
-    PROD_NOT_PREGNANT_LIST: 45,
+    PROD_OUTPUT:            45,
+    PROD_NOT_PREGNANT_LIST: 46,
     
     
     PROD_SALES_LIST:        48,
@@ -215,7 +216,7 @@ const HASH_ROUTES = {
     USER_SETTINGS:          'user_settings',
     BILL_NEW:               'bill_new',
 
-
+    PROD_OUTPUT:            'prod_output',
     PROD_NOT_PREGNANT_LIST: 'not_pregnant_list',
     
     SOW_BOAR_LIST:          'sow_boar_list',

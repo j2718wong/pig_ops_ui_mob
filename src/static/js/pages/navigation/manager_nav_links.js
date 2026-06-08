@@ -41,11 +41,13 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavAccountLists       = null;
     let elemMobileNavAdmin              = null;
     
+    
     let elemDesktopNavProduction1       = null;
     let elemDesktopNavProduction2       = null;
     let elemDesktopNavProduction3       = null;
     let elemDesktopNavProduction4       = null;
     let elemDesktopNavProduction5       = null;
+    let elemDesktopNavProduction6       = null;
                                         
                                         
     let elemDesktopNavSowBoarGilt1      = null;
@@ -95,6 +97,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavProduction3        = null;
     let elemMobileNavProduction4        = null;
     let elemMobileNavProduction5        = null;
+    let elemMobileNavProduction6        = null;
                                         
                                         
     let elemMobileNavSowBoarGilt1       = null;
@@ -153,6 +156,7 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavLabelProduction3      = null;
     let elemDesktopNavLabelProduction4      = null;
     let elemDesktopNavLabelProduction5      = null;
+    let elemDesktopNavLabelProduction6      = null;
     
     let elemDesktopNavLabelSowBoarGilt1     = null;
     let elemDesktopNavLabelSowBoarGilt2     = null;
@@ -205,6 +209,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavLabelProduction3       = null;
     let elemMobileNavLabelProduction4       = null;
     let elemMobileNavLabelProduction5       = null;
+    let elemMobileNavLabelProduction6       = null;
     
     let elemMobileNavLabelSowBoarGilt1      = null;
     let elemMobileNavLabelSowBoarGilt2      = null;
@@ -291,7 +296,8 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavProduction3       = elemDesktopNavProduction.querySelector('#desktop-nav-production-3');
         elemDesktopNavProduction4       = elemDesktopNavProduction.querySelector('#desktop-nav-production-4');
         elemDesktopNavProduction5       = elemDesktopNavProduction.querySelector('#desktop-nav-production-5');
-    
+        elemDesktopNavProduction6       = elemDesktopNavProduction.querySelector('#desktop-nav-production-6');
+        
         
         elemDesktopNavSowBoarGilt1      = elemDesktopNavSowBoarGilt.querySelector('#desktop-nav-sow-boar-gilt-1');
         elemDesktopNavSowBoarGilt2      = elemDesktopNavSowBoarGilt.querySelector('#desktop-nav-sow-boar-gilt-2');
@@ -339,6 +345,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavProduction3        = elemMobileNavProduction.querySelector('#mobile-subnav-production-3');
         elemMobileNavProduction4        = elemMobileNavProduction.querySelector('#mobile-subnav-production-4');
         elemMobileNavProduction5        = elemMobileNavProduction.querySelector('#mobile-subnav-production-5');
+        elemMobileNavProduction6        = elemMobileNavProduction.querySelector('#mobile-subnav-production-6');
         
             
         elemMobileNavSowBoarGilt1       = elemMobileNavSowBoarGilt.querySelector('#mobile-subnav-sow-boar-gilt-1');
@@ -403,6 +410,7 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavLabelProduction3      = elemDesktopNavProduction.querySelector('#desktop-nav-production-3 .nav-label');
         elemDesktopNavLabelProduction4      = elemDesktopNavProduction.querySelector('#desktop-nav-production-4 .nav-label');
         elemDesktopNavLabelProduction5      = elemDesktopNavProduction.querySelector('#desktop-nav-production-5 .nav-label');
+        elemDesktopNavLabelProduction6      = elemDesktopNavProduction.querySelector('#desktop-nav-production-6 .nav-label');
         
         // Desktop submenu labels - Sow Boar Gilt
         elemDesktopNavLabelSowBoarGilt1     = elemDesktopNavSowBoarGilt.querySelector('#desktop-nav-sow-boar-gilt-1 .nav-label');
@@ -463,6 +471,8 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavLabelProduction3       = elemMobileNavProduction.querySelector('#mobile-subnav-production-3 .nav-label');
         elemMobileNavLabelProduction4       = elemMobileNavProduction.querySelector('#mobile-subnav-production-4 .nav-label');
         elemMobileNavLabelProduction5       = elemMobileNavProduction.querySelector('#mobile-subnav-production-5 .nav-label');
+        elemMobileNavLabelProduction6       = elemMobileNavProduction.querySelector('#mobile-subnav-production-6 .nav-label');
+        
         
         // Mobile submenu labels - Sow Boar Gilt
         elemMobileNavLabelSowBoarGilt1      = elemMobileNavSowBoarGilt.querySelector('#mobile-subnav-sow-boar-gilt-1 .nav-label');
@@ -556,6 +566,15 @@ export function ManagerNavLinks(_navigation) {
         });
           
         elemDesktopNavProduction5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavProdOutput(false);
+        });
+          
+        elemDesktopNavProduction6.addEventListener('click', function() {
             if (navigation.userControl.isAccountLocked()){
                 navigation.showHomeDashBoard();
                 return;
@@ -878,8 +897,17 @@ export function ManagerNavLinks(_navigation) {
             
             thisObj.onClickNavProdHistory(true);
         }); 
-          
+        
         elemMobileNavProduction5.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavProdOutput(true);
+        });
+        
+        elemMobileNavProduction6.addEventListener('click', function() {
             if (navigation.userControl.isAccountLocked()){
                 navigation.showHomeDashBoard();
                 return;
@@ -1263,7 +1291,10 @@ export function ManagerNavLinks(_navigation) {
             elemDesktopNavLabelProduction4.textContent = translated_nav_links.Production4 || "Prod History";
         }
         if (elemDesktopNavLabelProduction5) {
-            elemDesktopNavLabelProduction5.textContent = translated_nav_links.Production5 || "Not Pregnant";
+            elemDesktopNavLabelProduction5.textContent = translated_nav_links.Production5 || "Prod Output";
+        }
+        if (elemDesktopNavLabelProduction6) {
+            elemDesktopNavLabelProduction6.textContent = translated_nav_links.Production6 || "Not Pregnant";
         }
         
         // Desktop sow boar gilt submenu labels
@@ -1399,7 +1430,10 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelProduction4.textContent = translated_nav_links.Production4 || "Prod History";
         }
         if (elemMobileNavLabelProduction5) {
-            elemMobileNavLabelProduction5.textContent = translated_nav_links.Production5 || "Not Pregnant";
+            elemMobileNavLabelProduction5.textContent = translated_nav_links.Production5 || "Prod Output";
+        }
+        if (elemMobileNavLabelProduction6) {
+            elemMobileNavLabelProduction6.textContent = translated_nav_links.Production6 || "Not Pregnant";
         }
         
         // Mobile sow boar gilt submenu labels
@@ -1680,6 +1714,36 @@ export function ManagerNavLinks(_navigation) {
         
         navigation.showThisPage(next_page);
         navigation.pageProdHistoryList.show();
+    }
+    
+    
+    this.onClickNavProdOutput = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
+        
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.PROD_OUTPUT);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.PROD_OUTPUT);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.PROD_OUTPUT, {
+                pageId: PAGE_ID.PROD_OUTPUT
+            });
+        }
+        else{
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.PROD_OUTPUT, {
+                pageId: PAGE_ID.PROD_OUTPUT
+            });
+        }
     }
     
     

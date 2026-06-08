@@ -167,7 +167,7 @@ export function PageProdNotPregnantList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavProdHistory();
+            navigation.managerNavLinks.onClickNavProdOutput();
         };
         
           

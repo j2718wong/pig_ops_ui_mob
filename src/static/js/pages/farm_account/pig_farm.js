@@ -1340,6 +1340,76 @@ export function PigFarm(_navigation){
     }
  
     
+    this.requestDataPigFarmProdOutput = function(callback_success,
+            callback_offline, elem_show_error){
+        
+        const pig_farm_hid = thisObj.getPigFarmHid();
+        
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_prod/output_per_year?pfhid=${pig_farm_hid}`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    
+                    if (callback_success){
+                        let ver_num = 0
+                        if (response.data_ver_num){
+                            ver_num = response.data_ver_num.pig_farm.pig_prod;
+                        }
+                        
+                        callback_success({
+                            ver_num : ver_num,
+                            data: response.data
+                        });
+                    }
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    
+                    return;
+                }
+                
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+ 
+    
+    
     
     this.requestDataPigFarmSummaryReportList = function(callback_success, 
             elem_show_error){

@@ -96,6 +96,7 @@ import {PageFeedBalanceAddEdit}     from '../feeds/feed_balance/page_feed_balanc
 import {PageProdHarvestAddEdit}     from '../production/harvest/page_prod_harvest_add_edit.js';
 
 import {PageProdHistoryList}        from '../production/history/page_prod_history_list.js';
+import {PageProdOutputChart}        from '../production/page_prod_output_chart.js';
 import {PageProdNotPregnantList}    from '../production/history/page_prod_not_pregnant_list.js';
 
 
@@ -455,6 +456,12 @@ export function Navigation(){
         isProdHistory:          true
     });
 
+
+    this.pageProdOutputChart    = new PageProdOutputChart({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.PROD_OUTPUT),
+        uniqueKey:              'prod-output'
+    });
 
     this.pageNotPregnantList    = new PageProdNotPregnantList({
         navigation:             this,
@@ -980,7 +987,13 @@ export function Navigation(){
         
         this.pageProdHistoryList.init();
         this.pageProdHistoryEntry.init();
+        
+        this.pageProdOutputChart.init();
         this.pageNotPregnantList.init();
+        
+        
+        this.pageAllFeedBalanceList.init();
+        this.pageAllFeedBalanceAddEdit.init();
         
         this.pageFarrowingSchedule.init();
         
@@ -990,18 +1003,14 @@ export function Navigation(){
         this.pagePigDeadList.init();
         this.pagePigDeadAddEdit.init();
         
-        
         this.pageAccFarrowChecklist.init();
         this.pageAccFChecklistAddEdit.init();
+        
+        this.pageFeedsConsumedChart.init();
         
         
         this.pageProdSalesList.init();
         this.pageProdSalesEntry.init();
-        
-        this.pageAllFeedBalanceList.init();
-        this.pageAllFeedBalanceAddEdit.init();
-        
-        this.pageFeedsConsumedChart.init();
         
         this.pageSummaryReportList.init();
         this.pageSummaryReportAdd.init();

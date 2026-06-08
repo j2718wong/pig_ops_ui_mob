@@ -73,7 +73,9 @@ export function NavPageContainers(_navigation){
     const elemIdContProdHistoryList     = 'container-prod-history-list';
     const elemIdContProdHistoryEntry    = 'container-prod-history-entry';
     
+    const elemIdContProdOutput          = 'container-prod-output';
     const elemIdContProdNotPregnantList = 'container-prod-not-pregnant-list';
+    
     
     const elemIdContAllFeedBalList      = 'container-all-feed-bal-list';
     const elemIdContAllFeedBalAddEdit   = 'container-all-feed-bal-add-edit';
@@ -213,6 +215,7 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.PROD_HISTORY_LIST]      = document.getElementById(elemIdContProdHistoryList);
         this.containers[PAGE_ID.PROD_HISTORY_ENTRY]     = document.getElementById(elemIdContProdHistoryEntry);
         
+        this.containers[PAGE_ID.PROD_OUTPUT]            = document.getElementById(elemIdContProdOutput);
         this.containers[PAGE_ID.PROD_NOT_PREGNANT_LIST] = document.getElementById(elemIdContProdNotPregnantList);
         
         
@@ -273,6 +276,7 @@ export function NavPageContainers(_navigation){
             this.containers[PAGE_ID.PROD_LACTA_LIST],
             this.containers[PAGE_ID.PROD_FATTENING_LIST],
             this.containers[PAGE_ID.PROD_HISTORY_LIST],
+            this.containers[PAGE_ID.PROD_OUTPUT],
             this.containers[PAGE_ID.PROD_NOT_PREGNANT_LIST]
         ]; 
         
@@ -323,6 +327,7 @@ export function NavPageContainers(_navigation){
             PAGE_ID.PROD_LACTA_LIST,
             PAGE_ID.PROD_FATTENING_LIST,
             PAGE_ID.PROD_HISTORY_LIST,
+            PAGE_ID.PROD_OUTPUT,
             PAGE_ID.PROD_NOT_PREGNANT_LIST
         ]; 
         
@@ -412,8 +417,11 @@ export function NavPageContainers(_navigation){
                 
             { container: this.containers[PAGE_ID.PROD_HISTORY_LIST],      id: PAGE_ID.PROD_HISTORY_LIST },
             { container: this.containers[PAGE_ID.PROD_HISTORY_ENTRY],     id: PAGE_ID.PROD_HISTORY_ENTRY },
+            
+            { container: this.containers[PAGE_ID.PROD_OUTPUT],            id: PAGE_ID.PROD_OUTPUT },
             { container: this.containers[PAGE_ID.PROD_NOT_PREGNANT_LIST], id: PAGE_ID.PROD_NOT_PREGNANT_LIST },
-                
+             
+            
             { container: this.containers[PAGE_ID.ALL_FEED_BAL_LIST],      id: PAGE_ID.ALL_FEED_BAL_LIST },
             { container: this.containers[PAGE_ID.ALL_FEED_BAL_ADD_EDIT],  id: PAGE_ID.ALL_FEED_BAL_ADD_EDIT },
             
@@ -571,6 +579,9 @@ export function NavPageContainers(_navigation){
                 
             case PAGE_ID.PROD_HISTORY_ENTRY:
                 return elemIdContProdHistoryEntry;
+                
+            case PAGE_ID.PROD_OUTPUT:
+                return elemIdContProdOutput;
                 
             case PAGE_ID.PROD_NOT_PREGNANT_LIST:
                 return elemIdContProdNotPregnantList;
@@ -762,6 +773,7 @@ export function NavPageContainers(_navigation){
             case this.containers[PAGE_ID.PROD_HISTORY_LIST]         :{return "PageContProdHistoryList";}
             case this.containers[PAGE_ID.PROD_HISTORY_ENTRY]        :{return "PageContProdHistoryEntry";}
                                                                         
+            case this.containers[PAGE_ID.PROD_OUTPUT]               :{return "PageContProdOutput";}                                                            
             case this.containers[PAGE_ID.PROD_NOT_PREGNANT_LIST]    :{return "PageContProdNotPregnantList";}
                                                                         
                                                                         
