@@ -503,8 +503,6 @@ export function PageSowBoarEntry(input_settings){
         }
         
         
-        
-        
         // Set Entry Title
         let s_title = '';
         
@@ -713,6 +711,7 @@ export function PageSowBoarEntry(input_settings){
                 // Build the list route for return after edit
                 const listRoute = `${HASH_ROUTES.SOW_BOAR_LIST}?type=${typeLabel}`;
                 
+                
                 // Use hash router navigation
                 navigation.hashRouter.navigate(HASH_ROUTES.SOW_BOAR_ADD_EDIT, {
                     pageId:             PAGE_ID.SOW_BOAR_ADD_EDIT,
@@ -720,24 +719,18 @@ export function PageSowBoarEntry(input_settings){
                     sowBoarType:        typeLabel,
                     entryHid:           dataSowBoar.sow_boar.hid,
                     returnRoute:        entryRoute,
-                    returnPageId:       PAGE_ID.SOW_BOAR_ENTRY
+                    returnPageId:       PAGE_ID.SOW_BOAR_ENTRY,
+                    
+                    prevSowBoarHid:     showOptions.prev_sow_boar_hid,
+                    nextSowBoarHid:     showOptions.next_sow_boar_hid,
+                    dataIndex:          showOptions.data_index,
+                    totalEntries:       showOptions.total_entries
+                    
                 });
                 
-                // Show the add/edit page
-                const addEditPage = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-                navigation.showThisPage(addEditPage);
-                
-                // Prepare options for edit
-                const options_sow_boar = {
-                    is_add:         false,
-                    sow_boar_type:  showOptions.sow_boar_type,
-                    returnRoute:    entryRoute,
-                    returnPageId:   PAGE_ID.SOW_BOAR_ENTRY
-                };
-                
-                navigation.pageSowBoarAddEdit.show(options_sow_boar, dataSowBoar);
-                navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(
-                    thisObj.onSuccessUpdateStatus);
+                // TO removed?
+                //navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(
+                //    thisObj.onSuccessUpdateStatus);
             };
         } 
         else {

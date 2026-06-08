@@ -1594,8 +1594,20 @@ export function Navigation(){
         
         let pageContainer = null;
         
+        
+        
+        
         // Extract base route (remove query parameters)
-        const baseRoute = route.split('?')[0];
+        let baseRoute = route;
+        
+        if (route.includes('?')){
+            baseRoute = route.split('?')[0];
+        }
+        
+        if (route.includes('/')){
+            baseRoute = route.split('/')[0];
+        }
+        
         
         switch(baseRoute) {
             case HASH_ROUTES.HOME: {
@@ -1747,10 +1759,18 @@ export function Navigation(){
                     
                     if (entryData) {
                         this.pageSowBoarAddEdit.show({
-                            is_add:         false,
-                            sow_boar_type:  sowBoarType,
-                            returnRoute:    data.returnRoute,
-                            returnPageId:   data.returnPageId
+                            is_add:             false,
+                            sow_boar_type:      sowBoarType,
+                            returnRoute:        data.returnRoute,
+                            returnPageId:       data.returnPageId,
+                            
+                            // These are needed to be passed so that after
+                            // successful edit can go back to PageSowBoarEntry
+                            prev_sow_boar_hid:  data.prevSowBoarHid,
+                            next_sow_boar_hid:  data.nextSowBoarHid,
+                            data_index:         data.dataIndex,
+                            total_entries:      data.totalEntries
+                            
                         }, entryData);
                     } else {
                         // If not found in memory, fetch from server

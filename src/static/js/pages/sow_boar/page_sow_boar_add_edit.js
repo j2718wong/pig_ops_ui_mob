@@ -724,14 +724,12 @@ export function PageSowBoarAddEdit(input_settings){
         this.returnRoute    = options.returnRoute || HASH_ROUTES.SOW_BOAR_LIST;
         this.returnPageId   = options.returnPageId || PAGE_ID.SOW_BOAR_LIST;
         this.sowBoarType    = options.sow_boar_type;
-            
         
         // Also store in showOptions for legacy compatibility
         showOptions = options;
         showOptions.returnRoute     = this.returnRoute;
         showOptions.returnPageId    = this.returnPageId;
 
-        
         
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
@@ -899,19 +897,16 @@ export function PageSowBoarAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
-            // Use hash router replace, not history.back()
-            navigation.hashRouter.replace(thisObj.returnRoute, {
-                pageId:         thisObj.returnPageId,
-                sowBoarType:    thisObj.sowBoarType
-            });
+            history.back();
         };
         
         elemBtnCancel.onclick = function() {
+            history.back();
             // Use hash router replace, not history.back()
-            navigation.hashRouter.replace(thisObj.returnRoute, {
-                pageId:         thisObj.returnPageId,
-                sowBoarType:    thisObj.sowBoarType
-            });
+            //navigation.hashRouter.replace(thisObj.returnRoute, {
+            //    pageId:         thisObj.returnPageId,
+            //    sowBoarType:    thisObj.sowBoarType
+            //});
         };
         
         
@@ -1410,7 +1405,15 @@ export function PageSowBoarAddEdit(input_settings){
             navigation.hashRouter.replace(entryRoute, {
                 pageId:         PAGE_ID.SOW_BOAR_ENTRY,
                 sowBoarHid:     thisObj.curDataSowBoar.sow_boar.hid,
-                sowBoarType:    typeLabel
+                sowBoarType:    typeLabel,
+                
+                prevSowBoarHid: showOptions.prev_sow_boar_hid,
+                nextSowBoarHid: showOptions.next_sow_boar_hid,
+                dataIndex:      showOptions.data_index,     
+                totalEntries:   showOptions.total_entries, 
+                 
+                returnRoute:    showOptions.returnRoute,   
+                returnPageId:   showOptions.returnPageId   
             });
             
         }

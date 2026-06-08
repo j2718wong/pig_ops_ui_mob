@@ -772,6 +772,9 @@ export function PageHomeDashBoard(input_settings){
         }
         */
 
+        
+        // Do not delete this; useful in tracing back buton issues
+        //console.trace();
 
         // For first-time users with native prompt
         managerPwa.showPwaInstallButton();
