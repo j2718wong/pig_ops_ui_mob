@@ -1787,6 +1787,15 @@ export function Navigation(){
                 break;
             }            
             
+            
+            case HASH_ROUTES.TRACE_PARENTS: {
+                pageContainer = this.getPageContainer(PAGE_ID.TRACE_PARENTS);
+                this.showThisPage(pageContainer);
+                
+                this.pageParentTrace.show();
+                break;
+            }
+            
                         
             case HASH_ROUTES.ALL_FEED_BAL_LIST: {
                 pageContainer = this.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
