@@ -1561,10 +1561,13 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     // Fixed return route; After Add/edit should return to list page
-                    navigation.hashRouter.replace(HASH_ROUTES.ALL_FEED_BAL_LIST, {
+                    const dataHashRoute = {
                         pageId:         PAGE_ID.ALL_FEED_BAL_LIST,
                         refreshList:    true
-                    });
+                    };
+                    
+                    navigation.managerHashRoute.hashRouter.replace(
+                        HASH_ROUTES.ALL_FEED_BAL_LIST, dataHashRoute);
                 
                 }   
                 else{

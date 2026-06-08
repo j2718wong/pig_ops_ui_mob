@@ -902,11 +902,6 @@ export function PageSowBoarAddEdit(input_settings){
         
         elemBtnCancel.onclick = function() {
             history.back();
-            // Use hash router replace, not history.back()
-            //navigation.hashRouter.replace(thisObj.returnRoute, {
-            //    pageId:         thisObj.returnPageId,
-            //    sowBoarType:    thisObj.sowBoarType
-            //});
         };
         
         
@@ -1344,11 +1339,14 @@ export function PageSowBoarAddEdit(input_settings){
                 // Return to Sow/Boar List page using hash router
                 const refreshCallback = function() {
                     // Use hash router to navigate back to list
-                    navigation.hashRouter.replace(returnRoute, {
+                    const dataHashRoute = {
                         pageId:         returnPageId,
                         sowBoarType:    typeLabel,
                         refresh:        true
-                    });
+                    };
+                    
+                    navigation.managerHashRoute.hashRouter.replace(
+                        returnRoute, dataHashRoute);
 
                 };
                 
@@ -1364,14 +1362,18 @@ export function PageSowBoarAddEdit(input_settings){
                     thisObj.callbackOnSuccessAdd(new_sow_boar_hid);
                 }
                 
+                
                 // Navigate to gestating add page using hash router
-                navigation.hashRouter.navigate(HASH_ROUTES.PROD_GESTA_ADD, {
+                const dataHashRoute = {
                     pageId:         PAGE_ID.PROD_GESTA_ADD,
                     sowBoarHid:     new_sow_boar_hid,
                     returnRoute:    HASH_ROUTES.SOW_BOAR_LIST,
                     returnPageId:   PAGE_ID.SOW_BOAR_LIST,
                     sowBoarType:    sowBoarType
-                });
+                };
+                
+                navigation.managerHashRoute.hashRouter.navigate(
+                    HASH_ROUTES.PROD_GESTA_ADD, dataHashRoute);
             };
             
             navigation.pigFarm.managerSowBoar.requestSowBoarList(
@@ -1384,11 +1386,14 @@ export function PageSowBoarAddEdit(input_settings){
             if (is_ready != post_data.is_production_ready) {
                 // Production ready flag changed - need to refresh list
                 const refreshCallback = function() {
-                    navigation.hashRouter.replace(returnRoute, {
+                    const dataHashRoute = {
                         pageId:         returnPageId,
                         sowBoarType:    typeLabel,
                         refresh:        true
-                    });
+                    };
+                    
+                    navigation.managerHashRoute.hashRouter.replace(
+                        returnRoute, dataHashRoute);
                 };
                 
                 navigation.pigFarm.managerSowBoar.requestSowBoarList(
@@ -1402,7 +1407,7 @@ export function PageSowBoarAddEdit(input_settings){
             // Return to entry page using hash router
             const entryRoute = `${HASH_ROUTES.SOW_BOAR_ENTRY}/${thisObj.curDataSowBoar.sow_boar.hid}`;
             
-            navigation.hashRouter.replace(entryRoute, {
+            const dataHashRoute = {
                 pageId:         PAGE_ID.SOW_BOAR_ENTRY,
                 sowBoarHid:     thisObj.curDataSowBoar.sow_boar.hid,
                 sowBoarType:    typeLabel,
@@ -1414,9 +1419,10 @@ export function PageSowBoarAddEdit(input_settings){
                  
                 returnRoute:    showOptions.returnRoute,   
                 returnPageId:   showOptions.returnPageId   
-            });
+            };
             
+            navigation.managerHashRoute.hashRouter.replace(
+                entryRoute, dataHashRoute);
         }
     }
-    
 }   

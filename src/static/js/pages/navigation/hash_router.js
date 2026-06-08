@@ -5,6 +5,11 @@
 // j2718wong@gmail.com
 
 
+import {APPLICATION,
+        PAGE_ID,
+        HASH_ROUTES,
+        SOW_BOAR_TYPE}              from '../../constants.js';
+
 
 export class HashRouter {
     constructor() {
@@ -99,4 +104,444 @@ export class HashRouter {
     }
 }
 
+
+export function ManagerHashRoute(_navigation) {
+    const thisObj           = this;
+    const navigation        = _navigation;
+    
+    
+    this.hashRouter         = new HashRouter();
+    
+    this.init = function(){
+        this.initHashRouter();
+    }
+    
+    
+    this.initHashRouter = function() {
+        // Set the route handler
+        thisObj.hashRouter.onRouteChange = (route, data) => {
+            thisObj.handleHashRoute(route, data);
+        };
+        
+        // Start listening to popstate events
+        thisObj.hashRouter.init();
+    }
+    
+    
+    this.handleHashRoute = function(route, data) {
+        console.log('Hash route changed:', route, data);
+        
+        let pageContainer = null;
+        
+        
+        
+        
+        // Extract base route (remove query parameters)
+        let baseRoute = route;
+        
+        if (route.includes('?')){
+            baseRoute = route.split('?')[0];
+        }
+        
+        if (route.includes('/')){
+            baseRoute = route.split('/')[0];
+        }
+        
+        
+        switch(baseRoute) {
+            case HASH_ROUTES.HOME: {
+                navigation.showHomeDashBoard();
+                break;
+            }
+            
+            
+            case HASH_ROUTES.MY_ACCOUNT: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.MY_ACCOUNT);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageMyAccount.show({ 
+                    returnRoute:    data.returnRoute,
+                    returnPageId:   data.returnPageId 
+                });
+                break;
+            }
+               
+                        
+            case HASH_ROUTES.CUSTOMER_PRICING: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageCustomerPricing.show({ 
+                    returnRoute:    data.returnRoute || HASH_ROUTES.MY_ACCOUNT
+                });
+                break;
+            }
+            
+            
+            case HASH_ROUTES.BILL_NEW: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.BILL_NEW);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageAccountNewBill.show({ 
+                    returnRoute:    data.returnRoute || HASH_ROUTES.HOME
+                });
+                break;
+            }
+            
+            
+            case HASH_ROUTES.USER_SETTINGS: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.USER_SETTINGS);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageUserSettings.show({ 
+                    returnRoute:    data.returnRoute || HASH_ROUTES.HOME
+                });
+                break;
+            }
+            
+            
+            
+            case HASH_ROUTES.PROD_NOT_PREGNANT_LIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_NOT_PREGNANT_LIST);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageNotPregnantList.show();
+                break;
+            }
+            
+            
+            case HASH_ROUTES.SOW_BOAR_LIST: {
+                // Parse query parameters
+                const urlParams = new URLSearchParams(route.split('?')[1] || '');
+                const type  = urlParams.get('type') || 'sows';
+                const tab   = urlParams.get('tab') || 'all';
+                
+                let sowBoarType;
+                switch(type) {
+                    case 'sows':    sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                    case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
+                    case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
+                    case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
+                    default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                }
+                
+                pageContainer = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+                navigation.showThisPage(pageContainer);
+                
+                const options = {
+                    sow_boar_type: sowBoarType
+                };
+                if (tab !== 'all') {
+                    options.filter_type = tab;
+                }
+                if (data.showOptions) {
+                    Object.assign(options, data.showOptions);
+                }
+                
+                navigation.pageSowBoarList.show(options);
+                break;
+            }
+            
+            
+            case HASH_ROUTES.SOW_BOAR_ADD_EDIT: {
+                const addEditContainer = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+                navigation.showThisPage(addEditContainer);
+                
+                if (data.isAdd) {
+                    // data.sowBoarType is a string
+                    // SOW_BOAR_TYPE is a integer
+                    
+                    // Add mode
+                    let sowBoarType;
+                    switch(data.sowBoarType) {
+                        case 'sows':    sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                        case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
+                        case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
+                        case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
+                        default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                    }
+                    
+                    
+                    
+                    navigation.pageSowBoarAddEdit.show({
+                        is_add:         true,
+                        sow_boar_type:  sowBoarType,
+                        returnRoute:    data.returnRoute,
+                        returnPageId:   data.returnPageId
+                    });
+                } else {
+                    // Edit mode - need to load entry by HID
+                    const entryHid = data.entryHid;
+                    
+                    let sowBoarType;
+                    switch(data.sowBoarType) {
+                        case 'sows':    sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                        case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
+                        case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
+                        case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
+                        default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                    }
+                    
+                    
+                    // Find the entry from existing data
+                    let entryData = null;
+                    switch(sowBoarType) {
+                        case SOW_BOAR_TYPE.SOW:
+                            entryData = navigation.pigFarm.managerSowBoar.dataSowList?.find(
+                                item => item.sow_boar.hid === entryHid
+                            );
+                            break;
+                        case SOW_BOAR_TYPE.BOAR:
+                            entryData = navigation.pigFarm.managerSowBoar.dataBoarList?.find(
+                                item => item.sow_boar.hid === entryHid
+                            );
+                            break;
+                        case SOW_BOAR_TYPE.GILT:
+                            entryData = navigation.pigFarm.managerSowBoar.dataGiltList?.find(
+                                item => item.sow_boar.hid === entryHid
+                            );
+                            break;
+                    }
+                    
+                    if (entryData) {
+                        navigation.pageSowBoarAddEdit.show({
+                            is_add:             false,
+                            sow_boar_type:      sowBoarType,
+                            returnRoute:        data.returnRoute,
+                            returnPageId:       data.returnPageId,
+                            
+                            // These are needed to be passed so that after
+                            // successful edit can go back to PageSowBoarEntry
+                            prev_sow_boar_hid:  data.prevSowBoarHid,
+                            next_sow_boar_hid:  data.nextSowBoarHid,
+                            data_index:         data.dataIndex,
+                            total_entries:      data.totalEntries
+                            
+                        }, entryData);
+                    } else {
+                        // If not found in memory, fetch from server
+                        navigation.fetchAndShowSowBoarEntry(entryHid, sowBoarType, data);
+                    }
+                }
+                break;
+            }
+            
+            
+            case HASH_ROUTES.SOW_BOAR_ENTRY: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                navigation.showThisPage(pageContainer);
+                
+                // Find the entry data by HID
+                let entryData       = null;
+                const sowBoarType   = data.sowBoarType || 'sows';
+                let sowBoarTypeNum  = SOW_BOAR_TYPE.SOW;
+                
+                switch(sowBoarType) {
+                    case 'sows':    sowBoarTypeNum = SOW_BOAR_TYPE.SOW; break;
+                    case 'boars':   sowBoarTypeNum = SOW_BOAR_TYPE.BOAR; break;
+                    case 'gilts':   sowBoarTypeNum = SOW_BOAR_TYPE.GILT; break;
+                    case 'disposed':sowBoarTypeNum = SOW_BOAR_TYPE.DISPOSED; break;
+                }
+                
+                // Try to find entry in existing data
+                switch(sowBoarTypeNum) {
+                    case SOW_BOAR_TYPE.SOW:
+                        entryData = navigation.pigFarm.managerSowBoar.dataSowList?.find(
+                            item => item.sow_boar.hid === data.sowBoarHid
+                        );
+                        break;
+                    case SOW_BOAR_TYPE.BOAR:
+                        entryData = navigation.pigFarm.managerSowBoar.dataBoarList?.find(
+                            item => item.sow_boar.hid === data.sowBoarHid
+                        );
+                        break;
+                    case SOW_BOAR_TYPE.GILT:
+                        entryData = navigation.pigFarm.managerSowBoar.dataGiltList?.find(
+                            item => item.sow_boar.hid === data.sowBoarHid
+                        );
+                        break;
+                }
+                
+                const options = {
+                    sow_boar_type:      sowBoarTypeNum,
+                    prev_sow_boar_hid:  data.prevSowBoarHid,
+                    next_sow_boar_hid:  data.nextSowBoarHid,
+                    sow_boar_list:      null, // Will be loaded from data
+                    data_index:         data.dataIndex,
+                    total_entries:      data.totalEntries
+                };
+                if (data.tabId) {
+                    options.tab_id = data.tabId;
+                }
+                
+                
+                navigation.pageSowBoarEntry.show(entryData, options);
+                
+                break;            
+            }
+            
+            
+            case HASH_ROUTES.SOW_BOAR_DISPOSED: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.SOW_BOAR_DISPOSED);
+                navigation.showThisPage(pageContainer);
+                
+                // Find the disposed entry
+                let disposedData = null;
+                const disposedList = navigation.pigFarm.managerSowBoar.dataDisposedList;
+                if (disposedList) {
+                    disposedData = disposedList.find(item => item.sow_boar.hid === data.entryHid);
+                }
+                
+                const disposedOptions = {
+                    sow_boar_type: SOW_BOAR_TYPE.DISPOSED,
+                    returnRoute: data.returnRoute,
+                    returnPageId: data.returnPageId
+                };
+                
+                if (disposedData) {
+                    navigation.pageSowBoarDisposed.show(disposedData, disposedOptions);
+                }
+                break;
+            }
+            
+            
+            case HASH_ROUTES.TRACE_PARENTS: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.TRACE_PARENTS);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageParentTrace.show();
+                break;
+            }
+            
+                        
+            case HASH_ROUTES.ALL_FEED_BAL_LIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
+                navigation.showThisPage(pageContainer);
+                
+                if (data.refreshList) {
+                    navigation.pageAllFeedBalanceList.show({ refresh_list: true });
+                } else {
+                    navigation.pageAllFeedBalanceList.show();
+                }
+                break;
+            }
+            
+            
+            case HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.ALL_FEED_BAL_ADD_EDIT);
+                navigation.showThisPage(pageContainer);
+                if (data.isAdd) {
+                    navigation.pageAllFeedBalanceAddEdit.show(data.options);
+                } else {
+                    navigation.pageAllFeedBalanceAddEdit.show(data.options);
+                }
+                break;
+            }
+                
+            
+            case HASH_ROUTES.FARROWING_SCHEDULE: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.FARROWING_SCHEDULE);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageFarrowingSchedule.show();
+                break;
+            }
+              
+                
+            case HASH_ROUTES.PIG_DEAD_LIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
+                navigation.showThisPage(pageContainer);
+                
+                if (data.refreshList) {
+                    navigation.pagePigDeadList.show({ refresh_list: true });
+                } else {
+                    navigation.pagePigDeadList.show();
+                }
+                break;
+            }
+              
+                
+            case HASH_ROUTES.PIG_DEAD_ADD_EDIT: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
+                navigation.showThisPage(pageContainer);
+                if (data.isAdd) {
+                    navigation.pagePigDeadAddEdit.show(data.options);
+                } else {
+                    //navigation.pagePigDeadAddEdit.show(data.options);
+                }
+                break;
+            }
+            
+            
+            case HASH_ROUTES.BOAR_EXT_MATE_LIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_LIST);
+                navigation.showThisPage(pageContainer);
+                
+                if (data.refreshList) {
+                    navigation.pageBoarExtMateList.show({ refresh_list: true });
+                } else {
+                    navigation.pageBoarExtMateList.show();
+                }
+                break;
+            }
+               
+                
+            case HASH_ROUTES.BOAR_EXT_MATE_ADD_EDIT: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT);
+                navigation.showThisPage(pageContainer);
+                if (data.isAdd) {
+                    navigation.pagePigDeadAddEdit.show(data.options);
+                } else {
+                    //navigation.pagePigDeadAddEdit.showEdit(data.options);
+                }
+                break;
+            }
+            
+            
+            case HASH_ROUTES.ACC_FARROW_CHECKLIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.ACC_FARROW_CHECKLIST);
+                navigation.showThisPage(pageContainer);
+                
+                if (data.refreshList) {
+                    navigation.pageAccFarrowChecklist.show({ refresh_list: true });
+                } else {
+                    navigation.pageAccFarrowChecklist.show();
+                }
+                break;
+            }
+            
+            
+            case HASH_ROUTES.ACC_F_CHECKLIST_ADD_EDIT: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT);
+                navigation.showThisPage(pageContainer);
+                if (data.isAdd) {
+                    navigation.pageAccFChecklistAddEdit.show(data.options);
+                } else {
+                    navigation.pageAccFChecklistAddEdit.show(
+                        data.options, data.entryHid);
+                }
+                break;
+            }
+    
+    
+            case HASH_ROUTES.FEEDS_CONSUMED: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.FEEDS_CONSUMED);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageFeedsConsumedChart.show();
+                break;
+            }
+            
+            
+                
+            // Add more routes as you implement them
+                
+            default:{
+                navigation.showHomeDashBoard();
+                break;
+            }
+        }
+    }
+    
+}
 

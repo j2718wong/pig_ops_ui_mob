@@ -327,10 +327,13 @@ export function PageAccFChecklistAddEdit(input_settings){
                         const callback_success = function(){
                             
                             // Fixed return route; After Add/edit should return to list page
-                            navigation.hashRouter.replace(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
+                            const dataHashRoute = {
                                 pageId:         PAGE_ID.ACC_FARROW_CHECKLIST,
                                 refreshList:    true
-                            });
+                            };
+                            
+                            navigation.managerHashRoute.hashRouter.replace(
+                                HASH_ROUTES.ACC_FARROW_CHECKLIST, dataHashRoute);
                         };
                         
                         
@@ -342,10 +345,13 @@ export function PageAccFChecklistAddEdit(input_settings){
                     
                     
                     // Fixed return route; After Add/edit should return to list page
-                    navigation.hashRouter.replace(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
+                    const dataHashRoute = {
                         pageId:         PAGE_ID.ACC_FARROW_CHECKLIST,
                         refreshList:    true
-                    });
+                    };
+                    
+                    navigation.managerHashRoute.hashRouter.replace(
+                        HASH_ROUTES.ACC_FARROW_CHECKLIST, dataHashRoute);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

@@ -17,9 +17,10 @@ import {APPLICATION,
         PIG_PROD_TYPE}              from '../../constants.js';
 
 
-import {HashRouter}                 from './hash_router.js';
 
 import {NavPageContainers}          from './nav_page_containers.js';
+
+import {ManagerHashRoute}           from './hash_router.js';
 
 import {ManagerNavLinks}            from './manager_nav_links.js';
 import {ManagerPublicSections}      from './manager_public_sections.js';
@@ -177,9 +178,10 @@ export function Navigation(){
     };
     
 
-    this.hashRouter             = new HashRouter();
     
     this.pageContainers         = new NavPageContainers(this);
+    
+    this.managerHashRoute       = new ManagerHashRoute(this);
     
     
     this.managerNavLinks        = new ManagerNavLinks(this);
@@ -912,7 +914,7 @@ export function Navigation(){
     
     
     this.initComponents = function(){
-        this.initHashRouter();
+        this.managerHashRoute.init();
         
         this.managerNavLinks.init();
         this.managerPublicSections.init();
@@ -1102,24 +1104,7 @@ export function Navigation(){
             });
         });
         
-        
-        /* 2026-06-06; disabled to try to use hashRouter
-        // Listen for back button only
-        window.addEventListener('popstate', function(event) {
-            console.log('\n\nback pressed', event.state);
-        
-            if (event.state) {
-                // Still in app - handle back navigation
-                thisObj.managerNavHistory.onClickBackBtn();
-                
-                // Re-push state so back works again
-                history.pushState({inApp: true}, '', window.location.href);
-            } else {
-                // No state - user really wants to leave
-                // Let them leave
-            }
-        });
-        */
+
     }
     
     
@@ -1196,7 +1181,7 @@ export function Navigation(){
         
         
         // Let hash router handle initial state 
-        if (this.hashRouter && this.hashRouter.isListening) {
+        if (this.managerHashRoute.hashRouter.isListening) {
             console.log('\n\nHash router manages initial history state');
         } else {
             // Legacy fallback (optional)
@@ -1460,15 +1445,14 @@ export function Navigation(){
     
     this.showHomeDashBoard = function(){
         // Clear all history and start fresh with home
-        if (this.hashRouter && this.hashRouter.isListening) {
+        if (this.managerHashRoute.hashRouter.isListening) {
             // Replace the entire history stack with just home
             const initialState = { route: 'home', data: {}, timestamp: Date.now() };
             history.replaceState(initialState, '', '#home');
             
             // Also reset any internal state
-            if (this.hashRouter) {
-                this.hashRouter.currentState = initialState;
-            }
+            this.managerHashRoute.hashRouter.currentState = initialState;
+            
         }
             
         const next_page = thisObj.getPageContainer(PAGE_ID.HOME);
@@ -1578,427 +1562,6 @@ export function Navigation(){
     }
     
     
-    this.initHashRouter = function() {
-        // Set the route handler
-        thisObj.hashRouter.onRouteChange = (route, data) => {
-            thisObj.handleHashRoute(route, data);
-        };
-        
-        // Start listening to popstate events
-        thisObj.hashRouter.init();
-    }
-    
-    
-    this.handleHashRoute = function(route, data) {
-        console.log('Hash route changed:', route, data);
-        
-        let pageContainer = null;
-        
-        
-        
-        
-        // Extract base route (remove query parameters)
-        let baseRoute = route;
-        
-        if (route.includes('?')){
-            baseRoute = route.split('?')[0];
-        }
-        
-        if (route.includes('/')){
-            baseRoute = route.split('/')[0];
-        }
-        
-        
-        switch(baseRoute) {
-            case HASH_ROUTES.HOME: {
-                //console.log('🔴 Going to HOME - check stack trace');
-                //console.trace(); // This will show who called it
-                
-                this.showHomeDashBoard();
-                break;
-            }
-            
-            
-            case HASH_ROUTES.MY_ACCOUNT: {
-                pageContainer = this.getPageContainer(PAGE_ID.MY_ACCOUNT);
-                this.showThisPage(pageContainer);
-                
-                this.pageMyAccount.show({ 
-                    returnRoute:    data.returnRoute,
-                    returnPageId:   data.returnPageId 
-                });
-                break;
-            }
-               
-                        
-            case HASH_ROUTES.CUSTOMER_PRICING: {
-                pageContainer = this.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
-                this.showThisPage(pageContainer);
-                
-                this.pageCustomerPricing.show({ 
-                    returnRoute:    data.returnRoute || HASH_ROUTES.MY_ACCOUNT
-                });
-                break;
-            }
-            
-            
-            case HASH_ROUTES.BILL_NEW: {
-                pageContainer = this.getPageContainer(PAGE_ID.BILL_NEW);
-                this.showThisPage(pageContainer);
-                
-                this.pageAccountNewBill.show({ 
-                    returnRoute:    data.returnRoute || HASH_ROUTES.HOME
-                });
-                break;
-            }
-            
-            
-            case HASH_ROUTES.USER_SETTINGS: {
-                pageContainer = this.getPageContainer(PAGE_ID.USER_SETTINGS);
-                this.showThisPage(pageContainer);
-                
-                this.pageUserSettings.show({ 
-                    returnRoute:    data.returnRoute || HASH_ROUTES.HOME
-                });
-                break;
-            }
-            
-            
-            case HASH_ROUTES.SOW_BOAR_LIST: {
-                // Parse query parameters
-                const urlParams = new URLSearchParams(route.split('?')[1] || '');
-                const type  = urlParams.get('type') || 'sows';
-                const tab   = urlParams.get('tab') || 'all';
-                
-                let sowBoarType;
-                switch(type) {
-                    case 'sows':    sowBoarType = SOW_BOAR_TYPE.SOW; break;
-                    case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
-                    case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
-                    case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
-                    default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
-                }
-                
-                pageContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
-                this.showThisPage(pageContainer);
-                
-                const options = {
-                    sow_boar_type: sowBoarType
-                };
-                if (tab !== 'all') {
-                    options.filter_type = tab;
-                }
-                if (data.showOptions) {
-                    Object.assign(options, data.showOptions);
-                }
-                
-                this.pageSowBoarList.show(options);
-                break;
-            }
-            
-            
-            case HASH_ROUTES.SOW_BOAR_ADD_EDIT: {
-                const addEditContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-                this.showThisPage(addEditContainer);
-                
-                if (data.isAdd) {
-                    // data.sowBoarType is a string
-                    // SOW_BOAR_TYPE is a integer
-                    
-                    // Add mode
-                    let sowBoarType;
-                    switch(data.sowBoarType) {
-                        case 'sows':    sowBoarType = SOW_BOAR_TYPE.SOW; break;
-                        case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
-                        case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
-                        case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
-                        default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
-                    }
-                    
-                    
-                    
-                    this.pageSowBoarAddEdit.show({
-                        is_add:         true,
-                        sow_boar_type:  sowBoarType,
-                        returnRoute:    data.returnRoute,
-                        returnPageId:   data.returnPageId
-                    });
-                } else {
-                    // Edit mode - need to load entry by HID
-                    const entryHid = data.entryHid;
-                    
-                    let sowBoarType;
-                    switch(data.sowBoarType) {
-                        case 'sows':    sowBoarType = SOW_BOAR_TYPE.SOW; break;
-                        case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
-                        case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
-                        case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
-                        default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
-                    }
-                    
-                    
-                    // Find the entry from existing data
-                    let entryData = null;
-                    switch(sowBoarType) {
-                        case SOW_BOAR_TYPE.SOW:
-                            entryData = navigation.pigFarm.managerSowBoar.dataSowList?.find(
-                                item => item.sow_boar.hid === entryHid
-                            );
-                            break;
-                        case SOW_BOAR_TYPE.BOAR:
-                            entryData = navigation.pigFarm.managerSowBoar.dataBoarList?.find(
-                                item => item.sow_boar.hid === entryHid
-                            );
-                            break;
-                        case SOW_BOAR_TYPE.GILT:
-                            entryData = navigation.pigFarm.managerSowBoar.dataGiltList?.find(
-                                item => item.sow_boar.hid === entryHid
-                            );
-                            break;
-                    }
-                    
-                    if (entryData) {
-                        this.pageSowBoarAddEdit.show({
-                            is_add:             false,
-                            sow_boar_type:      sowBoarType,
-                            returnRoute:        data.returnRoute,
-                            returnPageId:       data.returnPageId,
-                            
-                            // These are needed to be passed so that after
-                            // successful edit can go back to PageSowBoarEntry
-                            prev_sow_boar_hid:  data.prevSowBoarHid,
-                            next_sow_boar_hid:  data.nextSowBoarHid,
-                            data_index:         data.dataIndex,
-                            total_entries:      data.totalEntries
-                            
-                        }, entryData);
-                    } else {
-                        // If not found in memory, fetch from server
-                        this.fetchAndShowSowBoarEntry(entryHid, sowBoarType, data);
-                    }
-                }
-                break;
-            }
-            
-            
-            case HASH_ROUTES.SOW_BOAR_ENTRY: {
-                pageContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
-                this.showThisPage(pageContainer);
-                
-                // Find the entry data by HID
-                let entryData       = null;
-                const sowBoarType   = data.sowBoarType || 'sows';
-                let sowBoarTypeNum  = SOW_BOAR_TYPE.SOW;
-                
-                switch(sowBoarType) {
-                    case 'sows':    sowBoarTypeNum = SOW_BOAR_TYPE.SOW; break;
-                    case 'boars':   sowBoarTypeNum = SOW_BOAR_TYPE.BOAR; break;
-                    case 'gilts':   sowBoarTypeNum = SOW_BOAR_TYPE.GILT; break;
-                    case 'disposed':sowBoarTypeNum = SOW_BOAR_TYPE.DISPOSED; break;
-                }
-                
-                // Try to find entry in existing data
-                switch(sowBoarTypeNum) {
-                    case SOW_BOAR_TYPE.SOW:
-                        entryData = navigation.pigFarm.managerSowBoar.dataSowList?.find(
-                            item => item.sow_boar.hid === data.sowBoarHid
-                        );
-                        break;
-                    case SOW_BOAR_TYPE.BOAR:
-                        entryData = navigation.pigFarm.managerSowBoar.dataBoarList?.find(
-                            item => item.sow_boar.hid === data.sowBoarHid
-                        );
-                        break;
-                    case SOW_BOAR_TYPE.GILT:
-                        entryData = navigation.pigFarm.managerSowBoar.dataGiltList?.find(
-                            item => item.sow_boar.hid === data.sowBoarHid
-                        );
-                        break;
-                }
-                
-                const options = {
-                    sow_boar_type:      sowBoarTypeNum,
-                    prev_sow_boar_hid:  data.prevSowBoarHid,
-                    next_sow_boar_hid:  data.nextSowBoarHid,
-                    sow_boar_list:      null, // Will be loaded from data
-                    data_index:         data.dataIndex,
-                    total_entries:      data.totalEntries
-                };
-                if (data.tabId) {
-                    options.tab_id = data.tabId;
-                }
-                
-                
-                this.pageSowBoarEntry.show(entryData, options);
-                
-                break;            
-            }
-            
-            
-            case HASH_ROUTES.SOW_BOAR_DISPOSED: {
-                pageContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_DISPOSED);
-                this.showThisPage(pageContainer);
-                
-                // Find the disposed entry
-                let disposedData = null;
-                const disposedList = navigation.pigFarm.managerSowBoar.dataDisposedList;
-                if (disposedList) {
-                    disposedData = disposedList.find(item => item.sow_boar.hid === data.entryHid);
-                }
-                
-                const disposedOptions = {
-                    sow_boar_type: SOW_BOAR_TYPE.DISPOSED,
-                    returnRoute: data.returnRoute,
-                    returnPageId: data.returnPageId
-                };
-                
-                if (disposedData) {
-                    this.pageSowBoarDisposed.show(disposedData, disposedOptions);
-                }
-                break;
-            }
-            
-            
-            case HASH_ROUTES.TRACE_PARENTS: {
-                pageContainer = this.getPageContainer(PAGE_ID.TRACE_PARENTS);
-                this.showThisPage(pageContainer);
-                
-                this.pageParentTrace.show();
-                break;
-            }
-            
-                        
-            case HASH_ROUTES.ALL_FEED_BAL_LIST: {
-                pageContainer = this.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
-                this.showThisPage(pageContainer);
-                
-                if (data.refreshList) {
-                    this.pageAllFeedBalanceList.show({ refresh_list: true });
-                } else {
-                    this.pageAllFeedBalanceList.show();
-                }
-                break;
-            }
-            
-            
-            case HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT: {
-                pageContainer = this.getPageContainer(PAGE_ID.ALL_FEED_BAL_ADD_EDIT);
-                this.showThisPage(pageContainer);
-                if (data.isAdd) {
-                    this.pageAllFeedBalanceAddEdit.show(data.options);
-                } else {
-                    this.pageAllFeedBalanceAddEdit.show(data.options);
-                }
-                break;
-            }
-                
-            
-            case HASH_ROUTES.FARROWING_SCHEDULE: {
-                pageContainer = this.getPageContainer(PAGE_ID.FARROWING_SCHEDULE);
-                this.showThisPage(pageContainer);
-                
-                this.pageFarrowingSchedule.show();
-                break;
-            }
-              
-                
-            case HASH_ROUTES.PIG_DEAD_LIST: {
-                pageContainer = this.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
-                this.showThisPage(pageContainer);
-                
-                if (data.refreshList) {
-                    this.pagePigDeadList.show({ refresh_list: true });
-                } else {
-                    this.pagePigDeadList.show();
-                }
-                break;
-            }
-              
-                
-            case HASH_ROUTES.PIG_DEAD_ADD_EDIT: {
-                pageContainer = this.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
-                this.showThisPage(pageContainer);
-                if (data.isAdd) {
-                    this.pagePigDeadAddEdit.show(data.options);
-                } else {
-                    //this.pagePigDeadAddEdit.show(data.options);
-                }
-                break;
-            }
-            
-            
-            case HASH_ROUTES.BOAR_EXT_MATE_LIST: {
-                pageContainer = this.getPageContainer(PAGE_ID.BOAR_EXT_MATE_LIST);
-                this.showThisPage(pageContainer);
-                
-                if (data.refreshList) {
-                    this.pageBoarExtMateList.show({ refresh_list: true });
-                } else {
-                    this.pageBoarExtMateList.show();
-                }
-                break;
-            }
-               
-                
-            case HASH_ROUTES.BOAR_EXT_MATE_ADD_EDIT: {
-                pageContainer = this.getPageContainer(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT);
-                this.showThisPage(pageContainer);
-                if (data.isAdd) {
-                    this.pagePigDeadAddEdit.show(data.options);
-                } else {
-                    //this.pagePigDeadAddEdit.showEdit(data.options);
-                }
-                break;
-            }
-            
-            
-            case HASH_ROUTES.ACC_FARROW_CHECKLIST: {
-                pageContainer = this.getPageContainer(PAGE_ID.ACC_FARROW_CHECKLIST);
-                this.showThisPage(pageContainer);
-                
-                if (data.refreshList) {
-                    this.pageAccFarrowChecklist.show({ refresh_list: true });
-                } else {
-                    this.pageAccFarrowChecklist.show();
-                }
-                break;
-            }
-            
-            
-            case HASH_ROUTES.ACC_F_CHECKLIST_ADD_EDIT: {
-                pageContainer = this.getPageContainer(PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT);
-                this.showThisPage(pageContainer);
-                if (data.isAdd) {
-                    this.pageAccFChecklistAddEdit.show(data.options);
-                } else {
-                    this.pageAccFChecklistAddEdit.show(
-                        data.options, data.entryHid);
-                }
-                break;
-            }
-    
-    
-            case HASH_ROUTES.FEEDS_CONSUMED: {
-                pageContainer = this.getPageContainer(PAGE_ID.FEEDS_CONSUMED);
-                this.showThisPage(pageContainer);
-                
-                this.pageFeedsConsumedChart.show();
-                break;
-            }
-            
-            
-                
-            // Add more routes as you implement them
-                
-            default:{
-                this.showHomeDashBoard();
-                break;
-            }
-        }
-    }
-    
-    
-
     this.onClickProdGestatingEntry = function(pig_prod_pid){
         if (pig_prod_pid == null){
             thisObj.managerNavLinks.onClickNavProdGestaLacta(null, 

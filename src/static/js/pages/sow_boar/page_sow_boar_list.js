@@ -971,7 +971,6 @@ ${html_style}
             const next_page_hash    = HASH_ROUTES.SOW_BOAR_ADD_EDIT;
             
             // Get current route for return navigation
-            const currentRoute      = navigation.hashRouter.getCurrentRoute();
             const currentPageId     = PAGE_ID.SOW_BOAR_LIST;
             const sowBoarType       = showOptions.sow_boar_type;
             
@@ -987,13 +986,16 @@ ${html_style}
             
             
             // Use hash router for navigation
-            navigation.hashRouter.navigate(next_page_hash, {
+            const dataHashRoute = {
                 pageId:         next_page_id,
                 isAdd:          true,
                 sowBoarType:    typeLabel,
                 returnRoute:    listRoute,
                 returnPageId:   currentPageId
-            });
+            };
+            
+            navigation.managerHashRoute.hashRouter.navigate(
+                next_page_hash, dataHashRoute);
             
             // Show the add/edit page
             //const next_page = navigation.getPageContainer(next_page_id);
@@ -1025,10 +1027,10 @@ ${html_style}
                 }
                 
                 // After redrawing, use hash router to go back to list with refresh
-                navigation.hashRouter.replace(listRoute, {
-                    pageId: currentPageId,
-                    sowBoarType: sowBoarType,
-                    refresh: true
+                navigation.managerHashRoute.hashRouter.replace(listRoute, {
+                    pageId:         currentPageId,
+                    sowBoarType:    sowBoarType,
+                    refresh:        true
                 });
             };
             
@@ -1538,7 +1540,7 @@ ${html_style}
             }
             
             const listRoute = `${HASH_ROUTES.SOW_BOAR_LIST}?type=${typeLabel}`;
-            navigation.hashRouter.replace(listRoute, {
+            navigation.managerHashRoute.hashRouter.replace(listRoute, {
                 pageId: PAGE_ID.SOW_BOAR_LIST,
                 sowBoarType: typeLabel
             });
@@ -1615,7 +1617,7 @@ ${html_style}
                 const listRoute = `${HASH_ROUTES.SOW_BOAR_LIST}?type=${typeLabel}`;
                 
                 // Use hash router navigation
-                navigation.hashRouter.navigate(entryRoute, {
+                navigation.managerHashRoute.hashRouter.navigate(entryRoute, {
                     pageId:         PAGE_ID.SOW_BOAR_ENTRY,
                     sowBoarHid:     sow_boar_hid,
                     sowBoarType:    typeLabel,

@@ -751,7 +751,7 @@ export function PageTableBasic(){
  
             
             // Use hash navigation instead of manual history
-            thisObj.navigation.hashRouter.navigate(next_page_hash, {
+            thisObj.navigation.managerHashRoute.hashRouter.navigate(next_page_hash, {
                 pageId:         next_page_id,
                 isAdd:          true,
                 options:        options_hash_route_data,
@@ -802,7 +802,7 @@ export function PageTableBasic(){
  
             
             // Use hash navigation instead of manual history
-            thisObj.navigation.hashRouter.navigate(next_page_hash, {
+            thisObj.navigation.managerHashRoute.hashRouter.navigate(next_page_hash, {
                 pageId:         next_page_id,
                 isAdd:          false,
                 options:        options_hash_route_data,

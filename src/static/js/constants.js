@@ -214,7 +214,9 @@ const HASH_ROUTES = {
     CUSTOMER_PRICING:       'pricing',
     USER_SETTINGS:          'user_settings',
     BILL_NEW:               'bill_new',
-    
+
+
+    PROD_NOT_PREGNANT_LIST: 'not_pregnant_list',
     
     SOW_BOAR_LIST:          'sow_boar_list',
     SOW_BOAR_ENTRY:         'sow_boar_entry',
@@ -222,9 +224,7 @@ const HASH_ROUTES = {
     SOW_BOAR_DISPOSED:      'sow_boar_disposed',
     TRACE_PARENTS:          'trace_parents',
     
-    
-    
-    
+
     ALL_FEED_BAL_LIST:      'feed_balance_list',
     ALL_FEED_BAL_ADD_EDIT:  'feed_balance_add_edit',
     

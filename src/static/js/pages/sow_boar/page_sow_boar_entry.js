@@ -713,7 +713,7 @@ export function PageSowBoarEntry(input_settings){
                 
                 
                 // Use hash router navigation
-                navigation.hashRouter.navigate(HASH_ROUTES.SOW_BOAR_ADD_EDIT, {
+                const dataHashRoute = {
                     pageId:             PAGE_ID.SOW_BOAR_ADD_EDIT,
                     isAdd:              false,
                     sowBoarType:        typeLabel,
@@ -725,8 +725,10 @@ export function PageSowBoarEntry(input_settings){
                     nextSowBoarHid:     showOptions.next_sow_boar_hid,
                     dataIndex:          showOptions.data_index,
                     totalEntries:       showOptions.total_entries
-                    
-                });
+                };
+                
+                navigation.managerHashRoute.hashRouter.navigate(
+                    HASH_ROUTES.SOW_BOAR_ADD_EDIT, dataHashRoute);
                 
                 // TO removed?
                 //navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(
@@ -741,7 +743,7 @@ export function PageSowBoarEntry(input_settings){
                 const entryRoute = `${HASH_ROUTES.SOW_BOAR_ENTRY}/${dataSowBoar.sow_boar.hid}`;
                 const listRoute = `${HASH_ROUTES.SOW_BOAR_LIST}?type=${typeLabel}`;
                 
-                navigation.hashRouter.navigate(HASH_ROUTES.SOW_BOAR_DISPOSED, {
+                const dataHashRoute = {
                     pageId:             PAGE_ID.SOW_BOAR_DISPOSED,
                     sowBoarType:        typeLabel,
                     entryHid:           dataSowBoar.sow_boar.hid,
@@ -749,9 +751,13 @@ export function PageSowBoarEntry(input_settings){
                     returnPageId:       PAGE_ID.SOW_BOAR_ENTRY,
                     listReturnRoute:    listRoute,
                     listReturnPageId:   PAGE_ID.SOW_BOAR_LIST
-                });
+                };
                 
-                const disposedPage = navigation.getPageContainer(PAGE_ID.SOW_BOAR_DISPOSED);
+                navigation.managerHashRoute.hashRouter.navigate(
+                    HASH_ROUTES.SOW_BOAR_DISPOSED, dataHashRoute);
+                
+                const disposedPage = navigation.getPageContainer(
+                    PAGE_ID.SOW_BOAR_DISPOSED);
                 navigation.showThisPage(disposedPage);
                 
                 const options_disposed = {

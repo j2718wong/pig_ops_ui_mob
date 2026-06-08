@@ -1547,14 +1547,14 @@ export function ManagerNavLinks(_navigation) {
         // Special handling for Sows - check data updates first
         const navigateToSowBoar = function() {
             if (is_left_right_nav || areSameMenuLevel || isSamePage) {
-                navigation.hashRouter.replace(route, {
+                navigation.managerHashRoute.hashRouter.replace(route, {
                     pageId:         PAGE_ID.SOW_BOAR_LIST,
                     sowBoarType:    typeLabel,
                     activeTab:      activeTab,
                     showOptions:    show_options
                 });
             } else {
-                navigation.hashRouter.navigate(route, {
+                navigation.managerHashRoute.hashRouter.navigate(route, {
                     pageId:         PAGE_ID.SOW_BOAR_LIST,
                     sowBoarType:    typeLabel,
                     activeTab:      activeTab,
@@ -1607,12 +1607,12 @@ export function ManagerNavLinks(_navigation) {
         
         // Use hash navigation instead of manual history
         if (is_left_right_nav || areSameMenuLevel || isSamePage) {
-            navigation.hashRouter.replace(HASH_ROUTES.TRACE_PARENTS, {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.TRACE_PARENTS, {
                 pageId: PAGE_ID.TRACE_PARENTS
             });
         }
         else{
-            navigation.hashRouter.navigate(HASH_ROUTES.TRACE_PARENTS, {
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.TRACE_PARENTS, {
                 pageId: PAGE_ID.TRACE_PARENTS
             });
         }
@@ -1683,11 +1683,33 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
-    this.onClickNavProdNotPregnant = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.PROD_NOT_PREGNANT_LIST);
+    this.onClickNavProdNotPregnant = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
         
-        navigation.showThisPage(next_page);
-        navigation.pageNotPregnantList.show();
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.PROD_NOT_PREGNANT_LIST);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.PROD_NOT_PREGNANT_LIST);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.PROD_NOT_PREGNANT_LIST, {
+                pageId: PAGE_ID.PROD_NOT_PREGNANT_LIST
+            });
+        }
+        else{
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.PROD_NOT_PREGNANT_LIST, {
+                pageId: PAGE_ID.PROD_NOT_PREGNANT_LIST
+            });
+        }
     }
     
         
@@ -1710,12 +1732,12 @@ export function ManagerNavLinks(_navigation) {
         
         // Use hash navigation instead of manual history
         if (is_left_right_nav || areSameMenuLevel || isSamePage) {
-            navigation.hashRouter.replace(HASH_ROUTES.ALL_FEED_BAL_LIST, {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.ALL_FEED_BAL_LIST, {
                 pageId: PAGE_ID.ALL_FEED_BAL_LIST
             });
         }
         else{
-            navigation.hashRouter.navigate(HASH_ROUTES.ALL_FEED_BAL_LIST, {
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.ALL_FEED_BAL_LIST, {
                 pageId: PAGE_ID.ALL_FEED_BAL_LIST
             });
         }
@@ -1740,12 +1762,12 @@ export function ManagerNavLinks(_navigation) {
         
         // Use hash navigation instead of manual history
         if (is_left_right_nav || areSameMenuLevel || isSamePage) {
-            navigation.hashRouter.replace(HASH_ROUTES.FARROWING_SCHEDULE, {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.FARROWING_SCHEDULE, {
                 pageId: PAGE_ID.FARROWING_SCHEDULE
             });
         }
         else{
-            navigation.hashRouter.navigate(HASH_ROUTES.FARROWING_SCHEDULE, {
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.FARROWING_SCHEDULE, {
                 pageId: PAGE_ID.FARROWING_SCHEDULE
             });
         }
@@ -1771,12 +1793,12 @@ export function ManagerNavLinks(_navigation) {
         
         // Use hash navigation instead of manual history
         if (is_left_right_nav || areSameMenuLevel || isSamePage) {
-            navigation.hashRouter.replace(HASH_ROUTES.BOAR_EXT_MATE_LIST, {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.BOAR_EXT_MATE_LIST, {
                 pageId: PAGE_ID.BOAR_EXT_MATE_LIST
             });
         }
         else{
-            navigation.hashRouter.navigate(HASH_ROUTES.BOAR_EXT_MATE_LIST, {
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.BOAR_EXT_MATE_LIST, {
                 pageId: PAGE_ID.BOAR_EXT_MATE_LIST
             });
         }
@@ -1784,20 +1806,6 @@ export function ManagerNavLinks(_navigation) {
     
     
     this.onClickNavPigDead = function(is_mobile, is_left_right_nav){
-        // 2026-06-06; Do not delete this yet; this is the old manaul nav history
-        // const next_page = navigation.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
-        
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        //navigation.pushCurrentPageToNavHistory(next_page);
-        
-        
-        // manual show
-        //navigation.showThisPage(next_page);
-        //navigation.pagePigDeadList.show();
-        
-        
         // Get previous page_id from history state
         let previousPageId = null;
         if (history.state && history.state.data && history.state.data.pageId) {
@@ -1815,12 +1823,12 @@ export function ManagerNavLinks(_navigation) {
         
         // Use hash navigation instead of manual history
         if (is_left_right_nav || areSameMenuLevel || isSamePage) {
-            navigation.hashRouter.replace(HASH_ROUTES.PIG_DEAD_LIST, {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.PIG_DEAD_LIST, {
                 pageId: PAGE_ID.PIG_DEAD_LIST
             });
         }
         else{
-            navigation.hashRouter.navigate(HASH_ROUTES.PIG_DEAD_LIST, {
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.PIG_DEAD_LIST, {
                 pageId: PAGE_ID.PIG_DEAD_LIST
             });
         }
@@ -1845,12 +1853,12 @@ export function ManagerNavLinks(_navigation) {
         
         // Use hash navigation instead of manual history
         if (is_left_right_nav || areSameMenuLevel || isSamePage) {
-            navigation.hashRouter.replace(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
                 pageId: PAGE_ID.ACC_FARROW_CHECKLIST
             });
         }
         else{
-            navigation.hashRouter.navigate(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.ACC_FARROW_CHECKLIST, {
                 pageId: PAGE_ID.ACC_FARROW_CHECKLIST
             });
         }
@@ -1875,12 +1883,12 @@ export function ManagerNavLinks(_navigation) {
         
         // Use hash navigation instead of manual history
         if (is_left_right_nav || areSameMenuLevel || isSamePage) {
-            navigation.hashRouter.replace(HASH_ROUTES.FEEDS_CONSUMED, {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.FEEDS_CONSUMED, {
                 pageId: PAGE_ID.FEEDS_CONSUMED
             });
         }
         else{
-            navigation.hashRouter.navigate(HASH_ROUTES.FEEDS_CONSUMED, {
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.FEEDS_CONSUMED, {
                 pageId: PAGE_ID.FEEDS_CONSUMED
             });
         }

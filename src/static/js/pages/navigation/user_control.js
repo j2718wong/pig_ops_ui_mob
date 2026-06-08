@@ -358,11 +358,11 @@ export function UserControl(_navigation) {
     
     
     this.onClickMyAccount = function(){
-        const cur_route      = navigation.hashRouter.getCurrentRoute();
+        const cur_route      = navigation.managerHashRoute.hashRouter.getCurrentRoute();
         const cur_container  = navigation.curPageNavigated.pageContainer;
         const cur_page_id    = navigation.pageContainers.getPageIdFromContainer(cur_container);
         
-        navigation.hashRouter.navigate(HASH_ROUTES.MY_ACCOUNT, {
+        navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.MY_ACCOUNT, {
             pageId:         PAGE_ID.MY_ACCOUNT,
             returnRoute:    cur_route,
             returnPageId:   cur_page_id
@@ -383,11 +383,11 @@ export function UserControl(_navigation) {
     
     
     this.onClickBillNew = function(){
-        const cur_route      = navigation.hashRouter.getCurrentRoute();
+        const cur_route      = navigation.managerHashRoute.hashRouter.getCurrentRoute();
         const cur_container  = navigation.curPageNavigated.pageContainer;
         const cur_page_id    = navigation.pageContainers.getPageIdFromContainer(cur_container);
         
-        navigation.hashRouter.navigate(HASH_ROUTES.BILL_NEW, {
+        navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.BILL_NEW, {
             pageId:         PAGE_ID.BILL_NEW,
             returnRoute:    cur_route,
             returnPageId:   cur_page_id
@@ -408,11 +408,11 @@ export function UserControl(_navigation) {
     
     
     this.onClickSettings = function(){
-        const cur_route      = navigation.hashRouter.getCurrentRoute();
+        const cur_route      = navigation.managerHashRoute.hashRouter.getCurrentRoute();
         const cur_container  = navigation.curPageNavigated.pageContainer;
         const cur_page_id    = navigation.pageContainers.getPageIdFromContainer(cur_container);
         
-        navigation.hashRouter.navigate(HASH_ROUTES.USER_SETTINGS, {
+        navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.USER_SETTINGS, {
             pageId:         PAGE_ID.USER_SETTINGS,
             returnRoute:    cur_route,
             returnPageId:   cur_page_id

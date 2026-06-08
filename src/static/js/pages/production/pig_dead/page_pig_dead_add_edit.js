@@ -541,10 +541,13 @@ export function PagePigDeadAddEdit(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     // Fixed return route; After Add/edit should return to list page
-                    navigation.hashRouter.replace(HASH_ROUTES.PIG_DEAD_LIST, {
+                    const dataHashRoute = {
                         pageId:         PAGE_ID.PIG_DEAD_LIST,
                         refreshList:    true
-                    });
+                    };
+                    
+                    navigation.managerHashRoute.hashRouter.replace(
+                        HASH_ROUTES.PIG_DEAD_LIST, dataHashRoute);
                     
                 }
                 else{

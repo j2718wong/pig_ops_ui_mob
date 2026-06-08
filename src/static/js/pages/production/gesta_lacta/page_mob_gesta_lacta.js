@@ -585,7 +585,7 @@ ${html_style}
         if (settings.isGesta == true){
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
-                navigation.managerNavLinks.onClickNavProdNotPregnant(null);
+                navigation.managerNavLinks.onClickNavProdNotPregnant(null, true);
             }
 
             elemNavNextEntry.onclick = function(){

@@ -574,9 +574,12 @@ ${html_style}
             elemAfterFreeTrialLink.addEventListener('click', function(event) {
                 event.preventDefault();
                 
-                navigation.hashRouter.navigate(HASH_ROUTES.CUSTOMER_PRICING, {
+                const dataHashRoute = {
                     pageId:         PAGE_ID.CUSTOMER_PRICING
-                });
+                };
+                
+                navigation.managerHashRoute.hashRouter.navigate(
+                    HASH_ROUTES.CUSTOMER_PRICING, dataHashRoute);
                 
                 const next_page = navigation.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
                 navigation.showThisPage(next_page);
