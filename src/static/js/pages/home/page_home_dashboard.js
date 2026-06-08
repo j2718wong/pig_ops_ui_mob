@@ -761,13 +761,6 @@ export function PageHomeDashBoard(input_settings){
     
     
     this.show = function(){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = null;
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
-        
         // Show/ Hide debug  elemnts
         const user = navigation.userControl.dataUserAccount.user.user;
         

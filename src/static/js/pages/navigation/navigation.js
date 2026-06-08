@@ -1594,13 +1594,20 @@ export function Navigation(){
         
         let pageContainer = null;
         
-        switch(route) {
-            case HASH_ROUTES.HOME:
+        // Extract base route (remove query parameters)
+        const baseRoute = route.split('?')[0];
+        
+        switch(baseRoute) {
+            case HASH_ROUTES.HOME: {
+                //console.log('🔴 Going to HOME - check stack trace');
+                //console.trace(); // This will show who called it
+                
                 this.showHomeDashBoard();
                 break;
+            }
             
             
-            case HASH_ROUTES.MY_ACCOUNT:
+            case HASH_ROUTES.MY_ACCOUNT: {
                 pageContainer = this.getPageContainer(PAGE_ID.MY_ACCOUNT);
                 this.showThisPage(pageContainer);
                 
@@ -1609,8 +1616,9 @@ export function Navigation(){
                     returnPageId:   data.returnPageId 
                 });
                 break;
+            }
                         
-            case HASH_ROUTES.CUSTOMER_PRICING:
+            case HASH_ROUTES.CUSTOMER_PRICING: {
                 pageContainer = this.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
                 this.showThisPage(pageContainer);
                 
@@ -1618,8 +1626,9 @@ export function Navigation(){
                     returnRoute:    data.returnRoute || HASH_ROUTES.MY_ACCOUNT
                 });
                 break;
+            }
             
-            case HASH_ROUTES.BILL_NEW:
+            case HASH_ROUTES.BILL_NEW: {
                 pageContainer = this.getPageContainer(PAGE_ID.BILL_NEW);
                 this.showThisPage(pageContainer);
                 
@@ -1627,10 +1636,10 @@ export function Navigation(){
                     returnRoute:    data.returnRoute || HASH_ROUTES.HOME
                 });
                 break;
+            }
             
             
-            
-            case HASH_ROUTES.USER_SETTINGS:
+            case HASH_ROUTES.USER_SETTINGS: {
                 pageContainer = this.getPageContainer(PAGE_ID.USER_SETTINGS);
                 this.showThisPage(pageContainer);
                 
@@ -1638,14 +1647,14 @@ export function Navigation(){
                     returnRoute:    data.returnRoute || HASH_ROUTES.HOME
                 });
                 break;
+            }
             
             
-            
-            case HASH_ROUTES.SOW_BOAR_LIST:
+            case HASH_ROUTES.SOW_BOAR_LIST: {
                 // Parse query parameters
                 const urlParams = new URLSearchParams(route.split('?')[1] || '');
-                const type = urlParams.get('type') || 'sows';
-                const tab = urlParams.get('tab') || 'all';
+                const type  = urlParams.get('type') || 'sows';
+                const tab   = urlParams.get('tab') || 'all';
                 
                 let sowBoarType;
                 switch(type) {
@@ -1653,7 +1662,7 @@ export function Navigation(){
                     case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
                     case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
                     case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
-                    default: sowBoarType = SOW_BOAR_TYPE.SOW;
+                    default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
                 }
                 
                 pageContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
@@ -1671,9 +1680,115 @@ export function Navigation(){
                 
                 this.pageSowBoarList.show(options);
                 break;
+            }
+            
+            
+            case HASH_ROUTES.SOW_BOAR_ADD_EDIT: {
+                const addEditContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+                this.showThisPage(addEditContainer);
+                
+                if (data.isAdd) {
+                    // data.sowBoarType is a string
+                    // SOW_BOAR_TYPE is a integer
+                    
+                    // Add mode
+                    let sowBoarType;
+                    switch(data.sowBoarType) {
+                        case 'sows':    sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                        case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
+                        case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
+                        case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
+                        default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                    }
+                    
+                    
+                    
+                    this.pageSowBoarAddEdit.show({
+                        is_add: true,
+                        sow_boar_type: sowBoarType,
+                        returnRoute: data.returnRoute,
+                        returnPageId: data.returnPageId
+                    });
+                } else {
+                    // Edit mode - need to load entry by HID
+                    const entryHid = data.entryHid;
+                    const sowBoarType = data.sowBoarType || SOW_BOAR_TYPE.SOW;
+                    
+                    // Find the entry from existing data
+                    let entryData = null;
+                    switch(sowBoarType) {
+                        case SOW_BOAR_TYPE.SOW:
+                            entryData = navigation.pigFarm.managerSowBoar.dataSowList?.find(
+                                item => item.sow_boar.hid === entryHid
+                            );
+                            break;
+                        case SOW_BOAR_TYPE.BOAR:
+                            entryData = navigation.pigFarm.managerSowBoar.dataBoarList?.find(
+                                item => item.sow_boar.hid === entryHid
+                            );
+                            break;
+                        case SOW_BOAR_TYPE.GILT:
+                            entryData = navigation.pigFarm.managerSowBoar.dataGiltList?.find(
+                                item => item.sow_boar.hid === entryHid
+                            );
+                            break;
+                    }
+                    
+                    if (entryData) {
+                        this.pageSowBoarAddEdit.show({
+                            is_add: false,
+                            sow_boar_type: sowBoarType,
+                            returnRoute: data.returnRoute,
+                            returnPageId: data.returnPageId
+                        }, entryData);
+                    } else {
+                        // If not found in memory, fetch from server
+                        this.fetchAndShowSowBoarEntry(entryHid, sowBoarType, data);
+                    }
+                }
+                break;
+            }
+            
+            
+            case HASH_ROUTES.SOW_BOAR_ENTRY: {
+                const entryContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                this.showThisPage(entryContainer);
+                
+                const entryHid = data.entryHid;
+                const sowBoarType = data.sowBoarType || SOW_BOAR_TYPE.SOW;
+                
+                // Find the entry from existing data
+                let entryData = null;
+                switch(sowBoarType) {
+                    case SOW_BOAR_TYPE.SOW:
+                        entryData = navigation.pigFarm.managerSowBoar.dataSowList?.find(
+                            item => item.sow_boar.hid === entryHid
+                        );
+                        break;
+                    case SOW_BOAR_TYPE.BOAR:
+                        entryData = navigation.pigFarm.managerSowBoar.dataBoarList?.find(
+                            item => item.sow_boar.hid === entryHid
+                        );
+                        break;
+                    case SOW_BOAR_TYPE.GILT:
+                        entryData = navigation.pigFarm.managerSowBoar.dataGiltList?.find(
+                            item => item.sow_boar.hid === entryHid
+                        );
+                        break;
+                }
+                
+                if (entryData) {
+                    this.pageSowBoarEntry.show(entryData, {
+                        sow_boar_type: sowBoarType,
+                        returnRoute: data.returnRoute,
+                        returnPageId: data.returnPageId
+                    });
+                }
+                break;
+            }            
             
                         
-            case HASH_ROUTES.ALL_FEED_BAL_LIST:
+            case HASH_ROUTES.ALL_FEED_BAL_LIST: {
                 pageContainer = this.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
                 this.showThisPage(pageContainer);
                 
@@ -1683,8 +1798,9 @@ export function Navigation(){
                     this.pageAllFeedBalanceList.show();
                 }
                 break;
+            }
             
-            case HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT:
+            case HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT: {
                 pageContainer = this.getPageContainer(PAGE_ID.ALL_FEED_BAL_ADD_EDIT);
                 this.showThisPage(pageContainer);
                 if (data.isAdd) {
@@ -1693,17 +1809,18 @@ export function Navigation(){
                     this.pageAllFeedBalanceAddEdit.show(data.options);
                 }
                 break;
+            }
                 
             
-            case HASH_ROUTES.FARROWING_SCHEDULE:
+            case HASH_ROUTES.FARROWING_SCHEDULE: {
                 pageContainer = this.getPageContainer(PAGE_ID.FARROWING_SCHEDULE);
                 this.showThisPage(pageContainer);
                 
                 this.pageFarrowingSchedule.show();
                 break;
+            }
                 
-                
-            case HASH_ROUTES.PIG_DEAD_LIST:
+            case HASH_ROUTES.PIG_DEAD_LIST: {
                 pageContainer = this.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
                 this.showThisPage(pageContainer);
                 
@@ -1713,8 +1830,9 @@ export function Navigation(){
                     this.pagePigDeadList.show();
                 }
                 break;
+            }
                 
-            case HASH_ROUTES.PIG_DEAD_ADD_EDIT:
+            case HASH_ROUTES.PIG_DEAD_ADD_EDIT: {
                 pageContainer = this.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
                 this.showThisPage(pageContainer);
                 if (data.isAdd) {
@@ -1723,9 +1841,10 @@ export function Navigation(){
                     //this.pagePigDeadAddEdit.show(data.options);
                 }
                 break;
+            }
             
             
-            case HASH_ROUTES.BOAR_EXT_MATE_LIST:
+            case HASH_ROUTES.BOAR_EXT_MATE_LIST: {
                 pageContainer = this.getPageContainer(PAGE_ID.BOAR_EXT_MATE_LIST);
                 this.showThisPage(pageContainer);
                 
@@ -1735,8 +1854,9 @@ export function Navigation(){
                     this.pageBoarExtMateList.show();
                 }
                 break;
+            }
                 
-            case HASH_ROUTES.BOAR_EXT_MATE_ADD_EDIT:
+            case HASH_ROUTES.BOAR_EXT_MATE_ADD_EDIT: {
                 pageContainer = this.getPageContainer(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT);
                 this.showThisPage(pageContainer);
                 if (data.isAdd) {
@@ -1745,9 +1865,9 @@ export function Navigation(){
                     //this.pagePigDeadAddEdit.showEdit(data.options);
                 }
                 break;
+            }
             
-            
-            case HASH_ROUTES.ACC_FARROW_CHECKLIST:
+            case HASH_ROUTES.ACC_FARROW_CHECKLIST: {
                 pageContainer = this.getPageContainer(PAGE_ID.ACC_FARROW_CHECKLIST);
                 this.showThisPage(pageContainer);
                 
@@ -1757,8 +1877,9 @@ export function Navigation(){
                     this.pageAccFarrowChecklist.show();
                 }
                 break;
+            }
             
-            case HASH_ROUTES.ACC_F_CHECKLIST_ADD_EDIT:
+            case HASH_ROUTES.ACC_F_CHECKLIST_ADD_EDIT: {
                 pageContainer = this.getPageContainer(PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT);
                 this.showThisPage(pageContainer);
                 if (data.isAdd) {
@@ -1768,23 +1889,24 @@ export function Navigation(){
                         data.options, data.entryHid);
                 }
                 break;
-            
+            }
     
-            case HASH_ROUTES.FEEDS_CONSUMED:
+            case HASH_ROUTES.FEEDS_CONSUMED: {
                 pageContainer = this.getPageContainer(PAGE_ID.FEEDS_CONSUMED);
                 this.showThisPage(pageContainer);
                 
                 this.pageFeedsConsumedChart.show();
                 break;
-            
+            }
             
             
                 
             // Add more routes as you implement them
                 
-            default:
-                // Default to home
+            default:{
                 this.showHomeDashBoard();
+                break;
+            }
         }
     }
     

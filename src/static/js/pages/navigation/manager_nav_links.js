@@ -1503,65 +1503,7 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
-    /*
-    this.onClickNavSowBoar = function(is_mobile, sow_boar_type, show_options){
-        
-        
-        const callback_success = function(){
-            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
-        
-            // Push currentPage to NavHistory;
-            // Will also compare current page and next_page NAV_MENU_GROUP. 
-            navigation.pushCurrentPageToNavHistory(next_page);
-            
-            
-            navigation.showThisPage(next_page);
-            
-            const options= {
-                sow_boar_type: sow_boar_type
-            };
-            
-            if (show_options){
-                // Combine show_options to options
-                Object.assign(options, show_options); 
-            }
-            
-            navigation.pageSowBoarList.show(options);
-        };
-        
-        
-        if (sow_boar_type == SOW_BOAR_TYPE.SOW){
-            // Check data updates if user navigates to SOW
-            navigation.pigFarm.managerPigProd.checkIfToUpdateDataPigProdList(
-                callback_success);
-            return;
-        }
-        
-        
-        const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
-        
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
-        
-        
-        navigation.showThisPage(next_page);
-        
-        const options= {
-            sow_boar_type: sow_boar_type
-        };
-        
-        if (show_options){
-            // Combine show_options to options
-            Object.assign(options, show_options); 
-        }
-        
-        navigation.pageSowBoarList.show(options);
-        
-    }
-    */
-    
-    
+     
     this.onClickNavSowBoar = function(is_mobile, sow_boar_type, show_options, is_left_right_nav){
         // Get previous page from history state
         let previousPageId = null;
@@ -1581,39 +1523,45 @@ export function ManagerNavLinks(_navigation) {
         
         
         // Set active tab based on sow_boar_type
+        let typeLabel = 'sows';
         switch(sow_boar_type) {
             case SOW_BOAR_TYPE.SOW:
                 activeTab = show_options?.filter_type || 'all';
+                typeLabel = 'sows';
                 route = `${HASH_ROUTES.SOW_BOAR_LIST}?type=sows&tab=${activeTab}`;
                 break;
             case SOW_BOAR_TYPE.BOAR:
+                typeLabel = 'boars';
                 route = `${HASH_ROUTES.SOW_BOAR_LIST}?type=boars`;
                 break;
             case SOW_BOAR_TYPE.GILT:
+                typeLabel = 'gilts';
                 route = `${HASH_ROUTES.SOW_BOAR_LIST}?type=gilts`;
                 break;
             case SOW_BOAR_TYPE.DISPOSED:
+                typeLabel = 'disposed';
                 route = `${HASH_ROUTES.SOW_BOAR_LIST}?type=disposed`;
                 break;
         }
         
         // Special handling for Sows - check data updates first
-        const navigateToSowBoar = () => {
+        const navigateToSowBoar = function() {
             if (is_left_right_nav || areSameMenuLevel || isSamePage) {
                 navigation.hashRouter.replace(route, {
                     pageId:         PAGE_ID.SOW_BOAR_LIST,
-                    sowBoarType:    sow_boar_type,
+                    sowBoarType:    typeLabel,
                     activeTab:      activeTab,
                     showOptions:    show_options
                 });
             } else {
                 navigation.hashRouter.navigate(route, {
                     pageId:         PAGE_ID.SOW_BOAR_LIST,
-                    sowBoarType:    sow_boar_type,
+                    sowBoarType:    typeLabel,
                     activeTab:      activeTab,
                     showOptions:    show_options
                 });
             }
+            
             
             // Show the page
             const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);

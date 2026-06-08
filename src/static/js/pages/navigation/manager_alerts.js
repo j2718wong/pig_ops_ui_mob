@@ -309,8 +309,6 @@ export function ManagerAlerts(_navigation) {
 
 
     this.addGestaPigOpsPrepListToAlerts = function(data) {
-        console.log('addGestaPigOpsPrepListToAlerts');
-        console.log(data);
         
         if (!data || data.length === 0) {
             return;

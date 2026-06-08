@@ -10,10 +10,9 @@ import {PageViewPigFarmPage}        from '../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
-        PIG_OPERATION_TYPE,
+        HASH_ROUTES,
         SOW_BOAR_TYPE,
-        SOW_STATUS,
-        SOW_STATUS_NAME}            from '../../constants.js';
+        SOW_STATUS}                 from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -966,11 +965,13 @@ ${html_style}
         // Set Entry count
         elemEntryCount.textContent = entry_count;
         
-        
+        /*
         // Need to set click listener
         elemAddEntryBtn.onclick = function(){
             // Show Container
             const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+            const next_page_hash = HASH_ROUTES.SOW_BOAR_ADD_EDIT;
+            
             
             // Push currentPage to NavHistory; 
             // Will also compare current page and  next_page NAV_MENU_GROUP.
@@ -1014,10 +1015,80 @@ ${html_style}
 
             navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
             navigation.pageSowBoarAddEdit.show(options_sow_boar);
-
-            
         };
+        */
         
+        elemAddEntryBtn.onclick = function(){
+            const next_page_id      = PAGE_ID.SOW_BOAR_ADD_EDIT;
+            const next_page_hash    = HASH_ROUTES.SOW_BOAR_ADD_EDIT;
+            
+            // Get current route for return navigation
+            const currentRoute      = navigation.hashRouter.getCurrentRoute();
+            const currentPageId     = PAGE_ID.SOW_BOAR_LIST;
+            const sowBoarType       = showOptions.sow_boar_type;
+            
+            // Build query params for current list state (preserve type)
+            let typeLabel = 'sows';
+            switch(sowBoarType){
+                case SOW_BOAR_TYPE.SOW:     typeLabel = 'sows'; break;
+                case SOW_BOAR_TYPE.BOAR:    typeLabel = 'boars'; break;
+                case SOW_BOAR_TYPE.GILT:    typeLabel = 'gilts'; break;
+                case SOW_BOAR_TYPE.DISPOSED:typeLabel = 'disposed'; break; 
+            }
+            const listRoute = `${HASH_ROUTES.SOW_BOAR_LIST}?type=${typeLabel}`;
+            
+            
+            // Use hash router for navigation
+            navigation.hashRouter.navigate(next_page_hash, {
+                pageId:         next_page_id,
+                isAdd:          true,
+                sowBoarType:    typeLabel,
+                returnRoute:    listRoute,
+                returnPageId:   currentPageId
+            });
+            
+            // Show the add/edit page
+            //const next_page = navigation.getPageContainer(next_page_id);
+            //navigation.showThisPage(next_page);
+            
+            // Prepare options for the add/edit page
+            const options_sow_boar = {
+                is_add:         true,
+                sow_boar_type:  sowBoarType,
+                returnRoute:    listRoute,
+                returnPageId:   currentPageId
+            };
+            
+            // callback on successful add - will redraw table
+            const callback = function(new_sow_boar_hid){
+                switch (sowBoarType){
+                    case SOW_BOAR_TYPE.SOW: {
+                        tableSowAll.renderTable(dataSowList);
+                        break;
+                    }
+                    case SOW_BOAR_TYPE.BOAR: {
+                        tableBoar.renderTable(dataBoarList);
+                        break;
+                    }
+                    case SOW_BOAR_TYPE.GILT:{
+                        tableGilt.renderTable(dataGiltList);
+                        break;
+                    }
+                }
+                
+                // After redrawing, use hash router to go back to list with refresh
+                navigation.hashRouter.replace(listRoute, {
+                    pageId: currentPageId,
+                    sowBoarType: sowBoarType,
+                    refresh: true
+                });
+            };
+            
+            navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
+            //navigation.pageSowBoarAddEdit.show(options_sow_boar);
+        };
+
+
         
         // 
         navigation.pageSowBoarEntry.resetToFirstTab();

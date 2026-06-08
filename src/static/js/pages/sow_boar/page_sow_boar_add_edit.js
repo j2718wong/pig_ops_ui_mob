@@ -8,11 +8,6 @@
 
 import {PageSowBoarWithBreadCrumbs} from './page_sow_boar_with_breadcrumbs.js';
 
-
-import {TRANSLATION_PAGE_SOW_BOAR_ADD_EDIT} from  '../../translations/page_sow_boar_add_edit_i8n.js';
-
-import {TextTranslation}            from '../common/translation.js';
-
 import {addValidationClassToElem}   from '../common/ui/ui_utils.js';
 
 import {UiInputDatePicker}          from '../common/ui/input_datepicker.js';
@@ -720,9 +715,6 @@ export function PageSowBoarAddEdit(input_settings){
         options ={
             is_add:         true,   // false is edit
             sow_boar_type:  1,   
-            farm_sow_boar_id: 1,    // only needed for edit
-            go_back_page:   elemDivContainer,   // this is Div element
-            go_back_page_id: PAGE_ID.SOW_BOAR_LIST, optional
             from_prod_pid:  null    // can be null or undefined
         }
         
@@ -730,15 +722,17 @@ export function PageSowBoarAddEdit(input_settings){
         
         */
         
+        // Store return info for hash routing
+        this.returnRoute    = options.returnRoute || HASH_ROUTES.SOW_BOAR_LIST;
+        this.returnPageId   = options.returnPageId || PAGE_ID.SOW_BOAR_LIST;
+        this.sowBoarType    = options.sow_boar_type;
+            
         
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {
-            options:        options,
-            data_sow_boar:  data_sow_boar
-        };
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
+        // Also store in showOptions for legacy compatibility
+        showOptions = options;
+        showOptions.returnRoute     = this.returnRoute;
+        showOptions.returnPageId    = this.returnPageId;
+
         
         
         // Check if Offline
@@ -755,9 +749,7 @@ export function PageSowBoarAddEdit(input_settings){
         thisObj.setDataBoarList(navigation.pigFarm.managerSowBoar.dataBoarList);
         
         
-        showOptions = options;
         
-
         
         let html;
 
@@ -794,7 +786,6 @@ export function PageSowBoarAddEdit(input_settings){
         }
         
         
-        const translations      = navigation.getTranslations();
         
         let label_add_sow       = 'Add Sow';
         let label_edit_sow      = 'Edit Sow';
@@ -806,27 +797,16 @@ export function PageSowBoarAddEdit(input_settings){
         let label_edit_gilt     = 'Edit Gilt';
         
         
+        const helper = navigation.managerTranslations.translationHelper;
         
-        if (translations){
-            if (translations.page_sow_boar_add && 
-                translations.page_sow_boar_add.labels){
-                
-                const labels_page = translations.page_sow_boar_add.labels;
-                
-                            
-                if (labels_page) {
-                    if(labels_page.add_sow)   {label_add_sow = labels_page.add_sow;}
-                    if(labels_page.edit_sow)  {label_edit_sow = labels_page.edit_sow;}
-                    
-                    if(labels_page.add_boar)  {label_add_boar = labels_page.add_boar;}
-                    if(labels_page.edit_boar) {label_edit_boar = labels_page.edit_boar;}
-                    
-                    if(labels_page.add_gilt)  {label_add_gilt = labels_page.add_gilt;}
-                    if(labels_page.edit_gilt) {label_edit_gilt = labels_page.edit_gilt;}
-                    
-                }
-            }
-        }
+        label_add_sow   = helper.getSimpleTranslation('page_sow_boar_add.labels.add_sow')   || label_add_sow;
+        label_edit_sow  = helper.getSimpleTranslation('page_sow_boar_edit.labels.edit_sow') || label_edit_sow;
+        
+        label_add_boar  = helper.getSimpleTranslation('page_sow_boar_add.labels.add_boar')  || label_add_boar;
+        label_edit_boar = helper.getSimpleTranslation('page_sow_boar_edit.labels.edit_boar')|| label_edit_boar;
+        
+        label_add_gilt  = helper.getSimpleTranslation('page_sow_boar_add.labels.add_gilt')  || label_add_gilt;
+        label_edit_gilt = helper.getSimpleTranslation('page_sow_boar_edit.labels.edit_gilt')|| label_edit_gilt;
         
         
         
@@ -921,21 +901,11 @@ export function PageSowBoarAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            navigation.showThisPage(showOptions.go_back_page);
+            history.back();
         };
         
         elemBtnCancel.onclick = function() {
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            navigation.showThisPage(showOptions.go_back_page);
+            history.back();
         };
         
         
@@ -986,7 +956,6 @@ export function PageSowBoarAddEdit(input_settings){
         
         if (cur_sow_boar.num_nipples ){
             compNumNipples.setValue(cur_sow_boar.num_nipples);
-            //elemNumNipples.value = cur_sow_boar.num_nipples;
         }
         
         if (cur_sow_boar.add_notes ){
@@ -1318,78 +1287,7 @@ export function PageSowBoarAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    let is_sow = false;
-                    switch(showOptions.sow_boar_type){
-                        case SOW_BOAR_TYPE.SOW:{is_sow = true; break;}
-                        case SOW_BOAR_TYPE.BOAR:{is_sow = false; break;}
-                        case SOW_BOAR_TYPE.GILT:{is_sow = true; break;}
-                    }
-                    
-                    
-                    if (showOptions.is_add == true){
-                        // Add action can either go back to SowBoar List page 
-                        // or AddGestating Entry page
-                        
-                        
-                        if ('go_back_page_id' in showOptions){
-                            if (showOptions.go_back_page_id == PAGE_ID.SOW_BOAR_LIST){
-                                // This should go to SowBoar List page 
-                                
-                                const callback_success = function(){
-                                    navigation.pageSowBoarList.show(null);
-                                    
-                                    navigation.managerNavHistory.removeFromNavHistoryHead(
-                                        showOptions.go_back_page);
-                    
-                                    
-                                    navigation.showThisPage(showOptions.go_back_page);
-                                };
-                                
-                                navigation.pigFarm.managerSowBoar.requestSowBoarList(
-                                    is_sow, callback_success, elemServerErrorMsg);
-
-                                return;
-                            }
-                        }
-                        
-                        
-                        
-                        // This should go to AddGestating Entry page
-                        
-                        const new_sow_boar_hid = response.sow_boar.hid;
-                        const callback_success = function(){
-                            thisObj.callbackOnSuccessAdd(new_sow_boar_hid);
-                            navigation.showThisPage(showOptions.go_back_page);
-                        };
-                        
-                        navigation.pigFarm.managerSowBoar.requestSowBoarList(
-                            is_sow, callback_success, elemServerErrorMsg);
-                        
-                    }
-                    
-                    else{
-                        // The change in sow_boar.is_production_ready flag 
-                        // will trigger to request sow_boar list again.
-                        if (thisObj.curDataSowBoar.sow_boar.is_production_ready != post_data.is_production_ready){
-                            const callback_success = function(){
-                                navigation.pageSowBoarList.show(null);
-                                navigation.showThisPage(showOptions.go_back_page);
-                            };
-                            
-                            navigation.pigFarm.managerSowBoar.requestSowBoarList(
-                                is_sow, callback_success, elemServerErrorMsg);
-                            return;
-                        }
-                        
-                        // Edit action will
-                        // 1.) replace this data only.
-                        thisObj.curDataSowBoar.sow_boar = response.sow_boar;
-                        
-                        navigation.pageSowBoarEntry.show(thisObj.curDataSowBoar);
-                        navigation.showThisPage(showOptions.go_back_page);
-                    }
-                    
-                    
+                    thisObj.onSuccessAddEdit(response, post_data);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(
@@ -1401,10 +1299,121 @@ export function PageSowBoarAddEdit(input_settings){
             },
   
             error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
             }
         });
     }
     
+    
+    this.onSuccessAddEdit = function(response, post_data){
+        let is_sow = false;
+        switch(showOptions.sow_boar_type){
+            case SOW_BOAR_TYPE.SOW:  { is_sow = true; break; }
+            case SOW_BOAR_TYPE.BOAR: { is_sow = false; break; }
+            case SOW_BOAR_TYPE.GILT: { is_sow = true; break; }
+        }
+        
+        // Determine the return route based on where we came from
+        const returnRoute   = showOptions.returnRoute || HASH_ROUTES.SOW_BOAR_LIST;
+        const returnPageId  = showOptions.returnPageId || PAGE_ID.SOW_BOAR_LIST;
+        const sowBoarType   = showOptions.sow_boar_type;
+        
+        // Convert sowBoarType to string to be used in hashRouter
+        let typeLabel = 'sows';
+        switch(sowBoarType) {
+            case SOW_BOAR_TYPE.SOW:
+                typeLabel = 'sows';
+                break;
+            case SOW_BOAR_TYPE.BOAR:
+                typeLabel = 'boars';
+                break;
+            case SOW_BOAR_TYPE.GILT:
+                typeLabel = 'gilts';
+                break;
+            case SOW_BOAR_TYPE.DISPOSED:
+                typeLabel = 'disposed';
+                break;
+        }
+        
+        
+        if (showOptions.is_add == true) {
+            // Check if we need to return to list or go to gestating entry
+            if ('returnPageId' in showOptions && showOptions.returnPageId == PAGE_ID.SOW_BOAR_LIST) {
+                // Return to Sow/Boar List page using hash router
+                const refreshCallback = () => {
+                    // Use hash router to navigate back to list
+                    navigation.hashRouter.replace(returnRoute, {
+                        pageId:         returnPageId,
+                        sowBoarType:    typeLabel,
+                        refresh:        true
+                    });
 
+                };
+                
+                navigation.pigFarm.managerSowBoar.requestSowBoarList(
+                    is_sow, refreshCallback, elemServerErrorMsg);
+                return;
+            }
+            
+            // Add action - go to Add Gestating Entry page
+            const new_sow_boar_hid = response.sow_boar.hid;
+            const gestatingCallback = () => {
+                if (thisObj.callbackOnSuccessAdd) {
+                    thisObj.callbackOnSuccessAdd(new_sow_boar_hid);
+                }
+                
+                // Navigate to gestating add page using hash router
+                navigation.hashRouter.navigate(HASH_ROUTES.PROD_GESTA_ADD, {
+                    pageId:         PAGE_ID.PROD_GESTA_ADD,
+                    sowBoarHid:     new_sow_boar_hid,
+                    returnRoute:    HASH_ROUTES.SOW_BOAR_LIST,
+                    returnPageId:   PAGE_ID.SOW_BOAR_LIST,
+                    sowBoarType:    sowBoarType
+                });
+            };
+            
+            navigation.pigFarm.managerSowBoar.requestSowBoarList(
+                is_sow, gestatingCallback, elemServerErrorMsg);
+            
+        } else {
+            // Edit action
+            const is_ready = thisObj.curDataSowBoar.sow_boar.is_production_ready;
+            
+            if (is_ready != post_data.is_production_ready) {
+                // Production ready flag changed - need to refresh list
+                const refreshCallback = () => {
+                    navigation.hashRouter.replace(returnRoute, {
+                        pageId: returnPageId,
+                        sowBoarType: sowBoarType,
+                        refresh: true
+                    });
+                    
+                    navigation.pageSowBoarList.show({ sow_boar_type: sowBoarType });
+                };
+                
+                navigation.pigFarm.managerSowBoar.requestSowBoarList(
+                    is_sow, refreshCallback, elemServerErrorMsg);
+                return;
+            }
+            
+            // Update local data
+            thisObj.curDataSowBoar.sow_boar = response.sow_boar;
+            
+            // Return to entry page using hash router
+            const entryRoute = `${HASH_ROUTES.SOW_BOAR_ENTRY}/${thisObj.curDataSowBoar.sow_boar.hid}`;
+            
+            navigation.hashRouter.replace(entryRoute, {
+                pageId: PAGE_ID.SOW_BOAR_ENTRY,
+                sowBoarHid: thisObj.curDataSowBoar.sow_boar.hid,
+                sowBoarType: sowBoarType
+            });
+            
+            navigation.pageSowBoarEntry.show(thisObj.curDataSowBoar, {
+                sow_boar_type: sowBoarType
+            });
+            navigation.showThisPage(navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY));
+        }
+    }
+    
 }   
