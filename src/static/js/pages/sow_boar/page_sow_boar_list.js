@@ -965,58 +965,6 @@ ${html_style}
         // Set Entry count
         elemEntryCount.textContent = entry_count;
         
-        /*
-        // Need to set click listener
-        elemAddEntryBtn.onclick = function(){
-            // Show Container
-            const next_page = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-            const next_page_hash = HASH_ROUTES.SOW_BOAR_ADD_EDIT;
-            
-            
-            // Push currentPage to NavHistory; 
-            // Will also compare current page and  next_page NAV_MENU_GROUP.
-            navigation.pushCurrentPageToNavHistory(next_page);
-        
-            navigation.showThisPage(next_page);
-            
-            
-            
-            // Show Page
-            const options_sow_boar ={
-                is_add:         true,   // false is edit
-                sow_boar_type:  showOptions.sow_boar_type, 
-                go_back_page:   elemDivContainer,   // Go back to this page
-                go_back_page_id: PAGE_ID.SOW_BOAR_LIST
-            };
-            
-            
-            // callback on successful add;
-            // will redraw table regardless if filtered or not
-            const callback = function(new_sow_boar_hid){
-                switch (showOptions.sow_boar_type){
-                    case SOW_BOAR_TYPE.SOW: {
-                        tableSowAll.renderTable(dataSowList);
-                        break;
-                    }
-            
-                    case SOW_BOAR_TYPE.BOAR: {
-                        tableBoar.renderTable(dataBoarList);
-                        break;
-                    }
-            
-                    case SOW_BOAR_TYPE.GILT:{
-                        tableGilt.renderTable(dataGiltList);
-                        break;
-                    }
-                    
-                }
-            };
-            
-
-            navigation.pageSowBoarAddEdit.callbackOnSuccessAdd = callback;
-            navigation.pageSowBoarAddEdit.show(options_sow_boar);
-        };
-        */
         
         elemAddEntryBtn.onclick = function(){
             const next_page_id      = PAGE_ID.SOW_BOAR_ADD_EDIT;
@@ -1452,18 +1400,7 @@ ${html_style}
     }
     
     
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
-    }
-         
-         
+    /** 2026-06-08: Dont delete until new hash route is stable
     this.onClickSowBoarEntry = function(sow_boar_hid, pig_prod_id, tab_id, sow_boar_type){
         if (sow_boar_hid == null){
             
@@ -1585,5 +1522,137 @@ ${html_style}
         navigation.showThisPage(next_page)
 
     }
+    * 
+    * */
+    
+    
+    this.onClickSowBoarEntry = function(sow_boar_hid, pig_prod_id, tab_id, sow_boar_type){
+        if (sow_boar_hid == null){
+            // Return to list page using hash router
+            let typeLabel = 'sows';
+            switch(sow_boar_type){
+                case SOW_BOAR_TYPE.SOW:     typeLabel = 'sows'; break;
+                case SOW_BOAR_TYPE.BOAR:    typeLabel = 'boars'; break;
+                case SOW_BOAR_TYPE.GILT:    typeLabel = 'gilts'; break;
+                case SOW_BOAR_TYPE.DISPOSED:typeLabel = 'disposed'; break;
+            }
+            
+            const listRoute = `${HASH_ROUTES.SOW_BOAR_LIST}?type=${typeLabel}`;
+            navigation.hashRouter.replace(listRoute, {
+                pageId: PAGE_ID.SOW_BOAR_LIST,
+                sowBoarType: typeLabel
+            });
+            return;
+        }
 
+
+        if (pig_prod_id){
+            navigation.onClickProdGestatingEntry(pig_prod_id);
+            return;
+        }
+
+
+        let cur_sow_boar_list = null;
+        
+        if (!sow_boar_type){
+            sow_boar_type = showOptions.sow_boar_type;
+        }
+        
+        switch (sow_boar_type){
+            case SOW_BOAR_TYPE.SOW:     cur_sow_boar_list = dataSowList; break;
+            case SOW_BOAR_TYPE.BOAR:    cur_sow_boar_list = dataBoarList; break;
+            case SOW_BOAR_TYPE.GILT:    cur_sow_boar_list = dataGiltList; break;
+            case SOW_BOAR_TYPE.DISPOSED:cur_sow_boar_list = dataDisposedList; break;
+        }
+        
+        this.gotoSowBoarEntryPage(cur_sow_boar_list, sow_boar_hid, 
+            sow_boar_type, tab_id);
+    };
+
+
+    this.gotoSowBoarEntryPage = function(sow_boar_list, sow_boar_hid, 
+            sow_boar_type, tab_id){
+        
+        let prev_sow_boar_hid = null;
+        let next_sow_boar_hid = null;
+        let index;
+        let cur_entry = null;
+        let prev_entry = null;
+        let next_entry = null;
+        
+        if (sow_boar_list == null){
+            sow_boar_list = navigation.pigFarm.managerSowBoar.dataSowList;
+            sow_boar_type = SOW_BOAR_TYPE.SOW;
+            showOptions = { sow_boar_type: sow_boar_type };
+        }
+        
+        for (index = 0; index < sow_boar_list.length; index++){
+            cur_entry = sow_boar_list[index];
+            
+            if (cur_entry.sow_boar.hid == sow_boar_hid){
+                // Get prev/next HIDs for navigation
+                if ((index-1) >= 0){
+                    prev_entry = sow_boar_list[index-1];
+                    prev_sow_boar_hid = prev_entry.sow_boar.hid;
+                }
+                
+                if ((index+1) < sow_boar_list.length){
+                    next_entry = sow_boar_list[index+1];
+                    next_sow_boar_hid = next_entry.sow_boar.hid;
+                }
+                
+                // Build entry route with HID
+                const entryRoute = `${HASH_ROUTES.SOW_BOAR_ENTRY}/${sow_boar_hid}`;
+                
+                // Convert type to label for return route
+                let typeLabel = 'sows';
+                switch(sow_boar_type){
+                    case SOW_BOAR_TYPE.SOW: typeLabel = 'sows'; break;
+                    case SOW_BOAR_TYPE.BOAR: typeLabel = 'boars'; break;
+                    case SOW_BOAR_TYPE.GILT: typeLabel = 'gilts'; break;
+                    case SOW_BOAR_TYPE.DISPOSED: typeLabel = 'disposed'; break;
+                }
+                const listRoute = `${HASH_ROUTES.SOW_BOAR_LIST}?type=${typeLabel}`;
+                
+                // Use hash router navigation
+                navigation.hashRouter.navigate(entryRoute, {
+                    pageId:         PAGE_ID.SOW_BOAR_ENTRY,
+                    sowBoarHid:     sow_boar_hid,
+                    sowBoarType:    typeLabel,
+                    
+                    prevSowBoarHid: prev_sow_boar_hid,
+                    nextSowBoarHid: next_sow_boar_hid,
+                    dataIndex:      index + 1,
+                    totalEntries:   sow_boar_list.length,
+                    returnRoute:    listRoute,
+                    returnPageId:   PAGE_ID.SOW_BOAR_LIST,
+                    tabId:          tab_id
+                });
+                
+                // Show the entry page (handleHashRoute will call show)
+                const entryPage = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                navigation.showThisPage(entryPage);
+                
+                const options = {
+                    sow_boar_type:      sow_boar_type,
+                    prev_sow_boar_hid:  prev_sow_boar_hid,
+                    next_sow_boar_hid:  next_sow_boar_hid,
+                    sow_boar_list:      sow_boar_list,
+                    data_index:         index + 1,
+                    total_entries:      sow_boar_list.length
+                };
+                if (tab_id){
+                    options.tab_id      = tab_id;
+                }
+                
+                navigation.pageSowBoarEntry.show(cur_entry, options);
+                return;
+            }
+        }
+        
+        // Fallback: show entry page anyway
+        const entryPage = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+        navigation.showThisPage(entryPage);
+    };
+    
 }

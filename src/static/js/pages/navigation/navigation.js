@@ -1617,6 +1617,7 @@ export function Navigation(){
                 });
                 break;
             }
+               
                         
             case HASH_ROUTES.CUSTOMER_PRICING: {
                 pageContainer = this.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
@@ -1627,6 +1628,7 @@ export function Navigation(){
                 });
                 break;
             }
+            
             
             case HASH_ROUTES.BILL_NEW: {
                 pageContainer = this.getPageContainer(PAGE_ID.BILL_NEW);
@@ -1704,15 +1706,24 @@ export function Navigation(){
                     
                     
                     this.pageSowBoarAddEdit.show({
-                        is_add: true,
-                        sow_boar_type: sowBoarType,
-                        returnRoute: data.returnRoute,
-                        returnPageId: data.returnPageId
+                        is_add:         true,
+                        sow_boar_type:  sowBoarType,
+                        returnRoute:    data.returnRoute,
+                        returnPageId:   data.returnPageId
                     });
                 } else {
                     // Edit mode - need to load entry by HID
                     const entryHid = data.entryHid;
-                    const sowBoarType = data.sowBoarType || SOW_BOAR_TYPE.SOW;
+                    
+                    let sowBoarType;
+                    switch(data.sowBoarType) {
+                        case 'sows':    sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                        case 'boars':   sowBoarType = SOW_BOAR_TYPE.BOAR; break;
+                        case 'gilts':   sowBoarType = SOW_BOAR_TYPE.GILT; break;
+                        case 'disposed':sowBoarType = SOW_BOAR_TYPE.DISPOSED; break;
+                        default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
+                    }
+                    
                     
                     // Find the entry from existing data
                     let entryData = null;
@@ -1736,10 +1747,10 @@ export function Navigation(){
                     
                     if (entryData) {
                         this.pageSowBoarAddEdit.show({
-                            is_add: false,
-                            sow_boar_type: sowBoarType,
-                            returnRoute: data.returnRoute,
-                            returnPageId: data.returnPageId
+                            is_add:         false,
+                            sow_boar_type:  sowBoarType,
+                            returnRoute:    data.returnRoute,
+                            returnPageId:   data.returnPageId
                         }, entryData);
                     } else {
                         // If not found in memory, fetch from server
@@ -1751,41 +1762,81 @@ export function Navigation(){
             
             
             case HASH_ROUTES.SOW_BOAR_ENTRY: {
-                const entryContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
-                this.showThisPage(entryContainer);
+                pageContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                this.showThisPage(pageContainer);
                 
-                const entryHid = data.entryHid;
-                const sowBoarType = data.sowBoarType || SOW_BOAR_TYPE.SOW;
+                // Find the entry data by HID
+                let entryData       = null;
+                const sowBoarType   = data.sowBoarType || 'sows';
+                let sowBoarTypeNum  = SOW_BOAR_TYPE.SOW;
                 
-                // Find the entry from existing data
-                let entryData = null;
                 switch(sowBoarType) {
+                    case 'sows':    sowBoarTypeNum = SOW_BOAR_TYPE.SOW; break;
+                    case 'boars':   sowBoarTypeNum = SOW_BOAR_TYPE.BOAR; break;
+                    case 'gilts':   sowBoarTypeNum = SOW_BOAR_TYPE.GILT; break;
+                    case 'disposed':sowBoarTypeNum = SOW_BOAR_TYPE.DISPOSED; break;
+                }
+                
+                // Try to find entry in existing data
+                switch(sowBoarTypeNum) {
                     case SOW_BOAR_TYPE.SOW:
                         entryData = navigation.pigFarm.managerSowBoar.dataSowList?.find(
-                            item => item.sow_boar.hid === entryHid
+                            item => item.sow_boar.hid === data.sowBoarHid
                         );
                         break;
                     case SOW_BOAR_TYPE.BOAR:
                         entryData = navigation.pigFarm.managerSowBoar.dataBoarList?.find(
-                            item => item.sow_boar.hid === entryHid
+                            item => item.sow_boar.hid === data.sowBoarHid
                         );
                         break;
                     case SOW_BOAR_TYPE.GILT:
                         entryData = navigation.pigFarm.managerSowBoar.dataGiltList?.find(
-                            item => item.sow_boar.hid === entryHid
+                            item => item.sow_boar.hid === data.sowBoarHid
                         );
                         break;
                 }
                 
-                if (entryData) {
-                    this.pageSowBoarEntry.show(entryData, {
-                        sow_boar_type: sowBoarType,
-                        returnRoute: data.returnRoute,
-                        returnPageId: data.returnPageId
-                    });
+                const options = {
+                    sow_boar_type:      sowBoarTypeNum,
+                    prev_sow_boar_hid:  data.prevSowBoarHid,
+                    next_sow_boar_hid:  data.nextSowBoarHid,
+                    sow_boar_list:      null, // Will be loaded from data
+                    data_index:         data.dataIndex,
+                    total_entries:      data.totalEntries
+                };
+                if (data.tabId) {
+                    options.tab_id = data.tabId;
+                }
+                
+                
+                this.pageSowBoarEntry.show(entryData, options);
+                
+                break;            
+            }
+            
+            
+            case HASH_ROUTES.SOW_BOAR_DISPOSED: {
+                pageContainer = this.getPageContainer(PAGE_ID.SOW_BOAR_DISPOSED);
+                this.showThisPage(pageContainer);
+                
+                // Find the disposed entry
+                let disposedData = null;
+                const disposedList = navigation.pigFarm.managerSowBoar.dataDisposedList;
+                if (disposedList) {
+                    disposedData = disposedList.find(item => item.sow_boar.hid === data.entryHid);
+                }
+                
+                const disposedOptions = {
+                    sow_boar_type: SOW_BOAR_TYPE.DISPOSED,
+                    returnRoute: data.returnRoute,
+                    returnPageId: data.returnPageId
+                };
+                
+                if (disposedData) {
+                    this.pageSowBoarDisposed.show(disposedData, disposedOptions);
                 }
                 break;
-            }            
+            }
             
             
             case HASH_ROUTES.TRACE_PARENTS: {
@@ -1809,6 +1860,7 @@ export function Navigation(){
                 break;
             }
             
+            
             case HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT: {
                 pageContainer = this.getPageContainer(PAGE_ID.ALL_FEED_BAL_ADD_EDIT);
                 this.showThisPage(pageContainer);
@@ -1828,6 +1880,7 @@ export function Navigation(){
                 this.pageFarrowingSchedule.show();
                 break;
             }
+              
                 
             case HASH_ROUTES.PIG_DEAD_LIST: {
                 pageContainer = this.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
@@ -1840,6 +1893,7 @@ export function Navigation(){
                 }
                 break;
             }
+              
                 
             case HASH_ROUTES.PIG_DEAD_ADD_EDIT: {
                 pageContainer = this.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
@@ -1864,6 +1918,7 @@ export function Navigation(){
                 }
                 break;
             }
+               
                 
             case HASH_ROUTES.BOAR_EXT_MATE_ADD_EDIT: {
                 pageContainer = this.getPageContainer(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT);
@@ -1875,6 +1930,7 @@ export function Navigation(){
                 }
                 break;
             }
+            
             
             case HASH_ROUTES.ACC_FARROW_CHECKLIST: {
                 pageContainer = this.getPageContainer(PAGE_ID.ACC_FARROW_CHECKLIST);
@@ -1888,6 +1944,7 @@ export function Navigation(){
                 break;
             }
             
+            
             case HASH_ROUTES.ACC_F_CHECKLIST_ADD_EDIT: {
                 pageContainer = this.getPageContainer(PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT);
                 this.showThisPage(pageContainer);
@@ -1899,6 +1956,7 @@ export function Navigation(){
                 }
                 break;
             }
+    
     
             case HASH_ROUTES.FEEDS_CONSUMED: {
                 pageContainer = this.getPageContainer(PAGE_ID.FEEDS_CONSUMED);

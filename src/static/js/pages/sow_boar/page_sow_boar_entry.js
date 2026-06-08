@@ -13,9 +13,9 @@ import {getSowBoarReference}    from '../common/common_app.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        SOW_STATUS_NAME,
         MULTIKEY_OBJ_TYPE}      from '../../constants.js';
 
 import {formatDate,
@@ -491,16 +491,6 @@ export function PageSowBoarEntry(input_settings){
     
     
     this.show = function(data_sow_boar, options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {
-            data_sow_boar:  data_sow_boar,
-            options:        options
-        };
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
-        
         
         dataSowBoar = data_sow_boar;
 
@@ -665,6 +655,7 @@ export function PageSowBoarEntry(input_settings){
         */
         
         
+        /*
         // Clicking on the SowBoar Name should open the SowBoar edit page
         if (showOptions.sow_boar_type != SOW_BOAR_TYPE.DISPOSED){
             elemEntryName.onclick = function(){
@@ -704,6 +695,84 @@ export function PageSowBoarEntry(input_settings){
                 navigation.showThisPage(next_page)
             }
         }
+        */
+        // Clicking on the SowBoar Name should open the SowBoar edit page
+        if (showOptions.sow_boar_type != SOW_BOAR_TYPE.DISPOSED){
+            elemEntryName.onclick = function(){
+                // Convert type to label
+                let typeLabel = 'sows';
+                switch(showOptions.sow_boar_type){
+                    case SOW_BOAR_TYPE.SOW:     typeLabel = 'sows'; break;
+                    case SOW_BOAR_TYPE.BOAR:    typeLabel = 'boars'; break;
+                    case SOW_BOAR_TYPE.GILT:    typeLabel = 'gilts'; break;
+                }
+                
+                // Build the return route (current entry page)
+                const entryRoute = `${HASH_ROUTES.SOW_BOAR_ENTRY}/${dataSowBoar.sow_boar.hid}`;
+                
+                // Build the list route for return after edit
+                const listRoute = `${HASH_ROUTES.SOW_BOAR_LIST}?type=${typeLabel}`;
+                
+                // Use hash router navigation
+                navigation.hashRouter.navigate(HASH_ROUTES.SOW_BOAR_ADD_EDIT, {
+                    pageId:             PAGE_ID.SOW_BOAR_ADD_EDIT,
+                    isAdd:              false,
+                    sowBoarType:        typeLabel,
+                    entryHid:           dataSowBoar.sow_boar.hid,
+                    returnRoute:        entryRoute,
+                    returnPageId:       PAGE_ID.SOW_BOAR_ENTRY
+                });
+                
+                // Show the add/edit page
+                const addEditPage = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
+                navigation.showThisPage(addEditPage);
+                
+                // Prepare options for edit
+                const options_sow_boar = {
+                    is_add:         false,
+                    sow_boar_type:  showOptions.sow_boar_type,
+                    returnRoute:    entryRoute,
+                    returnPageId:   PAGE_ID.SOW_BOAR_ENTRY
+                };
+                
+                navigation.pageSowBoarAddEdit.show(options_sow_boar, dataSowBoar);
+                navigation.pageSowBoarAddEdit.setCallbackOnSuccessUpdateStatus(
+                    thisObj.onSuccessUpdateStatus);
+            };
+        } 
+        else {
+            // For disposed entries
+            elemEntryName.onclick = function(){
+                let typeLabel = 'disposed';
+                
+                const entryRoute = `${HASH_ROUTES.SOW_BOAR_ENTRY}/${dataSowBoar.sow_boar.hid}`;
+                const listRoute = `${HASH_ROUTES.SOW_BOAR_LIST}?type=${typeLabel}`;
+                
+                navigation.hashRouter.navigate(HASH_ROUTES.SOW_BOAR_DISPOSED, {
+                    pageId:             PAGE_ID.SOW_BOAR_DISPOSED,
+                    sowBoarType:        typeLabel,
+                    entryHid:           dataSowBoar.sow_boar.hid,
+                    returnRoute:        entryRoute,
+                    returnPageId:       PAGE_ID.SOW_BOAR_ENTRY,
+                    listReturnRoute:    listRoute,
+                    listReturnPageId:   PAGE_ID.SOW_BOAR_LIST
+                });
+                
+                const disposedPage = navigation.getPageContainer(PAGE_ID.SOW_BOAR_DISPOSED);
+                navigation.showThisPage(disposedPage);
+                
+                const options_disposed = {
+                    sow_boar_type: showOptions.sow_boar_type,
+                    returnRoute: entryRoute,
+                    returnPageId: PAGE_ID.SOW_BOAR_ENTRY
+                };
+                
+                navigation.pageSowBoarDisposed.show(dataSowBoar, options_disposed);
+            };
+        }
+                
+        
+        
         
         
         // Set left-right arrow navigation
