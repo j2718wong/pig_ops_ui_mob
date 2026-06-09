@@ -10,6 +10,7 @@ import {PageTableBasic}         from '../../common/page_table_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         DATA_VER_NUM_PIG_FARM,
         SOW_BOAR_TYPE,
         SOW_STATUS,
@@ -62,13 +63,6 @@ export function PagePigFarmFeedBuyList(input_settings){
     let elemPageInfo            = null;
     let elemTableBody           = null;
     
-    
-
-
-
-    //let textTranslation         = new TextTranslation();
-    let curUserLanguageKey      = 'en';
-
 
     let showOptions             = null;
     
@@ -148,7 +142,7 @@ export function PagePigFarmFeedBuyList(input_settings){
     
     this._processAfterHtmlRenderThis = function(){
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavProdSales();
+            navigation.managerNavLinks.onClickNavProdSales(null, true);
         };
         
           
@@ -158,11 +152,6 @@ export function PagePigFarmFeedBuyList(input_settings){
         
         
         componentNavLeftRight.bindEventListeners();
-
-        
-        
-        // Set onclick listener to parent object
-        //thisObj.setOnClickAddEntry(thisObj.showAddEntryPage); 
     }
     
     
@@ -444,5 +433,15 @@ export function PagePigFarmFeedBuyList(input_settings){
     // func_name(options, row_entry);
     this.getFuncAddEditShowPage = function(){
         return navigation.pagePfFeedBuyAddEdit.show;}
-   
+    
+    
+    this.getHashRouteAddEditPage = function(){
+        return HASH_ROUTES.FARM_FEED_BUY_ADD_EDIT;
+    }
+    
+    
+    this.getHashRouteListPage = function(){
+        return HASH_ROUTES.FARM_FEED_BUY_LIST;
+    }
+    
 }

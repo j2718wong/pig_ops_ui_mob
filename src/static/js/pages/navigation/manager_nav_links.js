@@ -2025,29 +2025,63 @@ export function ManagerNavLinks(_navigation) {
     
     
     
-    this.onClickNavProdSales = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.PROD_SALES_LIST);
+    this.onClickNavProdSales = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
         
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.PROD_SALES_LIST);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.PROD_SALES_LIST);
         
         
-        navigation.showThisPage(next_page);
-        navigation.pageProdSalesList.show();
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.PROD_SALES_LIST, {
+                pageId: PAGE_ID.PROD_SALES_LIST
+            });
+        }
+        else{
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.PROD_SALES_LIST, {
+                pageId: PAGE_ID.PROD_SALES_LIST
+            });
+        }
     }
     
         
-    this.onClickNavFeedsExpenses = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_LIST);
+    this.onClickNavFeedsExpenses = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
         
-        // Push currentPage to NavHistory;
-        // Will also compare current page and next_page NAV_MENU_GROUP. 
-        navigation.pushCurrentPageToNavHistory(next_page);
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.FARM_FEED_BUY_LIST);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.FARM_FEED_BUY_LIST);
         
         
-        navigation.showThisPage(next_page);
-        navigation.pagePigFarmFeedBuyList.show();
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.FARM_FEED_BUY_LIST, {
+                pageId: PAGE_ID.FARM_FEED_BUY_LIST
+            });
+        }
+        else{
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.FARM_FEED_BUY_LIST, {
+                pageId: PAGE_ID.FARM_FEED_BUY_LIST
+            });
+        }
     }
         
     

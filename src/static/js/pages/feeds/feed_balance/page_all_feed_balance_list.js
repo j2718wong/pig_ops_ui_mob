@@ -636,7 +636,7 @@ export function PageAllFeedBalanceList(input_settings){
             if (is_feed_buy == 0){
                 if (index == 0 || index == 1){
                     cur_td.onclick = function(){
-                        thisObj.showEditEntryPage(cur_entry);
+                        thisObj.onClickRowEntry(cur_entry);
                     };
                 }
             }
@@ -675,4 +675,34 @@ export function PageAllFeedBalanceList(input_settings){
         return HASH_ROUTES.ALL_FEED_BAL_LIST;
     }
     
+    
+    this.onClickRowEntry = function(row_entry){
+        // The unique key is date_balance
+        const entryDate = row_entry.date_balance;
+        
+        const next_page_id      = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
+        const next_page_hash    = HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT;
+        const listRoute         = HASH_ROUTES.ALL_FEED_BAL_LIST;
+        
+        // Use hash router with date as identifier
+        navigation.managerHashRoute.hashRouter.navigate(next_page_hash, {
+            pageId:         next_page_id,
+            isAdd:          false,
+            entryDate:      entryDate,  // Use date instead of HID
+            returnRoute:    listRoute,
+            returnPageId:   PAGE_ID.ALL_FEED_BAL_LIST
+        });
+        
+        // Show the add/edit page
+        const next_page = navigation.getPageContainer(next_page_id);
+        navigation.showThisPage(next_page);
+        
+        const options = {
+            is_add:         false,
+            returnRoute:    listRoute,
+            returnPageId:   PAGE_ID.ALL_FEED_BAL_LIST
+        };
+        
+        navigation.pageAllFeedBalanceAddEdit.show(options, row_entry);
+    };
 }

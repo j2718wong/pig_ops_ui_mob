@@ -254,7 +254,14 @@ const HASH_ROUTES = {
     ACC_FARROW_CHECKLIST:   'acc_farrow_checklist',
     ACC_F_CHECKLIST_ADD_EDIT: 'acc_f_checklist_add_edit',
     
-    FEEDS_CONSUMED:         'feeds_consumed'
+    FEEDS_CONSUMED:         'feeds_consumed',
+    
+    PROD_SALES_LIST:        'prod_sales_list', 
+    PROD_SALES_ENTRY:       'prod_sales_entry',
+    
+    FARM_FEED_BUY_LIST:     'feed_buy_list',
+    FARM_FEED_BUY_ADD_EDIT: 'feed_buy_add_edit',
+    FARM_FEED_BUY_ITEM_ADD_EDIT: 'feed_buy_item_add_edit' 
 };
 
 

@@ -62,8 +62,9 @@ export function PageAllFeedBalanceAddEdit(input_settings){
         
         items:[
             {
-                'label':        'Feed Balance List',
-                'gotoPageId':   PAGE_ID.ALL_FEED_BAL_LIST
+                'label':            'Feed Balance List',
+                'gotoPageId':       PAGE_ID.ALL_FEED_BAL_LIST,
+                'callbackOnClick':  function(){history.back();}
             }
         ]
         

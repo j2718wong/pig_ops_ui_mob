@@ -976,9 +976,6 @@ export function Navigation(){
         this.pageProdFatteningEntry.init();
         this.pageProdFatteningAdd.init();
         
-        this.pagePigFarmFeedBuyList.init();
-        this.pagePfFeedBuyAddEdit.init();
-        this.pagePfFeedBuyItemAddEdit.init();
         
         this.pageProdFeedAddEdit.init();
         this.pageFeedBalanceAddEdit.init();
@@ -1011,6 +1008,10 @@ export function Navigation(){
         
         this.pageProdSalesList.init();
         this.pageProdSalesEntry.init();
+        
+        this.pagePigFarmFeedBuyList.init();
+        this.pagePfFeedBuyAddEdit.init();
+        this.pagePfFeedBuyItemAddEdit.init();
         
         this.pageSummaryReportList.init();
         this.pageSummaryReportAdd.init();

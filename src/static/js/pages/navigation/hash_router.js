@@ -496,10 +496,28 @@ export function ManagerHashRoute(_navigation) {
             case HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT: {
                 pageContainer = navigation.getPageContainer(PAGE_ID.ALL_FEED_BAL_ADD_EDIT);
                 navigation.showThisPage(pageContainer);
+                
                 if (data.isAdd) {
                     navigation.pageAllFeedBalanceAddEdit.show(data.options);
                 } else {
-                    navigation.pageAllFeedBalanceAddEdit.show(data.options);
+                    // Edit mode - need to load entry by date_balance
+                    const entryDate = data.entryDate;
+                    
+                    // Find the entry from feed balance list by date_balance
+                    let entryData = null;
+                    const feedBalanceList = navigation.pigFarm.dataFeedBalanceList;
+                    if (feedBalanceList && entryDate) {
+                        entryData = feedBalanceList.find(item => item.date_balance === entryDate);
+                    }
+                    
+                    // Prepare options with return route
+                    const options = {
+                        is_add: false,
+                        returnRoute:    data.returnRoute,
+                        returnPageId:   data.returnPageId
+                    };
+                    
+                    navigation.pageAllFeedBalanceAddEdit.show(options, entryData);
                 }
                 break;
             }
@@ -598,6 +616,23 @@ export function ManagerHashRoute(_navigation) {
                 break;
             }
             
+            
+            case HASH_ROUTES.PROD_SALES_LIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_SALES_LIST);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageProdSalesList.show();
+                break;
+            }
+            
+            
+            case HASH_ROUTES.FARM_FEED_BUY_LIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_LIST);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pagePigFarmFeedBuyList.show();
+                break;
+            }
             
                 
             // Add more routes as you implement them

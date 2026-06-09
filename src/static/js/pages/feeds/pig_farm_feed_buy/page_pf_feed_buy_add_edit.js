@@ -57,7 +57,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
             {
                 'label':        'Feed Buy List',
                 'gotoPageId':   PAGE_ID.FARM_FEED_BUY_LIST,
-                'callbackOnClick': null     // update later
+                'callbackOnClick': function(){history.back();}
             }
         ]
         
@@ -374,8 +374,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         /*
         Typical options
         options ={
-            is_add:                 true,   // false is edit
-            go_back_page:           go_back_page
+            is_add:                 true   // false is edit
         }
             
         
@@ -424,11 +423,11 @@ export function PagePfFeedBuyAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
-            navigation.managerNavLinks.onClickNavFeedsExpenses();
+            history.back();
         };
         
         elemBtnCancel.onclick = function() {
-            navigation.managerNavLinks.onClickNavFeedsExpenses();
+            history.back();
         };
         
     }
