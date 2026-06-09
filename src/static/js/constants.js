@@ -261,7 +261,14 @@ const HASH_ROUTES = {
     
     FARM_FEED_BUY_LIST:     'feed_buy_list',
     FARM_FEED_BUY_ADD_EDIT: 'feed_buy_add_edit',
-    FARM_FEED_BUY_ITEM_ADD_EDIT: 'feed_buy_item_add_edit' 
+    FARM_FEED_BUY_ITEM_ADD_EDIT: 'feed_buy_item_add_edit',
+    
+    USER_LIST:              'user_list',
+    USER_ADD_EDIT:          'user_add_edit',
+    
+    ACCESS_CODE_LIST:       'access_code_list',
+    ACCESS_CODE_ADD_EDIT:   'access_code_add_edit'
+     
 };
 
 

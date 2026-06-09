@@ -225,13 +225,6 @@ export function PageAccessCodeAddEdit(input_settings){
     
     // Reset add form
     this.show = function(options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {options:options};
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
-        
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
             // Display modal offline
@@ -349,11 +342,14 @@ export function PageAccessCodeAddEdit(input_settings){
   
             success: function(response){
                 if (response.result.num == 0){
-                    navigation.managerNavHistory.removeFromNavHistoryHead(
-                        showOptions.go_back_page);
+                    // Fixed return route; After Add/edit should return to list page
+                    const dataHashRoute = {
+                        pageId:         PAGE_ID.ACCESS_CODE_LIST,
+                        refreshList:    true
+                    };
                     
-                    navigation.showThisPage(showOptions.go_back_page);
-                    navigation.pageAccessCodeList.show();
+                    navigation.managerHashRoute.hashRouter.replace(
+                        HASH_ROUTES.ACCESS_CODE_LIST, dataHashRoute);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(

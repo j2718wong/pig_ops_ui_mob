@@ -649,10 +649,6 @@ export function PageAllFeedBalanceAddEdit(input_settings){
     
     
     this.show = function(options, data_feed_balance){
-        
-        // Store return route for back button
-        thisObj.returnRoute = HASH_ROUTES.ALL_FEED_BAL_LIST;
-        
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
             // Display modal offline

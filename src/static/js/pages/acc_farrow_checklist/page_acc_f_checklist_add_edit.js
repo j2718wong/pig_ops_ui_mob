@@ -211,9 +211,6 @@ export function PageAccFChecklistAddEdit(input_settings){
     
     
     this.show = function(options, data_checklist_item){
-        // Store return route for back button
-        thisObj.returnRoute = HASH_ROUTES.ACC_FARROW_CHECKLIST;
-        
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
             // Display modal offline

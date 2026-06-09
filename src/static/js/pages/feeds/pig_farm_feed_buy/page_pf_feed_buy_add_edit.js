@@ -307,31 +307,19 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     this._bindEventListeners = function(){
         
-      
-        
-        // Update Close and cancel button on click
-       
-        /* This is updated dynamically; not fixed;     
         elemBtnClose.addEventListener('click', function() {
-            navigation.managerNavLinks.onClickNavFeedsExpenses();
+            history.back();
         });
         
         
         elemBtnCancel.addEventListener('click', function() {
-            navigation.managerNavLinks.onClickNavFeedsExpenses();
+            history.back();
         });
-        */
-        
-        settingsBreadcrumb.items[0].callbackOnClick = function(){
-            navigation.managerNavLinks.onClickNavFeedsExpenses();
-        }
         
         
         elemBtnSave.addEventListener('click', function() {
             thisObj.onClickSaveButton();
         });
-        
-        
     }
     
     
@@ -360,8 +348,6 @@ export function PagePfFeedBuyAddEdit(input_settings){
     
     
     this.show = function(options, data_farm_feed_buy){
-        
-        
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
             // Display modal offline
@@ -418,17 +404,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
             
             thisObj.populateForm();
         }
-        
-        
-        // Update Close and cancel button on click
-        
-        elemBtnClose.onclick = function() {
-            history.back();
-        };
-        
-        elemBtnCancel.onclick = function() {
-            history.back();
-        };
+
         
     }
     

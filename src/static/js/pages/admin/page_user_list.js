@@ -149,13 +149,13 @@ export function PageUserList(input_settings){
                 // TODO
             }
             else{
-                navigation.managerNavLinks.onClickNavAccessCodes();
+                navigation.managerNavLinks.onClickNavAccessCodes(null, true);
             }
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavAccessCodes();
+            navigation.managerNavLinks.onClickNavAccessCodes(null, true);
         };
         
         
@@ -164,22 +164,6 @@ export function PageUserList(input_settings){
     
     
     this._bindEventListenersThis = function(){
-    }
-    
-    
-    
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        /*
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }*/
     }
     
     
@@ -336,20 +320,23 @@ export function PageUserList(input_settings){
         let data_pig_prod_list = dataUserList;
         
         
-        
         const filtered = [];
         for (const cur_entry of data_pig_prod_list){
             let user_name = `${cur_entry.user.name_first} ${cur_entry.user.name_last}`;
-            let user_email = cur_entry.user.email.toUpperCase();
+            let user_email = null;
             
             user_name = user_name.toUpperCase();
+            
+            if (cur_entry.user.email){
+                user_email = cur_entry.user.email.toUpperCase();
+            }
             
             if (user_name.includes(key)){
                 filtered.push(cur_entry)
                 continue;
             }
             
-            if (user_email.includes(key)){
+            if (user_email && user_email.includes(key)){
                 filtered.push(cur_entry)
                 continue;
             }

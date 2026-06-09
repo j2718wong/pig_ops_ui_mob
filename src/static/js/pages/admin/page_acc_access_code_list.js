@@ -7,18 +7,17 @@
 'use strict';
 
 import {PageTableBasic}         from '../common/page_table_basic.js';
-import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         ACC_USER_GROUP}         from '../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT,
-        sortList}               from '../../utils.js';
+        FORMAT_COMPACT}         from '../../utils.js';
 
 import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
 
@@ -67,8 +66,6 @@ export function PageAccessCodeList(input_settings){
     
     let dtCurrentDate           = null;
 
-
-    let farmPage                = new PageViewPigFarmPage();
 
     
     this.init = function(){
@@ -165,19 +162,17 @@ export function PageAccessCodeList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavUsers();
+            navigation.managerNavLinks.onClickNavUsers(null, true);
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavUsers();
+            navigation.managerNavLinks.onClickNavUsers(null, true);
         };
         
         
         componentNavLeftRight.bindEventListeners();
-        
-        
-        thisObj.setOnClickAddEntry(thisObj.onClickAddEntry);
+
     }
     
     
@@ -188,21 +183,6 @@ export function PageAccessCodeList(input_settings){
     
     
     
-    // Handle window resize for view switching
-    this.handleWindowResize = function() {
-        const isMobile = window.innerWidth <= APPLICATION.MAX_WIDTH_WINDOW_IS_MOBILE;
-                
-        /*
-        if (isMobile) {
-            elemMobileContainer.style.display = 'flex';
-            elemTableContainer.style.display = 'none';
-        } else {
-            elemMobileContainer.style.display = 'none';
-            elemTableContainer.style.display = 'block';
-        }*/
-    }
-    
-    
     this.renderPage = function(page_data){
         thisObj.show();
     }
@@ -210,20 +190,13 @@ export function PageAccessCodeList(input_settings){
     
     
     this.show = function(){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = null;
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
         
         const callback_success = function(data){
             dataAccessCodeList = data;
             thisObj.renderTable(dataAccessCodeList);
         };
 
-   
-        // Request ProdPigDead List
+
         navigation.pigFarm.accountLists.requestDataAccessCodeList(
             callback_success, null);
         
@@ -351,9 +324,6 @@ export function PageAccessCodeList(input_settings){
         elem_row.innerHTML = html;
         
         
-         
-
-        
         // Attach onclick listeners to td
         
         const elem_tds = elem_row.querySelectorAll('td'); 
@@ -376,210 +346,49 @@ export function PageAccessCodeList(input_settings){
     }
     
     
-    
-    
-    
-    
-    this.setUserLanguage = function(language_key){
-        curUserLanguageKey = language_key;
-        thisObj.onUserChangeLanguage();
-    }
-    
-    
-    this.onUserChangeLanguage = function(){
-        
-       
-    }
-    
-    
     this.searchEntries = function(key){
-        let data_pig_prod_list = dataAccessCodeList;
+        let data_list = dataAccessCodeList;
         
         
         
         const filtered = [];
-        for (const cur_entry of data_pig_prod_list){
-            
-            let u_sow_name          = null;
-            let u_sow_number        = null;
-            
-            let u_boar_name         = null;
-            let u_boar_number       = null;
-            
-            let u_semen_supplier    = null;
-            let u_semen_name        = null;
-            
-            
-            let s_pid   = `${cur_entry.pig_production.farm_prod_id}`;
-            
-            if (cur_entry.sow.name){
-                u_sow_name = cur_entry.sow.name.toUpperCase();
-            }
-            
-            if (cur_entry.sow.number){
-                u_sow_number = cur_entry.sow.number.toUpperCase();
-            }
-            
-            
-            let insemination = cur_entry.insemination;
-            
-            switch (insemination.insem_type){
-                case 'B': {
-                    if (insemination.boar.name){
-                        u_boar_name = insemination.boar.name.toUpperCase();
-                    }
-                    
-                    if (insemination.boar.number){
-                        u_boar_number = insemination.boar.number.toUpperCase();
-                    }
-                    
-                    break;
-                }
-                
-                case 'AI_X': {
-                    u_semen_supplier = insemination.ai.semen_supplier.name.toUpperCase();
-                    u_semen_name    = insemination.ai.semen_supplier.semen.name.toUpperCase();
-                    
-                    break;
-                }
-                
-                case 'AI_N': {
-                    if (insemination.ai.internal_boar.name){
-                        u_boar_name = insemination.ai.internal_boar.name.toUpperCase();
-                    }
-                    
-                    if (insemination.ai.internal_boar.number){
-                        u_boar_number = insemination.ai.internal_boar.number.toUpperCase();
-                    }
-                    
-                    break;
-                }
-            }
-            
-            
-            if (s_pid.startsWith(key)){
-                filtered.push(cur_entry);
-                continue;
-            }
-            
-            
-            if (u_sow_name){
-                if (u_sow_name.startsWith(key)){
-                    filtered.push(cur_entry);
-                    continue;
-                }
-            }
-            
-            if (u_sow_number){
-                if (u_sow_name.startsWith(key)){
-                    filtered.push(cur_entry);
-                    continue;
-                }
-            }
-            
-            
-            if (searchIncludeInsem){
-                if (u_boar_name){
-                    if (u_boar_name.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-                
-                if (u_boar_number){
-                    if (u_boar_number.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-                
-                if (u_semen_supplier){
-                    if (u_semen_supplier.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-            
-                if (u_semen_name){
-                    if (u_semen_name.startsWith(key)){
-                        filtered.push(cur_entry);
-                        continue;
-                    }
-                }
-            }
+        for (const cur_entry of data_list){
             
         } 
         
         
-        return filtered;
+        return data_list;
     }
     
     
-    this.getDataPigProd = function(pid){
-        // Most functions with getData*** always use entry_hid as 
-        // input parameter. The DataPigProd will use pid instead
-        // as this is highly visible by in the page.
-        for (const cur_entry of dataPigProdList){
-            if(cur_entry.pig_production.farm_prod_id == pid){return cur_entry;}
-        }
-        return null;
+    this.getPageIdAddEditPage = function(){
+        return PAGE_ID.ACCESS_CODE_ADD_EDIT;}
+    
+    
+    this.getPageIdListPage = function(){
+        return PAGE_ID.ACCESS_CODE_LIST;}
+    
+    
+    // Should return a reference to a function that has this signature:
+    // func_name(options, row_entry);
+    this.getFuncAddEditShowPage = function(){
+        return navigation.pageAccessCodeAddEdit.show;}
+    
+    
+    this.getHashRouteAddEditPage = function(){
+        return HASH_ROUTES.ACCESS_CODE_ADD_EDIT;
     }
     
     
-    this.onClickAddEntry = function(){
-        // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.ACCESS_CODE_ADD_EDIT);
-        
-        // Push currentPage to NavHistory; 
-        // Will also compare current page and  next_page NAV_MENU_GROUP.
-        navigation.pushCurrentPageToNavHistory(next_page);
-        
-        navigation.showThisPage(next_page);
-        
-        
-        // Show Page
-        const go_back_page_id = PAGE_ID.ACCESS_CODE_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
-        
-        const options ={
-            is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
-            go_back_page:           go_back_page   
-        }
-        navigation.pageAccessCodeAddEdit.show(options);
-    }
-    
-    
-    this.onSuccessAddEntry = function(){
-        
-    }
-    
-    
-    this.onSuccessEditEntry = function(){
-        
-    }
-    
-    
-    this.onClickRowEntry = function(entry_hid){
-        const data_acc_pig_ops = thisObj.getDataAccPigOps(entry_hid);   
-        
-        const go_back_page_id = PAGE_ID.ACC_PIG_OPS_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
-    
-        const options ={
-            operation_type:         curAccPigOpsType,
-            is_add:                 false,   // false is edit
-            callback_after_edit:    thisObj.onSuccessEditEntry,
-            go_back_page:           go_back_page 
-        }
-        navigation.pageAccPigOpsAddEdit.show(options, data_acc_pig_ops);
-        
-        
-        const goto_page_id   = PAGE_ID.ACC_PIG_OPS_ADD_EDIT;
-        const page_container = navigation.getPageContainer(goto_page_id);
-        navigation.showThisPage(page_container);
+    this.getHashRouteListPage = function(){
+        return HASH_ROUTES.ACCESS_CODE_LIST;
     }
   
+  
+    this.getRowEntryHashId = function(row_entry){
+        if (!row_entry){return null;}
+        return row_entry.access_code.hid;
+    }
     
     
 }

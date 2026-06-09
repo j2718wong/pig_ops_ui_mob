@@ -300,11 +300,6 @@ export function PagePigDeadAddEdit(input_settings){
     
     // Reset add form
     this.show = function(options, data_pig_dead){        
-        
-        // Store return route for back button
-        thisObj.returnRoute = HASH_ROUTES.PIG_DEAD_LIST;
-        
-        
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
             // Display modal offline

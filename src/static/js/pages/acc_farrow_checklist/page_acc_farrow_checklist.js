@@ -247,7 +247,6 @@ export function PageAccFarrowChecklist(input_settings){
             // Check server data update
             this.checkServerDataUpdate();
             
-            console.log('🔍 Page show exit 2 - History length:', history.length);
             return;
         }
         
@@ -256,7 +255,6 @@ export function PageAccFarrowChecklist(input_settings){
         // Load cached data 
         const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
         this.loadCachedData(pig_farm_hid);
-        console.log('🔍 Page show exit END - History length:', history.length);
     }
     
 

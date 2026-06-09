@@ -569,15 +569,13 @@ export function PageProdGestatingAdd(input_settings){
     
     
     this.show = function(){
-
-        thisObj._resetForm();
-        
-        
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
             // Display modal offline
             navigation.managerSystem.showOfflineMessageModal();
         }
+        
+        thisObj._resetForm();
         
         
         componentSelectSow.beforeShow();

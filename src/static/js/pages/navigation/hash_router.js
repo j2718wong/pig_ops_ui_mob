@@ -391,20 +391,22 @@ export function ManagerHashRoute(_navigation) {
                     }
                     
                     if (entryData) {
-                        navigation.pageSowBoarAddEdit.show({
+                        const options = {
                             is_add:             false,
                             sow_boar_type:      sowBoarType,
-                            returnRoute:        data.returnRoute,
-                            returnPageId:       data.returnPageId,
                             
                             // These are needed to be passed so that after
                             // successful edit can go back to PageSowBoarEntry
                             prev_sow_boar_hid:  data.prevSowBoarHid,
                             next_sow_boar_hid:  data.nextSowBoarHid,
                             data_index:         data.dataIndex,
-                            total_entries:      data.totalEntries
+                            total_entries:      data.totalEntries,
                             
-                        }, entryData);
+                            returnRoute:        data.returnRoute,
+                            returnPageId:       data.returnPageId
+                        };
+                        
+                        navigation.pageSowBoarAddEdit.show(options, entryData);
                     } 
                 }
                 break;
@@ -635,10 +637,24 @@ export function ManagerHashRoute(_navigation) {
                 pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 if (data.isAdd) {
-                    navigation.pagePfFeedBuyAddEdit.show(data.options);
+                    navigation.pageAccFChecklistAddEdit.show(data.options);
                 } else {
-                    navigation.pagePfFeedBuyAddEdit.show(
-                        data.options, data.entryHid);
+                    let entryData = null;
+                    const dataList = navigation.pigFarm.accountLists.dataAccSowDueChecklist;
+                    
+                    if (dataList) {
+                        entryData = dataList.find(
+                            item => item.hid === data.entryHid);
+                    }
+                    
+                    // Prepare options with return route
+                    const options = {
+                        is_add: false,
+                        returnRoute:    data.returnRoute,
+                        returnPageId:   data.returnPageId
+                    };
+                    
+                    navigation.pageAccFChecklistAddEdit.show(options, entryData);
                 }
                 break;
             }
@@ -703,7 +719,38 @@ export function ManagerHashRoute(_navigation) {
             }
             
             
+            case HASH_ROUTES.USER_LIST: {
+                pageId          = PAGE_ID.USER_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
                 
+                navigation.pageUserList.show();
+                break;
+            }
+            
+            
+            case HASH_ROUTES.ACCESS_CODE_LIST: {
+                pageId          = PAGE_ID.ACCESS_CODE_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageAccessCodeList.show();
+                break;
+            }
+                
+            
+            case HASH_ROUTES.ACCESS_CODE_ADD_EDIT: {
+                pageId          = PAGE_ID.ACCESS_CODE_ADD_EDIT;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
+                
+                if (data.isAdd) {
+                    navigation.pageAccessCodeAddEdit.show(data.options);
+                } else {
+                    // TODO
+                }
+                break;
+            }
                 
             // Add more routes as you implement them
                 
