@@ -4162,7 +4162,7 @@ input[type=number] {
 .farm-name {
     font-weight: 700;
     font-size: 1.5rem;
-    color: var(--corporate-blue-dark);
+    color: var(--corporate-blue);
     letter-spacing: -0.3px;
     line-height: 1.2;
 }

@@ -1709,11 +1709,33 @@ export function ManagerNavLinks(_navigation) {
     }
     
     
-    this.onClickNavProdHistory = function(is_mobile, show_options){
-        const next_page = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_LIST);
+    this.onClickNavProdHistory = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
         
-        navigation.showThisPage(next_page);
-        navigation.pageProdHistoryList.show();
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.PROD_HISTORY_LIST);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.PROD_HISTORY_LIST);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.PROD_HISTORY_LIST, {
+                pageId: PAGE_ID.PROD_HISTORY_LIST
+            });
+        }
+        else{
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.PROD_HISTORY_LIST, {
+                pageId: PAGE_ID.PROD_HISTORY_LIST
+            });
+        }
     }
     
     

@@ -454,7 +454,7 @@ ${html_style}
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavProdHistory();
+            navigation.managerNavLinks.onClickNavProdHistory(null, true);
         };
         
         

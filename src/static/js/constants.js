@@ -216,6 +216,11 @@ const HASH_ROUTES = {
     USER_SETTINGS:          'user_settings',
     BILL_NEW:               'bill_new',
 
+
+
+    PROD_HISTORY_LIST:      'prod_history_list',
+    PROD_HISTORY_ENTRY:     'prod_history_entry',
+    
     PROD_OUTPUT:            'prod_output',
     PROD_NOT_PREGNANT_LIST: 'not_pregnant_list',
     

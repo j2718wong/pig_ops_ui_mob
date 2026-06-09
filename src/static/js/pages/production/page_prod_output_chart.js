@@ -53,6 +53,7 @@ export function PageProdOutputChart(input_settings){
     let componentNavLeftRight   = null;
     
     let elemIdPageInfo          = null;
+    let elemIdPigFarmName       = null;
     let elemIdLabelToday        = null;
     let elemIdDateToday         = null;
     
@@ -63,6 +64,7 @@ export function PageProdOutputChart(input_settings){
  
     
     let elemPageInfo            = null;
+    let elemPigFarmName         = null;
     let elemLabelToday          = null;
     let elemDateToday           = null;
     
@@ -158,6 +160,8 @@ export function PageProdOutputChart(input_settings){
         
         elemIdPageInfo          = `${settings.uniqueKey}-page-info`;
         
+        elemIdPigFarmName       = `${settings.uniqueKey}-pig-farm-name`;
+        
         elemIdLabelToday        = `${settings.uniqueKey}-label-today`;
         elemIdDateToday         = `${settings.uniqueKey}-date-today`;
 
@@ -188,6 +192,7 @@ ${html_style}
     -->
     
     <div style="text-align: center;">
+        <div class="farm-name"><span id="${elemIdPigFarmName}"></span></div>
         <span id="${elemIdLabelToday}">${label_today}</span>
         <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
     </div>
@@ -221,6 +226,7 @@ ${html_style}
     this._findElements = function(){
         elemPageInfo            = elemDivContainer.querySelector('#'+elemIdPageInfo);
      
+        elemPigFarmName         = elemDivContainer.querySelector('#'+elemIdPigFarmName);
         elemLabelToday          = elemDivContainer.querySelector('#'+elemIdLabelToday);
         elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
      
@@ -235,12 +241,12 @@ ${html_style}
     this._processAfterHtmlRender = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavProdHistory();
+            navigation.managerNavLinks.onClickNavProdHistory(null, true);
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavProdNotPregnant();
+            navigation.managerNavLinks.onClickNavProdNotPregnant(null, true);
         };
         
         
@@ -275,8 +281,13 @@ ${html_style}
         dtCurrentDate.setHours(0, 0, 0, 0);
         
         const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
-        
         elemDateToday.textContent = s_dt_current;
+        
+        // Set Farm name
+        const cur_user_farm = navigation.userControl.getCurrentFarm();
+        const pig_farm_name = cur_user_farm.pig_farm.name;
+        elemPigFarmName.textContent = pig_farm_name;
+        
         
         if (dataProdOutputList == null){
             // Note at this point, the 
@@ -447,11 +458,11 @@ ${html_style}
                     <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px;">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <div style="width: 20px; height: 20px; background: #e67e22; border-radius: 4px;"></div>
-                            <span style="font-size: 0.8rem;">Lactating</span>
+                            <span style="font-size: 1.1rem;">Lactating</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <div style="width: 20px; height: 20px; background: #2e7d64; border-radius: 4px;"></div>
-                            <span style="font-size: 0.8rem;">Weaned</span>
+                            <span style="font-size: 1.1rem;">Weaned</span>
                         </div>
                     </div>
                 </div>
@@ -485,8 +496,8 @@ ${html_style}
         const footerHtml = `
                     </div>
                 </div>
-                <div style="text-align: center; margin-top: 16px; font-size: 0.8rem; color: #666;">
-                    <span>📊 Weaned pigs + Currently lactating pigs = Total annual output</span>
+                <div style="text-align: center; margin-top: 16px; font-size: 1.1rem; color: #666;">
+                    <span>📊 Weaned pigs + Lactating pigs = Total annual output</span>
                 </div>
             </div>
         `;
