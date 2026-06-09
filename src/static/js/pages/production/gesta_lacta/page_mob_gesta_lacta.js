@@ -10,6 +10,7 @@ import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
         PROD_STATUS,
@@ -575,12 +576,34 @@ ${html_style}
 
         
         elemAddEntryBtn.addEventListener('click', function() {
-            const next_page = navigation.getPageContainer(PAGE_ID.PROD_GESTA_ADD);
+            const next_page_id      = PAGE_ID.PROD_GESTA_ADD;
+            const next_page_hash    = HASH_ROUTES.PROD_GESTA_ADD;
             
+            // Get current route for return navigation
+            const listRoute = HASH_ROUTES.PROD_GESTA_LIST;
+            
+            // Use hash router for navigation
+            navigation.managerHashRoute.hashRouter.navigate(next_page_hash, {
+                pageId:     next_page_id,
+                isAdd:      true,
+                returnRoute: listRoute,
+                returnPageId: PAGE_ID.PROD_GESTA_LIST
+            });
+            
+            // Show the add page (handleHashRoute will also show, but this ensures immediate response)
+            const next_page = navigation.getPageContainer(next_page_id);
             navigation.showThisPage(next_page);
-            navigation.pageProdGestatingAdd.show();
+            
+            // Prepare options for the add page
+            const options = {
+                is_add: true,
+                returnRoute: listRoute,
+                returnPageId: PAGE_ID.PROD_GESTA_LIST
+            };
+            
+            navigation.pageProdGestatingAdd.show(options);
         });
-        
+                
         
         if (settings.isGesta == true){
             // Set up listeners for navigation arrows
@@ -590,7 +613,7 @@ ${html_style}
 
             elemNavNextEntry.onclick = function(){
                 navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
-                    PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                    PIG_OPERATION_TYPE.LACTATING_PIGLETS, false, true);
             }
         
             elemPigOpsSeeSample.addEventListener('click', function() {
@@ -657,7 +680,7 @@ ${html_style}
             // Set up listeners for navigation arrows
             elemNavPrevEntry.onclick = function(){
                 navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
-                    PIG_OPERATION_TYPE.GESTATING);
+                    PIG_OPERATION_TYPE.GESTATING, false, true);
             }
 
             elemNavNextEntry.onclick = function(){

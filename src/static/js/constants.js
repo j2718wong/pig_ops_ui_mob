@@ -217,6 +217,13 @@ const HASH_ROUTES = {
     BILL_NEW:               'bill_new',
 
     
+    PROD_GESTA_LIST:        'prod_gesta_list',
+    PROD_GESTA_ADD:         'prod_gesta_add',
+    PROD_GESTA_ENTRY:       'prod_gesta_entry',
+    
+    PROD_LACTA_LIST:        'prod_lacta_list',
+    PROD_LACTA_ENTRY:       'prod_lacta_entry',
+    
     PROD_FATTENING_LIST:    'fattening_list',
     PROD_FATTENING_ADD:     'fattening_add',
 

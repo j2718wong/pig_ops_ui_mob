@@ -449,7 +449,7 @@ ${html_style}
     this._processAfterHtmlRenderThis = function(){
         componentNavLeftRight.callbackNavLeft = function(){
             navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
-                PIG_OPERATION_TYPE.LACTATING_PIGLETS);
+                PIG_OPERATION_TYPE.LACTATING_PIGLETS, false, true);
         };
         
           

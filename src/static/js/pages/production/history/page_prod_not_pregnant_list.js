@@ -172,7 +172,8 @@ export function PageProdNotPregnantList(input_settings){
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            navigation.managerNavLinks.onClickNavProdGestaLacta(null, 
+                PIG_OPERATION_TYPE.GESTATING, false, true);
         };
         
         

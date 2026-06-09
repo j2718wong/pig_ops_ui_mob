@@ -200,6 +200,34 @@ export function ManagerHashRoute(_navigation) {
             }
             
             
+            case HASH_ROUTES.PROD_GESTA_LIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_GESTA_LIST);
+                navigation.showThisPage(pageContainer);
+                navigation.pageMobGestatingList.show();
+                break;
+            }
+            
+            
+            case HASH_ROUTES.PROD_GESTA_ADD: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_GESTA_ADD);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageProdGestatingAdd.show({
+                    is_add:         data.isAdd || true,
+                    returnRoute:    data.returnRoute,
+                    returnPageId:   data.returnPageId
+                });
+                break;
+            }
+            
+
+            case HASH_ROUTES.PROD_LACTA_LIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_LACTA_LIST);
+                navigation.showThisPage(pageContainer);
+                navigation.pageMobLactatingList.show();
+                break;
+            }
+            
             
             case HASH_ROUTES.PROD_FATTENING_LIST: {
                 pageContainer = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_LIST);

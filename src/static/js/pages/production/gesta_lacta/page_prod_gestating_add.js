@@ -411,7 +411,7 @@ export function PageProdGestatingAdd(input_settings){
         
         
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" data-bs-dismiss="modal" style="margin-right:10px;">
+            <button type="button" class="btn btn-secondary" id="${elemIdBtnCancel}" style="margin-right:10px;">
                 <i class="fas fa-times me-2"></i>${label_cancel}
             </button>
             <button type="button" class="btn btn-primary" id="${elemIdBtnSave}">
@@ -513,12 +513,12 @@ export function PageProdGestatingAdd(input_settings){
         
               
         elemBtnClose.addEventListener('click', function() {
-            navigation.managerNavLinks.onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            history.back();
         });
         
         
         elemBtnCancel.addEventListener('click', function() {
-            navigation.managerNavLinks.onClickNavProdGestaLacta(null, PIG_OPERATION_TYPE.GESTATING);
+            history.back();
         });
         
         
@@ -569,9 +569,7 @@ export function PageProdGestatingAdd(input_settings){
     
     
     this.show = function(){
-        thisObj.debugNavHistory(TAG);
 
-        
         thisObj._resetForm();
         
         

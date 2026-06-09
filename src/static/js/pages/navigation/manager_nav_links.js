@@ -1655,50 +1655,66 @@ export function ManagerNavLinks(_navigation) {
     
     
     this.onClickNavProdGestaLacta = function(is_mobile, operation_type, 
-            check_data_updates, show_options){
-        
-        if (is_mobile == null){ 
-            // If not specified use the last known screen state.
-            is_mobile = navigation.curScreenIsMobile;
-        }
-        else{
-            navigation.curScreenIsMobile = is_mobile;
+            check_data_updates, is_left_right_nav){
+    
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
         }
         
+        let pageId, hashRoute, pageShowFunction;
         
+        // Determine target page based on operation type
+        if (operation_type == PIG_OPERATION_TYPE.GESTATING) {
+            pageId = PAGE_ID.PROD_GESTA_LIST;
+            hashRoute = HASH_ROUTES.PROD_GESTA_LIST;
+            pageShowFunction = () => navigation.pageMobGestatingList.show();
+        } 
+        else if (operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS || 
+                 operation_type == PIG_OPERATION_TYPE.LACTATING_SOW) {
+            pageId = PAGE_ID.PROD_LACTA_LIST;
+            hashRoute = HASH_ROUTES.PROD_LACTA_LIST;
+            pageShowFunction = () => navigation.pageMobLactatingList.show();
+        }
+        else {
+            return; // Unknown operation type
+        }
         
-        if (operation_type == PIG_OPERATION_TYPE.GESTATING){
-            const next_page = navigation.getPageContainer(PAGE_ID.PROD_GESTA_LIST);
-            
-            if (check_data_updates){
-                const callback_success = function(){
-                    navigation.showThisPage(next_page);
-                    navigation.pageMobGestatingList.show();
-                };
-                
-                navigation.pigFarm.managerPigProd.checkIfToUpdateDataPigProdList(
-                    callback_success); 
+        // Check if same menu level
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, pageId);
+        
+        const isSamePage = (previousPageId === pageId);
+        
+        // For Gestating, check data updates first
+        const navigateToPage = () => {
+            // Use hash navigation instead of manual history
+            if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+                navigation.managerHashRoute.hashRouter.replace(hashRoute, {
+                    pageId: pageId
+                });
+            }
+            else {
+                navigation.managerHashRoute.hashRouter.navigate(hashRoute, {
+                    pageId: pageId
+                });
             }
             
-            else{
-                navigation.showThisPage(next_page);
-                navigation.pageMobGestatingList.show();
-            }
-            
-            return;
-        }
-        
-        if ((operation_type == PIG_OPERATION_TYPE.LACTATING_PIGLETS) || 
-            (operation_type == PIG_OPERATION_TYPE.LACTATING_SOW)){
-            
-            const next_page = navigation.getPageContainer(PAGE_ID.PROD_LACTA_LIST);
-                
+            // Show the page
+            const next_page = navigation.getPageContainer(pageId);
             navigation.showThisPage(next_page);
-            navigation.pageMobLactatingList.show();
-            return;
-        }
+            pageShowFunction();
+        };
         
-    }
+        if (operation_type == PIG_OPERATION_TYPE.GESTATING && check_data_updates) {
+            navigation.pigFarm.managerPigProd.checkIfToUpdateDataPigProdList(
+                navigateToPage);
+        } 
+        else {
+            navigateToPage();
+        }
+    };
     
     
     this.onClickNavProdFattening = function(is_mobile, is_left_right_nav){
