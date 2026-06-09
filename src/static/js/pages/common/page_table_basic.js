@@ -816,7 +816,7 @@ export function PageTableBasic(){
         };
         
         
-        func_show_page(options, row_entry_hid);
+        func_show_page(options, row_entry);
     }
     
     

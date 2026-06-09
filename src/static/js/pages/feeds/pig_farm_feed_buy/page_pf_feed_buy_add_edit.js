@@ -405,7 +405,7 @@ export function PagePfFeedBuyAddEdit(input_settings){
         else{
             // Set title
             curDataPigFarmFeedBuy = data_farm_feed_buy;
-            
+            console.log('curDataPigFarmFeedBuy'); console.log(curDataPigFarmFeedBuy);
             const html = `<i class="fas fa-plus me-2"></i>Edit Farm Feed Buy`;
             elemHeaderTitle.innerHTML = html;
 

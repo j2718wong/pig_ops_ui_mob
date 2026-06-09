@@ -131,9 +131,8 @@ export function ManagerHashRoute(_navigation) {
     this.handleHashRoute = function(route, data) {
         console.log('Hash route changed:', route, data);
         
-        let pageContainer = null;
-        
-        
+        let pageId          = null;
+        let pageContainer   = null;
         
         
         // Extract base route (remove query parameters)
@@ -156,7 +155,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.MY_ACCOUNT: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.MY_ACCOUNT);
+                pageId          = PAGE_ID.MY_ACCOUNT;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageMyAccount.show({ 
@@ -168,7 +168,8 @@ export function ManagerHashRoute(_navigation) {
                
                         
             case HASH_ROUTES.CUSTOMER_PRICING: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.CUSTOMER_PRICING);
+                pageId          = PAGE_ID.CUSTOMER_PRICING;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageCustomerPricing.show({ 
@@ -179,7 +180,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.BILL_NEW: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.BILL_NEW);
+                pageId          = PAGE_ID.BILL_NEW;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageAccountNewBill.show({ 
@@ -190,7 +192,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.USER_SETTINGS: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.USER_SETTINGS);
+                pageId          = PAGE_ID.USER_SETTINGS;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageUserSettings.show({ 
@@ -201,7 +204,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.PROD_GESTA_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_GESTA_LIST);
+                pageId          = PAGE_ID.PROD_GESTA_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 navigation.pageMobGestatingList.show();
                 break;
@@ -209,7 +213,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.PROD_GESTA_ADD: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_GESTA_ADD);
+                pageId          = PAGE_ID.PROD_GESTA_ADD;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageProdGestatingAdd.show({
@@ -222,7 +227,8 @@ export function ManagerHashRoute(_navigation) {
             
 
             case HASH_ROUTES.PROD_LACTA_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_LACTA_LIST);
+                pageId          = PAGE_ID.PROD_LACTA_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 navigation.pageMobLactatingList.show();
                 break;
@@ -230,7 +236,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.PROD_FATTENING_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_LIST);
+                pageId          = PAGE_ID.PROD_FATTENING_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageProdFatteningList.show();
@@ -239,7 +246,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.PROD_FATTENING_ADD: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_ADD);
+                pageId          = PAGE_ID.PROD_FATTENING_ADD;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageProdFatteningAdd.show({
@@ -249,17 +257,21 @@ export function ManagerHashRoute(_navigation) {
                 });
                 break;
             }
+             
                         
             case HASH_ROUTES.PROD_HISTORY_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_LIST);
+                pageId          = PAGE_ID.PROD_HISTORY_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageProdHistoryList.show();
                 break;
             }
             
+            
             case HASH_ROUTES.PROD_OUTPUT: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_OUTPUT);
+                pageId          = PAGE_ID.PROD_OUTPUT;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageProdOutputChart.show();
@@ -268,7 +280,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.PROD_NOT_PREGNANT_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_NOT_PREGNANT_LIST);
+                pageId          = PAGE_ID.PROD_NOT_PREGNANT_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageNotPregnantList.show();
@@ -291,7 +304,8 @@ export function ManagerHashRoute(_navigation) {
                     default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
                 }
                 
-                pageContainer = navigation.getPageContainer(PAGE_ID.SOW_BOAR_LIST);
+                pageId          = PAGE_ID.SOW_BOAR_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 const options = {
@@ -310,8 +324,9 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.SOW_BOAR_ADD_EDIT: {
-                const addEditContainer = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ADD_EDIT);
-                navigation.showThisPage(addEditContainer);
+                pageId          = PAGE_ID.SOW_BOAR_ADD_EDIT;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
                 
                 if (data.isAdd) {
                     // data.sowBoarType is a string
@@ -327,15 +342,15 @@ export function ManagerHashRoute(_navigation) {
                         default: sowBoarType = SOW_BOAR_TYPE.SOW; break;
                     }
                     
-                    
-                    
                     navigation.pageSowBoarAddEdit.show({
                         is_add:         true,
                         sow_boar_type:  sowBoarType,
                         returnRoute:    data.returnRoute,
                         returnPageId:   data.returnPageId
                     });
-                } else {
+                } 
+                
+                else {
                     // Edit mode - need to load entry by HID
                     const entryHid = data.entryHid;
                     
@@ -350,20 +365,26 @@ export function ManagerHashRoute(_navigation) {
                     
                     
                     // Find the entry from existing data
-                    let entryData = null;
+                    let entryData       = null;
+                    let dataList        = null;
+                    let managerSowBoar  = navigation.pigFarm.managerSowBoar;
+                    
                     switch(sowBoarType) {
                         case SOW_BOAR_TYPE.SOW:
-                            entryData = navigation.pigFarm.managerSowBoar.dataSowList?.find(
+                            dataList = managerSowBoar.dataSowList;
+                            entryData = dataList?.find(
                                 item => item.sow_boar.hid === entryHid
                             );
                             break;
                         case SOW_BOAR_TYPE.BOAR:
-                            entryData = navigation.pigFarm.managerSowBoar.dataBoarList?.find(
+                            dataList = managerSowBoar.dataBoarList;
+                            entryData = dataList?.find(
                                 item => item.sow_boar.hid === entryHid
                             );
                             break;
                         case SOW_BOAR_TYPE.GILT:
-                            entryData = navigation.pigFarm.managerSowBoar.dataGiltList?.find(
+                            dataList = managerSowBoar.dataGiltList;
+                            entryData = dataList?.find(
                                 item => item.sow_boar.hid === entryHid
                             );
                             break;
@@ -384,17 +405,15 @@ export function ManagerHashRoute(_navigation) {
                             total_entries:      data.totalEntries
                             
                         }, entryData);
-                    } else {
-                        // If not found in memory, fetch from server
-                        navigation.fetchAndShowSowBoarEntry(entryHid, sowBoarType, data);
-                    }
+                    } 
                 }
                 break;
             }
             
             
             case HASH_ROUTES.SOW_BOAR_ENTRY: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.SOW_BOAR_ENTRY);
+                pageId          = PAGE_ID.SOW_BOAR_ENTRY;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 // Find the entry data by HID
@@ -410,19 +429,23 @@ export function ManagerHashRoute(_navigation) {
                 }
                 
                 // Try to find entry in existing data
+                let dataList = null;
                 switch(sowBoarTypeNum) {
                     case SOW_BOAR_TYPE.SOW:
-                        entryData = navigation.pigFarm.managerSowBoar.dataSowList?.find(
+                        dataList = navigation.pigFarm.managerSowBoar.dataSowList;
+                        entryData = dataList?.find(
                             item => item.sow_boar.hid === data.sowBoarHid
                         );
                         break;
                     case SOW_BOAR_TYPE.BOAR:
-                        entryData = navigation.pigFarm.managerSowBoar.dataBoarList?.find(
+                        dataList = navigation.pigFarm.managerSowBoar.dataBoarList;
+                        entryData = dataList?.find(
                             item => item.sow_boar.hid === data.sowBoarHid
                         );
                         break;
                     case SOW_BOAR_TYPE.GILT:
-                        entryData = navigation.pigFarm.managerSowBoar.dataGiltList?.find(
+                        dataList = navigation.pigFarm.managerSowBoar.dataGiltList;
+                        entryData = dataList?.find(
                             item => item.sow_boar.hid === data.sowBoarHid
                         );
                         break;
@@ -448,31 +471,34 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.SOW_BOAR_DISPOSED: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.SOW_BOAR_DISPOSED);
+                pageId          = PAGE_ID.SOW_BOAR_DISPOSED
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 // Find the disposed entry
-                let disposedData = null;
-                const disposedList = navigation.pigFarm.managerSowBoar.dataDisposedList;
-                if (disposedList) {
-                    disposedData = disposedList.find(item => item.sow_boar.hid === data.entryHid);
+                let entryData = null;
+                const dataList = navigation.pigFarm.managerSowBoar.dataDisposedList;
+                if (dataList) {
+                    entryData = dataList.find(
+                        item => item.sow_boar.hid === data.entryHid);
                 }
                 
-                const disposedOptions = {
-                    sow_boar_type: SOW_BOAR_TYPE.DISPOSED,
-                    returnRoute: data.returnRoute,
-                    returnPageId: data.returnPageId
+                const options = {
+                    sow_boar_type:  SOW_BOAR_TYPE.DISPOSED,
+                    returnRoute:    data.returnRoute,
+                    returnPageId:   data.returnPageId
                 };
                 
-                if (disposedData) {
-                    navigation.pageSowBoarDisposed.show(disposedData, disposedOptions);
+                if (entryData) {
+                    navigation.pageSowBoarDisposed.show(entryData, options);
                 }
                 break;
             }
             
             
             case HASH_ROUTES.TRACE_PARENTS: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.TRACE_PARENTS);
+                pageId          = PAGE_ID.TRACE_PARENTS;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageParentTrace.show();
@@ -481,11 +507,12 @@ export function ManagerHashRoute(_navigation) {
             
                         
             case HASH_ROUTES.ALL_FEED_BAL_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.ALL_FEED_BAL_LIST);
+                pageId          = PAGE_ID.ALL_FEED_BAL_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 if (data.refreshList) {
-                    navigation.pageAllFeedBalanceList.show({ refresh_list: true });
+                    navigation.pageAllFeedBalanceList.show({refresh_list:true});
                 } else {
                     navigation.pageAllFeedBalanceList.show();
                 }
@@ -494,7 +521,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.ALL_FEED_BAL_ADD_EDIT: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.ALL_FEED_BAL_ADD_EDIT);
+                pageId          = PAGE_ID.ALL_FEED_BAL_ADD_EDIT;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 if (data.isAdd) {
@@ -505,9 +533,10 @@ export function ManagerHashRoute(_navigation) {
                     
                     // Find the entry from feed balance list by date_balance
                     let entryData = null;
-                    const feedBalanceList = navigation.pigFarm.dataFeedBalanceList;
-                    if (feedBalanceList && entryDate) {
-                        entryData = feedBalanceList.find(item => item.date_balance === entryDate);
+                    const dataList = navigation.pigFarm.dataFeedBalanceList;
+                    if (dataList && entryDate) {
+                        entryData = dataList.find(
+                            item => item.date_balance === entryDate);
                     }
                     
                     // Prepare options with return route
@@ -524,7 +553,8 @@ export function ManagerHashRoute(_navigation) {
                 
             
             case HASH_ROUTES.FARROWING_SCHEDULE: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.FARROWING_SCHEDULE);
+                pageId          = PAGE_ID.FARROWING_SCHEDULE;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageFarrowingSchedule.show();
@@ -533,7 +563,8 @@ export function ManagerHashRoute(_navigation) {
               
                 
             case HASH_ROUTES.PIG_DEAD_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PIG_DEAD_LIST);
+                pageId          = PAGE_ID.PIG_DEAD_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 if (data.refreshList) {
@@ -546,7 +577,8 @@ export function ManagerHashRoute(_navigation) {
               
                 
             case HASH_ROUTES.PIG_DEAD_ADD_EDIT: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PIG_DEAD_ADD_EDIT);
+                pageId          = PAGE_ID.PIG_DEAD_ADD_EDIT;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 if (data.isAdd) {
                     navigation.pagePigDeadAddEdit.show(data.options);
@@ -558,7 +590,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.BOAR_EXT_MATE_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_LIST);
+                pageId          = PAGE_ID.BOAR_EXT_MATE_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 if (data.refreshList) {
@@ -571,7 +604,8 @@ export function ManagerHashRoute(_navigation) {
                
                 
             case HASH_ROUTES.BOAR_EXT_MATE_ADD_EDIT: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.BOAR_EXT_MATE_ADD_EDIT);
+                pageId          = PAGE_ID.BOAR_EXT_MATE_ADD_EDIT;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 if (data.isAdd) {
                     navigation.pagePigDeadAddEdit.show(data.options);
@@ -583,11 +617,12 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.ACC_FARROW_CHECKLIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.ACC_FARROW_CHECKLIST);
+                pageId          = PAGE_ID.ACC_FARROW_CHECKLIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 if (data.refreshList) {
-                    navigation.pageAccFarrowChecklist.show({ refresh_list: true });
+                    navigation.pageAccFarrowChecklist.show({refresh_list:true});
                 } else {
                     navigation.pageAccFarrowChecklist.show();
                 }
@@ -596,12 +631,13 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.ACC_F_CHECKLIST_ADD_EDIT: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT);
+                pageId          = PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 if (data.isAdd) {
-                    navigation.pageAccFChecklistAddEdit.show(data.options);
+                    navigation.pagePfFeedBuyAddEdit.show(data.options);
                 } else {
-                    navigation.pageAccFChecklistAddEdit.show(
+                    navigation.pagePfFeedBuyAddEdit.show(
                         data.options, data.entryHid);
                 }
                 break;
@@ -609,7 +645,8 @@ export function ManagerHashRoute(_navigation) {
     
     
             case HASH_ROUTES.FEEDS_CONSUMED: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.FEEDS_CONSUMED);
+                pageId          = PAGE_ID.FEEDS_CONSUMED;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageFeedsConsumedChart.show();
@@ -618,7 +655,8 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.PROD_SALES_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_SALES_LIST);
+                pageId          = PAGE_ID.PROD_SALES_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pageProdSalesList.show();
@@ -627,13 +665,45 @@ export function ManagerHashRoute(_navigation) {
             
             
             case HASH_ROUTES.FARM_FEED_BUY_LIST: {
-                pageContainer = navigation.getPageContainer(PAGE_ID.FARM_FEED_BUY_LIST);
+                pageId          = PAGE_ID.FARM_FEED_BUY_LIST;
+                pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
                 
                 navigation.pagePigFarmFeedBuyList.show();
                 break;
             }
             
+            
+            case HASH_ROUTES.FARM_FEED_BUY_ADD_EDIT: {
+                pageId          = PAGE_ID.FARM_FEED_BUY_ADD_EDIT;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
+                
+                if (data.isAdd) {
+                    navigation.pagePfFeedBuyAddEdit.show(data.options);
+                } else {
+                    // Find the entry from feed buy list by entryHid
+                    let entryData = null;
+                    const dataList = navigation.pigFarm.dataFarmFeedBuyList;
+                    if (dataList) {
+                        entryData = dataList.find(
+                            item => item.pf_feed_buy.hid === data.entryHid);
+                    }
+                    
+                    // Prepare options with return route
+                    const options = {
+                        is_add: false,
+                        returnRoute:    data.returnRoute,
+                        returnPageId:   data.returnPageId
+                    };
+                    
+                    navigation.pagePfFeedBuyAddEdit.show(options, entryData);
+                }
+                break;
+            }
+            
+            
+                
                 
             // Add more routes as you implement them
                 

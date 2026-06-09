@@ -444,4 +444,9 @@ export function PagePigFarmFeedBuyList(input_settings){
         return HASH_ROUTES.FARM_FEED_BUY_LIST;
     }
     
+    
+    this.getRowEntryHashId = function(row_entry){
+        if (!row_entry){return null;}
+        return row_entry.pf_feed_buy.hid;
+    }
 }
