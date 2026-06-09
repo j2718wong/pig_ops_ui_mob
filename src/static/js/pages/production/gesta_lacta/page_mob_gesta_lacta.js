@@ -661,7 +661,7 @@ ${html_style}
             }
 
             elemNavNextEntry.onclick = function(){
-                navigation.managerNavLinks.onClickNavProdFattening(null);
+                navigation.managerNavLinks.onClickNavProdFattening(null, true);
             }
         }
         

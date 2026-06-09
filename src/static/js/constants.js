@@ -216,7 +216,8 @@ const HASH_ROUTES = {
     USER_SETTINGS:          'user_settings',
     BILL_NEW:               'bill_new',
 
-
+    
+    PROD_FATTENING_LIST:    'fattening_list',
 
     PROD_HISTORY_LIST:      'prod_history_list',
     PROD_HISTORY_ENTRY:     'prod_history_entry',

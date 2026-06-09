@@ -200,6 +200,16 @@ export function ManagerHashRoute(_navigation) {
             }
             
             
+            
+            case HASH_ROUTES.PROD_FATTENING_LIST: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_LIST);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageProdFatteningList.show();
+                break;
+            }
+            
+            
             case HASH_ROUTES.PROD_HISTORY_LIST: {
                 pageContainer = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_LIST);
                 navigation.showThisPage(pageContainer);

@@ -1348,7 +1348,6 @@ ${html_style}
         
         const options ={
             is_add:                 true,   // false is edit
-            callback_after_add:     thisObj.onSuccessAddEntry,
             go_back_page:           go_back_page   
         }
         navigation.pageProdFatteningAdd.show(options);

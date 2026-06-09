@@ -312,6 +312,8 @@ export function PageProdFatteningAdd(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
+            history.back();
+            /*
             // Remove NavHistoryHead if same with go_back_page
             navigation.managerNavHistory.removeFromNavHistoryHead(
                 showOptions.go_back_page);
@@ -323,9 +325,13 @@ export function PageProdFatteningAdd(input_settings){
             if (APPLICATION.DEBUG_NAV_HISTORY){
                 thisObj.debugNavHistory(TAG);
             }
+            */
         };
         
         elemBtnCancel.onclick = function() {
+            history.back();
+            
+            /*
             // Remove NavHistoryHead if same with go_back_page
             navigation.managerNavHistory.removeFromNavHistoryHead(
                 showOptions.go_back_page);
@@ -338,6 +344,7 @@ export function PageProdFatteningAdd(input_settings){
             if (APPLICATION.DEBUG_NAV_HISTORY){
                 thisObj.debugNavHistory(TAG);
             }
+            */ 
         };
     }
     

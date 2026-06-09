@@ -466,7 +466,7 @@ export function PageProdHistoryList(input_settings){
         else{
             
             componentNavLeftRight.callbackNavLeft = function(){
-                navigation.managerNavLinks.onClickNavProdFattening();
+                navigation.managerNavLinks.onClickNavProdFattening(null, true);
             };
             
               
