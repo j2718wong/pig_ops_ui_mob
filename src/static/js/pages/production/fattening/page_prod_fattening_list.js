@@ -12,9 +12,9 @@ import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
+        HASH_ROUTES,
         PIG_OPERATION_TYPE,
         PIG_PROD_TYPE,
-        PROD_STATUS,
         FLAG_BITS}              from '../../../constants.js';
 
 import {formatDate,
@@ -1332,25 +1332,33 @@ ${html_style}
     
     
     this.onClickAddEntry = function(){
-        // Show Container
-        const next_page = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_ADD);
+        const next_page_id      = PAGE_ID.PROD_FATTENING_ADD;
+        const next_page_hash    = HASH_ROUTES.PROD_FATTENING_ADD;
         
-        // Push currentPage to NavHistory; 
-        // Will also compare current page and  next_page NAV_MENU_GROUP.
-        navigation.pushCurrentPageToNavHistory(next_page);
+        // Get current route for return navigation
+        const currentRoute  = navigation.managerHashRoute.hashRouter.getCurrentRoute();
+        const listRoute     = HASH_ROUTES.PROD_FATTENING_LIST;
         
+        // Use hash router for navigation
+        navigation.managerHashRoute.hashRouter.navigate(next_page_hash, {
+            pageId: next_page_id,
+            isAdd:  true,
+            returnRoute: listRoute,
+            returnPageId: PAGE_ID.PROD_FATTENING_LIST
+        });
+        
+        // Show the add/edit page (handleHashRoute will also show, but this ensures immediate response)
+        const next_page = navigation.getPageContainer(next_page_id);
         navigation.showThisPage(next_page);
         
+        // Prepare options for the add/edit page
+        const options = {
+            is_add:         true,
+            returnRoute:    listRoute,
+            returnPageId:   PAGE_ID.PROD_FATTENING_LIST
+        };
         
-        // Show Page
-        const go_back_page_id = PAGE_ID.PROD_FATTENING_LIST;
-        const go_back_page = navigation.getPageContainer(go_back_page_id);
-        
-        const options ={
-            is_add:                 true,   // false is edit
-            go_back_page:           go_back_page   
-        }
         navigation.pageProdFatteningAdd.show(options);
-    }
+    };
     
 }

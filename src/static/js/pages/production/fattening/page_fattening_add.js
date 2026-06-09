@@ -9,8 +9,8 @@
 import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
     
 import {APPLICATION,    
-        PAGE_ID,    
-        PIG_OPERATION_TYPE,
+        PAGE_ID,
+        HASH_ROUTES,    
         PIG_PROD_TYPE}              from '../../../constants.js';
     
 import {ComponentBreadCrumbs}       from '../../common/ui/comp_breadcrumb.js';
@@ -58,8 +58,9 @@ export function PageProdFatteningAdd(input_settings){
         
         items:[
             {
-                'label':        'Fattening List',
-                'gotoPageId':   PAGE_ID.PROD_FATTENING_LIST
+                'label':            'Fattening List',
+                'gotoPageId':       PAGE_ID.PROD_FATTENING_LIST,
+                'callbackOnClick':  function(){history.back();}
             }
         ]
         
@@ -313,38 +314,10 @@ export function PageProdFatteningAdd(input_settings){
         
         elemBtnClose.onclick = function() {
             history.back();
-            /*
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            // This will not redraw the previous page; only shwo container
-            navigation.showThisPage(showOptions.go_back_page);
-            
-            if (APPLICATION.DEBUG_NAV_HISTORY){
-                thisObj.debugNavHistory(TAG);
-            }
-            */
         };
         
         elemBtnCancel.onclick = function() {
             history.back();
-            
-            /*
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            // This will not redraw the previous page; only shwo container
-            navigation.showThisPage(showOptions.go_back_page);
-
-            
-            if (APPLICATION.DEBUG_NAV_HISTORY){
-                thisObj.debugNavHistory(TAG);
-            }
-            */ 
         };
     }
     
@@ -515,14 +488,15 @@ export function PageProdFatteningAdd(input_settings){
                 if (response.result.num == 0){
 
                     const callback_success = function(data){
-                        const go_back_page_id = PAGE_ID.PROD_FATTENING_LIST;
-                        const go_back_page = navigation.getPageContainer(go_back_page_id);
                         
-                        navigation.managerNavHistory.removeFromNavHistoryHead(
-                            go_back_page);
+                        // Fixed return route; After Add/edit should return to list page
+                        const dataHashRoute = {
+                            pageId:         PAGE_ID.PROD_FATTENING_LIST,
+                            refreshList:    true
+                        };
                         
-                        navigation.showThisPage(go_back_page);
-                        navigation.pageProdFatteningList.show();
+                        navigation.managerHashRoute.hashRouter.replace(
+                            HASH_ROUTES.PROD_FATTENING_LIST, dataHashRoute);
                     
                     };
             

@@ -210,6 +210,18 @@ export function ManagerHashRoute(_navigation) {
             }
             
             
+            case HASH_ROUTES.PROD_FATTENING_ADD: {
+                pageContainer = navigation.getPageContainer(PAGE_ID.PROD_FATTENING_ADD);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageProdFatteningAdd.show({
+                    is_add:         data.isAdd || true,
+                    returnRoute:    data.returnRoute,
+                    returnPageId:   data.returnPageId
+                });
+                break;
+            }
+                        
             case HASH_ROUTES.PROD_HISTORY_LIST: {
                 pageContainer = navigation.getPageContainer(PAGE_ID.PROD_HISTORY_LIST);
                 navigation.showThisPage(pageContainer);

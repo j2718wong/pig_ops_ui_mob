@@ -218,6 +218,7 @@ const HASH_ROUTES = {
 
     
     PROD_FATTENING_LIST:    'fattening_list',
+    PROD_FATTENING_ADD:     'fattening_add',
 
     PROD_HISTORY_LIST:      'prod_history_list',
     PROD_HISTORY_ENTRY:     'prod_history_entry',

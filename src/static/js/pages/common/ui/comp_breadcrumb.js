@@ -121,8 +121,8 @@ export function ComponentBreadCrumbs(input_settings){
                 
                 
                 // Remove navigation history entries from head until next_page.
-                navigation.managerNavHistory.removeFromHeadUntilThisPage(
-                    next_page);
+                //navigation.managerNavHistory.removeFromHeadUntilThisPage(
+                //    next_page);
                 
                 
                 navigation.showThisPage(next_page);
