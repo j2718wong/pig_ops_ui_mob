@@ -541,12 +541,7 @@ export function ManagerHashRoute(_navigation) {
                 pageId          = PAGE_ID.ALL_FEED_BAL_LIST;
                 pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
-                
-                if (data.refreshList) {
-                    navigation.pageAllFeedBalanceList.show({refresh_list:true});
-                } else {
-                    navigation.pageAllFeedBalanceList.show();
-                }
+                navigation.pageAllFeedBalanceList.show();
                 break;
             }
             
@@ -597,12 +592,7 @@ export function ManagerHashRoute(_navigation) {
                 pageId          = PAGE_ID.PIG_DEAD_LIST;
                 pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
-                
-                if (data.refreshList) {
-                    navigation.pagePigDeadList.show({ refresh_list: true });
-                } else {
-                    navigation.pagePigDeadList.show();
-                }
+                navigation.pagePigDeadList.show();
                 break;
             }
               
@@ -624,12 +614,7 @@ export function ManagerHashRoute(_navigation) {
                 pageId          = PAGE_ID.BOAR_EXT_MATE_LIST;
                 pageContainer   = navigation.getPageContainer(pageId);
                 navigation.showThisPage(pageContainer);
-                
-                if (data.refreshList) {
-                    navigation.pageBoarExtMateList.show({ refresh_list: true });
-                } else {
-                    navigation.pageBoarExtMateList.show();
-                }
+                navigation.pageBoarExtMateList.show();
                 break;
             }
                

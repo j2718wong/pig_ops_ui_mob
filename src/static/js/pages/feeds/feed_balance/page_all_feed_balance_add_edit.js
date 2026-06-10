@@ -1558,14 +1558,17 @@ export function PageAllFeedBalanceAddEdit(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     // Fixed return route; After Add/edit should return to list page
-                    const dataHashRoute = {
-                        pageId:         PAGE_ID.ALL_FEED_BAL_LIST,
-                        refreshList:    true
+                    const callback_success = function(){
+                        history.back();
                     };
                     
-                    navigation.managerHashRoute.hashRouter.replace(
-                        HASH_ROUTES.ALL_FEED_BAL_LIST, dataHashRoute);
-                
+                    const callback_offline = function(){
+                        // TODO: what to do if offline
+                        history.back();
+                    };
+                    
+                    navigation.pigFarm.requestDataPigFarmFeedBalance(null, 
+                        callback_success, callback_offline, elemServerErrorMsg);
                 }   
                 else{
                     navigation.serverError.receivedErrorMessage(

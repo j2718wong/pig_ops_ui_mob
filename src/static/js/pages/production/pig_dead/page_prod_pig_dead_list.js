@@ -224,18 +224,6 @@ export function PageProdPigDeadList(input_settings){
     
     
     this.show = function(options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = null;
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
-  
-        if (options && options.refresh_list){
-            this.requestServerData();
-            return;
-        }
-  
    
         // Get data source
         let data_list  = navigation.pigFarm.managerPigProd.dataProdPigDeadList;

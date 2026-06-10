@@ -474,7 +474,6 @@ export function PagePigDeadAddEdit(input_settings){
         } 
         
         
-        
         const user_hid      = navigation.userControl.getUserHid();
         const base_url      = window.location.origin;
         
@@ -536,13 +535,29 @@ export function PagePigDeadAddEdit(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     // Fixed return route; After Add/edit should return to list page
-                    const dataHashRoute = {
-                        pageId:         PAGE_ID.PIG_DEAD_LIST,
-                        refreshList:    true
+                    
+                    const callback_success = function(){
+                        // TODO need to also update pig_production, because
+                        // the pig_production pig count now is different;
+                        // If pig_production is not updated, the pig counts in 
+                        // dashboard is out of sync; need to refresh the app to 
+                        // get the correct data.
+                        // As much as possible refresh only the pig_production
+                        // entry, not the the whole pig_production list.
+                        
+                        
+                        history.back();
                     };
                     
-                    navigation.managerHashRoute.hashRouter.replace(
-                        HASH_ROUTES.PIG_DEAD_LIST, dataHashRoute);
+                    const callback_offline = function(){
+                        // TODO: what to do if offline
+                        history.back();
+                    };
+                    
+                    
+                    navigation.pigFarm.managerPigProd.requestProdPigDeadList(
+                        callback_success, callback_offline, elemServerErrorMsg
+                    );
                     
                 }
                 else{

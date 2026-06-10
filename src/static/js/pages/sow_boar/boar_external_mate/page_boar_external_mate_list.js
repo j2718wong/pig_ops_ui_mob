@@ -236,17 +236,6 @@ export function PageBoarExternalMateList(input_settings){
     
     
     this.show = function(options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = null;
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
-        
-        // Store return route for back button
-        thisObj.returnRoute = HASH_ROUTES.BOAR_EXT_MATE_LIST;
-        
-        
         // So that not to instantiate in every table redraw
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
@@ -256,12 +245,6 @@ export function PageBoarExternalMateList(input_settings){
         elemDateToday.textContent = s_dt_current;
         
 
-        
-        if (options && options.refresh_list){
-            this.requestServerData();
-            return;
-        }
-        
 
         // Get data source
         let data_list = navigation.pigFarm.managerSowBoar.dataBoarExtMateList;

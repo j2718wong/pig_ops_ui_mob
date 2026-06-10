@@ -10,12 +10,7 @@ import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
-        HASH_ROUTES,
-        SOW_STATUS,
-        PIG_PROD_TYPE,
-        PIG_OPERATION_TYPE,
-        PROD_STATUS,
-        SUPPLIER_TYPE}          from '../../../constants.js';
+        HASH_ROUTES}            from '../../../constants.js';
 
 
 import {SelectBoarGesta}        from '../../production/gesta_lacta/components/select_boar_gesta.js';
@@ -415,13 +410,17 @@ export function PageBoarExtMateAddEdit(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     // Fixed return route; After Add/edit should return to list page
-                    const dataHashRoute = {
-                        pageId:         PAGE_ID.BOAR_EXT_MATE_LIST,
-                        refreshList:    true
+                    const callback_success = function(){
+                        history.back();
                     };
- 
-                    navigation.managerHashRoute.hashRouter.replace(
-                        HASH_ROUTES.BOAR_EXT_MATE_LIST, dataHashRoute); 
+                    
+                    const callback_offline = function(){
+                        // TODO: what to do if offline
+                        history.back();
+                    };
+                    
+                    navigation.pigFarm.managerSowBoar.requestBoarExtMateList(
+                        callback_success, callback_offline, elemServerErrorMsg);
                 }
                 else{
                     navigation.serverError.receivedErrorMessage(
