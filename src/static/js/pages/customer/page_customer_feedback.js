@@ -611,14 +611,7 @@ export function PageCustomerFeedback(input_settings){
     
     this._bindEventListeners = function(){
         elemBtnBack.addEventListener('click', function(event) {
-            event.preventDefault();
-            
-            // Remove NavHistoryHead if same with go_back_page
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            
-            navigation.showThisPage(showOptions.go_back_page);
+            history.back();
         });
         
         elemNotes.addEventListener('input', function(event){
@@ -656,31 +649,16 @@ export function PageCustomerFeedback(input_settings){
     
     
     this.show = function(options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {options: options};
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
-        
         thisObj._resetForm();
-        
-        
+
         showOptions = options;
-        
-        
-       
+
         thisObj.populateForm();
-        
-        
-                
-        
     }
     
     
     this.populateForm = function(){
 
-        
     }
     
         
@@ -798,16 +776,8 @@ export function PageCustomerFeedback(input_settings){
                     document.getElementById('back-from-success').addEventListener('click', function() {
                         document.body.removeChild(successOverlay);
                         
-                        if (showOptions && showOptions.go_back_page) {
-                            
-                            // Remove NavHistoryHead if same with go_back_page
-                            navigation.managerNavHistory.removeFromNavHistoryHead(
-                                showOptions.go_back_page);
-                                            
-                            navigation.showThisPage(showOptions.go_back_page);
-                        } else {
-                            history.back();
-                        }
+                        history.back();
+                        
                     });
                     
                     // Reset form

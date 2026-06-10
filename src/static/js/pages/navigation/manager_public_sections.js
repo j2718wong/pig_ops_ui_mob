@@ -8,7 +8,8 @@
 
 import {ACC_USER_GROUP,
         PIG_OPERATION_TYPE,
-        PAGE_ID}              from '../../constants.js';
+        PAGE_ID,
+        HASH_ROUTES}                from '../../constants.js';
         
 
 export function ManagerPublicSections(_navigation) {
@@ -63,34 +64,16 @@ export function ManagerPublicSections(_navigation) {
     
     this._bindEventListeners = function(){
         elemFeedbackUs.addEventListener('click', function() {
-            let go_back_page_id = null;
             
-            let go_back_page = navigation.currentPage;
+            const next_page_id      = PAGE_ID.FEEDBACK_US;
+            const next_page_hash    = HASH_ROUTES.FEEDBACK_US;
             
-            if (go_back_page == null){
-                go_back_page_id = PAGE_ID.HOME;
-                go_back_page = navigation.getPageContainer(go_back_page_id);
-            }
+            
+            // Use hash router 
+            navigation.managerHashRoute.hashRouter.navigate(next_page_hash, {
+                pageId:         next_page_id
+            });
 
-            
-            const nex_page_id = PAGE_ID.FEEDBACK_US;
-            const next_page = navigation.getPageContainer(nex_page_id);
-            
-            
-            // Push currentPage to NavHistory; 
-            // Will also compare current page and  next_page NAV_MENU_GROUP.
-            navigation.pushCurrentPageToNavHistory(next_page);
-                
-            
-            navigation.showThisPage(next_page);
-            
-            
-            const options = {
-                go_back_page:   go_back_page
-            };
-            navigation.pageCustomerFeedback.show(options);
-            
-            
         });
     }
     

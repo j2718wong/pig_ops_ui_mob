@@ -73,12 +73,15 @@ export class HashRouter {
         const hash = `#${route}`;
         const state = { route, data, timestamp: Date.now() };
         
+        
         history.pushState(state, '', hash);
         this.currentState = state;
         
         if (this.onRouteChange) {
             this.onRouteChange(route, data);
         }
+        
+        
         console.log('🔵 After navigate, History length:', history.length);
     }
     
@@ -150,6 +153,17 @@ export function ManagerHashRoute(_navigation) {
         switch(baseRoute) {
             case HASH_ROUTES.HOME: {
                 navigation.showHomeDashBoard();
+                break;
+            }
+            
+            
+            case HASH_ROUTES.FEEDBACK_US: {
+                pageId          = PAGE_ID.FEEDBACK_US;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageCustomerFeedback.show();
+                console.log('pageCustomerFeedback.show() done');
                 break;
             }
             
