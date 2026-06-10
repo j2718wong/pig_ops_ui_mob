@@ -12,11 +12,11 @@ import {APPLICATION,
         FLAG_BITS,
         DEFAULT_WEEKDAY,
         PAGE_ID,
+        HASH_ROUTES,
         PIG_OPERATION_TYPE,
         SOW_BOAR_TYPE,
         SOW_STATUS,
-        ACC_USER_GROUP,
-        FEED_TYPE_NAME}         from '../../constants.js';
+        ACC_USER_GROUP}         from '../../constants.js';
 
 
 import {formatDate,
@@ -1043,13 +1043,18 @@ export function PageHomeDashBoard(input_settings){
             user_group_num == ACC_USER_GROUP.MANAGEMENT){
             elemFarmName.onclick = function() {
                 // Show Container
-                const next_page_id   = PAGE_ID.PIG_FARM_ADD_EDIT;
+                const next_page_id      = PAGE_ID.PIG_FARM_ADD_EDIT;
+                const next_page_hash    = HASH_ROUTES.PIG_FARM_ADD_EDIT;
+                
+                // Use hash router 
+                navigation.managerHashRoute.hashRouter.navigate(next_page_hash, {
+                    pageId:         next_page_id,
+                    isAdd:          false,
+                    returnPageId:   PAGE_ID.HOME
+                });
+                
+                
                 const next_page = navigation.getPageContainer(next_page_id);
-                
-                // Push currentPage to NavHistory; 
-                // Will also compare current page and  next_page NAV_MENU_GROUP.
-                navigation.pushCurrentPageToNavHistory(next_page);
-                
                 navigation.showThisPage(next_page);
                 
                 

@@ -203,6 +203,21 @@ export function ManagerHashRoute(_navigation) {
             }
             
             
+            case HASH_ROUTES.PIG_FARM_ADD_EDIT: {
+                pageId          = PAGE_ID.PIG_FARM_ADD_EDIT;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
+                
+                if (data.isAdd) {
+                    navigation.pagePigFarmAddEdit.show(data.options);
+                } else {
+                    
+                    navigation.pagePigFarmAddEdit.show(data.options);
+                }
+                break;
+            }
+            
+            
             case HASH_ROUTES.PROD_GESTA_LIST: {
                 pageId          = PAGE_ID.PROD_GESTA_LIST;
                 pageContainer   = navigation.getPageContainer(pageId);

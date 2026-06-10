@@ -10,13 +10,8 @@ import {PageViewPigFarmPage}    from '../common/page_view_basic.js';
 
 import {APPLICATION,
         PAGE_ID,
-        FLAG_BITS,
-        SOW_STATUS,
-        PIG_PROD_TYPE,
-        PIG_OPERATION_TYPE,
-        SUPPLIER_TYPE}          from '../../constants.js';
-
-import {CommonSelectOptions}    from '../common/common_select_options.js';
+        HASH_ROUTES,
+        FLAG_BITS}              from '../../constants.js';
 
 
 import {addValidationClassToElem} from '../common/ui/ui_utils.js';
@@ -255,12 +250,6 @@ export function PagePigFarmAddEdit(input_settings){
     
     
     this.show = function(options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {options: options};
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
         // Check if Offline
         if (navigation.managerSystem.isOffLine){
             // Display modal offline
@@ -289,17 +278,11 @@ export function PagePigFarmAddEdit(input_settings){
         // Update Close and cancel button on click
         
         elemBtnClose.onclick = function() {
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                showOptions.go_back_page);
-            
-            navigation.showThisPage(showOptions.go_back_page);
+            history.back();
         };
         
         elemBtnCancel.onclick = function() {
-            navigation.managerNavHistory.removeFromNavHistoryHead(
-                        showOptions.go_back_page);
-                    
-            navigation.showThisPage(showOptions.go_back_page);
+            history.back();
         };
     }
     
@@ -519,6 +502,9 @@ export function PagePigFarmAddEdit(input_settings){
                     // This will return the data pig farm
                     navigation.pigFarm.setDataPigFarm(response.data);
                     
+                    history.back();
+                    
+                    /*
                     // Show Container
                     navigation.showThisPage(showOptions.go_back_page);
                     
@@ -548,7 +534,7 @@ export function PagePigFarmAddEdit(input_settings){
                         }
                     
                     }
-                    
+                    */
                     
                 }
                 else{

@@ -216,6 +216,8 @@ const HASH_ROUTES = {
     USER_SETTINGS:          'user_settings',
     BILL_NEW:               'bill_new',
 
+    PIG_FARM_ADD_EDIT:      'pig_farm_add_edit',
+
     
     PROD_GESTA_LIST:        'prod_gesta_list',
     PROD_GESTA_ADD:         'prod_gesta_add',
