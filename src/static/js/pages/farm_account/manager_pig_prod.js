@@ -435,6 +435,105 @@ export function ManagerPigProd(input_settings){
     }
     
     
+    this.requestPigProdFeedSummaryList = function(pig_prod_entry, 
+            callback_success, callback_offline, elem_show_error){
+        
+        
+        const pig_prod_hid       = pig_prod_entry.pig_production.hid;
+        const pig_prod_status_id = pig_prod_entry.pig_production.prod_status_id;
+
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/pig_prod/feed_summary?pig_prod_hid=${pig_prod_hid}`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    const KEY_PIG_FARM = navigation.managerLocalData.STORAGE_KEY.PIG_FARM;
+                    
+                    
+                    // Update feeds data block
+                    pig_prod_entry.feeds = response.data.feeds;
+
+                    let key         = null;
+                    let local_data  = null;
+                    
+                    // Need to update local cache based on pig_prod_status_id
+                    if (pig_prod_status_id == PROD_STATUS.LACTATING){
+                        // Update local storage
+                        key = KEY_PIG_FARM.PROD_LACTATING;
+                        local_data = {
+                            pig_farm_hid:   parentObj.getPigFarmHid(),
+                            ver_num:        parentObj.dataVerNum.prod_lacta,
+                            data:           thisObj.dataLactatingList,
+                            cached_at:      Date.now()
+                        };
+                        localStorage.setItem(key, JSON.stringify(local_data));
+                    
+                    }
+                    
+                    // Need to update local cache based on pig_prod_status_id
+                    if (pig_prod_status_id == PROD_STATUS.WEANING ||
+                        pig_prod_status_id == PROD_STATUS.GROWING){
+                        
+                        // Update local storage
+                        key = KEY_PIG_FARM.PROD_FATTENING;
+                        local_data = {
+                            pig_farm_hid:   parentObj.getPigFarmHid(),
+                            ver_num:        parentObj.dataVerNum.prod_fatten,
+                            data:           thisObj.dataFatteningList,
+                            cached_at:      Date.now()
+                        };
+                        localStorage.setItem(key, JSON.stringify(local_data));                    
+                    }
+                    
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                // Check if Offline
+                if (navigation.managerSystem.isOffLine){
+                    if (callback_offline) {callback_offline();}
+                    return;
+                }
+                
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+    
+    
     this.requestPigProdNotPregnantList = function(callback_success, 
             callback_offline, elem_show_error){
         

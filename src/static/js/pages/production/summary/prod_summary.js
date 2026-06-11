@@ -85,6 +85,7 @@ export function ProdSummary(input_settings){
     let elemIdTdGrossProfitPP   = null;
     
 
+    let elemIdFeedSummaryTitle  = null;
     let elemIdTableBody         = null;
     let elemIdLastFeedBalance   = null;
 
@@ -110,6 +111,7 @@ export function ProdSummary(input_settings){
     let elemTdGrossProfitPP     = null;
     
     
+    let elemFeedSummaryTitle    = null;
     let elemTableBody           = null;
     let elemLastFeedBalance     = null;
 
@@ -157,7 +159,7 @@ export function ProdSummary(input_settings){
     
     
     this.getHtml = function(){
-        
+        elemIdFeedSummaryTitle  = `${settings.uniqueKey}-feed-summary`;
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
         elemIdLastFeedBalance   = `${settings.uniqueKey}-last-feed-balance`;
         
@@ -175,7 +177,7 @@ export function ProdSummary(input_settings){
     <div class="modal-body" id="">
         ${html_prod_summary}
         
-        <h2 class="tab-title">
+        <h2 class="tab-title" id=${elemIdFeedSummaryTitle}>
             Feed Summary
         </h2>
     
@@ -221,6 +223,7 @@ export function ProdSummary(input_settings){
     
     
     this._findElements = function(){
+        elemFeedSummaryTitle    = elemDivContainer.querySelector('#'+elemIdFeedSummaryTitle);
         elemTableBody           = elemDivContainer.querySelector('#'+elemIdTableBody);
         elemLastFeedBalance     = elemDivContainer.querySelector('#'+elemIdLastFeedBalance);
         
@@ -246,7 +249,15 @@ export function ProdSummary(input_settings){
     
     
     this._processAfterHtmlRender= function(){}
-    this._bindEventListeners= function(){}
+    
+    
+    this._bindEventListeners= function(){
+        // Temporary data refresh;  may find some fixed solution for data refresh later
+        elemFeedSummaryTitle.addEventListener('click', function() {
+            thisObj.onClickRefeshFeedSummary();
+        });
+        
+    }
     
     
     
@@ -554,8 +565,11 @@ export function ProdSummary(input_settings){
                 consumed_gestating  = feeds_bought.gestating - feeds_balance.gestating;
             }
             else{
-                balance_gestating   = 0;
-                consumed_gestating  = feeds_bought.gestating;
+                if (feeds_balance.date_balance){
+                    balance_gestating   = 0;
+                    consumed_gestating  = feeds_bought.gestating;
+                }
+                // If no last feed balance, consumption cannot be computed
             }
         }
         
@@ -566,8 +580,11 @@ export function ProdSummary(input_settings){
                 consumed_lactating  = feeds_bought.lactating - feeds_balance.lactating;
             }
             else{
-                balance_lactating   = 0;
-                consumed_lactating  = feeds_bought.lactating;
+                if (feeds_balance.date_balance){
+                    balance_lactating   = 0;
+                    consumed_lactating  = feeds_bought.lactating;
+                }
+                // If no last feed balance, consumption cannot be computed
             }
         }
         
@@ -578,8 +595,11 @@ export function ProdSummary(input_settings){
                 consumed_booster    = feeds_bought.booster - feeds_balance.booster;
             }
             else{
-                balance_booster     = 0;
-                consumed_booster    = feeds_bought.booster;
+                if (feeds_balance.date_balance){
+                    balance_booster     = 0;
+                    consumed_booster    = feeds_bought.booster;
+                }
+                // If no last feed balance, consumption cannot be computed
             }
         }
         
@@ -590,8 +610,11 @@ export function ProdSummary(input_settings){
                 consumed_prestarter = feeds_bought.prestarter - feeds_balance.prestarter;
             }
             else{
-                balance_prestarter  = 0;
-                consumed_prestarter = feeds_bought.prestarter;
+                if (feeds_balance.date_balance){
+                    balance_prestarter  = 0;
+                    consumed_prestarter = feeds_bought.prestarter;
+                }
+                // If no last feed balance, consumption cannot be computed
             }
         }
         
@@ -602,8 +625,11 @@ export function ProdSummary(input_settings){
                 consumed_starter    = feeds_bought.starter - feeds_balance.starter;
             }
             else{
-                balance_starter     = 0;
-                consumed_starter    = feeds_bought.starter;
+                if (feeds_balance.date_balance){
+                    balance_starter     = 0;
+                    consumed_starter    = feeds_bought.starter;
+                }
+                // If no last feed balance, consumption cannot be computed
             }
         }
         
@@ -614,8 +640,11 @@ export function ProdSummary(input_settings){
                 consumed_grower     = feeds_bought.grower - feeds_balance.grower;
             }
             else{
-                balance_grower      = 0;
-                consumed_grower     = feeds_bought.grower;
+                if (feeds_balance.date_balance){
+                    balance_grower      = 0;
+                    consumed_grower     = feeds_bought.grower;
+                }
+                // If no last feed balance, consumption cannot be computed
             }
         }
         
@@ -626,8 +655,11 @@ export function ProdSummary(input_settings){
                 consumed_finisher   = feeds_bought.finisher - feeds_balance.finisher;
             }
             else{
-                balance_finisher    = 0;
-                consumed_finisher   = feeds_bought.finisher;
+                if (feeds_balance.date_balance){
+                    balance_finisher    = 0;
+                    consumed_finisher   = feeds_bought.finisher;
+                }
+                // If no last feed balance, consumption cannot be computed
             }
         }
         
@@ -920,6 +952,17 @@ export function ProdSummary(input_settings){
         `;
         
         return html;
+    }
+    
+    
+    this.onClickRefeshFeedSummary = function(){
+        const callback_success = function(){
+            thisObj.populateFeedSummary();
+        }
+        
+        navigation.pigFarm.managerPigProd.requestPigProdFeedSummaryList(
+            curDataEntry, callback_success);
+    
     }
     
 }

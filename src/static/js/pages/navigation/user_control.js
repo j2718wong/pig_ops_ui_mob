@@ -49,6 +49,10 @@ export function UserControl(_navigation) {
     this.userInitials               = null;
     
     
+    // This is not a versioned data, as only the user can change this data.
+    this.dataUserPushSubscribeList  = null;
+    
+    
     this.init = function(){
         this.afterHtmlRender();
     }
@@ -450,6 +454,59 @@ export function UserControl(_navigation) {
             window.location.href = '/login';
         }, 50);
     }
+
+
+    this.requestPushSubscriptionList = function(callback_success, 
+            elem_show_error){
+        
+        
+        const base_url = window.location.origin;
+        const url = `${base_url}/user/push_susbcription/list`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataUserPushSubscribeList = response.data;
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+    
 
 }
 

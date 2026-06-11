@@ -263,12 +263,6 @@ ${html_style}
     
     
     this.show = function(options){
-        thisObj.debugNavHistory(TAG);
-        
-        // Update navigation.curPageNavigated
-        navigation.curPageNavigated.pageData = {options: options};
-        navigation.curPageNavigated.renderPageFunc = thisObj.renderPage;
-        
         
         thisObj._resetForm();
         
@@ -300,12 +294,15 @@ ${html_style}
         const callback_success = function(data){            
             thisObj.existingSubscription = data;
             
+            console.log(`\n\nuserSubscription`);
+            console.log(data);
             thisObj.populateForm();
         };
         
         
         // Request  User PushSubscriptionList
-        thisObj.requestPushSubscriptionList(callback_success, elemServerErrorMsg);
+        navigation.userControl.requestPushSubscriptionList(
+            callback_success, elemServerErrorMsg);
     }
     
     
@@ -567,58 +564,6 @@ ${html_style}
     
     
     
-    this.requestPushSubscriptionList = function(callback_success, 
-            elem_show_error){
-        
-        
-        const base_url = window.location.origin;
-        const url = `${base_url}/user/push_susbcription/list`;
-        
-        
-        const bearer_token = localStorage.getItem('access_token');
-        
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
-            
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    
-                    if (callback_success){callback_success(response.data);}
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
-            }
-        });
-        
-    }
-    
-    
-    
     this.onSavePushSubscription = function(data){
         /**
          Typical data
@@ -704,7 +649,8 @@ ${html_style}
             const callback_refresh = function(data){
                 console.log('Updated subscription list:', data);
             };
-            this.requestPushSubscriptionList(callback_refresh, elemServerErrorMsg);
+            navigation.userControl.requestPushSubscriptionList(
+                callback_refresh, elemServerErrorMsg);
         }
     
     }

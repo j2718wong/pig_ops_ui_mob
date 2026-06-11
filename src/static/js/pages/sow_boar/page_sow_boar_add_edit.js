@@ -1367,8 +1367,6 @@ export function PageSowBoarAddEdit(input_settings){
                 const dataHashRoute = {
                     pageId:         PAGE_ID.PROD_GESTA_ADD,
                     sowBoarHid:     new_sow_boar_hid,
-                    returnRoute:    HASH_ROUTES.SOW_BOAR_LIST,
-                    returnPageId:   PAGE_ID.SOW_BOAR_LIST,
                     sowBoarType:    sowBoarType
                 };
                 

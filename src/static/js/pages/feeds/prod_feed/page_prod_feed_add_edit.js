@@ -1150,19 +1150,31 @@ export function PageProdFeedAddEdit(input_settings){
             success: function(response){
                 if (response.result.num == 0){
                     if (showOptions.is_add == true){
-                        navigation.showThisPage(showOptions.go_back_page);
-                        
-                        if (showOptions.callback_after_add){
-                            showOptions.callback_after_add();
-                        }
+                        const callback_success = function(){
+                            navigation.showThisPage(showOptions.go_back_page);
+                            
+                            if (showOptions.callback_after_add){
+                                showOptions.callback_after_add();
+                            }                        
+                        };
+                    
+                        navigation.pigFarm.managerPigProd.requestPigProdFeedSummaryList(
+                            dataPigProd, callback_success
+                        );                        
                     }
                     
                     else{
-                        navigation.showThisPage(showOptions.go_back_page);
+                        const callback_success = function(){
+                            navigation.showThisPage(showOptions.go_back_page);
+                            
+                            if (showOptions.callback_after_edit){
+                                showOptions.callback_after_edit();
+                            }
+                        };
                         
-                        if (showOptions.callback_after_edit){
-                            showOptions.callback_after_edit();
-                        }
+                        navigation.pigFarm.managerPigProd.requestPigProdFeedSummaryList(
+                            dataPigProd, callback_success
+                        );
                     }
                 }
                 else{

@@ -592,6 +592,7 @@ export function PageHomeDashBoard(input_settings){
                         
         });
         
+        
         elemCardLactaPiglets.addEventListener('click', function() {
             navigation.managerNavLinks.onClickNavProdGestaLacta(true, 
                 PIG_OPERATION_TYPE.LACTATING_PIGLETS);
@@ -601,7 +602,6 @@ export function PageHomeDashBoard(input_settings){
         elemCardFatteningPigs.addEventListener('click', function() {
             navigation.managerNavLinks.onClickNavProdFattening(true);
         });
-        
         
         
         elemCardLactaSows.addEventListener('click', function() {
@@ -614,7 +614,6 @@ export function PageHomeDashBoard(input_settings){
              navigation.managerNavLinks.onClickNavProdGestaLacta(true, 
                 PIG_OPERATION_TYPE.GESTATING);
         }); 
-        
         
         
         elemCardBoars.addEventListener('click', function() {
@@ -1072,6 +1071,15 @@ export function PageHomeDashBoard(input_settings){
             };
         }
     }
+    
+    
+    
+    this.showEnableNotification = function(){
+        // This is called in every show dashboard; so there should be a way to 
+        // minimize data traffic between user and server.
+    
+    }
+    
     
       
     this.addDebugMessage = function(message) {

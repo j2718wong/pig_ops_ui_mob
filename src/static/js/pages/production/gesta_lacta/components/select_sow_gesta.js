@@ -8,10 +8,7 @@
 
 import {PAGE_ID,
         SOW_STATUS,
-        SOW_BOAR_TYPE,
-        PIG_PROD_TYPE,
-        PIG_OPERATION_TYPE,
-        SUPPLIER_TYPE}          from '../../../../constants.js';
+        SOW_BOAR_TYPE}          from '../../../../constants.js';
 
 
 import {formatDate,
