@@ -1158,7 +1158,7 @@ export function PageProdFeedAddEdit(input_settings){
                             }                        
                         };
                     
-                        navigation.pigFarm.managerPigProd.requestPigProdFeedSummaryList(
+                        navigation.pigFarm.managerPigProd.requestPigProdFeedSummary(
                             dataPigProd, callback_success
                         );                        
                     }
@@ -1172,7 +1172,7 @@ export function PageProdFeedAddEdit(input_settings){
                             }
                         };
                         
-                        navigation.pigFarm.managerPigProd.requestPigProdFeedSummaryList(
+                        navigation.pigFarm.managerPigProd.requestPigProdFeedSummary(
                             dataPigProd, callback_success
                         );
                     }

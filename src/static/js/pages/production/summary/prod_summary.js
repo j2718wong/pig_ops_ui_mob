@@ -960,7 +960,7 @@ export function ProdSummary(input_settings){
             thisObj.populateFeedSummary();
         }
         
-        navigation.pigFarm.managerPigProd.requestPigProdFeedSummaryList(
+        navigation.pigFarm.managerPigProd.requestPigProdFeedSummary(
             curDataEntry, callback_success);
     
     }

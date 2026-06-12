@@ -1099,12 +1099,17 @@ export function PigFarm(_navigation){
         const base_url = window.location.origin;
         let url = null;
         
+        let sow_boar_hid = null;
+        let pig_prod_hid = null;
+        
+        
+        // The data_entry can either be a data_sow_boar or data_pig_prod 
         if (medvac_type == MULTIKEY_OBJ_TYPE.SOW_BOAR){
-            const sow_boar_hid = data_entry.sow_boar.hid;
+            sow_boar_hid = data_entry.sow_boar.hid;
             url = `${base_url}/pig_medvac/list?sow_boar_hid=${sow_boar_hid}`;
         }
         else{
-            const pig_prod_hid = data_entry.pig_production.hid;
+            pig_prod_hid = data_entry.pig_production.hid;
             url = `${base_url}/pig_medvac/list?pig_prod_hid=${pig_prod_hid}`;
         }
         
@@ -1133,6 +1138,14 @@ export function PigFarm(_navigation){
                 if (response.result.num == 0){
                     
                     data_entry.data_details.list_medvac = response.data;
+                    
+                    // The data_entry can either be a data_sow_boar or data_pig_prod
+                    if (medvac_type == MULTIKEY_OBJ_TYPE.SOW_BOAR){
+                    }
+                    else{
+                    }
+                    
+                    
                     
                     if (callback_success){
                         callback_success(response.data);
