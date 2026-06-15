@@ -118,7 +118,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavFinancials1        = null;
     let elemMobileNavFinancials2        = null;
     let elemMobileNavFinancials3        = null;
-                                        
+    let elemMobileNavFinancials4        = null;                                    
                                         
     let elemMobileNavAccountLists1      = null;
     let elemMobileNavAccountLists2      = null;
@@ -174,6 +174,7 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavLabelFinancials1      = null;
     let elemDesktopNavLabelFinancials2      = null;
     let elemDesktopNavLabelFinancials3      = null;
+    let elemDesktopNavLabelFinancials4      = null;
     
     let elemDesktopNavLabelAccountLists1    = null;
     let elemDesktopNavLabelAccountLists2    = null;
@@ -227,6 +228,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavLabelFinancials1       = null;
     let elemMobileNavLabelFinancials2       = null;
     let elemMobileNavLabelFinancials3       = null;
+    let elemMobileNavLabelFinancials4       = null;
     
     let elemMobileNavLabelAccountLists1     = null;
     let elemMobileNavLabelAccountLists2     = null;
@@ -317,6 +319,7 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavFinancials1       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-1');  
         elemDesktopNavFinancials2       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-2');  
         elemDesktopNavFinancials3       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-3');  
+        elemDesktopNavFinancials4       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-4');
         
         
         elemDesktopNavAccountLists1     = elemDesktopNavAccountLists.querySelector('#desktop-nav-account-lists-1');
@@ -366,7 +369,8 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavFinancials1        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-1');  
         elemMobileNavFinancials2        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-2');  
         elemMobileNavFinancials3        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-3');  
-            
+        elemMobileNavFinancials4        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-4');
+        
             
         elemMobileNavAccountLists1      = elemMobileNavAccountLists.querySelector('#mobile-subnav-account-lists-1');
         elemMobileNavAccountLists2      = elemMobileNavAccountLists.querySelector('#mobile-subnav-account-lists-2');
@@ -432,6 +436,7 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavLabelFinancials1      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-1 .nav-label');
         elemDesktopNavLabelFinancials2      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-2 .nav-label');
         elemDesktopNavLabelFinancials3      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-3 .nav-label');
+        elemDesktopNavLabelFinancials4      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-4 .nav-label');
         
         
         // Desktop submenu labels - Account Lists
@@ -440,6 +445,7 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavLabelAccountLists3    = elemDesktopNavAccountLists.querySelector('#desktop-nav-account-lists-3 .nav-label');
         elemDesktopNavLabelAccountLists4    = elemDesktopNavAccountLists.querySelector('#desktop-nav-account-lists-4 .nav-label');
         elemDesktopNavLabelAccountLists5    = elemDesktopNavAccountLists.querySelector('#desktop-nav-account-lists-5 .nav-label');
+        
         
         // Desktop submenu labels - Settings
         elemDesktopNavLabelSettings1        = elemDesktopNavSettings.querySelector('#desktop-nav-settings-1 .nav-label');
@@ -494,6 +500,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavLabelFinancials1       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-1 .nav-label');
         elemMobileNavLabelFinancials2       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-2 .nav-label');
         elemMobileNavLabelFinancials3       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-3 .nav-label');
+        elemMobileNavLabelFinancials4       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-4 .nav-label');
         
         
         // Mobile submenu labels - Account Lists
@@ -707,8 +714,17 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavFeedsExpenses(false);
         });
         
-          
+        
         elemDesktopNavFinancials3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            //
+        });
+          
+        elemDesktopNavFinancials4.addEventListener('click', function() {
             if (navigation.userControl.isAccountLocked()){
                 navigation.showHomeDashBoard();
                 return;
@@ -1037,8 +1053,18 @@ export function ManagerNavLinks(_navigation) {
             
             thisObj.onClickNavFeedsExpenses(true);
         });
-         
+        
         elemMobileNavFinancials3.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            //
+        });   
+        
+         
+        elemMobileNavFinancials4.addEventListener('click', function() {
             if (navigation.userControl.isAccountLocked()){
                 navigation.showHomeDashBoard();
                 return;
@@ -1342,7 +1368,10 @@ export function ManagerNavLinks(_navigation) {
             elemDesktopNavLabelFinancials2.textContent = translated_nav_links.Financials2 || "Feeds Expenses";
         }
         if (elemDesktopNavLabelFinancials3) {
-            elemDesktopNavLabelFinancials3.textContent = translated_nav_links.Financials4 || "Reports";
+            elemDesktopNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Feeds Estimate";
+        }
+        if (elemDesktopNavLabelFinancials4) {
+            elemDesktopNavLabelFinancials4.textContent = translated_nav_links.Financials4 || "Reports";
         }
         
         // Desktop account lists submenu labels
@@ -1483,7 +1512,10 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavLabelFinancials2.textContent = translated_nav_links.Financials2 || "Feeds Expenses";
         }
         if (elemMobileNavLabelFinancials3) {
-            elemMobileNavLabelFinancials3.textContent = translated_nav_links.Financials4 || "Reports";
+            elemMobileNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Feeds Estimate";
+        }
+        if (elemMobileNavLabelFinancials4) {
+            elemMobileNavLabelFinancials4.textContent = translated_nav_links.Financials4 || "Reports";
         }
         
         
