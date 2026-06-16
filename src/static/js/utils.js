@@ -226,7 +226,7 @@ export function insertIntoSortedList(list, object_to_insert, sort_key, sort_dire
 
 
 export function createPaginationManager(config) {
-    const {
+    let {
         navigation,
         
         elemPagination,
@@ -245,6 +245,8 @@ export function createPaginationManager(config) {
         getRowDataHid,
         getRowElement
     } = config;
+    
+    if (!data){data = [];}
     
     let currentPage = 1;
     let totalPages = Math.ceil(data.length / itemsPerPage);
