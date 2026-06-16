@@ -193,14 +193,14 @@ export function ProdHarvestList(input_settings){
         
         // Hide Search Add Controls if already harvested
         const prod_status_id = dataPigProd.pig_production.prod_status_id; 
-        if (prod_status_id == PROD_STATUS.HARVESTED || prod_status_id == PROD_STATUS.CLOSED){
-            elemSearchAddControl.style.display = 'none';
-        }
-        else{
+        if (prod_status_id == PROD_STATUS.WEANING || 
+            prod_status_id == PROD_STATUS.GROWING){
             elemSearchAddControl.style.display = 'flex';
         }
-        
-        
+        else{
+            elemSearchAddControl.style.display = 'none';
+        }
+
         
         // Request data if not yet requested
         if ('data_details' in dataPigProd){
