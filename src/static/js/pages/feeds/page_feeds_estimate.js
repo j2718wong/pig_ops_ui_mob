@@ -41,8 +41,12 @@ const DEFAULT_FEED_UNIT_WEIGHT = {
 };
 
 
+const MAX_NUM_MONTHS_FEED_PROJECTION = 4;
+
+const MAX_DAYS_OFFSET_BUY_LACTA_THIS_MONTH = 3;
 
 
+// This is the default feed budget for lactating sow and piglets
 let DEFAULT_KG_FEED_LACTATING   = 150;
 let DEFAULT_KG_FEED_BOOSTER     = 20;
 let DEFAULT_KG_FEED_PRESTARTER  = 100;
@@ -51,18 +55,14 @@ let DEFAULT_KG_PER_PIG_STARTER  = 50;
 let DEFAULT_KG_PER_PIG_GROWER   = 100;
 let DEFAULT_KG_PER_PIG_FINISHER = 50;
 
-const MAX_NUM_MONTHS_FEED_PROJECTION = 2;
-
-const MAX_DAYS_OFFSET_BUY_LACTA_THIS_MONTH = 3;
-
 
 // These are the average number of days before changing feed using the
 // default kg per feed type above.
-let AVE_NUMDAYS_SINCE_BIRTH_BOOSTER    = 7
+let AVE_NUMDAYS_SINCE_BIRTH_BOOSTER    = 5
 let AVE_NUMDAYS_SINCE_BIRTH_PRESTARTER = 30
 let AVE_NUMDAYS_SINCE_BIRTH_STARTER    = 50
 let AVE_NUMDAYS_SINCE_BIRTH_GROWER     = 90
-let AVE_NUMDAYS_SINCE_BIRTH_FINISHER   = 120
+let AVE_NUMDAYS_SINCE_BIRTH_FINISHER   = 130
 
 
 
@@ -131,7 +131,7 @@ function PigProduction(data_pig_prod){
     
     
     /**
-     * Will return an array of Date objects every 1st of the month in the future.
+     * Will return an array of Date strings every 1st of the month in the future.
      * Example:
      * 
      * num_months = 2
@@ -252,14 +252,20 @@ function PigProduction(data_pig_prod){
             {
                 date_to_buy:    '2026-07-01',
                 feeds:{
-                    lactating:  null
+                    prestarter: null,
+                    starter:    null,
+                    grower:     null,
+                    finisher:   null,
                 }
             },
              
             {
                 date_to_buy:    '2026-08-01',
                 feeds:{
-                    lactating:  DEFAULT_KG_FEED_LACTATING
+                    prestarter: null,
+                    starter:    null,
+                    grower:     null,
+                    finisher:   null,
                 }
             }
        ] 
@@ -352,6 +358,10 @@ function PigProduction(data_pig_prod){
     
     
     /**
+     * Will get feed estimate needs for the next MAX_NUM_MONTHS_FEED_PROJECTION
+     * months. The estimate is computed as number of kilogram of feed type
+     * to buy at the beginning of the month.
+     * 
      * This is used when production entry already has given birth or 
      * in fattening stage.
      * 
@@ -362,119 +372,258 @@ function PigProduction(data_pig_prod){
             {
                 date_to_buy:    '2026-07-01',
                 feeds:{
-                    lactating:  null,
                     booster:    20,
-                    prestarter: 100
+                    prestarter: 100,
+                    starter:    null,
+                    grower:     null,
+                    finisher:   null,
                 }
             },
              
             {
                 date_to_buy:    '2026-08-01',
                 feeds:{
-                    lactating:  null,
                     booster:    null,
                     prestarter: null,
-                    starter:    700
+                    starter:    350,
+                    grower:     null,
+                    finisher:   null,
                 }
             }
        ] 
     */
     this._computeFeedNeeds = function(){
-        // 
-        // This will return a list of date strings
-        const list_first_day_of_month =  this.getEveryFirstDayOfMonth(
-                MAX_NUM_MONTHS_FEED_PROJECTION);
+          
+        // Average daily consumption per pig (kg per day)
+        const DAILY_CONSUMPTION = {
+            booster: 0.8,        // Piglet booster (20kg over ~25 days)
+            prestarter: 1.0,     // Piglet prestarter (100kg over ~100 days)
+            starter: 1.2,        // 50kg over ~42 days
+            grower: 1.8,         // 100kg over ~56 days
+            finisher: 2.2        // 50kg over ~23 days
+        };
         
-        const result = []; 
+        // Days since birth when each feed stage starts
+        const FEED_STAGE_START_DAY = {
+            booster: 5,          // Starts at day 5
+            prestarter: 30,      // Starts at day 30
+            starter: 50,         // Starts at day 50 (after weaning)
+            grower: 90,          // Starts at day 90
+            finisher: 130        // Starts at day 130 (harvest ~145-150)
+        };
+        
+        // Total feed per piglet from each stage
+        const FEED_TOTAL_PER_PIG = {
+            starter:    DEFAULT_KG_PER_PIG_STARTER,
+            grower:     DEFAULT_KG_PER_PIG_GROWER,
+            finisher:   DEFAULT_KG_PER_PIG_FINISHER
+        };
+        
+        // Get list of months to project
+        const list_first_day_of_month = this.getEveryFirstDayOfMonth(MAX_NUM_MONTHS_FEED_PROJECTION);
+        if (!list_first_day_of_month || list_first_day_of_month.length === 0) {
+            return [];
+        }
         
         const num_current_pigs = dataPigProd.pig_production.cur_pig_count;
-        
-        if (!num_current_pigs || num_current_pigs == 0){return null;} 
-        
-        
-        // Step 1: Compute first the projected feed needs after piglets are born
-        //  until harvest
-        const all_projected_feeds = {
-            booster:    DEFAULT_KG_FEED_BOOSTER,    // this can be adjusted instead of fixed
-            prestarter: DEFAULT_KG_FEED_PRESTARTER, // this can be adjusted instead of fixed
-            starter:    num_current_pigs * DEFAULT_KG_PER_PIG_STARTER,
-            grower:     num_current_pigs * DEFAULT_KG_PER_PIG_GROWER,
-            finisher:   num_current_pigs * DEFAULT_KG_PER_PIG_FINISHER
-        }; 
-        
-        
-        
-        // Step 2: Remove feeds that are not needed anymore; 
-        // For example if prestarter is already bought, then booster is remove
-        // Or if prestarter is already bought, then booster and prestarter is remove
-        
-        const prod_feeds        = dataPigProd.feeds;
-        
-        if (prod_feeds.bought_kg && prod_feeds.bought_kg.prestarter){
-            delete all_projected_feeds.booster;
+        if (!num_current_pigs || num_current_pigs == 0) {
+            return [];
         }
-        else{
-            if (prod_feeds.bought.prestarter){
-                delete all_projected_feeds.booster;
+        
+        // Get production data
+        const prod_feeds    = dataPigProd.feeds || {};
+        const bought_kg     = prod_feeds.bought_kg || {};
+        const bought        = prod_feeds.bought || {};
+        
+        // Get birth date
+        const date_birth = dataPigProd.birth.date_actual;
+        
+        
+        if (!date_birth) {
+            return list_first_day_of_month.map(date => ({
+                date_to_buy: date,
+                feeds: {}
+            }));
+        }
+        
+        const birthDate = new Date(date_birth);
+        birthDate.setHours(0, 0, 0, 0);
+        
+        // Step 1: Calculate remaining feed needs per stage (excluding lactating)
+        const remainingFeeds = {};
+        
+        // Booster
+        let boosterBought = 0;
+        if (bought_kg.booster) {
+            boosterBought = bought_kg.booster;
+        } else if (bought.booster) {
+            const unitWeight = DEFAULT_FEED_UNIT_WEIGHT?.BOOSTER || 1;
+            boosterBought = bought.booster * unitWeight;
+        }
+        if (boosterBought < DEFAULT_KG_FEED_BOOSTER) {
+            remainingFeeds.booster = DEFAULT_KG_FEED_BOOSTER - boosterBought;
+        }
+        
+        // Prestarter
+        let prestarterBought = 0;
+        if (bought_kg.prestarter) {
+            prestarterBought = bought_kg.prestarter;
+        } else if (bought.prestarter) {
+            const unitWeight = DEFAULT_FEED_UNIT_WEIGHT?.PRESTARTER || 25;
+            prestarterBought = bought.prestarter * unitWeight;
+        }
+        if (prestarterBought < DEFAULT_KG_FEED_PRESTARTER) {
+            remainingFeeds.prestarter = DEFAULT_KG_FEED_PRESTARTER - prestarterBought;
+        }
+        
+        // Starter, Grower, Finisher (per pig)
+        const pigFeedStages = ['starter', 'grower', 'finisher'];
+        for (const stage of pigFeedStages) {
+            const totalNeeded = num_current_pigs * FEED_TOTAL_PER_PIG[stage];
+            let boughtAmount = 0;
+            if (bought_kg[stage]) {
+                boughtAmount = bought_kg[stage];
+            } else if (bought[stage]) {
+                const unitWeight = DEFAULT_FEED_UNIT_WEIGHT?.[stage.toUpperCase()] || 50;
+                boughtAmount = bought[stage] * unitWeight;
+            }
+            if (boughtAmount < totalNeeded) {
+                remainingFeeds[stage] = totalNeeded - boughtAmount;
             }
         }
         
+        // Step 2: Distribute remaining feeds across months
+        const result = [];
+        let remainingBalance = { ...remainingFeeds };
         
-        if (prod_feeds.bought_kg && prod_feeds.bought_kg.starter){
-            delete all_projected_feeds.prestarter;
-        }
-        else{
-            if (prod_feeds.bought.starter){
-                delete all_projected_feeds.prestarter;
-            }
-        }
-        
-        if (prod_feeds.bought_kg && prod_feeds.bought_kg.grower){
-            delete all_projected_feeds.starter;
-        }
-        else{
-            if (prod_feeds.bought.grower){
-                delete all_projected_feeds.starter;
-            }
-        }
-        
-        if (prod_feeds.bought_kg && prod_feeds.bought_kg.finisher){
-            delete all_projected_feeds.grower;
-        }
-        else{
-            if (prod_feeds.bought.finisher){
-                delete all_projected_feeds.grower;
-            }
-        }
-        
-        
-        
-        
-        
-        
-        
-        for (const cur_date of list_first_day_of_month){
-  
-            const cur_result = {
-                date_to_buy:        cur_date,
-                feeds:              {} 
-            };
-            result.push(cur_result);
-        
+        for (let i = 0; i < list_first_day_of_month.length; i++) {
+            const cur_date = list_first_day_of_month[i];
+            const currentDate = new Date(cur_date);
+            currentDate.setHours(0, 0, 0, 0);
             
-        
+            // Calculate days since birth at start of this month
+            const daysAtMonthStart = Math.floor((currentDate - birthDate) / (1000 * 60 * 60 * 24));
+            
+            // Calculate days in this month
+            const nextMonth = new Date(currentDate);
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            const daysInMonth = Math.floor((nextMonth - currentDate) / (1000 * 60 * 60 * 24));
+            
+            const curResult = {
+                date_to_buy: cur_date,
+                feeds: {}
+            };
+            
+            // For each feed stage, calculate how much is needed this month
+            for (const [stage, remaining] of Object.entries(remainingBalance)) {
+                if (remaining <= 0) continue;
+                
+                const startDay = FEED_STAGE_START_DAY[stage] || 0;
+                const dailyRate = DAILY_CONSUMPTION[stage] || 0;
+                
+                // Skip if stage hasn't started yet
+                if (daysAtMonthStart < startDay) {
+                    // Check if stage will start within this month
+                    const daysUntilStart = startDay - daysAtMonthStart;
+                    if (daysUntilStart >= daysInMonth) {
+                        // Won't start this month, skip
+                        continue;
+                    }
+                    // Starts mid-month, calculate partial
+                    const daysInMonthActive = daysInMonth - daysUntilStart;
+                    const amountThisMonth = daysInMonthActive * dailyRate * num_current_pigs;
+                    const finalAmount = Math.min(amountThisMonth, remaining);
+                    if (finalAmount > 0) {
+                        curResult.feeds[stage] = Math.round(finalAmount);
+                        remainingBalance[stage] = remaining - finalAmount;
+                    }
+                } else {
+                    // Stage already active, full month consumption
+                    const amountThisMonth = daysInMonth * dailyRate * num_current_pigs;
+                    const finalAmount = Math.min(amountThisMonth, remaining);
+                    if (finalAmount > 0) {
+                        curResult.feeds[stage] = Math.round(finalAmount);
+                        remainingBalance[stage] = remaining - finalAmount;
+                    }
+                }
+            }
+            
+            result.push(curResult);
+            
+            // If all feeds are assigned, break early
+            const allAssigned = Object.values(remainingBalance).every(v => v <= 0);
+            if (allAssigned) break;
         }
-    }
-    
-    
-    
-    
         
+        // Step 3: If any remaining feeds, add to last month
+        const lastIndex = result.length - 1;
+        for (const [stage, remaining] of Object.entries(remainingBalance)) {
+            if (remaining > 0 && lastIndex >= 0) {
+                result[lastIndex].feeds[stage] = (result[lastIndex].feeds[stage] || 0) + Math.round(remaining);
+            }
+        }
+        
+        return result;
+    }
+
     
-    
-    
-    
-    
+    /**
+     * Should return a list of dates of the production entry
+     * 
+     * */
+    this.getImportantDateMarks = function(){
+        
+        // Get birth date
+        const date_birth = dataPigProd.birth.date_actual;
+        
+        if (!date_birth) {
+            return {
+                date_birth: null,
+                day_5_booster: null,
+                day_30_prestarter: null,
+                day_32_weaning: null,
+                day_50_starter: null,
+                day_90_grower: null,
+                day_130_finisher: null
+            };
+        }
+        
+        const birthDate = new Date(date_birth);
+        birthDate.setHours(0, 0, 0, 0);
+        
+        // Helper function to add days to a date
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+        
+        // Helper function to format date as YYYY-MM-DD
+        function formatDateISO(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        const day_005_booster    = formatDateISO(addDays(birthDate, 5));
+        const day_030_prestarter = formatDateISO(addDays(birthDate, 30));
+        const day_032_weaning    = formatDateISO(addDays(birthDate, 32));
+        const day_050_starter    = formatDateISO(addDays(birthDate, 50));
+        const day_090_grower     = formatDateISO(addDays(birthDate, 90));
+        const day_130_finisher   = formatDateISO(addDays(birthDate, 130));
+        
+        return {
+            date_birth: date_birth,
+            day_005_booster:     day_005_booster,
+            day_030_prestarter:  day_030_prestarter,
+            day_032_weaning:     day_032_weaning,
+            day_050_starter:     day_050_starter,
+            day_090_grower:      day_090_grower,
+            day_130_finisher:    day_130_finisher
+        };
+    }
+
 }
 
 
@@ -706,7 +855,7 @@ ${html_style}
         
         this.populateAccFeedPricePUWT();
         
-        this.processPigProduction();
+        this.processPigProdFeedProjection();
     }
     
     
@@ -751,19 +900,158 @@ ${html_style}
     }
     
     
-    this.processPigProduction = function(){
-        const list_gestating = navigation.pigFarm.managerPigProd.dataGestatingList;
+    this.processPigProdFeedProjection = function(){
+        const list_lactating = navigation.pigFarm.managerPigProd.dataLactatingList;
+        const list_fattening = navigation.pigFarm.managerPigProd.dataFatteningList;   
         
+        // Map to store combined feed needs by month
+        const monthlyFeedMap = {};
         
-
-        for (const cur_entry of list_gestating){
+        // Process lactating entries
+        for (const cur_entry of list_lactating){
             const cur_pig_prod = new PigProduction(cur_entry);
+            const cur_feed_needs = cur_pig_prod._computeFeedNeeds();
             
-            console.log('cur entry pig production');
-            console.log(cur_entry);
+            if (!cur_feed_needs || cur_feed_needs.length === 0) continue;
             
+            // Add to monthly map
+            for (const monthEntry of cur_feed_needs) {
+                const monthKey = monthEntry.date_to_buy;
+                if (!monthlyFeedMap[monthKey]) {
+                    monthlyFeedMap[monthKey] = {
+                        date_to_buy: monthKey,
+                        feeds: {}
+                    };
+                }
+                
+                // Add lactating feeds to this month
+                for (const [feedType, amount] of Object.entries(monthEntry.feeds)) {
+                    if (amount && amount > 0) {
+                        monthlyFeedMap[monthKey].feeds[feedType] = 
+                            (monthlyFeedMap[monthKey].feeds[feedType] || 0) + amount;
+                    }
+                }
+            }
         }
         
+        // Process fattening entries
+        for (const cur_entry of list_fattening){
+            const cur_pig_prod = new PigProduction(cur_entry);
+            const cur_feed_needs = cur_pig_prod._computeFeedNeeds();
+            
+            if (!cur_feed_needs || cur_feed_needs.length === 0) continue;
+            
+            // Add to monthly map
+            for (const monthEntry of cur_feed_needs) {
+                const monthKey = monthEntry.date_to_buy;
+                if (!monthlyFeedMap[monthKey]) {
+                    monthlyFeedMap[monthKey] = {
+                        date_to_buy: monthKey,
+                        feeds: {}
+                    };
+                }
+                
+                // Add fattening feeds to this month
+                for (const [feedType, amount] of Object.entries(monthEntry.feeds)) {
+                    if (amount && amount > 0) {
+                        monthlyFeedMap[monthKey].feeds[feedType] = 
+                            (monthlyFeedMap[monthKey].feeds[feedType] || 0) + amount;
+                    }
+                }
+            }
+        }
+        
+        // Convert map to sorted array
+        const result = Object.values(monthlyFeedMap);
+        result.sort((a, b) => a.date_to_buy.localeCompare(b.date_to_buy));
+
+        console.log('feeds_projection');
+        console.log(result);
+        
+        return result;
+    }
+    
+    
+    // Add monthly feed projection in sacks;
+    // And add approximate cost of the number of sacks to be bought
+    // Use ceiling to round to nearest sack;
+    this.postProcessFeedProjection = function(feed_projection){
+        /* This is declared at the top
+        const DEFAULT_FEED_UNIT_WEIGHT = {
+            GESTATING:  50,
+            LACTATING:  50,
+            BOOSTER:    1,
+            PRESTARTER: 25,
+            STARTER:    50,
+            GROWER:     50,
+            FINISHER:   50
+        };
+        */
+
+        // This is the moving average price per kg of feed_type
+        // This is saved in latestFeedPricePUWT
+        /*
+        {
+          "gestating": 31.5,
+          "lactating": 32.84,
+          "booster": 75.8,
+          "prestarter": 55.2,
+          "starter": 37.5,
+          "grower": 33.6,
+          "finisher": 33.5
+        }*/
+        
+        if (!feed_projection || feed_projection.length === 0) {
+            return [];
+        }
+        
+        const result = [];
+        
+        for (const monthEntry of feed_projection) {
+            const processedMonth = {
+                date_to_buy: monthEntry.date_to_buy,
+                feeds: {},
+                sacks: {},
+                cost: {}
+            };
+            
+            // Process each feed type in this month
+            for (const [feedType, kgAmount] of Object.entries(monthEntry.feeds)) {
+                if (!kgAmount || kgAmount <= 0) continue;
+                
+                // Get unit weight per sack for this feed type
+                const feedTypeUpper = feedType.toUpperCase();
+                const unitWeight = DEFAULT_FEED_UNIT_WEIGHT[feedTypeUpper] || 50;
+                
+                // Calculate number of sacks (ceiling to round up)
+                const sacks = Math.ceil(kgAmount / unitWeight);
+                processedMonth.sacks[feedType] = sacks;
+                
+                // Calculate cost
+                const pricePerKg = latestFeedPricePUWT[feedType] || 30; // Fallback to ₱30/kg
+                const totalCost = Math.round(kgAmount * pricePerKg);
+                processedMonth.cost[feedType] = totalCost;
+                
+                // Keep the kg amount
+                processedMonth.feeds[feedType] = Math.round(kgAmount);
+            }
+            
+            // Add total sacks and total cost for the month
+            let totalSacks = 0;
+            let totalCost = 0;
+            
+            for (const [feedType, sacks] of Object.entries(processedMonth.sacks)) {
+                totalSacks += sacks;
+                totalCost += processedMonth.cost[feedType] || 0;
+            }
+            
+            processedMonth.total_sacks = totalSacks;
+            processedMonth.total_cost = totalCost;
+            
+            result.push(processedMonth);
+        }
+        
+        return result;
     }
     
     
