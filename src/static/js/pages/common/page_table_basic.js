@@ -517,7 +517,7 @@ export function PageTableBasic(){
     this.setDataEntryList = function(data_entry_list){
         dataEntryList = data_entry_list;    
         
-        if (elemTableEntryCount){
+        if (elemTableEntryCount && dataEntryList){
             elemTableEntryCount.textContent = dataEntryList.length;
         }
     }

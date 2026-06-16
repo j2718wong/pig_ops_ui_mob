@@ -14,6 +14,7 @@ import {getSowBoarReference}    from '../../common/common_app.js';
 
 import {APPLICATION,
         PAGE_ID,
+        PROD_STATUS,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         SOW_STATUS_NAME}        from '../../../constants.js';

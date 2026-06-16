@@ -14,6 +14,7 @@ import {getSowBoarReference}    from '../../common/common_app.js';
 
 import {APPLICATION,
         PAGE_ID,
+        PROD_STATUS,
         SOW_BOAR_TYPE,
         SOW_STATUS,
         SOW_STATUS_NAME}        from '../../../constants.js';
@@ -63,6 +64,8 @@ export function TablePigProdFeed(input_settings){
     
     
     let dataPigProd             = null;
+    
+    let isEditable              = true;
     
     
     this.init = function(){
@@ -119,6 +122,27 @@ export function TablePigProdFeed(input_settings){
             
             thisObj.requestDataPigProdFeedList();
         }
+        
+        
+        // If already in history, user should not be able to add or edit entry;
+        const pig_prod_status = dataPigProd.pig_production.prod_status_id;
+
+                
+        switch (pig_prod_status){
+            case PROD_STATUS.LACTATING:
+            case PROD_STATUS.WEANING:
+            case PROD_STATUS.GROWING: {
+                thisObj.addTextLinkShow();
+                isEditable = true;
+                break;
+            }
+            
+            default: {
+                thisObj.addTextLinkHide();
+                isEditable = false;
+                break;
+            }
+        }
 
     }
     
@@ -149,7 +173,6 @@ export function TablePigProdFeed(input_settings){
         dtCurrentDate.setHours(0, 0, 0, 0);
         
         showOptions = options;
-
     }
     
      
@@ -240,11 +263,12 @@ export function TablePigProdFeed(input_settings){
         let index = 0
         for (const cur_td of elem_tds){
 
-            if (index == 1){
-                cur_td.onclick = function(){
-                    thisObj.onClickRowEntry(pig_prod_feed.hid);
-                };
-
+            if (isEditable == true) {
+                if (index == 0 || index == 1){
+                    cur_td.onclick = function(){
+                        thisObj.onClickRowEntry(pig_prod_feed.hid);
+                    };
+                }
             }
             
             index += 1;
@@ -292,6 +316,8 @@ export function TablePigProdFeed(input_settings){
     
     
     this.onClickRowEntry = function(entry_hid){
+        if (!isEditable) {return;}
+        
         const row_entry = thisObj.getEntry(entry_hid);
         
 

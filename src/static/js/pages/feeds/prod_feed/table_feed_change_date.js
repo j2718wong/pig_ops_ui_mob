@@ -16,6 +16,7 @@ import {APPLICATION,
         PAGE_ID,
         FEED_TYPE,
         FEED_TYPE_NAME,
+        PROD_STATUS,
         PIG_PROD_TYPE}          from '../../../constants.js';
 
 import {formatDate,
@@ -65,6 +66,8 @@ export function TableFeedChangeDate(input_settings){
     
     
     let dataPigProd             = null;
+    
+    let isEditable              = true;
     
     // Map feed type name to FEED_TYPE ID
     const FEED_TYPE_NAME_TO_ID = {
@@ -273,6 +276,26 @@ export function TableFeedChangeDate(input_settings){
             
         }
         
+        
+        // If already in history, user should not be able to add or edit entry;
+        const pig_prod_status = dataPigProd.pig_production.prod_status_id;
+
+                
+        switch (pig_prod_status){
+            case PROD_STATUS.LACTATING:
+            case PROD_STATUS.WEANING:
+            case PROD_STATUS.GROWING: {
+                isEditable = true;
+                break;
+            }
+            
+            default: {
+                isEditable = false;
+                break;
+            }
+        }
+
+        
         thisObj.renderTable(change_feed);
     }
     
@@ -362,7 +385,7 @@ export function TableFeedChangeDate(input_settings){
         let index = 0;
         for (const cur_td of elem_tds){
 
-            if (index === 1){ // Only the date column
+            if (isEditable == true && index === 1){ // Only the date column
                 // Style the cell to look clickable
                 cur_td.style.cursor = 'pointer';
                 cur_td.style.backgroundColor = '#f9f9f9';
