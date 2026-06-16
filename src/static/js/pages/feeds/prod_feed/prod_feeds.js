@@ -84,7 +84,7 @@ export function ProdFeeds(input_settings){
 
         const html = `
     <div>
-        <div id="${elemIdContChangeFeed}" style="margin-bottom:15px; display:none;"></div>
+        <div id="${elemIdContChangeFeed}" style="margin-bottom:15px;"></div>
         <div id="${elemIdContTableProdFeed}"></div>
     </div>
         `;

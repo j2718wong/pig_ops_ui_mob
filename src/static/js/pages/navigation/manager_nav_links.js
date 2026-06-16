@@ -721,7 +721,7 @@ export function ManagerNavLinks(_navigation) {
                 return;
             }
             
-            //
+            thisObj.onClickNavFeedsEstimate(false);
         });
           
         elemDesktopNavFinancials4.addEventListener('click', function() {
@@ -1060,7 +1060,7 @@ export function ManagerNavLinks(_navigation) {
                 return;
             }
             
-            //
+            thisObj.onClickNavFeedsEstimate(true);
         });   
         
          
@@ -1247,6 +1247,18 @@ export function ManagerNavLinks(_navigation) {
             elemMobileNavAdmin3.style.display   = 'none';
 
         }
+        
+        
+        if (window.SUPERPIG_UI_SETTINGS.inc_feeds_estimate > 0){
+            elemDesktopNavFinancials3.style.display  = 'block';
+            elemMobileNavFinancials3.style.display   = 'block';
+        }
+        else{
+            elemDesktopNavFinancials3.style.display  = 'none';
+            elemMobileNavFinancials3.style.display   = 'none';
+
+        }
+        
     }
     
     
@@ -2116,6 +2128,36 @@ export function ManagerNavLinks(_navigation) {
         }
     }
         
+    
+    this.onClickNavFeedsEstimate = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
+        
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.FEEDS_ESTIMATE);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.FEEDS_ESTIMATE);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.FEEDS_ESTIMATE, {
+                pageId: PAGE_ID.FEEDS_ESTIMATE
+            });
+        }
+        else{
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.FEEDS_ESTIMATE, {
+                pageId: PAGE_ID.FEEDS_ESTIMATE
+            });
+        }
+    }
+    
     
     this.onClickNavSummaryReports = function(is_mobile, show_options){
         const next_page = navigation.getPageContainer(PAGE_ID.SUMMARY_REPORT_LIST);

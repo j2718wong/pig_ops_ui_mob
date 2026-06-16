@@ -1,6 +1,6 @@
 // table_feed_change_date.js
 
-// April 5, 2026
+// April 5, 2026 - Updated June 16, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -14,7 +14,9 @@ import {getSowBoarReference}    from '../../common/common_app.js';
 
 import {APPLICATION,
         PAGE_ID,
-        FEED_TYPE_NAME}        from '../../../constants.js';
+        FEED_TYPE,
+        FEED_TYPE_NAME,
+        PIG_PROD_TYPE}          from '../../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
@@ -54,7 +56,7 @@ export function TableFeedChangeDate(input_settings){
     
     let elemTableBody           = null;
     
-
+    let elemServerErrorMsg      = null;
 
 
     let showOptions             = null;
@@ -63,6 +65,15 @@ export function TableFeedChangeDate(input_settings){
     
     
     let dataPigProd             = null;
+    
+    // Map feed type name to FEED_TYPE ID
+    const FEED_TYPE_NAME_TO_ID = {
+        [FEED_TYPE_NAME.BOST]: FEED_TYPE.BOOSTER,
+        [FEED_TYPE_NAME.PRES]: FEED_TYPE.PRESTARTER,
+        [FEED_TYPE_NAME.START]: FEED_TYPE.STARTER,
+        [FEED_TYPE_NAME.GROW]: FEED_TYPE.GROWER,
+        [FEED_TYPE_NAME.FINISH]: FEED_TYPE.FINISHER
+    };
     
     
     this.init = function(){
@@ -86,6 +97,7 @@ export function TableFeedChangeDate(input_settings){
     
     this.afterHtmlRenderThis = function(){
         elemTableBody           = document.getElementById(elemIdTableBody);
+        elemServerErrorMsg      = document.getElementById(`${settings.uniqueKey}-server-error-msg`);
     }
     
     
@@ -118,13 +130,12 @@ export function TableFeedChangeDate(input_settings){
         if (dataPigProd.feeds && dataPigProd.feeds.date_change_feed){
             date_change_feed = dataPigProd.feeds.date_change_feed;
             
-            
-            // Finisher
+            // Booster
             num_days_since_birth = null;
             date_change          = null;
 
-            if (date_change_feed.finisher){
-                date_change = date_change_feed.finisher;
+            if (date_change_feed.booster){
+                date_change = date_change_feed.booster;
                 
                 if (date_of_birth){
                     num_days_since_birth = calculateNumDaysSinceBirth(
@@ -133,47 +144,8 @@ export function TableFeedChangeDate(input_settings){
             }
             
             change_feed.push({
-                feed_type:      FEED_TYPE_NAME.FINISH,
-                date_change:    date_change,
-                num_days:       num_days_since_birth 
-            });
-            
-            
-            // Grower
-            num_days_since_birth = null;
-            date_change          = null;
-
-            if (date_change_feed.grower){
-                date_change = date_change_feed.grower;
-                
-                if (date_of_birth){
-                    num_days_since_birth = calculateNumDaysSinceBirth(
-                        date_of_birth, new Date(date_change), acc_settings_ops);
-                }
-            }
-            
-            change_feed.push({
-                feed_type:      FEED_TYPE_NAME.GROW,
-                date_change:    date_change,
-                num_days:       num_days_since_birth 
-            });
-            
-            
-            // Starter
-            num_days_since_birth = null;
-            date_change          = null;
-
-            if (date_change_feed.starter){
-                date_change = date_change_feed.starter;
-                
-                if (date_of_birth){
-                    num_days_since_birth = calculateNumDaysSinceBirth(
-                        date_of_birth, new Date(date_change), acc_settings_ops);
-                }
-            }
-            
-            change_feed.push({
-                feed_type:      FEED_TYPE_NAME.START,
+                feed_type:      FEED_TYPE_NAME.BOST,
+                feed_type_id:   FEED_TYPE.BOOSTER,
                 date_change:    date_change,
                 num_days:       num_days_since_birth 
             });
@@ -194,17 +166,17 @@ export function TableFeedChangeDate(input_settings){
             
             change_feed.push({
                 feed_type:      FEED_TYPE_NAME.PRES,
+                feed_type_id:   FEED_TYPE.PRESTARTER,
                 date_change:    date_change,
                 num_days:       num_days_since_birth 
             });
             
-            
-            // Booster
+            // Starter
             num_days_since_birth = null;
             date_change          = null;
 
-            if (date_change_feed.booster){
-                date_change = date_change_feed.booster;
+            if (date_change_feed.starter){
+                date_change = date_change_feed.starter;
                 
                 if (date_of_birth){
                     num_days_since_birth = calculateNumDaysSinceBirth(
@@ -213,39 +185,88 @@ export function TableFeedChangeDate(input_settings){
             }
             
             change_feed.push({
-                feed_type:      FEED_TYPE_NAME.BOST,
+                feed_type:      FEED_TYPE_NAME.START,
+                feed_type_id:   FEED_TYPE.STARTER,
                 date_change:    date_change,
                 num_days:       num_days_since_birth 
             });
-        }
-        
-        else{
+            
+            
+            // Grower
+            num_days_since_birth = null;
+            date_change          = null;
+
+            if (date_change_feed.grower){
+                date_change = date_change_feed.grower;
+                
+                if (date_of_birth){
+                    num_days_since_birth = calculateNumDaysSinceBirth(
+                        date_of_birth, new Date(date_change), acc_settings_ops);
+                }
+            }
+            
+            change_feed.push({
+                feed_type:      FEED_TYPE_NAME.GROW,
+                feed_type_id:   FEED_TYPE.GROWER,
+                date_change:    date_change,
+                num_days:       num_days_since_birth 
+            });
+            
+            
+            // Finisher
+            num_days_since_birth = null;
+            date_change          = null;
+
+            if (date_change_feed.finisher){
+                date_change = date_change_feed.finisher;
+                
+                if (date_of_birth){
+                    num_days_since_birth = calculateNumDaysSinceBirth(
+                        date_of_birth, new Date(date_change), acc_settings_ops);
+                }
+            }
+            
             change_feed.push({
                 feed_type:      FEED_TYPE_NAME.FINISH,
+                feed_type_id:   FEED_TYPE.FINISHER,
+                date_change:    date_change,
+                num_days:       num_days_since_birth 
+            });
+            
+            
+        }
+        else{
+            change_feed.push({
+                feed_type:      FEED_TYPE_NAME.BOST,
+                feed_type_id:   FEED_TYPE.BOOSTER,
                 date_change:    null,
                 num_days:       null 
             });
             
             change_feed.push({
-                feed_type:      FEED_TYPE_NAME.GROW,
+                feed_type:      FEED_TYPE_NAME.PRES,
+                feed_type_id:   FEED_TYPE.PRESTARTER,
                 date_change:    null,
                 num_days:       null 
             });
 
             change_feed.push({
                 feed_type:      FEED_TYPE_NAME.START,
+                feed_type_id:   FEED_TYPE.STARTER,
                 date_change:    null,
                 num_days:       null 
             });
 
             change_feed.push({
-                feed_type:      FEED_TYPE_NAME.PRES,
+                feed_type:      FEED_TYPE_NAME.GROW,
+                feed_type_id:   FEED_TYPE.GROWER,
                 date_change:    null,
                 num_days:       null 
             });
-            
+
             change_feed.push({
-                feed_type:      FEED_TYPE_NAME.BOST,
+                feed_type:      FEED_TYPE_NAME.FINISH,
+                feed_type_id:   FEED_TYPE.FINISHER,
                 date_change:    null,
                 num_days:       null 
             });
@@ -253,16 +274,18 @@ export function TableFeedChangeDate(input_settings){
         }
         
         thisObj.renderTable(change_feed);
-        
     }
-    
     
      
      
     this.getHtmlTableHeader = function(){
         elemIdTableBody         = `${settings.uniqueKey}-table-tbody`;
         
+        // Create server error message element
+        const errorMsgHtml = `<div id="${settings.uniqueKey}-server-error-msg" class="server-error-msg" style="display: none;"></div>`;
+        
         const html = `
+        ${errorMsgHtml}
         <table class="data-table" id="">
             <colgroup>
                 <col style="width: 28%;">
@@ -281,11 +304,9 @@ export function TableFeedChangeDate(input_settings){
             <tbody id="${elemIdTableBody}">
             </tbody>
         </table>
-        
         `;
         
         return html;
-        
     }
        
 
@@ -306,13 +327,15 @@ export function TableFeedChangeDate(input_settings){
             s_num_days = `${cur_entry.num_days}`;
         }
         
-
         let s_date_change = '&nbsp;';
         if (cur_entry.date_change){
-            s_date_change = formatDate(cur_entry.date_change, FORMAT_COMPACT)
+            // Format as "MMM DD, YYYY" for display (e.g., "Jun 16, 2026")
+            const dateObj = new Date(cur_entry.date_change);
+            const month = dateObj.toLocaleString('en-US', { month: 'short' });
+            const day = dateObj.getDate();
+            const year = dateObj.getFullYear();
+            s_date_change = `${month} ${day}, ${year}`;
         }
-        
-        
         
         const html = `
             <tr>
@@ -333,101 +356,91 @@ export function TableFeedChangeDate(input_settings){
         const html = thisObj.getHtmlTableRow(cur_entry);
         elem_row.innerHTML = html;
          
-
-        
         // Attach onclick listeners to td
-        
         const elem_tds = elem_row.querySelectorAll('td'); 
         
-        let index = 0
+        let index = 0;
         for (const cur_td of elem_tds){
 
-            if (index == 1){ // Only the date column
-                // Store original values
-                const originalDate = cur_entry.date_change;
-                
+            if (index === 1){ // Only the date column
                 // Style the cell to look clickable
                 cur_td.style.cursor = 'pointer';
                 cur_td.style.backgroundColor = '#f9f9f9';
                 
+                // Store the original date value and feed_type_id
+                const originalDate = cur_entry.date_change;
+                const feed_type_id = cur_entry.feed_type_id;
+                
+                // Create a hidden input for jQuery datepicker
+                const tempInputId = `temp-date-input-${Date.now()}-${index}`;
+                const tempInput = document.createElement('input');
+                tempInput.type = 'text';
+                tempInput.id = tempInputId;
+                tempInput.style.position = 'absolute';
+                tempInput.style.opacity = '0';
+                tempInput.style.pointerEvents = 'none';
+                tempInput.style.width = '0';
+                tempInput.style.height = '0';
+                document.body.appendChild(tempInput);
+                
                 cur_td.onclick = function(event){
                     event.stopPropagation();
                     
-                    // Get the position of the clicked cell
+                    // Set the current date value to the hidden input
+                    if (originalDate) {
+                        const displayDate = new Date(originalDate);
+                        if (!isNaN(displayDate.getTime())) {
+                            $(tempInput).datepicker('setDate', displayDate);
+                        }
+                    } else {
+                        $(tempInput).datepicker('setDate', null);
+                    }
+                    
+                    // Show the datepicker
+                    $(tempInput).datepicker('show');
+                };
+                
+                // Initialize jQuery datepicker on the hidden input
+                $(tempInput).datepicker({
+                    format: 'M dd, yyyy',  // "Jun 16, 2026" format
+                    autoclose: true,
+                    orientation: 'bottom',
+                    endDate: new Date(), // Max date is today
+                    todayHighlight: true
+                }).on('show', function(e) {
+                    $('.datepicker').addClass('datepicker-material');
+                    
+                    // Position the datepicker near the clicked cell
                     const rect = cur_td.getBoundingClientRect();
+                    const $datepicker = $('.datepicker');
+                    $datepicker.css({
+                        'position': 'absolute',
+                        'top': rect.bottom + window.scrollY + 'px',
+                        'left': rect.left + window.scrollX + 'px'
+                    });
+                }).on('changeDate', function(e) {
+                    const selectedDate = e.date;
                     
-                    // Create a temporary container for the datepicker
-                    const containerId = `datepicker-container-${Date.now()}-${Math.random()}`;
-                    const container = document.createElement('div');
-                    container.id = containerId;
-                    container.style.position = 'absolute';
-                    container.style.top = `${rect.bottom + window.scrollY}px`;
-                    container.style.left = `${rect.left + window.scrollX}px`;
-                    container.style.zIndex = '10000';
-                    container.style.backgroundColor = 'white';
-                    container.style.padding = '10px';
-                    container.style.borderRadius = '4px';
-                    container.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-                    
-                    // Create input element
-                    const tempInput = document.createElement('input');
-                    tempInput.type = 'text';
-                    tempInput.id = `temp-date-input-${Date.now()}`;
-                    tempInput.style.padding = '8px';
-                    tempInput.style.border = '1px solid #ccc';
-                    tempInput.style.borderRadius = '4px';
-                    tempInput.style.fontSize = '14px';
-                    
-                    container.appendChild(tempInput);
-                    
-                    // Add close button
-                    const closeBtn = document.createElement('button');
-                    closeBtn.innerHTML = '×';
-                    closeBtn.style.position = 'absolute';
-                    closeBtn.style.top = '5px';
-                    closeBtn.style.right = '5px';
-                    closeBtn.style.border = 'none';
-                    closeBtn.style.background = 'none';
-                    closeBtn.style.fontSize = '18px';
-                    closeBtn.style.cursor = 'pointer';
-                    closeBtn.onclick = function() {
-                        if (container && container.parentNode) {
-                            container.remove();
-                        }
-                        if (tempInput && tempInput.datepicker) {
-                            $(tempInput).datepicker('destroy');
-                        }
-                    };
-                    container.appendChild(closeBtn);
-                    
-                    document.body.appendChild(container);
-                    
-                    // Initialize datepicker on the visible input
-                    $(tempInput).datepicker({
-                        format: 'dd M yyyy',  // This gives "05 Apr 2026"
-                        autoclose: true,
-                        orientation: 'auto',
-                        endDate: new Date(), // Max date is today
-                        todayHighlight: true,
-                        container: 'body'  // Attach to body to avoid positioning issues
-                    }).on('show', function(e) {
-                        $('.datepicker').addClass('datepicker-material');
-                    }).on('changeDate', function(e) {
-                        const selectedDate = e.date;
-                        
-                        // Format date as "05 Apr 2026"
-                        const day = selectedDate.getDate().toString().padStart(2, '0');
+                    if (selectedDate && !isNaN(selectedDate.getTime())) {
+                        // Format the date as "MMM DD, YYYY" for display
                         const month = selectedDate.toLocaleString('en-US', { month: 'short' });
+                        const day = selectedDate.getDate();
                         const year = selectedDate.getFullYear();
-                        const formattedDate = `${day} ${month} ${year}`;
+                        const formattedDate = `${month} ${day}, ${year}`;
                         
                         // Update the cell text
                         cur_td.innerHTML = formattedDate;
                         
-                        // Update your data model
-                        cur_entry.date_change = selectedDate.toISOString().split('T')[0];
+                        // Store the date in YYYY-MM-DD format for the backend
+                        const yyyy = selectedDate.getFullYear();
+                        const mm = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                        const dd = String(selectedDate.getDate()).padStart(2, '0');
+                        const isoDate = `${yyyy}-${mm}-${dd}`;
                         
-                        // Calculate days since birth if needed
+                        // Update cur_entry with the ISO date
+                        cur_entry.date_change = isoDate;
+                        
+                        // Calculate days since birth if applicable
                         if (dataPigProd && dataPigProd.birth && dataPigProd.birth.date_actual_birth) {
                             const acc_settings_ops = navigation.pigFarm.getSettingsOperations();
                             const birthDate = new Date(dataPigProd.birth.date_actual_birth);
@@ -440,47 +453,24 @@ export function TableFeedChangeDate(input_settings){
                             // Update the days column (third column, index 2)
                             const daysTd = elem_tds[2];
                             if (daysTd) {
-                                daysTd.innerHTML = daysSinceBirth || '';
+                                if (daysSinceBirth !== null && daysSinceBirth !== undefined) {
+                                    daysTd.innerHTML = daysSinceBirth;
+                                } else {
+                                    daysTd.innerHTML = '';
+                                }
                             }
                             
                             // Update cur_entry
                             cur_entry.num_days = daysSinceBirth;
                         }
                         
-                        // Clean up
-                        if (container && container.parentNode) {
-                            container.remove();
-                        }
-                        $(tempInput).datepicker('destroy');
-                    });
-                    
-                    // Set the date if exists
-                    if (originalDate && originalDate !== '&nbsp;') {
-                        let dateObj = originalDate;
-                        if (typeof originalDate === 'string') {
-                            dateObj = new Date(originalDate);
-                        }
-                        if (!isNaN(dateObj.getTime())) {
-                            $(tempInput).datepicker('setDate', dateObj);
-                        }
+                        // Call the onChangeFeedDate method
+                        thisObj.onChangeFeedDate(feed_type_id, isoDate);
                     }
                     
-                    // Remove container when clicking outside
-                    const removeContainer = function(e) {
-                        if (container && !container.contains(e.target) && e.target !== tempInput) {
-                            if (container.parentNode) {
-                                container.remove();
-                            }
-                            $(tempInput).datepicker('destroy');
-                            document.removeEventListener('click', removeContainer);
-                        }
-                    };
-                    
-                    // Delay adding the event listener to avoid immediate trigger
-                    setTimeout(() => {
-                        document.addEventListener('click', removeContainer);
-                    }, 100);
-                };
+                    // Hide the datepicker
+                    $(tempInput).datepicker('hide');
+                });
             }
             
             index += 1;
@@ -489,22 +479,10 @@ export function TableFeedChangeDate(input_settings){
         return elem_row;
     }
     
-      
-   
     
-    
-    this.getEntry = function(entry_hid){
-        const data_list = dataPigProd.data_details.list_prod_feed;
-        
-        for (const cur_entry of data_list){
-            if (cur_entry.pig_prod_feed.hid == entry_hid){
-                return cur_entry;
-            }
-        }
-        
-        return null;
-    }
-    
+    this.setDateChangeCallback = function(callback) {
+        thisObj.onDateChange = callback;
+    };
     
     
     this.onClickRowEntry = function(entry_hid){
@@ -512,7 +490,104 @@ export function TableFeedChangeDate(input_settings){
     }
     
     
-    this.onSuccessEditEntry = function(){
+    this.calculateNumDaysSinceBirth = function(date_change){
         
+    }
+    
+
+    this.onChangeFeedDate = function(feed_type_id, date_change){
+        // Final check before sending request
+        if (navigation.pigFarm.checkUserAccountBeforeAddEdit() == false){
+            return;
+        }
+        
+        const user_hid = navigation.userControl.getUserHid();
+        const base_url = window.location.origin;
+        const pig_prod_hid = dataPigProd.pig_production.hid;
+        
+        // Send post request
+        const post_data = {
+            'uhid': user_hid,
+            'pig_prod_hid': pig_prod_hid,
+            'feed_type_id': feed_type_id,
+            'date_change': date_change
+        };
+        
+        let url = `${base_url}/pig_prod_feed/change_date`;
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+                if (elemServerErrorMsg) {
+                    elemServerErrorMsg.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    const feed_change_date = response.feed_change_date;
+                    console.log('Feed change date updated:', feed_change_date);
+                    
+
+                    if (feed_change_date) {
+                        
+                        // Update the dataPigProd with the new feed change dates
+                        if (!dataPigProd.feeds) {
+                            dataPigProd.feeds = {};
+                        }
+                        if (!dataPigProd.feeds.date_change_feed) {
+                            dataPigProd.feeds.date_change_feed = {};
+                        }
+                        
+                        // Map feed_type_id to the correct property name
+                        const feedTypeMap = {
+                            [FEED_TYPE.BOOSTER]:    'booster',
+                            [FEED_TYPE.PRESTARTER]: 'prestarter',
+                            [FEED_TYPE.STARTER]:    'starter',
+                            [FEED_TYPE.GROWER]:     'grower',
+                            [FEED_TYPE.FINISHER]:   'finisher'
+                        };
+                        
+                        const feedKey = feedTypeMap[feed_type_id];
+                        if (feedKey) {
+                            dataPigProd.feeds.date_change_feed[feedKey] = date_change;
+                        }
+                        
+                        navigation.pigFarm.managerPigProd.savePigProdListToCache(
+                            PIG_PROD_TYPE.FATTENING);
+                        
+                    }
+                }
+                else{
+                    if (elemServerErrorMsg) {
+                        navigation.serverError.receivedErrorMessage(
+                            response, elemServerErrorMsg);
+                    }
+                }
+            },
+  
+            complete: function(){
+                // TODO: what to do on complete
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
+            }
+        });
     }
 }

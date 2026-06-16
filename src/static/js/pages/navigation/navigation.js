@@ -113,6 +113,7 @@ import {PagePigDeadAddEdit}         from '../production/pig_dead/page_pig_dead_a
 import {PageAccFarrowChecklist}     from '../acc_farrow_checklist/page_acc_farrow_checklist.js';
 import {PageAccFChecklistAddEdit}   from '../acc_farrow_checklist/page_acc_f_checklist_add_edit.js';
 
+import {PageFeedsEstimate}          from '../feeds/page_feeds_estimate.js';
 
 import {PageSummaryReportList}      from '../reports/page_summary_report_list.js';
 import {PageSummaryReportAdd}       from '../reports/page_summary_report_add.js';
@@ -528,6 +529,12 @@ export function Navigation(){
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT),
         uniqueKey:              'acc-f-checklist-add-edit'
     });
+    
+    this.pageFeedsConsumedChart  = new PageFeedsConsumedChart({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FEEDS_CONSUMED),
+        uniqueKey:              'feeds-consumed'
+    });
 
     
 
@@ -564,12 +571,14 @@ export function Navigation(){
         uniqueKey:              'feed-buy-item-add-edit'
     });
 
-    this.pageFeedsConsumedChart  = new PageFeedsConsumedChart({
+
+    this.pageFeedsEstimate      = new PageFeedsEstimate({
         navigation:             this,
-        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FEEDS_CONSUMED),
-        uniqueKey:              'feeds-consumed'
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FEEDS_ESTIMATE),
+        uniqueKey:              'feeds-estimate'
     });
 
+    
     this.pageSummaryReportList = new PageSummaryReportList({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SUMMARY_REPORT_LIST),
@@ -1012,6 +1021,8 @@ export function Navigation(){
         this.pagePigFarmFeedBuyList.init();
         this.pagePfFeedBuyAddEdit.init();
         this.pagePfFeedBuyItemAddEdit.init();
+        
+        this.pageFeedsEstimate.init();
         
         this.pageSummaryReportList.init();
         this.pageSummaryReportAdd.init();

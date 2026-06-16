@@ -733,6 +733,16 @@ export function ManagerHashRoute(_navigation) {
             }
             
             
+            case HASH_ROUTES.FEEDS_ESTIMATE: {
+                pageId          = PAGE_ID.FEEDS_ESTIMATE;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageFeedsEstimate.show();
+                break;
+            }
+            
+            
             case HASH_ROUTES.USER_LIST: {
                 pageId          = PAGE_ID.USER_LIST;
                 pageContainer   = navigation.getPageContainer(pageId);

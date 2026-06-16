@@ -29,7 +29,8 @@ export function AccountLists(input_settings){
         
         account:                0,
         pig_buyer:              0,             
-        sow_due_checklist:      0
+        sow_due_checklist:      0,
+        last_feed_price:        0
     };
     
     

@@ -268,6 +268,9 @@ const HASH_ROUTES = {
     FARM_FEED_BUY_ADD_EDIT: 'feed_buy_add_edit',
     FARM_FEED_BUY_ITEM_ADD_EDIT: 'feed_buy_item_add_edit',
     
+    FEEDS_ESTIMATE:         'feeds_estimate',
+    
+    
     USER_LIST:              'user_list',
     USER_ADD_EDIT:          'user_add_edit',
     
