@@ -120,8 +120,7 @@ export function TableFeedChangeDate(input_settings){
         
         
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
-        const date_of_birth     = dataPigProd.birth.date_actual_birth;
-        
+        const date_of_birth     = dataPigProd.birth.date_actual;
         
         const change_feed = [];
         
