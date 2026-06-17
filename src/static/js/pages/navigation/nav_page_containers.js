@@ -84,6 +84,7 @@ export function NavPageContainers(_navigation){
     const elemIdContProdFeedBalAddEdit  = 'container-feed-balance-add-edit';
     
     const elemIdContFarrowingSchedule   = 'container-farrowing-schedule';
+    const elemIdContDateCalculator      = 'container-date-calculator';
     
     const elemIdContBoarExtMateList     = 'container-boar-ext-mate-list';
     const elemIdContBoarExtMateAddEdit  = 'container-boar-ext-mate-add-edit';
@@ -224,6 +225,7 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.ALL_FEED_BAL_ADD_EDIT]  = document.getElementById(elemIdContAllFeedBalAddEdit);
         
         this.containers[PAGE_ID.FARROWING_SCHEDULE]     = document.getElementById(elemIdContFarrowingSchedule);
+        this.containers[PAGE_ID.DATE_CALCULATOR]        = document.getElementById(elemIdContDateCalculator);
         
         this.containers[PAGE_ID.BOAR_EXT_MATE_LIST]     = document.getElementById(elemIdContBoarExtMateList);
         this.containers[PAGE_ID.BOAR_EXT_MATE_ADD_EDIT] = document.getElementById(elemIdContBoarExtMateAddEdit);
@@ -293,6 +295,7 @@ export function NavPageContainers(_navigation){
         CONTAINER_GROUP_OPERATIONS      = [
             this.containers[PAGE_ID.ALL_FEED_BAL_LIST],
             this.containers[PAGE_ID.FARROWING_SCHEDULE],
+            this.containers[PAGE_ID.DATE_CALCULATOR],
             this.containers[PAGE_ID.BOAR_EXT_MATE_LIST],
             this.containers[PAGE_ID.PIG_DEAD_LIST],
             this.containers[PAGE_ID.ACC_FARROW_CHECKLIST],
@@ -345,6 +348,7 @@ export function NavPageContainers(_navigation){
         MENU_GROUP_OPERATIONS      = [
             PAGE_ID.ALL_FEED_BAL_LIST,
             PAGE_ID.FARROWING_SCHEDULE,
+            PAGE_ID.DATE_CALCULATOR,
             PAGE_ID.BOAR_EXT_MATE_LIST,
             PAGE_ID.PIG_DEAD_LIST,
             PAGE_ID.ACC_FARROW_CHECKLIST,
@@ -429,6 +433,7 @@ export function NavPageContainers(_navigation){
             { container: this.containers[PAGE_ID.ALL_FEED_BAL_ADD_EDIT],  id: PAGE_ID.ALL_FEED_BAL_ADD_EDIT },
             
             { container: this.containers[PAGE_ID.FARROWING_SCHEDULE],     id: PAGE_ID.FARROWING_SCHEDULE },
+            { container: this.containers[PAGE_ID.DATE_CALCULATOR],        id: PAGE_ID.DATE_CALCULATOR },
                 
             { container: this.containers[PAGE_ID.BOAR_EXT_MATE_LIST],     id: PAGE_ID.BOAR_EXT_MATE_LIST },
             { container: this.containers[PAGE_ID.BOAR_EXT_MATE_ADD_EDIT], id: PAGE_ID.BOAR_EXT_MATE_ADD_EDIT }, 
@@ -601,6 +606,9 @@ export function NavPageContainers(_navigation){
                 
             case PAGE_ID.FARROWING_SCHEDULE:
                 return elemIdContFarrowingSchedule;
+                
+            case PAGE_ID.DATE_CALCULATOR:
+                return elemIdContDateCalculator;
             
                 
             case PAGE_ID.BOAR_EXT_MATE_LIST:
@@ -801,6 +809,7 @@ export function NavPageContainers(_navigation){
             case this.containers[PAGE_ID.ACC_F_CHECKLIST_ADD_EDIT]  :{return "PageContAccFarrowChecklistAddEdit";}
                                                                         
             case this.containers[PAGE_ID.FEEDS_CONSUMED]            :{return "PageContFeedsConsumed";}
+            case this.containers[PAGE_ID.DATE_CALCULATOR]           :{return "PageContDateCalculator";}
             
             
             case this.containers[PAGE_ID.PROD_SALES_LIST]           :{return "PageContProdSalesList";}

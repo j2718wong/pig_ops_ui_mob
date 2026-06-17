@@ -159,17 +159,18 @@ const PAGE_ID = {
     ALL_FEED_BAL_ADD_EDIT:  51,
     
     FARROWING_SCHEDULE:     52,
+    DATE_CALCULATOR:        53,
     
-    BOAR_EXT_MATE_LIST:     53,
-    BOAR_EXT_MATE_ADD_EDIT: 54,
+    BOAR_EXT_MATE_LIST:     54,
+    BOAR_EXT_MATE_ADD_EDIT: 55,
     
-    PIG_DEAD_LIST:          55,
-    PIG_DEAD_ADD_EDIT:      56,
+    PIG_DEAD_LIST:          56,
+    PIG_DEAD_ADD_EDIT:      57,
     
-    ACC_FARROW_CHECKLIST:   57,
-    ACC_F_CHECKLIST_ADD_EDIT: 58,   
+    ACC_FARROW_CHECKLIST:   58,
+    ACC_F_CHECKLIST_ADD_EDIT: 59,   
 
-    FEEDS_CONSUMED:         59,
+    FEEDS_CONSUMED:         60,
     
     
     FARM_FEED_BUY_LIST:     70,
@@ -249,6 +250,7 @@ const HASH_ROUTES = {
     ALL_FEED_BAL_ADD_EDIT:  'feed_balance_add_edit',
     
     FARROWING_SCHEDULE:     'farrowing_schedule',
+    DATE_CALCULATOR:        'date_calculator',
     
     BOAR_EXT_MATE_LIST:     'boar_ext_mate_list',
     BOAR_EXT_MATE_ADD_EDIT: 'boar_ext_add_edit',

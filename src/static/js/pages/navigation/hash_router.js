@@ -586,6 +586,16 @@ export function ManagerHashRoute(_navigation) {
                 navigation.pageFarrowingSchedule.show();
                 break;
             }
+            
+            
+            case HASH_ROUTES.DATE_CALCULATOR: {
+                pageId          = PAGE_ID.DATE_CALCULATOR;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageDateCalculator.show();
+                break;
+            }
               
                 
             case HASH_ROUTES.PIG_DEAD_LIST: {

@@ -23,6 +23,7 @@ export function UiInputDatePicker(input_settings){
         
         className:      'form-group-date',
         textLabel:      'Name',
+        maxDate:        30,     // if null, max date is today; else today + 30 days
         isRequired:     false,
         invalidFeedBack: null,
         helpText:       ''  
@@ -119,13 +120,35 @@ export function UiInputDatePicker(input_settings){
     
     
     this._processAfterHtmlRender = function(){
-        // The date picker is purposely set to give the text format
-        // so that there is no ambuiguity which number is date or month
-        // because the users are not that tech savvy.
+        // The date picker is purposely set to give date in text format 
+        // like "June 5, 2025" so that there is no ambiguity which number 
+        // is date or month. This is because the users are not that tech savvy.
         //
         // So there will be date format conversions along the way
         // from getting data from the database, presenting to user 
         // and going back to database.
+        
+        
+        let endDate = new Date(); // Default: today
+    
+        if (settings.maxDate){
+            // If maxDate is a number, add days to today
+            if (typeof settings.maxDate === 'number') {
+                endDate = new Date();
+                endDate.setDate(endDate.getDate() + settings.maxDate);
+            } 
+            // If maxDate is a Date object, use it directly
+            else if (settings.maxDate instanceof Date) {
+                endDate = settings.maxDate;
+            }
+            // If maxDate is a string, parse it
+            else if (typeof settings.maxDate === 'string') {
+                endDate = new Date(settings.maxDate);
+                if (isNaN(endDate.getTime())) {
+                    endDate = new Date(); // Fallback to today if invalid
+                }
+            }
+        }
         
         
         // jquery to the rescue
@@ -133,7 +156,7 @@ export function UiInputDatePicker(input_settings){
             format: 'MM d, yyyy',  // This gives "January 31, 2026"
             autoclose: true,
             orientation: 'bottom',
-            endDate: new Date() // Max date is today
+            endDate: endDate,
         }).on('show', function(e) {
             $('.datepicker').addClass('datepicker-material');
         });

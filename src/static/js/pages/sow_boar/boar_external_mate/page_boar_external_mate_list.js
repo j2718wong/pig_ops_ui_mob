@@ -178,7 +178,7 @@ export function PageBoarExternalMateList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavFarrowingSchedule(null, true);
+            navigation.managerNavLinks.onClickNavDateCalculator(null, true);
         };
         
           

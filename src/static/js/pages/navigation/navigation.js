@@ -106,6 +106,7 @@ import {PageAllFeedBalanceAddEdit}  from '../feeds/feed_balance/page_all_feed_ba
 import {PageFeedsConsumedChart}     from '../feeds/page_feeds_consumed_chart.js';
 
 import {PageFarrowingSchedule}      from '../pig_farm/page_farrowing_schedule.js';
+import {PageDateCalculator}         from '../pig_farm/page_date_calculator.js';
 
 import {PageProdPigDeadList}        from '../production/pig_dead/page_prod_pig_dead_list.js';
 import {PagePigDeadAddEdit}         from '../production/pig_dead/page_pig_dead_add_edit.js';
@@ -492,6 +493,12 @@ export function Navigation(){
         uniqueKey:              'farrowing-schedule'
     });
     
+    
+    this.pageDateCalculator     = new PageDateCalculator({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.DATE_CALCULATOR),
+        uniqueKey:              'date-calculator'
+    });
     
     this.pageBoarExtMateList    = new PageBoarExternalMateList({
         navigation:             this,
@@ -1002,6 +1009,7 @@ export function Navigation(){
         this.pageAllFeedBalanceAddEdit.init();
         
         this.pageFarrowingSchedule.init();
+        this.pageDateCalculator.init();
         
         this.pageBoarExtMateList.init();
         this.pageBoarExtMateAddEdit.init();

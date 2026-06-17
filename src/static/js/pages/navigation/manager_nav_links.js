@@ -59,6 +59,7 @@ export function ManagerNavLinks(_navigation) {
                                         
     let elemDesktopNavOperations1       = null;
     let elemDesktopNavOperations2       = null;
+    let elemDesktopNavOperations2_1     = null;
     let elemDesktopNavOperations3       = null;
     let elemDesktopNavOperations4       = null;
     let elemDesktopNavOperations5       = null;
@@ -109,6 +110,7 @@ export function ManagerNavLinks(_navigation) {
                                         
     let elemMobileNavOperations1        = null;
     let elemMobileNavOperations2        = null;
+    let elemMobileNavOperations2_1      = null;
     let elemMobileNavOperations3        = null;
     let elemMobileNavOperations4        = null;
     let elemMobileNavOperations5        = null;
@@ -166,6 +168,7 @@ export function ManagerNavLinks(_navigation) {
     
     let elemDesktopNavLabelOperations1      = null;
     let elemDesktopNavLabelOperations2      = null;
+    let elemDesktopNavLabelOperations2_1    = null;
     let elemDesktopNavLabelOperations3      = null;
     let elemDesktopNavLabelOperations4      = null;
     let elemDesktopNavLabelOperations5      = null;
@@ -220,6 +223,7 @@ export function ManagerNavLinks(_navigation) {
     
     let elemMobileNavLabelOperations1       = null;
     let elemMobileNavLabelOperations2       = null;
+    let elemMobileNavLabelOperations2_1     = null;
     let elemMobileNavLabelOperations3       = null;
     let elemMobileNavLabelOperations4       = null;
     let elemMobileNavLabelOperations5       = null;
@@ -310,6 +314,7 @@ export function ManagerNavLinks(_navigation) {
         
         elemDesktopNavOperations1       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-1');
         elemDesktopNavOperations2       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-2');
+        elemDesktopNavOperations2_1     = elemDesktopNavOperations.querySelector('#desktop-nav-operations-2-1');
         elemDesktopNavOperations3       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-3');
         elemDesktopNavOperations4       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-4');
         elemDesktopNavOperations5       = elemDesktopNavOperations.querySelector('#desktop-nav-operations-5');
@@ -360,6 +365,7 @@ export function ManagerNavLinks(_navigation) {
             
         elemMobileNavOperations1        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-1');
         elemMobileNavOperations2        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-2');
+        elemMobileNavOperations2_1      = elemMobileNavOperations.querySelector('#mobile-subnav-operations-2-1');
         elemMobileNavOperations3        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-3');
         elemMobileNavOperations4        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-4');
         elemMobileNavOperations5        = elemMobileNavOperations.querySelector('#mobile-subnav-operations-5');
@@ -426,6 +432,7 @@ export function ManagerNavLinks(_navigation) {
         // Desktop submenu labels - Operations
         elemDesktopNavLabelOperations1      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-1 .nav-label');
         elemDesktopNavLabelOperations2      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-2 .nav-label');
+        elemDesktopNavLabelOperations2_1    = elemDesktopNavOperations.querySelector('#desktop-nav-operations-2-1 .nav-label');
         elemDesktopNavLabelOperations3      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-3 .nav-label');
         elemDesktopNavLabelOperations4      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-4 .nav-label');
         elemDesktopNavLabelOperations5      = elemDesktopNavOperations.querySelector('#desktop-nav-operations-5 .nav-label');
@@ -490,6 +497,7 @@ export function ManagerNavLinks(_navigation) {
         // Mobile submenu labels - Operations
         elemMobileNavLabelOperations1       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-1 .nav-label');
         elemMobileNavLabelOperations2       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-2 .nav-label');
+        elemMobileNavLabelOperations2_1     = elemMobileNavOperations.querySelector('#mobile-subnav-operations-2-1 .nav-label');
         elemMobileNavLabelOperations3       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-3 .nav-label');
         elemMobileNavLabelOperations4       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-4 .nav-label');
         elemMobileNavLabelOperations5       = elemMobileNavOperations.querySelector('#mobile-subnav-operations-5 .nav-label');
@@ -656,6 +664,15 @@ export function ManagerNavLinks(_navigation) {
             }
             
             thisObj.onClickNavFarrowingSchedule(false);
+        });
+        
+        elemDesktopNavOperations2_1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavDateCalculator(false);
         });
         
         elemDesktopNavOperations3.addEventListener('click', function() {
@@ -997,6 +1014,15 @@ export function ManagerNavLinks(_navigation) {
             }
             
             thisObj.onClickNavFarrowingSchedule(true);
+        });
+        
+        elemMobileNavOperations2_1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavDateCalculator(true);
         }); 
         
         elemMobileNavOperations3.addEventListener('click', function() {
@@ -1937,6 +1963,37 @@ export function ManagerNavLinks(_navigation) {
         else{
             navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.FARROWING_SCHEDULE, {
                 pageId: PAGE_ID.FARROWING_SCHEDULE
+            });
+        }
+        
+    }
+    
+
+    this.onClickNavDateCalculator = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
+        
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.DATE_CALCULATOR);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.DATE_CALCULATOR);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.DATE_CALCULATOR, {
+                pageId: PAGE_ID.DATE_CALCULATOR
+            });
+        }
+        else{
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.DATE_CALCULATOR, {
+                pageId: PAGE_ID.DATE_CALCULATOR
             });
         }
         
