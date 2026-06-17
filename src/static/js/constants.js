@@ -369,8 +369,8 @@ const MULTIKEY_OBJ_TYPE = {
 
 
 const FEED_TYPE = {
-    GESTA:              1,   
-    LACTA:              2,   
+    GESTATING:          1,   
+    LACTATING:          2,   
     BOOSTER:            3,     
     PRESTARTER:         4, 
     STARTER:            5,     
@@ -390,7 +390,7 @@ const FEED_TYPE_NAME = {
 };
 
 
-// These are manually hashed feed_type.id
+// These are manually hashed feed_type.id; TODO: maybe change this later
 const DEFAULT_UNIT_WEIGHT = {
     "3QLG0EDV":  50,
     "N5EP4LPW":  50,
@@ -400,6 +400,19 @@ const DEFAULT_UNIT_WEIGHT = {
     "34RDPRBJ":  50,
     "GNEB2L1X":  50
 };
+
+
+// The BOOSTER is usually packed by 1kg packs; the rest are by weight by sack.
+const DEFAULT_FEED_UNIT_WEIGHT = {
+    GESTATING:  50,
+    LACTATING:  50,
+    BOOSTER:    1,
+    PRESTARTER: 25,
+    STARTER:    50,
+    GROWER:     50,
+    FINISHER:   50
+};
+
 
 
 // These are manually hashed harvest_type.id
@@ -547,6 +560,7 @@ export {
     FEED_TYPE,
     FEED_TYPE_NAME,
     DEFAULT_UNIT_WEIGHT,
+    DEFAULT_FEED_UNIT_WEIGHT,
     HARVEST_TYPE,
     
     DATA_VER_NUM_PIG_FARM,

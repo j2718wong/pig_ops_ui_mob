@@ -20,6 +20,7 @@ import {APPLICATION,
 
 import {ManagerSowBoar}         from './manager_sow_boar.js';
 import {ManagerPigProd}         from './manager_pig_prod.js';
+import {ManagerFeeds}           from './manager_feeds.js';
 
 import {AccountLists}           from './account_lists.js';
 
@@ -170,6 +171,11 @@ export function PigFarm(_navigation){
         parentObj:              this
     });
     
+    
+    this.managerFeeds         = new ManagerFeeds({
+        navigation:             navigation,
+        parentObj:              this
+    });
     
     
     let accountHasUnpaidBill    = false;
@@ -486,6 +492,10 @@ export function PigFarm(_navigation){
 
         // Update thisObj.managerSowBoar storage
         thisObj.managerSowBoar.saveToStorage();
+
+        
+        // Populate account feed price per unit weight
+        thisObj.managerFeeds.populateAccFeedPricePUWT();
 
 
         // Load cached production data if there is any
