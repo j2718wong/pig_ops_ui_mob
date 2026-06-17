@@ -29,7 +29,7 @@ const FEED_BALANCE_CONSUMED     = 'superpig_feed_balance_consumed';
 const FEED_BUY_CONSUMED         = 'superpig_feed_buy_consumed';
 
 
-
+// The booster is usually packed by 1kg packs; the rest are by weight by sack.
 const DEFAULT_FEED_UNIT_WEIGHT = {
     GESTATING:  50,
     LACTATING:  50,
@@ -49,7 +49,7 @@ const MAX_DAYS_OFFSET_BUY_LACTA_THIS_MONTH = 3;
 // This is the default feed budget for lactating sow and piglets
 let DEFAULT_KG_FEED_LACTATING   = 150;
 let DEFAULT_KG_FEED_BOOSTER     = 20;
-let DEFAULT_KG_FEED_PRESTARTER  = 100;
+let DEFAULT_KG_FEED_PRESTARTER  = 50;
 
 let DEFAULT_KG_PER_PIG_STARTER  = 50;
 let DEFAULT_KG_PER_PIG_GROWER   = 100;
@@ -67,7 +67,7 @@ let AVE_NUMDAYS_SINCE_BIRTH_FINISHER   = 130
 
 
 
-function PigProduction(data_pig_prod){
+export function PigProduction(data_pig_prod){
     const thisObj               = this;
     
     let dataPigProd             = data_pig_prod;
@@ -377,6 +377,14 @@ function PigProduction(data_pig_prod){
                     starter:    null,
                     grower:     null,
                     finisher:   null,
+                },
+                
+                feeds_sacks:{
+                    booster:    20,    // 1kg packs, so 20 sacks/packs
+                    prestarter: 4,     // 100kg / 25kg per sack = 4 sacks
+                    starter:    null,
+                    grower:     null,
+                    finisher:   null,
                 }
             },
              
@@ -388,19 +396,27 @@ function PigProduction(data_pig_prod){
                     starter:    350,
                     grower:     null,
                     finisher:   null,
-                }
+                },
+                
+                feeds_sacks:{
+                    booster:    null,
+                    prestarter: null,
+                    starter:    7,     // 350kg / 50kg per sack = 7 sacks
+                    grower:     null,
+                    finisher:   null
+                } 
             }
        ] 
     */
-    this._computeFeedNeeds = function(){
+    this.computeFeedNeeds = function(){
           
         // Average daily consumption per pig (kg per day)
         const DAILY_CONSUMPTION = {
-            booster: 0.8,        // Piglet booster (20kg over ~25 days)
-            prestarter: 1.0,     // Piglet prestarter (100kg over ~100 days)
-            starter: 1.2,        // 50kg over ~42 days
-            grower: 1.8,         // 100kg over ~56 days
-            finisher: 2.2        // 50kg over ~23 days
+            booster: 0.8,        // Piglet booster (20kg over ~25 days)    for whole lactating batch
+            prestarter: 2.5,     // Piglet prestarter (50kg over ~20 days) for whole lactating batch
+            starter: 1.25,       // 50kg over ~40 days per pig
+            grower: 2.5,         // 100kg over ~40 days per pig
+            finisher: 2.5        // 50kg over ~20 days per pig
         };
         
         // Days since birth when each feed stage starts
@@ -438,11 +454,11 @@ function PigProduction(data_pig_prod){
         // Get birth date
         const date_birth = dataPigProd.birth.date_actual;
         
-        
         if (!date_birth) {
             return list_first_day_of_month.map(date => ({
                 date_to_buy: date,
-                feeds: {}
+                feeds: {},
+                feeds_sacks: {}
             }));
         }
         
@@ -511,7 +527,8 @@ function PigProduction(data_pig_prod){
             
             const curResult = {
                 date_to_buy: cur_date,
-                feeds: {}
+                feeds: {},
+                feeds_sacks: {}
             };
             
             // For each feed stage, calculate how much is needed this month
@@ -534,7 +551,8 @@ function PigProduction(data_pig_prod){
                     const amountThisMonth = daysInMonthActive * dailyRate * num_current_pigs;
                     const finalAmount = Math.min(amountThisMonth, remaining);
                     if (finalAmount > 0) {
-                        curResult.feeds[stage] = Math.round(finalAmount);
+                        const roundedAmount = Math.round(finalAmount);
+                        curResult.feeds[stage] = roundedAmount;
                         remainingBalance[stage] = remaining - finalAmount;
                     }
                 } else {
@@ -542,7 +560,8 @@ function PigProduction(data_pig_prod){
                     const amountThisMonth = daysInMonth * dailyRate * num_current_pigs;
                     const finalAmount = Math.min(amountThisMonth, remaining);
                     if (finalAmount > 0) {
-                        curResult.feeds[stage] = Math.round(finalAmount);
+                        const roundedAmount = Math.round(finalAmount);
+                        curResult.feeds[stage] = roundedAmount;
                         remainingBalance[stage] = remaining - finalAmount;
                     }
                 }
@@ -559,13 +578,111 @@ function PigProduction(data_pig_prod){
         const lastIndex = result.length - 1;
         for (const [stage, remaining] of Object.entries(remainingBalance)) {
             if (remaining > 0 && lastIndex >= 0) {
-                result[lastIndex].feeds[stage] = (result[lastIndex].feeds[stage] || 0) + Math.round(remaining);
+                const roundedAmount = Math.round(remaining);
+                result[lastIndex].feeds[stage] = (result[lastIndex].feeds[stage] || 0) + roundedAmount;
+            }
+        }
+        
+        // Step 4: Calculate sacks correctly
+        // First, collect total kg per feed type across all months
+        const totalKgPerFeed = {};
+        for (const monthResult of result) {
+            for (const [feedType, kg] of Object.entries(monthResult.feeds)) {
+                if (kg && kg > 0) {
+                    totalKgPerFeed[feedType] = (totalKgPerFeed[feedType] || 0) + kg;
+                }
+            }
+        }
+        
+        // Calculate total sacks needed per feed type based on actual pig count
+        const totalSacksPerFeed = {};
+        for (const [feedType, totalKg] of Object.entries(totalKgPerFeed)) {
+            const unitWeight = DEFAULT_FEED_UNIT_WEIGHT?.[feedType.toUpperCase()] || 50;
+            
+            // For starter, grower, finisher - use pig count based calculation
+            // This ensures exact sack counts (1 starter, 2 grower, 1 finisher per pig)
+            if (feedType === 'starter') {
+                totalSacksPerFeed[feedType] = num_current_pigs * 1; // 1 sack per pig
+            } else if (feedType === 'grower') {
+                totalSacksPerFeed[feedType] = num_current_pigs * 2; // 2 sacks per pig
+            } else if (feedType === 'finisher') {
+                totalSacksPerFeed[feedType] = num_current_pigs * 1; // 1 sack per pig
+            } else {
+                // For booster and prestarter, use kg-based calculation with ceil
+                totalSacksPerFeed[feedType] = Math.ceil(totalKg / unitWeight);
+            }
+        }
+        
+        // Calculate sacks per month for booster and prestarter (kg-based)
+        for (const monthResult of result) {
+            for (const [feedType, kg] of Object.entries(monthResult.feeds)) {
+                if (kg && kg > 0) {
+                    const unitWeight = DEFAULT_FEED_UNIT_WEIGHT?.[feedType.toUpperCase()] || 50;
+                    
+                    // For booster and prestarter, use kg-based calculation
+                    if (feedType === 'booster' || feedType === 'prestarter') {
+                        let sacks = kg / unitWeight;
+                        let roundedSacks = Math.round(sacks);
+                        if (roundedSacks === 0 && kg > 0) {
+                            roundedSacks = 1;
+                        }
+                        monthResult.feeds_sacks[feedType] = roundedSacks;
+                    }
+                    // For starter, grower, finisher - don't set yet, we'll distribute total sacks
+                }
+            }
+        }
+        
+        // Distribute total sacks for starter, grower, finisher across months
+        const feedTypesWithFixedSacks = ['starter', 'grower', 'finisher'];
+        for (const feedType of feedTypesWithFixedSacks) {
+            const totalSacks = totalSacksPerFeed[feedType] || 0;
+            if (totalSacks === 0) continue;
+            
+            // Get all months that have this feed type
+            const monthsWithFeed = [];
+            for (let i = 0; i < result.length; i++) {
+                if (result[i].feeds[feedType] && result[i].feeds[feedType] > 0) {
+                    monthsWithFeed.push(i);
+                }
+            }
+            
+            if (monthsWithFeed.length === 0) continue;
+            
+            // Calculate total kg for this feed type
+            let totalKg = 0;
+            for (const monthIndex of monthsWithFeed) {
+                totalKg += result[monthIndex].feeds[feedType];
+            }
+            
+            // Distribute sacks proportionally based on kg per month
+            let allocatedSacks = 0;
+            for (let i = 0; i < monthsWithFeed.length - 1; i++) {
+                const monthIndex = monthsWithFeed[i];
+                const kg = result[monthIndex].feeds[feedType];
+                // Calculate proportion of total kg for this month
+                const proportion = kg / totalKg;
+                let sacks = Math.round(proportion * totalSacks);
+                // Ensure at least 1 sack if kg > 0
+                if (sacks === 0 && kg > 0) {
+                    sacks = 1;
+                }
+                result[monthIndex].feeds_sacks[feedType] = sacks;
+                allocatedSacks += sacks;
+            }
+            
+            // Last month gets the remaining sacks
+            const lastMonthIndex = monthsWithFeed[monthsWithFeed.length - 1];
+            result[lastMonthIndex].feeds_sacks[feedType] = totalSacks - allocatedSacks;
+            // Ensure we don't go negative
+            if (result[lastMonthIndex].feeds_sacks[feedType] < 0) {
+                result[lastMonthIndex].feeds_sacks[feedType] = 0;
             }
         }
         
         return result;
     }
-
+    
     
     /**
      * Should return a list of dates of the production entry
@@ -910,9 +1027,11 @@ ${html_style}
         // Process lactating entries
         for (const cur_entry of list_lactating){
             const cur_pig_prod = new PigProduction(cur_entry);
-            const cur_feed_needs = cur_pig_prod._computeFeedNeeds();
+            const cur_feed_needs = cur_pig_prod.computeFeedNeeds();
             
             if (!cur_feed_needs || cur_feed_needs.length === 0) continue;
+            
+            console.log(cur_feed_needs);
             
             // Add to monthly map
             for (const monthEntry of cur_feed_needs) {
@@ -937,7 +1056,7 @@ ${html_style}
         // Process fattening entries
         for (const cur_entry of list_fattening){
             const cur_pig_prod = new PigProduction(cur_entry);
-            const cur_feed_needs = cur_pig_prod._computeFeedNeeds();
+            const cur_feed_needs = cur_pig_prod.computeFeedNeeds();
             
             if (!cur_feed_needs || cur_feed_needs.length === 0) continue;
             
@@ -968,7 +1087,14 @@ ${html_style}
         console.log('feeds_projection');
         console.log(result);
         
-        return result;
+        
+        const result_money = this.postProcessFeedProjection(result);
+        
+        console.log('result_money');
+        console.log(result_money);
+        
+        
+        return result_money;
     }
     
     
