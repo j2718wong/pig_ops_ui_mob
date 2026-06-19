@@ -26,6 +26,9 @@ import {formatDate,
 
 import {PigProductionFeeds}     from  '../../feeds/pig_production_feeds.js'
 
+import {calculateNumDaysSinceBirth} from '../../common/page_view_basic.js';
+import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';
+
 
 /*
  is used in these objects
@@ -97,6 +100,7 @@ export function ProdSummary(input_settings){
     let elemIdPigCount          = null;
     
     let elemIdFeedEstimateShow  = null;
+    let elemIdProdEstimatePid   = null;
     let elemIdFeedEstimateTitle = null;
     
     let elemIdThMonth1          = null;
@@ -106,6 +110,8 @@ export function ProdSummary(input_settings){
      
     let elemIdTableEstimateBody = null;
     let elemIdEstFeedCost       = null;
+    let elemIdLabelDateHarvest  = null;
+    let elemIdDateHarvest       = null;
     
 
     let elemTdPigCountBirth     = null;
@@ -137,6 +143,7 @@ export function ProdSummary(input_settings){
     let elemPigCount            = null;
     
     let elemFeedEstimateShow    = null;
+    let elemProdEstimatePid     = null;
     let elemFeedEstimateTitle   = null;
         
     let elemThMonth1            = null;
@@ -146,7 +153,8 @@ export function ProdSummary(input_settings){
         
     let elemTableEstimateBody   = null;
     let elemEstFeedCost         = null;
-    
+    let elemLabelDateHarvest    = null;
+    let elemDateHarvest         = null;
 
 
 
@@ -266,6 +274,7 @@ export function ProdSummary(input_settings){
         
         
         elemIdFeedEstimateShow  = `${settings.uniqueKey}-estimate-show`;
+        elemIdProdEstimatePid   = `${settings.uniqueKey}-estimate-prod-pid`;
         elemIdFeedEstimateTitle = `${settings.uniqueKey}-estimate-title`;
         
         elemIdThMonth1          = `${settings.uniqueKey}-estimate-month-1`;
@@ -277,13 +286,19 @@ export function ProdSummary(input_settings){
         
         elemIdEstFeedCost       = `${settings.uniqueKey}-estimate-cost`;
         
+        elemIdLabelDateHarvest  = `${settings.uniqueKey}-label-date-harvest`;
+        elemIdDateHarvest       = `${settings.uniqueKey}-date-harvest`;
+        
+        
         const html = `
     <div id="${elemIdFeedEstimateShow}">
         <br>
-    
+        
         <h2 class="tab-title" id="${elemIdFeedEstimateTitle}">
             Feed Estimate
         </h2>
+        
+        <div id="${elemIdProdEstimatePid}"></div>
     
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; gap: 10px;">
             <div>
@@ -360,6 +375,11 @@ export function ProdSummary(input_settings){
             <span id="${elemIdEstFeedCost}" style="color:blue; font-weight:600;"></span>
         </div>
         
+        <div>
+            <span id="${elemIdLabelDateHarvest}">Day 145(Harvest): </span>
+            <span id="${elemIdDateHarvest}" style="color:blue; font-weight:600;"></span>
+        </div>
+        
     </div>
     
         `;
@@ -405,6 +425,7 @@ export function ProdSummary(input_settings){
         elemPigCount            = elemDivContainer.querySelector('#'+elemIdPigCount);
         
         elemFeedEstimateShow    = elemDivContainer.querySelector('#'+elemIdFeedEstimateShow);
+        elemProdEstimatePid     = elemDivContainer.querySelector('#'+elemIdProdEstimatePid);
         elemFeedEstimateTitle   = elemDivContainer.querySelector('#'+elemIdFeedEstimateTitle);
         
         elemThMonth1            = elemDivContainer.querySelector('#'+elemIdThMonth1);
@@ -414,6 +435,8 @@ export function ProdSummary(input_settings){
         
         elemTableEstimateBody   = elemDivContainer.querySelector('#'+elemIdTableEstimateBody);
         elemEstFeedCost         = elemDivContainer.querySelector('#'+elemIdEstFeedCost);
+        elemLabelDateHarvest    = elemDivContainer.querySelector('#'+elemIdLabelDateHarvest);
+        elemDateHarvest         = elemDivContainer.querySelector('#'+elemIdDateHarvest);
     }
     
     
@@ -920,16 +943,79 @@ export function ProdSummary(input_settings){
         //console.log('curDataEntry');
         //console.log(curDataEntry);
         
+        const farm_page = new PageViewPigFarmPage();
+        farm_page.setNavigation(navigation);
+        
+        const html_pid = farm_page.getHtmlPidSowLoveBoar(curDataEntry, false, true);
+        elemProdEstimatePid.innerHTML = html_pid;
+        
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         
+        
+        // Compute number of days since birth
+        let diff_days = null;
+        
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        
+        console.log(`acc_settings_ops`);
+        console.log(acc_settings_ops);
+        
+        if (curDataEntry.birth.date_actual){
+            diff_days = calculateNumDaysSinceBirth(
+                            curDataEntry.birth.date_actual, dtCurrentDate,
+                            acc_settings_ops);
+        }
+        
         const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
         
-        elemDateToday.textContent = s_dt_current;
+        let s_date = s_dt_current;
+        if (diff_days) {s_date = `${s_dt_current} (Day ${diff_days})`;}
+        
+        elemDateToday.textContent = s_date;
     
         elemPigCount.textContent = curDataEntry.pig_production.cur_pig_count;
+        
+        
+        // Compute date of harvest; 
+        // This is computed as 
+        //
+        // if curDataEntry.birth.date_actual is not null
+        //      date_harvest = curDataEntry.birth.date_actual + 
+        //          acc_settings_ops.num_days_harvest_from_birth;  
+        //
+        // else:
+        //      date_harvest = curDataEntry.weaning.date_weaning + 
+        //          acc_settings_ops.num_days_harvest_from_wean;
+        let s_date_harvest; 
+        
+        // Get account settings for harvest days
+        const days_birth_to_harvest = acc_settings_ops.num_days_harvest_from_birth || 145;
+        const days_weaning_to_harvest = acc_settings_ops.num_days_harvest_from_wean || 100;
+        let days_harvest = null;
+
+        // Check if birth date exists
+        if (curDataEntry.birth && curDataEntry.birth.date_actual) {
+            // Birth + days_birth_to_harvest
+            const birthDate = new Date(curDataEntry.birth.date_actual);
+            birthDate.setDate(birthDate.getDate() + days_birth_to_harvest);
+            s_date_harvest = formatDate(birthDate, FORMAT_COMPACT);
+            
+            days_harvest = days_birth_to_harvest;
+        } 
+        else if (curDataEntry.weaning && curDataEntry.weaning.date_weaning) {
+            // Weaning + days_weaning_to_harvest
+            const weaningDate = new Date(curDataEntry.weaning.date_weaning);
+            weaningDate.setDate(weaningDate.getDate() + days_weaning_to_harvest);
+            s_date_harvest = formatDate(weaningDate, FORMAT_COMPACT);
+        
+            days_harvest =  days_weaning_to_harvest;
+        }
+        
+        elemLabelDateHarvest.textContent = `Day ${days_harvest}(Harvest): `;
+        elemDateHarvest.textContent = s_date_harvest;
     
-    
+
         const prod_status_id = curDataEntry.pig_production.prod_status_id;
         
         if (prod_status_id == PROD_STATUS.LACTATING ||

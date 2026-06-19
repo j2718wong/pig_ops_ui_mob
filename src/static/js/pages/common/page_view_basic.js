@@ -564,7 +564,7 @@ export function PageViewPigFarmPage(){
     }
     
     
-    this.getHtmlPidSowLoveBoar = function(data_pig_prod, exclude_boar_name){
+    this.getHtmlPidSowLoveBoar = function(data_pig_prod, exclude_boar_name, inline){
         const pig_production = data_pig_prod.pig_production;
         
         // 2026-04-09 Notes:
@@ -673,7 +673,18 @@ export function PageViewPigFarmPage(){
         
         let html_boar_name = '';
         if (boar_name && !exclude_boar_name) {
-            html_boar_name = `<div><span class="love-icon">❤️</span> ${boar_name}</div>`;
+            if (inline){
+                html_boar_name = `<span class="love-icon">❤️</span> ${boar_name}`;
+            }
+            else{
+                html_boar_name = `<div><span class="love-icon">❤️</span> ${boar_name}</div>`;
+            }
+        }
+        
+        if (inline){
+            return `
+                <div>${s_pid}, ${sow_name} ${html_boar_name} </div>
+            `;
         }
         
         return `
