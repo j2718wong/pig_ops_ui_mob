@@ -537,44 +537,7 @@ ${html_style}
     }
     
     
-    // Will return production entry for a given farm_sow_id
-    // if is_gesta_or_lacta == true, will search in gestating, else in lactating
-    this._getDataProductionEntry = function(farm_sow_id, is_gesta_or_lacta){
-        let data_list = null;
-        
-        if (is_gesta_or_lacta == true){
-            data_list = navigation.pigFarm.managerPigProd.dataGestatingList;
-        }
-        else{
-            data_list = navigation.pigFarm.managerPigProd.dataLactatingList;
-        }
     
-        if (!data_list || data_list.length == 0){return null;}
-        
-        for (const cur_entry of data_list){
-            if (cur_entry.pig_production.sow){
-                if (cur_entry.pig_production.sow.farm_sow_id == farm_sow_id){
-                    return cur_entry;
-                }
-            } 
-        } 
-        
-        return null;
-    }
-    
-    
-    // Will return weaning date of a lactating entry;
-    // This is a computed number.
-    // This will return a date object;
-    this._getWeaningDate = function(data_entry_lactating){
-        const date_birth        = data_entry_lactating.birth.date_actual;
-        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
-        
-        if (!date_birth){return null;}
-        
-        return calculateDateExpectedWean(date_birth, acc_settings_ops);
-        
-    }
     
     
     /**

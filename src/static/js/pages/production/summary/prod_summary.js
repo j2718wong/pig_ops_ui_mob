@@ -24,7 +24,7 @@ import {formatDate,
         FORMAT_COMPACT,
         FORMAT_COMPACT_NO_SPACE} from '../../../utils.js';
 
-import {PigProductionFeeds}     from  '../../feeds/pig_production_feeds.js'
+import {PigProductionFeeds}     from  '../../feeds/feed_estimate/pig_production_feeds.js'
 
 import {calculateNumDaysSinceBirth} from '../../common/page_view_basic.js';
 import {PageViewPigFarmPage}    from '../../common/page_view_basic.js';

@@ -27,11 +27,38 @@ let DEFAULT_KG_PER_PIG_FINISHER         = 50;
 
 // These are the average number of days before changing feed using the
 // default kg per feed type above.
-let AVE_NUMDAYS_SINCE_BIRTH_BOOSTER    = 5
-let AVE_NUMDAYS_SINCE_BIRTH_PRESTARTER = 30
-let AVE_NUMDAYS_SINCE_BIRTH_STARTER    = 50
-let AVE_NUMDAYS_SINCE_BIRTH_GROWER     = 90
-let AVE_NUMDAYS_SINCE_BIRTH_FINISHER   = 130
+let AVE_NUMDAYS_SINCE_BIRTH_BOOSTER     = 5;
+let AVE_NUMDAYS_SINCE_BIRTH_PRESTARTER  = 30;
+let AVE_NUMDAYS_SINCE_BIRTH_STARTER     = 50;
+let AVE_NUMDAYS_SINCE_BIRTH_GROWER      = 90;
+let AVE_NUMDAYS_SINCE_BIRTH_FINISHER    = 130;
+
+
+// Average daily consumption per pig (kg per day)
+const DAILY_CONSUMPTION = {
+    booster: 0.8,        // Piglet booster (20kg over ~25 days) for whole lactating batch
+    prestarter: 2.5,     // Piglet prestarter (50kg over ~20 days) for whole lactating batch
+    starter: 1.25,       // 50kg over ~40 days per pig
+    grower: 2.5,         // 100kg over ~40 days per pig
+    finisher: 2.5        // 50kg over ~20 days per pig
+};
+
+// Days since birth when each feed stage starts
+const FEED_STAGE_START_DAY = {
+    booster: 5,          // Starts at day 5
+    prestarter: 30,      // Starts at day 30
+    starter: 50,         // Starts at day 50 (after weaning)
+    grower: 90,          // Starts at day 90
+    finisher: 130        // Starts at day 130 (harvest ~145-150)
+};
+
+
+// Total feed per piglet from each stage
+const FEED_TOTAL_PER_PIG = {
+    starter:    DEFAULT_KG_PER_PIG_STARTER,
+    grower:     DEFAULT_KG_PER_PIG_GROWER,
+    finisher:   DEFAULT_KG_PER_PIG_FINISHER
+};
 
 
 
@@ -47,7 +74,7 @@ export function PigProductionFeeds(data_pig_prod){
      * months. The estimate is computed as number of kilogram of feed type
      * to buy at the beginning of the month.
      * 
-     * This is used when production entry already has given birth or 
+     * This is used when a production entry already has already given birth or 
      * in fattening stage.
      * 
      * This should return a list like this; the feeds unit are all in kg;
@@ -96,31 +123,6 @@ export function PigProductionFeeds(data_pig_prod){
        ] 
     */
     this.computeFeedNeeds = function(){
-          
-        // Average daily consumption per pig (kg per day)
-        const DAILY_CONSUMPTION = {
-            booster: 0.8,        // Piglet booster (20kg over ~25 days) for whole lactating batch
-            prestarter: 2.5,     // Piglet prestarter (50kg over ~20 days) for whole lactating batch
-            starter: 1.25,       // 50kg over ~40 days per pig
-            grower: 2.5,         // 100kg over ~40 days per pig
-            finisher: 2.5        // 50kg over ~20 days per pig
-        };
-        
-        // Days since birth when each feed stage starts
-        const FEED_STAGE_START_DAY = {
-            booster: 5,          // Starts at day 5
-            prestarter: 30,      // Starts at day 30
-            starter: 50,         // Starts at day 50 (after weaning)
-            grower: 90,          // Starts at day 90
-            finisher: 130        // Starts at day 130 (harvest ~145-150)
-        };
-        
-        // Total feed per piglet from each stage
-        const FEED_TOTAL_PER_PIG = {
-            starter:    DEFAULT_KG_PER_PIG_STARTER,
-            grower:     DEFAULT_KG_PER_PIG_GROWER,
-            finisher:   DEFAULT_KG_PER_PIG_FINISHER
-        };
         
         // This is the account latest feed price per unit weight
         const latestFeedPricePUWT = navigation.pigFarm.managerFeeds.latestFeedPricePUWT;
@@ -245,8 +247,7 @@ export function PigProductionFeeds(data_pig_prod){
         let remainingBalance = { ...remainingFeeds };
         
         for (let i = 0; i < list_first_day_of_month.length; i++) {
-            const cur_date = list_first_day_of_month[i];
-            const currentDate = new Date(cur_date);
+            const currentDate = new Date(list_first_day_of_month[i]);
             currentDate.setHours(0, 0, 0, 0);
             
             // Calculate days since birth at start of this month
