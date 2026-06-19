@@ -1,6 +1,6 @@
 // page_feeds_estimate.js
 
-// June 15, 2026
+// June 15, 2026 - Updated June 19, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -26,6 +26,15 @@ import {formatDate,
 import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
 
 import {PigProductionFeeds}     from './pig_production_feeds.js';
+
+
+const ESTIMATE_FEEDS_ALL_PIGS       = 0;
+
+// Estimate feeds for lactating and fattening production entries only
+const ESTIMATE_FEEDS_PROD_ONLY      = 1;
+
+// Estimate feeds for sow/boar/gilt  including lacta preparation sows about to give birth only
+const ESTIMATE_FEEDS_BREEDING_ONLY  = 2;
 
 
 export function PageFeedsEstimate(input_settings){
@@ -60,7 +69,15 @@ export function PageFeedsEstimate(input_settings){
     let elemIdLabelToday        = null;
     let elemIdDateToday         = null;
     
-    let elemIdShowSample        = null;        
+    let elemIdShowSample        = null; 
+    
+    let elemIdThMonth1          = null;
+    let elemIdThMonth2          = null;
+    let elemIdThMonth3          = null;
+    let elemIdThMonth4          = null;
+                                
+    let elemIdTableEstimateBody = null;
+    let elemIdEstFeedCost       = null;      
     
     let elemIdDebug             = null; 
         
@@ -71,11 +88,17 @@ export function PageFeedsEstimate(input_settings){
     
     let elemShowSample          = null;
     
+    let elemThMonth1            = null;
+    let elemThMonth2            = null;
+    let elemThMonth3            = null;
+    let elemThMonth4            = null;
+                              
+    let elemTableEstimateBody   = null;
+    let elemEstFeedCost         = null; 
+    
     let elemDebug               = null;
     
     let dtCurrentDate           = null;
-    
-    
     
     
     
@@ -133,6 +156,13 @@ export function PageFeedsEstimate(input_settings){
 
         elemIdShowSample        = `${settings.uniqueKey}-show-sample`;
         
+        elemIdThMonth1          = `${settings.uniqueKey}-estimate-month-1`;
+        elemIdThMonth2          = `${settings.uniqueKey}-estimate-month-2`;
+        elemIdThMonth3          = `${settings.uniqueKey}-estimate-month-3`;
+        elemIdThMonth4          = `${settings.uniqueKey}-estimate-month-4`;
+        
+        elemIdTableEstimateBody = `${settings.uniqueKey}-estimate-body`;
+        elemIdEstFeedCost       = `${settings.uniqueKey}-estimate-cost`;
         
         elemIdDebug             = `${settings.uniqueKey}-debug`;
         
@@ -167,7 +197,96 @@ ${html_style}
         </a>
     </div>
     
-    <div id=""></div>   
+    <!-- Centered Filter Controls -->
+    <div>
+        <div class="filter-controls">
+            <div class="animal-filter">
+                <div class="filter-buttons sow">
+                    <button class="filter-button active" data-filter="all">All</button>
+                    <button class="filter-button" data-filter="sow_boar">Sow/Boar</button>
+                    <button class="filter-button" data-filter="fattening">Production</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <table class="data-table table-feed-summary" id="">
+        <colgroup>
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+        </colgroup>
+        
+        <thead>
+            <tr>
+                <th>Feed Type</th>
+                <th id="${elemIdThMonth1}">Jul 1</th>
+                <th id="${elemIdThMonth2}">Aug 1</th>
+                <th id="${elemIdThMonth3}">Sep 1</th>
+                <th id="${elemIdThMonth4}">Oct 1</th>
+            </tr>
+        </thead>
+        
+        <tbody id="${elemIdTableEstimateBody}">
+            <tr>
+                <td>Gesta</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Lacta</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>PreStart</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Starter</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Grower</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Finisher</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Est. Cost</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div>
+        <span id="">Estimated Feed Cost: </span>
+        <span id="${elemIdEstFeedCost}" style="color:blue; font-weight:600;"></span>
+    </div>
+          
     
     <div id="${elemIdDebug}"></div>
 
@@ -194,6 +313,15 @@ ${html_style}
         elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
      
         elemShowSample          = elemDivContainer.querySelector('#'+elemIdShowSample);
+        
+        elemThMonth1            = elemDivContainer.querySelector('#'+elemIdThMonth1);
+        elemThMonth2            = elemDivContainer.querySelector('#'+elemIdThMonth2);
+        elemThMonth3            = elemDivContainer.querySelector('#'+elemIdThMonth3);
+        elemThMonth4            = elemDivContainer.querySelector('#'+elemIdThMonth4);
+        
+        elemTableEstimateBody   = elemDivContainer.querySelector('#'+elemIdTableEstimateBody);
+        elemEstFeedCost         = elemDivContainer.querySelector('#'+elemIdEstFeedCost);
+        
         
         elemDebug               = elemDivContainer.querySelector('#'+elemIdDebug);
     }
@@ -245,14 +373,17 @@ ${html_style}
         
         elemDateToday.textContent = s_dt_current;
         
+        // Get production feed estimates
+        const feed_estimate_prod = this.estimateFeedsProduction();
         
-        this.processPigProdFeedProjection();
+        // Populate the table
+        this.populateFeedEstimate(feed_estimate_prod);
     }
     
     
        
-    
-    this.processPigProdFeedProjection = function(){
+    // Will only estimate Lactating and fattening production entries
+    this.estimateFeedsProduction = function(){
         const list_lactating = navigation.pigFarm.managerPigProd.dataLactatingList;
         const list_fattening = navigation.pigFarm.managerPigProd.dataFatteningList;   
         
@@ -266,24 +397,37 @@ ${html_style}
             
             if (!cur_feed_needs || cur_feed_needs.length === 0) continue;
             
-            console.log(cur_feed_needs);
-            
             // Add to monthly map
             for (const monthEntry of cur_feed_needs) {
                 const monthKey = monthEntry.date_to_buy;
                 if (!monthlyFeedMap[monthKey]) {
                     monthlyFeedMap[monthKey] = {
                         date_to_buy: monthKey,
-                        feeds: {}
+                        feeds: {},
+                        feeds_sacks: {},
+                        estimated_cost: 0
                     };
                 }
                 
-                // Add lactating feeds to this month
+                // Add feeds to this month
                 for (const [feedType, amount] of Object.entries(monthEntry.feeds)) {
                     if (amount && amount > 0) {
                         monthlyFeedMap[monthKey].feeds[feedType] = 
                             (monthlyFeedMap[monthKey].feeds[feedType] || 0) + amount;
                     }
+                }
+                
+                // Add sacks to this month
+                for (const [feedType, sacks] of Object.entries(monthEntry.feeds_sacks || {})) {
+                    if (sacks && sacks > 0) {
+                        monthlyFeedMap[monthKey].feeds_sacks[feedType] = 
+                            (monthlyFeedMap[monthKey].feeds_sacks[feedType] || 0) + sacks;
+                    }
+                }
+                
+                // Add cost to this month
+                if (monthEntry.estimated_cost) {
+                    monthlyFeedMap[monthKey].estimated_cost += monthEntry.estimated_cost;
                 }
             }
         }
@@ -301,16 +445,31 @@ ${html_style}
                 if (!monthlyFeedMap[monthKey]) {
                     monthlyFeedMap[monthKey] = {
                         date_to_buy: monthKey,
-                        feeds: {}
+                        feeds: {},
+                        feeds_sacks: {},
+                        estimated_cost: 0
                     };
                 }
                 
-                // Add fattening feeds to this month
+                // Add feeds to this month
                 for (const [feedType, amount] of Object.entries(monthEntry.feeds)) {
                     if (amount && amount > 0) {
                         monthlyFeedMap[monthKey].feeds[feedType] = 
                             (monthlyFeedMap[monthKey].feeds[feedType] || 0) + amount;
                     }
+                }
+                
+                // Add sacks to this month
+                for (const [feedType, sacks] of Object.entries(monthEntry.feeds_sacks || {})) {
+                    if (sacks && sacks > 0) {
+                        monthlyFeedMap[monthKey].feeds_sacks[feedType] = 
+                            (monthlyFeedMap[monthKey].feeds_sacks[feedType] || 0) + sacks;
+                    }
+                }
+                
+                // Add cost to this month
+                if (monthEntry.estimated_cost) {
+                    monthlyFeedMap[monthKey].estimated_cost += monthEntry.estimated_cost;
                 }
             }
         }
@@ -322,103 +481,111 @@ ${html_style}
         console.log('feeds_projection');
         console.log(result);
         
-        
-        const result_money = this.postProcessFeedProjection(result);
-        
-        console.log('result_money');
-        console.log(result_money);
-        
-        
-        return result_money;
-    }
-    
-    
-    // Add monthly feed projection in sacks;
-    // And add approximate cost of the number of sacks to be bought
-    // Use ceiling to round to nearest sack;
-    this.postProcessFeedProjection = function(feed_projection){
-        /* This is declared at the top
-        const DEFAULT_FEED_UNIT_WEIGHT = {
-            GESTATING:  50,
-            LACTATING:  50,
-            BOOSTER:    1,
-            PRESTARTER: 25,
-            STARTER:    50,
-            GROWER:     50,
-            FINISHER:   50
-        };
-        */
-
-        // This is the moving average price per kg of feed_type
-        // This is saved in latestFeedPricePUWT
-        /*
-        {
-          "gestating": 31.5,
-          "lactating": 32.84,
-          "booster": 75.8,
-          "prestarter": 55.2,
-          "starter": 37.5,
-          "grower": 33.6,
-          "finisher": 33.5
-        }*/
-        
-        if (!feed_projection || feed_projection.length === 0) {
-            return [];
-        }
-        
-        const result = [];
-        
-        for (const monthEntry of feed_projection) {
-            const processedMonth = {
-                date_to_buy: monthEntry.date_to_buy,
-                feeds: {},
-                sacks: {},
-                cost: {}
-            };
-            
-            // Process each feed type in this month
-            for (const [feedType, kgAmount] of Object.entries(monthEntry.feeds)) {
-                if (!kgAmount || kgAmount <= 0) continue;
-                
-                // Get unit weight per sack for this feed type
-                const feedTypeUpper = feedType.toUpperCase();
-                const unitWeight = DEFAULT_FEED_UNIT_WEIGHT[feedTypeUpper] || 50;
-                
-                // Calculate number of sacks (ceiling to round up)
-                const sacks = Math.ceil(kgAmount / unitWeight);
-                processedMonth.sacks[feedType] = sacks;
-                
-                // Calculate cost
-                const latestFeedPricePUWT = navigation.pigFarm.managerFeeds.latestFeedPricePUWT;
-                const pricePerKg = latestFeedPricePUWT[feedType] || 30; // Fallback to ₱30/kg
-                const totalCost = Math.round(kgAmount * pricePerKg);
-                processedMonth.cost[feedType] = totalCost;
-                
-                // Keep the kg amount
-                processedMonth.feeds[feedType] = Math.round(kgAmount);
-            }
-            
-            // Add total sacks and total cost for the month
-            let totalSacks = 0;
-            let totalCost = 0;
-            
-            for (const [feedType, sacks] of Object.entries(processedMonth.sacks)) {
-                totalSacks += sacks;
-                totalCost += processedMonth.cost[feedType] || 0;
-            }
-            
-            processedMonth.total_sacks = totalSacks;
-            processedMonth.total_cost = totalCost;
-            
-            result.push(processedMonth);
-        }
-        
         return result;
     }
     
     
-    
-    
-    
-     
+    /**
+     * Populate the feed estimate table with combined data
+     * @param {Array} feed_estimate - Array of monthly feed estimates
+     */
+    this.populateFeedEstimate = function(feed_estimate){
+        if (!feed_estimate || feed_estimate.length === 0) {
+            elemTableEstimateBody.innerHTML = `
+                <tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">
+                    No production entries found for feed estimation
+                </td></tr>
+            `;
+            elemEstFeedCost.textContent = '';
+            return;
+        }
+        
+        // Helper function to format money: round to nearest 100 and add commas
+        const formatMoney = function(amount) {
+            if (!amount) return '';
+            const rounded = Math.round(amount / 100) * 100;
+            return rounded.toLocaleString('en-US');
+        };
+        
+        // Update month headers
+        const monthHeaders = [elemThMonth1, elemThMonth2, elemThMonth3, elemThMonth4];
+        for (let i = 0; i < monthHeaders.length && i < feed_estimate.length; i++) {
+            const dateStr = feed_estimate[i].date_to_buy;
+            if (dateStr) {
+                const dateObj = new Date(dateStr);
+                const month = dateObj.toLocaleString('en-US', { month: 'short' });
+                const day = dateObj.getDate();
+                monthHeaders[i].textContent = `${month} ${day}`;
+            }
+        }
+        
+        // Clear remaining headers
+        for (let i = feed_estimate.length; i < monthHeaders.length; i++) {
+            monthHeaders[i].textContent = '';
+        }
+        
+        // Define feed types to display (in order)
+        // Note: Gesta and Lacta are not estimated yet, but kept for future
+        const feedTypes = ['gestating', 'lactating', 'prestarter', 'starter', 'grower', 'finisher'];
+        const feedLabels = {
+            'gestating': 'Gesta',
+            'lactating': 'Lacta',
+            'prestarter': 'PreStart',
+            'starter': 'Starter',
+            'grower': 'Grower',
+            'finisher': 'Finisher'
+        };
+        
+        // Build table rows
+        let html = '';
+        let totalCost = 0;
+        
+        // Feed type rows (using sacks)
+        for (const feedType of feedTypes) {
+            let rowHtml = `<tr><td>${feedLabels[feedType]}</td>`;
+            let hasData = false;
+            
+            for (let i = 0; i < feed_estimate.length; i++) {
+                const monthData = feed_estimate[i];
+                const sacks = monthData.feeds_sacks && monthData.feeds_sacks[feedType] 
+                    ? monthData.feeds_sacks[feedType] 
+                    : '';
+                if (sacks) hasData = true;
+                rowHtml += `<td style="text-align:center">${sacks}</td>`;
+            }
+            
+            // Fill remaining columns if less than 4 months
+            for (let i = feed_estimate.length; i < 4; i++) {
+                rowHtml += `<td></td>`;
+            }
+            
+            rowHtml += `</tr>`;
+            if (hasData) {
+                html += rowHtml;
+            }
+        }
+        
+        // Estimated cost row
+        let costRowHtml = `<tr><td><strong>Est. Cost</strong></td>`;
+        
+        for (let i = 0; i < feed_estimate.length; i++) {
+            const monthData = feed_estimate[i];
+            const cost = monthData.estimated_cost || 0;
+            totalCost += cost;
+            costRowHtml += `<td>${formatMoney(cost)}</td>`;
+        }
+        
+        // Fill remaining columns if less than 4 months
+        for (let i = feed_estimate.length; i < 4; i++) {
+            costRowHtml += `<td></td>`;
+        }
+        
+        costRowHtml += `</tr>`;
+        html += costRowHtml;
+        
+        elemTableEstimateBody.innerHTML = html;
+        
+        // Display total estimated feed cost
+        elemEstFeedCost.textContent = formatMoney(totalCost);
+    }
 }
