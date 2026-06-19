@@ -217,7 +217,7 @@ export function ProdSummary(input_settings){
     
         ${html_style}
         
-        <div>Last Feed Balance: <span id="${elemIdLastFeedBalance}">02 Feb 2026</span>  </div>
+        <div>Last Feed Balance: <span id="${elemIdLastFeedBalance}" style="color:blue; font-weight:600;"></span></div>
         
         <table class="data-table table-feed-summary" id="">
             <colgroup>
@@ -231,8 +231,8 @@ export function ProdSummary(input_settings){
                 <tr>
                     <th>Feed<br>Type</th>
                     <th>Buy<br>(sacks)</th>
-                    <th>Cons<br>(sacks)</th>
-                    <th>Bal<br>(sacks)</th>
+                    <th>Consumed (sacks)</th>
+                    <th>Balance (sacks)</th>
                 </tr>
             </thead>
             
