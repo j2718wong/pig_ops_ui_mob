@@ -230,7 +230,7 @@ export function PageProdSalesEntry(input_settings){
 
         switch(tabId) {
             case elemIdTabSalesProdSummary:{
-                thisObj.pigProdSummary.beforeShow(dataPigProd);
+                thisObj.pigProdSummary.show(dataPigProd);
                 
                 curTabSales = thisObj.TAB_SALES_FEED_SUMMARY;
                 break;

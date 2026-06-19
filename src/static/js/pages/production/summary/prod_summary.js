@@ -24,6 +24,8 @@ import {formatDate,
         FORMAT_COMPACT,
         FORMAT_COMPACT_NO_SPACE} from '../../../utils.js';
 
+import {PigProductionFeeds}     from  '../../feeds/pig_production_feeds.js'
+
 
 /*
  is used in these objects
@@ -89,7 +91,22 @@ export function ProdSummary(input_settings){
     let elemIdTableBody         = null;
     let elemIdLastFeedBalance   = null;
 
-
+    
+    let elemIdLabelToday        = null;
+    let elemIdDateToday         = null;
+    let elemIdPigCount          = null;
+    
+    let elemIdFeedEstimateShow  = null;
+    let elemIdFeedEstimateTitle = null;
+    
+    let elemIdThMonth1          = null;
+    let elemIdThMonth2          = null;
+    let elemIdThMonth3          = null;
+    let elemIdThMonth4          = null;
+     
+    let elemIdTableEstimateBody = null;
+    let elemIdEstFeedCost       = null;
+    
 
     let elemTdPigCountBirth     = null;
     let elemTdPigCountWean      = null;
@@ -114,6 +131,22 @@ export function ProdSummary(input_settings){
     let elemFeedSummaryTitle    = null;
     let elemTableBody           = null;
     let elemLastFeedBalance     = null;
+
+    let elemLabelToday          = null;
+    let elemDateToday           = null;
+    let elemPigCount            = null;
+    
+    let elemFeedEstimateShow    = null;
+    let elemFeedEstimateTitle   = null;
+        
+    let elemThMonth1            = null;
+    let elemThMonth2            = null;
+    let elemThMonth3            = null;
+    let elemThMonth4            = null;
+        
+    let elemTableEstimateBody   = null;
+    let elemEstFeedCost         = null;
+    
 
 
 
@@ -171,13 +204,14 @@ export function ProdSummary(input_settings){
             html_prod_summary = this.getHtmlProdSummary();
         }
         
+        let html_feed_estimate = this.getHtmlFeedEstimate();
         
         
         const html = `
     <div class="modal-body" id="">
         ${html_prod_summary}
         
-        <h2 class="tab-title" id=${elemIdFeedSummaryTitle}>
+        <h2 class="tab-title" id="${elemIdFeedSummaryTitle}">
             Feed Summary
         </h2>
     
@@ -207,11 +241,130 @@ export function ProdSummary(input_settings){
         </table>
         
         
+        ${html_feed_estimate}
+        
     </div>
         `;
        
         return html;
 
+    }
+    
+    
+    this.getHtmlFeedEstimate = function(){
+        let label_today         = 'Today';
+        
+        const helper = navigation.managerTranslations.translationHelper;
+        
+        
+        label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
+        
+        
+        elemIdLabelToday        = `${settings.uniqueKey}-label-today`;
+        elemIdDateToday         = `${settings.uniqueKey}-date-today`;
+        elemIdPigCount          = `${settings.uniqueKey}-pig-count`;
+        
+        
+        elemIdFeedEstimateShow  = `${settings.uniqueKey}-estimate-show`;
+        elemIdFeedEstimateTitle = `${settings.uniqueKey}-estimate-title`;
+        
+        elemIdThMonth1          = `${settings.uniqueKey}-estimate-month-1`;
+        elemIdThMonth2          = `${settings.uniqueKey}-estimate-month-2`;
+        elemIdThMonth3          = `${settings.uniqueKey}-estimate-month-3`;
+        elemIdThMonth4          = `${settings.uniqueKey}-estimate-month-4`;
+        
+        elemIdTableEstimateBody = `${settings.uniqueKey}-estimate-body`;
+        
+        elemIdEstFeedCost       = `${settings.uniqueKey}-estimate-cost`;
+        
+        const html = `
+    <div id="${elemIdFeedEstimateShow}">
+        <br>
+    
+        <h2 class="tab-title" id="${elemIdFeedEstimateTitle}">
+            Feed Estimate
+        </h2>
+    
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; gap: 10px;">
+            <div>
+                <span id="${elemIdLabelToday}">${label_today}</span>
+                <span id="${elemIdDateToday}" style="color:blue; font-weight:600;"></span>
+            </div>
+            
+            <div>
+                <span>Pig Count: </span>
+                <span id="${elemIdPigCount}" style="color:blue; font-weight:600;"></span>
+            </div>
+        </div>
+        
+        <table class="data-table table-feed-summary" id="">
+            <colgroup>
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+                <col style="width: 20%;">
+            </colgroup>
+            
+            <thead>
+                <tr>
+                    <th>Feed Type</th>
+                    <th id="${elemIdThMonth1}">Jul 1</th>
+                    <th id="${elemIdThMonth2}">Aug 1</th>
+                    <th id="${elemIdThMonth3}">Sep 1</th>
+                    <th id="${elemIdThMonth4}">Oct 1</th>
+                </tr>
+            </thead>
+            
+            <tbody id="${elemIdTableEstimateBody}">
+                <tr>
+                    <td>PreStart</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Starter</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Grower</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Finisher</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Est. Cost</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div>
+            <span id="">Estimated Feed Cost: </span>
+            <span id="${elemIdEstFeedCost}" style="color:blue; font-weight:600;"></span>
+        </div>
+        
+    </div>
+    
+        `;
+        
+        return html;
     }
     
     
@@ -245,6 +398,22 @@ export function ProdSummary(input_settings){
         elemTdTotalSales        = elemDivContainer.querySelector('#'+elemIdTdTotalSales);
         elemTdGrossProfit       = elemDivContainer.querySelector('#'+elemIdTdGrossProfit);
         elemTdGrossProfitPP     = elemDivContainer.querySelector('#'+elemIdTdGrossProfitPP);
+        
+        
+        elemLabelToday          = elemDivContainer.querySelector('#'+elemIdLabelToday);
+        elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
+        elemPigCount            = elemDivContainer.querySelector('#'+elemIdPigCount);
+        
+        elemFeedEstimateShow    = elemDivContainer.querySelector('#'+elemIdFeedEstimateShow);
+        elemFeedEstimateTitle   = elemDivContainer.querySelector('#'+elemIdFeedEstimateTitle);
+        
+        elemThMonth1            = elemDivContainer.querySelector('#'+elemIdThMonth1);
+        elemThMonth2            = elemDivContainer.querySelector('#'+elemIdThMonth2);
+        elemThMonth3            = elemDivContainer.querySelector('#'+elemIdThMonth3);
+        elemThMonth4            = elemDivContainer.querySelector('#'+elemIdThMonth4);
+        
+        elemTableEstimateBody   = elemDivContainer.querySelector('#'+elemIdTableEstimateBody);
+        elemEstFeedCost         = elemDivContainer.querySelector('#'+elemIdEstFeedCost);
     }
     
     
@@ -275,14 +444,16 @@ export function ProdSummary(input_settings){
     
 
     
-    this.beforeShow = function(data_entry){
+    this.show = function(data_entry, options){
         curDataEntry = data_entry;
         
         if (settings.includeProdSummary){
             this.populateProdSummary();
         }
         
-        thisObj.populateFeedSummary();
+        this.populateFeedSummary();
+        
+        this.populateFeedEstimate();
     }
     
     
@@ -745,20 +916,124 @@ export function ProdSummary(input_settings){
     }
         
     
+    this.populateFeedEstimate = function(){
+        //console.log('curDataEntry');
+        //console.log(curDataEntry);
         
-    this.show = function(options){
-        
-        // show the last showOptions if there is no options
-        if (options == null){options = showOptions;}
-        
-        // So that not to instantiate in every table redraw
         dtCurrentDate = new Date();
         dtCurrentDate.setHours(0, 0, 0, 0);
         
-        showOptions = options;
+        const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
         
-    }
+        elemDateToday.textContent = s_dt_current;
     
+        elemPigCount.textContent = curDataEntry.pig_production.cur_pig_count;
+    
+    
+        const prod_status_id = curDataEntry.pig_production.prod_status_id;
+        
+        if (prod_status_id == PROD_STATUS.LACTATING ||
+            prod_status_id == PROD_STATUS.WEANING ||
+            prod_status_id == PROD_STATUS.GROWING) {
+            elemFeedEstimateShow.style.display = 'block';
+        }
+        else{
+            elemFeedEstimateShow.style.display = 'none';
+            return;
+        }
+        
+        // compute feed_estimate in next 4 months
+        const prod_feeds    = new PigProductionFeeds(curDataEntry);
+        const feed_estimate = prod_feeds.computeFeedNeeds();
+        
+        //console.log('feed_estimate');
+        //console.log(feed_estimate);
+        
+        if (!feed_estimate || feed_estimate.length === 0) {
+            // Show empty state or hide
+            return;
+        }
+        
+        // Helper function to format money: round to nearest 100 and add commas
+        const formatMoney = function(amount) {
+            if (!amount) return '';
+            // Round to nearest 100
+            const rounded = Math.round(amount / 100) * 100;
+            // Add commas
+            return rounded.toLocaleString('en-US');
+        };
+        
+        // Update month headers
+        const monthHeaders = [elemThMonth1, elemThMonth2, elemThMonth3, elemThMonth4];
+        for (let i = 0; i < monthHeaders.length && i < feed_estimate.length; i++) {
+            const dateStr = feed_estimate[i].date_to_buy;
+            if (dateStr) {
+                const dateObj = new Date(dateStr);
+                const month = dateObj.toLocaleString('en-US', { month: 'short' });
+                const day = dateObj.getDate();
+                monthHeaders[i].textContent = `${month} ${day} (sacks)`;
+            }
+        }
+        
+        // Define feed types to display (in order)
+        const feedTypes = ['prestarter', 'starter', 'grower', 'finisher'];
+        const feedLabels = {
+            'prestarter': 'PreStart',
+            'starter': 'Starter',
+            'grower': 'Grower',
+            'finisher': 'Finisher'
+        };
+        
+        // Build table rows
+        let html = '';
+        
+        // Feed type rows
+        for (const feedType of feedTypes) {
+            let rowHtml = `<tr><td>${feedLabels[feedType]}</td>`;
+            
+            for (let i = 0; i < feed_estimate.length; i++) {
+                const monthData = feed_estimate[i];
+                const sacks = monthData.feeds_sacks && monthData.feeds_sacks[feedType] 
+                    ? monthData.feeds_sacks[feedType] 
+                    : '';
+                rowHtml += `<td style="text-align:center;">${sacks}</td>`;
+            }
+            
+            // Fill remaining columns if less than 4 months
+            for (let i = feed_estimate.length; i < 4; i++) {
+                rowHtml += `<td></td>`;
+            }
+            
+            rowHtml += `</tr>`;
+            html += rowHtml;
+        }
+        
+        // Estimated cost row (rounded to nearest 100, with commas, no currency symbol)
+        let costRowHtml = `<tr><td><strong>Est. Cost</strong></td>`;
+        
+        let totalEstCost = 0; 
+        
+        for (let i = 0; i < feed_estimate.length; i++) {
+            const monthData = feed_estimate[i];
+            const cost = monthData.estimated_cost || 0;
+            totalEstCost    += cost;
+            costRowHtml     += `<td>${formatMoney(cost)}</td>`;
+        }
+        
+        // Fill remaining columns if less than 4 months
+        for (let i = feed_estimate.length; i < 4; i++) {
+            costRowHtml += `<td></td>`;
+        }
+        
+        costRowHtml += `</tr>`;
+        html += costRowHtml;
+        
+        elemTableEstimateBody.innerHTML = html;
+        
+        // Show Total estimated cost
+        elemEstFeedCost.textContent = `${formatMoney(totalEstCost)}`;
+    }
+
     
     this.getHtmlProdSummary = function(){
         elemIdTdPigCountBirth   = `${settings.uniqueKey}-pig-count-birth`;

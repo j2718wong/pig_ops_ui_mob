@@ -462,7 +462,7 @@ export function PageProdLactatingEntry(input_settings){
             
             
             case elemIdTabLactaFeedSummary:{
-                thisObj.prodSummary.beforeShow(dataPigProd);
+                thisObj.prodSummary.show(dataPigProd);
                 
                 curTabLacta = thisObj.TAB_LACTA_FEED_SUMMARY;
                 break;

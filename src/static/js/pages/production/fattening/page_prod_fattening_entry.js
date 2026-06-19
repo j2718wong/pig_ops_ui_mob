@@ -531,7 +531,7 @@ export function PageProdFatteningEntry(input_settings){
 
         switch(tabId) {
             case elemIdTabFatProdSummary:{
-                thisObj.pigProdSummary.beforeShow(dataPigProd);
+                thisObj.pigProdSummary.show(dataPigProd);
                 
                 curTabFat = thisObj.TAB_FAT_FEED_SUMMARY;
                 break;

@@ -468,6 +468,46 @@ export function PigProductionFeeds(data_pig_prod){
             remainingFeeds.prestarter = DEFAULT_KG_FEED_PRESTARTER - prestarterBought;
         }
         
+        
+        // TODO
+        /*
+        2026-06-17 Notes:
+        // These are the average number of days before changing feed using the
+        // default kg per feed type above.
+        let AVE_NUMDAYS_SINCE_BIRTH_BOOSTER    = 5
+        let AVE_NUMDAYS_SINCE_BIRTH_PRESTARTER = 30
+        let AVE_NUMDAYS_SINCE_BIRTH_STARTER    = 50
+        let AVE_NUMDAYS_SINCE_BIRTH_GROWER     = 90
+        let AVE_NUMDAYS_SINCE_BIRTH_FINISHER   = 130
+        
+         
+        Users may not record the bought or allocated feeds per production batch.
+        In this case, it is assumed that the feed requirement of the 
+        production batch up until to this current date now, was already bought.
+        This needs to be taken into account;
+        
+        1.) It maybe possible that a production  entry has no birthdate;
+        This is when the piglets are bougth from outside.
+        
+        2.) If pig_age >= 45 AND pig_age < AVE_NUMDAYS_SINCE_BIRTH_GROWER,
+                if no recorded bought feeds 
+                    - no more BOOSTER, PRESTARTER calculation
+                    - the assumed bought and consumed STARTER feeds should be computed
+                     
+        3.) If pig_age >= AVE_NUMDAYS_SINCE_BIRTH_GROWER AND pig_age < AVE_NUMDAYS_SINCE_BIRTH_FINISHER,
+                if no recorded bought feeds 
+                    - no more BOOSTER, PRESTARTER, STARTER calculation
+                    - the assumed bought and consumed GROWER feeds should be computed
+                    
+        4.) If pig_age >= AVE_NUMDAYS_SINCE_BIRTH_FINISHER
+                if no recorded bought feeds 
+                    - no more BOOSTER, PRESTARTER, STARTER, GROWER calculation
+                    - the assumed bought and consumed FINISHER feeds should be computed
+                
+         
+        */
+        
+        
         // Starter, Grower, Finisher (per pig)
         const pigFeedStages = ['starter', 'grower', 'finisher'];
         for (const stage of pigFeedStages) {
@@ -476,6 +516,7 @@ export function PigProductionFeeds(data_pig_prod){
             if (bought_kg[stage]) {
                 boughtAmount = bought_kg[stage];
             } else if (bought[stage]) {
+                // Number of sacks bought converted to kg
                 const unitWeight = DEFAULT_FEED_UNIT_WEIGHT?.[stage.toUpperCase()] || 50;
                 boughtAmount = bought[stage] * unitWeight;
             }
