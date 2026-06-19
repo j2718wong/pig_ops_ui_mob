@@ -114,7 +114,7 @@ import {PagePigDeadAddEdit}         from '../production/pig_dead/page_pig_dead_a
 import {PageAccFarrowChecklist}     from '../acc_farrow_checklist/page_acc_farrow_checklist.js';
 import {PageAccFChecklistAddEdit}   from '../acc_farrow_checklist/page_acc_f_checklist_add_edit.js';
 
-import {PageFeedsEstimate}          from '../feeds/page_feeds_estimate.js';
+import {PageFeedsEstimate}          from '../feeds/feed_estimate/page_feeds_estimate.js';
 
 import {PageSummaryReportList}      from '../reports/page_summary_report_list.js';
 import {PageSummaryReportAdd}       from '../reports/page_summary_report_add.js';

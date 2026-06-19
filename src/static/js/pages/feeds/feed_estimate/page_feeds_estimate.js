@@ -6,8 +6,9 @@
 
 'use strict';
 
-import {PageViewPigFarmPage}         from '../common/page_view_basic.js';
-import {calculateNumDaysSinceInsem}  from '../common/page_view_basic.js';
+import {PageViewPigFarmPage}        from '../../common/page_view_basic.js';
+import {calculateNumDaysSinceInsem,
+        calculateDateExpectedWean}  from '../../common/page_view_basic.js';
 
 
 import {APPLICATION,
@@ -16,14 +17,14 @@ import {APPLICATION,
         PIG_PROD_TYPE,
         PROD_STATUS,
         DEFAULT_FEED_UNIT_WEIGHT,
-        DATA_VER_NUM_PIG_FARM}        from '../../constants.js';
+        DATA_VER_NUM_PIG_FARM}      from '../../../constants.js';
 
 import {formatDate,
         FORMAT_SHORT_MONTH,
         FORMAT_LONG_MONTH,
-        FORMAT_COMPACT}         from '../../utils.js';
+        FORMAT_COMPACT}         from '../../../utils.js';
 
-import {ComponentNavLeftRight}  from '../common/ui/comp_nav_left_right.js';
+import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
 
 import {PigProductionFeeds}     from './pig_production_feeds.js';
 
@@ -378,6 +379,10 @@ ${html_style}
         
         // Populate the table
         this.populateFeedEstimate(feed_estimate_prod);
+        
+        
+        this.estimateFeedsSows();
+        
     }
     
     
@@ -482,6 +487,93 @@ ${html_style}
         console.log(result);
         
         return result;
+    }
+    
+    
+    this.estimateFeedsSows = function(){
+        const list_lactating = navigation.pigFarm.managerPigProd.dataLactatingList;
+        const list_sows      = navigation.pigFarm.managerSowBoar.dataSowList;
+        
+        
+        
+        console.log('list_sows')
+        console.log(list_sows);
+        
+        /**
+         * 
+         * 
+         * */
+         
+        for (const cur_entry of list_sows){
+            
+        } 
+    }
+    
+    
+    /**
+     * This should return the estimated feeds for the sow
+    {
+        date_to_buy:    '2026-07-01',
+        feeds:{
+            gestating:  null,
+            lactating:  null
+        }
+        
+        
+    }
+    */
+    this._getEstimateFeedSow = function(data_sow_entry, dt_first_day_of_month){
+        const farm_sow_id = data_sow_entry.sow_boar.farm_sow_id;
+        
+        // Check if sow is currently lactating
+        this._getDataProductionEntry(farm_sow_id);
+        
+        
+        /**
+         * 
+         * 
+         * */
+        
+    }
+    
+    
+    // Will return production entry for a given farm_sow_id
+    // if is_gesta_or_lacta == true, will search in gestating, else in lactating
+    this._getDataProductionEntry = function(farm_sow_id, is_gesta_or_lacta){
+        let data_list = null;
+        
+        if (is_gesta_or_lacta == true){
+            data_list = navigation.pigFarm.managerPigProd.dataGestatingList;
+        }
+        else{
+            data_list = navigation.pigFarm.managerPigProd.dataLactatingList;
+        }
+    
+        if (!data_list || data_list.length == 0){return null;}
+        
+        for (const cur_entry of data_list){
+            if (cur_entry.pig_production.sow){
+                if (cur_entry.pig_production.sow.farm_sow_id == farm_sow_id){
+                    return cur_entry;
+                }
+            } 
+        } 
+        
+        return null;
+    }
+    
+    
+    // Will return weaning date of a lactating entry;
+    // This is a computed number.
+    // This will return a date object;
+    this._getWeaningDate = function(data_entry_lactating){
+        const date_birth        = data_entry_lactating.birth.date_actual;
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        
+        if (!date_birth){return null;}
+        
+        return calculateDateExpectedWean(date_birth, acc_settings_ops);
+        
     }
     
     

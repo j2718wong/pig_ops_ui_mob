@@ -398,6 +398,30 @@ export function calculateNumDaysSinceBirth(date_of_birth, dt_current, acc_settin
 }
     
 
+// Will return date object
+export function calculateDateExpectedWean(date_of_birth, acc_settings_ops){
+    const dt_actual = new Date(date_of_birth);
+        
+    let num_days_wean = APPLICATION.DEFAULT_NUM_DAYS_WEAN;
+    
+    // check if the account has set num_days_wean
+    if (acc_settings_ops){
+        num_days_wean = acc_settings_ops.num_days_wean;
+        
+        // Adjust Day 1 on date of birth if needed
+        if (acc_settings_ops.day_1_on_date_of_birth > 0){
+            num_days_wean -= 1;
+        }
+    }
+    
+    let msecs_wean = dt_actual.getTime() + num_days_wean * APPLICATION.NUM_MSECS_1DAY;
+    let dt_wean = new Date(msecs_wean);
+
+    return dt_wean
+}        
+        
+
+
 export function PageViewPigFarmPage(){  
     const thisObj       = this;
     
@@ -420,23 +444,7 @@ export function PageViewPigFarmPage(){
     
     
     this.calculateDateExpectedWean = function(date_of_birth, acc_settings_ops){
-        const dt_actual = new Date(date_of_birth);
-            
-        let num_days_wean = APPLICATION.DEFAULT_NUM_DAYS_WEAN;
-        
-        // check if the account has set num_days_wean
-        if (acc_settings_ops){
-            num_days_wean = acc_settings_ops.num_days_wean;
-            
-            // Adjust Day 1 on date of birth if needed
-            if (acc_settings_ops.day_1_on_date_of_birth > 0){
-                num_days_wean -= 1;
-            }
-        }
-        
-        let msecs_wean = dt_actual.getTime() + num_days_wean * APPLICATION.NUM_MSECS_1DAY;
-        let dt_wean = new Date(msecs_wean);
-        
+        let dt_wean = calculateDateExpectedWean(date_of_birth, acc_settings_ops);
         return formatDate(dt_wean, FORMAT_COMPACT);
     }
     
