@@ -28,6 +28,9 @@ import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
 
 import {PigProductionFeeds}     from './pig_production_feeds.js';
 
+import {SowFeeds,
+        combineFeedEstimatesSowBoarGilt} from './sow_boar_gilt_feeds.js';
+
 
 const ESTIMATE_FEEDS_ALL_PIGS       = 0;
 
@@ -483,7 +486,7 @@ ${html_style}
         const result = Object.values(monthlyFeedMap);
         result.sort((a, b) => a.date_to_buy.localeCompare(b.date_to_buy));
 
-        console.log('feeds_projection');
+        console.log('Production feeds_projection');
         console.log(result);
         
         return result;
@@ -491,50 +494,48 @@ ${html_style}
     
     
     this.estimateFeedsSows = function(){
-        const list_lactating = navigation.pigFarm.managerPigProd.dataLactatingList;
+
         const list_sows      = navigation.pigFarm.managerSowBoar.dataSowList;
         
+        const list_feed_estimate = [];
         
-        
-        console.log('list_sows')
-        console.log(list_sows);
-        
-        /**
-         * 
-         * 
-         * */
-         
-        for (const cur_entry of list_sows){
-            
-        } 
-    }
-    
-    
-    /**
-     * This should return the estimated feeds for the sow
-    {
-        date_to_buy:    '2026-07-01',
-        feeds:{
-            gestating:  null,
-            lactating:  null
+        // Compute feed needs for each sow in the next 
+        // MAX_NUM_MONTHS_FEED_PROJECTION months
+        if (list_sows){ 
+            for (const cur_entry of list_sows){
+                const cur_sow_feed = new SowFeeds(cur_entry);
+                const cur_feed_estimate = cur_sow_feed.computeFeedNeeds();
+                list_feed_estimate.push(cur_feed_estimate );
+            } 
         }
         
         
+        // Compute feed needs for each gilt in the next 
+        // MAX_NUM_MONTHS_FEED_PROJECTION months
+        const list_gilts    = navigation.pigFarm.managerSowBoar.dataGiltList;
+        
+        if (list_gilts){
+            for (const cur_entry of list_gilts){
+                const cur_sow_feed = new SowFeeds(cur_entry);
+                const cur_feed_estimate = cur_sow_feed.computeFeedNeeds();
+                list_feed_estimate.push(cur_feed_estimate );
+            }
+        }
+        
+        
+        // Compute feed needs for each boar in the next 
+        // MAX_NUM_MONTHS_FEED_PROJECTION months
+        const list_boars    = navigation.pigFarm.managerSowBoar.dataBoarList;
+        // TODO
+        
+        const result = combineFeedEstimatesSowBoarGilt(list_feed_estimate);
+        
+        console.log('Feed estimate SowBoar gilt');
+        console.log(result)
+        return result;
+        
     }
-    */
-    this._getEstimateFeedSow = function(data_sow_entry, dt_first_day_of_month){
-        const farm_sow_id = data_sow_entry.sow_boar.farm_sow_id;
-        
-        // Check if sow is currently lactating
-        this._getDataProductionEntry(farm_sow_id);
-        
-        
-        /**
-         * 
-         * 
-         * */
-        
-    }
+    
     
     
     

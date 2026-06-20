@@ -39,103 +39,109 @@ const DAILY_CONSUMPTION = {
 
 
 
+
+/**
+ * Check if expected date of birth requires lactating feed computation
+ * for the given month.
+ * 
+ * Logic:
+ * - If expected birth is in the current month (cur_date's month) → TRUE
+ * - If expected birth is in the next month but within first 3 days → TRUE (preparation)
+ * - If expected birth is already past → FALSE
+ * - If expected birth is beyond next month's cutoff → FALSE
+ * 
+ * Example 1:
+ * today            = '2026-06-15'
+ * cur_date         = '2026-07-01'
+ * date_expected   = '2026-06-20' 
+ * is_to_compute    = false (already past)
+ * 
+ * Example 2:
+ * today            = '2026-06-19'
+ * cur_date         = '2026-07-01'
+ * date_expected   = '2026-07-01' to '2026-07-03' 
+ * is_to_compute    = false (birth is within first 3 days of July, 
+ *                    but this should have been budgeted in June)
+ * 
+ * Example 3:
+ * today            = '2026-06-15'
+ * cur_date         = '2026-07-01'
+ * date_expected   = '2026-07-04' to '2026-07-31'
+ * is_to_compute    = true (birth in current month, beyond preparation window)
+ * 
+ * Example 4:
+ * today            = '2026-06-15'
+ * cur_date         = '2026-07-01'
+ * date_expected   = '2026-08-01' to '2026-08-03'
+ * is_to_compute    = true (birth in next month, within preparation window)
+ * 
+ * Example 5:
+ * today            = '2026-06-15'
+ * cur_date         = '2026-07-01'
+ * date_expected   = '2026-08-04' or later
+ * is_to_compute    = false (beyond next month's cutoff)
+ * 
+ * @param {string} cur_date - Date string in 'YYYY-MM-DD' format
+ * @param {string} date_expected - Date string in 'YYYY-MM-DD' format
+ * @returns {boolean} - True if lactating feed should be computed for this month
+ */
+function isToComputeLactaFeeds(cur_date, date_expected){
+        
+    // Parse dates
+    const curDateObj = new Date(cur_date);
+    const expectedBirthObj = new Date(date_expected);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Get the month and year of cur_date
+    const curMonth = curDateObj.getMonth();
+    const curYear = curDateObj.getFullYear();
+    
+    // Get the month and year of date_expected
+    const birthMonth = expectedBirthObj.getMonth();
+    const birthYear = expectedBirthObj.getFullYear();
+    
+    // Case 1: Expected birth is before cur_date (already past)
+    if (expectedBirthObj < curDateObj) {
+        return false;
+    }
+    
+    // Case 2: Expected birth is within cur_date's month
+    if (birthYear === curYear && birthMonth === curMonth) {
+        // Check if birth is within the first MAX_DAYS_OFFSET days of the month
+        // If so, it should have been budgeted in the previous month
+        const dayOfMonth = expectedBirthObj.getDate();
+        if (dayOfMonth <= MAX_DAYS_OFFSET_BUY_LACTA_THIS_MONTH) {
+            return false; // Already budgeted in previous month
+        }
+        return true;
+    }
+    
+    // Case 3: Expected birth is in the next month
+    if (birthYear === curYear && birthMonth === curMonth + 1) {
+        // Check if birth is within the first MAX_DAYS_OFFSET days of next month
+        const dayOfMonth = expectedBirthObj.getDate();
+        if (dayOfMonth <= MAX_DAYS_OFFSET_BUY_LACTA_THIS_MONTH) {
+            return true; // Need to prepare this month
+        }
+        return false;
+    }
+    
+    // Case 4: Expected birth is beyond next month
+    return false;
+}
+
+
+
+
+
+
 export function SowFeeds(data_sow){
     const thisObj               = this;
     
     let dataSow             = data_sow;
     
 
-    /**
-     * Check if expected date of birth requires lactating feed computation
-     * for the given month.
-     * 
-     * Logic:
-     * - If expected birth is in the current month (cur_date's month) → TRUE
-     * - If expected birth is in the next month but within first 3 days → TRUE (preparation)
-     * - If expected birth is already past → FALSE
-     * - If expected birth is beyond next month's cutoff → FALSE
-     * 
-     * Example 1:
-     * today            = '2026-06-15'
-     * cur_date         = '2026-07-01'
-     * date_expected   = '2026-06-20' 
-     * is_to_compute    = false (already past)
-     * 
-     * Example 2:
-     * today            = '2026-06-19'
-     * cur_date         = '2026-07-01'
-     * date_expected   = '2026-07-01' to '2026-07-03' 
-     * is_to_compute    = false (birth is within first 3 days of July, 
-     *                    but this should have been budgeted in June)
-     * 
-     * Example 3:
-     * today            = '2026-06-15'
-     * cur_date         = '2026-07-01'
-     * date_expected   = '2026-07-04' to '2026-07-31'
-     * is_to_compute    = true (birth in current month, beyond preparation window)
-     * 
-     * Example 4:
-     * today            = '2026-06-15'
-     * cur_date         = '2026-07-01'
-     * date_expected   = '2026-08-01' to '2026-08-03'
-     * is_to_compute    = true (birth in next month, within preparation window)
-     * 
-     * Example 5:
-     * today            = '2026-06-15'
-     * cur_date         = '2026-07-01'
-     * date_expected   = '2026-08-04' or later
-     * is_to_compute    = false (beyond next month's cutoff)
-     * 
-     * @param {string} cur_date - Date string in 'YYYY-MM-DD' format
-     * @param {string} date_expected - Date string in 'YYYY-MM-DD' format
-     * @returns {boolean} - True if lactating feed should be computed for this month
-     */
-    this._isToComputeLactaFeeds = function(cur_date, date_expected){
-        
-        // Parse dates
-        const curDateObj = new Date(cur_date);
-        const expectedBirthObj = new Date(date_expected);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        // Get the month and year of cur_date
-        const curMonth = curDateObj.getMonth();
-        const curYear = curDateObj.getFullYear();
-        
-        // Get the month and year of date_expected
-        const birthMonth = expectedBirthObj.getMonth();
-        const birthYear = expectedBirthObj.getFullYear();
-        
-        // Case 1: Expected birth is before cur_date (already past)
-        if (expectedBirthObj < curDateObj) {
-            return false;
-        }
-        
-        // Case 2: Expected birth is within cur_date's month
-        if (birthYear === curYear && birthMonth === curMonth) {
-            // Check if birth is within the first MAX_DAYS_OFFSET days of the month
-            // If so, it should have been budgeted in the previous month
-            const dayOfMonth = expectedBirthObj.getDate();
-            if (dayOfMonth <= MAX_DAYS_OFFSET_BUY_LACTA_THIS_MONTH) {
-                return false; // Already budgeted in previous month
-            }
-            return true;
-        }
-        
-        // Case 3: Expected birth is in the next month
-        if (birthYear === curYear && birthMonth === curMonth + 1) {
-            // Check if birth is within the first MAX_DAYS_OFFSET days of next month
-            const dayOfMonth = expectedBirthObj.getDate();
-            if (dayOfMonth <= MAX_DAYS_OFFSET_BUY_LACTA_THIS_MONTH) {
-                return true; // Need to prepare this month
-            }
-            return false;
-        }
-        
-        // Case 4: Expected birth is beyond next month
-        return false;
-    }
-    
     
     // Will return production entry for a given farm_sow_id
     // if is_gesta_or_lacta == true, will search in gestating, else in lactating
@@ -152,8 +158,8 @@ export function SowFeeds(data_sow){
         if (!data_list || data_list.length == 0){return null;}
         
         for (const cur_entry of data_list){
-            if (cur_entry.pig_production.sow){
-                if (cur_entry.pig_production.sow.farm_sow_id == farm_sow_id){
+            if (cur_entry.sow){
+                if (cur_entry.sow.farm_sow_id == farm_sow_id){
                     return cur_entry;
                 }
             } 
@@ -165,17 +171,20 @@ export function SowFeeds(data_sow){
     
     // Will return weaning date of a lactating entry;
     // This is a computed number.
-    // This will return a date object;
     this._getWeaningDate = function(data_entry_lacta){
-        const date_birth        = data_entry_lacta.birth.date_actual;
-        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        // Get birth date from the lactating entry
+        const date_birth = data_entry_lacta.birth.date_actual;
+        if (!date_birth) {
+            return null;
+        }
         
-        if (!date_birth){return null;}
+        // Get account settings for weaning days
+        const acc_settings_ops = navigation.pigFarm.getSettingsOperations();
         
+        // This will return a date object
         return calculateDateExpectedWean(date_birth, acc_settings_ops);
         
     }
-    
     
     
     /**
@@ -188,22 +197,119 @@ export function SowFeeds(data_sow){
      * This should return a list like this; the feeds unit are all in kg;
      * No conversion to sacks yet or cost computation.
      * 
-     * [  
+     
+     Example 1: sow has not yet given birth
+     Today = '2026-06-20'
+     
+     result = [  
             {
-                date_to_buy:    '2026-07-01',
+                date_to_buy:            '2026-07-01',
+                sow_name:               'Rosita',
+                date_birth:             '2026-07-26', // This is expected birth; not yet happened
+                date_wean:              '2026-08-26', // This is expected wean; not yet happened  
                 feeds:{
-                    gestating:  60,     // this is in kg
-                    lactating:  150,    // this is in kg (full batch purchased in advance)
+                    gestating:  52,     // July 1-26 = 26 days × 2kg
+                    lactating:  150,    // Full batch purchased 
                 }
             },
              
             {
-                date_to_buy:    '2026-08-01',
+                date_to_buy:            '2026-08-01',
+                sow_name:               'Rosita',
+                date_expected_birth:    '2026-07-26',
+                date_expected_wean:     '2026-08-26',   
                 feeds:{
-                    gestating:  62,     // this is in kg (after weaning, back to gestating)
+                    gestating:  12      // Aug 26-31 = 6 days × 2kg
+                } 
+            },
+            
+            {
+                date_to_buy:            '2026-09-01',
+                sow_name:               'Rosita',
+                date_expected_birth:    '2026-07-26',
+                date_expected_wean:     '2026-08-26',   
+                feeds:{
+                    gestating:  60      // Sep 1-30 = 30 days × 2kg
                 } 
             }
        ] 
+       
+       
+       Example 2: Currently Lactating
+       Today = '2026-06-20'
+       
+       result = [  
+            {
+                date_to_buy:            '2026-07-01',
+                sow_name:               'Lala',
+                date_birth:             '2026-06-07',   // This is actual birth; already happened
+                date_wean:              '2026-07-08',   // This is expected wean; not yet happened
+                feeds:{
+                    gestating:  48      // July 8-31 = 24 days × 2kg
+                     
+                }
+            },
+             
+            {
+                date_to_buy:            '2026-08-01',
+                sow_name:               'Lala',
+                date_expected_birth:    '2026-06-07',
+                date_expected_wean:     '2026-07-08',  
+                feeds:{
+                    gestating:  62      // Aug 1-31 = 31 days × 2kg
+                } 
+            },
+            
+            {
+                date_to_buy:            '2026-09-01',
+                sow_name:               'Lala',
+                date_expected_birth:    '2026-06-07',
+                date_expected_wean:     '2026-07-08',    
+                feeds:{
+                    gestating:  60      // Sep 1-30 = 30 days × 2kg
+                } 
+            }
+       ] 
+       
+       
+       Example 3: sow has not yet given birth but expected date of birth within 
+        MAX_DAYS_OFFSET_BUY_LACTA_THIS_MONTH (3 days)
+       Today = '2026-06-20'
+     
+       result = [  
+            {
+                date_to_buy:            '2026-07-01',
+                sow_name:               'Mylene',
+                date_birth:             '2026-08-03', // This is expected birth; not yet happened
+                date_wean:              '2026-09-03', // This is expected wean; not yet happened  
+                feeds:{
+                    gestating:  62,     // July 1-31 = 31 days × 2kg
+                    lactating:  150,    // Full batch purchased; this si needed for lacta preparation 
+                }
+            },
+             
+            {
+                date_to_buy:            '2026-08-01',
+                sow_name:               'Mylene',
+                date_birth:             '2026-08-03', // This is expected birth; not yet happened
+                date_wean:              '2026-09-03', // This is expected wean; not yet happened,   
+                feeds:{
+                    gestating:  6      // Aug 1-3 = 3 days × 2kg
+                } 
+            },
+            
+            {
+                date_to_buy:            '2026-09-01',
+                sow_name:               'Mylene',
+                date_birth:             '2026-08-03', // This is expected birth; not yet happened
+                date_wean:              '2026-09-03', // This is expected wean; not yet happened,     
+                feeds:{
+                    gestating:  56      // Sep 3-30 = 28 days × 2kg
+                } 
+            }
+       ]
+       
+        
     */
     this.computeFeedNeeds = function(){
         const result = [];
@@ -223,143 +329,178 @@ export function SowFeeds(data_sow){
         const data_entry_gesta = thisObj._getDataProductionEntry(farm_sow_id, true);
         const data_entry_lacta = thisObj._getDataProductionEntry(farm_sow_id, false);
         
-        // Determine sow's current state
-        const isGestating = data_entry_gesta !== null;
-        const isLactating = data_entry_lacta !== null;
-        const isWeaningOrGilt = !isGestating && !isLactating;
-        
         // Constants
         const DAILY_GESTA = DAILY_CONSUMPTION.gestating || 2.0;
+        const acc_settings_ops = navigation.pigFarm.getSettingsOperations();
         
-        // Get weaning date if lactating
-        let weaningDateObj = null;
-        let weaningMonth = -1;
-        let weaningYear = -1;
+        // Determine sow's base state
+        const isCurrentlyLactating = data_entry_lacta !== null;
+        const isCurrentlyGestating = data_entry_gesta !== null;
+        const isWeaningOrGilt = !isCurrentlyLactating && !isCurrentlyGestating;
         
-        if (isLactating) {
-            const weaningDate = thisObj._getWeaningDate(data_entry_lacta);
-            if (weaningDate) {
-                weaningDateObj = new Date(weaningDate);
-                weaningDateObj.setHours(0, 0, 0, 0);
-                weaningMonth = weaningDateObj.getMonth();
-                weaningYear = weaningDateObj.getFullYear();
+        // Get birth and weaning dates
+        let birthDate       = null;
+        let birthDateObj    = null;
+        let weaningDate     = null;
+        let weaningDateObj  = null;
+        
+        // For gestating sows: set birthDate to expected birth date
+        if (isCurrentlyGestating && data_entry_gesta) {
+            birthDate       = data_entry_gesta.birth.date_expected;
+            if (birthDate) {
+                birthDateObj = new Date(birthDate);
+                birthDateObj.setHours(0, 0, 0, 0);
             }
+            
+            // Compute weaning date
+            weaningDateObj  = calculateDateExpectedWean(birthDate, acc_settings_ops); 
+            weaningDate     = weaningDateObj.toISOString().split('T')[0];   
         }
         
-        // Track if we've already added lactating preparation
+        // For lactating sows: set birthDate to actual birth date
+        if (isCurrentlyLactating && data_entry_lacta) {
+            birthDate = data_entry_lacta.birth.date_actual;
+            if (birthDate) {
+                const birthDateObj = new Date(birthDate);
+                birthDateObj.setHours(0, 0, 0, 0);
+            }
+            
+            // Compute weaning date
+            weaningDateObj = calculateDateExpectedWean(birthDate, acc_settings_ops);
+            weaningDate     = weaningDateObj.toISOString().split('T')[0];
+        }
+        
+        
+        
+        // Track if lactating feed has been prepared
         let lactaPrepared = false;
         
         for (let i = 0; i < list_first_day_of_month.length; i++) {
-            const cur_date = list_first_day_of_month[i];
-            const currentDate = new Date(cur_date);
+            const cur_date      = list_first_day_of_month[i];
+            const currentDate   = new Date(cur_date);
             currentDate.setHours(0, 0, 0, 0);
             
             // Calculate days in this month
-            const nextMonth = new Date(currentDate);
+            const nextMonth     = new Date(currentDate);
             nextMonth.setMonth(nextMonth.getMonth() + 1);
-            const daysInMonth = Math.floor((nextMonth - currentDate) / (1000 * 60 * 60 * 24));
+            const daysInMonth   = Math.floor((nextMonth - currentDate) / (1000 * 60 * 60 * 24));
             
             const curResult = {
-                date_to_buy: cur_date,
+                sow_name:       dataSow.sow_boar.name,
+                date_to_buy:    cur_date,
+                date_birth:     birthDate,
+                date_wean:      weaningDate,
                 feeds: {}
             };
             
-            // ============================================
-            // CASE 1: Sow is GESTATING
-            // ============================================
-            if (isGestating) {
-                const date_expected = data_entry_gesta.birth.date_expected;
-                
-                if (date_expected) {
-                    const expectedBirthObj = new Date(date_expected);
-                    expectedBirthObj.setHours(0, 0, 0, 0);
-                    
-                    // Check if expected birth falls within this month
-                    const isBirthThisMonth = (expectedBirthObj.getFullYear() === currentDate.getFullYear() &&
-                                              expectedBirthObj.getMonth() === currentDate.getMonth());
-                    
-                    let daysToFeedGesta = 0;
-                    
-                    if (isBirthThisMonth) {
-                        // Feed from first day of month until expected birth date
-                        const birthDay = expectedBirthObj.getDate();
-                        daysToFeedGesta = birthDay - 1; // Days from 1st to day before birth
-                    } else {
-                        // Feed the whole month
-                        daysToFeedGesta = daysInMonth;
-                    }
-                    
-                    // Calculate gestating consumption in kg
-                    const estGestaConsumption = Math.round(daysToFeedGesta * DAILY_GESTA);
-                    
-                    if (estGestaConsumption > 0) {
-                        curResult.feeds.gestating = estGestaConsumption;
-                    }
-                    
-                    // ============================================
-                    // Lactating feed preparation (full batch in advance)
-                    // ============================================
-                    const isToComputeLacta = thisObj._isToComputeLactaFeeds(cur_date, date_expected);
-                    
-                    if (isToComputeLacta && !lactaPrepared) {
-                        // Add full lactating feed budget (150kg = 3 sacks) purchased in advance
-                        curResult.feeds.lactating = DEFAULT_KG_FEED_LACTATING;
-                        lactaPrepared = true;
-                    }
-                }
-            }
             
             // ============================================
-            // CASE 2: Sow is LACTATING
+            // DETERMINE SOW STATE FOR THIS MONTH
             // ============================================
-            if (isLactating && weaningDateObj) {
-                // Check if weaning is in this month
+            let isGestatingThisMonth        = false;
+            let isLactatingThisMonth        = false;
+            let isWeaningOrGiltThisMonth    = false;
+            let daysToFeedGesta             = 0;
+            let hasBirthThisMonth           = false;
+            let birthDayInMonth             = 0;
+            let weanDayInMonth              = 0;
+            
+            
+            // --- CASE A: Sow is currently LACTATING ---
+            if (isCurrentlyLactating && weaningDateObj) {
                 const isWeaningThisMonth = (weaningDateObj.getFullYear() === currentDate.getFullYear() &&
                                             weaningDateObj.getMonth() === currentDate.getMonth());
-                
-                let daysToFeedGesta = 0;
+                const isWeaningFuture   = weaningDateObj > currentDate;
+                const isWeaningPast     = weaningDateObj < currentDate;
                 
                 if (isWeaningThisMonth) {
                     // Weaning happens this month
                     const weaningDay = weaningDateObj.getDate();
-                    // After weaning day, sow reverts to gestating feed for the rest of the month
+                    // After weaning, sow reverts to gestating feed
+                    daysToFeedGesta = daysInMonth - weaningDay + 1;
+                    isGestatingThisMonth = true;
+                } else if (isWeaningPast) {
+                    // Weaning already passed - full month gestating
+                    daysToFeedGesta = daysInMonth;
+                    isGestatingThisMonth = true;
+                } else {
+                    // Weaning is in the future - sow is still lactating
+                    isLactatingThisMonth = true;
+                }
+                
+            }
+            
+            
+            // --- CASE B: Sow is currently GESTATING ---
+            if (isCurrentlyGestating && birthDateObj) {
+                const isBirthThisMonth  = (birthDateObj.getFullYear() === currentDate.getFullYear() &&
+                                          birthDateObj.getMonth() === currentDate.getMonth());
+                 
+                const isWeanThisMonth   = (weaningDateObj.getFullYear() === currentDate.getFullYear() &&
+                                          weaningDateObj.getMonth() === currentDate.getMonth());
+                
+                
+                // Compute daysToFeedGesta
+                if (isBirthThisMonth) {
+                    hasBirthThisMonth = true;
+                    birthDayInMonth = birthDateObj.getDate();
+                    
+                    // Gestating until birth day
+                    daysToFeedGesta = birthDayInMonth;
+
+                } else if (isWeanThisMonth) {
+                    const weaningDay = weaningDateObj.getDate();
                     daysToFeedGesta = daysInMonth - weaningDay + 1;
                     
-                } else if (weaningDateObj < currentDate) {
-                    // Weaning already passed in previous month
-                    // Sow is now on gestating feed for the whole month
+                } else {
+                    // Birth already passed - full month gestating
                     daysToFeedGesta = daysInMonth;
                 }
+
                 
-                // Add gestating consumption (after weaning, sow reverts to gestating feed)
-                if (daysToFeedGesta > 0) {
-                    const estGestaConsumption = Math.round(daysToFeedGesta * DAILY_GESTA);
-                    if (estGestaConsumption > 0) {
-                        curResult.feeds.gestating = (curResult.feeds.gestating || 0) + estGestaConsumption;
-                    }
+                // Check if lactating feed should be prepared
+                const is_to_compute_lacta = isToComputeLactaFeeds(cur_date, birthDate);
+                if (is_to_compute_lacta && !lactaPrepared) {
+                    curResult.feeds.lactating = DEFAULT_KG_FEED_LACTATING;
                 }
                 
-                // Note: Lactating feed is not added here because it was already
-                // purchased in advance during the gestating period
+            }
+            
+            
+            // --- CASE C: Sow is WEANING or GILT ---
+            if (isWeaningOrGilt) {
+                // Full month gestating (maintenance)
+                daysToFeedGesta = daysInMonth;
             }
             
             // ============================================
-            // CASE 3: Sow is WEANING or GILT(not gestating or lactating)
+            // ADD GESTATING FEED
             // ============================================
-            if (isWeaningOrGilt) {
-                // Sow is in weaning period or idle
-                // Still needs maintenance feed (gestating rate)
-                const estGestaConsumption = Math.round(daysInMonth * DAILY_GESTA);
+            if (daysToFeedGesta > 0) {
+                const estGestaConsumption = Math.round(daysToFeedGesta * DAILY_GESTA);
                 if (estGestaConsumption > 0) {
                     curResult.feeds.gestating = estGestaConsumption;
                 }
             }
             
+            // ============================================
+            // ADD LACTATING FEED (if birth this month)
+            // ============================================
+            // Note: Lactating feed is already added in the birth month case above
+            
             result.push(curResult);
         }
+
+        
+        // Do not delete this in case for debugging
+        //console.log('\n\nsow_name = ' + dataSow.sow_boar.name);
+        //console.log(JSON.stringify(result, null, 2));
         
         return result;
     }
+
+
+        
 
 }
 
@@ -448,11 +589,11 @@ export function combineFeedEstimatesSowBoarGilt(feed_estimates){
     const FEED_UNIT_WEIGHT = {
         gestating:  DEFAULT_FEED_UNIT_WEIGHT?.GESTATING || 50,
         lactating:  DEFAULT_FEED_UNIT_WEIGHT?.LACTATING || 50,
-        booster:    DEFAULT_FEED_UNIT_WEIGHT?.BOOSTER || 1,
+        booster:    DEFAULT_FEED_UNIT_WEIGHT?.BOOSTER   || 1,
         prestarter: DEFAULT_FEED_UNIT_WEIGHT?.PRESTARTER || 25,
-        starter:    DEFAULT_FEED_UNIT_WEIGHT?.STARTER || 50,
-        grower:     DEFAULT_FEED_UNIT_WEIGHT?.GROWER || 50,
-        finisher:   DEFAULT_FEED_UNIT_WEIGHT?.FINISHER || 50
+        starter:    DEFAULT_FEED_UNIT_WEIGHT?.STARTER   || 50,
+        grower:     DEFAULT_FEED_UNIT_WEIGHT?.GROWER    || 50,
+        finisher:   DEFAULT_FEED_UNIT_WEIGHT?.FINISHER  || 50
     };
     
     // This is the account latest feed price per unit weight
