@@ -178,7 +178,7 @@ export function TranslationHelper(settings) {
         }
         
         if (localText){
-            if (localText.lenght == 0){return null;}
+            if (localText.length == 0){return null;}
             return localText;
         }
         

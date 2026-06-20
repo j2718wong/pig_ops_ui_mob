@@ -1215,14 +1215,36 @@ export function ManagerPigProd(input_settings){
         let index;
         let cur_entry;
         
+        let pig_prod_type;
+        
         for(index = 0; index<prod_list.length; index++){
             cur_entry = prod_list[index];
             
             if (cur_entry.pig_production.hid == pig_prod_hid){
                 prod_list.splice(index, 1, new_prod_entry);
                 
-                // Update local storage
-                //thisObj.saveToStorage();
+                
+                if (prod_list == thisObj.dataGestatingList){
+                    pig_prod_type = PIG_PROD_TYPE.GESTATING;
+                    
+                    // Update local storage
+                    thisObj.savePigProdListToCache(pig_prod_type);
+                }
+
+                if (prod_list == thisObj.dataLactatingList){
+                    pig_prod_type = PIG_PROD_TYPE.LACTATING;
+                    
+                    // Update local storage
+                    thisObj.savePigProdListToCache(pig_prod_type);
+                }
+
+                if (prod_list == thisObj.dataFatteningList){
+                    pig_prod_type = PIG_PROD_TYPE.FATTENING;
+                    
+                    // Update local storage
+                    thisObj.savePigProdListToCache(pig_prod_type);
+                }
+
                 
                 return;
             }

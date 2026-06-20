@@ -658,7 +658,7 @@ export function PageProdFeedAddEdit(input_settings){
             
                     // populate elemSelectOlderFeedBuy
                     let filtered = feed_buy_list;
-                    if (feed_buy_list.lenght >= MAX_OLDER_ENTRIES) {
+                    if (feed_buy_list.length >= MAX_OLDER_ENTRIES) {
                         filtered = feed_buy_list.slice(0, MAX_OLDER_ENTRIES);
                     }
                     

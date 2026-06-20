@@ -293,7 +293,7 @@ export function ComponentWeightPerPig(input_settings){
     
     // pig_weights, comma separated string
     this.setPigWeights = function(pig_weights){
-        if (pig_weights.lenght == 0){return;}
+        if (pig_weights.length == 0){return;}
         
         const weights = pig_weights.split(',');
         

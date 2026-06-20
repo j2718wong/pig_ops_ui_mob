@@ -433,7 +433,7 @@ export function PagePigDeadAddEdit(input_settings){
         
         
         // Validate pig_prod
-        input_elem          = elemUiCurrentProduction.getElemSelect;
+        input_elem          = elemUiCurrentProduction.getElemSelect();
         if (input_prod_hid == '0' || input_prod_hid == '-1'){
             validation      = -1;
             addValidationClassToElem(input_elem, validation);
@@ -459,7 +459,7 @@ export function PagePigDeadAddEdit(input_settings){
         
         
         // Validate pig_prod
-        input_elem          = componentDeadType.getElemSelect;
+        input_elem          = componentDeadType.getElemSelect();
         if (input_dead_type_hid == '0' || input_dead_type_hid == '-1'){
             validation      = -1;
             addValidationClassToElem(input_elem, validation);
@@ -537,7 +537,7 @@ export function PagePigDeadAddEdit(input_settings){
                     // Fixed return route; After Add/edit should return to list page
                     
                     const callback_success = function(){
-                        // TODO need to also update pig_production, because
+                        // Need to also update pig_production, because
                         // the pig_production pig count now is different;
                         // If pig_production is not updated, the pig counts in 
                         // dashboard is out of sync; need to refresh the app to 
@@ -545,8 +545,8 @@ export function PagePigDeadAddEdit(input_settings){
                         // As much as possible refresh only the pig_production
                         // entry, not the the whole pig_production list.
                         
+                        thisObj.onSuccessAddEntry(input_prod_hid);
                         
-                        history.back();
                     };
                     
                     const callback_offline = function(){
@@ -573,5 +573,72 @@ export function PagePigDeadAddEdit(input_settings){
                 navigation.serverError.serverErrorThrown(jqXHR, textStatus, errorThrown);
             }
         });
+    }
+    
+    
+    // The prod_hid is the production entry where the pig died; 
+    this.onSuccessAddEntry = function(pig_prod_hid){
+        let lacta_list = navigation.pigFarm.managerPigProd.dataLactatingList;
+        let fattening_list = navigation.pigFarm.managerPigProd.dataFatteningList;
+        
+        let prod_list      = null; 
+        let curDataPigProd = null;
+        
+        if (lacta_list && lacta_list.length > 0){
+            for (const cur_entry of lacta_list){
+                if (cur_entry.pig_production.hid == pig_prod_hid){
+                    curDataPigProd = cur_entry;
+                    prod_list   = lacta_list;
+                    break;
+                }
+            }
+        }
+        
+        
+        if (curDataPigProd == null){
+            if (fattening_list && fattening_list.length > 0){
+                for (const cur_entry of fattening_list){
+                    if (cur_entry.pig_production.hid == pig_prod_hid){
+                        curDataPigProd = cur_entry;
+                        prod_list   = fattening_list;
+                        break;
+                    }
+                }
+            }
+        }
+        
+
+        // Replace production entry from databse.
+        if (curDataPigProd){
+        
+            const callback_success = function(data_pig_prod){
+                // 1.) Copy the current gestating_ops and lactating_ops to
+                //     data_pig_prod
+                data_pig_prod.gestating_ops = curDataPigProd.gestating_ops;
+                data_pig_prod.lactating_ops = curDataPigProd.lactating_ops;
+                
+                // 2.) Copy all production data_details
+                data_pig_prod.data_details  = curDataPigProd.data_details;
+
+
+                // Note: this will save prod_list to cache but the data versions
+                // are not updated; On next application page reload, it should 
+                // request again the list + version;
+                navigation.pigFarm.managerPigProd.replaceInProdList(
+                        pig_prod_hid, prod_list, data_pig_prod);
+                        
+                        
+                history.back();
+            };
+            
+            
+            // Request updated prod_entry data and replace curDataPigProd;
+            // Exclude requesting gestating, lactating pig_ops
+            const inc_pig_ops = 0;
+            
+            navigation.pigFarm.managerPigProd.requestPigProdEntry(pig_prod_hid, 
+                inc_pig_ops, callback_success, elemServerErrorMsg);
+        }
+        
     }
 }
