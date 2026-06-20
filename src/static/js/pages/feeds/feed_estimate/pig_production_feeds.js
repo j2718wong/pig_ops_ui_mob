@@ -247,7 +247,8 @@ export function PigProductionFeeds(data_pig_prod){
         let remainingBalance = { ...remainingFeeds };
         
         for (let i = 0; i < list_first_day_of_month.length; i++) {
-            const currentDate = new Date(list_first_day_of_month[i]);
+            const cur_date      = list_first_day_of_month[i];
+            const currentDate   = new Date(cur_date);
             currentDate.setHours(0, 0, 0, 0);
             
             // Calculate days since birth at start of this month
