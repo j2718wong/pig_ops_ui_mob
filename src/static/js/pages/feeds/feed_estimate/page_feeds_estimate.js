@@ -28,7 +28,7 @@ import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
 
 import {PigProductionFeeds}     from './pig_production_feeds.js';
 
-import {SowFeeds,
+import {SowFeeds, BoarFeeds,
         combineFeedEstimatesSowBoarGilt} from './sow_boar_gilt_feeds.js';
 
 
@@ -108,9 +108,9 @@ export function PageFeedsEstimate(input_settings){
     let currentFilter           = 'all'; // 'all', 'sow_boar', 'fattening'
     
     // Cached data
-    let cachedProdEstimate      = null;
-    let cachedBreedingEstimate  = null;
-    let cachedCombinedEstimate  = null;
+    let estimateProd      = null;
+    let estimateBreeding  = null;
+    let estimateCombined  = null;
     
     
     this.init = function(){
@@ -130,7 +130,7 @@ export function PageFeedsEstimate(input_settings){
         let label_page_title    = 'Feeds Estimate';
         let label_today         = 'Today';
         
-        let label_see_sample    = 'See Sample Feeds Consumed data';
+        let label_see_sample    = 'See Sample Estimate data';
         let label_filter        = 'View:';
         let label_all           = 'All';
         let label_sow_boar      = 'Sow/Boar';
@@ -138,7 +138,8 @@ export function PageFeedsEstimate(input_settings){
         
         
         let page_info   = `
-            This will estimate feed requirements and cost for next two months.
+            This will help you estimate your feed needs and cost for the next 4 months.
+            The estimate includes your breeding pigs and fatteners until harvest.
         `;
         
         
@@ -191,7 +192,7 @@ export function PageFeedsEstimate(input_settings){
                         <div class="filter-buttons sow">
                             <button class="filter-button active" data-filter="all">All</button>
                             <button class="filter-button" data-filter="sow_boar">Sow/Boar</button>
-                            <button class="filter-button" data-filter="fattening">Production</button>
+                            <button class="filter-button" data-filter="fattening">Fattening</button>
                         </div>
                     </div>
                 </div>
@@ -205,6 +206,11 @@ ${html_style}
 
 <div class="mobile-container">
     ${html_nav}
+    
+    <div class="mobile-info-box" id="${elemIdPageInfo}">
+        ${page_info}
+    </div>
+    
     
     <div style="text-align: center;">
         <span id="${elemIdLabelToday}">${label_today}</span>
@@ -338,12 +344,13 @@ ${html_style}
     this._processAfterHtmlRender = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavFarrowingChecklist();
+            navigation.managerNavLinks.onClickNavFeedsExpenses(null, true);
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            navigation.managerNavLinks.onClickNavFeedBalance();
+            // TODO - to fixed
+            navigation.managerNavLinks.onClickNavSummaryReports();
         };
         
         
@@ -401,13 +408,20 @@ ${html_style}
         elemDateToday.textContent = s_dt_current;
         
         // Get production feed estimates
-        cachedProdEstimate = this.estimateFeedsProduction();
+        estimateProd = this.estimateFeedsProduction();
         
         // Get breeding feed estimates (sows + gilts + boars)
-        cachedBreedingEstimate = this.estimateFeedsSows();
+        estimateBreeding = this.estimateFeedsSows();
         
         // Combine both for "All" view
-        cachedCombinedEstimate = this.combineEstimates(cachedProdEstimate, cachedBreedingEstimate);
+        estimateCombined = this.combineEstimates(estimateProd, estimateBreeding);
+        
+        if (estimateCombined && estimateCombined.length > 0){
+            elemShowSample.style.display =  'none';
+        }
+        else{
+            elemShowSample.style.display =  'block';
+        }
         
         // Default to "All" view
         currentFilter = 'all';
@@ -498,16 +512,16 @@ ${html_style}
         
         switch(filter) {
             case 'all':
-                dataToShow = cachedCombinedEstimate || [];
+                dataToShow = estimateCombined || [];
                 break;
             case 'sow_boar':
-                dataToShow = cachedBreedingEstimate || [];
+                dataToShow = estimateBreeding || [];
                 break;
             case 'fattening':
-                dataToShow = cachedProdEstimate || [];
+                dataToShow = estimateProd || [];
                 break;
             default:
-                dataToShow = cachedCombinedEstimate || [];
+                dataToShow = estimateCombined || [];
         }
         
         this.populateFeedEstimate(dataToShow);
@@ -611,18 +625,17 @@ ${html_style}
         const result = Object.values(monthlyFeedMap);
         result.sort((a, b) => a.date_to_buy.localeCompare(b.date_to_buy));
 
-        console.log('Production feeds_projection');
-        console.log(result);
+        //console.log('Production feeds_projection');
+        //console.log(result);
         
         return result;
     }
     
     
     this.estimateFeedsSows = function(){
-
-        const list_sows      = navigation.pigFarm.managerSowBoar.dataSowList;
-        
         const list_feed_estimate = [];
+        
+        const list_sows      = navigation.pigFarm.managerSowBoar.dataSowList;
         
         // Compute feed needs for each sow in the next 
         // MAX_NUM_MONTHS_FEED_PROJECTION months
@@ -651,19 +664,23 @@ ${html_style}
         // Compute feed needs for each boar in the next 
         // MAX_NUM_MONTHS_FEED_PROJECTION months
         const list_boars    = navigation.pigFarm.managerSowBoar.dataBoarList;
-        // TODO: Add boar feed estimation
+        
+        if (list_boars){
+            for (const cur_entry of list_boars){
+                const cur_boar_feed = new BoarFeeds(cur_entry);
+                const cur_feed_estimate = cur_boar_feed.computeFeedNeeds();
+                list_feed_estimate.push(cur_feed_estimate );
+            }
+        }
+        
         
         const result = combineFeedEstimatesSowBoarGilt(list_feed_estimate);
         
-        console.log('Feed estimate SowBoar gilt');
-        console.log(result)
+        //console.log('Feed estimate SowBoar gilt');
+        //console.log(result)
         return result;
         
     }
-    
-    
-    
-    
     
     
     /**
@@ -706,14 +723,16 @@ ${html_style}
         }
         
         // Define feed types to display (in order)
-        const feedTypes = ['gestating', 'lactating', 'prestarter', 'starter', 'grower', 'finisher'];
+        const feedTypes = ['gestating', 'lactating', 'prestarter', 
+                            'starter', 'grower', 'finisher'];
         const feedLabels = {
-            'gestating': 'Gesta',
-            'lactating': 'Lacta',
-            'prestarter': 'PreStart',
-            'starter': 'Starter',
-            'grower': 'Grower',
-            'finisher': 'Finisher'
+            'gestating':    'Gesta',
+            'lactating':    'Lacta',
+            //'booster':      'Booster',  // TODO double check
+            'prestarter':   'PreStart',
+            'starter':      'Starter',
+            'grower':       'Grower',
+            'finisher':     'Finisher'
         };
         
         // Build table rows

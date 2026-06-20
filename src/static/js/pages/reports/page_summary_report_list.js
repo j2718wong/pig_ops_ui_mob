@@ -174,7 +174,7 @@ export function PageSummaryReportList(input_settings){
     this._processAfterHtmlRenderThis = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            navigation.managerNavLinks.onClickNavFeedsExpenses(null, true);
+            navigation.managerNavLinks.onClickNavFeedsEstimate(null, true);
         };
         
           

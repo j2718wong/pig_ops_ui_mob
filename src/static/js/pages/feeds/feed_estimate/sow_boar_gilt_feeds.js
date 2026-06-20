@@ -30,12 +30,19 @@ const MAX_DAYS_OFFSET_BUY_LACTA_THIS_MONTH = 3;
 // This is the default feed budget for lactating sow and piglets
 let DEFAULT_KG_FEED_LACTATING   = 150;
 
+let DEFAULT_KG_FEED_BOOSTER     = 20;
+
 
 // Average daily consumption per pig (kg per day)
 const DAILY_CONSUMPTION = {
     gestating: 2.0       // this maybe refined later on
 };
 
+
+// Average daily consumption per pig (kg per day)
+const DAILY_CONSUMPTION_BOAR = {
+    finisher: 3.0       // this maybe refined later on
+};
 
 
 
@@ -399,9 +406,7 @@ export function SowFeeds(data_sow){
             // ============================================
             let isGestatingThisMonth        = false;
             let isLactatingThisMonth        = false;
-            let isWeaningOrGiltThisMonth    = false;
             let daysToFeedGesta             = 0;
-            let hasBirthThisMonth           = false;
             let birthDayInMonth             = 0;
             let weanDayInMonth              = 0;
             
@@ -442,7 +447,6 @@ export function SowFeeds(data_sow){
                 
                 // Compute daysToFeedGesta
                 if (isBirthThisMonth) {
-                    hasBirthThisMonth = true;
                     birthDayInMonth = birthDateObj.getDate();
                     
                     // Gestating until birth day
@@ -461,7 +465,8 @@ export function SowFeeds(data_sow){
                 // Check if lactating feed should be prepared
                 const is_to_compute_lacta = isToComputeLactaFeeds(cur_date, birthDate);
                 if (is_to_compute_lacta && !lactaPrepared) {
-                    curResult.feeds.lactating = DEFAULT_KG_FEED_LACTATING;
+                    curResult.feeds.lactating   = DEFAULT_KG_FEED_LACTATING;
+                    curResult.feeds.booster     = DEFAULT_KG_FEED_BOOSTER;
                 }
                 
             }
@@ -498,10 +503,51 @@ export function SowFeeds(data_sow){
         
         return result;
     }
+}
 
 
+export function BoarFeeds(data_boar){
+    const thisObj           = this;
+    
+    let dataBoar            = data_boar;
+ 
+    
+    this.computeFeedNeeds = function(){
+        const result = [];
         
-
+        // Get list of months to project
+        const list_first_day_of_month = getEveryFirstDayOfMonth(MAX_NUM_MONTHS_FEED_PROJECTION);
+        if (!list_first_day_of_month || list_first_day_of_month.length === 0) {
+            return result;
+        }
+        
+        
+        for (let i = 0; i < list_first_day_of_month.length; i++) {
+            const cur_date      = list_first_day_of_month[i];
+            const currentDate   = new Date(cur_date);
+            currentDate.setHours(0, 0, 0, 0);
+            
+            // Calculate days in this month
+            const nextMonth     = new Date(currentDate);
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            const daysInMonth   = Math.floor((nextMonth - currentDate) / (1000 * 60 * 60 * 24));
+            
+            const curResult = {
+                boar_name:      dataBoar.sow_boar.name,
+                date_to_buy:    cur_date,
+                feeds: {}
+            };
+            
+            
+            const estConsumption = Math.round(daysInMonth * DAILY_CONSUMPTION_BOAR.finisher);
+            curResult.feeds.finisher = estConsumption;
+            
+            result.push(curResult);
+        }
+        
+        
+        return result;
+    }
 }
 
 
