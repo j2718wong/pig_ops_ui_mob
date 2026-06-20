@@ -635,7 +635,7 @@ export function combineFeedEstimatesSowBoarGilt(feed_estimates){
     const FEED_UNIT_WEIGHT = {
         gestating:  DEFAULT_FEED_UNIT_WEIGHT?.GESTATING || 50,
         lactating:  DEFAULT_FEED_UNIT_WEIGHT?.LACTATING || 50,
-        booster:    DEFAULT_FEED_UNIT_WEIGHT?.BOOSTER   || 1,
+        booster:    10, // special case
         prestarter: DEFAULT_FEED_UNIT_WEIGHT?.PRESTARTER || 25,
         starter:    DEFAULT_FEED_UNIT_WEIGHT?.STARTER   || 50,
         grower:     DEFAULT_FEED_UNIT_WEIGHT?.GROWER    || 50,

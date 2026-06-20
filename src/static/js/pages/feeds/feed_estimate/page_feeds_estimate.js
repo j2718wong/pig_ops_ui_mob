@@ -131,10 +131,10 @@ export function PageFeedsEstimate(input_settings){
         let label_today         = 'Today';
         
         let label_see_sample    = 'See Sample Estimate data';
-        let label_filter        = 'View:';
+
         let label_all           = 'All';
         let label_sow_boar      = 'Sow/Boar';
-        let label_production    = 'Production';
+        let label_fattening     = 'Fattening';
         
         
         let page_info   = `
@@ -150,10 +150,12 @@ export function PageFeedsEstimate(input_settings){
         label_page_title    = helper.getSimpleTranslation('navigation.nav_links.Financials3') || label_page_title;
         label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
         label_see_sample    = helper.getSimpleTranslation('page_farrowing_schedule.labels.see_sample') || label_see_sample;
-        label_filter        = helper.getSimpleTranslation('page_feeds_estimate.labels.filter') || label_filter;
+        
         label_all           = helper.getSimpleTranslation('page_feeds_estimate.labels.all') || label_all;
         label_sow_boar      = helper.getSimpleTranslation('page_feeds_estimate.labels.sow_boar') || label_sow_boar;
-        label_production    = helper.getSimpleTranslation('page_feeds_estimate.labels.production') || label_production;
+        label_fattening     = helper.getSimpleTranslation('page_feeds_estimate.labels.fattening') || label_fattening;
+        
+        page_info           = helper.getSimpleTranslation('page_info.feeds_estimate') || page_info;
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({
@@ -723,12 +725,12 @@ ${html_style}
         }
         
         // Define feed types to display (in order)
-        const feedTypes = ['gestating', 'lactating', 'prestarter', 
+        const feedTypes = ['gestating', 'lactating', 'booster', 'prestarter', 
                             'starter', 'grower', 'finisher'];
         const feedLabels = {
             'gestating':    'Gesta',
             'lactating':    'Lacta',
-            //'booster':      'Booster',  // TODO double check
+            'booster':      'Booster',  // TODO double check
             'prestarter':   'PreStart',
             'starter':      'Starter',
             'grower':       'Grower',

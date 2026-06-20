@@ -162,6 +162,7 @@ export function PigProductionFeeds(data_pig_prod){
         const remainingFeeds = {};
         
         // Booster
+        /* 2026-06-21: This is transferred to sow feeds;
         let boosterBought = 0;
         if (bought_kg.booster) {
             boosterBought = bought_kg.booster;
@@ -172,6 +173,7 @@ export function PigProductionFeeds(data_pig_prod){
         if (boosterBought < DEFAULT_KG_FEED_BOOSTER) {
             remainingFeeds.booster = DEFAULT_KG_FEED_BOOSTER - boosterBought;
         }
+        **/
         
         // Prestarter
         let prestarterBought = 0;
