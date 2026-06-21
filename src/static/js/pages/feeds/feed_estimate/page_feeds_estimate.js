@@ -384,13 +384,11 @@ ${html_style}
         }
 
         elemShowSample.addEventListener('click', function() {
-            /*
             thisObj.onClickShowSample({
-                title:      'Sample Feeds Consumed Data',
-                img_src:    '/static_m/images/mar/mar_feeds_consumed.png',
-                img_alt:    'Sample Feeds Consumed Data'
+                title:      'Sample Feeds Estimate Data',
+                img_src:    '/static_m/images/mar/mar_feeds_estimate.png',
+                img_alt:    'Sample Feeds Estimate Data'
             });
-            */ 
         });
     }
     
