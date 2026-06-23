@@ -69,6 +69,7 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavFinancials1       = null;
     let elemDesktopNavFinancials2       = null;
     let elemDesktopNavFinancials3       = null;
+    let elemDesktopNavFinancials3_1     = null;
     let elemDesktopNavFinancials4       = null;
                                         
                                         
@@ -120,6 +121,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavFinancials1        = null;
     let elemMobileNavFinancials2        = null;
     let elemMobileNavFinancials3        = null;
+    let elemMobileNavFinancials3_1      = null;
     let elemMobileNavFinancials4        = null;                                    
                                         
     let elemMobileNavAccountLists1      = null;
@@ -177,6 +179,7 @@ export function ManagerNavLinks(_navigation) {
     let elemDesktopNavLabelFinancials1      = null;
     let elemDesktopNavLabelFinancials2      = null;
     let elemDesktopNavLabelFinancials3      = null;
+    let elemDesktopNavLabelFinancials3_1    = null;
     let elemDesktopNavLabelFinancials4      = null;
     
     let elemDesktopNavLabelAccountLists1    = null;
@@ -232,6 +235,7 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavLabelFinancials1       = null;
     let elemMobileNavLabelFinancials2       = null;
     let elemMobileNavLabelFinancials3       = null;
+    let elemMobileNavLabelFinancials3_1     = null;
     let elemMobileNavLabelFinancials4       = null;
     
     let elemMobileNavLabelAccountLists1     = null;
@@ -251,8 +255,6 @@ export function ManagerNavLinks(_navigation) {
     let elemMobileNavLabelAdmin2            = null;
     let elemMobileNavLabelAdmin3            = null;
     let elemMobileNavLabelAdmin4            = null;
-    
-    
     
     
     
@@ -323,7 +325,8 @@ export function ManagerNavLinks(_navigation) {
     
         elemDesktopNavFinancials1       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-1');  
         elemDesktopNavFinancials2       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-2');  
-        elemDesktopNavFinancials3       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-3');  
+        elemDesktopNavFinancials3       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-3'); 
+        elemDesktopNavFinancials3_1     = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-3-1');
         elemDesktopNavFinancials4       = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-4');
         
         
@@ -375,6 +378,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavFinancials1        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-1');  
         elemMobileNavFinancials2        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-2');  
         elemMobileNavFinancials3        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-3');  
+        elemMobileNavFinancials3_1      = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-3-1');
         elemMobileNavFinancials4        = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-4');
         
             
@@ -443,6 +447,7 @@ export function ManagerNavLinks(_navigation) {
         elemDesktopNavLabelFinancials1      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-1 .nav-label');
         elemDesktopNavLabelFinancials2      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-2 .nav-label');
         elemDesktopNavLabelFinancials3      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-3 .nav-label');
+        elemDesktopNavLabelFinancials3_1    = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-3-1 .nav-label');
         elemDesktopNavLabelFinancials4      = elemDesktopNavFinancials.querySelector('#desktop-nav-financials-4 .nav-label');
         
         
@@ -508,6 +513,7 @@ export function ManagerNavLinks(_navigation) {
         elemMobileNavLabelFinancials1       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-1 .nav-label');
         elemMobileNavLabelFinancials2       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-2 .nav-label');
         elemMobileNavLabelFinancials3       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-3 .nav-label');
+        elemMobileNavLabelFinancials3_1     = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-3-1 .nav-label');
         elemMobileNavLabelFinancials4       = elemMobileNavFinancials.querySelector('#mobile-subnav-financials-4 .nav-label');
         
         
@@ -731,7 +737,6 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavFeedsExpenses(false);
         });
         
-        
         elemDesktopNavFinancials3.addEventListener('click', function() {
             if (navigation.userControl.isAccountLocked()){
                 navigation.showHomeDashBoard();
@@ -739,6 +744,15 @@ export function ManagerNavLinks(_navigation) {
             }
             
             thisObj.onClickNavFeedsEstimate(false);
+        });
+        
+        elemDesktopNavFinancials3_1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavFixedExpenses(false);
         });
           
         elemDesktopNavFinancials4.addEventListener('click', function() {
@@ -1089,6 +1103,14 @@ export function ManagerNavLinks(_navigation) {
             thisObj.onClickNavFeedsEstimate(true);
         });   
         
+        elemMobileNavFinancials3_1.addEventListener('click', function() {
+            if (navigation.userControl.isAccountLocked()){
+                navigation.showHomeDashBoard();
+                return;
+            }
+            
+            thisObj.onClickNavFixedExpenses(true);
+        });
          
         elemMobileNavFinancials4.addEventListener('click', function() {
             if (navigation.userControl.isAccountLocked()){
@@ -1271,7 +1293,6 @@ export function ManagerNavLinks(_navigation) {
         else{
             elemDesktopNavAdmin3.style.display  = 'none';
             elemMobileNavAdmin3.style.display   = 'none';
-
         }
         
         
@@ -1282,7 +1303,15 @@ export function ManagerNavLinks(_navigation) {
         else{
             elemDesktopNavFinancials3.style.display  = 'none';
             elemMobileNavFinancials3.style.display   = 'none';
-
+        }
+        
+        if (window.SUPERPIG_UI_SETTINGS.inc_fixed_expenses > 0){
+            elemDesktopNavFinancials3_1.style.display  = 'block';
+            elemMobileNavFinancials3_1.style.display   = 'block';
+        }
+        else{
+            elemDesktopNavFinancials3_1.style.display  = 'none';
+            elemMobileNavFinancials3_1.style.display   = 'none';
         }
         
     }
@@ -1407,6 +1436,9 @@ export function ManagerNavLinks(_navigation) {
         }
         if (elemDesktopNavLabelFinancials3) {
             elemDesktopNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Feeds Estimate";
+        }
+        if (elemDesktopNavLabelFinancials3_1) {
+            elemDesktopNavLabelFinancials3_1.textContent = translated_nav_links.Financials3_1 || "Fixed Expenses";
         }
         if (elemDesktopNavLabelFinancials4) {
             elemDesktopNavLabelFinancials4.textContent = translated_nav_links.Financials4 || "Reports";
@@ -1551,6 +1583,9 @@ export function ManagerNavLinks(_navigation) {
         }
         if (elemMobileNavLabelFinancials3) {
             elemMobileNavLabelFinancials3.textContent = translated_nav_links.Financials3 || "Feeds Estimate";
+        }
+        if (elemMobileNavLabelFinancials3_1) {
+            elemMobileNavLabelFinancials3_1.textContent = translated_nav_links.Financials3_1 || "Fixed Expenses";
         }
         if (elemMobileNavLabelFinancials4) {
             elemMobileNavLabelFinancials4.textContent = translated_nav_links.Financials4 || "Reports";
@@ -2214,6 +2249,37 @@ export function ManagerNavLinks(_navigation) {
             });
         }
     }
+    
+    
+    this.onClickNavFixedExpenses = function(is_mobile, is_left_right_nav){
+        // Get previous page_id from history state
+        let previousPageId = null;
+        if (history.state && history.state.data && history.state.data.pageId) {
+            previousPageId = history.state.data.pageId;
+        }
+        
+        
+        // Check if previous page_id has same menu level with next page_id
+        const areSameMenuLevel = navigation.pageContainers.checkIfPagesOnSameMenu(
+                previousPageId, PAGE_ID.FIXED_EXPENSES);
+        
+        // Check if previous page is next page
+        const isSamePage = (previousPageId === PAGE_ID.FIXED_EXPENSES);
+        
+        
+        // Use hash navigation instead of manual history
+        if (is_left_right_nav || areSameMenuLevel || isSamePage) {
+            navigation.managerHashRoute.hashRouter.replace(HASH_ROUTES.FIXED_EXPENSES, {
+                pageId: PAGE_ID.FIXED_EXPENSES
+            });
+        }
+        else{
+            navigation.managerHashRoute.hashRouter.navigate(HASH_ROUTES.FIXED_EXPENSES, {
+                pageId: PAGE_ID.FIXED_EXPENSES
+            });
+        }
+    }
+    
     
     
     // TODO

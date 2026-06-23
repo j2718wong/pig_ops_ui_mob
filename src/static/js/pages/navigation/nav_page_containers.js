@@ -106,6 +106,7 @@ export function NavPageContainers(_navigation){
     const elemIdContFeedBuyItemAddEdit  = 'container-farm-feed-buy-item-add-edit';
     
     const elemIdContFeedsEstimate       = 'container-feeds-estimate';
+    const elemIdContFixedExpenses       = 'container-fixed-expenses';
     
     const elemIdContSummaryReportList   = 'container-summary-report-list';
     const elemIdContSummaryReportAddEdit= 'container-summary-report-add-edit';
@@ -247,6 +248,7 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT] = document.getElementById(elemIdContFeedBuyItemAddEdit);
         
         this.containers[PAGE_ID.FEEDS_ESTIMATE]         = document.getElementById(elemIdContFeedsEstimate);
+        this.containers[PAGE_ID.FIXED_EXPENSES]         = document.getElementById(elemIdContFixedExpenses);
         
         this.containers[PAGE_ID.SUMMARY_REPORT_LIST]    = document.getElementById(elemIdContSummaryReportList);
         this.containers[PAGE_ID.SUMMARY_REPORT_ADD_EDIT]= document.getElementById(elemIdContSummaryReportAddEdit);
@@ -270,8 +272,6 @@ export function NavPageContainers(_navigation){
         this.containers[PAGE_ID.ACC_REFERRAL_ENTRY]     = document.getElementById(elemIdContReferralEntry);
         
         this.containers[PAGE_ID.SYSTEM_STATS]           = document.getElementById(elemIdContSystemStats);
-        
-        
         
         
         
@@ -307,6 +307,7 @@ export function NavPageContainers(_navigation){
             this.containers[PAGE_ID.PROD_SALES_LIST],
             this.containers[PAGE_ID.FARM_FEED_BUY_LIST],
             this.containers[PAGE_ID.FEEDS_ESTIMATE],
+            this.containers[PAGE_ID.FIXED_EXPENSES],
             this.containers[PAGE_ID.SUMMARY_REPORT_LIST]
         ];
         
@@ -455,6 +456,7 @@ export function NavPageContainers(_navigation){
             { container: this.containers[PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT], id: PAGE_ID.FARM_FEED_BUY_ITEM_ADD_EDIT },
             
             { container: this.containers[PAGE_ID.FEEDS_ESTIMATE],         id: PAGE_ID.FEEDS_ESTIMATE },
+            { container: this.containers[PAGE_ID.FIXED_EXPENSES],         id: PAGE_ID.FIXED_EXPENSES },
             
             { container: this.containers[PAGE_ID.SUMMARY_REPORT_LIST],    id: PAGE_ID.SUMMARY_REPORT_LIST },
             { container: this.containers[PAGE_ID.SUMMARY_REPORT_ADD_EDIT],id: PAGE_ID.SUMMARY_REPORT_ADD_EDIT },
@@ -656,6 +658,9 @@ export function NavPageContainers(_navigation){
                 
             case PAGE_ID.FEEDS_ESTIMATE:
                 return elemIdContFeedsEstimate;
+                
+            case PAGE_ID.FIXED_EXPENSES:
+                return elemIdContFixedExpenses;
             
             case PAGE_ID.SUMMARY_REPORT_LIST:
                 return elemIdContSummaryReportList;
@@ -822,6 +827,7 @@ export function NavPageContainers(_navigation){
             case this.containers[PAGE_ID.PROD_FEED_BAL_ADD_EDIT]    :{return "PageContProdFeedBalAddEdit";}
             
             case this.containers[PAGE_ID.FEEDS_ESTIMATE]            :{return "PageContProdFeedsEstimate";}
+            case this.containers[PAGE_ID.FIXED_EXPENSES]            :{return "PageContFixedExpenses";}
             
             case this.containers[PAGE_ID.SUMMARY_REPORT_LIST]       :{return "PageContSummaryReportList";}
             case this.containers[PAGE_ID.SUMMARY_REPORT_ADD_EDIT]   :{return "PageContSummaryReportAddEdit";}

@@ -54,20 +54,6 @@ export function ManagerPigProd(input_settings){
 
 
     this.loadDataFromStorage = function(){
-        // This is the previous cache loading
-        /*
-        let cached = localStorage.getItem(thisObj.STORAGE_KEY);
-        if (cached) {
-            const data = JSON.parse(cached);
-            
-            thisObj.dataGestatingList       = data.gestatingList;      
-            thisObj.dataLactatingList       = data.lactatingtList;     
-            thisObj.dataFatteningList       = data.fatteningList;    
-                                            
-            thisObj.dataProdHistoryList     = data.prodHistoryList;   
-
-        }*/
-        
         
         // Get current pig_farm_hid; this must be previously set
         const pig_farm_hid = navigation.pigFarm.getPigFarmHid();

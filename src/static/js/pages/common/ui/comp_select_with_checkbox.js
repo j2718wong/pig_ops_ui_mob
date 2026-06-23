@@ -21,7 +21,7 @@ export function ComponentStaffFormGroup(input_settings){
         labelSelect:            ''
         helpText:               ''
         
-        labelCheckBos:          ''
+        labelCheckBox:          ''
     }
     
     

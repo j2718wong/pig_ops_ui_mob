@@ -753,6 +753,15 @@ export function ManagerHashRoute(_navigation) {
             }
             
             
+            case HASH_ROUTES.FIXED_EXPENSES: {
+                pageId          = PAGE_ID.FIXED_EXPENSES;
+                pageContainer   = navigation.getPageContainer(pageId);
+                navigation.showThisPage(pageContainer);
+                
+                navigation.pageFixedExpenses.show();
+                break;
+            }
+            
             case HASH_ROUTES.USER_LIST: {
                 pageId          = PAGE_ID.USER_LIST;
                 pageContainer   = navigation.getPageContainer(pageId);

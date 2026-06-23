@@ -57,7 +57,9 @@ export function PigFarm(_navigation){
         sow_boar_disposed:      0,
         prod_gesta:             0,
         prod_lacta:             0,
-        prod_fatten:            0
+        prod_fatten:            0,
+        
+        fixed_expenses:         0
     };
     
     
@@ -160,6 +162,9 @@ export function PigFarm(_navigation){
     this.dataSowDueChecklist    = null;
     
     
+    this.dataFixedExpenses      = null;
+    
+    
     this.managerSowBoar         = new ManagerSowBoar({
         navigation:             navigation,
         parentObj:              this
@@ -204,35 +209,6 @@ export function PigFarm(_navigation){
         localStorage.setItem(thisObj.STORAGE_KEY, JSON.stringify(data));
     }
 
-    
-    this.getDataVerNumFromStorage = function(){
-        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
-        if (cached) {
-            const data = JSON.parse(cached);
-            
-            return data.verNum;
-        }
-        
-        return null;
-    }
-    
-    
-    this.loadDataFromStorage = function(){
-        const cached = localStorage.getItem(thisObj.STORAGE_KEY);
-        if (cached) {
-            const data = JSON.parse(cached);
-            
-            thisObj.dataVerNum              = data.verNum;     
-            
-            thisObj.dataPigFarmAccount      = data.pigFarmAccount;
-            
-            thisObj.dataSummaryReportList   = data.summaryReportList;
-            
-            thisObj.dataLastFeedBalance     = data.lastFeedBalance;
-            
-            thisObj.dataSowDueChecklist     = data.sowDueChecklist;
-        }
-    }
     
     
     /**
@@ -497,6 +473,10 @@ export function PigFarm(_navigation){
         // Populate account feed price per unit weight
         thisObj.managerFeeds.populateAccFeedPricePUWT();
 
+        
+        // Load this first; update later if needed
+        thisObj.loadCachedDataPigFarmFixedExpenses();
+
 
         // Load cached production data if there is any
         thisObj.managerPigProd.loadDataFromStorage();
@@ -556,6 +536,8 @@ export function PigFarm(_navigation){
                 const data_ver_num_prod_gesta       = data[12];
                 const data_ver_num_prod_lacta       = data[13];
                 const data_ver_num_prod_fatten      = data[14];
+                
+                const data_ver_num_fixed_expenses   = data[15];
                 
                 console.log('version number from server');
                 console.log(data);
@@ -709,6 +691,27 @@ export function PigFarm(_navigation){
     this.getSettingsOperations  = function(){
         if (thisObj.dataPigFarmAccount == null){return null;}
         return thisObj.dataPigFarmAccount.settings_operations;
+    }
+ 
+ 
+    this.loadCachedDataPigFarmFixedExpenses = function(){
+        // Load cached data 
+        const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.FIXED_EXPENSES;
+        const cached = localStorage.getItem(key);
+        
+        if (cached){
+            const data = JSON.parse(cached);
+            
+            // Update data source
+            thisObj.dataFixedExpenses = data.data;
+            
+            // Update data source version
+            thisObj.dataVerNum.fixed_expenses = data.ver_num
+        }
+        else{
+            thisObj.requestDataPigFarmFixedExpenses()
+        }
+        
     }
     
     
@@ -1432,6 +1435,73 @@ export function PigFarm(_navigation){
     }
  
     
+    
+    this.requestDataPigFarmFixedExpenses = function(callback_success, elem_show_error){
+        const base_url = window.location.origin;
+        let url = `${base_url}/pig_farm/fixed_expenses?pfhid=${thisObj.getPigFarmHid()}`;
+        
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            beforeSend: function(){
+                if (elem_show_error){
+                    elem_show_error.style.display = 'none';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num == 0){
+                    thisObj.dataFixedExpenses = response.data;
+                    
+                    // Update thisObj.dataVerNum.feed_buy
+                    if (response.data_ver_num){
+                        const ver_num = response.data_ver_num.pig_farm.fixed_expenses;
+                        thisObj.dataVerNum.fixed_expenses = ver_num;
+                    }
+                    
+                    
+                    // Update local storage
+                    const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.FIXED_EXPENSES;
+                    const local_data = {
+                        pig_farm_hid:   thisObj.getPigFarmHid(),
+                        ver_num:        thisObj.dataVerNum.fixed_expenses,
+                        data:           thisObj.dataFixedExpenses,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                    
+                    
+                    if (callback_success){callback_success(response.data);}
+                }
+                else {
+                    navigation.serverError.receivedErrorMessage(
+                        response, elem_show_error);
+                }
+            },
+  
+            complete: function(){
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                navigation.serverError.serverErrorThrown(jqXHR, 
+                    textStatus, errorThrown);
+            }
+        });
+        
+    }
+ 
     
     
     this.requestDataPigFarmSummaryReportList = function(callback_success, 

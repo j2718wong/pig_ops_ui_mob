@@ -178,9 +178,11 @@ const PAGE_ID = {
     FARM_FEED_BUY_ITEM_ADD_EDIT: 72,
     
     FEEDS_ESTIMATE:         73,
+    CASH_FLOW:              74,
+    FIXED_EXPENSES:         75,
     
-    SUMMARY_REPORT_LIST:    76,
-    SUMMARY_REPORT_ADD_EDIT:77,
+    SUMMARY_REPORT_LIST:    78,
+    SUMMARY_REPORT_ADD_EDIT:79,
     
     
     
@@ -271,6 +273,8 @@ const HASH_ROUTES = {
     FARM_FEED_BUY_ITEM_ADD_EDIT: 'feed_buy_item_add_edit',
     
     FEEDS_ESTIMATE:         'feeds_estimate',
+    CASH_FLOW:              'cash_flow',
+    FIXED_EXPENSES:         'fixed_expenses',
     
     
     USER_LIST:              'user_list',
@@ -448,7 +452,9 @@ const DATA_VER_NUM_PIG_FARM = {
     SOW_BOAR_DISPOSED:      11,
     PROD_GESTATING:         12,
     PROD_LACTATING:         13,
-    PROD_FATTENING:         14
+    PROD_FATTENING:         14,
+    
+    FIXED_EXPENSE:          15
 };
 
 

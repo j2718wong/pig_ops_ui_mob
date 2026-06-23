@@ -26,6 +26,8 @@ import {formatDate,
 
 import {ComponentNavLeftRight}  from '../../common/ui/comp_nav_left_right.js';
 
+import {UiInputCheckBox}        from '../../common/ui/input_checkbox.js';
+
 import {PigProductionFeeds}     from './pig_production_feeds.js';
 
 import {SowFeeds, BoarFeeds,
@@ -102,16 +104,25 @@ export function PageFeedsEstimate(input_settings){
     
     let elemDebug               = null;
     
+    let elemUiIncFixedExpenses  = null;
+    
     let dtCurrentDate           = null;
     
     // Current filter state
     let currentFilter           = 'all'; // 'all', 'sow_boar', 'fattening'
     
-    // Cached data
+    // Estimated data expenses
     let estimateProd      = null;
     let estimateBreeding  = null;
     let estimateCombined  = null;
     
+    // Categorized fixed expenses per month
+    const catFixedExpenses = {
+        staff:      0,
+        utilities:  0,
+        others:     0
+    };
+        
     
     this.init = function(){
         this.render();
@@ -182,6 +193,19 @@ export function PageFeedsEstimate(input_settings){
         
         elemIdDebug             = `${settings.uniqueKey}-debug`;
         
+        
+        elemUiIncFixedExpenses  = new UiInputCheckBox({
+            uniqueKey:          `${settings.uniqueKey}-inc-fixed-expenses`,
+        
+            textLabel:          '',
+            checkBoxLabel:      'Include Fixed Expenses',
+            helpText:           null,  
+            
+            onChangeFunc:       thisObj.onChangeIncludeFixedExpenses
+        });
+    
+        
+        
         const html_style        = thisObj._writeInlineStyle();
         
         const html_nav          = componentNavLeftRight.getHtml();   
@@ -201,6 +225,9 @@ export function PageFeedsEstimate(input_settings){
             </div>
             
         `;
+        
+        
+        const html_inc_fixed_expenses    = elemUiIncFixedExpenses.getHtml();
            
         const html = `
 
@@ -290,12 +317,14 @@ ${html_style}
                 <td></td>
             </tr>
             <tr>
-                <td>Est. Cost</td>
+                <td>Est. Feed Cost</td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
+            
+            
         </tbody>
     </table>
     
@@ -304,6 +333,7 @@ ${html_style}
         <span id="${elemIdEstFeedCost}" style="color:blue; font-weight:600;"></span>
     </div>
           
+    ${html_inc_fixed_expenses}
     
     <div id="${elemIdDebug}"></div>
 
@@ -316,6 +346,7 @@ ${html_style}
     
     this.afterHtmlRender = function(){
         componentNavLeftRight.afterHtmlRender();
+        elemUiIncFixedExpenses.afterHtmlRender();
         
         this._findElements();
         this._processAfterHtmlRender();
@@ -406,6 +437,32 @@ ${html_style}
         const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
         
         elemDateToday.textContent = s_dt_current;
+        
+        
+        // Get PigFarm latest pig farm Fixed monthly expenses
+        const fixedExpenses = navigation.pigFarm.dataFixedExpenses;
+        
+        // Classify fixed expenses into just 3 categories
+        if (fixedExpenses){
+            catFixedExpenses.staff = fixedExpenses.fixed_expenses.staff || 0;
+            
+            let utilities = 0;
+            let others = 0;
+            utilities   += fixedExpenses.fixed_expenses.electric || 0;
+            utilities   += fixedExpenses.fixed_expenses.water || 0;
+            utilities   += fixedExpenses.fixed_expenses.internet || 0;
+            
+            others      += fixedExpenses.fixed_expenses.fuel || 0;
+            others      += fixedExpenses.fixed_expenses.supplies || 0;
+            others      += fixedExpenses.fixed_expenses.other || 0;
+            
+            catFixedExpenses.utilities  = utilities;
+            catFixedExpenses.others     = others; 
+        } 
+        
+        
+        console.log('fixedExpenses');
+        console.log(fixedExpenses);
         
         // Get production feed estimates
         estimateProd = this.estimateFeedsProduction();
@@ -786,5 +843,127 @@ ${html_style}
         
         // Display total estimated feed cost
         elemEstFeedCost.textContent = formatMoney(totalCost);
+    }
+    
+    
+    this.onChangeIncludeFixedExpenses = function(event, isChecked){
+        // Get the current feed estimate data
+        let dataToShow = [];
+        
+        switch(currentFilter) {
+            case 'all':
+                dataToShow = estimateCombined || [];
+                break;
+            case 'sow_boar':
+                dataToShow = estimateBreeding || [];
+                break;
+            case 'fattening':
+                dataToShow = estimateProd || [];
+                break;
+            default:
+                dataToShow = estimateCombined || [];
+        }
+        
+        if (!dataToShow || dataToShow.length === 0) {
+            return;
+        }
+        
+        // Helper function to format money
+        const formatMoney = function(amount) {
+            if (!amount || isNaN(amount)) return '0';
+            const rounded = Math.round(amount / 100) * 100;
+            return rounded.toLocaleString('en-US');
+        };
+        
+        // Get fixed expense values
+        const staffCost = catFixedExpenses.staff || 0;
+        const utilitiesCost = catFixedExpenses.utilities || 0;
+        const othersCost = catFixedExpenses.others || 0;
+        const totalFixedCost = staffCost + utilitiesCost + othersCost;
+        
+        console.log('Fixed expenses:', { staffCost, utilitiesCost, othersCost, totalFixedCost });
+        
+        // Check if fixed expense rows already exist
+        const existingRows = elemTableEstimateBody.querySelectorAll('.fixed-expense-row');
+        const existingTotalRow = elemTableEstimateBody.querySelector('.total-cost-row');
+        
+        if (isChecked) {
+            // Remove existing rows first if any
+            for (const row of existingRows) {
+                row.remove();
+            }
+            if (existingTotalRow) {
+                existingTotalRow.remove();
+            }
+            
+            // Add fixed expense rows
+            let fixedExpensesHtml = '';
+            
+            // Staff row
+            let staffHtml = `<tr class="fixed-expense-row"><td>Staff</td>`;
+            for (let i = 0; i < dataToShow.length; i++) {
+                staffHtml += `<td style="text-align:center">${formatMoney(staffCost)}</td>`;
+            }
+            for (let i = dataToShow.length; i < 4; i++) {
+                staffHtml += `<td></td>`;
+            }
+            staffHtml += `</tr>`;
+            fixedExpensesHtml += staffHtml;
+            
+            // Utilities row
+            let utilitiesHtml = `<tr class="fixed-expense-row"><td>Utilities</td>`;
+            for (let i = 0; i < dataToShow.length; i++) {
+                utilitiesHtml += `<td style="text-align:center">${formatMoney(utilitiesCost)}</td>`;
+            }
+            for (let i = dataToShow.length; i < 4; i++) {
+                utilitiesHtml += `<td></td>`;
+            }
+            utilitiesHtml += `</tr>`;
+            fixedExpensesHtml += utilitiesHtml;
+            
+            // Others row
+            let othersHtml = `<tr class="fixed-expense-row"><td>Others</td>`;
+            for (let i = 0; i < dataToShow.length; i++) {
+                othersHtml += `<td style="text-align:center">${formatMoney(othersCost)}</td>`;
+            }
+            for (let i = dataToShow.length; i < 4; i++) {
+                othersHtml += `<td></td>`;
+            }
+            othersHtml += `</tr>`;
+            fixedExpensesHtml += othersHtml;
+            
+            // Calculate and add Est. Total Cost row
+            let totalCostHtml = `<tr class="total-cost-row"><td><strong>Est. Total Cost</strong></td>`;
+            
+            for (let i = 0; i < dataToShow.length; i++) {
+                const feedCost = dataToShow[i].estimated_cost || 0;
+                const totalCost = feedCost + totalFixedCost;
+                totalCostHtml += `<td style="text-align:center; font-weight:600; color:var(--corporate-blue);">${formatMoney(totalCost)}</td>`;
+            }
+            for (let i = dataToShow.length; i < 4; i++) {
+                totalCostHtml += `<td></td>`;
+            }
+            totalCostHtml += `</tr>`;
+            
+            // Add the fixed expense rows
+            elemTableEstimateBody.insertAdjacentHTML('beforeend', fixedExpensesHtml);
+            elemTableEstimateBody.insertAdjacentHTML('beforeend', totalCostHtml);
+            
+        } else {
+            // Remove fixed expense rows
+            for (const row of existingRows) {
+                row.remove();
+            }
+            if (existingTotalRow) {
+                existingTotalRow.remove();
+            }
+            
+            // Update total cost to show only feed cost
+            let totalFeedCost = 0;
+            for (const monthData of dataToShow) {
+                totalFeedCost += monthData.estimated_cost || 0;
+            }
+            elemEstFeedCost.textContent = formatMoney(totalFeedCost);
+        }
     }
 }

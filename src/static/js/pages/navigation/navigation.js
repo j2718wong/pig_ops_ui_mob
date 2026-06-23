@@ -115,6 +115,7 @@ import {PageAccFarrowChecklist}     from '../acc_farrow_checklist/page_acc_farro
 import {PageAccFChecklistAddEdit}   from '../acc_farrow_checklist/page_acc_f_checklist_add_edit.js';
 
 import {PageFeedsEstimate}          from '../feeds/feed_estimate/page_feeds_estimate.js';
+import {PageFixedExpenses}          from '../financials/page_fixed_expenses.js';
 
 import {PageSummaryReportList}      from '../reports/page_summary_report_list.js';
 import {PageSummaryReportAdd}       from '../reports/page_summary_report_add.js';
@@ -586,6 +587,13 @@ export function Navigation(){
     });
 
     
+    this.pageFixedExpenses      = new PageFixedExpenses({
+        navigation:             this,
+        elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.FIXED_EXPENSES),
+        uniqueKey:              'fixed-expenses'
+    });
+    
+    
     this.pageSummaryReportList = new PageSummaryReportList({
         navigation:             this,
         elemIdDivContainer:     this.pageContainers.getPageContainerId(PAGE_ID.SUMMARY_REPORT_LIST),
@@ -1031,6 +1039,7 @@ export function Navigation(){
         this.pagePfFeedBuyItemAddEdit.init();
         
         this.pageFeedsEstimate.init();
+        this.pageFixedExpenses.init();
         
         this.pageSummaryReportList.init();
         this.pageSummaryReportAdd.init();

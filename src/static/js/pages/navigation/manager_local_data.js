@@ -21,7 +21,8 @@ export function ManagerLocalData(_navigation) {
             PROD_FATTENING:         'superpig_prod_fattening',
             PROD_HISTORY:           'superpig_prod_history',
             
-            LAST_FEED_BALANCE:      'superpig_last_feed_balance'
+            LAST_FEED_BALANCE:      'superpig_last_feed_balance',
+            FIXED_EXPENSES:         'superpig_fixed_expenses'
         },
         
         PRODUCTION:{

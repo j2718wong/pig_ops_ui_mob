@@ -19,7 +19,10 @@ export function UiInputCheckBox(input_settings){
         textLabel:      'Is Ready for Mating?',
         checkBoxLabel   'Production Ready',
         helpText:       'Need to specify if ready to mate. 
-                <span class="sow-only"> Not Production Ready sow will be listed in Gilt List. </span>'  
+                <span class="sow-only"> Not Production Ready sow will be listed in Gilt List. </span>'
+                 
+        onChangeFunc:   null   // Reference to a function to callback when 
+                                // there is a change in checked state 
     }
     
     
@@ -36,6 +39,9 @@ export function UiInputCheckBox(input_settings){
     let elemUiShow              = null;
     
     let elemCheckBox            = null;
+    
+    // Store the onChange callback function
+    let onChangeCallback        = settings.onChangeFunc || null;
     
     
     this.getHtml = function(){
@@ -75,8 +81,28 @@ export function UiInputCheckBox(input_settings){
     
     
     this._bindEventListeners = function(){
+        // Attach change event listener
+        if (elemCheckBox) {
+            elemCheckBox.addEventListener('change', function(event) {
+                // If callback exists, call it with the current state
+                if (onChangeCallback && typeof onChangeCallback === 'function') {
+                    onChangeCallback(event, this.checked);
+                }
+            });
+        }
     }
         
+    
+    /**
+     * Set the onChange callback function
+     * @param {Function} callback - Function to call when checkbox state changes
+     */
+    this.setOnChange = function(callback) {
+        if (typeof callback === 'function') {
+            onChangeCallback = callback;
+        }
+    };
+    
     
     this.getElemCheckBox  = function(){
         return elemCheckBox;
@@ -99,6 +125,13 @@ export function UiInputCheckBox(input_settings){
     } 
     
     
+    /**
+     * Get the current checked state
+     * @returns {boolean} - True if checked, false otherwise
+     */
+    this.isChecked = function() {
+        return elemCheckBox ? elemCheckBox.checked : false;
+    };
    
     
 }
