@@ -235,6 +235,7 @@ else {
         };
     }
 
+    /* 2026-06-25; disabled first; users will not open app at all with this instructions;
     // Check and show modal
     if (isInAppBrowser()) {
         // Wait for page to load
@@ -242,5 +243,5 @@ else {
             setTimeout(showOpenInBrowserModal, 500);
         });
     }
-
+    */
 }
