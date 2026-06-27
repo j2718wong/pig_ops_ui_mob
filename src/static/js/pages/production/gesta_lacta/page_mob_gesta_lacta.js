@@ -1195,7 +1195,7 @@ ${html_style}
     
     
     this.renderLactaDay45Table = function(){
-        elemPigCountTableBody.innerHTML = '';
+        elemDay45TableBody.innerHTML = '';
         
         let pig_prod_list = dataPigProdList;
         
