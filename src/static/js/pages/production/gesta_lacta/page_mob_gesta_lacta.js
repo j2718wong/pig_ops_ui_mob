@@ -1017,7 +1017,7 @@ ${html_style}
         
         
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
-        
+        const pid = cur_entry.pig_production.farm_prod_id;
         const html_pid_sow = thisObj.getHtmlPidSowLoveBoar(cur_entry);
         
         
