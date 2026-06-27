@@ -429,16 +429,7 @@ ${html_style}
     }
     
     
-    
-    this.show = function(){
-        dtCurrentDate = new Date();
-        dtCurrentDate.setHours(0, 0, 0, 0);
-        
-        const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
-        
-        elemDateToday.textContent = s_dt_current;
-        
-        
+    this._loadFixedExpenses = function(){
         // Get PigFarm latest pig farm Fixed monthly expenses
         const fixedExpenses = navigation.pigFarm.dataFixedExpenses;
         
@@ -463,6 +454,43 @@ ${html_style}
         
         console.log('fixedExpenses');
         console.log(fixedExpenses);
+        
+    }
+    
+    
+    this.show = function(){
+        dtCurrentDate = new Date();
+        dtCurrentDate.setHours(0, 0, 0, 0);
+        
+        const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
+        
+        elemDateToday.textContent = s_dt_current;
+        
+        
+        // Check if there is an update of navigation.pigFarm.dataFixedExpenses data
+        const ver_num_fixed_expenses = navigation.pigFarm.dataVerNum.fixed_expenses;
+        
+        const last_server_ver_num = navigation.pigFarm.lastDataVerNumReq.dataVerNum;
+        
+        if (last_server_ver_num){
+            const server_ver_num = last_server_ver_num[DATA_VER_NUM_PIG_FARM.FIXED_EXPENSES];
+            if (server_ver_num > last_server_ver_num){
+                const callback_success = function(){
+                    thisObj._loadFixedExpenses();
+                };
+                
+                navigation.pigFarm.requestDataPigFarmFixedExpenses();
+            }
+            else{
+                thisObj._loadFixedExpenses();
+            }
+        }
+        else{
+            thisObj._loadFixedExpenses();
+        }
+        
+                
+        
         
         // Get production feed estimates
         estimateProd = this.estimateFeedsProduction();

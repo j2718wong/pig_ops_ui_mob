@@ -12,6 +12,9 @@ import {APPLICATION,
         PAGE_ID}                from '../../constants.js';
 
 
+/** Per breeding head charging method; sow, boar, gilt*/
+const CHARGING_METHOD_PER_HEAD  = 0;
+const CHARGING_METHOD_PER_FARM  = 1;
 
 
 export function PageCustomerPricing(input_settings){
@@ -45,6 +48,9 @@ export function PageCustomerPricing(input_settings){
     let elemIdHeaderTitle       = null;
     let elemIdBtnClose          = null;
     
+    let elemIdChargingDesc      = null;
+    let elemIdThChargingLabel   = null;
+    
     let elemIdCountryName       = null;
     let elemIdCurrencyCode      = null;
     let elemIdPricePerHead      = null;
@@ -54,6 +60,9 @@ export function PageCustomerPricing(input_settings){
     
     let elemHeaderTitle         = null;
     let elemBtnClose            = null;
+    
+    let elemChargingDesc        = null;
+    let elemThChargingLabel     = null;
     
     let elemCountryName         = null;
     let elemCurrencyCode        = null;
@@ -78,6 +87,9 @@ export function PageCustomerPricing(input_settings){
         
         elemIdHeaderTitle       = `${settings.uniqueKey}-title`;
         elemIdBtnClose          = `${settings.uniqueKey}-close`;
+        
+        elemIdChargingDesc      = `${settings.uniqueKey}-charging-desc`;
+        elemIdThChargingLabel   = `${settings.uniqueKey}-charging-label`;
         
         elemIdCountryName       = `${settings.uniqueKey}-country-name`;
         elemIdCurrencyCode      = `${settings.uniqueKey}-cur-code`;
@@ -104,7 +116,7 @@ export function PageCustomerPricing(input_settings){
             <!-- plain list: two main policy points (cards removed) -->
             <ul class="plain-list">
                 <li><strong>All your users keep access</strong> — If SuperPig helps your operation, every user (owner, manager, staff) continues seamlessly.</li>
-                <li><strong>We send your first bill.</strong>  We count your active <span class="highlight">sows, gilts, and boars</span> across all your farms. <strong>Fattening pigs are never charged</strong>.</li>
+                <li id="${elemIdChargingDesc}"><strong>We send your first bill.</strong>  We count your active <span class="highlight">sows, gilts, and boars</span> across all your farms. <strong>Fattening pigs are never charged</strong>.</li>
                 <li><strong>We charged every 30 days after.</strong>
             </ul>
 
@@ -119,7 +131,7 @@ export function PageCustomerPricing(input_settings){
                         <tr>
                             <th>Country</th>
                             <th>Currency</th>
-                            <th>Per head</th>
+                            <th id="${elemIdThChargingLabel}">Per Head</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -188,6 +200,9 @@ export function PageCustomerPricing(input_settings){
         elemHeaderTitle         = elemDivContainer.querySelector('#'+elemIdHeaderTitle);
         elemBtnClose            = elemDivContainer.querySelector('#'+elemIdBtnClose);
 
+        elemChargingDesc        = elemDivContainer.querySelector('#'+elemIdChargingDesc);
+        elemThChargingLabel     = elemDivContainer.querySelector('#'+elemIdThChargingLabel);
+
         elemCountryName         = elemDivContainer.querySelector('#'+elemIdCountryName);           
         elemCurrencyCode        = elemDivContainer.querySelector('#'+elemIdCurrencyCode);
         elemPricePerHead        = elemDivContainer.querySelector('#'+elemIdPricePerHead);
@@ -231,6 +246,7 @@ export function PageCustomerPricing(input_settings){
             thisObj.populateForm(data);
         };
         
+        
         navigation.managerBusiness.requestDataPricing(callback_success);        
         
     }
@@ -239,6 +255,22 @@ export function PageCustomerPricing(input_settings){
     this.populateForm = function(data){
         // Get Account
         const account = navigation.account.accountInfo.account;
+
+        
+        // This is a dictionary
+        const list_of_values = navigation.managerBusiness.listOfValues
+        
+        let charging_method = list_of_values.GLOBAL_CHARGING_METHOD;
+        
+        if (!charging_method) {charging_method = CHARGING_METHOD_PER_HEAD;}
+        
+        
+        // Update charging method labels; The default is per head charging
+        if (charging_method != CHARGING_METHOD_PER_HEAD){
+            elemChargingDesc.innerHTML = `<strong>We send your first bill.</strong>  We charge a flat rate per farm on your account.`;
+            elemThChargingLabel.textContent = 'Per Farm';
+        }
+        
 
         // Get the country_pricing
         let country_pricing = null;
@@ -263,6 +295,11 @@ export function PageCustomerPricing(input_settings){
             elemCountryName.textContent     = pricing.country_name;  
             elemCurrencyCode.textContent    = pricing.currency_code;  
             elemPricePerHead.textContent    = pricing.price_per_head;  
+            
+            if (charging_method != CHARGING_METHOD_PER_HEAD){
+                elemPricePerHead.textContent    = pricing.price_per_farm; 
+            }
+            
             
             let are_taxes_included = 0;
             

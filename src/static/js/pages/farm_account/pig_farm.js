@@ -709,7 +709,7 @@ export function PigFarm(_navigation){
             thisObj.dataVerNum.fixed_expenses = data.ver_num
         }
         else{
-            thisObj.requestDataPigFarmFixedExpenses()
+            thisObj.requestDataPigFarmFixedExpenses();
         }
         
     }

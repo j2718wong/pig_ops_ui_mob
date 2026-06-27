@@ -200,22 +200,22 @@ ${html_style}
             
             <tr>
                 <td>Electric</td>
-                <td id="${elemIdTdElectric}">--</td>
+                <td id="${elemIdTdElectric}">0.0</td>
             </tr>
             
             <tr>
                 <td>Water</td>
-                <td id="${elemIdTdWater}">--</td>
+                <td id="${elemIdTdWater}">0.0</td>
             </tr>
             
             <tr>
                 <td>Internet</td>
-                <td id="${elemIdTdInternet}">--</td>
+                <td id="${elemIdTdInternet}">0.0</td>
             </tr>
             
             <tr>
                 <td>Fuel</td>
-                <td id="${elemIdTdFuel}">--</td>
+                <td id="${elemIdTdFuel}">0.0</td>
             </tr>
             
             <tr>
@@ -313,7 +313,29 @@ ${html_style}
         elemDateToday.textContent = s_dt_current;
         
         
+        this.populateFixedExpenses();
     }
     
+    
+    this.populateFixedExpenses = function(){
+        // Get PigFarm latest pig farm Fixed monthly expenses
+        const fixedExpenses = navigation.pigFarm.dataFixedExpenses;
+        
+        // Format number with commas and 1 decimal place (e.g., 1,000.0)
+        const formatMoney = (value) => {
+            const num = Number(value) || 0;
+            return num.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        };
+        
+        // Populate the table cells with formatted values
+        elemTdStaff.textContent = formatMoney(expenses.staff);
+        elemTdElectric.textContent = formatMoney(expenses.electric);
+        elemTdWater.textContent = formatMoney(expenses.water);
+        elemTdInternet.textContent = formatMoney(expenses.internet);
+        elemTdFuel.textContent = formatMoney(expenses.fuel);
+        elemTdSupplies.textContent = formatMoney(expenses.supplies);
+        elemTdOther.textContent = formatMoney(expenses.other);
+        
+    }
 
 }

@@ -14,6 +14,8 @@ export function ManagerBusiness(_navigation) {
     const thisObj                   = this;
     const navigation                = _navigation;
     
+    this.listOfValues               = null;
+    
     
     this.requestListOfValues = function(callback_success, 
             elem_show_error){
@@ -46,6 +48,10 @@ export function ManagerBusiness(_navigation) {
             success: function(response){
                 if (response.result.num == 0){
                     if (callback_success) {
+                        thisObj.listOfValues = response.data;
+                        
+                        console.log(`thisObj.listOfValues`);
+                        console.log(thisObj.listOfValues);
                         callback_success(response.data);
                     }
                 }

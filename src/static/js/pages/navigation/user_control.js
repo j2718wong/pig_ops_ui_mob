@@ -372,16 +372,6 @@ export function UserControl(_navigation) {
             returnPageId:   cur_page_id
         });
         
-        
-        
-        const next_page = navigation.getPageContainer(PAGE_ID.MY_ACCOUNT);
-        navigation.showThisPage(next_page);
-        
-        navigation.pageMyAccount.show({ 
-            returnRoute:    cur_route,
-            returnPageId:   cur_page_id 
-        });
-        
         elemDesktopUserDropdown.classList.remove('active');
     }
     
@@ -397,16 +387,6 @@ export function UserControl(_navigation) {
             returnPageId:   cur_page_id
         });
         
-        
-        
-        const next_page = navigation.getPageContainer(PAGE_ID.BILL_NEW);
-        navigation.showThisPage(next_page);
-        
-        navigation.pageAccountNewBill.show({ 
-            returnRoute:    cur_route,
-            returnPageId:   cur_page_id 
-        });
-        
         elemDesktopUserDropdown.classList.remove('active');
     }
     
@@ -420,16 +400,6 @@ export function UserControl(_navigation) {
             pageId:         PAGE_ID.USER_SETTINGS,
             returnRoute:    cur_route,
             returnPageId:   cur_page_id
-        });
-        
-        
-        
-        const next_page = navigation.getPageContainer(PAGE_ID.USER_SETTINGS);
-        navigation.showThisPage(next_page);
-        
-        navigation.pageUserSettings.show({ 
-            returnRoute:    cur_route,
-            returnPageId:   cur_page_id 
         });
         
         elemDesktopUserDropdown.classList.remove('active');

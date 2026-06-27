@@ -454,7 +454,7 @@ const DATA_VER_NUM_PIG_FARM = {
     PROD_LACTATING:         13,
     PROD_FATTENING:         14,
     
-    FIXED_EXPENSE:          15
+    FIXED_EXPENSES:         15
 };
 
 
