@@ -396,7 +396,28 @@ export function calculateNumDaysSinceBirth(date_of_birth, dt_current, acc_settin
     }
     return diff_days;
 }
+ 
+ 
+// Will return date object
+export function calculateDateAfterBirth(date_of_birth, acc_settings_ops, num_days){
+    const dt_actual = new Date(date_of_birth);
+        
+    let actual_num_days = num_days;
     
+    if (acc_settings_ops){
+        
+        // Adjust Day 1 on date of birth if needed
+        if (acc_settings_ops.day_1_on_date_of_birth > 0){
+            actual_num_days -= 1;
+        }
+    }
+    
+    let msecs = dt_actual.getTime() + actual_num_days * APPLICATION.NUM_MSECS_1DAY;
+    let dt = new Date(msecs);
+
+    return dt
+}
+
 
 // Will return date object
 export function calculateDateExpectedWean(date_of_birth, acc_settings_ops){
@@ -444,8 +465,14 @@ export function PageViewPigFarmPage(){
     
     
     this.calculateDateExpectedWean = function(date_of_birth, acc_settings_ops){
-        let dt_wean = calculateDateExpectedWean(date_of_birth, acc_settings_ops);
-        return formatDate(dt_wean, FORMAT_COMPACT);
+        let dt = calculateDateExpectedWean(date_of_birth, acc_settings_ops);
+        return formatDate(dt, FORMAT_COMPACT);
+    }
+    
+    
+    this.calculateDateAfterBirth = function(date_of_birth, acc_settings_ops, num_days){
+        let dt = calculateDateAfterBirth(date_of_birth, acc_settings_ops, num_days);
+        return formatDate(dt, FORMAT_COMPACT);
     }
     
     

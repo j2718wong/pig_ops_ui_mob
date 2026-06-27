@@ -37,8 +37,9 @@ export function PageMobGestaLacta(input_settings){
     
     
     const LACTA_TABLE_PIGOPS    = 1;
-    const LACTA_TABLE_PIG_COUNT = 2;
-    const LACTA_TABLE_FEEDS     = 3;
+    const LACTA_TABLE_DAY45     = 2;
+    const LACTA_TABLE_PIG_COUNT = 3;
+    
     
     
     
@@ -76,13 +77,16 @@ export function PageMobGestaLacta(input_settings){
     
     let elemIdTableColControls  = null;
     let elemIdLactaPigOps       = null;
+    let elemIdLactaDay45        = null;
     let elemIdLactaPigCount     = null;
-    let elemIdLactaFeeds        = null;
     
     let elemIdTablePigOpsShow   = null;
     let elemIdTablePigOps       = null;
     let elemIdPigOpsSeeSample   = null;
     let elemIdCheckFarrowing    = null;
+    
+    let elemIdTableDay45Show    = null;
+    let elemIdTableDay45        = null;
     
     let elemIdTablePigCountShow = null;
     let elemIdTablePigCount     = null;
@@ -92,8 +96,9 @@ export function PageMobGestaLacta(input_settings){
     let elemIdDateToday         = null;
     
     let elemIdProdTableContainer= null;
-    let elemIdPigOpsTableBody  = null;
+    let elemIdPigOpsTableBody   = null;
     let elemIdPigCountTableBody = null;
+    let elemIdDay45TableBody    = null;
     
     let elemIdPigOpsAlarmTable  = null;
 
@@ -114,8 +119,8 @@ export function PageMobGestaLacta(input_settings){
     
     let elemTableColControls    = null;
     let elemLactaPigOps         = null;
+    let elemLactaDay45          = null;
     let elemLactaPigCount       = null;
-    let elemLactaFeeds          = null;
     
     
     let elemTablePigOpsShow     = null;
@@ -123,6 +128,9 @@ export function PageMobGestaLacta(input_settings){
     let elemPigOpsSeeSample     = null;
     let elemCheckFarrowing      = null;
 
+    let elemTableDay45Show      = null;
+    let elemTableDay45          = null;
+    
 
     let elemTablePigCountShow   = null;
     let elemTablePigCount       = null;
@@ -138,8 +146,9 @@ export function PageMobGestaLacta(input_settings){
     
     
     let elemProdTableContainer  = null;
-    let elemPigOpsTableBody    = null;
+    let elemPigOpsTableBody     = null;
     let elemPigCountTableBody   = null;
+    let elemDay45TableBody      = null;
     
     
     let elemPigOpsAlarmTable    = null;
@@ -218,14 +227,17 @@ export function PageMobGestaLacta(input_settings){
         
         elemIdTableColControls  = `${settings.uniqueKey}-mobile-pig-prod-table-cols`;
         elemIdLactaPigOps       = `${settings.uniqueKey}-lacta-pigops`;
+        elemIdLactaDay45        = `${settings.uniqueKey}-lacta-day45`;
         elemIdLactaPigCount     = `${settings.uniqueKey}-lacta-piglets`;
-        elemIdLactaFeeds        = `${settings.uniqueKey}-lacta-feeds`;
         
         elemIdTablePigOpsShow   = `${settings.uniqueKey}-table-pigops-show`;
         elemIdTablePigOps       = `${settings.uniqueKey}-table-pigops`;
         elemIdPigOpsSeeSample   = `${settings.uniqueKey}-pigops-see-sample`;
         elemIdCheckFarrowing    = `${settings.uniqueKey}-check-farrowing`;
         
+        elemIdTableDay45Show    = `${settings.uniqueKey}-table-day45-show`;
+        elemIdTableDay45        = `${settings.uniqueKey}-table-day45`;
+            
         
         elemIdTablePigCountShow = `${settings.uniqueKey}-table-pig-count-show`;
         elemIdTablePigCount     = `${settings.uniqueKey}-table-pig-count`;
@@ -238,7 +250,7 @@ export function PageMobGestaLacta(input_settings){
         elemIdProdTableContainer= `${settings.uniqueKey}-mobile-pig-prod-table`;
         elemIdPigOpsTableBody   = `${settings.uniqueKey}-mobile-pig-prod-tbody`;
         elemIdPigCountTableBody = `${settings.uniqueKey}-mobile-pig-count-tbody`;
-        
+        elemIdDay45TableBody    = `${settings.uniqueKey}-mobile-day45-tbody`;
         
         
         elemIdPigOpsAlarmTable  = `${settings.uniqueKey}-alarm-table`;
@@ -261,7 +273,7 @@ export function PageMobGestaLacta(input_settings){
         let label_expected      = 'Expected';
         let label_wean          = 'Wean';
         let label_operation     = 'What to do?';
-        
+        let label_day45         = 'Day 45';
         
         let label_num_pigs      = 'Num Pigs';
         let label_dead_at_birth = 'Dead at Birth';
@@ -324,8 +336,8 @@ export function PageMobGestaLacta(input_settings){
                 <div class="animal-filter">
                     <div class="filter-buttons sow">
                         <button class="filter-button active" id="${elemIdLactaPigOps}" style="min-width:120px;">PigOps</button>
+                        <button class="filter-button" id="${elemIdLactaDay45}" style="min-width:100px;">Day 45</button>
                         <button class="filter-button" id="${elemIdLactaPigCount}" style="min-width:120px;">Pig Count</button>
-                        <!--<button class="filter-button" id="${elemIdLactaFeeds}">Feeds</button>-->
                     </div>
                 </div>
             </div>
@@ -367,6 +379,35 @@ export function PageMobGestaLacta(input_settings){
                 </div>
                 
             </div>
+            
+            
+            <div id="${elemIdTableDay45Show}">
+                <table class="data-table table-gesta-lacta" id="${elemIdTableDay45}">
+                    <colgroup>
+                        <col style="width: 34%;">
+                        <col style="width: 30%;">
+                        <col style="width: 36%;">
+                    </colgroup>
+      
+                    <thead>
+                        <tr>
+                            <th>
+                                <div>PID, ${label_sow}</div> 
+                                <div><span class="love-icon">❤️</span> ${label_boar}</div>
+                            </th>
+                            <th>${label_wean}</th>
+                            <th>${label_day45}</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody id="${elemIdDay45TableBody}">
+                    </tbody>
+                </table>
+                
+                
+            </div>
+            
+            
             
             <div id="${elemIdTablePigCountShow}">
                 <table class="data-table table-gesta-lacta" id="${elemIdTablePigCount}">
@@ -531,8 +572,8 @@ ${html_style}
         
         elemTableColControls    = elemDivContainer.querySelector('#'+elemIdTableColControls);
         elemLactaPigOps         = elemDivContainer.querySelector('#'+elemIdLactaPigOps);
+        elemLactaDay45          = elemDivContainer.querySelector('#'+elemIdLactaDay45);
         elemLactaPigCount       = elemDivContainer.querySelector('#'+elemIdLactaPigCount);
-        elemLactaFeeds          = elemDivContainer.querySelector('#'+elemIdLactaFeeds);
         
         
         elemTablePigOpsShow     = elemDivContainer.querySelector('#'+elemIdTablePigOpsShow);
@@ -540,6 +581,8 @@ ${html_style}
         elemPigOpsSeeSample     = elemDivContainer.querySelector('#'+elemIdPigOpsSeeSample);
         elemCheckFarrowing      = elemDivContainer.querySelector('#'+elemIdCheckFarrowing);
         
+        elemTableDay45Show      = elemDivContainer.querySelector('#'+elemIdTableDay45Show);
+        elemTableDay45          = elemDivContainer.querySelector('#'+elemIdTableDay45);
         
         elemTablePigCountShow   = elemDivContainer.querySelector('#'+elemIdTablePigCountShow);
         elemTablePigCount       = elemDivContainer.querySelector('#'+elemIdTablePigCount);
@@ -550,7 +593,8 @@ ${html_style}
         elemDateToday           = elemDivContainer.querySelector('#'+elemIdDateToday);
         
         elemProdTableContainer  = elemDivContainer.querySelector('#'+elemIdProdTableContainer);
-        elemPigOpsTableBody    = elemDivContainer.querySelector('#'+elemIdPigOpsTableBody);
+        elemPigOpsTableBody     = elemDivContainer.querySelector('#'+elemIdPigOpsTableBody);
+        elemDay45TableBody      = elemDivContainer.querySelector('#'+elemIdDay45TableBody);
         elemPigCountTableBody   = elemDivContainer.querySelector('#'+elemIdPigCountTableBody);
         
         elemPigOpsAlarmTable    = elemDivContainer.querySelector('#'+elemIdPigOpsAlarmTable);
@@ -641,6 +685,18 @@ ${html_style}
             });
             
             
+            elemLactaDay45.addEventListener('click', function() {
+                const filterButtons  = elemDivContainer.querySelectorAll('.filter-button');
+                for (const cur_entry of filterButtons){
+                    cur_entry.classList.remove('active');
+                }
+                
+                this.classList.add('active');
+                
+                thisObj.changeLactaTable(LACTA_TABLE_DAY45);
+            });
+            
+            
             elemLactaPigCount.addEventListener('click', function() {
                 const filterButtons  = elemDivContainer.querySelectorAll('.filter-button');
                 for (const cur_entry of filterButtons){
@@ -711,6 +767,7 @@ ${html_style}
             
             case LACTA_TABLE_PIGOPS:{
                 elemTablePigOpsShow.style.display   = 'block';
+                elemTableDay45Show.style.display    = 'none';
                 elemTablePigCountShow.style.display = 'none';
                 
                 thisObj.renderGestaLactaTable(pig_prod_list);
@@ -718,8 +775,20 @@ ${html_style}
                 break;
             }
             
+            case LACTA_TABLE_DAY45:{
+                elemTablePigOpsShow.style.display   = 'none';
+                elemTableDay45Show.style.display    = 'block';
+                elemTablePigCountShow.style.display = 'none';
+                
+                thisObj.renderLactaDay45Table(pig_prod_list);
+                curLactaTable = LACTA_TABLE_DAY45;
+                break;
+            }
+
+            
             case LACTA_TABLE_PIG_COUNT:{
                 elemTablePigOpsShow.style.display   = 'none';
+                elemTableDay45Show.style.display    = 'none';
                 elemTablePigCountShow.style.display = 'block';
                 
                 thisObj.renderLactaPigCountTable();
@@ -727,13 +796,10 @@ ${html_style}
                 break;
             }
             
-            case LACTA_TABLE_FEEDS:{
-                elemTablePigOps.style.display = 'none';
-                break;
-            }
-            
+                        
             default:{
                 elemTablePigOpsShow.style.display   = 'block';
+                elemTableDay45Show.style.display    = 'none';
                 elemTablePigCountShow.style.display = 'none';
                 
                 thisObj.renderGestaLactaTable(pig_prod_list);
@@ -930,19 +996,12 @@ ${html_style}
         let s_date_expected = ''
         let s_operation = '';
         
-        let pid;
-        let data_sow;
-        let sow_reference;
         
         let dt_important; 
         let dt_important_s;
         let diff_days;
-        let num_days_wean; 
         let s_date_important;
         
-        let dt_actual;
-        let msecs_wean;
-        let dt_wean;
         
         let operations;
         let len_items;
@@ -957,15 +1016,7 @@ ${html_style}
         let operation_name;
         
         
-        
-        
         const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
-        
-        
-        pid = cur_entry.pig_production.farm_prod_id;
-        
-        data_sow = cur_entry.sow;
-        sow_reference = getSowBoarReference(data_sow);
         
         const html_pid_sow = thisObj.getHtmlPidSowLoveBoar(cur_entry);
         
@@ -1143,6 +1194,33 @@ ${html_style}
     }
     
     
+    this.renderLactaDay45Table = function(){
+        elemPigCountTableBody.innerHTML = '';
+        
+        let pig_prod_list = dataPigProdList;
+        
+        
+        if (pig_prod_list.length > 0){
+            for (const cur_entry of pig_prod_list){
+                const elem_row = thisObj.getElemTableRowDay45(cur_entry)
+                elemDay45TableBody.appendChild(elem_row);
+            }
+        }
+        else{
+            const html = `
+                <tr>
+                    <td colspan="3"><div>No Entries</div></td>
+                </tr>
+            `;
+            
+            const elem_row = document.createElement('tr');
+            elem_row.innerHTML = html;
+            
+            elemDay45TableBody.appendChild(elem_row);
+        }
+    }
+    
+    
     this.renderLactaPigCountTable = function(){
         elemPigCountTableBody.innerHTML = '';
         
@@ -1170,28 +1248,96 @@ ${html_style}
     }
     
     
-    this.getElemTableRowPigCount = function(cur_entry){
-
-        let pid;
-        let data_sow;
-        let sow_reference;
-        let s_num_dead_at_birth = '';
+    this.getElemTableRowDay45 = function(cur_entry){
+        const html_pid_sow = thisObj.getHtmlPidSowLoveBoar(cur_entry);
+    
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
         
+        
+        let dt_important; 
+        let dt_important_s;
+        let diff_days;
+        let s_date_important;
+        
+        
+        // Set important date; 
+        // lacta: date of weaning
+        s_date_important = '';
+        dt_important_s  = thisObj.calculateDateExpectedWean(
+                        cur_entry.birth.date_actual, acc_settings_ops);
+                                    
+        diff_days = thisObj.calculateNumDaysSinceBirth(
+                    cur_entry.birth.date_actual, dtCurrentDate,
+                    acc_settings_ops);
+        
+        s_date_important = `${dt_important_s} <span class="nowrap">(Day ${diff_days})</span>`;
+        
+        
+        const dt_45_s = thisObj.calculateDateAfterBirth(
+            cur_entry.birth.date_actual, acc_settings_ops, 45);
+        
+        const html = `
+        <tr>
+            <td>${html_pid_sow}</td>
+            <td>${s_date_important}</td>
+            <td>${dt_45_s}</td>
+        </tr>
+        `;
+            
+        
+        const elem_row = document.createElement('tr');
+        elem_row.innerHTML = html;
+        
+        
+        
+        // Attach onclick listeners to td
+        
+        const elem_tds = elem_row.querySelectorAll('td'); 
+        
+        let index = 0
+        for (const cur_td of elem_tds){
+            
+            switch(index){
+                case 0:{
+                    cur_td.onclick = function (){
+                        navigation.onClickProdLactatingEntry(pid);
+                    };
+                    
+                    break;
+                }
+                
+                case 1:
+                case 2: {
+                    const tab_id_sow_ouput = navigation.pageSowBoarEntry.elemIdTabOutput;
+                    
+                    
+                    cur_td.onclick = function (){
+                        navigation.pageSowBoarList.gotoSowBoarEntryPage(null, 
+                            data_sow.hid, SOW_BOAR_TYPE.SOW, tab_id_sow_ouput);
+                    };
+                    break;
+                }
+                
+                default: {break;}
+                
+            }
+                        
+            index += 1;
+        
+        }
+        
+        
+        return elem_row;
+        
+    }
+    
+    
+    this.getElemTableRowPigCount = function(cur_entry){
+        let s_num_dead_at_birth = '';
         let s_num_dead_after_birth = '';
         
         
-        let index = 0;
-            
-        pid = cur_entry.pig_production.farm_prod_id;
-        
-        data_sow = cur_entry.sow;
-        sow_reference = getSowBoarReference(data_sow);
-        
         const html_pid_sow = thisObj.getHtmlPidSowLoveBoar(cur_entry);
-    
-        s_num_dead_at_birth = '';
-        
-        s_num_dead_after_birth = '';
         
         
         if (cur_entry.birth.num_dead_at_birth > 0){
@@ -1221,7 +1367,7 @@ ${html_style}
         
         const elem_tds = elem_row.querySelectorAll('td'); 
         
-        index = 0
+        let index = 0
         for (const cur_td of elem_tds){
             
             switch(index){
