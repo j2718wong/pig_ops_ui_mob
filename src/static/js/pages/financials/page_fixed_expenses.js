@@ -1,6 +1,6 @@
 // page_fixed_expenses.js
 
-// June 21, 2026
+// June 21, 2026 - Updated June 27, 2026
 // Jack Wong
 // j2718wong@gmail.com
 
@@ -86,13 +86,13 @@ export function PageFixedExpenses(input_settings){
     
     let dtCurrentDate           = null;
     
-    // Current filter state
-    let currentFilter           = 'all'; // 'all', 'sow_boar', 'fattening'
+    // Map of expense keys to element references
+    const expenseElements = {};
+    const expenseKeys = ['staff', 'electric', 'water', 'internet', 'fuel', 'supplies', 'other'];
     
-    // Cached data
-    let estimateProd      = null;
-    let estimateBreeding  = null;
-    let estimateCombined  = null;
+    // Store original values for cancel
+    let originalValues = {};
+    let activeInput = null;
     
     
     this.init = function(){
@@ -103,6 +103,38 @@ export function PageFixedExpenses(input_settings){
     
     this._writeInlineStyle = function(){
         const html = `
+        <style>
+            .editable-cell {
+                cursor: pointer;
+                padding: 4px 8px;
+                border-radius: 4px;
+                transition: background-color 0.2s;
+                min-height: 32px;
+            }
+            .editable-cell:hover {
+                background-color: #f0f4ff;
+            }
+            .editable-cell.editing {
+                padding: 0;
+                background-color: #fff;
+            }
+            .editable-cell .edit-input {
+                width: 100%;
+                padding: 4px 8px;
+                border: 2px solid var(--corporate-blue);
+                border-radius: 4px;
+                font-size: 1rem;
+                font-family: inherit;
+                outline: none;
+                background: white;
+                min-width: 60px;
+                box-sizing: border-box;
+            }
+            .editable-cell .edit-input:focus {
+                border-color: var(--corporate-blue-dark);
+                box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+            }
+        </style>
         `;
         return html;
     }
@@ -183,7 +215,7 @@ ${html_style}
     
     <br>
     <h2 class="tab-title">
-        Monthly Expenses
+        Monthly Expenses (Click to edit)
     </h2>
     
     <table class="data-table">
@@ -195,37 +227,37 @@ ${html_style}
         <tbody>
             <tr>
                 <td>Staff</td>
-                <td id="${elemIdTdStaff}">0.0</td>
+                <td id="${elemIdTdStaff}" class="editable-cell" data-expense="staff">0.0</td>
             </tr>
             
             <tr>
                 <td>Electric</td>
-                <td id="${elemIdTdElectric}">0.0</td>
+                <td id="${elemIdTdElectric}" class="editable-cell" data-expense="electric">0.0</td>
             </tr>
             
             <tr>
                 <td>Water</td>
-                <td id="${elemIdTdWater}">0.0</td>
+                <td id="${elemIdTdWater}" class="editable-cell" data-expense="water">0.0</td>
             </tr>
             
             <tr>
                 <td>Internet</td>
-                <td id="${elemIdTdInternet}">0.0</td>
+                <td id="${elemIdTdInternet}" class="editable-cell" data-expense="internet">0.0</td>
             </tr>
             
             <tr>
                 <td>Fuel</td>
-                <td id="${elemIdTdFuel}">0.0</td>
+                <td id="${elemIdTdFuel}" class="editable-cell" data-expense="fuel">0.0</td>
             </tr>
             
             <tr>
                 <td>Supplies</td>
-                <td id="${elemIdTdSupplies}">--</td>
+                <td id="${elemIdTdSupplies}" class="editable-cell" data-expense="supplies">0.0</td>
             </tr>
             
             <tr>
-                <td>Supplies</td>
-                <td id="${elemIdTdOther}">--</td>
+                <td>Other</td>
+                <td id="${elemIdTdOther}" class="editable-cell" data-expense="other">0.0</td>
             </tr>
             
         </tbody>
@@ -269,19 +301,26 @@ ${html_style}
         
         
         elemDebug               = elemDivContainer.querySelector('#'+elemIdDebug);
+        
+        // Store expense elements in map
+        expenseElements.staff = elemTdStaff;
+        expenseElements.electric = elemTdElectric;
+        expenseElements.water = elemTdWater;
+        expenseElements.internet = elemTdInternet;
+        expenseElements.fuel = elemTdFuel;
+        expenseElements.supplies = elemTdSupplies;
+        expenseElements.other = elemTdOther;
     }
     
     
     this._processAfterHtmlRender = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            
             //navigation.managerNavLinks.onClickNavFeedsExpenses(null, true);
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            
             //navigation.managerNavLinks.onClickNavSummaryReports();
         };
         
@@ -293,8 +332,30 @@ ${html_style}
     
     
     this._bindEventListeners = function(){
+        // Add click listeners to all editable cells
+        for (const expenseKey of expenseKeys) {
+            const elem = expenseElements[expenseKey];
+            if (elem) {
+                elem.addEventListener('click', function(event) {
+                    // Only trigger if not already editing
+                    if (!this.classList.contains('editing')) {
+                        thisObj.startEditing(expenseKey);
+                    }
+                });
+            }
+        }
         
-       
+        // Global click handler to save on outside click
+        document.addEventListener('click', function(event) {
+            if (activeInput) {
+                const expenseKey = activeInput.getAttribute('data-expense');
+                // Check if click is outside the editing cell
+                const cell = expenseElements[expenseKey];
+                if (cell && !cell.contains(event.target)) {
+                    thisObj.saveEditing(expenseKey);
+                }
+            }
+        });
     }
     
     
@@ -328,14 +389,278 @@ ${html_style}
         };
         
         // Populate the table cells with formatted values
-        elemTdStaff.textContent = formatMoney(expenses.staff);
-        elemTdElectric.textContent = formatMoney(expenses.electric);
-        elemTdWater.textContent = formatMoney(expenses.water);
-        elemTdInternet.textContent = formatMoney(expenses.internet);
-        elemTdFuel.textContent = formatMoney(expenses.fuel);
-        elemTdSupplies.textContent = formatMoney(expenses.supplies);
-        elemTdOther.textContent = formatMoney(expenses.other);
+        if (fixedExpenses) {
+            elemTdStaff.textContent     = formatMoney(fixedExpenses.staff);
+            elemTdElectric.textContent  = formatMoney(fixedExpenses.electric);
+            elemTdWater.textContent     = formatMoney(fixedExpenses.water);
+            elemTdInternet.textContent  = formatMoney(fixedExpenses.internet);
+            elemTdFuel.textContent      = formatMoney(fixedExpenses.fuel);
+            elemTdSupplies.textContent  = formatMoney(fixedExpenses.supplies);
+            elemTdOther.textContent     = formatMoney(fixedExpenses.other);
+        }
+    }
+    
+    
+    /**
+     * Start inline editing for a specific expense cell
+     * @param {string} expenseKey - The expense key (staff, electric, etc.)
+     */
+    this.startEditing = function(expenseKey) {
+        const elem = expenseElements[expenseKey];
+        if (!elem) return;
         
+        // If already editing, save first
+        if (elem.classList.contains('editing')) {
+            this.saveEditing(expenseKey);
+            return;
+        }
+        
+        // If another cell is editing, save it first
+        if (activeInput) {
+            const activeKey = activeInput.getAttribute('data-expense');
+            if (activeKey && activeKey !== expenseKey) {
+                this.saveEditing(activeKey);
+            }
+        }
+        
+        // Get current value (remove commas)
+        const currentText = elem.textContent.trim().replace(/,/g, '');
+        const currentValue = parseFloat(currentText) || 0;
+        
+        // Store original value for cancel
+        originalValues[expenseKey] = currentValue;
+        
+        // Mark as editing
+        elem.classList.add('editing');
+        
+        // Create input element
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'edit-input';
+        input.step = '0.1';
+        input.value = currentValue;
+        input.setAttribute('data-expense', expenseKey);
+        
+        // Clear cell and add input
+        elem.innerHTML = '';
+        elem.appendChild(input);
+        
+        // Store reference to active input
+        activeInput = input;
+        
+        // Focus the input
+        input.focus();
+        input.select();
+        
+        // Event handlers
+        const keydownHandler = function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                thisObj.saveEditing(expenseKey);
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                thisObj.cancelEditing(expenseKey);
+            }
+        };
+        
+        // Attach event listeners
+        input.addEventListener('keydown', keydownHandler);
+        
+        // Store handler for cleanup
+        elem._keydownHandler = keydownHandler;
+    }
+    
+    
+    /**
+     * Save the edited value and send to server
+     * @param {string} expenseKey - The expense key (staff, electric, etc.)
+     */
+    this.saveEditing = function(expenseKey) {
+        const elem = expenseElements[expenseKey];
+        if (!elem) return;
+        
+        if (!elem.classList.contains('editing')) return;
+        
+        // Get input value
+        const input = elem.querySelector('.edit-input');
+        if (!input) return;
+        
+        const newValue = parseFloat(input.value) || 0;
+        
+        // Remove editing state
+        elem.classList.remove('editing');
+        activeInput = null;
+        
+        // Format and display the value
+        const formatMoney = (value) => {
+            const num = Number(value) || 0;
+            return num.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        };
+        
+        // Check if value changed
+        const originalValue = originalValues[expenseKey] || 0;
+        if (Math.abs(newValue - originalValue) > 0.01) {
+            // Value changed - update
+            elem.textContent = formatMoney(newValue);
+            
+            // Update local data
+            const updatedExpenses = {};
+            updatedExpenses[expenseKey] = newValue;
+            
+            // Send update to server
+            this.updateServerFixedExpenses(updatedExpenses);
+        } else {
+            // No change - just revert to original display
+            elem.textContent = formatMoney(originalValue);
+        }
+        
+        // Clean up
+        delete originalValues[expenseKey];
+    }
+    
+    
+    /**
+     * Cancel editing and revert to original value
+     * @param {string} expenseKey - The expense key (staff, electric, etc.)
+     */
+    this.cancelEditing = function(expenseKey) {
+        const elem = expenseElements[expenseKey];
+        if (!elem) return;
+        
+        if (!elem.classList.contains('editing')) return;
+        
+        // Remove editing state
+        elem.classList.remove('editing');
+        activeInput = null;
+        
+        // Revert to original value
+        const originalValue = originalValues[expenseKey] || 0;
+        const formatMoney = (value) => {
+            const num = Number(value) || 0;
+            return num.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        };
+        
+        elem.textContent = formatMoney(originalValue);
+        
+        // Clean up
+        delete originalValues[expenseKey];
+    }
+    
+    
+    /**
+     * Update fixed expenses on the server
+     * @param {Object} updatedExpenses - Object with expense key-value pairs to update
+     */
+    this.updateServerFixedExpenses = function(updatedExpenses) {
+        const user_hid = navigation.userControl.getUserHid();
+        const pig_farm_hid = navigation.pigFarm.getPigFarmHid();
+        
+        const base_url = window.location.origin;
+        
+        const filteredExpenses = {};
+
+        for (const key of expenseKeys) {
+            if (updatedExpenses[key] !== undefined && updatedExpenses[key] !== null) {
+                filteredExpenses[key] = updatedExpenses[key];
+            }
+        }
+        
+        
+        // Send post request
+        const post_data = {
+            'uhid':         user_hid,
+            'pig_farm_hid': pig_farm_hid,
+            ...filteredExpenses
+        };
+        
+        
+        
+        let url = `${base_url}/pig_farm/fixed_expenses/update`;
+        
+        const bearer_token = localStorage.getItem('access_token');
+        
+        $.ajax({
+            type: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            
+            headers: {
+                'Authorization': `Bearer ${bearer_token}`
+            },
+            
+            timeout: APPLICATION.REQUEST_TIMEOUT,
+            url: url,
+            async: true,
+  
+            data: JSON.stringify(post_data),
+  
+            beforeSend: function(){
+                // Could add a small saving indicator
+                const elem = expenseElements[Object.keys(updatedExpenses)[0]];
+                if (elem) {
+                    elem.style.opacity = '0.6';
+                }
+            },
+  
+            success: function(response){
+                if (response.result.num === 0) {
+                    console.log('Fixed expenses updated successfully');
+                    
+                    // Update local data
+                    const fixedExpenses = navigation.pigFarm.dataFixedExpenses;
+                    if (fixedExpenses) {
+                        for (const [key, value] of Object.entries(updatedExpenses)) {
+                            fixedExpenses[key] = value;
+                        }
+                    }
+                    
+                    // Restore opacity
+                    const elem = expenseElements[Object.keys(updatedExpenses)[0]];
+                    if (elem) {
+                        elem.style.opacity = '1';
+                    }
+                } else {
+                    console.error('Failed to update fixed expenses:', response);
+                    thisObj.showError('Failed to update expenses. Please try again.');
+                    // Revert on error
+                    for (const [key] of Object.entries(updatedExpenses)) {
+                        thisObj.cancelEditing(key);
+                    }
+                }
+            },
+  
+            error: function(jqXHR, textStatus, errorThrown){
+                console.error('Error updating fixed expenses:', textStatus, errorThrown);
+                // Revert on error
+                for (const [key] of Object.entries(updatedExpenses)) {
+                    thisObj.cancelEditing(key);
+                }
+                thisObj.showError('Network error. Please try again.');
+            },
+  
+            complete: function(){
+                // Restore opacity
+                const elem = expenseElements[Object.keys(updatedExpenses)[0]];
+                if (elem) {
+                    elem.style.opacity = '1';
+                }
+            }
+        });
+    }
+    
+    
+    /**
+     * Show error message to user
+     * @param {string} message - Error message to display
+     */
+    this.showError = function(message) {
+        console.error(message);
+        // Use the navigation's error handler if available
+        if (navigation && navigation.serverError) {
+            // Maybe show a toast message
+        } else {
+            alert(message);
+        }
     }
 
 }
