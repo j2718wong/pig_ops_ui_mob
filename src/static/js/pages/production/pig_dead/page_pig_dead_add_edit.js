@@ -290,6 +290,9 @@ export function PagePigDeadAddEdit(input_settings){
     
     this._resetForm = function(){
         
+        componentNumDead.reset();
+        elemUiNotes.reset();
+        
     }
     
     
@@ -310,6 +313,7 @@ export function PagePigDeadAddEdit(input_settings){
         thisObj._resetForm();
         
         showOptions = options;
+        
         
         
         let html;
