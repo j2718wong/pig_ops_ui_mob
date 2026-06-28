@@ -100,6 +100,7 @@ export function PageMobGestaLacta(input_settings){
     let elemIdPigCountTableBody = null;
     let elemIdDay45TableBody    = null;
     
+    
     let elemIdPigOpsAlarmTable  = null;
 
 
@@ -140,9 +141,6 @@ export function PageMobGestaLacta(input_settings){
     
     let elemLabelToday          = null;    
     let elemDateToday           = null;
-    
-      
-    
     
     
     let elemProdTableContainer  = null;
@@ -363,7 +361,7 @@ export function PageMobGestaLacta(input_settings){
                                 <div>PID, ${label_sow}</div> 
                                 <div><span class="love-icon">❤️</span> ${label_boar}</div>
                             </th>
-                            <th>${label_wean}</th>
+                            <th>${label_wean} <span class="nowrap wean-num-days">(Day 32)</span></th>
                             <th>${label_operation}</th>
                         </tr>
                     </thead>
@@ -395,7 +393,7 @@ export function PageMobGestaLacta(input_settings){
                                 <div>PID, ${label_sow}</div> 
                                 <div><span class="love-icon">❤️</span> ${label_boar}</div>
                             </th>
-                            <th>${label_wean}</th>
+                            <th>${label_wean} <span class="nowrap wean-num-days">(Day 32)</span></th>
                             <th>${label_day45}</th>
                         </tr>
                     </thead>
@@ -597,6 +595,7 @@ ${html_style}
         elemDay45TableBody      = elemDivContainer.querySelector('#'+elemIdDay45TableBody);
         elemPigCountTableBody   = elemDivContainer.querySelector('#'+elemIdPigCountTableBody);
         
+                
         elemPigOpsAlarmTable    = elemDivContainer.querySelector('#'+elemIdPigOpsAlarmTable);
         
     }
@@ -947,6 +946,19 @@ ${html_style}
         
         
         thisObj.showInfoBox(dataPigProdList, elemPageInfo);
+        
+        
+        // Update Wean numdays
+        // <span class="nowrap wean-num-days">(Day 32)</span>
+        
+        const spans = elemDivContainer.querySelectorAll('.wean-num-days');
+        const acc_settings_ops  = navigation.pigFarm.getSettingsOperations();
+        const num_days_wean = acc_settings_ops.num_days_wean;
+        
+        for (const cur_entry of spans){
+            cur_entry.textContent = `(Day ${num_days_wean})`;
+        } 
+        
     }
     
     
