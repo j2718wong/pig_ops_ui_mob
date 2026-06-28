@@ -107,7 +107,7 @@ export function PageSummaryReportList(input_settings){
         const helper = navigation.managerTranslations.translationHelper;
         
         
-        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Financials3') || label_page_title;
+        label_page_title        = helper.getSimpleTranslation('navigation.nav_links.Financials4') || label_page_title;
       
             
         
