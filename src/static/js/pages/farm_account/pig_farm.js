@@ -740,7 +740,7 @@ export function PigFarm(_navigation){
      * It is possible to specify pig_farm_hid; if not specified, will read
      * current this.getPigFarmHid();
      * */
-    this.requestPigFarmDataVerNum = function(pig_farm_hid, callback_success, 
+    this.requestPigFarmDataVerNum = async function(pig_farm_hid, callback_success, 
             callback_offline, elem_show_error){
         
         let pfhid = null;
@@ -752,11 +752,10 @@ export function PigFarm(_navigation){
             pfhid = thisObj.getPigFarmHid();
         }
         
-        
         // Check if there was a previous request result
         if (thisObj.lastDataVerNumReq.seconds){
-            const seconds   = Math.floor(Date.now() / 1000);
-            const delta     = seconds - thisObj.lastDataVerNumReq.seconds;
+            const seconds = Math.floor(Date.now() / 1000);
+            const delta = seconds - thisObj.lastDataVerNumReq.seconds;
             
             if (delta < MAX_SECONDS_REQUEST_DATA_VER_NUM){
                 // If within this range there is expected no data change;
@@ -770,64 +769,93 @@ export function PigFarm(_navigation){
             }
         }
         
-        
         const base_url = window.location.origin;
         const url = `${base_url}/pig_farm/data_ver_num?pfhid=${pfhid}&r=1`;
         
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
+        
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
             
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
+            clearTimeout(timeoutId);
             
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    const seconds = Math.floor(Date.now() / 1000);
-                    
-                    thisObj.lastDataVerNumReq.seconds = seconds;
-                    thisObj.lastDataVerNumReq.dataVerNum = response.data;
-                    
-                    if (callback_success){callback_success(response.data);}
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                // Check if Offline
+            // Check if offline (network error would be caught in catch block)
+            // This check is here for HTTP errors that might indicate offline
+            if (!response.ok) {
+                // Check if offline
                 if (navigation.managerSystem.isOffLine){
                     if (callback_offline) {callback_offline();}
                     return;
                 }
                 
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
             }
-        });        
-    }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                const seconds = Math.floor(Date.now() / 1000);
+                
+                thisObj.lastDataVerNumReq.seconds = seconds;
+                thisObj.lastDataVerNumReq.dataVerNum = responseData.data;
+                
+                if (callback_success){
+                    callback_success(responseData.data);
+                }
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check if offline (network error)
+            if (navigation.managerSystem.isOffLine){
+                if (callback_offline) {callback_offline();}
+                return;
+            }
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
  
     
-    this.requestDataAccPigOpsList = function(pig_operation_type, 
+    this.requestDataAccPigOpsList = async function(pig_operation_type, 
             callback_success, elem_show_error){
         
         const base_url = window.location.origin;
@@ -838,119 +866,172 @@ export function PigFarm(_navigation){
             url += `&operation_type=${pig_operation_type}`;
         }
         
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
+        
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
             
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
+            clearTimeout(timeoutId);
             
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    
-                    
-                    navigation.pageAccPigOpsList.setDataAccPigOpsList(
-                        response.data, pig_operation_type, 
-                        response.data_ver_num);
-                    
-                    if (callback_success){callback_success(response.data);}
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
+            if (!response.ok) {
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
             }
-        });
-    }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                navigation.pageAccPigOpsList.setDataAccPigOpsList(
+                    responseData.data, pig_operation_type, 
+                    responseData.data_ver_num);
+                
+                if (callback_success){
+                    callback_success(responseData.data);
+                }
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
+     
  
- 
-    this.requestDataPigFarmStaffList = function(callback_success, elem_show_error){
+    this.requestDataPigFarmStaffList = async function(callback_success, elem_show_error){
         const base_url = window.location.origin;
         let url = `${base_url}/pig_farm_staff/list?pfhid=${thisObj.getPigFarmHid()}`;
         
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
-            
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    thisObj.dataStaffList = response.data;
-                    
-                    // Update thisObj.dataVerNum.feed_buy
-                    if (response.data_ver_num){
-                        const ver_num = response.data_ver_num.pig_farm.staff;
-                        thisObj.dataVerNum.staff = ver_num;
-                    }
-                    
-                    
-                    // Update local storage
-                    const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.STAFF;
-                    const local_data = {
-                        pig_farm_hid:   thisObj.getPigFarmHid(),
-                        ver_num:        thisObj.dataVerNum.staff,
-                        data:           thisObj.dataStaffList,
-                        cached_at:      Date.now()
-                    };
-                    localStorage.setItem(key, JSON.stringify(local_data));
-                    
-                    
-                    if (callback_success){callback_success(response.data);}
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
-            }
-        });
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
         
-    }
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
+            }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                thisObj.dataStaffList = responseData.data;
+                
+                // Update thisObj.dataVerNum.feed_buy
+                if (responseData.data_ver_num){
+                    const ver_num = responseData.data_ver_num.pig_farm.staff;
+                    thisObj.dataVerNum.staff = ver_num;
+                }
+                
+                // Update local storage
+                const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.STAFF;
+                const local_data = {
+                    pig_farm_hid:   thisObj.getPigFarmHid(),
+                    ver_num:        thisObj.dataVerNum.staff,
+                    data:           thisObj.dataStaffList,
+                    cached_at:      Date.now()
+                };
+                localStorage.setItem(key, JSON.stringify(local_data));
+                
+                if (callback_success){
+                    callback_success(responseData.data);
+                }
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
  
     
     /**
@@ -1436,71 +1517,82 @@ export function PigFarm(_navigation){
  
     
     
-    this.requestDataPigFarmFixedExpenses = function(callback_success, elem_show_error){
+    this.requestDataPigFarmFixedExpenses = async function(callback_success, elem_show_error){
         const base_url = window.location.origin;
         let url = `${base_url}/pig_farm/fixed_expenses?pfhid=${thisObj.getPigFarmHid()}`;
-        
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
-            
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    thisObj.dataFixedExpenses = response.data;
-                    
-                    // Update thisObj.dataVerNum.feed_buy
-                    if (response.data_ver_num){
-                        const ver_num = response.data_ver_num.pig_farm.fixed_expenses;
-                        thisObj.dataVerNum.fixed_expenses = ver_num;
-                    }
-                    
-                    
-                    // Update local storage
-                    const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.FIXED_EXPENSES;
-                    const local_data = {
-                        pig_farm_hid:   thisObj.getPigFarmHid(),
-                        ver_num:        thisObj.dataVerNum.fixed_expenses,
-                        data:           thisObj.dataFixedExpenses,
-                        cached_at:      Date.now()
-                    };
-                    localStorage.setItem(key, JSON.stringify(local_data));
-                    
-                    
-                    if (callback_success){callback_success(response.data);}
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
-            }
-        });
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
         
-    }
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal,
+                cache: 'no-cache'
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                throw { status: response.status, statusText: response.statusText, response };
+            }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                thisObj.dataFixedExpenses = responseData.data;
+                
+                if (responseData.data_ver_num){
+                    const ver_num = responseData.data_ver_num.pig_farm.fixed_expenses;
+                    thisObj.dataVerNum.fixed_expenses = ver_num;
+                }
+                
+                const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.FIXED_EXPENSES;
+                const local_data = {
+                    pig_farm_hid:   thisObj.getPigFarmHid(),
+                    ver_num:        thisObj.dataVerNum.fixed_expenses,
+                    data:           thisObj.dataFixedExpenses,
+                    cached_at:      Date.now()
+                };
+                localStorage.setItem(key, JSON.stringify(local_data));
+                
+                if (callback_success){callback_success(responseData.data);}
+            } else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
  
     
     
