@@ -1037,99 +1037,132 @@ export function PigFarm(_navigation){
     /**
      *  date_since - can be null or YYYY-MM-DD date string
      * */
-    this.requestDataPigFarmFeedBuyList = function(date_since, callback_success, 
+    this.requestDataPigFarmFeedBuyList = async function(date_since, callback_success, 
             callback_offline, elem_show_error, dont_save_to_cache){
         
         const base_url = window.location.origin;
         let url = `${base_url}/pf_feed_buy/list?pfhid=${thisObj.getPigFarmHid()}`;
         if (date_since) {
-            url += `&date_since=${date_since}`
+            url += `&date_since=${date_since}`;
         }
         
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
+        
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
             
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
+            clearTimeout(timeoutId);
             
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    // By default, the result is saved to cache;
-                    // But if specified dont_save_to_cache, it will ignore this
-                    // saving action.
-                    if (!dont_save_to_cache){
-                        thisObj.dataFarmFeedBuyList = response.data;
-                        
-                        // Update thisObj.dataVerNum.feed_buy
-                        if (response.data_ver_num){
-                            const ver_num = response.data_ver_num.pig_farm.feed_buy;
-                            thisObj.dataVerNum.feed_buy = ver_num;
-                        }
-                        
-                        
-                        // Update local storage
-                        const key = navigation.managerLocalData.STORAGE_KEY.FINANCIALS.FEED_BUY;
-                        const local_data = {
-                            pig_farm_hid:   thisObj.getPigFarmHid(),
-                            ver_num:        thisObj.dataVerNum.feed_buy,
-                            data:           thisObj.dataFarmFeedBuyList,
-                            cached_at:      Date.now()
-                        };
-                        localStorage.setItem(key, JSON.stringify(local_data));
-                    }
-                    
-                    if (callback_success){
-                        let ver_num = 0
-                        if (response.data_ver_num){
-                            ver_num = response.data_ver_num.pig_farm.feed_buy;
-                        }
-
-                        callback_success({
-                            ver_num : ver_num,
-                            data: response.data
-                        });
-                    }
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                // Check if Offline
+            // Check if offline (network error would be caught in catch block)
+            // This check is here for HTTP errors that might indicate offline
+            if (!response.ok) {
+                // Check if offline
                 if (navigation.managerSystem.isOffLine){
                     if (callback_offline) {callback_offline();}
-                    
                     return;
                 }
                 
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
             }
-        });
-        
-    }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                // By default, the result is saved to cache;
+                // But if specified dont_save_to_cache, it will ignore this
+                // saving action.
+                if (!dont_save_to_cache){
+                    thisObj.dataFarmFeedBuyList = responseData.data;
+                    
+                    // Update thisObj.dataVerNum.feed_buy
+                    if (responseData.data_ver_num){
+                        const ver_num = responseData.data_ver_num.pig_farm.feed_buy;
+                        thisObj.dataVerNum.feed_buy = ver_num;
+                    }
+                    
+                    // Update local storage
+                    const key = navigation.managerLocalData.STORAGE_KEY.FINANCIALS.FEED_BUY;
+                    const local_data = {
+                        pig_farm_hid:   thisObj.getPigFarmHid(),
+                        ver_num:        thisObj.dataVerNum.feed_buy,
+                        data:           thisObj.dataFarmFeedBuyList,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                }
+                
+                if (callback_success){
+                    let ver_num = 0;
+                    if (responseData.data_ver_num){
+                        ver_num = responseData.data_ver_num.pig_farm.feed_buy;
+                    }
+
+                    callback_success({
+                        ver_num : ver_num,
+                        data: responseData.data
+                    });
+                }
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check if offline (network error)
+            if (navigation.managerSystem.isOffLine){
+                if (callback_offline) {callback_offline();}
+                return;
+            }
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
  
     
-    this.requestDataPigFarmFeedBuyItems = function(pig_farm_feed_buy, 
+    this.requestDataPigFarmFeedBuyItems = async function(pig_farm_feed_buy, 
             callback_success, elem_show_error){
         
         // Only request feed_buy items not the whole pig_farm_feed_buy
@@ -1139,63 +1172,90 @@ export function PigFarm(_navigation){
         const base_url = window.location.origin;
         let url = `${base_url}/pf_feed_buy_item/list?pf_feed_buy_hid=${pf_feed_buy_hid}`;
         
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
-            
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    pig_farm_feed_buy.feed_items = response.data;
-                    
-                    // Update local storage
-                    thisObj.saveToStorage();
-                    
-                    if (callback_success){callback_success(response.data);}
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
-            }
-        });
-    }
-    
-    
-    this.requestDataPigMedVacList = function(medvac_type, data_entry, 
-            callback_success, elem_show_error){
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
         
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
+            }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                pig_farm_feed_buy.feed_items = responseData.data;
+                
+                // Update local storage
+                thisObj.saveToStorage();
+                
+                if (callback_success){
+                    callback_success(responseData.data);
+                }
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
+    
+    
+    this.requestDataPigMedVacList = async function(medvac_type, data_entry, 
+            callback_success, elem_show_error){
         
         const base_url = window.location.origin;
         let url = null;
         
         let sow_boar_hid = null;
         let pig_prod_hid = null;
-        
         
         // The data_entry can either be a data_sow_boar or data_pig_prod 
         if (medvac_type == MULTIKEY_OBJ_TYPE.SOW_BOAR){
@@ -1207,66 +1267,92 @@ export function PigFarm(_navigation){
             url = `${base_url}/pig_medvac/list?pig_prod_hid=${pig_prod_hid}`;
         }
         
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
-            
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    
-                    data_entry.data_details.list_medvac = response.data;
-                    
-                    // The data_entry can either be a data_sow_boar or data_pig_prod
-                    if (medvac_type == MULTIKEY_OBJ_TYPE.SOW_BOAR){
-                    }
-                    else{
-                    }
-                    
-                    
-                    
-                    if (callback_success){
-                        callback_success(response.data);
-                    }
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
-            }
-        });
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
         
-    }
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
+            }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                data_entry.data_details.list_medvac = responseData.data;
+                
+                // The data_entry can either be a data_sow_boar or data_pig_prod
+                // (No additional logic needed for now, but kept as placeholders)
+                if (medvac_type == MULTIKEY_OBJ_TYPE.SOW_BOAR){
+                    // Handle sow_boar specific logic if needed
+                }
+                else{
+                    // Handle pig_prod specific logic if needed
+                }
+                
+                if (callback_success){
+                    callback_success(responseData.data);
+                }
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
     
     
     /**
      *  date_since - can be null or YYYY-MM-DD date string
      * */
-    this.requestDataPigFarmFeedBalance = function(date_since, callback_success,
+    this.requestDataPigFarmFeedBalance = async function(date_since, callback_success,
             callback_offline, elem_show_error, dont_save_to_cache){
         
         const pig_farm_hid = thisObj.getPigFarmHid();
@@ -1274,95 +1360,127 @@ export function PigFarm(_navigation){
         const base_url = window.location.origin;
         let url = `${base_url}/feed_balance/list?pfhid=${pig_farm_hid}`;
         if (date_since) {
-            url += `&date_since=${date_since}`
+            url += `&date_since=${date_since}`;
         }
-        
         
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
+        
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
             
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
+            clearTimeout(timeoutId);
             
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    // By default, the result is saved to cache;
-                    // But if specified dont_save_to_cache, it will ignore this
-                    // saving action.
-                    if (!dont_save_to_cache){
-                        thisObj.dataFeedBalanceList = response.data;
-                        
-                        // Update thisObj.dataVerNum.feed_balance
-                        if (response.data_ver_num){
-                            const ver_num = response.data_ver_num.pig_farm.feed_balance;
-                            thisObj.dataVerNum.feed_balance = ver_num;
-                        }
-                        
-                        
-                        // Update local storage
-                        const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.FEED_BALANCE;
-                        const local_data = {
-                            pig_farm_hid:   thisObj.getPigFarmHid(),
-                            ver_num:        thisObj.dataVerNum.feed_balance,
-                            data:           thisObj.dataFeedBalanceList,
-                            cached_at:      Date.now()
-                        };
-                        localStorage.setItem(key, JSON.stringify(local_data));
-                    }
-                    
-                    if (callback_success){
-                        let ver_num = 0
-                        if (response.data_ver_num){
-                            ver_num = response.data_ver_num.pig_farm.feed_balance;
-                        }
-                        
-                        callback_success({
-                            ver_num : ver_num,
-                            data: response.data
-                        });
-                    }
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                // Check if Offline
+            // Check if offline (network error would be caught in catch block)
+            // This check is here for HTTP errors that might indicate offline
+            if (!response.ok) {
+                // Check if offline
                 if (navigation.managerSystem.isOffLine){
                     if (callback_offline) {callback_offline();}
-                    
                     return;
                 }
                 
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
             }
-        });
-        
-    }
- 
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                // By default, the result is saved to cache;
+                // But if specified dont_save_to_cache, it will ignore this
+                // saving action.
+                if (!dont_save_to_cache){
+                    thisObj.dataFeedBalanceList = responseData.data;
+                    
+                    // Update thisObj.dataVerNum.feed_balance
+                    if (responseData.data_ver_num){
+                        const ver_num = responseData.data_ver_num.pig_farm.feed_balance;
+                        thisObj.dataVerNum.feed_balance = ver_num;
+                    }
+                    
+                    // Update local storage
+                    const key = navigation.managerLocalData.STORAGE_KEY.OPERATIONS.FEED_BALANCE;
+                    const local_data = {
+                        pig_farm_hid:   thisObj.getPigFarmHid(),
+                        ver_num:        thisObj.dataVerNum.feed_balance,
+                        data:           thisObj.dataFeedBalanceList,
+                        cached_at:      Date.now()
+                    };
+                    localStorage.setItem(key, JSON.stringify(local_data));
+                }
+                
+                if (callback_success){
+                    let ver_num = 0;
+                    if (responseData.data_ver_num){
+                        ver_num = responseData.data_ver_num.pig_farm.feed_balance;
+                    }
+                    
+                    callback_success({
+                        ver_num : ver_num,
+                        data: responseData.data
+                    });
+                }
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check if offline (network error)
+            if (navigation.managerSystem.isOffLine){
+                if (callback_offline) {callback_offline();}
+                return;
+            }
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
+     
     
     
-    this.requestDataPigFarmLastFeedBalance = function(callback_success,
+    this.requestDataPigFarmLastFeedBalance = async function(callback_success,
             elem_show_error){
         /*
         1.) This request is called at dashboard;
@@ -1378,76 +1496,101 @@ export function PigFarm(_navigation){
         const base_url = window.location.origin;
         let url = `${base_url}/pig_farm/last_feed_balance?pfhid=${pig_farm_hid}`;
         
-        
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
+        
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
             
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
+            clearTimeout(timeoutId);
             
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    thisObj.dataLastFeedBalance = response.data;
-                    
-                    
-                    // Update thisObj.dataVerNum.feed_balance
-                    if (response.data_ver_num){
-                        const ver_num = response.data_ver_num.pig_farm.feed_balance;
-                        if (ver_num > thisObj.dataVerNum.feed_balance){
-                            thisObj.requestDataPigFarmFeedBalance();
-                        }
-                        
-                        thisObj.dataVerNum.feed_balance = ver_num;
+            if (!response.ok) {
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
+            }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                thisObj.dataLastFeedBalance = responseData.data;
+                
+                // Update thisObj.dataVerNum.feed_balance
+                if (responseData.data_ver_num){
+                    const ver_num = responseData.data_ver_num.pig_farm.feed_balance;
+                    if (ver_num > thisObj.dataVerNum.feed_balance){
+                        // Silently update the full feed balance list
+                        thisObj.requestDataPigFarmFeedBalance();
                     }
                     
-                    
-                    // Update local storage
-                    const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.LAST_FEED_BALANCE;
-                    const local_data = {
-                        pig_farm_hid:   thisObj.getPigFarmHid(),
-                        ver_num:        thisObj.dataVerNum.feed_balance,
-                        data:           thisObj.dataLastFeedBalance,
-                        cached_at:      Date.now()
-                    };
-                    localStorage.setItem(key, JSON.stringify(local_data));
-                    
-                    
-                    if (callback_success){callback_success(response.data);}
+                    thisObj.dataVerNum.feed_balance = ver_num;
                 }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
+                
+                // Update local storage
+                const key = navigation.managerLocalData.STORAGE_KEY.PIG_FARM.LAST_FEED_BALANCE;
+                const local_data = {
+                    pig_farm_hid:   thisObj.getPigFarmHid(),
+                    ver_num:        thisObj.dataVerNum.feed_balance,
+                    data:           thisObj.dataLastFeedBalance,
+                    cached_at:      Date.now()
+                };
+                localStorage.setItem(key, JSON.stringify(local_data));
+                
+                if (callback_success){
+                    callback_success(responseData.data);
                 }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
             }
-        });
-        
-    }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
  
     
-    this.requestDataPigFarmProdOutput = function(callback_success,
+    this.requestDataPigFarmProdOutput = async function(callback_success,
             callback_offline, elem_show_error){
         
         const pig_farm_hid = thisObj.getPigFarmHid();
@@ -1455,65 +1598,97 @@ export function PigFarm(_navigation){
         const base_url = window.location.origin;
         let url = `${base_url}/pig_prod/output_per_year?pfhid=${pig_farm_hid}`;
         
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
+        
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
             
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
+            clearTimeout(timeoutId);
             
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    
-                    if (callback_success){
-                        let ver_num = 0
-                        if (response.data_ver_num){
-                            ver_num = response.data_ver_num.pig_farm.pig_prod;
-                        }
-                        
-                        callback_success({
-                            ver_num : ver_num,
-                            data: response.data
-                        });
-                    }
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                // Check if Offline
+            // Check if offline (network error would be caught in catch block)
+            // This check is here for HTTP errors that might indicate offline
+            if (!response.ok) {
+                // Check if offline
                 if (navigation.managerSystem.isOffLine){
                     if (callback_offline) {callback_offline();}
-                    
                     return;
                 }
                 
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
             }
-        });
-        
-    }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                if (callback_success){
+                    let ver_num = 0;
+                    if (responseData.data_ver_num){
+                        ver_num = responseData.data_ver_num.pig_farm.pig_prod;
+                    }
+                    
+                    callback_success({
+                        ver_num : ver_num,
+                        data: responseData.data
+                    });
+                }
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check if offline (network error)
+            if (navigation.managerSystem.isOffLine){
+                if (callback_offline) {callback_offline();}
+                return;
+            }
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
  
     
     
@@ -1596,7 +1771,7 @@ export function PigFarm(_navigation){
  
     
     
-    this.requestDataPigFarmSummaryReportList = function(callback_success, 
+    this.requestDataPigFarmSummaryReportList = async function(callback_success, 
             elem_show_error){
         
         const pfhid = thisObj.getPigFarmHid();
@@ -1605,53 +1780,81 @@ export function PigFarm(_navigation){
         const base_url = window.location.origin;
         let url = `${base_url}/report/list?pfhid=${pfhid}&rtid=${rtid}`;
         
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
-            
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    thisObj.dataSummaryReportList = response.data;
-                    
-                    if (callback_success){callback_success(response.data);}
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
-            }
-        });
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
         
-    }
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
+            }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                thisObj.dataSummaryReportList = responseData.data;
+                
+                if (callback_success){
+                    callback_success(responseData.data);
+                }
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
  
     
     
-    this.requestDataPigFarmSowDueChecklist = function(callback_success,
+    this.requestDataPigFarmSowDueChecklist = async function(callback_success,
             elem_show_error){
         
         const pig_farm_hid = thisObj.getPigFarmHid();
@@ -1659,64 +1862,88 @@ export function PigFarm(_navigation){
         const base_url = window.location.origin;
         let url = `${base_url}/pf_sow_due_chklst?pfhid=${pig_farm_hid}`;
         
-        
-        
         const bearer_token = localStorage.getItem('access_token');
         
-        $.ajax({
-            type: 'GET',
-            dataType: 'json',
-            
-            headers: {
-                'Authorization': `Bearer ${bearer_token}`
-            },
-            
-            timeout: APPLICATION.REQUEST_TIMEOUT,
-            url: url,
-            async: true,
-  
-            beforeSend: function(){
-                if (elem_show_error){
-                    elem_show_error.style.display = 'none';
-                }
-            },
-  
-            success: function(response){
-                if (response.result.num == 0){
-                    let checklist = response.data;
-                    if (checklist.length == 0){checklist = null;}
-                    
-                    thisObj.dataSowDueChecklist = checklist;
-                    
-                    // Update thisObj.dataVerNum.sow_due_checklist
-                    if (response.data_ver_num){
-                        const ver_num = response.data_ver_num.pig_farm.sow_due_checklist;
-                        thisObj.dataVerNum.sow_due_checklist = ver_num;
-                    }
-                    
-                    
-                    // Update local storage
-                    thisObj.saveToStorage();
-                    
-                    if (callback_success){callback_success();}
-                }
-                else {
-                    navigation.serverError.receivedErrorMessage(
-                        response, elem_show_error);
-                }
-            },
-  
-            complete: function(){
-            },
-  
-            error: function(jqXHR, textStatus, errorThrown){
-                navigation.serverError.serverErrorThrown(jqXHR, 
-                    textStatus, errorThrown);
-            }
-        });
+        // Hide error element if provided
+        if (elem_show_error){
+            elem_show_error.style.display = 'none';
+        }
         
-    }
- 
+        // Setup timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), APPLICATION.REQUEST_TIMEOUT);
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${bearer_token}`,
+                    'Content-Type': 'application/json'
+                },
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                throw { 
+                    status: response.status, 
+                    statusText: response.statusText,
+                    response: response 
+                };
+            }
+            
+            const responseData = await response.json();
+            
+            if (responseData.result.num == 0){
+                let checklist = responseData.data;
+                if (checklist.length == 0){checklist = null;}
+                
+                thisObj.dataSowDueChecklist = checklist;
+                
+                // Update thisObj.dataVerNum.sow_due_checklist
+                if (responseData.data_ver_num){
+                    const ver_num = responseData.data_ver_num.pig_farm.sow_due_checklist;
+                    thisObj.dataVerNum.sow_due_checklist = ver_num;
+                }
+                
+                // Update local storage
+                thisObj.saveToStorage();
+                
+                if (callback_success){callback_success();}
+            }
+            else {
+                navigation.serverError.receivedErrorMessage(responseData, elem_show_error);
+            }
+            
+        } catch (error) {
+            clearTimeout(timeoutId);
+            
+            // Check for timeout
+            if (error.name === 'AbortError') {
+                navigation.serverError.serverErrorThrown(
+                    { status: 408, statusText: 'Request Timeout' },
+                    'timeout',
+                    'Request timed out'
+                );
+            } else if (error.response) {
+                // HTTP error
+                navigation.serverError.serverErrorThrown(
+                    error.response,
+                    'error',
+                    error.statusText
+                );
+            } else {
+                // Network or other errors
+                navigation.serverError.serverErrorThrown(
+                    null,
+                    'error',
+                    error.message || 'Network error'
+                );
+            }
+        }
+    };
+     
     
     this.generateFarmSummaryReport = function(callback_success, elem_show_error){
         const user_hid      = navigation.userControl.getUserHid();
