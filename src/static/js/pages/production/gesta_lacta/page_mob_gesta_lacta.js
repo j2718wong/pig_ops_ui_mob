@@ -272,6 +272,7 @@ export function PageMobGestaLacta(input_settings){
         let label_wean          = 'Wean';
         let label_operation     = 'What to do?';
         let label_day45         = 'Day 45';
+        let label_day150        = 'Day 150';
         
         let label_num_pigs      = 'Num Pigs';
         let label_dead_at_birth = 'Dead at Birth';
@@ -382,9 +383,10 @@ export function PageMobGestaLacta(input_settings){
             <div id="${elemIdTableDay45Show}">
                 <table class="data-table table-gesta-lacta" id="${elemIdTableDay45}">
                     <colgroup>
-                        <col style="width: 34%;">
                         <col style="width: 30%;">
-                        <col style="width: 36%;">
+                        <col style="width: 30%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
                     </colgroup>
       
                     <thead>
@@ -395,6 +397,7 @@ export function PageMobGestaLacta(input_settings){
                             </th>
                             <th>${label_wean} <span class="nowrap wean-num-days">(Day 32)</span></th>
                             <th>${label_day45}</th>
+                            <th>${label_day150}</th>
                         </tr>
                     </thead>
                     
@@ -1287,12 +1290,16 @@ ${html_style}
         
         const dt_45_s = thisObj.calculateDateAfterBirth(
             cur_entry.birth.date_actual, acc_settings_ops, 45);
+            
+        const dt_150_s = thisObj.calculateDateAfterBirth(
+            cur_entry.birth.date_actual, acc_settings_ops, 150);
         
         const html = `
         <tr>
             <td>${html_pid_sow}</td>
             <td>${s_date_important}</td>
             <td>${dt_45_s}</td>
+            <td>${dt_150_s}</td>
         </tr>
         `;
             
