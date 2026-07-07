@@ -290,7 +290,7 @@ ${html_style}
         dtCurrentDate   = dateMating;
         
         // Calculate dates
-        // Farrow: Day 113 from mating (gestation period)
+        // Farrow: Day 104 from mating (gestation period)
         const dateFarrow = new Date(dateMating);
         dateFarrow.setDate(dateFarrow.getDate() + 104);
         
