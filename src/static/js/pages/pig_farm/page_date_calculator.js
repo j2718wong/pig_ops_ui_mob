@@ -286,6 +286,9 @@ ${html_style}
             return;
         }
         
+        // Update dtCurrentDate
+        dtCurrentDate   = dateMating;
+        
         // Calculate dates
         // Farrow: Day 113 from mating (gestation period)
         const dateFarrow = new Date(dateMating);
@@ -376,9 +379,11 @@ ${html_style}
     this.show = function(){
         thisObj._resetForm();
         
-        dtCurrentDate = new Date();
-        dtCurrentDate.setHours(0, 0, 0, 0);
-        
+        if (!dtCurrentDate){
+            dtCurrentDate = new Date();
+            dtCurrentDate.setHours(0, 0, 0, 0);
+        }
+    
         const s_dt_current = formatDate(dtCurrentDate, FORMAT_COMPACT);
         
         elemDateToday.textContent = s_dt_current;
