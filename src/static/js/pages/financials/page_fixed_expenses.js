@@ -373,14 +373,21 @@ ${html_style}
         
         elemDateToday.textContent = s_dt_current;
         
+        const callback_success = function(){
+            thisObj.populateFixedExpenses();
+        };
         
-        this.populateFixedExpenses();
+        navigation.pigFarm.requestDataPigFarmFixedExpenses(callback_success);
     }
     
     
     this.populateFixedExpenses = function(){
         // Get PigFarm latest pig farm Fixed monthly expenses
         const fixedExpenses = navigation.pigFarm.dataFixedExpenses;
+        
+        console.log(`fixedExpenses`);
+        console.log(fixedExpenses);
+        
         
         // Format number with commas and 1 decimal place (e.g., 1,000.0)
         const formatMoney = (value) => {
@@ -389,14 +396,16 @@ ${html_style}
         };
         
         // Populate the table cells with formatted values
-        if (fixedExpenses) {
-            elemTdStaff.textContent     = formatMoney(fixedExpenses.staff);
-            elemTdElectric.textContent  = formatMoney(fixedExpenses.electric);
-            elemTdWater.textContent     = formatMoney(fixedExpenses.water);
-            elemTdInternet.textContent  = formatMoney(fixedExpenses.internet);
-            elemTdFuel.textContent      = formatMoney(fixedExpenses.fuel);
-            elemTdSupplies.textContent  = formatMoney(fixedExpenses.supplies);
-            elemTdOther.textContent     = formatMoney(fixedExpenses.other);
+        // Data structure: { fixed_expenses: { staff: 8000.0, electric: 0.0, ... } }
+        if (fixedExpenses && fixedExpenses.fixed_expenses) {
+            const fe = fixedExpenses.fixed_expenses;
+            elemTdStaff.textContent     = formatMoney(fe.staff);
+            elemTdElectric.textContent  = formatMoney(fe.electric);
+            elemTdWater.textContent     = formatMoney(fe.water);
+            elemTdInternet.textContent  = formatMoney(fe.internet);
+            elemTdFuel.textContent      = formatMoney(fe.fuel);
+            elemTdSupplies.textContent  = formatMoney(fe.supplies);
+            elemTdOther.textContent     = formatMoney(fe.other);
         }
     }
     
@@ -557,11 +566,19 @@ ${html_style}
         
         const base_url = window.location.origin;
         
-        const filteredExpenses = {};
+        // Include ALL existing expense values so the backend doesn't
+        // interpret missing fields as null/zero. The single updated
+        // field overrides its corresponding value.
+        const allExpenses = {};
 
         for (const key of expenseKeys) {
+            // Use updated value if provided, otherwise use the current
+            // in-memory value (which reflects the last server state).
             if (updatedExpenses[key] !== undefined && updatedExpenses[key] !== null) {
-                filteredExpenses[key] = updatedExpenses[key];
+                allExpenses[key] = updatedExpenses[key];
+            } else {
+                const fe = navigation.pigFarm.dataFixedExpenses;
+                allExpenses[key] = (fe && fe.fixed_expenses) ? (fe.fixed_expenses[key] || 0) : 0;
             }
         }
         
@@ -570,7 +587,7 @@ ${html_style}
         const post_data = {
             'uhid':         user_hid,
             'pig_farm_hid': pig_farm_hid,
-            ...filteredExpenses
+            ...allExpenses
         };
         
         
@@ -607,11 +624,18 @@ ${html_style}
                     console.log('Fixed expenses updated successfully');
                     
                     // Update local data
+                    // Data structure: { fixed_expenses: { staff: 8000.0, electric: 0.0, ... } }
                     const fixedExpenses = navigation.pigFarm.dataFixedExpenses;
-                    if (fixedExpenses) {
+                    if (fixedExpenses && fixedExpenses.fixed_expenses) {
                         for (const [key, value] of Object.entries(updatedExpenses)) {
-                            fixedExpenses[key] = value;
+                            fixedExpenses.fixed_expenses[key] = value;
                         }
+                    }
+                    
+                    // Notify feeds estimate page that fixed expenses changed
+                    if (navigation.pageFeedsEstimate && 
+                        typeof navigation.pageFeedsEstimate.onFixedExpensesUpdated === 'function') {
+                        navigation.pageFeedsEstimate.onFixedExpensesUpdated();
                     }
                     
                     // Restore opacity

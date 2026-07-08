@@ -433,29 +433,46 @@ ${html_style}
         // Get PigFarm latest pig farm Fixed monthly expenses
         const fixedExpenses = navigation.pigFarm.dataFixedExpenses;
         
-        // Classify fixed expenses into just 3 categories
-        if (fixedExpenses){
-            catFixedExpenses.staff = fixedExpenses.fixed_expenses.staff || 0;
+        if (fixedExpenses == null){
             
-            let utilities = 0;
-            let others = 0;
-            utilities   += fixedExpenses.fixed_expenses.electric || 0;
-            utilities   += fixedExpenses.fixed_expenses.water || 0;
-            utilities   += fixedExpenses.fixed_expenses.internet || 0;
-            
-            others      += fixedExpenses.fixed_expenses.fuel || 0;
-            others      += fixedExpenses.fixed_expenses.supplies || 0;
-            others      += fixedExpenses.fixed_expenses.other || 0;
-            
-            catFixedExpenses.utilities  = utilities;
-            catFixedExpenses.others     = others; 
-        } 
-        
-        
-        console.log('fixedExpenses');
-        console.log(fixedExpenses);
-        
+        }
+        else{
+            // Classify fixed expenses into just 3 categories
+            if (fixedExpenses){
+                catFixedExpenses.staff = fixedExpenses.fixed_expenses.staff || 0;
+                
+                let utilities = 0;
+                let others = 0;
+                utilities   += fixedExpenses.fixed_expenses.electric || 0;
+                utilities   += fixedExpenses.fixed_expenses.water || 0;
+                utilities   += fixedExpenses.fixed_expenses.internet || 0;
+                
+                others      += fixedExpenses.fixed_expenses.fuel || 0;
+                others      += fixedExpenses.fixed_expenses.supplies || 0;
+                others      += fixedExpenses.fixed_expenses.other || 0;
+                
+                catFixedExpenses.utilities  = utilities;
+                catFixedExpenses.others     = others; 
+            } 
+        }        
     }
+    
+    
+    /**
+     * Called by page_fixed_expenses.js after a successful save,
+     * so the feeds estimate page can refresh the displayed fixed expenses
+     * without requiring a full page reload.
+     */
+    this.onFixedExpensesUpdated = function() {
+        // Reload fixed expenses from the shared data (catFixedExpenses)
+        thisObj._loadFixedExpenses();
+        
+        // If the "Include Fixed Expenses" checkbox is currently checked,
+        // re-render the fixed expense rows with the updated values.
+        if (elemUiIncFixedExpenses && elemUiIncFixedExpenses.isChecked()) {
+            thisObj.onChangeIncludeFixedExpenses(null, true);
+        }
+    };
     
     
     this.show = function(){
@@ -474,7 +491,7 @@ ${html_style}
         
         if (last_server_ver_num){
             const server_ver_num = last_server_ver_num[DATA_VER_NUM_PIG_FARM.FIXED_EXPENSES];
-            if (server_ver_num > last_server_ver_num){
+            if (server_ver_num > ver_num_fixed_expenses){
                 const callback_success = function(){
                     thisObj._loadFixedExpenses();
                 };
@@ -610,6 +627,13 @@ ${html_style}
         }
         
         this.populateFeedEstimate(dataToShow);
+        
+        // If the "Include Fixed Expenses" checkbox is checked, re-apply
+        // the fixed expense rows (populateFeedEstimate rebuilds the entire
+        // tbody, which wipes them out).
+        if (elemUiIncFixedExpenses && elemUiIncFixedExpenses.isChecked()) {
+            thisObj.onChangeIncludeFixedExpenses(null, true);
+        }
     }
     
     
@@ -856,7 +880,7 @@ ${html_style}
             const monthData = feed_estimate[i];
             const cost = monthData.estimated_cost || 0;
             totalCost += cost;
-            costRowHtml += `<td>${formatMoney(cost)}</td>`;
+            costRowHtml += `<td style="text-align:center;">${formatMoney(cost)}</td>`;
         }
         
         // Fill remaining columns if less than 4 months
