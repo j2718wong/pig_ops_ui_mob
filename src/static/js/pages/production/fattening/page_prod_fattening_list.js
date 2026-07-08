@@ -538,7 +538,7 @@ ${html_style}
         <table class="data-table table-fattening" id="">
             <colgroup>
                 <col style="width: 10%;">
-                <col style="width: 22%;">
+                <col style="width: 30%;">
                 <col style="width: 15%;">
                 <col style="width: 15%;">
                 <col style="">
