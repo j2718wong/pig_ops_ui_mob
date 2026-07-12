@@ -316,12 +316,12 @@ ${html_style}
     this._processAfterHtmlRender = function(){
         
         componentNavLeftRight.callbackNavLeft = function(){
-            //navigation.managerNavLinks.onClickNavFeedsExpenses(null, true);
+            navigation.managerNavLinks.onClickNavFeedsEstimate(null, true);
         };
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            //navigation.managerNavLinks.onClickNavSummaryReports();
+            navigation.managerNavLinks.onClickNavSummaryReports();
         };
         
         

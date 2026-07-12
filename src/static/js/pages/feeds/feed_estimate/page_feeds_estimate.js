@@ -382,8 +382,7 @@ ${html_style}
         
           
         componentNavLeftRight.callbackNavRight = function(){
-            // TODO - to fixed
-            navigation.managerNavLinks.onClickNavSummaryReports();
+            navigation.managerNavLinks.onClickNavFixedExpenses(null, true);
         };
         
         
