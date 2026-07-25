@@ -75,6 +75,9 @@ export function PageDateCalculator(input_settings){
     
     
     let dtCurrentDate           = null;
+    
+    // Store the current date mode
+    let currentDateMode         = 'date-mating';  // 'date-mating' or 'date-birth'
 
     
     this.init = function(){
@@ -98,6 +101,7 @@ export function PageDateCalculator(input_settings){
         let label_today         = 'Today';
         
         let label_date_mating   = 'Date Mating or Insemination'; 
+        let label_date_birth    = 'Date of Birth';
         
         
         const helper = navigation.managerTranslations.translationHelper;
@@ -106,6 +110,7 @@ export function PageDateCalculator(input_settings){
         label_page_title    = helper.getSimpleTranslation('navigation.nav_links.Operations2_1') || label_page_title;
         label_today         = helper.getSimpleTranslation('common_app.labels.today') || label_today;
         label_date_mating   = helper.getSimpleTranslation('page_gestating_add.labels.date_mating') || label_date_mating;
+        label_date_birth    = helper.getSimpleTranslation('page_gestating_add.labels.date_birth') || label_date_birth;
         
         
         componentNavLeftRight   = new ComponentNavLeftRight({
@@ -128,7 +133,7 @@ export function PageDateCalculator(input_settings){
         elemUiDateMating        = new UiInputDatePicker({
             uniqueKey:          `${settings.uniqueKey}-date-mating`,
         
-            textLabel:          label_date_mating,
+            textLabel:          label_date_mating,  // Start with date mating label
             isRequired:         false,
             maxDate:            40,
             invalidFeedBack:    null,
@@ -155,6 +160,35 @@ ${html_style}
         <span id="${elemIdLabelToday}">${label_today}</span>
         <span id="${elemIdDateToday}" style="color:blue; font-weight:600;" ></span>
     </div>
+
+    <div class="mb-3" style="padding-left:5px;">
+        <label class="form-label d-block">Date Input</label>
+        
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" 
+                name="${settings.uniqueKey}-date-option" 
+                id="${settings.uniqueKey}-date-mating-radio" 
+                value="date-mating"
+                checked>
+            
+            <label class="form-check-label" for="${settings.uniqueKey}-date-mating-radio">
+                Input Date Mating
+            </label>
+        </div>
+        
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" 
+                name="${settings.uniqueKey}-date-option" 
+                id="${settings.uniqueKey}-date-birth-radio" 
+                value="date-birth">
+            
+            <label class="form-check-label" for="${settings.uniqueKey}-date-birth-radio">
+                Input Date Birth
+            </label>
+        </div>
+        
+    </div>
+        
 
     ${html_date_mating}
     
@@ -251,26 +285,79 @@ ${html_style}
         if (elemDateInput) {
             // jQuery datepicker change event
             $(elemDateInput).on('change', function() {
-                thisObj._onDateMatingChange();
+                thisObj._onDateChange();
             });
             
             // Also listen for manual input changes
             elemDateInput.addEventListener('input', function() {
-                thisObj._onDateMatingChange();
+                thisObj._onDateChange();
             });
             
             // Listen for blur to catch any final changes
             elemDateInput.addEventListener('blur', function() {
-                thisObj._onDateMatingChange();
+                thisObj._onDateChange();
+            });
+        }
+        
+        // =============================================================
+        // 1.) Radio button event listeners
+        // =============================================================
+        const radioMating = document.getElementById(`${settings.uniqueKey}-date-mating-radio`);
+        const radioBirth = document.getElementById(`${settings.uniqueKey}-date-birth-radio`);
+        
+        if (radioMating) {
+            radioMating.addEventListener('change', function() {
+                if (this.checked) {
+                    thisObj._onDateModeChange('date-mating');
+                }
+            });
+        }
+        
+        if (radioBirth) {
+            radioBirth.addEventListener('change', function() {
+                if (this.checked) {
+                    thisObj._onDateModeChange('date-birth');
+                }
             });
         }
     }
     
     
-    this._onDateMatingChange = function() {
-        const dateMatingValue = elemUiDateMating.getValue();
+    // =============================================================
+    // 1.) Handle radio button change
+    // =============================================================
+    this._onDateModeChange = function(mode) {
+        const helper = navigation.managerTranslations.translationHelper;
         
-        if (!dateMatingValue) {
+        let label_date_mating   = helper.getSimpleTranslation('page_gestating_add.labels.date_mating') || 'Date Mating or Insemination';
+        let label_date_birth    = helper.getSimpleTranslation('page_gestating_add.labels.date_birth') || 'Date of Birth';
+        
+        currentDateMode = mode;
+        
+        if (mode === 'date-mating') {
+            // Call setTextLabel with label_date_mating
+            elemUiDateMating.setTextLabel(label_date_mating);
+            
+            // Recalculate based on current date value (as mating date)
+            thisObj._onDateChange();
+            
+        } else if (mode === 'date-birth') {
+            // Call setTextLabel with label_date_birth
+            elemUiDateMating.setTextLabel(label_date_birth);
+            
+            // Recalculate based on current date value (as birth date)
+            thisObj._onDateChange();
+        }
+    }
+    
+    
+    // =============================================================
+    // 2.) Modified date change handler
+    // =============================================================
+    this._onDateChange = function() {
+        const dateValue = elemUiDateMating.getValue();
+        
+        if (!dateValue) {
             // Clear all calculated dates
             elemTdDateFarrow.textContent = '--';
             elemTdExpectedBirth.textContent = '--';
@@ -280,37 +367,66 @@ ${html_style}
         }
         
         // Parse the date from the input (format: "MMM DD, YYYY" e.g., "Jun 17, 2026")
-        const dateMating = thisObj._parseDateFromDisplay(dateMatingValue);
+        const parsedDate = thisObj._parseDateFromDisplay(dateValue);
         
-        if (!dateMating || isNaN(dateMating.getTime())) {
+        if (!parsedDate || isNaN(parsedDate.getTime())) {
             return;
         }
         
         // Update dtCurrentDate
-        dtCurrentDate   = dateMating;
+        dtCurrentDate = parsedDate;
         
-        // Calculate dates
-        // Farrow: Day 104 from mating (gestation period)
-        const dateFarrow = new Date(dateMating);
-        dateFarrow.setDate(dateFarrow.getDate() + 104);
-        
-        // Expected Birth: Day 114 from mating
-        const dateExpectedBirth = new Date(dateMating);
-        dateExpectedBirth.setDate(dateExpectedBirth.getDate() + 114);
-        
-        // Birth + 45 days
-        const dateBirthPlus45 = new Date(dateExpectedBirth);
-        dateBirthPlus45.setDate(dateBirthPlus45.getDate() + 45);
-        
-        // Birth + 150 days (harvest)
-        const dateBirthPlus150 = new Date(dateExpectedBirth);
-        dateBirthPlus150.setDate(dateBirthPlus150.getDate() + 150);
-        
-        // Display the dates
-        elemTdDateFarrow.textContent        = formatDate(dateFarrow, FORMAT_COMPACT);
-        elemTdExpectedBirth.textContent     = formatDate(dateExpectedBirth, FORMAT_COMPACT);
-        elemTdBirthPlus45Days.textContent   = formatDate(dateBirthPlus45, FORMAT_COMPACT);
-        elemTdBirthPlus150Days.textContent  = formatDate(dateBirthPlus150, FORMAT_COMPACT);
+        // Calculate dates based on mode
+        if (currentDateMode === 'date-mating') {
+            // ---------- Calculate from mating date ----------
+            // Farrow: Day 104 from mating (gestation period)
+            const dateFarrow = new Date(parsedDate);
+            dateFarrow.setDate(dateFarrow.getDate() + 104);
+            
+            // Expected Birth: Day 114 from mating
+            const dateExpectedBirth = new Date(parsedDate);
+            dateExpectedBirth.setDate(dateExpectedBirth.getDate() + 114);
+            
+            // Birth + 45 days (based on expected birth)
+            const dateBirthPlus45 = new Date(dateExpectedBirth);
+            dateBirthPlus45.setDate(dateBirthPlus45.getDate() + 45);
+            
+            // Birth + 150 days (harvest) (based on expected birth)
+            const dateBirthPlus150 = new Date(dateExpectedBirth);
+            dateBirthPlus150.setDate(dateBirthPlus150.getDate() + 150);
+            
+            // Display the dates
+            elemTdDateFarrow.textContent = formatDate(dateFarrow, FORMAT_COMPACT);
+            elemTdExpectedBirth.textContent = formatDate(dateExpectedBirth, FORMAT_COMPACT);
+            elemTdBirthPlus45Days.textContent = formatDate(dateBirthPlus45, FORMAT_COMPACT);
+            elemTdBirthPlus150Days.textContent = formatDate(dateBirthPlus150, FORMAT_COMPACT);
+            
+        } else if (currentDateMode === 'date-birth') {
+            // ---------- Calculate from birth date ----------
+            // The birth date is the date of birth
+            const dateBirth = parsedDate;
+            
+            // Expected Birth is the same as date of birth (for display consistency)
+            const dateExpectedBirth = new Date(dateBirth);
+            
+            // Farrow: 10 days before birth (calculated backwards)
+            const dateFarrow = new Date(dateBirth);
+            dateFarrow.setDate(dateFarrow.getDate() - 10);
+            
+            // Birth + 45 days
+            const dateBirthPlus45 = new Date(dateBirth);
+            dateBirthPlus45.setDate(dateBirthPlus45.getDate() + 45);
+            
+            // Birth + 150 days (harvest)
+            const dateBirthPlus150 = new Date(dateBirth);
+            dateBirthPlus150.setDate(dateBirthPlus150.getDate() + 150);
+            
+            // Display the dates
+            elemTdDateFarrow.textContent = formatDate(dateFarrow, FORMAT_COMPACT);
+            elemTdExpectedBirth.textContent = formatDate(dateExpectedBirth, FORMAT_COMPACT);
+            elemTdBirthPlus45Days.textContent = formatDate(dateBirthPlus45, FORMAT_COMPACT);
+            elemTdBirthPlus150Days.textContent = formatDate(dateBirthPlus150, FORMAT_COMPACT);
+        }
     }
     
     
@@ -392,9 +508,23 @@ ${html_style}
         const todayStr = formatDate(dtCurrentDate, FORMAT_LONG_MONTH);
         elemUiDateMating.setDate(formatDate(dtCurrentDate, FORMAT_COMPACT));
         
+        // Reset to date-mating mode by default
+        currentDateMode = 'date-mating';
+        
+        // Make sure the mating radio is checked
+        const radioMating = document.getElementById(`${settings.uniqueKey}-date-mating-radio`);
+        if (radioMating) {
+            radioMating.checked = true;
+        }
+        
+        // Set the label to date mating
+        const helper = navigation.managerTranslations.translationHelper;
+        const label_date_mating = helper.getSimpleTranslation('page_gestating_add.labels.date_mating') || 'Date Mating or Insemination';
+        elemUiDateMating.setTextLabel(label_date_mating);
+        
         // Trigger calculation with today's date
         setTimeout(function() {
-            thisObj._onDateMatingChange();
+            thisObj._onDateChange();
         }, 100);
     }
 }

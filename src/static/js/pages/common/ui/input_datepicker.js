@@ -38,12 +38,14 @@ export function UiInputDatePicker(input_settings){
     
     const elemIdUiShow          = `${settings.uniqueKey}-show`;
     
+    const elemIdTextLabel       = `${settings.uniqueKey}-text-label`;
     const elemIdText            = `${settings.uniqueKey}-text`;
     const elemIdTextInv         = `${settings.uniqueKey}-text-inv`;
     const elemIdTextHelp        = `${settings.uniqueKey}-text-help`;
     
     
     let elemUiShow              = null;
+    let elemTextLabel           = null;
     let elemText                = null;
     let elemTextInv             = null;
     let elemTextHelp            = null;
@@ -83,7 +85,7 @@ export function UiInputDatePicker(input_settings){
         return `
         <div class="${className}" id="${elemIdUiShow}">
             <label for="${elemIdText}" class="form-label">
-                ${settings.textLabel} ${s_required_mark}
+                <span id="${elemIdTextLabel}">${settings.textLabel}</span> ${s_required_mark}
             </label>
             
             <input  type="text" 
@@ -103,6 +105,7 @@ export function UiInputDatePicker(input_settings){
     
     this._findElements = function(){
         elemUiShow              = document.getElementById(elemIdUiShow);
+        elemTextLabel           = document.getElementById(elemIdTextLabel);
         elemText                = document.getElementById(elemIdText);
         elemTextInv             = document.getElementById(elemIdTextInv);
         elemTextHelp            = document.getElementById(elemIdTextHelp);
@@ -190,6 +193,11 @@ export function UiInputDatePicker(input_settings){
         $elemText.datepicker('setDate', dt_s);
     }
     
+    
+    this.setTextLabel = function(textLabel){
+        elemTextLabel.innerText = textLabel;
+    }
+
     
     this.getValue = function(){
         return elemText.value;
