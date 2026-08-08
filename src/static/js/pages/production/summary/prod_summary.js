@@ -83,6 +83,8 @@ export function ProdSummary(input_settings){
     let elemIdTdGiltBoarInt     = null;
     let elemIdTdGiltBoarSold    = null;
     
+    let elemIdTdAveWtLive       = null;
+    let elemIdTdAveWtSlaughter  = null; 
 
     let elemIdTdFeedsCost       = null;
     let elemIdTdTotalSales      = null;
@@ -127,6 +129,9 @@ export function ProdSummary(input_settings){
     let elemTdGiltBoarInt       = null;
     let elemTdGiltBoarSold      = null;
     
+    let elemTdAveWtLive         = null;
+    let elemTdAveWtSlaughter    = null; 
+
     
     let elemTdFeedsCost         = null;
     let elemTdTotalSales        = null;
@@ -413,6 +418,8 @@ export function ProdSummary(input_settings){
         elemTdGiltBoarInt       = elemDivContainer.querySelector('#'+elemIdTdGiltBoarInt);
         elemTdGiltBoarSold      = elemDivContainer.querySelector('#'+elemIdTdGiltBoarSold);
         
+        elemTdAveWtLive         = elemDivContainer.querySelector('#'+elemIdTdAveWtLive);
+        elemTdAveWtSlaughter    = elemDivContainer.querySelector('#'+elemIdTdAveWtSlaughter);
 
         elemTdFeedsCost         = elemDivContainer.querySelector('#'+elemIdTdFeedsCost);
         elemTdTotalSales        = elemDivContainer.querySelector('#'+elemIdTdTotalSales);
@@ -613,13 +620,21 @@ export function ProdSummary(input_settings){
             
             let num_gilt_boar_int   = 0;
             let num_gilt_boar_sold  = 0;
-            
+
+            let num_pigs_slaughter  = 0;
+            let total_slaughter_wt  = 0.0;
+
             
             
             for (const cur_entry of list_harvest){
                 const prod_harvest  = cur_entry.prod_harvest;
                 
                 num_pigs_harvested  += prod_harvest.num_pigs;
+
+                if (prod_harvest.slaughter_weight && prod_harvest.slaughter_weight.net_weight){
+                    num_pigs_slaughter += prod_harvest.num_pigs;
+                    total_slaughter_wt += prod_harvest.slaughter_weight.net_weight;
+                }
                 
                 if (prod_harvest.sales && prod_harvest.sales.net_sales){
                     num_pigs_sold   += prod_harvest.num_pigs;
@@ -639,11 +654,17 @@ export function ProdSummary(input_settings){
                 }
             }
             
-            
+
             elemTdPigsHarvested.innerHTML   = `${num_pigs_harvested}`;
             elemTdPigsSold.innerHTML        = `${num_pigs_sold}`;
             elemTdGiltBoarInt.innerHTML     = `${num_gilt_boar_int}`;
             elemTdGiltBoarSold.innerHTML    = `${num_gilt_boar_sold}`;
+            
+
+            if (num_pigs_slaughter > 0){
+                let ave_wt_slaughter = total_slaughter_wt / num_pigs_slaughter;
+                elemTdAveWtSlaughter.innerHTML  = `${ave_wt_slaughter.toFixed(1)}`;
+            }
         }
         
         
@@ -1134,6 +1155,8 @@ export function ProdSummary(input_settings){
         elemIdTdGiltBoarInt     = `${settings.uniqueKey}-gilt-boar-int`;
         elemIdTdGiltBoarSold    = `${settings.uniqueKey}-gilt-boar-sold`;
         
+        elemIdTdAveWtLive       = `${settings.uniqueKey}-td-ave-wt-live`;
+        elemIdTdAveWtSlaughter  = `${settings.uniqueKey}-td-ave-wt-slaughter`;
 
         elemIdTdFeedsCost       = `${settings.uniqueKey}-td-feeds-cost`;
         elemIdTdTotalSales      = `${settings.uniqueKey}-td-total-sales`;
@@ -1151,6 +1174,10 @@ export function ProdSummary(input_settings){
         let label_pigs_sold             = 'Total Pigs Sold';
         let label_gilt_boar_harvested   = 'Gilt, Boar Harvested';
         let label_gilt_boar_sold        = 'Gilt, Boar Sold';
+
+        let label_ave_wt_live           = 'Ave. weight Live';
+        let label_ave_wt_slaughter      = 'Ave. weight Slaughter';
+        
         let label_feeds_cost            = 'Feeds Cost';
         let label_total_sales           = 'Total Sales';
         let label_gross_profit          = 'Gross Profit';
@@ -1169,6 +1196,10 @@ export function ProdSummary(input_settings){
         label_pigs_sold                 = helper.getSimpleTranslation('prod_summary.labels.pigs_sold') || label_pigs_sold;
         label_gilt_boar_harvested       = helper.getSimpleTranslation('prod_summary.labels.gilt_boar_harvested') || label_gilt_boar_harvested;
         label_gilt_boar_sold            = helper.getSimpleTranslation('prod_summary.labels.gilt_boar_sold') || label_gilt_boar_sold;
+        
+        label_ave_wt_live               = helper.getSimpleTranslation('prod_summary.labels.ave_wt_live') || label_ave_wt_live;
+        label_ave_wt_slaughter          = helper.getSimpleTranslation('prod_summary.labels.ave_wt_slaughter') || label_ave_wt_slaughter;
+        
         label_feeds_cost                = helper.getSimpleTranslation('prod_summary.labels.feeds_cost') || label_feeds_cost;
         label_total_sales               = helper.getSimpleTranslation('prod_summary.labels.total_sales') || label_total_sales;
         label_gross_profit              = helper.getSimpleTranslation('prod_summary.labels.gross_profit') || label_gross_profit;
@@ -1274,7 +1305,18 @@ export function ProdSummary(input_settings){
                     <td>${label_gilt_boar_sold}</td>
                     <td id="${elemIdTdGiltBoarSold}">0</td>
                 </tr>
-                
+
+                <tr>
+                    <td>${label_ave_wt_live}</td>
+                    <td id="${elemIdTdAveWtLive}"></td>
+                </tr>
+
+                <tr>
+                    <td>${label_ave_wt_slaughter}</td>
+                    <td id="${elemIdTdAveWtSlaughter}"></td>
+                </tr>
+
+
                 ${html_financial}
                 
             </tbody>
