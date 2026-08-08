@@ -665,6 +665,9 @@ export function ProdSummary(input_settings){
                 let ave_wt_slaughter = total_slaughter_wt / num_pigs_slaughter;
                 elemTdAveWtSlaughter.innerHTML  = `${ave_wt_slaughter.toFixed(1)}`;
             }
+            else{
+                elemTdAveWtSlaughter.innerHTML  = '';
+            }
         }
         
         
